@@ -43,9 +43,7 @@ def flash_run(entry, flash_type):
         OPENOCD,
         '-s {}'.format(OPENOCD_SCRIPT_DIR),
         '-f interface/{}.cfg'.format(PROBE),
-        '-f target/stm32f1x.cfg',
-        '-f {}/stm32f1-openocd.cfg'.format(PLATFORM_DIR),
-        '-c "stm32f1x.cpu configure -rtos FreeRTOS"',
+        '-f target/stm32l4x.cfg',
     ]
     if flash_type == 'default':
         OPENOCD_CFG += [
