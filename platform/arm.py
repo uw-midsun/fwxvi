@@ -11,7 +11,6 @@ ar = 'arm-none-eabi-ar'
 arch_cflags = [
     '-mlittle-endian',
     '-mcpu=cortex-m4',
-    '-march=armv7-m',
     '-mfloat-abi=hard',
     '-mfpu=fpv4-sp-d16',
     '-mthumb'
