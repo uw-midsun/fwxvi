@@ -1,4 +1,5 @@
 /* Include necessary headers */
+#include <inttypes.h>
 #include <stdio.h>
 
 #include "FreeRTOS.h"
@@ -17,7 +18,7 @@ static uint32_t counter = 0;
 void vHelloTask(void *pvParameters) {
   /* Task loop */
   while (1) {
-    printf("Hello! Counter: %u\r\n", counter++);
+    printf("Hello! Counter: %" PRIu32 "\r\n", counter++);
 
     /* Delay for 1000ms (1 second) */
     vTaskDelay(pdMS_TO_TICKS(1000));
