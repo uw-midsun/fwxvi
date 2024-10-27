@@ -83,7 +83,7 @@ extern "C" {
 
 /* Set configUSE_MPU_WRAPPERS_V1 to 1 to use MPU wrappers v1. */
 #ifndef configUSE_MPU_WRAPPERS_V1
-#define configUSE_MPU_WRAPPERS_V1 1
+#define configUSE_MPU_WRAPPERS_V1 0
 #endif
 
 /* Set configENABLE_ACCESS_CONTROL_LIST to 1 to enable access control list support. */
@@ -299,7 +299,7 @@ extern "C" {
 #endif
 
 #ifndef configUSE_APPLICATION_TASK_TAG
-#define configUSE_APPLICATION_TASK_TAG 0
+#define configUSE_APPLICATION_TASK_TAG 1
 #endif
 
 #ifndef configNUM_THREAD_LOCAL_STORAGE_POINTERS
@@ -2836,7 +2836,7 @@ extern "C" {
 #endif
 
 #ifndef configKERNEL_PROVIDED_STATIC_MEMORY
-#define configKERNEL_PROVIDED_STATIC_MEMORY 0
+#define configKERNEL_PROVIDED_STATIC_MEMORY 1
 #endif
 
 #ifndef configSUPPORT_DYNAMIC_ALLOCATION

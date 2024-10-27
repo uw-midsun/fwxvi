@@ -1,7 +1,6 @@
 <!--
 General guidelines
 These are just guidelines, not strict rules - document however seems best.
-A README for a firmware-only project (e.g. Babydriver, MPXE, bootloader, CAN explorer) should answer the following questions:
     - What is it?
     - What problem does it solve?
     - How do I use it? (with usage examples / example commands, etc)

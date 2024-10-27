@@ -1,4 +1,7 @@
 {
+    "arm_libs": [
+        "CMSIS"
+    ],
     "cflags": [
         "-ffreestanding",
         "-nostdlib"

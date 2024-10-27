@@ -3,11 +3,8 @@
     "x86"
   ],
   "arm_libs": [
-    "stm32l433xx"
+    "HAL",
+    "CMSIS"
   ],
-  "mocks": {
-    "test_mock": [
-      "status_impl_update"
-    ]
-  }
+  "no_lint": true
 }

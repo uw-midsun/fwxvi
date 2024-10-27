@@ -28,6 +28,3 @@ MEMORY
   APPLICATION (rx) : ORIGIN = _application_start, LENGTH = _application_size
   RAM        (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
 }
-
-/* highest address of the user mode stack */
-_estack = _ram_start + _ram_size;

@@ -11,8 +11,14 @@ Import('VARS')
 TARGET = VARS.get("TARGET")
 
 # default configuration for projects
-DEFAULT_CONFIG = {"libs": ["FreeRTOS", "ms-common"]}
-
+DEFAULT_CONFIG = {
+    "libs": [
+        "FreeRTOS"
+    ],
+    "arm_libs": [
+        "core"
+    ]
+}
 
 def new_task(target, task_name):
     '''Create a new task within target'''

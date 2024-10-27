@@ -1,14 +1,15 @@
-/*
-Common part of the linker scripts for STR71x devices in FLASH mode
-(that is, the FLASH is seen at 0)
-Copyright RAISONANCE 2005
-You can use, modify and distribute this file freely, but without any warranty.
-*/
-
 /* Sections Definitions */
 
 SECTIONS
-{
+{   
+    /* Flash segments */
+    __FLASH_segment_start__ = ORIGIN(FLASH);
+    __FLASH_segment_end__ = ORIGIN(FLASH) + LENGTH(FLASH);
+
+    /* RAM segments */
+    __SRAM_segment_start__ = ORIGIN(RAM);
+    __SRAM_segment_end__ = ORIGIN(RAM) + LENGTH(RAM);
+    
     /* for Cortex devices, the beginning of the startup code is stored in the .isr_vector section, which goes to FLASH */
     .isr_vector :
     {

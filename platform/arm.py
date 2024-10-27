@@ -18,7 +18,6 @@ arch_cflags = [
 
 defines = [
     'MS_PLATFORM_ARM',
-    'USE_HAL_DRIVER',
     'STM32L433xx',
     'HSE_VALUE=16000000',
     'LSE_VALUE=32768'

@@ -1,8 +1,18 @@
-#include <stdio.h>
+/************************************************************************************************
+ * main.c
+ *
+ * Main file for [PROJECT NAME]
+ *
+ * Created: [YYYY/MM/DD]
+ * Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "log.h"
-#include "master_task.h"
-#include "tasks.h"
+/* Standard library headers */
+
+/* Inter-component Headers */
+#include "mcu.h"
+
+/* Intra-component Headers */
 
 void pre_loop_init() {}
 
@@ -13,9 +23,9 @@ void run_medium_cycle() {}
 void run_slow_cycle() {}
 
 int main() {
+  mcu_init();
   tasks_init();
   log_init();
-  LOG_DEBUG("Welcome to TEST!");
 
   init_master_task();
 

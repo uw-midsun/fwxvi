@@ -1903,12 +1903,15 @@ __STATIC_INLINE void NVIC_DecodePriority (uint32_t Priority, uint32_t PriorityGr
   \param [in]   IRQn      Interrupt number
   \param [in]   vector    Address of interrupt handler function
  */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
 __STATIC_INLINE void __NVIC_SetVector(IRQn_Type IRQn, uint32_t vector)
 {
   uint32_t vectors = (uint32_t )SCB->VTOR;
   (* (int *) (vectors + ((int32_t)IRQn + NVIC_USER_IRQ_OFFSET) * 4)) = vector;
   /* ARM Application Note 321 states that the M4 does not require the architectural barrier */
 }
+#pragma GCC diagnostic pop
 
 
 /**
@@ -1919,12 +1922,14 @@ __STATIC_INLINE void __NVIC_SetVector(IRQn_Type IRQn, uint32_t vector)
   \param [in]   IRQn      Interrupt number.
   \return                 Address of interrupt handler function
  */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
 __STATIC_INLINE uint32_t __NVIC_GetVector(IRQn_Type IRQn)
 {
   uint32_t vectors = (uint32_t )SCB->VTOR;
   return (uint32_t)(* (int *) (vectors + ((int32_t)IRQn + NVIC_USER_IRQ_OFFSET) * 4));
 }
-
+#pragma GCC diagnostic pop
 
 /**
   \brief   System Reset
