@@ -26,7 +26,8 @@
  * @details The generated function has the following signature:
  *          void _prv_your_task_function(void *context)
  *          where context is the context pointer passed to tasks_init_task.
- * @param   task_name is the name of your task, which should match any previous DECLARE_TASK declarations.
+ * @param   task_name is the name of your task, which should match any previous DECLARE_TASK
+ * declarations.
  * @param   task_stack_size is the depth of your task's stack - use your judgement to choose.
  */
 #define TASK(task_name, task_stack_size)                           \
@@ -99,7 +100,7 @@ void tasks_start(void);
  */
 StatusCode tasks_init(void);
 
-/** 
+/**
  * @brief   Waits for num_tasks of RTOS tasks to finish
  * @param   num_tasks Number of task completions to wait for
  * @details Takes num_tasks from end task semaphore, tracking the number of tasks completed
@@ -108,7 +109,7 @@ StatusCode tasks_init(void);
  */
 StatusCode wait_tasks(uint16_t num_tasks);
 
-/** 
+/**
  * @brief   A wrapper to give to the semaphore, to be called by tasks when they complete
  * @return  STATUS_CODE_OK if succesfully release sempahore
  */

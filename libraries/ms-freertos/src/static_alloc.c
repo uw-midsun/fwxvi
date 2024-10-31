@@ -2,7 +2,7 @@
  * static_alloc.c
  *
  * Static allocation helpers for FreeRTOS.
- * 
+ *
  * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
@@ -12,6 +12,7 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
+#include "log.h"
 #include "task.h"
 
 /* Intra-component Headers */
@@ -20,21 +21,19 @@
 
 /**
  * This is needed handle stack overflows.
- * See https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/02-Stack-usage-and-stack-overflow-checking
+ * See
+ * https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/02-Stack-usage-and-stack-overflow-checking
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
-  (void)xTask;
-  (void)pcTaskName;
-  taskDISABLE_INTERRUPTS();
-  for (;;);
+  LOG_CRITICAL("CRITICAL: Task '%s' has overflowed its allocated stack space.\n", pcTaskName);
 }
 
 /**
  * This is needed to handle memory allocation failures during task memory allocation.
  */
 void vApplicationMallocFailedHook(void) {
-    taskDISABLE_INTERRUPTS();
-    for (;;);
+  taskDISABLE_INTERRUPTS();
+  for (;;);
 }
 
 #endif

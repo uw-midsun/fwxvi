@@ -4,7 +4,7 @@
  * log.h
  *
  * Header file for the logging library used to debug all modules
- * 
+ *
  * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/

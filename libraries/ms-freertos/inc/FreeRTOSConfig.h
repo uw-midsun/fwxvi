@@ -37,7 +37,6 @@ extern uint32_t SystemCoreClock;
 #define configAPPLICATION_ALLOCATED_HEAP 0
 #define configSYSTEM_CALL_STACK_SIZE 128
 
-
 /* Hook function related definitions. */
 #define configUSE_IDLE_HOOK 0
 #define configUSE_TICK_HOOK 0

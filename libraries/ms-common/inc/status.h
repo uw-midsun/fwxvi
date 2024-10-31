@@ -4,7 +4,7 @@
  * status.h
  *
  * Status Library for more verbose error handling
- * 
+ *
  * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
@@ -34,7 +34,7 @@ typedef enum {
   NUM_STATUS_CODES,
 } StatusCode;
 
-/** 
+/**
  * @brief Use to forward failures or continue on success.
  */
 #define status_ok_or_return(code)          \
