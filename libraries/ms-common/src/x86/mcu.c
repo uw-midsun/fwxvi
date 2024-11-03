@@ -1,9 +1,9 @@
 /************************************************************************************************
- * tasks.c
+ * mcu.c
  *
- * Source code for the RTOS tasks wrapper
+ * Source code for MCU intialization
  *
- * Created: 2024-10-30
+ * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -11,5 +11,7 @@
 
 /* Inter-component Headers */
 
-/* Intra-component Headers */
-#include "fsm.h"
+/* Intra-component Headers*/
+#include "mcu.h"
+
+void mcu_init(void) {}

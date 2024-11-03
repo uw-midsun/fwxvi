@@ -3,9 +3,9 @@
 /************************************************************************************************
  * gpio.h
  *
- * GPIO Library
+ * GPIO Library Header file
  *
- * Created: 2024-10-27
+ * Created: 2024-11-02
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -13,52 +13,60 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#include "stm32l4xx_hal_gpio.h"
 
 /* Intra-component Headers */
 #include "gpio_mcu.h"
 #include "status.h"
 
+/**
+ * @brief   Port and pin data
+ */
 typedef struct GpioAddress {
-  uint8_t port;
+  GpioPort port;
   uint8_t pin;
+  GpioAlternateFunctions alternate_func;
 } GpioAddress;
 
-// Available modes for the GPIO pins
-// See Section 9.1.11 of stm32f10x reference manual for
-// configurations needed for different peripherals
-typedef enum {
-  GPIO_ANALOG = 0,
-  GPIO_INPUT_FLOATING,
-  GPIO_INPUT_PULL_DOWN,
-  GPIO_INPUT_PULL_UP,
-  GPIO_OUTPUT_OPEN_DRAIN,
-  GPIO_OUTPUT_PUSH_PULL,
-  GPIO_ALFTN_OPEN_DRAIN,
-  GPIO_ALTFN_PUSH_PULL,
-  NUM_GPIO_MODES,
-} GpioMode;
-
 /**
- * @brief   Initializes GPIO globally by setting all pins to their default state
+ * @brief   Initializes GPIO globally by disabling JTAG and enabling all GPIO clocks
  * @details ONLY CALL ONCE or it will deinit all current settings. Change pin setting by calling
- *          gpio_init_pin.
+ *          gpio_init_pin
+ * @return  STATUS_CODE_OK if intialization succeeded.
  */
 StatusCode gpio_init(void);
 
 /**
  * @brief   Initializes a GPIO pin by address
  * @details GPIOs are configured to a specified mode, at the max refresh speed
- * 
+ * @param   address Pointer to the GPIO address
+ * @param   pin_mode Pin configuration mode
+ * @param   init_state Initial GPIO state for output pins
+ * @return  STATUS_CODE_OK if pin initialization succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state);
 
-// Set the pin state by address.
+/**
+ * @brief   Sets the GPIO pin to a valid state
+ * @param   address to the GPIO address
+ * @param   state GPIO state can either be HIGH/LOW
+ * @return  STATUS_CODE_OK if pin writing succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
 StatusCode gpio_set_state(const GpioAddress *address, GpioState state);
 
-// Toggles the output state of the pin.
+/**
+ * @brief   Toggles the GPIO
+ * @param   address to the GPIO address
+ * @return  STATUS_CODE_OK if pin toggling succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
 StatusCode gpio_toggle_state(const GpioAddress *address);
 
-// Gets the value of the input register for a pin and assigns it to the state
-// that is passed in.
-StatusCode gpio_get_state(const GpioAddress *address, GpioState *input_state);
+/**
+ * @brief   Toggles the GPIO
+ * @param   address to the GPIO address
+ * @return  STATUS_CODE_OK if pin reading succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+GpioState gpio_get_state(const GpioAddress *address);

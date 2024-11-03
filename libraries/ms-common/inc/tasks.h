@@ -50,6 +50,17 @@
 #define MAX_NUM_TASKS 15
 
 /**
+ * @brief   Convienience priority to make code more readable
+ */
+#define TASK_PRIORITY(prio) ((TaskPriority)prio)
+
+/**
+ * @brief   Define wait timeout as 1 second, tasks cycle executino should not take longer than a
+ * second
+ */
+#define WAIT_TASK_TIMEOUT_MS 1000
+
+/**
  * @brief Minimum stack size a task can have. If you pass in something smaller than the min size, a
  *        warning will be issued
  */

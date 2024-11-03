@@ -12,7 +12,6 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
-#include "log.h"
 #include "task.h"
 
 /* Intra-component Headers */
@@ -24,9 +23,7 @@
  * See
  * https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/02-Stack-usage-and-stack-overflow-checking
  */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
-  LOG_CRITICAL("CRITICAL: Task '%s' has overflowed its allocated stack space.\n", pcTaskName);
-}
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {}
 
 /**
  * This is needed to handle memory allocation failures during task memory allocation.

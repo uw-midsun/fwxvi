@@ -1,80 +1,80 @@
-# name: CI
+name: CI
 
-# on:
-#   # Run on all pull requests and all pushes to main
-#   push:
-#     branches: [main]
-#   pull_request:
+on:
+  # Run on all pull requests and all pushes to main
+  push:
+    branches: [main]
+  pull_request:
 
-#   # Allow running this workflow manually
-#   workflow_dispatch:
+  # Allow running this workflow manually
+  workflow_dispatch:
 
-# env:
-#   # Set defines for builds/tests
-#   DEFINES: "LOG_LEVEL=LOG_LEVEL_WARN"
+env:
+  # Set defines for builds/tests
+  DEFINES: "LOG_LEVEL=LOG_LEVEL_WARN"
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-20.04
-#     timeout-minutes: 12
-#     steps:
-#       - uses: actions/checkout@v3
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v3
 
-#       - name: Get and run setup script
-#         run: |
-#           wget https://raw.githubusercontent.com/uw-midsun/box/master/requirements.sh
-#           chmod +x ./requirements.sh
-#           sudo ./requirements.sh
-#           pip install -r requirements.txt --upgrade
+      - name: Get and run setup script
+        run: |
+          wget https://raw.githubusercontent.com/uw-midsun/box/master/requirements.sh
+          chmod +x ./requirements.sh
+          sudo ./requirements.sh
+          pip install -r requirements.txt --upgrade
 
-#       - name: Install STM32 toolchain
-#         env:
-#           GCC_PATH: gcc-arm-none-eabi-8-2019-q3-update
-#           GCC_ARCHIVE_PATH: gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2
-#           GCC_URL: https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2
-#         run: |
-#           cd ${HOME}
-#           wget -nv $GCC_URL
-#           mkdir -p $GCC_PATH
-#           tar -xjf $GCC_ARCHIVE_PATH
-#           echo "${HOME}/${GCC_PATH}/bin" >> $GITHUB_PATH
+      - name: Install STM32 toolchain
+        env:
+          GCC_PATH: gcc-arm-none-eabi-8-2019-q3-update
+          GCC_ARCHIVE_PATH: gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2
+          GCC_URL: https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2
+        run: |
+          cd ${HOME}
+          wget -nv $GCC_URL
+          mkdir -p $GCC_PATH
+          tar -xjf $GCC_ARCHIVE_PATH
+          echo "${HOME}/${GCC_PATH}/bin" >> $GITHUB_PATH
 
-#       - name: Force PATH to update
-#         run: hash -r
+      - name: Force PATH to update
+        run: hash -r
 
-#       - name: Print versions of everything
-#         run: |
-#           arm-none-eabi-gcc --version
-#           arm-none-eabi-objcopy --version
-#           arm-none-eabi-objdump --version
-#           arm-none-eabi-size --version
-#           arm-none-eabi-gcc-ar --version
-#           arm-none-eabi-gdb --version
-#           gcc --version
-#           make --version
-#           clang --version
-#           clang-format --version
-#           pylint --version
+      - name: Print versions of everything
+        run: |
+          arm-none-eabi-gcc --version
+          arm-none-eabi-objcopy --version
+          arm-none-eabi-objdump --version
+          arm-none-eabi-size --version
+          arm-none-eabi-gcc-ar --version
+          arm-none-eabi-gdb --version
+          gcc --version
+          make --version
+          clang --version
+          clang-format --version
+          pylint --version
 
-#       - name: Format and lint
-#         run: |
-#           scons format
-#           if [[ $(git diff --name-only) ]] ; then 
-#             echo -e "\n unformatted files:";
-#             git diff --name-only;
-#             exit 1;
-#           fi
+      - name: Format and lint
+        run: |
+          scons format
+          if [[ $(git diff --name-only) ]] ; then 
+            echo -e "\n unformatted files:";
+            git diff --name-only;
+            exit 1;
+          fi
 
-#           scons lint
-#           if [ $? -ne 0 ] ; then
-#             echo -e "\n lint failed";
-#             exit 1;
-#           fi
+          scons lint
+          if [ $? -ne 0 ] ; then
+            echo -e "\n lint failed";
+            exit 1;
+          fi
 
-#       - name: Build stm32l4x
-#         id: build-stm32
-#         run: |
-#           scons --platform=arm --define="${DEFINES}"
+      - name: Build stm32l4x
+        id: build-stm32
+        run: |
+          scons --platform=arm --define="${DEFINES}"
 
 #       - name: Build and test
 #         id: build-test

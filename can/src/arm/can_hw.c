@@ -1,15 +1,18 @@
 /************************************************************************************************
- * tasks.c
+ * can_hw.c
  *
- * Source code for the RTOS tasks wrapper
+ * Source file for CAN HW Interface
  *
- * Created: 2024-10-30
+ * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
+#include <string.h>
 
 /* Inter-component Headers */
+#include "log.h"
+#include "stm32l4xx.h"
 
 /* Intra-component Headers */
-#include "fsm.h"
+#include "can_hw.h"

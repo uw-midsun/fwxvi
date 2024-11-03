@@ -1,29 +1,27 @@
 /************************************************************************************************
  * main.c
  *
- * Main file for [PROJECT NAME]
+ * Main file for Blinky
  *
- * Created: [YYYY/MM/DD]
+ * Created: 2024-11-03
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
 #include "gpio.h"
 #include "log.h"
+#include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
 
-void pre_loop_init() {}
-
-void run_fast_cycle() {}
-
-void run_medium_cycle() {}
-
-void run_slow_cycle() {}
+TASK(Blinky, TASK_STACK_512) {
+  while (true) {
+    LOG_DEBUG("BLINKY\n");
+  }
+}
 
 int main() {
   mcu_init();
@@ -31,7 +29,7 @@ int main() {
   tasks_init();
   log_init();
 
-  init_master_task();
+  tasks_init_task(Blinky, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

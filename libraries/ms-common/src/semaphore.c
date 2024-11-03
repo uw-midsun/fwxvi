@@ -1,7 +1,7 @@
 /************************************************************************************************
- * tasks.c
+ * semaphore.c
  *
- * Source code for the RTOS tasks wrapper
+ * Source code for the semaphore library
  *
  * Created: 2024-10-30
  * Midnight Sun Team #24 - MSXVI

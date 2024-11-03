@@ -1,9 +1,11 @@
+#pragma once
+
 /************************************************************************************************
- * tasks.c
+ * mcu.h
  *
- * Source code for the RTOS tasks wrapper
+ * Header file for MCU intialization
  *
- * Created: 2024-10-30
+ * Created: 2024-10-27
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -11,5 +13,10 @@
 
 /* Inter-component Headers */
 
-/* Intra-component Headers */
-#include "fsm.h"
+/* Intra-component Headers*/
+
+/**
+ * @brief   Initialize MCU system clock and HAL.
+ * @details Call this function once at the start of your application.
+ */
+void mcu_init(void);

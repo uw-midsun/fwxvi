@@ -1,9 +1,9 @@
 /************************************************************************************************
- * tasks.c
+ * mpu.c
  *
- * Source code for the RTOS tasks wrapper
+ * MPU Library Source code
  *
- * Created: 2024-10-30
+ * Created: 2024-11-03
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -12,4 +12,3 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "fsm.h"
