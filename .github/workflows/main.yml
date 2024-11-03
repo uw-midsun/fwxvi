@@ -5,58 +5,44 @@ on:
   push:
     branches: [main]
   pull_request:
+
   # Allow running this workflow manually
   workflow_dispatch:
 
 env:
+  # Set defines for builds/tests
   DEFINES: "LOG_LEVEL=LOG_LEVEL_WARN"
-  GCC_VERSION: "11.3-2022.02"
-  GCC_ARCH: "x86_64-linux"
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     timeout-minutes: 12
-    
-    env:
-      GCC_PATH: gcc-arm-none-eabi-${{ env.GCC_VERSION }}
-      GCC_ARCHIVE: gcc-arm-none-eabi-${{ env.GCC_VERSION }}-${{ env.GCC_ARCH }}.tar.bz2
-      GCC_URL: https://developer.arm.com/-/media/Files/downloads/gnu/${{ env.GCC_VERSION }}/gcc-arm-none-eabi-${{ env.GCC_VERSION }}-${{ env.GCC_ARCH }}.tar.bz2
-    
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Cache STM32 toolchain
-        id: cache-toolchain
-        uses: actions/cache@v3
-        with:
-          path: ~/gcc-arm-none-eabi-${{ env.GCC_VERSION }}
-          key: ${{ runner.os }}-gcc-arm-${{ env.GCC_VERSION }}
 
-      - name: Install dependencies
+      - name: Get and run setup script
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget make gcc clang clang-format python3-pip
           wget https://raw.githubusercontent.com/uw-midsun/box/master/requirements.sh
           chmod +x ./requirements.sh
           sudo ./requirements.sh
           pip install -r requirements.txt --upgrade
 
       - name: Install STM32 toolchain
-        if: steps.cache-toolchain.outputs.cache-hit != 'true'
+        env:
+          GCC_PATH: gcc-arm-none-eabi-10.3-2021.10
+          GCC_ARCHIVE_PATH: gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+          GCC_URL: https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
         run: |
           cd ${HOME}
-          wget -nv ${{ env.GCC_URL }}
-          tar -xjf ${{ env.GCC_ARCHIVE }}
-          rm ${{ env.GCC_ARCHIVE }}
-      
-      - name: Add toolchain to PATH
-        run: echo "${HOME}/${{ env.GCC_PATH }}/bin" >> $GITHUB_PATH
+          wget -nv $GCC_URL
+          mkdir -p $GCC_PATH
+          tar -xjf $GCC_ARCHIVE_PATH
+          echo "${HOME}/${GCC_PATH}/bin" >> $GITHUB_PATH
 
-      - name: Force PATH update
+      - name: Force PATH to update
         run: hash -r
 
-      - name: Verify toolchain installation
+      - name: Print versions of everything
         run: |
           arm-none-eabi-gcc --version
           arm-none-eabi-objcopy --version
@@ -70,37 +56,37 @@ jobs:
           clang-format --version
           pylint --version
 
-      - name: Format check
+      - name: Format and lint
         run: |
           scons format
-          if [[ $(git diff --name-only) ]]; then
-            echo "::error::Unformatted files detected:"
-            git diff --name-only
-            exit 1
+          if [[ $(git diff --name-only) ]] ; then 
+            echo -e "\n unformatted files:";
+            git diff --name-only;
+            exit 1;
           fi
 
-      - name: Lint check
+          scons lint
+          if [ $? -ne 0 ] ; then
+            echo -e "\n lint failed";
+            exit 1;
+          fi
+
+      - name: Build stm32l4x
+        id: build-stm32
         run: |
-          scons lint || {
-            echo "::error::Lint check failed"
-            exit 1
-          }
+          scons --platform=arm --define="${DEFINES}"
 
-      - name: Build STM32 firmware
-        run: scons --platform=arm --define="${DEFINES}"
+#       - name: Build and test
+#         id: build-test
+#         run: |
+#           # Setting up vcan
+#           sudo apt-get install -y linux-modules-extra-$(uname -r)
+#           sudo modprobe can
+#           sudo modprobe can_raw
+#           sudo modprobe vcan
+#           sudo ip link add dev vcan0 type vcan
+#           sudo ip link set up vcan0
 
-      # - name: Setup test environment
-      #   if: false  # Commented out for now, uncomment when ready for testing
-      #   run: |
-      #     sudo apt-get install -y linux-modules-extra-$(uname -r)
-      #     sudo modprobe can
-      #     sudo modprobe can_raw
-      #     sudo modprobe vcan
-      #     sudo ip link add dev vcan0 type vcan
-      #     sudo ip link set up vcan0
-
-      # - name: Build and test x86
-      #   run: |
-      #     scons --platform=x86 --define="${DEFINES}"
-      #     scons test --platform=x86 --define="${DEFINES}"
-      #     # Add make pytest_all when ready
+#           scons --platform=x86 --define="${DEFINES}"
+#           scons test --platform=x86 --define="${DEFINES}"
+#         # missing make pytest_all
