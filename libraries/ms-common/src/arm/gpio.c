@@ -71,8 +71,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
   GPIO_InitTypeDef init = { .Pin = 1U << (address->pin),
                             .Mode = s_gpio_mode_map[pin_mode],
                             .Pull = gpio_pull,
-                            .Speed = GPIO_SPEED_FREQ_HIGH,
-                            .Alternate = address->alternate_func };
+                            .Speed = GPIO_SPEED_FREQ_HIGH };
 
   GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * 0x400U));
   HAL_GPIO_Init(gpio_port, &init);
@@ -80,6 +79,36 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
   if (pin_mode == GPIO_OUTPUT_OPEN_DRAIN || pin_mode == GPIO_OUTPUT_PUSH_PULL) {
     HAL_GPIO_WritePin(gpio_port, init.Pin, init_state);
   }
+
+  taskEXIT_CRITICAL();
+  return STATUS_CODE_OK;
+}
+
+StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
+  if (address == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT ||
+      pin_mode >= NUM_GPIO_MODES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  /* Don't allow SWD/SCLK to be configured */
+  if (address->port == GPIO_PORT_A && (address->pin == 13 || address->pin == 14)) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  taskENTER_CRITICAL();
+
+  GPIO_InitTypeDef init = { .Pin = 1U << (address->pin),
+                            .Mode = s_gpio_mode_map[pin_mode],
+                            .Pull = GPIO_NOPULL,
+                            .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+                            .Alternate = alt_func };
+
+  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * 0x400U));
+  HAL_GPIO_Init(gpio_port, &init);
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;

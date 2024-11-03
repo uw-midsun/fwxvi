@@ -12,7 +12,6 @@
 /* Inter-component Headers */
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_conf.h"
-#include "stm32l4xx_hal_cortex.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_uart.h"
 
@@ -84,6 +83,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
   uint8_t tx_byte;
 
   if (xQueueReceiveFromISR(s_port_queues[uart].tx_queue.handle, &tx_byte, pdFALSE) == pdFALSE) {
+    /* If there is no more data */
     __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);
   } else {
     HAL_UART_Transmit_IT(huart, &tx_byte, 1);
@@ -136,8 +136,8 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   s_port_queues[uart].rx_queue.storage_buf = s_port_queues[uart].rx_buf;
   queue_init(&s_port_queues[uart].rx_queue);
 
-  gpio_init_pin(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_STATE_LOW);
-  gpio_init_pin(&settings->rx, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
+  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
 
   uint32_t uart_flow_control = UART_HWCONTROL_NONE;
   if (settings->flow_control) {
