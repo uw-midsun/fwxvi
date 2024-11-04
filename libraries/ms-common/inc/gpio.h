@@ -24,7 +24,6 @@
 typedef struct GpioAddress {
   GpioPort port;
   uint8_t pin;
-  GpioAlternateFunctions alternate_func;
 } GpioAddress;
 
 /**
@@ -45,6 +44,18 @@ StatusCode gpio_init(void);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state);
+
+/**
+ * @brief   Initializes an alternate function for a GPIO pin by address
+ * @details This initialization should be used I2C, SPI, UART and timers
+ * @param   address Pointer to the GPIO address
+ * @param   pin_mode Pin configuration mode
+ * @param   init_state Initial GPIO state for output pins
+ * @return  STATUS_CODE_OK if pin initialization succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
+                            GpioAlternateFunctions alt_func);
 
 /**
  * @brief   Sets the GPIO pin to a valid state

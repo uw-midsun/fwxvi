@@ -19,6 +19,10 @@
 #define GPIO_PINS_PER_PORT 16
 #endif
 
+#ifndef GPIO_ADDRESS_OFFSET
+#define GPIO_ADDRESS_OFFSET 0x400U
+#endif
+
 /**
  * @brief   High or low GPIO state
  */
@@ -90,6 +94,8 @@ typedef enum {
   GPIO_PORT_A = 0,
   GPIO_PORT_B,
   GPIO_PORT_C,
+  GPIO_PORT_D,
+  GPIO_PORT_E,
   GPIO_PORT_H,
   NUM_GPIO_PORTS,
 } GpioPort;

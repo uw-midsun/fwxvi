@@ -25,7 +25,6 @@ TASK(Blinky, TASK_STACK_512) {
 
 int main() {
   mcu_init();
-  gpio_init();
   tasks_init();
   log_init();
 

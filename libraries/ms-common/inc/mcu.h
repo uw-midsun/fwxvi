@@ -14,9 +14,13 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers*/
+#include "status.h"
+
+/* Timeout for HSE/LSE pins to stabilize. Should not take more than 5 seconds */
+#define HSE_LSE_TIMEOUT_MS 5000
 
 /**
  * @brief   Initialize MCU system clock and HAL.
  * @details Call this function once at the start of your application.
  */
-void mcu_init(void);
+StatusCode mcu_init(void);
