@@ -15,10 +15,4 @@
 
 /* Intra-component Headers */
 
-#ifndef NUM_UART_PORTS
-#define NUM_UART_PORTS 2U
-#endif
-typedef enum {
-  UART_PORT_1 = 0,
-  UART_PORT_2,
-} UartPort;
+typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;

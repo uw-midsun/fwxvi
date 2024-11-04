@@ -66,7 +66,7 @@ static SemaphoreHandle_t s_can_tx_ready_sem_handle;
 static StaticSemaphore_t s_can_tx_ready_sem;
 static bool s_tx_full = false;
 
-// takes 1 for filter_in, 2 for filter_out and default is 0
+/* 1 for filter in, 2 for filter out, default = 0 */
 static int s_can_filter_en = 0;
 static uint32_t can_filters[CAN_HW_NUM_FILTER_BANKS];
 
@@ -148,4 +148,147 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   LOG_DEBUG("CAN HW initialized on %s\n", CAN_HW_DEV_INTERFACE);
 
   return STATUS_CODE_OK;
+}
+
+StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended) {
+  if (s_can_filter_en == 0) {
+    s_can_filter_en = 1;
+  }
+
+  if (s_num_filters >= CAN_HW_NUM_FILTER_BANKS) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  } else if (s_can_filter_en != 1) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  size_t offset = extended ? 3 : 21;
+  uint32_t mask_val = (mask << offset) | (1 << 2);
+  uint32_t filter_val = (filter << offset) | ((uint32_t)extended << 2);
+
+  prv_add_filter_in(s_num_filters, mask_val, filter_val);
+  s_num_filters++;
+  return STATUS_CODE_OK;
+}
+
+CanHwBusStatus can_hw_bus_status(void) {
+  uint32_t error_flags = HAL_CAN_GetError(&s_can_handle);
+  
+  if (error_flags & HAL_CAN_ERROR_BOF) {
+    return CAN_HW_BUS_STATUS_OFF;
+  } else if (error_flags & (HAL_CAN_ERROR_EWG | HAL_CAN_ERROR_EPV)) {
+    return CAN_HW_BUS_STATUS_ERROR;
+  }
+
+  return CAN_HW_BUS_STATUS_OK;
+}
+
+StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+  CAN_TxHeaderTypeDef tx_header = {
+    .StdId = id,
+    .ExtId = id,
+    .IDE = extended ? CAN_ID_EXT : CAN_ID_STD,
+    .RTR = CAN_RTR_DATA,
+    .DLC = len,
+    .TransmitGlobalTime = DISABLE
+  };
+
+  uint32_t tx_mailbox;
+  for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
+    if (HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, (uint8_t*)data, &tx_mailbox) != HAL_OK) {
+      s_tx_full = true;
+      /* Check if the TX mailbox is full */
+      if (xSemaphoreTake(s_can_tx_ready_sem_handle, pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT)) == pdFALSE) {
+        LOG_WARN("CAN HW TX failed");
+      }
+    } else {
+      return STATUS_CODE_OK;
+    }
+  }
+
+  LOG_CRITICAL("CAN HW TX failed");
+  return STATUS_CODE_RESOURCE_EXHAUSTED;
+}
+
+bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len) {
+  CAN_RxHeaderTypeDef rx_header;
+  uint8_t rx_data[8];
+
+  /* Check FIFO 0 then FIFO 1 for data */
+  if (HAL_CAN_GetRxFifoFillLevel(&s_can_handle, CAN_RX_FIFO0) > 0) {
+    if (HAL_CAN_GetRxMessage(&s_can_handle, CAN_RX_FIFO0, &rx_header, rx_data) == HAL_OK) {
+      *extended = (rx_header.IDE == CAN_ID_EXT);
+      *id = *extended ? rx_header.ExtId : rx_header.StdId;
+      *len = rx_header.DLC;
+      memcpy(data, rx_data, rx_header.DLC);
+      return true;
+    }
+  } else if (HAL_CAN_GetRxFifoFillLevel(&s_can_handle, CAN_RX_FIFO1) > 0) {
+    if (HAL_CAN_GetRxMessage(&s_can_handle, CAN_RX_FIFO1, &rx_header, rx_data) == HAL_OK) {
+      *extended = (rx_header.IDE == CAN_ID_EXT);
+      *id = *extended ? rx_header.ExtId : rx_header.StdId;
+      *len = rx_header.DLC;
+      memcpy(data, rx_data, rx_header.DLC);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
+  if (s_tx_full) {
+    /* TX mailbox is no longer full once data is transmitted */
+    xSemaphoreGiveFromISR(s_can_tx_ready_sem_handle, NULL);
+    s_tx_full = false;
+  }
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  BaseType_t higher_woken = pdFALSE;
+  CanMessage rx_msg = { 0 };
+  
+  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+    bool s_filter_id_match = false;
+    for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
+      /* Check if the ID is in the filter */
+      if (can_filters[i] == rx_msg.id.raw) {
+        s_filter_id_match = true;
+        break;
+      }
+    }
+
+    /* If the ID is not in the filters, push to RX queue */
+    if (!s_filter_id_match) {
+      can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
+    }
+  }
+  
+  portYIELD_FROM_ISR(higher_woken);
+}
+
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  BaseType_t higher_woken = pdFALSE;
+  CanMessage rx_msg = { 0 };
+  
+  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+    bool s_filter_id_match = false;
+    for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
+      /* Check if the ID is in the filter */
+      if (can_filters[i] == rx_msg.id.raw) {
+        s_filter_id_match = true;
+        break;
+      }
+    }
+
+    /* If the ID is not in the filters, push to RX queue */
+    if (!s_filter_id_match) {
+      can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
+    }
+  }
+  
+  portYIELD_FROM_ISR(higher_woken);
+}
+
+void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+  /* TODO: Add error notifications/handling */
 }
