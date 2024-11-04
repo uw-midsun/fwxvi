@@ -13,27 +13,45 @@
 #include "stm32l4xx_hal.h"
 
 /* Intra-component Headers*/
+#include "gpio.h"
 #include "mcu.h"
 
-static void SystemClock_Config(void) {
+static StatusCode SystemClock_Config(void) {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
 
-  /* MSI is enabled after System reset, activate PLL with MSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
-  RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
+  /* Enable oscillators: HSE (16MHz) and LSE (32.768kHz) */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+
+  /* Configure PLL with HSE as source */
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 40;
-  RCC_OscInitStruct.PLL.PLLR = 2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+
+  /* PLL calculation for 80MHz from 16MHz HSE:
+   * 16MHz / PLLM(2) = 8MHz
+   * 8MHz * PLLN(20) = 160MHz
+   * 160MHz / PLLR(2) = 80MHz SYSCLK
+   */
+  RCC_OscInitStruct.PLL.PLLM = 2;  /* Divide */
+  RCC_OscInitStruct.PLL.PLLN = 20; /* Multiply */
+  RCC_OscInitStruct.PLL.PLLR = 2;  /* Divide */
+
+  /* Initialize PLLP and PLLQ even though they’re not used */
   RCC_OscInitStruct.PLL.PLLP = 7;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 2;
+
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     /* Initialization Error */
-    while (1) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  uint32_t start_time = HAL_GetTick();
+
+  while (__HAL_RCC_GET_FLAG(RCC_FLAG_HSERDY) != SET && __HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) != SET) {
+    if (HAL_GetTick() - start_time > HSE_LSE_TIMEOUT_MS) {
+      return STATUS_CODE_TIMEOUT;
     }
   }
 
@@ -47,12 +65,18 @@ static void SystemClock_Config(void) {
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
     /* Initialization Error */
-    while (1) {
-    }
+    return STATUS_CODE_INTERNAL_ERROR;
   }
+
+  return STATUS_CODE_OK;
 }
 
-void mcu_init(void) {
-  HAL_Init();
-  SystemClock_Config();
+StatusCode mcu_init(void) {
+  if (HAL_Init() != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  gpio_init();
+
+  return SystemClock_Config();
 }

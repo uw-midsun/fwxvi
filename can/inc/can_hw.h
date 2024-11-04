@@ -5,7 +5,7 @@
  *
  * Header file for CAN HW Interface
  *
- * Created: 2024-11-02
+ * Created: 2024-11-03
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -55,7 +55,7 @@ typedef struct CanSettings {
   GpioAddress tx;
   GpioAddress rx;
   bool loopback;
-  CanMode mode;
+  bool silent;
 } CanSettings;
 
 /**
@@ -64,6 +64,7 @@ typedef struct CanSettings {
  * @param   settings Pointer to the CAN settings
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
 StatusCode can_hw_init(const CanQueue* rx_queue, const CanSettings *settings);
 
@@ -95,7 +96,6 @@ CanHwBusStatus can_hw_bus_status(void);
  */
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
 
-// Must be called within the RX handler, returns whether a message was processed
 /**
  * @brief   Receives CAN data from the bus
  * @param   id

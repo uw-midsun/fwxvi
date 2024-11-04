@@ -28,6 +28,8 @@
  extern "C" {
 #endif
 
+#include "stm32l433xx.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -207,7 +209,7 @@
   *        for each PPP peripheral).
   */
 #define USE_HAL_ADC_REGISTER_CALLBACKS        0U
-#define USE_HAL_CAN_REGISTER_CALLBACKS        0U
+#define USE_HAL_CAN_REGISTER_CALLBACKS        1U
 #define USE_HAL_COMP_REGISTER_CALLBACKS       0U
 #define USE_HAL_CRYP_REGISTER_CALLBACKS       0U
 #define USE_HAL_DAC_REGISTER_CALLBACKS        0U

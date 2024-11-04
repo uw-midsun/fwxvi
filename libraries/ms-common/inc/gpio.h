@@ -54,7 +54,8 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
  * @return  STATUS_CODE_OK if pin initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func);
+StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
+                            GpioAlternateFunctions alt_func);
 
 /**
  * @brief   Sets the GPIO pin to a valid state

@@ -27,7 +27,6 @@ void run_slow_cycle() {}
 
 int main() {
   mcu_init();
-  gpio_init();
   tasks_init();
   log_init();
 

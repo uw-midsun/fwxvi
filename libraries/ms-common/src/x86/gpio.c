@@ -26,7 +26,8 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
+StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
+                            GpioAlternateFunctions alt_func) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
