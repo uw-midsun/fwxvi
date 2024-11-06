@@ -23,10 +23,10 @@
 #include "uart.h"
 #include "uart_mcu.h"
 
-static inline void prv_enable_usart1(void) {
+static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
 }
-static inline void prv_enable_usart2(void) {
+static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
 }
 
@@ -51,8 +51,8 @@ typedef struct {
 } UartPortData;
 
 static UartPortData s_port[] = {
-  [UART_PORT_1] = { .rcc_cmd = prv_enable_usart1, .irq = USART1_IRQn, .base = USART1 },
-  [UART_PORT_2] = { .rcc_cmd = prv_enable_usart2, .irq = USART2_IRQn, .base = USART2 },
+  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1 },
+  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2 },
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];

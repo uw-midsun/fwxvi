@@ -22,7 +22,7 @@ static StaticSemaphore_t s_end_task_sem;
 static SemaphoreHandle_t s_end_task_handle = NULL;
 
 // Add any setup or teardown that needs to be done for every task here.
-static void prv_task(void *params) {
+static void s_task(void *params) {
   Task *task = params;
   if (task == NULL) {  // guard just in case, error should have been caught previously
     LOG_CRITICAL("CRITICAL: Tried to start null task!\n");
@@ -65,7 +65,7 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
   }
 
   task->context = context;
-  task->handle = xTaskCreateStatic(prv_task, task->name, task->stack_size, task, priority,
+  task->handle = xTaskCreateStatic(s_task, task->name, task->stack_size, task, priority,
                                    task->stack, &task->tcb);
   if (task->handle == NULL) {
     LOG_CRITICAL("Failed to create Task %s\n", task->name);
