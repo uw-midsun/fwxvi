@@ -3,8 +3,8 @@
     "x86"
   ],
   "arm_libs": [
-    "HAL",
-    "CMSIS"
+    "CMSIS",
+    "HAL"
   ],
   "no_lint": true
 }

@@ -13,10 +13,8 @@ TARGET = VARS.get("TARGET")
 # default configuration for projects
 DEFAULT_CONFIG = {
     "libs": [
-        "FreeRTOS"
-    ],
-    "arm_libs": [
-        "core"
+        "FreeRTOS",
+        "ms-common"
     ]
 }
 

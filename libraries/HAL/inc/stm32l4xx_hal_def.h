@@ -86,27 +86,22 @@ typedef enum
   */
 #define __HAL_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = 0)
 
-#if (USE_RTOS == 1)
-  /* Reserved for future use */
-  #error " USE_RTOS should be 0 in the current HAL release "
-#else
-  #define __HAL_LOCK(__HANDLE__)                                           \
-                                do{                                        \
-                                    if((__HANDLE__)->Lock == HAL_LOCKED)   \
-                                    {                                      \
-                                       return HAL_BUSY;                    \
-                                    }                                      \
-                                    else                                   \
-                                    {                                      \
-                                       (__HANDLE__)->Lock = HAL_LOCKED;    \
-                                    }                                      \
-                                  }while (0)
+#define __HAL_LOCK(__HANDLE__)                                           \
+                              do{                                        \
+                                  if((__HANDLE__)->Lock == HAL_LOCKED)   \
+                                  {                                      \
+                                      return HAL_BUSY;                    \
+                                  }                                      \
+                                  else                                   \
+                                  {                                      \
+                                      (__HANDLE__)->Lock = HAL_LOCKED;    \
+                                  }                                      \
+                                }while (0)
 
-  #define __HAL_UNLOCK(__HANDLE__)                                          \
-                                  do{                                       \
-                                      (__HANDLE__)->Lock = HAL_UNLOCKED;    \
-                                    }while (0)
-#endif /* USE_RTOS */
+#define __HAL_UNLOCK(__HANDLE__)                                          \
+                                do{                                       \
+                                    (__HANDLE__)->Lock = HAL_UNLOCKED;    \
+                                  }while (0)
 
 
 #if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */

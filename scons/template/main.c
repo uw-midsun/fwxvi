@@ -11,6 +11,9 @@
 
 /* Inter-component Headers */
 #include "mcu.h"
+#include "gpio.h"
+#include "log.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 

@@ -5,7 +5,7 @@
  *
  * Header file for the logging library used to debug all modules
  *
- * Created: 2024-10-27
+ * Created: 2024-11-02
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -20,6 +20,7 @@
 /* Intra-component Headers */
 #include "semaphore.h"
 #include "tasks.h"
+#include "uart.h"
 
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
@@ -51,10 +52,10 @@ extern UartSettings log_uart_settings;
 #define log_init() \
   { mutex_init(&s_log_mutex); }
 #else
-#define log_init()                           \
-  {                                          \
-    mutex_init(&s_log_mutex);                \
-    uart_init(UARTPORT, &log_uart_settings); \
+#define log_init()                              \
+  {                                             \
+    mutex_init(&s_log_mutex);                   \
+    uart_init(UART_PORT_1, &log_uart_settings); \
   }
 #endif
 
@@ -67,7 +68,7 @@ extern UartSettings log_uart_settings;
       if (mutex_lock(&s_log_mutex, LOG_TIMEOUT_MS) == STATUS_CODE_OK) {                      \
         size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, \
                                            (level), __FILE__, __LINE__, ##__VA_ARGS__);      \
-        uart_tx(UARTPORT, (uint8_t *)g_log_buffer, &msg_size);                               \
+        uart_tx(UART_PORT_1, (uint8_t *)g_log_buffer, msg_size);                             \
       }                                                                                      \
       mutex_unlock(&s_log_mutex);                                                            \
     }                                                                                        \

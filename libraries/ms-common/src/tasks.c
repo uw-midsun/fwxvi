@@ -68,9 +68,9 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
   task->handle = xTaskCreateStatic(prv_task, task->name, task->stack_size, task, priority,
                                    task->stack, &task->tcb);
   if (task->handle == NULL) {
-    LOG_CRITICAL("Failed to create Task %s", task->name);
+    LOG_CRITICAL("Failed to create Task %s\n", task->name);
   } else {
-    LOG_DEBUG("Create Task %s", task->name);
+    LOG_DEBUG("Create Task %s\n", task->name);
   }
   return STATUS_CODE_OK;
 }
