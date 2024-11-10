@@ -18,8 +18,8 @@
 
 /* Intra-component Headers */
 #include "i2c.h"
-#include "log.h"
 #include "interrupts.h"
+#include "log.h"
 #include "queues.h"
 #include "semaphore.h"
 
@@ -83,7 +83,8 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
   }
   gpio_init_pin(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_STATE_HIGH);
   // Clear I2C error flags
-  __HAL_I2C_CLEAR_FLAG(&s_i2c_handles[i2c], I2C_FLAG_BERR | I2C_FLAG_ARLO | I2C_FLAG_OVR | I2C_FLAG_TIMEOUT);
+  __HAL_I2C_CLEAR_FLAG(&s_i2c_handles[i2c],
+                       I2C_FLAG_BERR | I2C_FLAG_ARLO | I2C_FLAG_OVR | I2C_FLAG_TIMEOUT);
   // Disable the I2C peripheral
   __HAL_I2C_DISABLE(&s_i2c_handles[i2c]);
   // Enable the I2C peripheral
@@ -100,9 +101,9 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
   s_i2c_handles[i2c].Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
   if (HAL_I2C_Init(&s_i2c_handles[i2c]) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
-  }  
+  }
   if (__HAL_I2C_GET_FLAG(&s_i2c_handles[i2c], I2C_FLAG_BUSY) == SET) {
-      return STATUS_CODE_UNREACHABLE;
+    return STATUS_CODE_UNREACHABLE;
   }
   return STATUS_CODE_OK;
 }
@@ -115,17 +116,17 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   }
 
   s_port[i2c].settings = *settings;
-  
+
   // Enable clock for I2C
   switch (s_port[i2c].periph) {
     case RCC_APB1Periph_I2C1:
-        __HAL_RCC_I2C1_CLK_ENABLE();
-        break;
+      __HAL_RCC_I2C1_CLK_ENABLE();
+      break;
     case RCC_APB1Periph_I2C2:
-        __HAL_RCC_I2C2_CLK_ENABLE();
-        break;
+      __HAL_RCC_I2C2_CLK_ENABLE();
+      break;
     default:
-        break;
+      break;
   }
 
   // Enable clock for GPIOB
@@ -135,7 +136,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   if (i2c == I2C_PORT_1) {
     GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
   }
- 
+
   // NOTE(mitch): This shouldn't be required for I2C, was needed to get around
   // Issue with SCL not being set high
   gpio_init_pin(&(settings->scl), GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
@@ -190,7 +191,7 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
   }
   queue_reset(&s_port[i2c].i2c_buf.queue);
   s_port[i2c].current_addr = (addr) << 1;
-  
+
   // Set up txn for read or write
   if (read) {
     s_port[i2c].curr_mode = I2C_MODE_RECEIVE;
@@ -206,16 +207,27 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
 
   // Enable Interrupts before setting start to begin txn
   s_port[i2c].exit = STATUS_CODE_OK;
-  HAL_I2C_GenerateStop(&s_i2c_handles[i2c], DISABLE); // will need to fix
-  I2C_GenerateSTART(s_port[i2c].base, ENABLE); // will need to fix
-  I2C_ITConfig(s_port[i2c].base, I2C_IT_ERR | I2C_IT_EVT, ENABLE);
+  HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr, data, len);
+  HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr, data, len);
+  HAL_I2C_EnableListen_IT(&s_i2c_handles[i2c]);
   // Wait for signal that txn is finished from ISR, then disable IT and generate stop
   status = sem_wait(&s_port[i2c].i2c_buf.wait_txn, I2C_TIMEOUT_MS);
-  I2C_ITConfig(s_port[i2c].base, I2C_IT_ERR | I2C_IT_EVT, DISABLE);
+  HAL_I2C_DisableListen_IT(&s_i2c_handles[i2c]);
   if (!s_port[i2c].multi_txn ||
       status) {  // In an multi exchange or failed txn, need to keep line live to receive data
-    I2C_GenerateSTOP(s_port[i2c].base, ENABLE);
+    HAL_I2C_Master_Abort_IT(&s_i2c_handles[i2c], addr);
   }
+  status_ok_or_return(s_port[i2c].exit);
+  if (read) {
+    // Receive data from queue
+    // If less than requested is received, an error in the transaction has occurred
+    for (size_t rx = 0; rx < len; rx++) {
+      if (queue_receive(&s_port[i2c].i2c_buf.queue, &data[rx], 0)) {
+        return STATUS_CODE_INTERNAL_ERROR;
+      }
+    }
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
