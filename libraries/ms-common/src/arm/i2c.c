@@ -91,8 +91,6 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
   __HAL_I2C_ENABLE(&s_i2c_handles[i2c]);
   // Reinitialize
   s_i2c_handles[i2c].Instance = s_port[i2c].base;
-  s_i2c_handles[i2c].Init.ClockSpeed = s_i2c_timing[settings->speed];
-  s_i2c_handles[i2c].Init.DutyCycle = I2C_DUTYCYCLE_2;
   s_i2c_handles[i2c].Init.OwnAddress1 = 0;
   s_i2c_handles[i2c].Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   s_i2c_handles[i2c].Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -110,9 +108,9 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
 
 StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   if (i2c >= NUM_I2C_PORTS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C port.");
+    return STATUS_CODE_INVALID_ARGS;
   } else if (settings->speed >= NUM_I2C_SPEEDS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C speed.");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   s_port[i2c].settings = *settings;
@@ -132,11 +130,6 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   // Enable clock for GPIOB
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  // Remap pins to I2C pins B8 & B9 on Port 1
-  if (i2c == I2C_PORT_1) {
-    GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
-  }
-
   // NOTE(mitch): This shouldn't be required for I2C, was needed to get around
   // Issue with SCL not being set high
   gpio_init_pin(&(settings->scl), GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
@@ -148,9 +141,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   gpio_init_pin(&(settings->scl), GPIO_ALTFN_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&(settings->sda), GPIO_ALFTN_OPEN_DRAIN, GPIO_STATE_HIGH);
 
-  s_i2c_handles[i2c].Instance = s_port[uart].base;
-  s_i2c_handles[i2c].Init.ClockSpeed = s_i2c_timing[settings->speed];
-  s_i2c_handles[i2c].Init.DutyCycle = I2C_DUTYCYCLE_2;
+  s_i2c_handles[i2c].Instance = s_port[i2c].base;
   s_i2c_handles[i2c].Init.OwnAddress1 = 0;
   s_i2c_handles[i2c].Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   s_i2c_handles[i2c].Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -164,7 +155,8 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
 
   interrupt_nvic_enable(s_port[i2c].ev_irqn, INTERRUPT_PRIORITY_NORMAL);
   interrupt_nvic_enable(s_port[i2c].err_irqn, INTERRUPT_PRIORITY_NORMAL);
-  __HAL_I2C_DISABLE_IT(&s_i2c_handles[i2c], I2C_IT_ERR | I2C_IT_EVT | I2C_IT_BUF);
+  __HAL_I2C_DISABLE_IT(&s_i2c_handles[i2c], I2C_IT_ERRI | I2C_IT_TCI | I2C_IT_STOPI | I2C_IT_NACKI |
+                                                I2C_IT_ADDRI | I2C_IT_RXI | I2C_IT_TXI);
 
   // Configure data structures
   s_port[i2c].i2c_buf.queue.num_items = I2C_MAX_NUM_DATA;
@@ -232,7 +224,7 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
 
 StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C port.");
+    return STATUS_CODE_INVALID_ARGS;
   }
   // Lock I2C resource
   StatusCode res = STATUS_CODE_OK;
@@ -247,7 +239,7 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
 // Address needs to be just the device address, read/write bit is taken care of in hardware
 StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
   if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C port.");
+    return STATUS_CODE_INVALID_ARGS;
   }
   // Lock I2C resource
   StatusCode res = STATUS_CODE_OK;
@@ -261,7 +253,7 @@ StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_l
 StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data,
                         size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C port.");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   StatusCode res = STATUS_CODE_OK;
@@ -282,7 +274,7 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
 StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data,
                          size_t tx_len) {
   if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA - 1) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Invalid I2C port.");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   uint8_t write_data[I2C_MAX_NUM_DATA] = { 0 };
