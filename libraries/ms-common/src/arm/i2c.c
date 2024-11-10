@@ -54,11 +54,11 @@ typedef struct {
 } I2CPortData;
 
 static I2CPortData s_port[NUM_I2C_PORTS] = {
-  [I2C_PORT_1] = { .periph = RCC_APB1Periph_I2C1,
+  [I2C_PORT_1] = { .periph = RCC_APB1ENR1_I2C1EN,
                    .base = I2C1,
                    .ev_irqn = I2C1_EV_IRQn,
                    .err_irqn = I2C1_ER_IRQn },
-  [I2C_PORT_2] = { .periph = RCC_APB1Periph_I2C2,
+  [I2C_PORT_2] = { .periph = RCC_APB1ENR1_I2C2EN,
                    .base = I2C2,
                    .ev_irqn = I2C2_EV_IRQn,
                    .err_irqn = I2C2_ER_IRQn },
@@ -117,10 +117,10 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
 
   // Enable clock for I2C
   switch (s_port[i2c].periph) {
-    case RCC_APB1Periph_I2C1:
+    case RCC_APB1ENR1_I2C1EN:
       __HAL_RCC_I2C1_CLK_ENABLE();
       break;
-    case RCC_APB1Periph_I2C2:
+    case RCC_APB1ENR1_I2C2EN:
       __HAL_RCC_I2C2_CLK_ENABLE();
       break;
     default:
