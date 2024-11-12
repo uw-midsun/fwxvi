@@ -39,18 +39,16 @@ typedef struct {
 } I2CBuffer;
 
 typedef struct {
-  uint32_t periph;                // Clock config
-  uint8_t ev_irqn;                // Event Interrupt
-  uint8_t err_irqn;               // Error Interrupt
-  I2C_TypeDef *base;              // Base Peripheral defined by CMSIS
-  I2CSettings settings;           // I2C Config
-  I2CBuffer i2c_buf;              // RTOS data structures
-  bool curr_mode;                 // Mode used in current transxn
-  Mutex mutex;                    // Ensure port only accessed from one task at time
-  I2CAddress current_addr;        // Addr used in current transxn
-  volatile uint8_t num_rx_bytes;  // Number of bytes left to receive in rx mode
-  volatile StatusCode exit;       // Flag set if error occurs in txn
-  bool multi_txn;                 // if we are doing more than one txn don't send stop
+  uint32_t periph;          // Clock config
+  uint8_t ev_irqn;          // Event Interrupt
+  uint8_t err_irqn;         // Error Interrupt
+  I2C_TypeDef *base;        // Base Peripheral defined by STM32L433
+  I2CSettings settings;     // I2C Config
+  I2CBuffer i2c_buf;        // RTOS data structures
+  bool curr_mode;           // Mode used in current transxn
+  Mutex mutex;              // Ensure port only accessed from one task at time
+  I2CAddress current_addr;  // Addr used in current transxn
+  bool multi_txn;           // if we are doing more than one txn don't send stop
 } I2CPortData;
 
 static I2CPortData s_port[NUM_I2C_PORTS] = {
@@ -77,11 +75,11 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
   HAL_I2C_DeInit(&s_i2c_handles[i2c]);
   I2CSettings *settings = &s_port[i2c].settings;
   // Manually clock SCL
-  gpio_init_pin(&settings->scl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin_af(&settings->scl, GPIO_OUTPUT_PUSH_PULL, GPIO_ALT4_I2C1);
   for (size_t i = 0; i < 16; i++) {
     gpio_toggle_state(&settings->scl);
   }
-  gpio_init_pin(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
   // Clear I2C error flags
   __HAL_I2C_CLEAR_FLAG(&s_i2c_handles[i2c],
                        I2C_FLAG_BERR | I2C_FLAG_ARLO | I2C_FLAG_OVR | I2C_FLAG_TIMEOUT);
@@ -107,9 +105,7 @@ static StatusCode prv_recover_lockup(I2CPort i2c) {
 }
 
 StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
-  if (i2c >= NUM_I2C_PORTS) {
-    return STATUS_CODE_INVALID_ARGS;
-  } else if (settings->speed >= NUM_I2C_SPEEDS) {
+  if (i2c >= NUM_I2C_PORTS || settings->speed >= NUM_I2C_SPEEDS || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -130,16 +126,11 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   // Enable clock for GPIOB
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  // NOTE(mitch): This shouldn't be required for I2C, was needed to get around
-  // Issue with SCL not being set high
-  gpio_init_pin(&(settings->scl), GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&(settings->sda), GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-
   // Initialize pins to correct mode to operate I2C (open drain)
   // SCL should be open drain as well, but this was not working with hardware
   // Since we only use one master shouldn't be an issue
-  gpio_init_pin(&(settings->scl), GPIO_ALTFN_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&(settings->sda), GPIO_ALFTN_OPEN_DRAIN, GPIO_STATE_HIGH);
+  gpio_init_pin_af(&(settings->scl), GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&(settings->sda), GPIO_ALFTN_OPEN_DRAIN, GPIO_ALT4_I2C1);
 
   s_i2c_handles[i2c].Instance = s_port[i2c].base;
   s_i2c_handles[i2c].Init.OwnAddress1 = 0;
@@ -162,7 +153,6 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   s_port[i2c].i2c_buf.queue.num_items = I2C_MAX_NUM_DATA;
   s_port[i2c].i2c_buf.queue.item_size = sizeof(uint8_t);
   s_port[i2c].i2c_buf.queue.storage_buf = s_port[i2c].i2c_buf.buf;
-  s_port[i2c].exit = STATUS_CODE_OK;
   s_port[i2c].multi_txn = false;
   status_ok_or_return(sem_init(&s_port[i2c].i2c_buf.wait_txn, 1, 0));
   status_ok_or_return(mutex_init(&s_port[i2c].mutex));
@@ -187,7 +177,6 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
   // Set up txn for read or write
   if (read) {
     s_port[i2c].curr_mode = I2C_MODE_RECEIVE;
-    s_port[i2c].num_rx_bytes = len;
   } else {
     s_port[i2c].curr_mode = I2C_MODE_TRANSMIT;
     for (size_t tx = 0; tx < len; tx++) {
@@ -198,7 +187,6 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
   }
 
   // Enable Interrupts before setting start to begin txn
-  s_port[i2c].exit = STATUS_CODE_OK;
   HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr, data, len);
   HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr, data, len);
   HAL_I2C_EnableListen_IT(&s_i2c_handles[i2c]);
@@ -209,21 +197,11 @@ static StatusCode prv_txn(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t le
       status) {  // In an multi exchange or failed txn, need to keep line live to receive data
     HAL_I2C_Master_Abort_IT(&s_i2c_handles[i2c], addr);
   }
-  status_ok_or_return(s_port[i2c].exit);
-  if (read) {
-    // Receive data from queue
-    // If less than requested is received, an error in the transaction has occurred
-    for (size_t rx = 0; rx < len; rx++) {
-      if (queue_receive(&s_port[i2c].i2c_buf.queue, &data[rx], 0)) {
-        return STATUS_CODE_INTERNAL_ERROR;
-      }
-    }
-  }
   return STATUS_CODE_OK;
 }
 
 StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
-  if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
+  if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA || rx_data == NULL || addr > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
   // Lock I2C resource
@@ -232,13 +210,12 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
   s_port[i2c].multi_txn = false;
   res = prv_txn(i2c, addr, rx_data, rx_len, true);
   mutex_unlock(&s_port[i2c].mutex);
-  // Return status code ok unless an error has occurred
   return res;
 }
 
 // Address needs to be just the device address, read/write bit is taken care of in hardware
 StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
-  if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA) {
+  if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA || tx_data == NULL || addr > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
   // Lock I2C resource
@@ -252,7 +229,7 @@ StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_l
 
 StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data,
                         size_t rx_len) {
-  if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
+  if (i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA || rx_data == NULL || addr > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -273,7 +250,7 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
 
 StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data,
                          size_t tx_len) {
-  if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA - 1) {
+  if (i2c >= NUM_I2C_PORTS || tx_len > I2C_MAX_NUM_DATA - 1 || tx_data == NULL || addr > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
