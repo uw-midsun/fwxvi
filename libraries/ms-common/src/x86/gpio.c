@@ -10,21 +10,20 @@
 /* Standard library headers */
 
 /* Inter-component Headers */
+#include "status.h"
 
 /* Intra-component Headers */
 #include "gpio.h"
-
 #include "gpio_mcu.h"
-#include "status.h"
 
 static GpioMode s_gpio_pin_modes[GPIO_TOTAL_PINS];
 static uint8_t s_gpio_pin_state[GPIO_TOTAL_PINS];
-static GpioMode s_gpio_alternative_function_modes[GPIO_TOTAL_PINS];
+static GpioMode s_gpio_alt_functions[GPIO_TOTAL_PINS];
 
 StatusCode gpio_init(void) {
   for (uint32_t k = 0; k < GPIO_TOTAL_PINS; ++k) {
     s_gpio_pin_state[k] = GPIO_STATE_LOW;
-    s_gpio_alternative_function_modes[k] = 0;
+    s_gpio_alt_functions[k] = GPIO_ALT_NONE;
   }
   return STATUS_CODE_OK;
 }
@@ -43,7 +42,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
 
   s_gpio_pin_modes[index] = pin_mode;
   s_gpio_pin_state[index] = init_state;
-  s_gpio_alternative_function_modes[index] = 0;
+  s_gpio_alt_functions[index] = GPIO_ALT_NONE;
   taskEXIT_CRITICAL();
 
   return STATUS_CODE_OK;
@@ -61,7 +60,7 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
   uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
 
   s_gpio_pin_modes[index] = pin_mode;
-  s_gpio_alternative_function_modes[index] = alt_func;
+  s_gpio_alt_functions[index] = alt_func;
 
   #ifdef DEBUG
     LOG_DEBUG("Mode of alternate function pin -> %d /nMode of GPIO pin -> %d",  altfunc, pin_mode);
@@ -86,11 +85,6 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
-  if (s_gpio_alternative_function_modes[index] != 0) {
-    LOG_WARN("Attempting to set an alternative function pin");
-    taskEXIT_CRITICAL();
-    return status_code(STATUS_CODE_INVALID_ARGS);
-  }
   s_gpio_pin_state[index] = state;
 
   #ifdef DEBUG
@@ -109,12 +103,6 @@ StatusCode gpio_toggle_state(const GpioAddress *address) {
   }
 
   uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
-
-  if (s_gpio_alternative_function_modes[index] != 0) {
-  LOG_WARN("Attempting to toggle an alternative function pin");
-  taskEXIT_CRITICAL();
-  return status_code(STATUS_CODE_INVALID_ARGS);
-  }
 
   if (s_gpio_pin_state[index] == GPIO_STATE_LOW) {
     s_gpio_pin_state[index] = GPIO_STATE_HIGH;
