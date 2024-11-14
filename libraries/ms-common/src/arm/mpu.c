@@ -15,36 +15,43 @@
 /* Intra-component Headers */
 #include "mpu.h"
 
-StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings){
-    MPU_Region_InitTypeDef MPU_InitStruct;
+StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings) {
+  if ((region == NULL) || (settings == NULL)) return STATUS_CODE_INVALID_ARGS;
 
-    MPU_InitStruct.Enable = region->enable;
-    MPU_InitStruct.Number = region->number;
-    MPU_InitStruct.BaseAddress = region->base_address;
-    MPU_InitStruct.Size = region->size;
-    MPU_InitStruct.SubRegionDisable = settings->subregion_disable;
-    MPU_InitStruct.TypeExtField = settings->type_ext_field;
-    MPU_InitStruct.AccessPermission = settings->access_permission;
-    MPU_InitStruct.DisableExec = settings->disable_exec;
-    MPU_InitStruct.IsShareable = settings->is_shareable;
-    MPU_InitStruct.IsCacheable = settings->is_cacheable;
-    MPU_InitStruct.IsBufferable = settings->is_bufferable;
+  MPU_Region_InitTypeDef init;
 
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  init.Enable = region->enable;
+  init.Number = region->number;
+  init.BaseAddress = region->base_address;
+  init.Size = region->size;
+  init.SubRegionDisable = 0x00;
+  init.TypeExtField = 0x00;
+  init.AccessPermission = settings->access_permission;
+  init.DisableExec = settings->disable_exec;
+  init.IsShareable = 0x00;
+  init.IsCacheable = settings->is_cacheable;
+  init.IsBufferable = settings->is_bufferable;
 
-    return STATUS_CODE_OK;
+  HAL_MPU_ConfigRegion(&init);
+  mpu_enable_region(region->number);
+
+  return STATUS_CODE_OK;
 }
 
-StatusCode mpu_disable_region(uint32_t region_number){
-    HAL_MPU_DisableRegion(region_number);
+StatusCode mpu_enable_region(uint32_t region_number) {
+  HAL_MPU_EnableRegion(region_number);
+
+  return STATUS_CODE_OK;
 }
 
-StatusCode mpu_enable(bool enable){
-    if (enable) {
-        HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-    } else {
-        HAL_MPU_Disable();
-    }
+StatusCode mpu_disable_region(uint32_t region_number) {
+  HAL_MPU_DisableRegion(region_number);
 
-    return STATUS_CODE_OK;
+  return STATUS_CODE_OK;
+}
+
+StatusCode mpu_init(void) {
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+  return STATUS_CODE_OK;
 }
