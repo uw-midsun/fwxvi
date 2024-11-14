@@ -14,23 +14,24 @@
 #include "gpio.h"
 #include "log.h"
 #include "tasks.h"
+#include "master_tasks.h"
 
 /* Intra-component Headers */
 
 void pre_loop_init() {}
 
-void run_fast_cycle() {}
+void run_100hz_cycle() {}
 
-void run_medium_cycle() {}
+void run_10hz_cycle() {}
 
-void run_slow_cycle() {}
+void run_1hz_cycle() {}
 
 int main() {
   mcu_init();
   tasks_init();
   log_init();
 
-  init_master_task();
+  init_master_tasks();
 
   tasks_start();
 

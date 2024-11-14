@@ -17,14 +17,24 @@
 
 /* Intra-component Headers */
 
-void set_master_cycle_time(uint32_t time_ms);
-void set_medium_cycle_count(uint32_t cycles);
-void set_slow_cycle_count(uint32_t cycles);
+#ifndef MASTER_TASK_100HZ_SIZE
+#define MASTER_TASK_100HZ_SIZE (TASK_STACK_256)
+#endif
+
+#ifndef MASTER_TASK_10HZ_SIZE
+#define MASTER_TASK_10HZ_SIZE (TASK_STACK_256)
+#endif
+
+#ifndef MASTER_TASK_1HZ_SIZE
+#define MASTER_TASK_1HZ_SIZE (TASK_STACK_256)
+#endif
 
 void run_fast_cycle();
 void run_medium_cycle();
 void run_slow_cycle();
 void pre_loop_init();
 
-StatusCode init_master_task();
-Task *get_master_task();
+StatusCode init_master_tasks();
+Task *get_100hz_task();
+Task *get_10hz_task();
+Task *get_1hz_task();

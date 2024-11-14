@@ -1,9 +1,9 @@
 /************************************************************************************************
  * main.c
  *
- * Main file for CAN communication
+ * Main file for master tasks smoke
  *
- * Created: 2024-11-03
+ * Created: 2024-11-13
  * Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -12,15 +12,26 @@
 /* Inter-component Headers */
 #include "gpio.h"
 #include "log.h"
+#include "master_tasks.h"
 #include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
 
-TASK(can_communication, TASK_STACK_512) {
-  while (true) {
-    LOG_DEBUG("BLINKY\n");
-  }
+void pre_loop_init() {
+  LOG_DEBUG("Pre-loop initialization\n");
+}
+
+void run_100hz_cycle() {
+  LOG_DEBUG("Running 100Hz cycle\n");
+}
+
+void run_10hz_cycle() {
+  LOG_DEBUG("Running 10hz cycle\n");
+}
+
+void run_1hz_cycle() {
+  LOG_DEBUG("Running 1hz cycle\n");
 }
 
 int main() {
@@ -28,7 +39,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(can_communication, TASK_PRIORITY(3U), NULL);
+  init_master_tasks();
 
   tasks_start();
 

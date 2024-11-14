@@ -14,7 +14,8 @@ TARGET = VARS.get("TARGET")
 DEFAULT_CONFIG = {
     "libs": [
         "FreeRTOS",
-        "ms-common"
+        "ms-common",
+        "master"
     ]
 }
 
