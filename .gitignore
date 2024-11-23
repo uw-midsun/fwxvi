@@ -4,6 +4,9 @@ build/*
 # scons cache
 .sconsign.dblite
 
+# clang cache 
+.cache/*
+
 # Other
 *.vscode
 .vs/
