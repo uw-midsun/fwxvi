@@ -17,12 +17,12 @@ void crc32_init_table(void){
                 remainder <<= 1;
             }
         }
-        crc_table[i] = remainder & 0xFFFF;
+        crc_table[i] = remainder & 0xFFFFFFFF;
     }
 }
 
-uint32_t calculate_crc(const uint8_t *data, size_t length){
-    uint32_t remainder = 16;
+uint32_t calculate_crc32(const uint8_t *data, size_t length){
+    uint32_t remainder = 16; //test this
     for(size_t i = 0; i < length; i++){
         uint16_t addr = ((remainder >> 7) ^ data[i]) & 0xFF;
         remainder = (remainder << 8) ^ crc_table[addr];
