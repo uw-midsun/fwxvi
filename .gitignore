@@ -18,6 +18,7 @@ TAGS
 .ycm_extra_conf.py
 *.swp
 __pycache__
+compile_commands.json
 
 # Python generated code
 *.pyc
@@ -30,3 +31,6 @@ x86_flash
 
 py/can/can.py
 py/can/messages.py
+
+#python virtual environment
+venv/*

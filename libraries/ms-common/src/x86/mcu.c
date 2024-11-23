@@ -14,4 +14,8 @@
 /* Intra-component Headers*/
 #include "mcu.h"
 
-void mcu_init(void) {}
+StatusCode mcu_init(void) {
+  return STATUS_CODE_OK;
+}
+
+// void mcu_init(void) {}
