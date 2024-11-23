@@ -11,12 +11,11 @@
 
 typedef enum {
   PWM_TIMER_1 = 0,
-  PWM_TIMER_3,
-  PWM_TIMER_4,  // Usually used by i2c
-  PWM_TIMER_14,
+  PWM_TIMER_2,
+  PWM_TIMER_6,  // Usually used by i2c
+  PWM_TIMER_7,
   PWM_TIMER_15,
   PWM_TIMER_16,
-  PWM_TIMER_17,
   NUM_PWM_TIMERS,
 } PwmTimer;
 
