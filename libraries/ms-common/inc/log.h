@@ -22,6 +22,12 @@
 #include "tasks.h"
 #include "uart.h"
 
+/**
+ * @defgroup  Logger
+ * @brief     Logging library
+ * @{
+ */
+
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
 
@@ -74,3 +80,5 @@ extern UartSettings log_uart_settings;
     }                                                                                        \
   } while (0)
 #endif
+
+/** @} */

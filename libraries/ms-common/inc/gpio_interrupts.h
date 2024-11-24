@@ -21,6 +21,12 @@
 #include "tasks.h"
 
 /**
+ * @defgroup  GPIO
+ * @brief     GPIO library
+ * @{
+ */
+
+/**
  * @brief   Register a GPIO interrupt by passing in the pin address and task to notify
  * @param   address Pointer to the GPIO address
  * @param   settings Pointer to the interrupt settings
@@ -38,3 +44,5 @@ StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSe
  * @param   address Pointer to the GPIO address
  */
 StatusCode gpio_trigger_interrupt(const GpioAddress *address);
+
+/** @} */

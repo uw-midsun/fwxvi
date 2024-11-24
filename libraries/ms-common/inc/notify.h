@@ -18,6 +18,12 @@
 #include "status.h"
 #include "tasks.h"
 
+/**
+ * @defgroup  RTOS_Helpers
+ * @brief     RTOS helper libraries
+ * @{
+ */
+
 /* Maximum block amount */
 #define BLOCK_INDEFINITELY UINT16_MAX
 
@@ -75,3 +81,5 @@ StatusCode notify(Task *task, Event event);
  * @param   event Numeric value used to signal task
  */
 void notify_from_isr(Task *task, Event event);
+
+/** @} */

@@ -18,6 +18,12 @@
 #include "gpio.h"
 #include "uart_mcu.h"
 
+/**
+ * @defgroup  UART
+ * @brief     UART library
+ * @{
+ */
+
 #define UART_MAX_BUFFER_LEN 256U
 #define UART_TIMEOUT_MS 10U
 
@@ -73,3 +79,5 @@ StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
 StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len);
+
+/** @} */

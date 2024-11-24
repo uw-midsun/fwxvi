@@ -17,6 +17,12 @@
 /* Intra-component Headers */
 #include "status.h"
 
+/**
+ * @defgroup  Flash
+ * @brief     Flash library
+ * @{
+ */
+
 #define FLASH_MEMORY_ALIGNMENT 4U
 
 #define FLASH_BASE_ADDR (0x08000000U)
@@ -59,3 +65,5 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len);
  *          STATUS_CODE_INTERNAL_ERROR if flash erase failed
  */
 StatusCode flash_erase(uint8_t start_page, uint8_t num_pages);
+
+/** @} */

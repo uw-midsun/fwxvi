@@ -20,6 +20,12 @@
 #include "status.h"
 
 /**
+ * @defgroup  Interrupts
+ * @brief     Interrupt library
+ * @{
+ */
+
+/**
  * @brief   Interrupt type runs a callback as soon as the interrupt is triggered
  *          Event type wakes the device without running a callback
  */
@@ -127,3 +133,5 @@ StatusCode interrupt_exti_clear_pending(uint8_t line);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_mask_set(uint8_t line, bool masked);
+
+/** @} */

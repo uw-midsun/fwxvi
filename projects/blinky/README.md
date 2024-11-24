@@ -12,3 +12,4 @@ A README for a board project (powering a hardware board, e.g. power distribution
     - How does it work? (architectural overview, e.g. what each module's purpose is or how data flows through the firmware)
 -->
 # blinky
+Sample application that toggles the LED (PA0) on our controller board.

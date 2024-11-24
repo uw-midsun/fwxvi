@@ -12,3 +12,4 @@ A README for a board project (powering a hardware board, e.g. power distribution
     - How does it work? (architectural overview, e.g. what each module's purpose is or how data flows through the firmware)
 -->
 # can_communication
+Sample application that echo's the CAN messages received.

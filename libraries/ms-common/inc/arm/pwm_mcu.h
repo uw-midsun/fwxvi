@@ -15,6 +15,14 @@
 
 /* Intra-component Headers */
 
+/**
+ * @defgroup  PWM
+ * @brief     PWM library
+ * @{
+ */
+
 typedef enum {} PwmTimer;
 
 typedef enum {} PwmChannel;
+
+/** @} */

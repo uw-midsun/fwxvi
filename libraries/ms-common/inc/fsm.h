@@ -20,6 +20,12 @@
 #include "status.h"
 #include "tasks.h"
 
+/**
+ * @defgroup  Finite_State_Machine
+ * @brief     FSM library
+ * @{
+ */
+
 #define MAX_STATES 10
 #define MAX_TRANSITIONS 5
 
@@ -48,3 +54,5 @@ typedef struct {
  */
 #define STATE(state_id, entry, state_func) \
   [state_id] = { .entry_func = entry, .state_action = state_func }
+
+/** @} */

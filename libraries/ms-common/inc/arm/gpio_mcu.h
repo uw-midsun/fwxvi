@@ -15,6 +15,12 @@
 
 /* Intra-component Headers */
 
+/**
+ * @defgroup  GPIO
+ * @brief     GPIO library
+ * @{
+ */
+
 #ifndef GPIO_PINS_PER_PORT
 #define GPIO_PINS_PER_PORT 16
 #endif
@@ -101,3 +107,5 @@ typedef enum {
 } GpioPort;
 
 #define GPIO_TOTAL_PINS ((GPIO_PINS_PER_PORT) * (NUM_GPIO_PORTS))
+
+/** @} */
