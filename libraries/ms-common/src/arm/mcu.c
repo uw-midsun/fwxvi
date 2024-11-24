@@ -1,10 +1,10 @@
 /************************************************************************************************
- * mcu.c
+ * @file   mcu.c
  *
- * Source code for MCU intialization
+ * @brief  Source code for MCU intialization
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

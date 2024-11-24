@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * gpio.h
+ * @file   gpio.h
  *
- * GPIO Library Header file
+ * @brief  GPIO Library Header file
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * interrupts.h
+ * @file   interrupts.h
  *
- * Interrupts Library Header file
+ * @brief  Interrupts Library Header file
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -74,12 +74,12 @@ typedef struct InterruptSettings {
  * @details If called multiple times the subsequent attempts will clear everything
  *          resulting in needing to re-initialize all interrupts
  */
-void stm32f10x_interrupt_init(void);
+void interrupt_init(void);
 
 /**
  * @brief   Enables the nested interrupt vector controller for a given channel
- * @param   irq_channel
- * @param   priority
+ * @param   irq_channel Numeric ID of the interrupt channel from the NVIC
+ * @param   priority Priority level of the interrupt
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -87,8 +87,8 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
 
 /**
  * @brief   Enables an external interrupt line with the given settings
- * @param   address
- * @param   settings
+ * @param   address Pointer to the GPIO address
+ * @param   settings Pointer to the interrupt settings
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -96,7 +96,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
 
 /**
  * @brief   Triggers a software interrupt on a given external interrupt channel
- * @param   line
+ * @param   line Numeric ID of the EXTI line (GPIO Pin number)
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -104,8 +104,8 @@ StatusCode interrupt_exti_trigger(uint8_t line);
 
 /**
  * @brief   Get the pending flag for an external interrupt
- * @param   line
- * @param   pending_bit
+ * @param   line Numeric ID of the EXTI line (GPIO Pin number)
+ * @param   pending_bit Pointer to a variable that is updated with the pending bit
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -113,7 +113,7 @@ StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit);
 
 /**
  * @brief   Clears the pending flag for an external interrupt
- * @param   line
+ * @param   line Numeric ID of the EXTI line (GPIO Pin number)
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -121,8 +121,8 @@ StatusCode interrupt_exti_clear_pending(uint8_t line);
 
 /**
  * @brief   Masks or clears the external interrupt on a given line
- * @param   line
- * @param   masked
+ * @param   line Numeric ID of the EXTI line (GPIO Pin number)
+ * @param   masked 0: Clears the interrupt 1: Mask the lines interrupt
  * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */

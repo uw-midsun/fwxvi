@@ -75,6 +75,10 @@ jobs:
         id: build-stm32
         run: |
           scons --platform=arm --define="${DEFINES}"
+      - name: Build x86
+        id: build-x86
+        run: |
+          scons --platform=x86 --define="${DEFINES}"
 #       - name: Build and test
 #         id: build-test
 #         run: |

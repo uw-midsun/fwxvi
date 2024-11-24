@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * uart.h
+ * @file   uart.h
  *
- * UART Library Header file
+ * @brief  UART Library Header file
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -18,7 +18,8 @@
 #include "gpio.h"
 #include "uart_mcu.h"
 
-#define UART_MAX_BUFFER_LEN 256
+#define UART_MAX_BUFFER_LEN 256U
+#define UART_TIMEOUT_MS 10U
 
 typedef enum {
   UART_FLOW_CONTROL_NONE,
@@ -41,6 +42,7 @@ typedef struct {
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
 StatusCode uart_init(UartPort uart, UartSettings *settings);
 
@@ -53,6 +55,8 @@ StatusCode uart_init(UartPort uart, UartSettings *settings);
  * @param   len Length of data to receive
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL receiving fails
+ *          STATUS_CODE_TIMEOUT if receiving takes too long
  */
 StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
 
@@ -65,5 +69,7 @@ StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
  * @param   len Length of data to receive
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
+ *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
 StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len);

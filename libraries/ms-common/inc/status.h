@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * status.h
+ * @file   status.h
  *
- * Status Library for more verbose error handling
+ * @brief  Status Library for more verbose error handling
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

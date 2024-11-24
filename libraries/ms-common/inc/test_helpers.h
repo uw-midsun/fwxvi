@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * test_helpers.h
+ * @file   test_helpers.h
  *
- * Unity test framework helper library
+ * @brief  Unity test framework helper library
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 // Test helper functions. These should only ever be called within a file in the
