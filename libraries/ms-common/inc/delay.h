@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * delay.h
+ * @file   delay.h
  *
- * Header file for the delay library
+ * @brief  Header file for the delay library
  *
- * Created: 2024-10-30
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

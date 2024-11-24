@@ -1,10 +1,10 @@
 /************************************************************************************************
- * main.c
+ * @file   main.c
  *
- * Main file for master tasks smoke
+ * @brief  Main file for master tasks smoke
  *
- * Created: 2024-11-13
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-13
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

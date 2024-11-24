@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * tasks.h
+ * @file   tasks.h
  *
- * Header file for the RTOS tasks wrapper
+ * @brief  Header file for the RTOS tasks wrapper
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

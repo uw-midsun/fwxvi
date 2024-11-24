@@ -1,10 +1,10 @@
 /************************************************************************************************
- * main.c
+ * @file   main.c
  *
- * Main file for [PROJECT NAME]
+ * @brief  Main file for [PROJECT NAME]
  *
- * Created: [YYYY/MM/DD]
- * Midnight Sun Team #24 - MSXVI
+ * @date   [YYYY/MM/DD]
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

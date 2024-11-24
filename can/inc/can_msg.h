@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * can_msg.h
+ * @file   can_msg.h
  *
- * CAN message definitions
+ * @brief  CAN message definitions
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -37,7 +37,7 @@ typedef union CanId {
   CanMessageId raw;
   struct {
     uint16_t source_id : 4;
-    uint16_t type : 1; // Currently unused
+    uint16_t type : 1;
     uint32_t msg_id : 24;
   };
 } CanId;

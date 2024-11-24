@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * gpio_interrupts.h
+ * @file   gpio_interrupts.h
  *
- * GPIO Interrupts Library Header file
+ * @brief  GPIO Interrupts Library Header file
  *
- * Created: 2024-11-05
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-05
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

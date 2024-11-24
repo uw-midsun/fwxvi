@@ -1,10 +1,10 @@
 /************************************************************************************************
- * gpio.c
+ * @file   gpio.c
  *
- * GPIO Library Source Code
+ * @brief  GPIO Library Source Code
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

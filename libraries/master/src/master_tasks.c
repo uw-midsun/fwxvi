@@ -1,10 +1,10 @@
 /************************************************************************************************
- * master_tasks.c
+ * @file   master_tasks.c
  *
- * Source file for Master Tasks API. Supports 1KHz, 100Hz and 10Hz scheduling
+ * @brief  Source file for Master Tasks API. Supports 1KHz, 100Hz and 10Hz scheduling
  *
- * Created: 2024-11-04
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-04
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

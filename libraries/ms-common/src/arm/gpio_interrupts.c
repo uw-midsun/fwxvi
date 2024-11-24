@@ -1,10 +1,10 @@
 /************************************************************************************************
- * gpio_interrupts.c
+ * @file   gpio_interrupts.c
  *
- * GPIO Interrupts Library Source Code
+ * @brief  GPIO Interrupts Library Source Code
  *
- * Created: 2024-11-05
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-05
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

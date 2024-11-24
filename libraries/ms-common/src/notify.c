@@ -1,10 +1,10 @@
 /************************************************************************************************
- * notify.h
+ * @file   notify.h
  *
- * Notify Library Header file
+ * @brief  Notify Library Header file
  *
- * Created: 2024-11-05
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-05
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

@@ -1,10 +1,10 @@
 /************************************************************************************************
- * can_hw.c
+ * @file   can_hw.c
  *
- * Source file for CAN HW Interface
+ * @brief  Source file for CAN HW Interface
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -88,6 +88,10 @@ static void s_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) 
 }
 
 StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
+  if (rx_queue == NULL || settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  
   gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
   gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
 
@@ -183,6 +187,15 @@ CanHwBusStatus can_hw_bus_status(void) {
 }
 
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+  if (data == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (len > 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+
   CAN_TxHeaderTypeDef tx_header = {
     .StdId = id,
     .ExtId = id,
@@ -210,6 +223,10 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size
 }
 
 bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len) {
+  if (id == NULL || extended == NULL || data == NULL || len == NULL) {
+    return false;
+  }
+
   CAN_RxHeaderTypeDef rx_header;
   uint8_t rx_data[8];
 
@@ -291,5 +308,5 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
   /* TODO: Add error notifications/handling */
-  /* Aryan - Maybe add a seperate CAN message for CAN Bus status? */
+  /* Aryan - Maybe reinitialize bus? */
 }

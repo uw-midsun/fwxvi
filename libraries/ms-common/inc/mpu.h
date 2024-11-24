@@ -1,16 +1,17 @@
 #pragma once
 
 /************************************************************************************************
- * mpu.h
+ * @file   mpu.h
  *
- * MPU Library Header file
+ * @brief  MPU Library Header file
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
 #include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 
@@ -25,7 +26,8 @@ typedef enum {
   MPU_REGION_4,
   MPU_REGION_5,
   MPU_REGION_6,
-  MPU_REGION_7
+  MPU_REGION_7,
+  NUM_MPU_REGIONS
 } MPURegionNumber;
 
 typedef enum {
@@ -38,17 +40,17 @@ typedef enum {
 } MPUAccessPerm;
 
 typedef struct {
-  uint8_t enable;
-  uint8_t number;
+  bool enable;
+  MPURegionNumber number;
   uint32_t base_address;
-  uint8_t size;
+  uint32_t size;
 } MPURegion;
 
 typedef struct {
-  uint8_t access_permission;
-  uint8_t disable_exec;
-  uint8_t is_cacheable;
-  uint8_t is_bufferable;
+  MPUAccessPerm access_permission;
+  bool disable_code_exec;
+  bool is_cacheable;
+  bool is_bufferable;
 } MPURegionSettings;
 
 /**
@@ -56,7 +58,7 @@ typedef struct {
  * @param   region Pointer to which MPU region to configure
  * @param   settings Pointer to MPU region configuration settings
  * @return  STATUS_CODE_OK if MPU initialization succeeded
- * @return  STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings);
 
@@ -64,15 +66,17 @@ StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings);
  * @brief   Enables given region
  * @param   region_number Number of MPU region to enable
  * @return  STATUS_CODE_OK if mpu region was successfully enabled
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode mpu_enable_region(uint32_t region_number);
+StatusCode mpu_enable_region(MPURegionNumber region_number);
 
 /**
  * @brief   Disables given region
  * @param   region_number Number of MPU region to disable
  * @return  STATUS_CODE_OK if mpu region was successfully disabled
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode mpu_disable_region(uint32_t region_number);
+StatusCode mpu_disable_region(MPURegionNumber region_number);
 
 /**
  * @brief   Enables or Disables MPU with default memory access

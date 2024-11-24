@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * misc.h
+ * @file   misc.h
  *
- * Common helper functions
+ * @brief  Common helper functions
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

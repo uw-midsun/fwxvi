@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * can_queue.h
+ * @file   can_queue.h
  *
- * Wrappers for CAN queues to reduce instruction jumps
+ * @brief  Wrappers for CAN queues to reduce instruction jumps
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

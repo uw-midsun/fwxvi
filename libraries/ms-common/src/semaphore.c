@@ -1,10 +1,10 @@
 /************************************************************************************************
- * semaphore.c
+ * @file   semaphore.c
  *
- * Source code for the semaphore library
+ * @brief  Source code for the semaphore library
  *
- * Created: 2024-10-30
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

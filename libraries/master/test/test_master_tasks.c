@@ -1,10 +1,10 @@
 /************************************************************************************************
- * test_master_tasks.h
+ * @file   test_master_tasks.h
  *
- * Test file for Master Tasks API. Supports 1Hz, 10Hz and 100Hz scheduling
+ * @brief  Test file for Master Tasks API. Supports 1Hz, 10Hz and 1000Hz scheduling
  *
- * Created: 2024-11-04
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-04
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

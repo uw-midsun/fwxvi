@@ -1,10 +1,10 @@
 /************************************************************************************************
- * main.c
+ * @file   main.c
  *
- * Main file for CAN communication
+ * @brief  Main file for CAN communication
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

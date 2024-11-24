@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * interrupts.h
+ * @file   interrupts.h
  *
- * Interrupts Library Header file
+ * @brief  Interrupts Library Header file
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

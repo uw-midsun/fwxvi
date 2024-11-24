@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * semaphore.h
+ * @file   semaphore.h
  *
- * Header file for the semaphore library
+ * @brief  Header file for the semaphore library
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
