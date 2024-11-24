@@ -18,20 +18,30 @@
 
 /* Intra-component Headers */
 
+TickType_t last_time_1000hz = 0U;
+TickType_t last_time_10hz = 0U;
+TickType_t last_time_1hz = 0U;
+
 void pre_loop_init() {
   LOG_DEBUG("Pre-loop initialization\n");
 }
 
-void run_100hz_cycle() {
-  LOG_DEBUG("Running 100Hz cycle\n");
+void run_1000hz_cycle() {
+  TickType_t time_elapsed = xTaskGetTickCount() - last_time_1000hz;
+  last_time_1000hz = xTaskGetTickCount();
+  LOG_DEBUG("Running 1000Hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
 }
 
 void run_10hz_cycle() {
-  LOG_DEBUG("Running 10hz cycle\n");
+  TickType_t time_elapsed = xTaskGetTickCount() - last_time_10hz;
+  last_time_10hz = xTaskGetTickCount();
+  LOG_DEBUG("Running 10hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
 }
 
 void run_1hz_cycle() {
-  LOG_DEBUG("Running 1hz cycle\n");
+  TickType_t time_elapsed = xTaskGetTickCount() - last_time_1hz;
+  last_time_1hz = xTaskGetTickCount();
+  LOG_DEBUG("Running 1hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
 }
 
 int main() {

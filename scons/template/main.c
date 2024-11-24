@@ -20,7 +20,7 @@
 
 void pre_loop_init() {}
 
-void run_100hz_cycle() {}
+void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {}
 

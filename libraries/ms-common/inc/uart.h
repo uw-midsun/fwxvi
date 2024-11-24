@@ -19,7 +19,7 @@
 #include "uart_mcu.h"
 
 #define UART_MAX_BUFFER_LEN 256U
-#define UART_TIMEOUT_MS  10U
+#define UART_TIMEOUT_MS 10U
 
 typedef enum {
   UART_FLOW_CONTROL_NONE,

@@ -17,8 +17,8 @@
 
 /* Intra-component Headers */
 
-#ifndef MASTER_TASK_100HZ_SIZE
-#define MASTER_TASK_100HZ_SIZE (TASK_STACK_256)
+#ifndef MASTER_TASK_1000HZ_SIZE
+#define MASTER_TASK_1000HZ_SIZE (TASK_STACK_256)
 #endif
 
 #ifndef MASTER_TASK_10HZ_SIZE
@@ -29,12 +29,12 @@
 #define MASTER_TASK_1HZ_SIZE (TASK_STACK_256)
 #endif
 
-void run_fast_cycle();
-void run_medium_cycle();
-void run_slow_cycle();
+void run_1000hz_cycle();
+void run_10hz_cycle();
+void run_1hz_cycle();
 void pre_loop_init();
 
 StatusCode init_master_tasks();
-Task *get_100hz_task();
+Task *get_1000hz_task();
 Task *get_10hz_task();
 Task *get_1hz_task();
