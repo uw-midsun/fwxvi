@@ -20,7 +20,7 @@
 #include "status.h"
 #include "tasks.h"
 
-/** 
+/**
  * @defgroup  Finite_State_Machine
  * @brief     FSM library
  * @{

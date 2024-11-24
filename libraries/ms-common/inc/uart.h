@@ -18,7 +18,7 @@
 #include "gpio.h"
 #include "uart_mcu.h"
 
-/** 
+/**
  * @defgroup  UART
  * @brief     UART library
  * @{

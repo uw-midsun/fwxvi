@@ -18,7 +18,7 @@
 #include "gpio_mcu.h"
 #include "status.h"
 
-/** 
+/**
  * @defgroup  GPIO
  * @brief     GPIO library
  * @{

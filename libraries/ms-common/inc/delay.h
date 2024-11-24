@@ -16,7 +16,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  RTOS_Helpers
  * @brief     RTOS helper libraries
  * @{

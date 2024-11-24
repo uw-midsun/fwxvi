@@ -16,7 +16,7 @@
 /* Intra-component Headers*/
 #include "status.h"
 
-/** 
+/**
  * @defgroup  MCU
  * @brief     MCU library
  * @{

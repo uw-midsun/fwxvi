@@ -15,7 +15,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  GPIO
  * @brief     GPIO library
  * @{

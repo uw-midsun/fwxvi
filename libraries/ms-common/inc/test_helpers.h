@@ -17,7 +17,7 @@
 #include "status.h"
 #include "unity.h"
 
-/** 
+/**
  * @defgroup  Miscellaneous
  * @brief     Miscellaneous libraries
  * @{

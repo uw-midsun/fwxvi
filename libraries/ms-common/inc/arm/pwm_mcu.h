@@ -15,7 +15,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  PWM
  * @brief     PWM library
  * @{

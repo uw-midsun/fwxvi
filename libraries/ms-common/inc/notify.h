@@ -18,7 +18,7 @@
 #include "status.h"
 #include "tasks.h"
 
-/** 
+/**
  * @defgroup  RTOS_Helpers
  * @brief     RTOS helper libraries
  * @{

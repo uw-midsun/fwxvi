@@ -18,7 +18,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-/** 
+/**
  * @defgroup  Memory_Protection_Unit
  * @brief     MPU library
  * @{

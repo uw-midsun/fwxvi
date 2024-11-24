@@ -17,7 +17,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-/** 
+/**
  * @defgroup  Flash
  * @brief     Flash library
  * @{

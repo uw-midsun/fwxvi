@@ -15,7 +15,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  UART
  * @brief     UART library
  * @{

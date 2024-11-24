@@ -20,7 +20,7 @@
 #include "status.h"
 #include "tasks.h"
 
-/** 
+/**
  * @defgroup  GPIO
  * @brief     GPIO library
  * @{

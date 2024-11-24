@@ -15,7 +15,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  Status_Code
  * @brief     Global error library
  * @{

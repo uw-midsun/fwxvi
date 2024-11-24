@@ -22,7 +22,7 @@
 #include "tasks.h"
 #include "uart.h"
 
-/** 
+/**
  * @defgroup  Logger
  * @brief     Logging library
  * @{

@@ -21,7 +21,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-/** 
+/**
  * @defgroup  RTOS_Helpers
  * @brief     RTOS helper libraries
  * @{

@@ -15,7 +15,7 @@
 
 /* Intra-component Headers */
 
-/** 
+/**
  * @defgroup  Miscellaneous
  * @brief     Miscellaneous libraries
  * @{

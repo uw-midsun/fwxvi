@@ -19,7 +19,7 @@
 #include "gpio.h"
 #include "status.h"
 
-/** 
+/**
  * @defgroup  Interrupts
  * @brief     Interrupt library
  * @{
