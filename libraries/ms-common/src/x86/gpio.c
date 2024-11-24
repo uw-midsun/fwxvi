@@ -38,7 +38,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
-  uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
+  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
 
   s_gpio_pin_modes[index] = pin_mode;
   s_gpio_pin_state[index] = init_state;
@@ -57,29 +57,29 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
-  uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
+  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
 
   s_gpio_pin_modes[index] = pin_mode;
   s_gpio_alt_functions[index] = alt_func;
 
-  #ifdef DEBUG
-    LOG_DEBUG("Mode of alternate function pin -> %d /nMode of GPIO pin -> %d",  altfunc, pin_mode);
-  #endif
+#ifdef DEBUG
+  LOG_DEBUG("Mode of alternate function pin -> %d /nMode of GPIO pin -> %d", altfunc, pin_mode);
+#endif
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
 }
 
 StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
-   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     taskEXIT_CRITICAL();
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
-  uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
+  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
 
   GpioMode mode = s_gpio_pin_modes[index];
-   if (mode != GPIO_OUTPUT_OPEN_DRAIN && mode != GPIO_OUTPUT_PUSH_PULL) {
+  if (mode != GPIO_OUTPUT_OPEN_DRAIN && mode != GPIO_OUTPUT_PUSH_PULL) {
     LOG_WARN("Attempting to set an input pin, check your configuration");
     taskEXIT_CRITICAL();
     return status_code(STATUS_CODE_INVALID_ARGS);
@@ -87,9 +87,9 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
 
   s_gpio_pin_state[index] = state;
 
-  #ifdef DEBUG
-    LOG_DEBUG("State of GPIO pin (port %d, pin %d) -> %d", address->port, address->pin, state);
-  #endif
+#ifdef DEBUG
+  LOG_DEBUG("State of GPIO pin (port %d, pin %d) -> %d", address->port, address->pin, state);
+#endif
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
@@ -98,11 +98,11 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
 StatusCode gpio_toggle_state(const GpioAddress *address) {
   taskENTER_CRITICAL();
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
-  taskEXIT_CRITICAL();
-  return status_code(STATUS_CODE_INVALID_ARGS);
+    taskEXIT_CRITICAL();
+    return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
-  uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
+  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
 
   if (s_gpio_pin_state[index] == GPIO_STATE_LOW) {
     s_gpio_pin_state[index] = GPIO_STATE_HIGH;
@@ -110,9 +110,9 @@ StatusCode gpio_toggle_state(const GpioAddress *address) {
     s_gpio_pin_state[index] = GPIO_STATE_LOW;
   }
 
-  #ifdef DEBUG
-    LOG_DEBUG("Toggled state of GPIO pin (port %d, pin %d)", address->port, address->pin);
-  #endif
+#ifdef DEBUG
+  LOG_DEBUG("Toggled state of GPIO pin (port %d, pin %d)", address->port, address->pin);
+#endif
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
@@ -124,11 +124,11 @@ GpioState gpio_get_state(const GpioAddress *address) {
     taskEXIT_CRITICAL();
     return status_code(STATUS_CODE_INVALID_ARGS);
 
-  if (address->port < NUM_GPIO_PORTS || address->pin < GPIO_PINS_PER_PORT) {
-    uint32_t index = address -> port * (uint32_t)GPIO_PINS_PER_PORT + address -> pin;
+    if (address->port < NUM_GPIO_PORTS || address->pin < GPIO_PINS_PER_PORT) {
+      uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+      taskEXIT_CRITICAL();
+      return s_gpio_pin_state[index];
+    }
     taskEXIT_CRITICAL();
-    return s_gpio_pin_state[index];
+    return GPIO_STATE_LOW;
   }
-  taskEXIT_CRITICAL();
-  return GPIO_STATE_LOW;
-}
