@@ -3,6 +3,7 @@ name: Deploy Doxygen Documentation
 on:
   push:
     branches: [ main ]
+  # Allow manual dispatch
   workflow_dispatch:
 
 jobs:
@@ -12,11 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Doxygen
-        run: sudo apt-get install -y doxygen graphviz
+      - name: Install Doxygen 1.9.5
+        run: |
+          wget -q https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz
+          tar -xzf doxygen-1.9.5.linux.bin.tar.gz
+          cd doxygen-1.9.5
+          sudo make install
+
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz
 
       - name: Generate Doxygen Documentation
         run: |
+          doxygen --version  # Verify version
           doxygen doxygen/Doxyfile
 
       - name: Deploy to GitHub Pages
