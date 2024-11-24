@@ -10,6 +10,8 @@
 /* Standard library headers */
 
 /* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "semphr.h"
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
@@ -37,27 +39,91 @@ static const uint16_t s_uart_flow_control_map[] = {
   [UART_FLOW_CONTROL_RTS_CTS] = UART_HWCONTROL_RTS_CTS,
 };
 
-typedef struct UartPortQueue {
-  Queue rx_queue;
-  Queue tx_queue;
-  uint8_t rx_buf[UART_MAX_BUFFER_LEN];
-  uint8_t tx_buf[UART_MAX_BUFFER_LEN];
-} UartPortQueue;
-
 typedef struct {
   USART_TypeDef *base;
   void (*rcc_cmd)(void);
   uint8_t irq;
+  bool initialized;
 } UartPortData;
 
 static UartPortData s_port[] = {
-  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1 },
-  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2 },
+  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1,
+                    .irq = USART1_IRQn,
+                    .base = USART1,
+                    .initialized = false },
+  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2,
+                    .irq = USART2_IRQn,
+                    .base = USART2,
+                    .initialized = false },
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
-static UartPortQueue s_port_queues[NUM_UART_PORTS];
-static uint8_t rx_bytes[NUM_UART_PORTS];
+
+/* Mutex for port access */
+static StaticSemaphore_t s_uart_port_mutex[NUM_UART_PORTS];
+static SemaphoreHandle_t s_uart_port_handle[NUM_UART_PORTS];
+
+/* Semaphore to signal event complete */
+static StaticSemaphore_t s_uart_cmplt_sem[NUM_UART_PORTS];
+static SemaphoreHandle_t s_uart_cmplt_handle[NUM_UART_PORTS];
+
+/* Private helper for common TX/RX operations */
+static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
+  if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (!s_port[uart].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  /* Take the mutex for this uart port */
+  if (xSemaphoreTake(s_uart_port_handle[uart], pdMS_TO_TICKS(UART_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
+
+  HAL_StatusTypeDef status;
+  if (is_rx) {
+    status = HAL_UART_Receive_IT(&s_uart_handles[uart], data, len);
+  } else {
+    status = HAL_UART_Transmit_IT(&s_uart_handles[uart], data, len);
+  }
+
+  if (status != HAL_OK) {
+    xSemaphoreGive(s_uart_port_handle[uart]);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  if (xSemaphoreTake(s_uart_cmplt_handle[uart], pdMS_TO_TICKS(UART_TIMEOUT_MS)) != pdTRUE) {
+    xSemaphoreGive(s_uart_port_handle[uart]);
+    return STATUS_CODE_TIMEOUT;
+  }
+
+  xSemaphoreGive(s_uart_port_handle[uart]);
+  return STATUS_CODE_OK;
+}
+
+/* Private helper to handle transfer complete */
+static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
+  BaseType_t higher_priority_task = pdFALSE;
+  UartPort uart = NUM_UART_PORTS;
+
+  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
+    if (&s_uart_handles[i] == huart) {
+      uart = i;
+      break;
+    }
+  }
+
+  if (uart >= NUM_UART_PORTS) {
+    return;
+  }
+
+  __HAL_UART_CLEAR_IT(huart, is_rx ? UART_IT_RXNE : UART_IT_TXE);
+
+  xSemaphoreGiveFromISR(s_uart_cmplt_handle[uart], &higher_priority_task);
+  portYIELD_FROM_ISR(higher_priority_task);
+}
 
 void USART1_IRQHandler(void) {
   HAL_UART_IRQHandler(&s_uart_handles[UART_PORT_1]);
@@ -69,52 +135,20 @@ void USART2_IRQHandler(void) {
 
 /* Callback functions for HAL UART TX */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-  UartPort uart = NUM_UART_PORTS;
-  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
-    if (&s_uart_handles[i] == huart) {
-      uart = i;
-    }
-  }
-
-  if (uart >= NUM_UART_PORTS) {
-    return;
-  }
-
-  uint8_t tx_byte;
-
-  if (xQueueReceiveFromISR(s_port_queues[uart].tx_queue.handle, &tx_byte, pdFALSE) == pdFALSE) {
-    /* If there is no more data */
-    __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);
-  } else {
-    HAL_UART_Transmit_IT(huart, &tx_byte, 1);
-  }
-  __HAL_UART_CLEAR_IT(&s_uart_handles[uart], UART_IT_TXE);
+  s_uart_transfer_complete_callback(huart, false);
 }
 
 /* Callback functions for HAL UART RX */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-  UartPort uart = NUM_UART_PORTS;
-  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
-    if (&s_uart_handles[i] == huart) {
-      uart = i;
-    }
-  }
+  s_uart_transfer_complete_callback(huart, true);
+}
 
-  if (uart >= NUM_UART_PORTS) {
-    return;
-  }
+StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
+  return s_uart_transfer(uart, data, len, true);
+}
 
-  uint8_t *rx_byte = &rx_bytes[uart];
-
-  HAL_UART_Receive_IT(huart, rx_byte, 1);
-  if (xQueueSendFromISR(s_port_queues[uart].rx_queue.handle, &rx_byte, pdFALSE) == errQUEUE_FULL) {
-    /* Drop oldest data if queue is full */
-    uint8_t buf = 0;
-    xQueueReceiveFromISR(s_port_queues[uart].rx_queue.handle, &buf, pdFALSE);
-    xQueueSendFromISR(s_port_queues[uart].rx_queue.handle, rx_byte, pdFALSE);
-  }
-
-  __HAL_UART_CLEAR_IT(&s_uart_handles[uart], UART_IT_RXNE);
+StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
+  return s_uart_transfer(uart, data, len, false);
 }
 
 StatusCode uart_init(UartPort uart, UartSettings *settings) {
@@ -126,15 +160,16 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  s_port_queues[uart].tx_queue.item_size = sizeof(uint8_t);
-  s_port_queues[uart].tx_queue.num_items = UART_MAX_BUFFER_LEN;
-  s_port_queues[uart].tx_queue.storage_buf = s_port_queues[uart].tx_buf;
-  queue_init(&s_port_queues[uart].tx_queue);
+  if (s_port[uart].initialized) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
 
-  s_port_queues[uart].rx_queue.item_size = sizeof(uint8_t);
-  s_port_queues[uart].rx_queue.num_items = UART_MAX_BUFFER_LEN;
-  s_port_queues[uart].rx_queue.storage_buf = s_port_queues[uart].rx_buf;
-  queue_init(&s_port_queues[uart].rx_queue);
+  s_uart_port_handle[uart] = xSemaphoreCreateMutexStatic(&s_uart_port_mutex[uart]);
+  s_uart_cmplt_handle[uart] = xSemaphoreCreateBinaryStatic(&s_uart_cmplt_sem[uart]);
+
+  if (s_uart_port_handle[uart] == NULL || s_uart_cmplt_handle[uart] == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
   gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
   gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
@@ -162,50 +197,7 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   /* Initialize interrupts */
   interrupt_nvic_enable(s_port[uart].irq, INTERRUPT_PRIORITY_HIGH);
 
-  HAL_UART_Receive_IT(&s_uart_handles[uart], &rx_bytes[uart], 1);
+  s_port[uart].initialized = true;
 
   return STATUS_CODE_OK;
-}
-
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
-  if (data == NULL || uart >= NUM_UART_PORTS) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  if (len > (size_t)queue_get_spaces_available(&s_port_queues[uart].tx_queue)) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
-  }
-
-  for (uint8_t i = 0; i < len; i++) {
-    if (queue_receive(&s_port_queues[uart].tx_queue, &data[i], 0) != STATUS_CODE_OK) {
-      return STATUS_CODE_INCOMPLETE;
-    }
-  }
-
-  return STATUS_CODE_OK;
-}
-
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
-  if (data == NULL || uart >= NUM_UART_PORTS) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  if (len > (size_t)queue_get_spaces_available(&s_port_queues[uart].tx_queue)) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
-  }
-
-  StatusCode status = STATUS_CODE_OK;
-
-  for (uint8_t i = 0; i < len; i++) {
-    if (queue_send(&s_port_queues[uart].tx_queue, &data[i], 0) != STATUS_CODE_OK) {
-      status = STATUS_CODE_INCOMPLETE;
-      break;
-    }
-  }
-
-  if (status == STATUS_CODE_OK) {
-    __HAL_UART_ENABLE_IT(&s_uart_handles[uart], UART_IT_TXE);
-  }
-
-  return status;
 }
