@@ -23,5 +23,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./doxygen/html
+          publish_branch: doxygen-pages
           force_orphan: true
           full_commit_message: 'Doxygen: update documentation'
