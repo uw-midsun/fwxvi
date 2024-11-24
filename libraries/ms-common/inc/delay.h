@@ -16,6 +16,12 @@
 
 /* Intra-component Headers */
 
+/** 
+ * @defgroup  RTOS_Helpers
+ * @brief     RTOS helper libraries
+ * @{
+ */
+
 /**
  * @brief   Blocking delay for some amount of time in milliseconds
  * @param   time_ms Amount of time to delay for
@@ -33,3 +39,5 @@ void non_blocking_delay_ms(uint32_t time_ms);
  * @param   time_ms Amount of time to delay for
  */
 #define delay_s(time) delay_ms((time)*1000)
+
+/** @} */

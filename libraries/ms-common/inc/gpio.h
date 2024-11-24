@@ -18,6 +18,12 @@
 #include "gpio_mcu.h"
 #include "status.h"
 
+/** 
+ * @defgroup  GPIO
+ * @brief     GPIO library
+ * @{
+ */
+
 /**
  * @brief   Port and pin data
  */
@@ -81,3 +87,5 @@ StatusCode gpio_toggle_state(const GpioAddress *address);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 GpioState gpio_get_state(const GpioAddress *address);
+
+/** @} */

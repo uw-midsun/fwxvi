@@ -15,6 +15,12 @@
 
 /* Intra-component Headers */
 
+/** 
+ * @defgroup  Miscellaneous
+ * @brief     Miscellaneous libraries
+ * @{
+ */
+
 #define SIZEOF_ARRAY(arr) (sizeof((arr)) / sizeof((arr)[0]))
 #define SIZEOF_FIELD(type, field) (sizeof(((type *)0)->field))
 #define SWAP_UINT16(x) (uint16_t)(((uint16_t)(x) >> 8) | ((uint16_t)(x) << 8))
@@ -35,3 +41,5 @@
     __typeof__(b) _b = (b); \
     _a > _b ? _a : _b;      \
   })
+
+/** @} */

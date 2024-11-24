@@ -18,6 +18,12 @@
 /* Intra-component Headers */
 #include "status.h"
 
+/** 
+ * @defgroup  RTOS_Helpers
+ * @brief     RTOS helper libraries
+ * @{
+ */
+
 #define QUEUE_DELAY_BLOCKING portMAX_DELAY
 
 /**
@@ -54,8 +60,7 @@ StatusCode queue_send(Queue *queue, const void *item, uint32_t delay_ms);
  * @brief   Place an item into the queue from an ISR
  * @param   queue Pointer to queue handle
  * @param   item Pointer to the item sent to the queue
- * @param   higher_prio_woken Boolean indicating if a context switch should occur after exiting the
- * ISR
+ * @param   higher_prio_woken Boolean to indicate a context switch after exiting the ISR
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the queue is full
@@ -77,8 +82,7 @@ StatusCode queue_receive(Queue *queue, void *buf, uint32_t delay_ms);
  * @brief   Retrieve an item from the queue, delaying for delay_ms before timing out
  * @param   queue Pointer to queue handle
  * @param   item Pointer to the buffer to fill from the queue
- * @param   higher_prio_woken Boolean indicating if a context switch should occur after exiting the
- * ISR
+ * @param   higher_prio_woken Boolean to indicate a context switch after exiting the ISR
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the queue is empty
@@ -118,3 +122,5 @@ uint32_t queue_get_num_items(Queue *queue);
  * @return  Remaining number of spaces available
  */
 uint32_t queue_get_spaces_available(Queue *queue);
+
+/** @} */

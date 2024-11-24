@@ -21,6 +21,12 @@
 /* Intra-component Headers */
 #include "status.h"
 
+/** 
+ * @defgroup  RTOS_Helpers
+ * @brief     RTOS helper libraries
+ * @{
+ */
+
 /**
  * @brief   Define a task function. This should go in a source file (.c).
  * @details The generated function has the following signature:
@@ -125,3 +131,5 @@ StatusCode wait_tasks(uint16_t num_tasks);
  * @return  STATUS_CODE_OK if succesfully release sempahore
  */
 StatusCode send_task_end(void);
+
+/** @} */

@@ -18,6 +18,12 @@
 /* Intra-component Headers */
 #include "status.h"
 
+/** 
+ * @defgroup  Memory_Protection_Unit
+ * @brief     MPU library
+ * @{
+ */
+
 typedef enum {
   MPU_REGION_0,
   MPU_REGION_1,
@@ -83,3 +89,5 @@ StatusCode mpu_disable_region(MPURegionNumber region_number);
  * @return  STATUS_CODE_OK if MPU initialization succeeded
  */
 StatusCode mpu_init(void);
+
+/** @} */

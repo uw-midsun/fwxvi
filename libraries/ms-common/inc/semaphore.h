@@ -19,6 +19,12 @@
 /* Intra-component Headers */
 #include "status.h"
 
+/** 
+ * @defgroup  RTOS_Helpers
+ * @brief     RTOS helper libraries
+ * @{
+ */
+
 #define BLOCK_INDEFINITELY UINT16_MAX
 
 /**
@@ -93,3 +99,5 @@ StatusCode sem_wait(Semaphore *sem, uint32_t timeout_ms);
  *          STATUS_CODE_INTERNAL_ERROR on error
  */
 StatusCode sem_post(Semaphore *sem);
+
+/** @} */

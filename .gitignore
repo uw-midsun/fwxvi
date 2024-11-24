@@ -28,5 +28,6 @@ __pycache__
 *can_sim.py
 x86_flash
 
-py/can/can.py
-py/can/messages.py
+# Doxygen HTML
+doxygen/html
+

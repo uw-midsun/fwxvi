@@ -162,6 +162,12 @@ elif COMMAND == "lint" or COMMAND == "format":
     SConscript('scons/lint_format.scons', exports='VARS')
 
 ###########################################################
+# Doxygen Generation
+###########################################################
+elif COMMAND == "doxygen":
+    AlwaysBuild(Command('#/doxygen', [], 'doxygen doxygen/Doxyfile'))
+
+###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build
