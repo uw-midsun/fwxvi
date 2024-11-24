@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * can_hw.h
+ * @file   can_hw.h
  *
- * Header file for CAN HW Interface
+ * @brief  Header file for CAN HW Interface
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -20,8 +20,6 @@
 
 /* Intra-component Headers */
 #include "can_queue.h"
-#include "gpio.h"
-#include "uart_mcu.h"
 
 #ifdef CAN_HW_DEV_USE_CAN0
 #define CAN_HW_DEV_INTERFACE "can0"
@@ -42,12 +40,6 @@ typedef enum {
   CAN_HW_BITRATE_1000KBPS,
   NUM_CAN_HW_BITRATES
 } CanHwBitrate;
-
-typedef enum {
-  CAN_CONTINUOUS = 0,
-  CAN_ONE_SHOT_MODE,
-  NUM_CAN_MODES
-} CanMode;
 
 typedef struct CanSettings {
   uint16_t device_id;
@@ -70,9 +62,9 @@ StatusCode can_hw_init(const CanQueue* rx_queue, const CanSettings *settings);
 
 /**
  * @brief   Sets a filter on the CAN interface
- * @param   mask
- * @param   filter
- * @param   extended
+ * @param   mask Determines which bits in the received ID are considered during filtering
+ * @param   filter Specifies the pattern the CAN ID must adhere to
+ * @param   extended Boolean to use CAN extended ID feature
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -92,16 +84,19 @@ CanHwBusStatus can_hw_bus_status(void);
  * @param   extended Boolean to use CAN extended ID feature
  * @param   data Pointer to the data to transmit
  * @param   len Size of the data to transfer
- * @return  STATUS_CODE_OK if data is retrieved succesfully
+ * @return  STATUS_CODE_OK if data is transmitted succesfully
+ *          STATUS_CODE_RESOURCE_EXHAUSTED if CAN mailbox is full
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
 
 /**
  * @brief   Receives CAN data from the bus
- * @param   id
- * @param   extended
+ * @param   id Pointer to store the CAN ID received
+ * @param   extended Pointer to a flag to indicate CAN extended ID feature
  * @param   data Pointer to a buffer to store data
- * @param   len Number of CAN messages to retrieve in 8-bytes
- * @return
+ * @param   len Pointer to the number of CAN messages received
+ * @return  true if data is retrieved succesfully
+ *          false if one of the parameters are incorrect or internal error occurred
  */
 bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len);

@@ -1,10 +1,10 @@
 /************************************************************************************************
- * main.c
+ * @file   main.c
  *
- * Main file for RTOS Sample.
+ * @brief  Main file for RTOS Sample.
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * queues.h
+ * @file   queues.h
  *
- * Header file for the queue library
+ * @brief  Header file for the queue library
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

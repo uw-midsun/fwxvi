@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * uart_mcu.h
+ * @file   uart_mcu.h
  *
- * Header file for MCU specific UART library
+ * @brief  Header file for MCU specific UART library
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */

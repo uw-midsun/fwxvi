@@ -1,10 +1,10 @@
 /************************************************************************************************
- * main.c
+ * @file   main.c
  *
- * Main file for CAN communication
+ * @brief  Main file for CAN communication
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -17,7 +17,7 @@
 
 /* Intra-component Headers */
 
-TASK(CANCommunication, TASK_STACK_512) {
+TASK(can_communication, TASK_STACK_512) {
   while (true) {
     LOG_DEBUG("BLINKY\n");
   }
@@ -28,7 +28,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(CANCommunication, TASK_PRIORITY(3U), NULL);
+  tasks_init_task(can_communication, TASK_PRIORITY(3U), NULL);
 
   tasks_start();
 
