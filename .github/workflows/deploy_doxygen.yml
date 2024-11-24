@@ -3,6 +3,7 @@ name: Deploy Doxygen Documentation
 on:
   push:
     branches: [ main ]
+  # Allow manual dispatch
   workflow_dispatch:
 
 jobs:
