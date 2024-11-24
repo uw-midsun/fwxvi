@@ -12,11 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Doxygen
-        run: sudo apt-get install -y doxygen graphviz
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake graphviz
+
+      - name: Build and Install Doxygen 1.9.5
+        run: |
+          wget https://github.com/doxygen/doxygen/archive/Release_1_9_5.tar.gz
+          tar -xzf Release_1_9_5.tar.gz
+          cd doxygen-Release_1_9_5
+          mkdir build
+          cd build
+          cmake -G "Unix Makefiles" ..
+          make
+          sudo make install
 
       - name: Generate Doxygen Documentation
         run: |
+          doxygen --version
           doxygen doxygen/Doxyfile
 
       - name: Deploy to GitHub Pages
