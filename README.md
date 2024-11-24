@@ -1,4 +1,4 @@
-<img src=doxygen/mid_sun_logo.png width=300></br>
+<img src=doxygen/banner.png width=90%></br>
 ## Midnight Sun XVI Firmware
 This repository contains all firmware for the [University of Waterloo](https://uwaterloo.ca/)'s [Midnight Sun Solar Rayce Car](http://www.uwmidsun.com/) team's car #24.
 

@@ -1,6 +1,5 @@
+![Midnight Sun Banner](../banner.png)
 # Midnight Sun XVI Firmware Documentation
-
-![Midnight Sun Logo](mid_sun_logo.png)
 
 Welcome to the firmware documentation for the **Midnight Sun XVI** Solar Race Car, developed by the [University of Waterloo](https://uwaterloo.ca/)'s [Midnight Sun Solar Car Team](http://www.uwmidsun.com/).
 
