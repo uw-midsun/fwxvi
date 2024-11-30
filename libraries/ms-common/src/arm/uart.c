@@ -23,7 +23,6 @@
 #include "queues.h"
 #include "status.h"
 #include "uart.h"
-#include "uart_mcu.h"
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
@@ -46,7 +45,7 @@ typedef struct {
   bool initialized;
 } UartPortData;
 
-static UartPortData s_port[] = {
+static UartPortData s_port[NUM_UART_PORTS] = {
   [UART_PORT_1] = { .rcc_cmd = s_enable_usart1,
                     .irq = USART1_IRQn,
                     .base = USART1,

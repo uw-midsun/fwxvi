@@ -15,7 +15,6 @@
 /* Intra-component Headers */
 #include "status.h"
 #include "uart.h"
-#include "uart_mcu.h"
 
 StatusCode uart_init(UartPort uart, UartSettings *settings) {
   return STATUS_CODE_UNIMPLEMENTED;

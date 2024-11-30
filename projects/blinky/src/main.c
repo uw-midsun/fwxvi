@@ -14,12 +14,22 @@
 #include "log.h"
 #include "mcu.h"
 #include "tasks.h"
+#include "delay.h"
 
 /* Intra-component Headers */
 
+GpioAddress led_green = {
+  .pin  = 0U,
+  .port = GPIO_PORT_A
+};
+
 TASK(Blinky, TASK_STACK_512) {
+  gpio_init();
+  gpio_init_pin(&led_green, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   while (true) {
     LOG_DEBUG("BLINKY\n");
+    gpio_toggle_state(&led_green);
+    delay_ms(500);
   }
 }
 
