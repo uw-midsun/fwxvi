@@ -1,0 +1,19 @@
+<map id="projects/blinky/src/main.c" name="projects/blinky/src/main.c">
+<area shape="rect" id="node1" title=" " alt="" coords="364,5,504,45"/>
+<area shape="rect" id="node2" href="$gpio_8h.html" title=" " alt="" coords="80,240,143,265"/>
+<area shape="rect" id="node5" href="$log_8h.html" title=" " alt="" coords="407,93,461,119"/>
+<area shape="rect" id="node13" href="$tasks_8h.html" title=" " alt="" coords="602,167,671,192"/>
+<area shape="rect" id="node16" href="$mcu_8h.html" title=" " alt="" coords="713,93,776,119"/>
+<area shape="rect" id="node17" href="$delay_8h.html" title=" " alt="" coords="5,93,73,119"/>
+<area shape="rect" id="node3" title=" " alt="" coords="76,313,147,339"/>
+<area shape="rect" id="node4" href="$status_8h.html" title=" " alt="" coords="542,313,617,339"/>
+<area shape="rect" id="node6" title=" " alt="" coords="234,167,301,192"/>
+<area shape="rect" id="node7" title=" " alt="" coords="325,167,396,192"/>
+<area shape="rect" id="node8" title=" " alt="" coords="265,240,361,265"/>
+<area shape="rect" id="node9" title=" " alt="" coords="799,240,861,265"/>
+<area shape="rect" id="node10" href="$semaphore_8h.html" title=" " alt="" coords="471,167,578,192"/>
+<area shape="rect" id="node15" href="$uart_8h.html" title=" " alt="" coords="149,167,209,192"/>
+<area shape="rect" id="node11" title=" " alt="" coords="435,240,518,265"/>
+<area shape="rect" id="node12" title=" " alt="" coords="542,240,625,265"/>
+<area shape="rect" id="node14" title=" " alt="" coords="649,240,723,265"/>
+</map>

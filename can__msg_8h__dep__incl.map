@@ -1,0 +1,10 @@
+<map id="can/inc/can_msg.h" name="can/inc/can_msg.h">
+<area shape="rect" id="node1" title=" " alt="" coords="183,5,325,31"/>
+<area shape="rect" id="node2" href="$can__queue_8h.html" title=" " alt="" coords="177,79,331,104"/>
+<area shape="rect" id="node3" href="$can_8h.html" title=" " alt="" coords="149,225,255,251"/>
+<area shape="rect" id="node6" href="$can__hw_8h.html" title=" " alt="" coords="240,152,372,177"/>
+<area shape="rect" id="node4" href="$can_8c.html" title=" " alt="" coords="239,306,346,331"/>
+<area shape="rect" id="node5" href="$projects_2can__communication_2src_2main_8c.html" title=" " alt="" coords="5,299,215,339"/>
+<area shape="rect" id="node7" href="$arm_2can__hw_8c.html" title=" " alt="" coords="331,225,492,251"/>
+<area shape="rect" id="node8" href="$x86_2can__hw_8c.html" title=" " alt="" coords="516,225,675,251"/>
+</map>

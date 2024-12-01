@@ -1,0 +1,17 @@
+<map id="libraries/ms&#45;common/src/tasks.c" name="libraries/ms&#45;common/src/tasks.c">
+<area shape="rect" id="node1" title=" " alt="" coords="461,5,623,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="302,240,385,265"/>
+<area shape="rect" id="node3" title=" " alt="" coords="131,240,227,265"/>
+<area shape="rect" id="node4" href="$log_8h.html" title=" " alt="" coords="397,93,452,119"/>
+<area shape="rect" id="node10" href="$status_8h.html" title=" " alt="" coords="359,313,434,339"/>
+<area shape="rect" id="node11" href="$tasks_8h.html" title=" " alt="" coords="579,167,649,192"/>
+<area shape="rect" id="node5" title=" " alt="" coords="438,167,505,192"/>
+<area shape="rect" id="node6" title=" " alt="" coords="343,167,413,192"/>
+<area shape="rect" id="node7" title=" " alt="" coords="665,240,728,265"/>
+<area shape="rect" id="node8" href="$semaphore_8h.html" title=" " alt="" coords="211,167,318,192"/>
+<area shape="rect" id="node13" href="$uart_8h.html" title=" " alt="" coords="25,167,85,192"/>
+<area shape="rect" id="node9" title=" " alt="" coords="409,240,491,265"/>
+<area shape="rect" id="node12" title=" " alt="" coords="566,240,641,265"/>
+<area shape="rect" id="node14" title=" " alt="" coords="5,313,76,339"/>
+<area shape="rect" id="node15" href="$gpio_8h.html" title=" " alt="" coords="44,240,107,265"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="can/inc/can_hw.h" name="can/inc/can_hw.h">
+<area shape="rect" id="node1" title=" " alt="" coords="193,5,325,31"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,79,88,104"/>
+<area shape="rect" id="node3" title=" " alt="" coords="128,225,203,251"/>
+<area shape="rect" id="node4" title=" " alt="" coords="266,225,337,251"/>
+<area shape="rect" id="node5" href="$gpio_8h.html" title=" " alt="" coords="339,152,402,177"/>
+<area shape="rect" id="node6" href="$status_8h.html" title=" " alt="" coords="372,225,447,251"/>
+<area shape="rect" id="node7" href="$can__queue_8h.html" title=" " alt="" coords="163,79,267,104"/>
+<area shape="rect" id="node8" href="$queues_8h.html" title=" " alt="" coords="478,152,559,177"/>
+<area shape="rect" id="node11" href="$can__msg_8h.html" title=" " alt="" coords="169,152,261,177"/>
+<area shape="rect" id="node9" title=" " alt="" coords="471,225,567,251"/>
+<area shape="rect" id="node10" title=" " alt="" coords="591,225,665,251"/>
+</map>

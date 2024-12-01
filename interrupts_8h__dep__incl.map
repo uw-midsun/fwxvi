@@ -1,0 +1,12 @@
+<map id="libraries/ms&#45;common/inc/interrupts.h" name="libraries/ms&#45;common/inc/interrupts.h">
+<area shape="rect" id="node1" title=" " alt="" coords="561,5,723,45"/>
+<area shape="rect" id="node2" href="$arm_2can__hw_8c.html" title=" " alt="" coords="5,101,167,126"/>
+<area shape="rect" id="node3" href="$gpio__interrupts_8h.html" title=" " alt="" coords="191,93,352,133"/>
+<area shape="rect" id="node6" href="$arm_2gpio_8c.html" title=" " alt="" coords="376,93,537,133"/>
+<area shape="rect" id="node7" href="$arm_2i2c_8c.html" title=" " alt="" coords="561,93,723,133"/>
+<area shape="rect" id="node8" href="$arm_2interrupts_8c.html" title=" " alt="" coords="747,93,908,133"/>
+<area shape="rect" id="node9" href="$arm_2uart_8c.html" title=" " alt="" coords="932,93,1093,133"/>
+<area shape="rect" id="node10" href="$x86_2interrupts_8c.html" title=" " alt="" coords="1117,93,1279,133"/>
+<area shape="rect" id="node4" href="$arm_2gpio__interrupts_8c.html" title=" " alt="" coords="71,181,259,221"/>
+<area shape="rect" id="node5" href="$x86_2gpio__interrupts_8c.html" title=" " alt="" coords="283,181,470,221"/>
+</map>

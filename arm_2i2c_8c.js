@@ -1,0 +1,27 @@
+var arm_2i2c_8c =
+[
+    [ "I2CPortData", "structI2CPortData.html", "structI2CPortData" ],
+    [ "HAL_I2C_ErrorCallback", "arm_2i2c_8c.html#a4d5338cd64a656dfdc4154773bc4f05d", null ],
+    [ "HAL_I2C_MasterRxCpltCallback", "arm_2i2c_8c.html#a5782358f977ddf450b203fc075833a1d", null ],
+    [ "HAL_I2C_MasterTxCpltCallback", "arm_2i2c_8c.html#aa258e0eb52bbc34002a46dc2db89a84b", null ],
+    [ "I2C1_ER_IRQHandler", "arm_2i2c_8c.html#ad25274aece51e7f5b821f5d32b31bddf", null ],
+    [ "I2C1_EV_IRQHandler", "arm_2i2c_8c.html#a272ffa65eb8ff5c4a065b0d3473611cd", null ],
+    [ "I2C2_ER_IRQHandler", "arm_2i2c_8c.html#aecd40b8012604ac4236bda3f65857c37", null ],
+    [ "I2C2_EV_IRQHandler", "arm_2i2c_8c.html#abdb05db0781544b33e806a12940d062c", null ],
+    [ "i2c_init", "group__I2C.html#ga4562162bb375d67404e61549896a8265", null ],
+    [ "i2c_read", "group__I2C.html#ga3c5fdc77983bcd376699e0b028a79048", null ],
+    [ "i2c_read_reg", "group__I2C.html#ga94d0a531f4ef25d90db26df23c61abe1", null ],
+    [ "i2c_write", "group__I2C.html#gaa4b330055f5fb46d0dd0515d90c63bba", null ],
+    [ "i2c_write_reg", "group__I2C.html#ga29d9cc0c92b67655edd4cfc25fe7da00", null ],
+    [ "s_enable_i2c1", "arm_2i2c_8c.html#a28eb3503c12f339e024fa29929c93a71", null ],
+    [ "s_enable_i2c2", "arm_2i2c_8c.html#ab925ec6201a80361832c4e4f405d4a10", null ],
+    [ "s_i2c_transfer", "arm_2i2c_8c.html#a5d5c2c12670d709795c9cc73e0c127f8", null ],
+    [ "s_i2c_transfer_complete_callback", "arm_2i2c_8c.html#a7b70d10079736247b1ac7bf0a8a20000", null ],
+    [ "s_i2c_cmplt_handle", "arm_2i2c_8c.html#a866ecc45761441cb19c7a47c1e5bc15e", null ],
+    [ "s_i2c_cmplt_sem", "arm_2i2c_8c.html#ad9f1d5d5402da3935f1e5b2311fd0b27", null ],
+    [ "s_i2c_handles", "arm_2i2c_8c.html#abc2ef9ac919be6135d2565880d1b0136", null ],
+    [ "s_i2c_port_handle", "arm_2i2c_8c.html#a1e7d48ac813309014a4fab7d8a27620c", null ],
+    [ "s_i2c_port_mutex", "arm_2i2c_8c.html#a0caf3bd41e765b0adb8569bf527c1655", null ],
+    [ "s_i2c_timing", "arm_2i2c_8c.html#a93f19a857a37aabef39d583de63b3e88", null ],
+    [ "s_port", "arm_2i2c_8c.html#ad9b860e2055508b25b7e05fff2e0d72c", null ]
+];

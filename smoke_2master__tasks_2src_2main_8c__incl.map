@@ -1,0 +1,19 @@
+<map id="smoke/master_tasks/src/main.c" name="smoke/master_tasks/src/main.c">
+<area shape="rect" id="node1" title=" " alt="" coords="438,5,595,45"/>
+<area shape="rect" id="node2" href="$gpio_8h.html" title=" " alt="" coords="44,313,107,339"/>
+<area shape="rect" id="node5" href="$log_8h.html" title=" " alt="" coords="391,167,445,192"/>
+<area shape="rect" id="node13" href="$tasks_8h.html" title=" " alt="" coords="581,240,650,265"/>
+<area shape="rect" id="node16" href="$master__tasks_8h.html" title=" " alt="" coords="455,93,578,119"/>
+<area shape="rect" id="node17" href="$mcu_8h.html" title=" " alt="" coords="695,167,757,192"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,387,76,412"/>
+<area shape="rect" id="node4" href="$status_8h.html" title=" " alt="" coords="403,387,478,412"/>
+<area shape="rect" id="node6" title=" " alt="" coords="343,240,410,265"/>
+<area shape="rect" id="node7" title=" " alt="" coords="435,240,505,265"/>
+<area shape="rect" id="node8" title=" " alt="" coords="131,313,227,339"/>
+<area shape="rect" id="node9" title=" " alt="" coords="516,313,579,339"/>
+<area shape="rect" id="node10" href="$semaphore_8h.html" title=" " alt="" coords="213,240,319,265"/>
+<area shape="rect" id="node15" href="$uart_8h.html" title=" " alt="" coords="77,240,137,265"/>
+<area shape="rect" id="node11" title=" " alt="" coords="302,313,385,339"/>
+<area shape="rect" id="node12" title=" " alt="" coords="409,313,491,339"/>
+<area shape="rect" id="node14" title=" " alt="" coords="654,313,729,339"/>
+</map>

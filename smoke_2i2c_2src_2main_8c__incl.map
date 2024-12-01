@@ -1,0 +1,20 @@
+<map id="smoke/i2c/src/main.c" name="smoke/i2c/src/main.c">
+<area shape="rect" id="node1" title=" " alt="" coords="198,5,357,31"/>
+<area shape="rect" id="node2" href="$mcu_8h.html" title=" " alt="" coords="207,152,270,177"/>
+<area shape="rect" id="node4" href="$gpio_8h.html" title=" " alt="" coords="73,299,135,324"/>
+<area shape="rect" id="node6" href="$i2c_8h.html" title=" " alt="" coords="5,225,59,251"/>
+<area shape="rect" id="node7" href="$log_8h.html" title=" " alt="" coords="450,152,505,177"/>
+<area shape="rect" id="node15" href="$tasks_8h.html" title=" " alt="" coords="688,225,757,251"/>
+<area shape="rect" id="node18" href="$master__tasks_8h.html" title=" " alt="" coords="416,79,539,104"/>
+<area shape="rect" id="node3" href="$status_8h.html" title=" " alt="" coords="192,372,267,397"/>
+<area shape="rect" id="node5" title=" " alt="" coords="69,372,139,397"/>
+<area shape="rect" id="node8" title=" " alt="" coords="451,225,517,251"/>
+<area shape="rect" id="node9" title=" " alt="" coords="542,225,613,251"/>
+<area shape="rect" id="node10" title=" " alt="" coords="267,299,363,324"/>
+<area shape="rect" id="node11" title=" " alt="" coords="651,299,714,324"/>
+<area shape="rect" id="node12" href="$semaphore_8h.html" title=" " alt="" coords="320,225,427,251"/>
+<area shape="rect" id="node17" href="$uart_8h.html" title=" " alt="" coords="134,225,194,251"/>
+<area shape="rect" id="node13" title=" " alt="" coords="437,299,520,324"/>
+<area shape="rect" id="node14" title=" " alt="" coords="544,299,627,324"/>
+<area shape="rect" id="node16" title=" " alt="" coords="789,299,864,324"/>
+</map>
