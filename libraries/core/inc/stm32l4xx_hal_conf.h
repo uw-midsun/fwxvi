@@ -185,7 +185,7 @@
 
 #define  VDD_VALUE					          3300U /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            15U    /*!< tick interrupt priority */
-#define  USE_RTOS                     0U
+#define  USE_RTOS                     1U
 #define  PREFETCH_ENABLE              0U
 #define  INSTRUCTION_CACHE_ENABLE     1U
 #define  DATA_CACHE_ENABLE            1U
@@ -219,7 +219,7 @@
 #define USE_HAL_GFXMMU_REGISTER_CALLBACKS     0U
 #define USE_HAL_HASH_REGISTER_CALLBACKS       0U
 #define USE_HAL_HCD_REGISTER_CALLBACKS        0U
-#define USE_HAL_I2C_REGISTER_CALLBACKS        0U
+#define USE_HAL_I2C_REGISTER_CALLBACKS        1U
 #define USE_HAL_IRDA_REGISTER_CALLBACKS       0U
 #define USE_HAL_LPTIM_REGISTER_CALLBACKS      0U
 #define USE_HAL_LTDC_REGISTER_CALLBACKS       0U

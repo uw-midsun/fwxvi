@@ -19,8 +19,8 @@
 #include "status.h"
 
 /**
- * @defgroup  RTOS_Helpers
- * @brief     RTOS helper libraries
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
  * @{
  */
 

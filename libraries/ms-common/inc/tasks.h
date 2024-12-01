@@ -22,8 +22,8 @@
 #include "status.h"
 
 /**
- * @defgroup  RTOS_Helpers
- * @brief     RTOS helper libraries
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
  * @{
  */
 
@@ -76,8 +76,8 @@
  * @brief Common stack sizes. If your task is failing for strange reasons, bump the stack
  *        size one size up
  */
-#define TASK_STACK_256 ((size_t)256)
-#define TASK_STACK_512 ((size_t)512)
+#define TASK_STACK_256  ((size_t)256)
+#define TASK_STACK_512  ((size_t)512)
 #define TASK_STACK_1024 ((size_t)1024)
 #define TASK_STACK_2048 ((size_t)2048)
 #define TASK_STACK_4096 ((size_t)4096)

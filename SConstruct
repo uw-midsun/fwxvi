@@ -81,8 +81,18 @@ AddOption(
     help="Specifies which application to flash. The bootloader, application or the entire flash bank"
 )
 
+AddOption(
+    '--build-config',
+    dest='build_config',
+    type='choice',
+    choices=('debug', 'release'),
+    default='debug',
+    help="Specifies if the build optimizes for size or provides more debug informtation"
+)
+
 PLATFORM = GetOption('platform')
 TARGET = GetOption('name')
+BUILD_CONFIG = GetOption('build_config')
 FLASH_TYPE = GetOption('flash')
 
 ###########################################################
@@ -90,12 +100,13 @@ FLASH_TYPE = GetOption('flash')
 ###########################################################
 
 # Retrieve the construction environment from the appropriate platform script
-env = SConscript(f'platform/{PLATFORM}.py', exports='FLASH_TYPE')
+env = SConscript(f'platform/{PLATFORM}.py', exports=['FLASH_TYPE', 'BUILD_CONFIG'])
 
 VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
     "FLASH_TYPE": FLASH_TYPE,
+    "BUILD_CONFIG": BUILD_CONFIG,
     "env": env,
 }
 

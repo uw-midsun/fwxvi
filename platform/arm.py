@@ -1,5 +1,6 @@
 import os
 Import ('FLASH_TYPE')
+Import ('BUILD_CONFIG')
 
 PLATFORM_DIR = os.getcwd()
 
@@ -25,13 +26,30 @@ defines = [
 
 define_flags = ['-D{}'.format(define) for define in defines]
 
-cflags = [
+debug_flags = [
+    '-g3',
+    '-ggdb3',
+    '-O0',
+    '-fno-inline',
+    '-fstack-usage',
+    '-DDEBUG'
+]
+
+release_flags = [
+    '-flto',
+    '-Os',
+    '-fomit-frame-pointer',
+    '-mthumb',
+    '-mfloat-abi=hard',
+    '-mfpu=fpv4-sp-d16',
+    '-DNDEBUG'
+]
+
+common_flags = [
     '-ffreestanding',
     '-Wall',
     '-Wextra',
     '-Werror',
-    '-g3',
-    '-Os',
     '-Wno-discarded-qualifiers',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
@@ -42,13 +60,13 @@ cflags = [
     '-Wno-enum-conversion',
     '-ffunction-sections',
     '-fdata-sections',
-    '-flto',
     '-fsingle-precision-constant',
     '-fno-math-errno',
     '-Wl,--gc-sections',
     '-Wl,-Map=build/out.map',
     '--specs=nosys.specs',
     '--specs=nano.specs',
+    '-mcpu=cortex-m4'
 ]
 
 def get_link_flags(flash_type='default'):
@@ -63,19 +81,25 @@ def get_link_flags(flash_type='default'):
         '-T{}'.format(script),
     ]
 
-def create_arm_env(flash_type='default'):
+def create_arm_env(flash_type='default', build_config='debug'):
+    if build_config == 'debug':
+        build_config_flags = debug_flags
+    else:
+        print(build_config)
+        build_config_flags = release_flags
+
     return Environment(
         ENV = { 'PATH': os.environ['PATH'] },
 
         CC=compiler,
-        CCFLAGS=cflags + arch_cflags + define_flags,
+        CCFLAGS=common_flags + build_config_flags + arch_cflags + define_flags,
         CPPPATH=[],
 
         AS=compiler,
-        ASFLAGS=['-c'] + cflags + arch_cflags + define_flags,
+        ASFLAGS=['-c'] + common_flags + build_config_flags + arch_cflags + define_flags,
         
         LINK=compiler,
-        LINKFLAGS=cflags + arch_cflags + get_link_flags(flash_type),
+        LINKFLAGS=common_flags + arch_cflags + get_link_flags(flash_type),
 
         AR=ar,
         RANLIB=ranlib,
@@ -84,7 +108,7 @@ def create_arm_env(flash_type='default'):
     )
 
 bin_builder = Builder(action='{} -O binary $SOURCE $TARGET'.format(objcopy))
-arm_env = create_arm_env(FLASH_TYPE)
+arm_env = create_arm_env(FLASH_TYPE, BUILD_CONFIG)
 arm_env.Append(BUILDERS={'Bin': bin_builder})
 
 Return('arm_env')

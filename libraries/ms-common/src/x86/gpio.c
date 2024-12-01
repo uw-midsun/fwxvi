@@ -17,7 +17,6 @@
 
 /* Intra-component Headers */
 #include "gpio.h"
-#include "gpio_mcu.h"
 
 static GpioMode s_gpio_pin_modes[GPIO_TOTAL_PINS];
 static uint8_t s_gpio_pin_state[GPIO_TOTAL_PINS];

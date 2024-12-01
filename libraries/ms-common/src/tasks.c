@@ -29,8 +29,6 @@ static void s_task(void *params) {
     return;
   }
 
-  LOG_DEBUG("Task %s starting.\n", task->name);
-
   // Call the task function. This shouldn't exit.
   task->task_func(task->context);
 

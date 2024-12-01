@@ -34,6 +34,12 @@ options can occur anywhere in the command string
 
     --mem-report
         (arm) Reports the memory space after a build
+    
+    --flash=<application type>
+        Specify whether we are flashing the bootloader, bootloader-application or raw application.
+
+    --build-config=<Build type>
+        Specify if we are building in release or debug mode
 
 Commands:
     NONE
@@ -77,6 +83,9 @@ Commands:
 
     clean
         Delete the `build` directory.
+    
+    doxygen
+        Build a local copy of the doxygen HTML
 
 Target:
 targest can be specified with an option.
