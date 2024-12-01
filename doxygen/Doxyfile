@@ -914,7 +914,8 @@ INPUT                  = projects \
                          libraries/ms-common \
                          libraries/ms-drivers \
                          libraries/master \
-                         doxygen/main_page.md
+                         doxygen/main_page.md \
+                         build_system.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

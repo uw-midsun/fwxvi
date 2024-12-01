@@ -18,8 +18,8 @@
 #include "unity.h"
 
 /**
- * @defgroup  Miscellaneous
- * @brief     Miscellaneous libraries
+ * @defgroup Miscellaneous
+ * @brief    Miscellaneous libraries
  * @{
  */
 

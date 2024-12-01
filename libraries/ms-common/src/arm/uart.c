@@ -15,6 +15,7 @@
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
+#include "stm32l4xx_hal_rcc_ex.h"
 #include "stm32l4xx_hal_uart.h"
 
 /* Intra-component Headers */
@@ -186,6 +187,20 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   s_uart_handles[uart].Init.Mode = UART_MODE_TX_RX;
   s_uart_handles[uart].Init.HwFlowCtl = uart_flow_control;
   s_uart_handles[uart].Init.OverSampling = UART_OVERSAMPLING_16;
+
+  RCC_PeriphCLKInitTypeDef periph_clk_init = {0U};
+
+  if (uart == UART_PORT_1) {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    periph_clk_init.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  } else {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+    periph_clk_init.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  }
+
+  if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
   s_port[uart].rcc_cmd();
 

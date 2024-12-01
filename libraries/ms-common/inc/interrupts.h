@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "FreeRTOSConfig.h"
 
 /* Intra-component Headers */
 #include "gpio.h"
@@ -35,10 +36,16 @@ typedef enum {
   NUM_INTERRUPT_CLASSES,
 } InterruptClass;
 
-// Start counting at 1, as needs to be <= configMAX_SYSCALL_INTERRUPT_PRIORITY
-// Priorities decrease with greater value (0 is highest priority, but is reserved)
+/** 
+ * @brief   Interrupt priority level selection
+ * @details Start counting at configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 
+ *          as ISR safe FreeRTOS API can only be called from interrupts that have
+ *          a priority <= configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY. Since priorities
+ *          decrease with greater value (0 is highest priority, but is reserved), interrupt
+ *          priorities must be greater than configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY.
+ */
 typedef enum {
-  INTERRUPT_PRIORITY_HIGH = 1,
+  INTERRUPT_PRIORITY_HIGH = configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY,
   INTERRUPT_PRIORITY_NORMAL,
   INTERRUPT_PRIORITY_LOW,
   NUM_INTERRUPT_PRIORITIES,
@@ -65,14 +72,10 @@ typedef struct InterruptSettings {
   InterruptEdge edge;
 } InterruptSettings;
 
-/**
- * @brief   Indexed number of STM32L433 NVIC entires from data sheet and IRQn_Type enum
- */
+/** @brief   Indexed number of STM32L433 NVIC entires from data sheet and IRQn_Type enum */
 #define NUM_STM32L433X_INTERRUPT_CHANNELS 83
 
-/**
- * @brief   Number of external interrupt lines
- */
+/** @brief   Number of external interrupt lines */
 #define NUM_STM32L433X_EXTI_LINES 16
 
 /**

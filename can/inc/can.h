@@ -21,6 +21,12 @@
 #include "can_hw.h"
 #include "can_queue.h"
 
+/**
+ * @defgroup CAN
+ * @brief    CAN library
+ * @{
+ */
+
 typedef struct CanStorage {
   volatile CanQueue rx_queue;
   uint16_t device_id;
@@ -105,3 +111,5 @@ StatusCode clear_rx_cache();
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
 StatusCode clear_tx_cache();
+
+/** @} */

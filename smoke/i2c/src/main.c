@@ -1,36 +1,35 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for CAN communication
+ * @brief  Main file for [PROJECT NAME]
  *
- * @date   2024-11-03
+ * @date   [YYYY/MM/DD]
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
 
 /* Inter-component Headers */
-#include "gpio.h"
-#include "can.h"
-#include "log.h"
 #include "mcu.h"
+#include "gpio.h"
+#include "i2c.h"
+#include "log.h"
 #include "tasks.h"
+#include "master_tasks.h"
 
 /* Intra-component Headers */
 
-static CanStorage s_can_storage = { 0 };
-const CanSettings can_settings = {
-  .device_id = 0U,
-  .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = { GPIO_PORT_A, 12 },
-  .rx = { GPIO_PORT_A, 11 },
-  .loopback = false,
-  .silent = false,
+GpioAddress pa0_led = {
+  .pin  = 0U,
+  .port = GPIO_PORT_A
 };
 
-TASK(can_communication, TASK_STACK_512) {
+TASK(Blinky, TASK_STACK_512) {
+  gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   while (true) {
-    LOG_DEBUG("BLINKY\n");
+    LOG_DEBUG("Blinky!\n");
+    gpio_toggle_state(&pa0_led);
+    delay_ms(500);
   }
 }
 
@@ -39,7 +38,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(can_communication, TASK_PRIORITY(3U), NULL);
+  tasks_init_task(Blinky, TASK_PRIORITY(3UL), NULL);
 
   tasks_start();
 

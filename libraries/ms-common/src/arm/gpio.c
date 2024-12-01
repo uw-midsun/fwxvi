@@ -49,10 +49,10 @@ StatusCode gpio_init(void) {
 
   /* No alternate function mapping required, calling this function for the very-high speed
    * configuration */
-  gpio_init_pin_af(&lse_input, GPIO_ANALOG, GPIO_ALT_NONE);
-  gpio_init_pin_af(&lse_output, GPIO_ANALOG, GPIO_ALT_NONE);
-  gpio_init_pin_af(&hse_input, GPIO_ANALOG, GPIO_ALT_NONE);
-  gpio_init_pin_af(&hse_output, GPIO_ANALOG, GPIO_ALT_NONE);
+  // gpio_init_pin_af(&lse_input, GPIO_ANALOG, GPIO_ALT_NONE);
+  // gpio_init_pin_af(&lse_output, GPIO_ANALOG, GPIO_ALT_NONE);
+  // gpio_init_pin_af(&hse_input, GPIO_ANALOG, GPIO_ALT_NONE);
+  // gpio_init_pin_af(&hse_output, GPIO_ANALOG, GPIO_ALT_NONE);
 
   return STATUS_CODE_OK;
 }
@@ -181,7 +181,7 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
   taskENTER_CRITICAL();
   GPIO_TypeDef *gpio_port =
       (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
-  HAL_GPIO_WritePin(gpio_port, 1U << (address->pin), state);
+  HAL_GPIO_WritePin(gpio_port, (1U << (address->pin)), state);
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
 }

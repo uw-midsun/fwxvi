@@ -29,7 +29,7 @@ void interrupt_init(void) {
 }
 
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
-  if (priority >= NUM_INTERRUPT_PRIORITIES || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
+  if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
   HAL_NVIC_SetPriority(irq_channel, priority, 0U);

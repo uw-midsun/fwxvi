@@ -19,8 +19,8 @@
 #include "status.h"
 
 /**
- * @defgroup  I2C
- * @brief     I2C library
+ * @defgroup I2C
+ * @brief    I2C library
  * @{
  */
 

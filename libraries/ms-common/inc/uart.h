@@ -18,8 +18,8 @@
 #include "gpio.h"
 
 /**
- * @defgroup  UART
- * @brief     UART library
+ * @defgroup UART
+ * @brief    UART library
  * @{
  */
 
@@ -29,7 +29,7 @@ typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
 /** @brief Maximum size permitted for a UART transaction */
 #define UART_MAX_BUFFER_LEN 256U
 /** @brief Maximum time permitted for a UART transaction */
-#define UART_TIMEOUT_MS     10U
+#define UART_TIMEOUT_MS     1U
 
 /**
  * @brief   UART Flow control selection

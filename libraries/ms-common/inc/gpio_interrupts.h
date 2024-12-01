@@ -21,8 +21,8 @@
 #include "tasks.h"
 
 /**
- * @defgroup  GPIO
- * @brief     GPIO library
+ * @defgroup GPIO
+ * @brief    GPIO library
  * @{
  */
 
