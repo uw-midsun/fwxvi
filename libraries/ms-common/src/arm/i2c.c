@@ -38,14 +38,8 @@ typedef struct {
 } I2CPortData;
 
 static I2CPortData s_port[NUM_I2C_PORTS] = {
-  [I2C_PORT_1] = { .rcc_cmd = s_enable_i2c1,
-                   .base = I2C1,
-                   .ev_irqn = I2C1_EV_IRQn,
-                   .err_irqn = I2C1_ER_IRQn },
-  [I2C_PORT_2] = { .rcc_cmd = s_enable_i2c2,
-                   .base = I2C2,
-                   .ev_irqn = I2C2_EV_IRQn,
-                   .err_irqn = I2C2_ER_IRQn },
+  [I2C_PORT_1] = { .rcc_cmd = s_enable_i2c1, .base = I2C1, .ev_irqn = I2C1_EV_IRQn, .err_irqn = I2C1_ER_IRQn },
+  [I2C_PORT_2] = { .rcc_cmd = s_enable_i2c2, .base = I2C2, .ev_irqn = I2C2_EV_IRQn, .err_irqn = I2C2_ER_IRQn },
 };
 
 /**
@@ -54,7 +48,7 @@ static I2CPortData s_port[NUM_I2C_PORTS] = {
  */
 static uint32_t s_i2c_timing[NUM_I2C_SPEEDS] = {
   [I2C_SPEED_STANDARD] = 0x10909CECU,
-  [I2C_SPEED_FAST]     = 0x00702991U,
+  [I2C_SPEED_FAST] = 0x00702991U,
 };
 
 static I2C_HandleTypeDef s_i2c_handles[NUM_I2C_PORTS];
@@ -66,7 +60,6 @@ static SemaphoreHandle_t s_i2c_port_handle[NUM_I2C_PORTS];
 /* Semaphore to signal event complete */
 static StaticSemaphore_t s_i2c_cmplt_sem[NUM_I2C_PORTS];
 static SemaphoreHandle_t s_i2c_cmplt_handle[NUM_I2C_PORTS];
-
 
 /* Private helper for common TX/RX operations */
 static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t len, bool is_rx) {
@@ -153,47 +146,48 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
-    I2CPort i2c = NUM_I2C_PORTS;
-    for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
-        if (&s_i2c_handles[i] == hi2c) {
-            i2c = i;
-            break;
-        }
+  I2CPort i2c = NUM_I2C_PORTS;
+  for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
+    if (&s_i2c_handles[i] == hi2c) {
+      i2c = i;
+      break;
     }
+  }
 
-    if (i2c >= NUM_I2C_PORTS) {
-        return;
-    }
+  if (i2c >= NUM_I2C_PORTS) {
+    return;
+  }
 
-    uint32_t error = HAL_I2C_GetError(hi2c);
+  uint32_t error = HAL_I2C_GetError(hi2c);
 
-    if (error & HAL_I2C_ERROR_BERR) {
-        /* Future expansion */
-    }
+  if (error & HAL_I2C_ERROR_BERR) {
+    /* Future expansion */
+  }
 
-    if (error & HAL_I2C_ERROR_ARLO) {
-        /* Future expansion */
-    }
+  if (error & HAL_I2C_ERROR_ARLO) {
+    /* Future expansion */
+  }
 
-    if (error & HAL_I2C_ERROR_AF) {
-        /* Future expansion */
-    }
+  if (error & HAL_I2C_ERROR_AF) {
+    /* Future expansion */
+  }
 
-    if (error & HAL_I2C_ERROR_OVR) {
-        /* Future expansion */
-    }
+  if (error & HAL_I2C_ERROR_OVR) {
+    /* Future expansion */
+  }
 
-    if (error & HAL_I2C_ERROR_DMA) {
-        /* Future expansion */
-    }
+  if (error & HAL_I2C_ERROR_DMA) {
+    /* Future expansion */
+  }
 
-    /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete */
-    xSemaphoreGive(s_i2c_cmplt_handle[i2c]);
-    xSemaphoreGive(s_i2c_port_handle[i2c]);
+  /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete
+   */
+  xSemaphoreGive(s_i2c_cmplt_handle[i2c]);
+  xSemaphoreGive(s_i2c_port_handle[i2c]);
 
-    /* Soft reset */
-    HAL_I2C_DeInit(hi2c);
-    HAL_I2C_Init(hi2c);
+  /* Soft reset */
+  HAL_I2C_DeInit(hi2c);
+  HAL_I2C_Init(hi2c);
 }
 
 StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
@@ -229,7 +223,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   s_i2c_handles[i2c].Init.OwnAddress2Masks = I2C_OA2_NOMASK;
   s_i2c_handles[i2c].Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
-  RCC_PeriphCLKInitTypeDef periph_clk_init = {0U};
+  RCC_PeriphCLKInitTypeDef periph_clk_init = { 0U };
 
   if (i2c == I2C_PORT_1) {
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
@@ -266,25 +260,24 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
 }
 
 StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
-  return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);;
+  return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);
 }
 
 StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
-    return s_i2c_transfer(i2c, addr, tx_data, tx_len, false);
+  return s_i2c_transfer(i2c, addr, tx_data, tx_len, false);
 }
 
 StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len) {
-    status_ok_or_return(s_i2c_transfer(i2c, addr, &reg, 1, false));
-    return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);
+  status_ok_or_return(s_i2c_transfer(i2c, addr, &reg, 1, false));
+  return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);
 }
 
 StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len) {
-    uint8_t buffer[tx_len + 1];
-    buffer[0] = reg;
+  uint8_t write_data[I2C_MAX_NUM_DATA] = { 0 };
+  write_data[0] = reg;
+  for (size_t i = 1; i < tx_len + 1; i++) {
+    write_data[i] = tx_data[i - 1];
+  }
 
-    for (size_t i = 0U; i < tx_len; i++) {
-      buffer[i + 1U] = tx_data[i];
-    }
-
-    return s_i2c_transfer(i2c, addr, buffer, tx_len + 1U, false);;
+  return s_i2c_transfer(i2c, addr, write_data, tx_len + 1U, false);
 }

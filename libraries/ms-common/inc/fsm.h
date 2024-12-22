@@ -52,7 +52,6 @@ typedef struct {
  * @brief   Creates state with associated ID in a state list
  * @details State id must be unique (preferred to use enum type)
  */
-#define STATE(state_id, entry, state_func) \
-  [state_id] = { .entry_func = entry, .state_action = state_func }
+#define STATE(state_id, entry, state_func) [state_id] = { .entry_func = entry, .state_action = state_func }
 
 /** @} */

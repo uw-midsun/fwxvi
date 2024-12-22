@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for Blinky
+ * @brief  Main file for blinky
  *
  * @date   2024-11-03
  * @author Midnight Sun Team #24 - MSXVI
@@ -10,18 +10,16 @@
 /* Standard library headers */
 
 /* Inter-component Headers */
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
 #include "tasks.h"
-#include "delay.h"
 
 /* Intra-component Headers */
+#include "blinky.h"
 
-GpioAddress pa0_led = {
-  .pin  = 0U,
-  .port = GPIO_PORT_A
-};
+GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
 
 TASK(blinky, TASK_STACK_512) {
   gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);

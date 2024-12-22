@@ -167,6 +167,10 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
 for entry in PY_DIR.glob("*", exclude=["*.*", "__pycache__"]):
     target = env.Command(entry.path, [],
                          f"PYTHONPATH={PY_DIR.path} python3 {entry.path}/main.py")
+    config = parse_config(entry)
+    if config["can"]:
+        # Depends(target, PY_DIR.File("can/message.py"))
+        pass
     Alias(entry.path, target)
     Alias(entry.name, target)
 

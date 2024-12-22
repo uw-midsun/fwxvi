@@ -1,5 +1,5 @@
 /************************************************************************************************
- * @file   test_master_tasks.h
+ * @file   test_master_tasks.c
  *
  * @brief  Test file for Master Tasks API. Supports 1Hz, 10Hz and 1000Hz scheduling
  *

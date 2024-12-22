@@ -25,7 +25,7 @@
  */
 
 /** @brief  Maximum time permitted for an I2C transaction */
-#define I2C_TIMEOUT_MS   100U
+#define I2C_TIMEOUT_MS 100U
 /** @brief  None of our I2C transactions should need to be longer than 32 bytes */
 #define I2C_MAX_NUM_DATA 32U
 
@@ -34,9 +34,9 @@ typedef uint8_t I2CAddress;
 
 /** @brief  I2C Port selection */
 typedef enum {
-  I2C_PORT_1 = 0,         /**< I2C Pins PA9 and PA10 */     
-  I2C_PORT_2,             /**< I2C Port PB10 and PB11 */
-  NUM_I2C_PORTS,          /**< Number of I2C Ports */
+  I2C_PORT_1 = 0, /**< I2C Pins PA9 and PA10 */
+  I2C_PORT_2,     /**< I2C Port PB10 and PB11 */
+  NUM_I2C_PORTS,  /**< Number of I2C Ports */
 } I2CPort;
 
 /** @brief  I2C speed type */
@@ -52,9 +52,9 @@ typedef enum {
  *          SDA is an open-drain data pin. SCL is an open-drain clock pin.
  */
 typedef struct {
-  I2CSpeed speed;         /**< I2C Clock speed selection */
-  GpioAddress sda;        /**< GPIO Pin to transmit and receive data */
-  GpioAddress scl;        /**< GPIO Pin to provide clock signal */
+  I2CSpeed speed;  /**< I2C Clock speed selection */
+  GpioAddress sda; /**< GPIO Pin to transmit and receive data */
+  GpioAddress scl; /**< GPIO Pin to provide clock signal */
 } I2CSettings;
 
 /**
@@ -120,8 +120,7 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data,
-                         size_t tx_len);
+StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len);
 
 #ifdef MS_PLATFORM_X86
 

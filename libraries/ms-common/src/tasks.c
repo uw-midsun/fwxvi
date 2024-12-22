@@ -46,14 +46,12 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
 
   // Priorities range from 0 to configMAX_PRIORITIES-1 with a higher number meaning higher priority.
   if (priority >= configMAX_PRIORITIES) {
-    LOG_CRITICAL("CRITICAL: task '%s' priority is too high, not creating! Was %d, max is %d\n",
-                 task->name, (int)priority, configMAX_PRIORITIES - 1);
+    LOG_CRITICAL("CRITICAL: task '%s' priority is too high, not creating! Was %d, max is %d\n", task->name, (int)priority, configMAX_PRIORITIES - 1);
     return STATUS_CODE_INVALID_ARGS;
   }
 
   if (task->stack_size < TASK_MIN_STACK_SIZE) {
-    LOG_WARN("Task '%s' had too small stack size, defaulting to minimum %d\n", task->name,
-             TASK_MIN_STACK_SIZE);
+    LOG_WARN("Task '%s' had too small stack size, defaulting to minimum %d\n", task->name, TASK_MIN_STACK_SIZE);
     task->stack_size = TASK_MIN_STACK_SIZE;
   }
 
@@ -63,8 +61,7 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
   }
 
   task->context = context;
-  task->handle = xTaskCreateStatic(s_task, task->name, task->stack_size, task, priority,
-                                   task->stack, &task->tcb);
+  task->handle = xTaskCreateStatic(s_task, task->name, task->stack_size, task, priority, task->stack, &task->tcb);
   if (task->handle == NULL) {
     LOG_CRITICAL("Failed to create Task %s\n", task->name);
   } else {

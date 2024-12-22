@@ -29,7 +29,7 @@ typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
 /** @brief Maximum size permitted for a UART transaction */
 #define UART_MAX_BUFFER_LEN 256U
 /** @brief Maximum time permitted for a UART transaction */
-#define UART_TIMEOUT_MS     1U
+#define UART_TIMEOUT_MS 1U
 
 /**
  * @brief   UART Flow control selection
@@ -37,10 +37,10 @@ typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
  *          2 devices. For most applications, this can be set to UART_FLOW_CONTROL_NONE.
  */
 typedef enum {
-  UART_FLOW_CONTROL_NONE,         /**< Disable flow control */
-  UART_FLOW_CONTROL_RTS,          /**< Enable request-to-send flow control */
-  UART_FLOW_CONTROL_CTS,          /**< Enable clear-to-send flow control */
-  UART_FLOW_CONTROL_RTS_CTS       /**< Enable both request-to-send and clear-to-send flow control */
+  UART_FLOW_CONTROL_NONE,   /**< Disable flow control */
+  UART_FLOW_CONTROL_RTS,    /**< Enable request-to-send flow control */
+  UART_FLOW_CONTROL_CTS,    /**< Enable clear-to-send flow control */
+  UART_FLOW_CONTROL_RTS_CTS /**< Enable both request-to-send and clear-to-send flow control */
 } UartFlowControl;
 
 /**
@@ -51,10 +51,10 @@ typedef enum {
  *          Flow control is of type UartFlowControl.
  */
 typedef struct {
-  GpioAddress tx;                 /**< GPIO Pin for UART TX */
-  GpioAddress rx;                 /**< GPIO Pin for UART RX */
-  uint32_t baudrate;              /**< Symbols per second */
-  UartFlowControl flow_control;   /**< UART Flow control settings */
+  GpioAddress tx;               /**< GPIO Pin for UART TX */
+  GpioAddress rx;               /**< GPIO Pin for UART RX */
+  uint32_t baudrate;            /**< Symbols per second */
+  UartFlowControl flow_control; /**< UART Flow control settings */
 } UartSettings;
 
 /**

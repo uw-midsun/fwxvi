@@ -499,7 +499,7 @@ NUM_PROC_THREADS       = 1
 # normally produced when WARNINGS is set to YES.
 # The default value is: NO.
 
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 
 # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
 # be included in the documentation.
@@ -616,14 +616,14 @@ CASE_SENSE_NAMES       = YES
 # scope will be hidden.
 # The default value is: NO.
 
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 
 # If the HIDE_COMPOUND_REFERENCE tag is set to NO (default) then doxygen will
 # append additional text to a page's title, such as Class Reference. If set to
 # YES the compound reference will be hidden.
 # The default value is: NO.
 
-HIDE_COMPOUND_REFERENCE= NO
+HIDE_COMPOUND_REFERENCE = YES
 
 # If the SHOW_HEADERFILE tag is set to YES then the documentation for a class
 # will show which file needs to be included to use the class.
@@ -915,6 +915,7 @@ INPUT                  = projects \
                          libraries/ms-drivers \
                          libraries/master \
                          doxygen/main_page.md \
+                         autogen \
                          build_system.md
 
 # This tag can be used to specify the character encoding of the source files
@@ -1016,7 +1017,8 @@ RECURSIVE              = YES
 EXCLUDE                = libraries/HAL \
                          libraries/FreeRTOS \
                          libraries/core \
-                         libraries/CMSIS
+                         libraries/CMSIS \
+                         doxygen
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

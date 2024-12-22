@@ -1,30 +1,31 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for [PROJECT NAME]
+ * @brief  Smoke test for flash_api
  *
- * @date   [YYYY/MM/DD]
+ * @date   2024-12-21
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
+#include "flash.h"
 #include "gpio.h"
 #include "log.h"
+#include "mcu.h"
+#include "status.h"
 #include "tasks.h"
-#include "flash.h"
-#include "delay.h"
 
 /* Intra-component Headers */
 
-TASK(flash_api_test, TASK_STACK_2048) {
+TASK(flash_api, TASK_STACK_2048) {
   StatusCode status = STATUS_CODE_OK;
-  uint8_t flash_buffer[FLASH_PAGE_SIZE] = {0U};
+  uint8_t flash_buffer[FLASH_PAGE_SIZE] = { 0U };
 
   flash_init();
-  
+
   while (true) {
     LOG_DEBUG("Running Flash Smoke!\n");
 
@@ -72,7 +73,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(flash_api_test, TASK_PRIORITY(3), NULL);
+  tasks_init_task(flash_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

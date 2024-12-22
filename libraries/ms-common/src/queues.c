@@ -16,8 +16,7 @@
 #include "queues.h"
 
 StatusCode queue_init(Queue *queue) {
-  queue->handle =
-      xQueueCreateStatic(queue->num_items, queue->item_size, queue->storage_buf, &queue->queue);
+  queue->handle = xQueueCreateStatic(queue->num_items, queue->item_size, queue->storage_buf, &queue->queue);
 
   if (queue->handle == NULL) {
     return STATUS_CODE_INVALID_ARGS;

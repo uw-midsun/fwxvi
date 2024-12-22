@@ -14,8 +14,7 @@
 /* Intra-component Headers */
 #include "gpio_interrupts.h"
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings,
-                                   const Event event, const Task *task) {
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 

@@ -23,7 +23,7 @@
  */
 
 /* Timeout for HSE/LSE pins to stabilize. Should not take more than 5 seconds */
-#define HSE_LSE_TIMEOUT_MS      5000U
+#define HSE_LSE_TIMEOUT_MS 5000U
 
 #define USE_INTERNAL_OSCILLATOR 1U
 

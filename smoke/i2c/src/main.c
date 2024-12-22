@@ -10,19 +10,16 @@
 /* Standard library headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
 #include "gpio.h"
 #include "i2c.h"
 #include "log.h"
-#include "tasks.h"
 #include "master_tasks.h"
+#include "mcu.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
-GpioAddress pa0_led = {
-  .pin  = 0U,
-  .port = GPIO_PORT_A
-};
+GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
 
 TASK(Blinky, TASK_STACK_512) {
   gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);

@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for CAN communication
+ * @brief  Main file for can_communication
  *
  * @date   2024-11-03
  * @author Midnight Sun Team #24 - MSXVI
@@ -10,13 +10,14 @@
 /* Standard library headers */
 
 /* Inter-component Headers */
-#include "gpio.h"
 #include "can.h"
+#include "gpio.h"
 #include "log.h"
 #include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "can_communication.h"
 
 static CanStorage s_can_storage = { 0 };
 const CanSettings can_settings = {

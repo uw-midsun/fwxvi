@@ -31,10 +31,8 @@ StatusCode gpio_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
-                         GpioState init_state) {
-  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT ||
-      pin_mode >= NUM_GPIO_MODES) {
+StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || pin_mode >= NUM_GPIO_MODES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -50,10 +48,8 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode,
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
-                            GpioAlternateFunctions alt_func) {
-  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT ||
-      pin_mode >= NUM_GPIO_MODES) {
+StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || pin_mode >= NUM_GPIO_MODES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 

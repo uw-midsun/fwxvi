@@ -47,14 +47,8 @@ typedef struct {
 } UartPortData;
 
 static UartPortData s_port[NUM_UART_PORTS] = {
-  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1,
-                    .irq = USART1_IRQn,
-                    .base = USART1,
-                    .initialized = false },
-  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2,
-                    .irq = USART2_IRQn,
-                    .base = USART2,
-                    .initialized = false },
+  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
+  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
@@ -188,7 +182,7 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   s_uart_handles[uart].Init.HwFlowCtl = uart_flow_control;
   s_uart_handles[uart].Init.OverSampling = UART_OVERSAMPLING_16;
 
-  RCC_PeriphCLKInitTypeDef periph_clk_init = {0U};
+  RCC_PeriphCLKInitTypeDef periph_clk_init = { 0U };
 
   if (uart == UART_PORT_1) {
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;

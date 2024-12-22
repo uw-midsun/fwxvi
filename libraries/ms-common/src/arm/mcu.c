@@ -17,8 +17,8 @@
 #include "mcu.h"
 
 static StatusCode SystemClock_Config(void) {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0U};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0U};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0U };
+  RCC_OscInitTypeDef RCC_OscInitStruct = { 0U };
 
 #if USE_INTERNAL_OSCILLATOR == 1U
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -72,8 +72,7 @@ static StatusCode SystemClock_Config(void) {
 #endif
 
   /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
-  RCC_ClkInitStruct.ClockType =
-      (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;

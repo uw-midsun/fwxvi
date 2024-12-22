@@ -25,10 +25,8 @@ typedef struct GpioInterrupt {
 
 static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0 };
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings,
-                                   const Event event, const Task *task) {
-  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT ||
-      event >= INVALID_EVENT) {
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || event >= INVALID_EVENT) {
     return STATUS_CODE_INVALID_ARGS;
   } else if (s_gpio_it_interrupts[address->pin].task != NULL) {
     LOG_DEBUG("GPIO INTERRUPT INIT FAILED. Pin already being used");

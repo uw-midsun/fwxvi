@@ -24,27 +24,27 @@
  */
 
 /** @brief  Flash memory must be aligned to 4-bytes since STM32 is 32-bit device */
-#define FLASH_MEMORY_ALIGNMENT      4U
+#define FLASH_MEMORY_ALIGNMENT 4U
 
 /** @brief  Flash memory begins at 0x0800 0000 as per ARM specification */
-#define FLASH_BASE_ADDR             (0x08000000U)
+#define FLASH_BASE_ADDR (0x08000000U)
 
 #ifndef FLASH_PAGE_SIZE
 /** @brief  Flash page size is 2Kbyte as per table 63. in STM32L433xx datasheet */
-#define FLASH_PAGE_SIZE             0x800U
+#define FLASH_PAGE_SIZE 0x800U
 #endif
 
 /** @brief  Convert page number to a memory address */
-#define FLASH_PAGE_TO_ADDR(page)    (FLASH_BASE_ADDR + ((page)*FLASH_PAGE_SIZE))
+#define FLASH_PAGE_TO_ADDR(page) (FLASH_BASE_ADDR + ((page)*FLASH_PAGE_SIZE))
 
 /** @brief  Convert memory address to a page number */
-#define FLASH_ADDR_TO_PAGE(addr)    (((addr)-FLASH_BASE_ADDR) / FLASH_PAGE_SIZE)
+#define FLASH_ADDR_TO_PAGE(addr) (((addr)-FLASH_BASE_ADDR) / FLASH_PAGE_SIZE)
 
 /** @brief Maximum time permitted for a flash transaction */
-#define FLASH_TIMEOUT_MS            100U
+#define FLASH_TIMEOUT_MS 100U
 
 /** @brief  Total number of flash pages in the STM32L433CCU6 */
-#define NUM_FLASH_PAGES             128U
+#define NUM_FLASH_PAGES 128U
 
 /**
  * @brief   Initialize flash API

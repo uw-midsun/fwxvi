@@ -57,14 +57,14 @@ StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if(xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
+  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }
 
   if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
     /* Direct memory read */
     memcpy(buffer, (void *)address, buffer_len);
-  };
+  }
 
   xSemaphoreGive(s_flash_handle);
   return STATUS_CODE_OK;
@@ -75,11 +75,11 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if(xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
+  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }
 
-  if(s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
+  if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
     HAL_FLASH_Unlock();
     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
 
@@ -102,19 +102,15 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
 }
 
 StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
-  if (start_page >= NUM_FLASH_PAGES || num_pages == 0U ||
-      start_page + num_pages > NUM_FLASH_PAGES) {
+  if (start_page >= NUM_FLASH_PAGES || num_pages == 0U || start_page + num_pages > NUM_FLASH_PAGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if(xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
+  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }
 
-  FLASH_EraseInitTypeDef erase_init = { .TypeErase = FLASH_TYPEERASE_PAGES,
-                                        .Banks = FLASH_BANK_1,
-                                        .Page = start_page,
-                                        .NbPages = num_pages };
+  FLASH_EraseInitTypeDef erase_init = { .TypeErase = FLASH_TYPEERASE_PAGES, .Banks = FLASH_BANK_1, .Page = start_page, .NbPages = num_pages };
 
   uint32_t page_error = 0U;
   HAL_StatusTypeDef status;
