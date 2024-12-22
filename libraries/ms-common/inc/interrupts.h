@@ -27,13 +27,12 @@
  */
 
 /**
- * @brief   Interrupt type runs a callback as soon as the interrupt is triggered
- *          Event type wakes the device without running a callback
+ * @brief   Interrupt class selection
  */
 typedef enum {
-  INTERRUPT_TYPE_INTERRUPT = 0,
-  INTERRUPT_TYPE_EVENT,
-  NUM_INTERRUPT_CLASSES,
+  INTERRUPT_TYPE_INTERRUPT = 0,     /**< Interrupt type runs a callback as soon as the interrupt is triggered */
+  INTERRUPT_TYPE_EVENT,             /**< Event type wakes the device without running a callback */
+  NUM_INTERRUPT_CLASSES,            /**< Number of supported interrupt classes */
 } InterruptClass;
 
 /** 
@@ -57,19 +56,19 @@ typedef enum {
  *          will use them
  */
 typedef enum {
-  INTERRUPT_EDGE_RISING = 0,
-  INTERRUPT_EDGE_FALLING,
-  INTERRUPT_EDGE_RISING_FALLING,
-  NUM_INTERRUPT_EDGES,
+  INTERRUPT_EDGE_RISING = 0,        /**< Rising edge interrupt triggers when a signal goes from LOW to HIGH */
+  INTERRUPT_EDGE_FALLING,           /**< Falling edge interrupt triggers when a signal goes from HIGH to LOW */
+  INTERRUPT_EDGE_TRANSITION,        /**< Transition interrupt triggers when a signal goes from LOW to HIGH or from HIGH to LOW */
+  NUM_INTERRUPT_EDGES,              /**< Number of supported interrupt edges */
 } InterruptEdge;
 
 /**
  * @brief   Interrupt configuration structure
  */
 typedef struct InterruptSettings {
-  InterruptClass type;
-  InterruptPriority priority;
-  InterruptEdge edge;
+  InterruptClass type;              /**< Interrupt class selection */
+  InterruptPriority priority;       /**< Interrupt priority selection */
+  InterruptEdge edge;               /**< Interrupt edge selection */
 } InterruptSettings;
 
 /** @brief   Indexed number of STM32L433 NVIC entires from data sheet and IRQn_Type enum */

@@ -35,9 +35,9 @@
 
 /** @brief  CAN Bus status flags */
 typedef enum {
-  CAN_HW_BUS_STATUS_OK = 0,   /** CAN Bus is operating correctly */
-  CAN_HW_BUS_STATUS_ERROR,    /** CAN Bus has detected an error */
-  CAN_HW_BUS_STATUS_OFF       /** CAN Bus is not initialized */
+  CAN_HW_BUS_STATUS_OK = 0,   /**< CAN Bus is operating correctly */
+  CAN_HW_BUS_STATUS_ERROR,    /**< CAN Bus has detected an error */
+  CAN_HW_BUS_STATUS_OFF       /**< CAN Bus is not initialized */
 } CanHwBusStatus;
 
 /**
@@ -53,11 +53,11 @@ typedef enum {
  *          Bitrate selection impacts signal reliability and bus length
  */
 typedef enum {
-  CAN_HW_BITRATE_125KBPS,     /** 125 KBits per second */
-  CAN_HW_BITRATE_250KBPS,     /** 250 KBits per second */
-  CAN_HW_BITRATE_500KBPS,     /** 500 KBits per second */
-  CAN_HW_BITRATE_1000KBPS,    /** 1000 KBits per second */
-  NUM_CAN_HW_BITRATES         /** Number of supported bit rates */
+  CAN_HW_BITRATE_125KBPS,     /**< 125 KBits per second */
+  CAN_HW_BITRATE_250KBPS,     /**< 250 KBits per second */
+  CAN_HW_BITRATE_500KBPS,     /**< 500 KBits per second */
+  CAN_HW_BITRATE_1000KBPS,    /**< 1000 KBits per second */
+  NUM_CAN_HW_BITRATES         /**< Number of supported bit rates */
 } CanHwBitrate;
 
 /**
@@ -69,12 +69,12 @@ typedef enum {
  *          Silent mode is used for only listening to the bus.
  */
 typedef struct CanSettings {
-  uint16_t device_id;         /** Device CAN ID */
-  CanHwBitrate bitrate;       /** Bits per second */
-  GpioAddress tx;             /** GPIO Pin for CAN TX */
-  GpioAddress rx;             /** GPIO Pin for CAN RX */
-  bool loopback;              /** Enables self-listening for message debugging */
-  bool silent;                /** Device can listen but not transmit messages */
+  uint16_t device_id;         /**< Device CAN ID */
+  CanHwBitrate bitrate;       /**< Bits per second */
+  GpioAddress tx;             /**< GPIO Pin for CAN TX */
+  GpioAddress rx;             /**< GPIO Pin for CAN RX */
+  bool loopback;              /**< Enables self-listening for message debugging */
+  bool silent;                /**< Device can listen but not transmit messages */
 } CanSettings;
 
 /**

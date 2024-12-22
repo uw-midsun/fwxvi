@@ -34,16 +34,16 @@ typedef uint8_t I2CAddress;
 
 /** @brief  I2C Port selection */
 typedef enum {
-  I2C_PORT_1 = 0,         /** I2C Pins PA9 and PA10 */     
-  I2C_PORT_2,             /** I2C Port PB10 and PB11 */
-  NUM_I2C_PORTS,          /** Number of I2C Ports */
+  I2C_PORT_1 = 0,         /**< I2C Pins PA9 and PA10 */     
+  I2C_PORT_2,             /**< I2C Port PB10 and PB11 */
+  NUM_I2C_PORTS,          /**< Number of I2C Ports */
 } I2CPort;
 
 /** @brief  I2C speed type */
 typedef enum {
-  I2C_SPEED_STANDARD = 0, /** 100kHz */
-  I2C_SPEED_FAST,         /** 400 kHz */
-  NUM_I2C_SPEEDS,         /** Number of I2C Speeds */
+  I2C_SPEED_STANDARD = 0, /**< 100kHz */
+  I2C_SPEED_FAST,         /**< 400 kHz */
+  NUM_I2C_SPEEDS,         /**< Number of I2C Speeds */
 } I2CSpeed;
 
 /**
@@ -52,9 +52,9 @@ typedef enum {
  *          SDA is an open-drain data pin. SCL is an open-drain clock pin.
  */
 typedef struct {
-  I2CSpeed speed;         /** I2C Clock speed selection */
-  GpioAddress sda;        /** GPIO Pin to transmit and receive data */
-  GpioAddress scl;        /** GPIO Pin to provide clock signal */
+  I2CSpeed speed;         /**< I2C Clock speed selection */
+  GpioAddress sda;        /**< GPIO Pin to transmit and receive data */
+  GpioAddress scl;        /**< GPIO Pin to provide clock signal */
 } I2CSettings;
 
 /**

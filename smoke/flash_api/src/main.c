@@ -22,6 +22,9 @@
 TASK(flash_api_test, TASK_STACK_2048) {
   StatusCode status = STATUS_CODE_OK;
   uint8_t flash_buffer[FLASH_PAGE_SIZE] = {0U};
+
+  flash_init();
+  
   while (true) {
     LOG_DEBUG("Running Flash Smoke!\n");
 

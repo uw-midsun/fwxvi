@@ -50,14 +50,14 @@ typedef union CanId {
  *          CAN Frames hold 8 bytes of data at most
  */
 typedef struct CanMessage {
-  CanId id;                 /** CAN ID */
-  bool extended;            /** Extended ID Flag */
-  size_t dlc;               /** Data length Code */
+  CanId id;                 /**< CAN ID */
+  bool extended;            /**< Extended ID Flag */
+  size_t dlc;               /**< Data length Code */
   union {
-    uint64_t data;          /** Raw data in the form of 8 bytes */
-    uint32_t data_u32[2];   /** Data split in 4 bytes partitions */
-    uint16_t data_u16[4];   /** Data split in 2 bytes partitions */
-    uint8_t data_u8[8];     /** Data split in 1 byte partitions */
+    uint64_t data;          /**< Raw data in the form of 8 bytes */
+    uint32_t data_u32[2];   /**< Data split in 4 bytes partitions */
+    uint16_t data_u16[4];   /**< Data split in 2 bytes partitions */
+    uint8_t data_u8[8];     /**< Data split in 1 byte partitions */
   };
 } CanMessage;
 

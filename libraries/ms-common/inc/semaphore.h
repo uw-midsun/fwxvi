@@ -30,8 +30,8 @@
 
 /** @brief   Semaphore object with handle and buffer */
 typedef struct Semaphore {
-  SemaphoreHandle_t handle;   /** Handle to interact with the semaphore */
-  StaticSemaphore_t buffer;   /** Stores the current state of the semaphore */
+  SemaphoreHandle_t handle;   /**< Handle to interact with the semaphore */
+  StaticSemaphore_t buffer;   /**< Stores the current state of the semaphore */
 } Semaphore;
 
 typedef Semaphore Mutex;

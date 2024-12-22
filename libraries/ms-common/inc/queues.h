@@ -30,11 +30,11 @@
  * @brief   Queue storage and access struct
  */
 typedef struct {
-  uint32_t num_items;   /* Number of items the queue can hold */
-  uint32_t item_size;   /* Size of each item */
-  uint8_t *storage_buf; /* Must be declared statically, and have size num_items*item_size */
-  StaticQueue_t queue;  /* Internal Queue storage */
-  QueueHandle_t handle; /* Handle used for all queue operations */
+  uint32_t num_items;   /**< Number of items the queue can hold */
+  uint32_t item_size;   /**< Size of each item */
+  uint8_t *storage_buf; /**< Must be declared statically, and have size num_items*item_size */
+  StaticQueue_t queue;  /**< Internal Queue storage */
+  QueueHandle_t handle; /**< Handle used for all queue operations */
 } Queue;
 
 /**

@@ -40,10 +40,10 @@
 #endif
 
 typedef enum {
-  LOG_LEVEL_DEBUG = 0,
-  LOG_LEVEL_WARN,
-  LOG_LEVEL_CRITICAL,
-  NUM_LOG_LEVELS,
+  LOG_LEVEL_DEBUG = 0,  /**< Debug level */
+  LOG_LEVEL_WARN,       /**< Warning level */
+  LOG_LEVEL_CRITICAL,   /**< Critical level */
+  NUM_LOG_LEVELS,       /**< Number of Log levels */
 } LogLevel;
 
 extern char g_log_buffer[MAX_LOG_SIZE];

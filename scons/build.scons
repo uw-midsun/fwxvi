@@ -21,10 +21,10 @@ SMOKE_DIR = ROOT.Dir('smoke')
 
 LIB_BIN_DIR = BIN_DIR.Dir('libraries')
 
-CODEGEN_DIR = LIB_DIR.Dir("codegen")
-BOARDS_DIR = CODEGEN_DIR.Dir("boards")
-GENERATOR = CODEGEN_DIR.File("generator.py")
-TEMPLATES_DIR = CODEGEN_DIR.Dir("templates")
+AUTOGEN_DIR = LIB_DIR.Dir("autogen")
+BOARDS_DIR = AUTOGEN_DIR.Dir("boards")
+GENERATOR = AUTOGEN_DIR.File("autogen.py")
+TEMPLATES_DIR = AUTOGEN_DIR.Dir("templates")
 
 LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
 

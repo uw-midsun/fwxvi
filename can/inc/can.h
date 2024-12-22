@@ -27,6 +27,9 @@
  * @{
  */
 
+/**
+ * @brief   Storage class for the device ID and RX data
+ */
 typedef struct CanStorage {
   volatile CanQueue rx_queue;
   uint16_t device_id;
