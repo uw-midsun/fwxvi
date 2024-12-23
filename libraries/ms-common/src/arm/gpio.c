@@ -43,8 +43,8 @@ StatusCode gpio_init(void) {
   GpioAddress hse_input = { .port = GPIO_PORT_H, .pin = 0 };
   GpioAddress hse_output = { .port = GPIO_PORT_H, .pin = 1 };
 
-  /* No alternate function mapping required, calling this function for the very-high speed
-   * configuration */
+  /* No alternate function mapping required, calling this function for the very-high speed configuration */
+  /* TODO: Uncomment this once hardware adds the LSE/HSE crystal to the board */
   // gpio_init_pin_af(&lse_input, GPIO_ANALOG, GPIO_ALT_NONE);
   // gpio_init_pin_af(&lse_output, GPIO_ANALOG, GPIO_ALT_NONE);
   // gpio_init_pin_af(&hse_input, GPIO_ANALOG, GPIO_ALT_NONE);
