@@ -39,11 +39,12 @@ static const uint16_t s_uart_flow_control_map[] = {
   [UART_FLOW_CONTROL_RTS_CTS] = UART_HWCONTROL_RTS_CTS,
 };
 
+/** @brief  UART Port data */
 typedef struct {
-  USART_TypeDef *base;
-  void (*rcc_cmd)(void);
-  uint8_t irq;
-  bool initialized;
+  USART_TypeDef *base;   /**< UART HW Base address */
+  void (*rcc_cmd)(void); /**< Function pointer to enable UART clock using RCC */
+  uint8_t irq;           /**< UART interrupt number */
+  bool initialized;      /**< Initialized flag */
 } UartPortData;
 
 static UartPortData s_port[NUM_UART_PORTS] = {

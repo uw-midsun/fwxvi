@@ -34,10 +34,10 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode i2c_set_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_set_data(I2CPort i2c, uint8_t *data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode i2c_get_data(I2CPort i2c, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_get_data(I2CPort i2c, uint8_t *data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }

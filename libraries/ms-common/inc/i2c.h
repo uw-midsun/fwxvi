@@ -35,8 +35,8 @@ typedef uint8_t I2CAddress;
 
 /** @brief  I2C Port selection */
 typedef enum {
-  I2C_PORT_1 = 0, /**< I2C Pins PA9 and PA10 */
-  I2C_PORT_2,     /**< I2C Port PB10 and PB11 */
+  I2C_PORT_1 = 0, /**< SCL: PA9 and SDA: PA10 */
+  I2C_PORT_2,     /**< SCL: PB10 and SDA: PB11 */
   NUM_I2C_PORTS,  /**< Number of I2C Ports */
 } I2CPort;
 
@@ -126,24 +126,24 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
 #ifdef MS_PLATFORM_X86
 
 /**
- * @brief   Sets I2C rx queue with the given data
+ * @brief   Sets I2C RX queue with the given data
  * @param   i2c Specifies which I2C port to update
- * @param   tx_data Pointer to a buffer of data to set
- * @param   tx_len Length of the data to set
+ * @param   data Pointer to a buffer of data to set
+ * @param   len Length of the data to set
  * @return  STATUS_CODE_OK if data is set succesfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len);
+StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
 
 /**
- * @brief   Gets I2C rx queue with the given data
- * @param   i2c Specifies which I2C port to update
- * @param   rx_data Pointer to a buffer of data to fill
- * @param   rx_len Length of the data to retrieve
+ * @brief   Gets data from the I2C TX queue
+ * @param   i2c Specifies which I2C port to read from
+ * @param   data Pointer to a buffer of data to fill
+ * @param   len Length of the data to retrieve
  * @return  STATUS_CODE_OK if data is retrieved succesfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *rx_data, size_t rx_len);
+StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);
 
 #endif
 

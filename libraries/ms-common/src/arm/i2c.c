@@ -29,12 +29,13 @@ static inline void s_enable_i2c2(void) {
   __HAL_RCC_I2C2_CLK_ENABLE();
 }
 
+/** @brief  I2C Port data */
 typedef struct {
-  I2C_TypeDef *base;
-  void (*rcc_cmd)(void);
-  uint8_t ev_irqn;
-  uint8_t err_irqn;
-  bool initialized;
+  I2C_TypeDef *base;     /**< I2C HW Base address */
+  void (*rcc_cmd)(void); /**< Function pointer to enable I2C clock using RCC */
+  uint8_t ev_irqn;       /**< Event interrupt number */
+  uint8_t err_irqn;      /**< Error interrupt number */
+  bool initialized;      /**< Initialized flag */
 } I2CPortData;
 
 static I2CPortData s_port[NUM_I2C_PORTS] = {
