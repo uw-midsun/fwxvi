@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -138,7 +138,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
  * @details This initialization should be used I2C, SPI, UART and timers
  * @param   address Pointer to the GPIO address
  * @param   pin_mode Pin configuration mode
- * @param   init_state Initial GPIO state for output pins
+ * @param   alt_func Alternate function of the GPIO
  * @return  STATUS_CODE_OK if pin initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -162,7 +162,7 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state);
 StatusCode gpio_toggle_state(const GpioAddress *address);
 
 /**
- * @brief   Toggles the GPIO
+ * @brief   Gets the GPIO state
  * @param   address to the GPIO address
  * @return  STATUS_CODE_OK if pin reading succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect

@@ -1,20 +1,18 @@
-"""
-@file    can_autogen.py
-@date    2024-12-21
-@author  Midnight Sun Team #24 - MSXVI
-@brief   YAML parsing and validation module for CAN message configurations
-
-@details This module provides functionality to parse and validate CAN message
-         configurations from YAML files, ensuring they meet specific requirements
-         for message IDs, signal lengths, and naming conventions
-
-@ingroup autogen
-
-"""
+## @file   can_autogen.py
+#  @date    2024-12-21
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   YAML parsing and validation module for CAN message configurations
+#
+#  @details This module provides functionality to parse and validate CAN message
+#           configurations from YAML files, ensuring they meet specific requirements
+#           for message IDs, signal lengths, and naming conventions
+#
+#  @ingroup autogen
 
 import re
 import yaml
-from pathlib import Path
+from pathlib    import Path
+from datetime   import datetime
 
 def check_yaml_file(data):
     """
@@ -39,10 +37,6 @@ def check_yaml_file(data):
         # Message has id
         if "id" not in message:
             raise Exception("Message " + message_name + " has no id")
-        if "critical" not in message:
-            raise Exception("Critical is not defined for message " + message_name)
-        if "cycle" not in message:
-            raise Exception("Cycle speed is not defined for message " + message_name)
 
         # No same ids for messages within a board
         if message["id"] in message_ids:
@@ -73,6 +67,16 @@ def check_yaml_file(data):
 
         if message_length > 64:
             raise Exception("Message must be 64 bits or less")
+        
+        if "critical" not in message:
+            raise Exception("Critical is not defined for message " + message_name)
+        if not isinstance(message["critical"], bool):
+            raise Exception("Critical must be a boolean value for message " + message_name)
+
+        if "cycle" not in message:
+            raise Exception("Cycle speed is not defined for message " + message_name)
+        if message["cycle"] not in ["medium", "fast", "slow"]:
+            raise Exception("Cycle must be one of ['medium', 'fast', 'slow'] for message " + message_name)
 
 def get_data(args):
     """
@@ -116,6 +120,10 @@ def get_data(args):
                 })
                 start_bit += signal["length"]
 
+            # Determine the message Id
+            # Packet structure:
+            # | PRIORITY (1 bit) | MESSAGE ID (6 bits) | SOURCE (4 bits) |
+
             messages.append({
                 "id": message["id"],
                 "critical": message["critical"],
@@ -126,6 +134,9 @@ def get_data(args):
                 "receiver": message["target"],
             })
 
-    board = Path(args.output).parent.stem
+    project_name = Path(args.output).parent.stem
 
-    return {"boards": boards, "messages": messages, "board": board}
+    current_date = datetime.now()
+    current_date = current_date.strftime("%Y-%m-%d")
+
+    return {"boards": boards, "messages": messages, "project_name": project_name, "current_date": current_date}

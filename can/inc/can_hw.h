@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -92,7 +92,7 @@ StatusCode can_hw_init(const CanQueue* rx_queue, const CanSettings *settings);
  * @param   mask Determines which bits in the received ID are considered during filtering
  * @param   filter Specifies the pattern the CAN ID must adhere to
  * @param   extended Boolean to use CAN extended ID feature
- * @return  STATUS_CODE_OK if initialization succeeded
+ * @return  STATUS_CODE_OK if adding the filter succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended);

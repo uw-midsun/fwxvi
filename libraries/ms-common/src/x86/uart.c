@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stddef.h>
 
 /* Inter-component Headers */

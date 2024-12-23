@@ -9,7 +9,8 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
+#include <stddef.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -124,9 +125,26 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
 
 #ifdef MS_PLATFORM_X86
 
-/** @brief  Used for tests only. Sets given data in the rx queue */
-StatusCode i2c_set_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len);
+/**
+ * @brief   Sets I2C rx queue with the given data
+ * @param   i2c Specifies which I2C port to update
+ * @param   tx_data Pointer to a buffer of data to set
+ * @param   tx_len Length of the data to set
+ * @return  STATUS_CODE_OK if data is set succesfully
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len);
 
-/** @brief  Used for tests only. Reads data from the tx_queue */
-StatusCode i2c_get_data(I2CPort i2c, uint8_t *rx_data, size_t rx_len);
+/**
+ * @brief   Gets I2C rx queue with the given data
+ * @param   i2c Specifies which I2C port to update
+ * @param   rx_data Pointer to a buffer of data to fill
+ * @param   rx_len Length of the data to retrieve
+ * @return  STATUS_CODE_OK if data is retrieved succesfully
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *rx_data, size_t rx_len);
+
 #endif
+
+/** @} */

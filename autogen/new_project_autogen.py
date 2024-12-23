@@ -1,14 +1,11 @@
-"""
-@file    new_project_autogen.py
-@date    2024-12-21
-@author  Midnight Sun Team #24 - MSXVI
-@brief   Updates the required data for new project autogeneration
-
-@details This module provides functionality to autogenerate template selection, config.json, and new project naming
-
-@ingroup autogen
-
-"""
+## @file    new_project_autogen.py
+#  @date    2024-12-21
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Updates the required data for new project autogeneration
+#
+#  @details This module provides functionality to autogenerate template selection, config.json, and new project naming
+#
+# @ingroup autogen
 
 from pathlib    import Path
 from datetime   import datetime

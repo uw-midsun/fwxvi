@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -46,59 +46,52 @@ typedef struct CanStorage {
 StatusCode can_init(CanStorage *storage, const CanSettings *settings);
 
 /**
- * @brief   Initialize the CAN interface
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if initialization succeeded
+ * @brief   Sets a filter on the CAN interface
+ * @param   msg_id Message ID of the message to filter
+ * @return  STATUS_CODE_OK if adding the filter succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode can_add_filter_in();
+StatusCode can_add_filter_in(CanMessageId msg_id);
 
 /**
  * @brief   Initialize the CAN interface
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if initialization succeeded
+ * @param   msg Pointer to the message to transmit
+ * @return  STATUS_CODE_OK if data is transmitted succesfuully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode can_transmit();
+StatusCode can_transmit(const CanMessage *msg);
 
 /**
  * @brief   Initialize the CAN interface
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if initialization succeeded
+ * @param   msg Pointer to the message to update on receive
+ * @return  STATUS_CODE_OK if data is retrieved succesfuully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode can_receive();
+StatusCode can_receive(const CanMessage *msg);
 
 /**
- * @brief   Initialize the CAN interface
+ * @brief   Run the CAN TX cache to transmit all messages
  * @param   rx_queue Pointer to the CAN RX queue
  * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if initialization succeeded
- *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ * @return  STATUS_CODE_OK if the cache is cleared succesfuully
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode cache_can_tx();
+StatusCode run_can_tx_cache();
 
 /**
- * @brief   Initialize the CAN interface
+ * @brief   Run the CAN RX cache to receive all messages
  * @param   rx_queue Pointer to the CAN RX queue
  * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if initialization succeeded
- *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ * @return  STATUS_CODE_OK if the cache is cleared succesfuully
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode cache_can_rx();
+StatusCode run_can_rx_cache();
 
 /**
- * @brief   Initialize the CAN interface
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
+ * @brief   Clear the RX cache
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
@@ -106,9 +99,7 @@ StatusCode cache_can_rx();
 StatusCode clear_rx_cache();
 
 /**
- * @brief   Initialize the CAN interface
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
+ * @brief   Clear the TX cache
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails

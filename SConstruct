@@ -179,6 +179,12 @@ elif COMMAND == "doxygen":
     AlwaysBuild(Command('#/doxygen', [], 'doxygen doxygen/Doxyfile'))
 
 ###########################################################
+# Cantools Autogeneration Script
+###########################################################
+elif COMMAND == "cantools":
+    AlwaysBuild(Command('#/cantools', [], 'python3 -m autogen cantools -o can/tools'))
+
+###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build

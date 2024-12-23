@@ -9,6 +9,7 @@
     battery_status:
       id: 1
       critical: true
+      cycle: "medium"
       target:
         centre_console:
           watchdog: 3
@@ -27,6 +28,7 @@
     battery_info:
       id: 14
       critical: true
+      cycle: "slow"
       target:
         centre_console:
           watchdog: 0
@@ -43,6 +45,7 @@
     battery_vt:
       id: 15
       critical: true
+      cycle: "fast"
       target:
         centre_console:
           watchdog: 0
@@ -55,20 +58,11 @@
           length: 16
         batt_perc:
           length: 16
-   
-    battery_relay_info:
-      id: 16
-      critical: false
-      target:
-        power_distribution:
-          watchdog: 0
-      signals:
-        state:
-          length: 8
 
     AFE1_status:
-          id: 60
+          id: 61
           critical: false
+          cycle: "medium"
           target:
             centre_console:
               watchdog: 0
@@ -87,8 +81,9 @@
               length: 16
 
     AFE2_status:
-      id: 61
+      id: 62
       critical: false
+      cycle: "medium"
       target:
         centre_console:
           watchdog: 0
@@ -107,8 +102,9 @@
           length: 16
 
     AFE3_status:
-      id: 62
+      id: 63
       critical: false
+      cycle: "medium"
       target:
         centre_console:
           watchdog: 0

@@ -1,14 +1,11 @@
-"""
-@file    test_autogen.py
-@date    2024-12-21
-@author  Midnight Sun Team #24 - MSXVI
-@brief   Updates the required data for new test autogeneration
-
-@details This module provides functionality to autogenerate tests
-
-@ingroup autogen
-
-"""
+## @file    test_autogen.py
+#  @date    2024-12-21
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Updates the required data for new test autogeneration
+#
+#  @details This module provides functionality to autogenerate tests
+#
+#  @ingroup autogen
 
 import re
 from pathlib import Path

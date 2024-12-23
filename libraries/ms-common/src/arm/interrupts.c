@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <string.h>
 
 /* Inter-component Headers */
@@ -18,7 +18,7 @@
 /* Intra-component Headers */
 #include "interrupts.h"
 
-static EXTI_HandleTypeDef s_exti_handles[16];
+static EXTI_HandleTypeDef s_exti_handles[GPIO_PINS_PER_PORT];
 
 void interrupt_init(void) {
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
@@ -38,11 +38,11 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
 }
 
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
-  if (settings == NULL || address == NULL || settings->type >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {
+  if (settings == NULL || address == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  EXTI_ConfigTypeDef init = { 0 };
+  EXTI_ConfigTypeDef init = { 0U };
 
   /* The line will correspond to the pin. This means A2 and B2
    * will have the same interrupt line
@@ -85,7 +85,8 @@ StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
   if (line >= NUM_STM32L433X_INTERRUPT_CHANNELS || pending_bit == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  *pending_bit = HAL_EXTI_GetPending(&s_exti_handles[line], EXTI_TRIGGER_RISING_FALLING);
+  /* Returns 1 if set, 0 if not */
+  *pending_bit = (uint8_t)HAL_EXTI_GetPending(&s_exti_handles[line], EXTI_TRIGGER_RISING_FALLING);
   return STATUS_CODE_OK;
 }
 
@@ -97,7 +98,7 @@ StatusCode interrupt_exti_clear_pending(uint8_t line) {
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_mask_set(uint8_t line, bool masked) {
+StatusCode interrupt_exti_set_mask(uint8_t line, bool masked) {
   if (line >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }

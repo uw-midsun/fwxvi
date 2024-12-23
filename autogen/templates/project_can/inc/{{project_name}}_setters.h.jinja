@@ -1,0 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   {{ project_name }}_setters.h
+ *
+ * @brief  Project code generation header
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "can_codegen.h"
+
+/**
+ * @defgroup {{ project_name }}_CAN
+ * @brief    CAN Interface for {{ project_name }}
+ * @{
+ */
+{% set messages = messages | selectattr("sender", "eq", project_name) | list -%}
+
+{% for message in messages %}    
+    {%- for signal in message.signals %}
+#define set_{{message.name}}_{{signal.name}}(val) \
+    g_tx_struct.{{message.name}}_{{signal.name}} = val
+    {% endfor %}
+{%- endfor %}
+/** @} */
