@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
 
@@ -264,7 +264,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
     for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
@@ -287,7 +287,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
     for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */

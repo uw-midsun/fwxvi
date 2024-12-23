@@ -3,9 +3,9 @@
 
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+#endif
 #include <stdint.h>
 extern uint32_t SystemCoreClock;
-#endif
 
 #define configUSE_PREEMPTION 1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
@@ -103,11 +103,11 @@ extern uint32_t SystemCoreClock;
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority" function. */
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY 0xf
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY 15
 
 /* The highest interrupt priority that can be used by any interrupt service
 routine that makes calls to interrupt safe FreeRTOS API functions. */
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 2
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names. */

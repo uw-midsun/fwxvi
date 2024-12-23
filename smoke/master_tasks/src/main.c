@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 #include "gpio.h"
@@ -22,15 +22,13 @@ TickType_t last_time_1000hz = 0U;
 TickType_t last_time_10hz = 0U;
 TickType_t last_time_1hz = 0U;
 
+GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
+
 void pre_loop_init() {
-  LOG_DEBUG("Pre-loop initialization\n");
+  gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 }
 
-void run_1000hz_cycle() {
-  TickType_t time_elapsed = xTaskGetTickCount() - last_time_1000hz;
-  last_time_1000hz = xTaskGetTickCount();
-  LOG_DEBUG("Running 1000Hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
-}
+void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
   TickType_t time_elapsed = xTaskGetTickCount() - last_time_10hz;

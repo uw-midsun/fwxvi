@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -19,22 +19,12 @@
 #include "status.h"
 
 /**
- * @defgroup  Memory_Protection_Unit
- * @brief     MPU library
+ * @defgroup Memory_Protection_Unit
+ * @brief    MPU library
  * @{
  */
 
-typedef enum {
-  MPU_REGION_0,
-  MPU_REGION_1,
-  MPU_REGION_2,
-  MPU_REGION_3,
-  MPU_REGION_4,
-  MPU_REGION_5,
-  MPU_REGION_6,
-  MPU_REGION_7,
-  NUM_MPU_REGIONS
-} MPURegionNumber;
+typedef enum { MPU_REGION_0, MPU_REGION_1, MPU_REGION_2, MPU_REGION_3, MPU_REGION_4, MPU_REGION_5, MPU_REGION_6, MPU_REGION_7, NUM_MPU_REGIONS } MPURegionNumber;
 
 typedef enum {
   MPU_ACCESS_NONE,

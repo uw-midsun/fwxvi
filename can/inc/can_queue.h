@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 #include "queues.h"
@@ -17,8 +17,20 @@
 /* Intra-component Headers */
 #include "can_msg.h"
 
-#define CAN_QUEUE_SIZE 64
+/**
+ * @defgroup CAN
+ * @brief    CAN library
+ * @{
+ */
 
+/** @brief Maximum number of CAN messages permitted for the CAN queue */
+#define CAN_QUEUE_SIZE 64U
+
+/**
+ * @brief   CAN queue data structure to store received CAN messages
+ * @details CAN data received is stored in the CanQueue data structure
+ *          The Queue can hold a maximum of 64 CAN messages
+ */
 typedef struct CanQueue {
   Queue queue;
   CanMessage msg_nodes[CAN_QUEUE_SIZE];
@@ -51,3 +63,4 @@ typedef struct CanQueue {
 #define can_queue_size(can_queue)                                   \
     queue_get_num_items(&(can_queue)->queue)
 
+/** @} */

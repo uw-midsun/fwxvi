@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 
@@ -17,13 +17,15 @@
 #include "status.h"
 
 /**
- * @defgroup  MCU
- * @brief     MCU library
+ * @defgroup MCU
+ * @brief    MCU library
  * @{
  */
 
 /* Timeout for HSE/LSE pins to stabilize. Should not take more than 5 seconds */
-#define HSE_LSE_TIMEOUT_MS 5000
+#define HSE_LSE_TIMEOUT_MS 5000U
+
+#define USE_INTERNAL_OSCILLATOR 1U
 
 /**
  * @brief   Initialize MCU system clock and HAL.

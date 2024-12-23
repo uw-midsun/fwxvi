@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 
 /* Inter-component Headers */
@@ -20,19 +20,18 @@
 #include "status.h"
 
 /**
- * @defgroup  RTOS_Helpers
- * @brief     RTOS helper libraries
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
  * @{
  */
 
+/** @brief Maximum time permitted to wait for a semaphore or mutex */
 #define BLOCK_INDEFINITELY UINT16_MAX
 
-/**
- * @brief Semaphore object with handle and
- */
+/** @brief   Semaphore object with handle and buffer */
 typedef struct Semaphore {
-  SemaphoreHandle_t handle;
-  StaticSemaphore_t buffer;
+  SemaphoreHandle_t handle; /**< Handle to interact with the semaphore */
+  StaticSemaphore_t buffer; /**< Stores the current state of the semaphore */
 } Semaphore;
 
 typedef Semaphore Mutex;
@@ -52,7 +51,7 @@ StatusCode mutex_init(Mutex *mutex);
  *          Using BLOCK_INDEFINITELY will cause this method to wait forever on mutex becoming
  *          available
  * @param   mutex Mutex handle
- * @param   ms_to_wait Amoutn of time to wait for mutex
+ * @param   ms_to_wait Amount of time to wait for mutex
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_TIMEOUT on timeout
  */

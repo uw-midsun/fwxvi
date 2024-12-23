@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -22,8 +22,8 @@
 #include "status.h"
 
 /**
- * @defgroup  RTOS_Helpers
- * @brief     RTOS helper libraries
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
  * @{
  */
 
@@ -36,18 +36,14 @@
  * declarations.
  * @param   task_stack_size is the depth of your task's stack - use your judgement to choose.
  */
-#define TASK(task_name, task_stack_size)                           \
-  /* forward declaration so we can reference it in the Task */     \
-  static void _s_task_impl_##task_name(void *);                    \
-  static StackType_t _s_stack_##task_name[task_stack_size];        \
-  /* use a compound literal so users can use it as a pointer */    \
-  Task *task_name = &((Task){                                      \
-      .task_func = _s_task_impl_##task_name,                       \
-      .name = #task_name,                                          \
-      .stack = _s_stack_##task_name,                               \
-      .stack_size = task_stack_size,                               \
-      .handle = NULL, /* will be initialized by tasks_init_task */ \
-  });                                                              \
+#define TASK(task_name, task_stack_size)                                                                                                                                                    \
+  /* forward declaration so we can reference it in the Task */                                                                                                                              \
+  static void _s_task_impl_##task_name(void *);                                                                                                                                             \
+  static StackType_t _s_stack_##task_name[task_stack_size];                                                                                                                                 \
+  /* use a compound literal so users can use it as a pointer */                                                                                                                             \
+  Task *task_name = &((Task){                                                                                                                                                               \
+      .task_func = _s_task_impl_##task_name, .name = #task_name, .stack = _s_stack_##task_name, .stack_size = task_stack_size, .handle = NULL, /* will be initialized by tasks_init_task */ \
+  });                                                                                                                                                                                       \
   static void _s_task_impl_##task_name(void *context)
 
 /**

@@ -9,15 +9,15 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
 
 /**
- * @defgroup  Miscellaneous
- * @brief     Miscellaneous libraries
+ * @defgroup Miscellaneous
+ * @brief    Miscellaneous libraries
  * @{
  */
 

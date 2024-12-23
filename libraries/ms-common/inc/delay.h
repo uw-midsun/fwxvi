@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -17,8 +17,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup  RTOS_Helpers
- * @brief     RTOS helper libraries
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
  * @{
  */
 
