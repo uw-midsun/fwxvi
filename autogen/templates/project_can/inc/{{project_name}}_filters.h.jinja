@@ -1,0 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   {{ project_name }}_filters.h
+ *
+ * @brief  Project code generation header
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "system_can.h"
+
+/* Intra-component Headers */
+#include "can_codegen.h"
+
+/**
+ * @defgroup {{ project_name }}_CAN
+ * @brief    CAN Interface for {{ project_name }}
+ * @{
+ */
+{% set messages = messages | selectattr("receiver", "contains", project_name) | list -%}
+
+void add_all_can_filters() {
+{%- for message in messages %} 
+  can_add_filter(SYSTEM_CAN_MESSAGE_{{ message.sender | upper }}_{{ message.name | upper }});
+{%- endfor %}
+}
+/** @} */

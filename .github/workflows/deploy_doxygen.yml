@@ -1,0 +1,38 @@
+name: Deploy Doxygen Documentation
+
+on:
+  push:
+    branches: [ main ]
+  # Allow manual dispatch
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Doxygen 1.9.5
+        run: |
+          wget -q https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz
+          tar -xzf doxygen-1.9.5.linux.bin.tar.gz
+          cd doxygen-1.9.5
+          sudo make install
+
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz
+
+      - name: Generate Doxygen Documentation
+        run: |
+          doxygen --version  # Verify version
+          doxygen doxygen/Doxyfile
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doxygen/html
+          publish_branch: doxygen-pages
+          force_orphan: true
+          full_commit_message: 'Doxygen: update documentation'

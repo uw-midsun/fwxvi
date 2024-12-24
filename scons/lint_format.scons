@@ -45,10 +45,12 @@ def run_lint(target, source, env):
 
 def run_format(target, source, env):
     # Formatter configs
-    AUTOPEP8_CONFIG = '-a --max-line-length 100 -r'
+    AUTOPEP8_CONFIG = '-a --max-line-length 200 -r --ignore E266'
     CLANG_FORMAT_CONFIG = '-i -style=file'
 
     C_FORMAT_CMD = 'clang-format {}'.format(CLANG_FORMAT_CONFIG)
+
+    # Specific commands to protect Python Doxygen comments
     PY_FORMAT_CMD = 'autopep8 {} -i'.format(AUTOPEP8_CONFIG)
 
     # Format C source files

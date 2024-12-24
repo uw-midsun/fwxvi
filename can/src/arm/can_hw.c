@@ -1,13 +1,13 @@
 /************************************************************************************************
- * can_hw.c
+ * @file   can_hw.c
  *
- * Source file for CAN HW Interface
+ * @brief  Source file for CAN HW Interface
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
 
@@ -50,7 +50,7 @@ typedef struct CanHwTiming {
 } CanHwTiming;
 
 /* Generated settings using http://www.bittiming.can-wiki.info/ */
-/* For 80 MHz APB1 clock */
+/* For 80 MHz APB1 clock. CAN Sampling occurs at ~87.5% of the frame */
 static CanHwTiming s_timing[NUM_CAN_HW_BITRATES] = {
   [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
   [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
@@ -70,7 +70,7 @@ static bool s_tx_full = false;
 static int s_can_filter_en = 0;
 static uint32_t can_filters[CAN_HW_NUM_FILTER_BANKS];
 
-static void prv_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) {
+static void s_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) {
   CAN_FilterTypeDef filter_cfg = {
     .FilterBank = filter_num,
     .FilterMode = CAN_FILTERMODE_IDMASK,
@@ -88,6 +88,10 @@ static void prv_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter
 }
 
 StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
+  if (rx_queue == NULL || settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  
   gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
   gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
 
@@ -104,15 +108,15 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_can_handle.Instance = CAN_HW_BASE;
   s_can_handle.Init.Prescaler = s_timing[settings->bitrate].prescaler;
   s_can_handle.Init.Mode = can_mode;
-  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;
-  s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;
-  s_can_handle.Init.TimeTriggeredMode = DISABLE;
-  s_can_handle.Init.AutoBusOff = ENABLE;
-  s_can_handle.Init.AutoWakeUp = DISABLE;
-  s_can_handle.Init.AutoRetransmission = ENABLE;
-  s_can_handle.Init.ReceiveFifoLocked = DISABLE;
-  s_can_handle.Init.TransmitFifoPriority = DISABLE;
+  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
+  s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;   /* Time permitted before sample point (Prop + Phase seg) */
+  s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;   /* Time permitted after sample point */
+  s_can_handle.Init.TimeTriggeredMode = DISABLE;                  /* Traditional CAN behaviour based on priority and arbitration */
+  s_can_handle.Init.AutoBusOff = ENABLE;                          /* Auto error handling. Turns bus off when many errors detected */
+  s_can_handle.Init.AutoWakeUp = DISABLE;                         /* Node stays in sleep until explicitly woken  */
+  s_can_handle.Init.AutoRetransmission = DISABLE;                 /* We use one-shot transmission since auto retransmit can cause timing issues */  
+  s_can_handle.Init.ReceiveFifoLocked = DISABLE;                  /* Ensures latest data is always available */
+  s_can_handle.Init.TransmitFifoPriority = DISABLE;               /* Message priority is driven off ID rather than order in FIFO */
 
   if (HAL_CAN_Init(&s_can_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
@@ -130,7 +134,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   interrupt_nvic_enable(CAN1_SCE_IRQn, INTERRUPT_PRIORITY_HIGH);
 
   /* Allow all messages by default, but reset the filter count so it's overwritten on the first filter */
-  prv_add_filter_in(0, 0, 0);
+  s_add_filter_in(0, 0, 0);
   s_num_filters = 0;
 
   /* Initialize CAN queue */
@@ -165,7 +169,7 @@ StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended) {
   uint32_t mask_val = (mask << offset) | (1 << 2);
   uint32_t filter_val = (filter << offset) | ((uint32_t)extended << 2);
 
-  prv_add_filter_in(s_num_filters, mask_val, filter_val);
+  s_add_filter_in(s_num_filters, mask_val, filter_val);
   s_num_filters++;
   return STATUS_CODE_OK;
 }
@@ -183,6 +187,15 @@ CanHwBusStatus can_hw_bus_status(void) {
 }
 
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+  if (data == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (len > 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+
   CAN_TxHeaderTypeDef tx_header = {
     .StdId = id,
     .ExtId = id,
@@ -210,6 +223,10 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size
 }
 
 bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len) {
+  if (id == NULL || extended == NULL || data == NULL || len == NULL) {
+    return false;
+  }
+
   CAN_RxHeaderTypeDef rx_header;
   uint8_t rx_data[8];
 
@@ -247,7 +264,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
     for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
@@ -270,7 +287,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, (bool *)&rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
     for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
@@ -291,4 +308,5 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
   /* TODO: Add error notifications/handling */
+  /* Aryan - Maybe reinitialize bus? */
 }

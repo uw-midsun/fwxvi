@@ -1,13 +1,13 @@
 /************************************************************************************************
- * can_hw.c
+ * @file   can_hw.c
  *
- * Source file for CAN HW Interface
+ * @brief  Source file for CAN HW Interface
  *
- * Created: 2024-11-03
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-03
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <string.h>
 
 /* Inter-component Headers */

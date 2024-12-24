@@ -1,15 +1,15 @@
 #pragma once
 
 /************************************************************************************************
- * tasks.h
+ * @file   tasks.h
  *
- * Header file for the RTOS tasks wrapper
+ * @brief  Header file for the RTOS tasks wrapper
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -22,27 +22,29 @@
 #include "status.h"
 
 /**
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
+ * @{
+ */
+
+/**
  * @brief   Define a task function. This should go in a source file (.c).
  * @details The generated function has the following signature:
- *          void _prv_your_task_function(void *context)
+ *          void _s_your_task_function(void *context)
  *          where context is the context pointer passed to tasks_init_task.
  * @param   task_name is the name of your task, which should match any previous DECLARE_TASK
  * declarations.
  * @param   task_stack_size is the depth of your task's stack - use your judgement to choose.
  */
-#define TASK(task_name, task_stack_size)                           \
-  /* forward declaration so we can reference it in the Task */     \
-  static void _prv_task_impl_##task_name(void *);                  \
-  static StackType_t _s_stack_##task_name[task_stack_size];        \
-  /* use a compound literal so users can use it as a pointer */    \
-  Task *task_name = &((Task){                                      \
-      .task_func = _prv_task_impl_##task_name,                     \
-      .name = #task_name,                                          \
-      .stack = _s_stack_##task_name,                               \
-      .stack_size = task_stack_size,                               \
-      .handle = NULL, /* will be initialized by tasks_init_task */ \
-  });                                                              \
-  static void _prv_task_impl_##task_name(void *context)
+#define TASK(task_name, task_stack_size)                                                                                                                                                    \
+  /* forward declaration so we can reference it in the Task */                                                                                                                              \
+  static void _s_task_impl_##task_name(void *);                                                                                                                                             \
+  static StackType_t _s_stack_##task_name[task_stack_size];                                                                                                                                 \
+  /* use a compound literal so users can use it as a pointer */                                                                                                                             \
+  Task *task_name = &((Task){                                                                                                                                                               \
+      .task_func = _s_task_impl_##task_name, .name = #task_name, .stack = _s_stack_##task_name, .stack_size = task_stack_size, .handle = NULL, /* will be initialized by tasks_init_task */ \
+  });                                                                                                                                                                                       \
+  static void _s_task_impl_##task_name(void *context)
 
 /**
  * @brief Maximum amount of RTOS tasks supported at a time
@@ -125,3 +127,5 @@ StatusCode wait_tasks(uint16_t num_tasks);
  * @return  STATUS_CODE_OK if succesfully release sempahore
  */
 StatusCode send_task_end(void);
+
+/** @} */
