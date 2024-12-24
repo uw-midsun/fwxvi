@@ -94,6 +94,7 @@ PLATFORM = GetOption('platform')
 TARGET = GetOption('name')
 BUILD_CONFIG = GetOption('build_config')
 FLASH_TYPE = GetOption('flash')
+TESTFILE = GetOption('testfile')
 
 ###########################################################
 # Environment setup
@@ -106,6 +107,7 @@ VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
     "FLASH_TYPE": FLASH_TYPE,
+    "TESTFILE": TESTFILE,
     "BUILD_CONFIG": BUILD_CONFIG,
     "env": env,
 }
@@ -159,6 +161,18 @@ if COMMAND == "test":
 ###########################################################
 elif COMMAND == "new":
     SConscript('scons/new_target.scons', exports='VARS')
+
+###########################################################
+# hil command
+###########################################################
+elif COMMAND == "hil":
+    print(TEST_FILE)
+    if not TEST_FILE:
+        #Error handling
+        pass
+    
+    SConscript('scons/pytest.scons', exports='VARS')
+
 
 ###########################################################
 # Clean
