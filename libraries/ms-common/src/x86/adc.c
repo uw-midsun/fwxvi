@@ -1,13 +1,22 @@
-#include "adc.h"
+/************************************************************************************************
+ * @file   adc.c
+ *
+ * @brief  ADC x86 implementation
+ *
+ * @date   2024-12-04
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include <stddef.h>
-#include <string.h>
+/* Standard library headers */
 
+/* Inter-component Headers*/
 #include "FreeRTOS.h"
-#include "delay.h"
-#include "gpio.h"
 #include "log.h"
+#include "gpio.h"
 #include "semaphore.h"
+
+/*Intra-component Headers*/
+#include "adc.h"
 
 #define ADC_Channel_Vrefint 17
 #define ADC_Channel_TempSensor 16
@@ -44,39 +53,39 @@ StatusCode adc_get_channel(GpioAddress address, uint8_t *adc_channel){
     switch(address.port){
         case GPIO_PORT_A:
             if(address.pin > 7){
-                return status_code(STATUS_CODE_INVALID_ARGS);
+                return STATUS_CODE_INVALID_ARGS;
             }
             break;
         case GPIO_PORT_B:
             if(address.pin > 1){
-                return status_code(STATUS_CODE_INVALID_ARGS);
+                return STATUS_CODE_INVALID_ARGS;
             }
             adc_channel += 8;
             break;
         case GPIO_PORT_C:
             if(address.pin > 5){
-                return status_code(STATUS_CODE_INVALID_ARGS);
+                return STATUS_CODE_INVALID_ARGS;
             }
             *adc_channel += 10;
             break;
         case NUM_GPIO_PORTS:
             if(address.pin != ADC_Channel_Vrefint && address.pin != ADC_Channel_TempSensor){
-                return status_code(STATUS_CODE_INVALID_ARGS);
+                return STATUS_CODE_INVALID_ARGS;
             }
             break;
         default:
-            return status_code(STATUS_CODE_INVALID_ARGS);
+            return STATUS_CODE_INVALID_ARGS;
     }
     if(*adc_channel > NUM_ADC_CHANNELS){
-        return status_code(STATUS_CODE_INVALID_ARGS);
+        return STATUS_CODE_INVALID_ARGS;
     }
     return STATUS_CODE_OK;
 }
 
-static uint16_t prv_get_temp(uint16_t reading){
-    uint16_t *reading;
-    StatusCode status = adc_read_converted(ADC_TEMP, reading);
-    return reading;
+static uint16_t prv_get_temp(uint16_t *reading){
+    // uint16_t *reading;
+    adc_read_converted(ADC_TEMP, reading);
+    return *reading;
 }
 
 static StatusCode prv_check_channel_enabled(uint8_t channel){
@@ -126,11 +135,11 @@ StatusCode adc_init(void){
 
 void adc_deint(void){
     memset(&s_adc_status, 0, sizeof(s_adc_status));
-    memset(&s_adc_readings, 0, sizeof(uint16_t) * MAX_ADC_READINGS);
-    memset(&s_adc_ranks, 0, sizeof(uint8_t) * NUM_ADC_CHANNELS);
+    memset(s_adc_readings, 0, sizeof(uint16_t) * MAX_ADC_READINGS);
+    memset(s_adc_ranks, 0, sizeof(uint8_t) * NUM_ADC_CHANNELS);
 }
 
-static void prc_adc_mock_reading(void){
+static void prv_adc_mock_reading(void){
     LOG_DEBUG("Reading ADC\n");
     delay_ms(100);
     mutex_unlock(&s_adc_status.converting);
@@ -167,7 +176,7 @@ StatusCode adc_read_converted(GpioAddress address, uint16_t *reading){
     uint16_t vref = s_adc_readings[s_adc_ranks[ADC_Channel_Vrefint]-1];
 
     if(channel == ADC_Channel_TempSensor){
-        *reading = prv_get_temp(adc_reading);
+        *reading = prv_get_temp(&adc_reading);
         return STATUS_CODE_OK;
     }
 
