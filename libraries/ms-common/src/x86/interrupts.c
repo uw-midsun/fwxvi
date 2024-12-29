@@ -162,7 +162,18 @@ void interrupt_init(void) {
 
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
   /* This function is for future expansion, in the situation we want to simulate NVIC interrupts */
-  return STATUS_CODE_UNIMPLEMENTED;
+
+  // Dec 29, 2024
+
+  if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_exti_interrupts[iqr_channel].enabled = true;
+  s_exti_interrupts[iqr_channel].masked = false;
+
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings) {
