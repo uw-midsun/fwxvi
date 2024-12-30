@@ -41,7 +41,7 @@ typedef struct {
   bool masked;                 /**< Interrupt Channel masked state */
   bool pending;                /**< Interrupt Channel pending state */
   x86InterruptHandler handler; /**< Interrupt Channel interrupt handler */
-  InterruptPriority priority;
+  InterruptPriority priority;  /**< Interrupt Channel interrupt priority */
 } X86Interrupt;
 
 /** @brief  Mock NVIC table that stores all function pointers */
@@ -63,6 +63,8 @@ static void s_nvic_handler(int signum, siginfo_t *info, void *context) {
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_INTERRUPT_CHANNELS) {
     if ((s_nvic_handlers[interrupt_id].handler != NULL) && !s_nvic_handlers[interrupt_id].masked && s_nvic_handlers[interrupt_id].enabled && s_nvic_handlers[interrupt_id].pending) {
       s_nvic_handlers[interrupt_id].handler(interrupt_id);
+
+      /* Turn off pending after handler function has run */
       s_nvic_handlers[interrupt_id].pending = false;
     }
   }
@@ -168,16 +170,17 @@ void interrupt_init(void) {
 
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
 
-  //Validate priority and irq_channel
+  /* Validate priority and irq_channel */
   if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  /* Check if channel is already enabled */
   if (s_nvic_handlers[irq_channel].enabled) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
-  // Enable the interrupt and set the priority
+  /* Enable the interrupt, unmask, and set priority */
   s_nvic_handlers[irq_channel].enabled = true;
   s_nvic_handlers[irq_channel].masked = false;
   s_nvic_handlers[irq_channel].priority = priority;
@@ -186,10 +189,13 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
 }
 
 StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings) {
+
+  /* Validate settings and channel */
   if (settings == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES || irq_channel > NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  /* If handler is not provided, use the default handler defined earlier */
   if (handler == NULL) {
     s_nvic_handlers[irq_channel].handler = s_default_handler;
   } else {
@@ -202,13 +208,15 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
 
 StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
 
+  /* Validate channel */
   if  irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-
   s_nvic_handlers[irq_channel].pending = true;
 
+  /* Add the interrupt to the signal queue */
+  /* https://man7.org/linux/man-pages/man3/sigqueue.3.html */
   siginfo_t value_store;
   value_store.si_value.sival_int = irq_channel;
   sigqueue(s_pid, SIGRTMIN + (int)s_nvic_handlers[irq_channel].priority, value_store.si_value);
