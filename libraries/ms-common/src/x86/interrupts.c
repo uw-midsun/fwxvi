@@ -39,6 +39,7 @@ typedef enum {
 typedef struct {
   bool enabled;                /**< Interrupt Channel enabled state */
   bool masked;                 /**< Interrupt Channel masked state */
+  bool pending;                /**< Interrupt Channel pending state */
   x86InterruptHandler handler; /**< Interrupt Channel interrupt handler */
   InterruptPriority priority;
 } X86Interrupt;
@@ -60,7 +61,7 @@ static void s_nvic_handler(int signum, siginfo_t *info, void *context) {
   int interrupt_id = info->si_value.sival_int;
 
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_INTERRUPT_CHANNELS) {
-    if ((s_nvic_handlers[interrupt_id].handler != NULL) && !s_nvic_handlers[interrupt_id].masked && s_nvic_handlers[interrupt_id].enabled) {
+    if ((s_nvic_handlers[interrupt_id].handler != NULL) && !s_nvic_handlers[interrupt_id].masked && s_nvic_handlers[interrupt_id].enabled && s_nvic_handlers[interrupt_id].pending) {
       s_nvic_handlers[interrupt_id].handler(interrupt_id);
     }
   }
@@ -70,7 +71,7 @@ static void s_exti_handler(int signum, siginfo_t *info, void *context) {
   int interrupt_id = info->si_value.sival_int;
 
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_EXTI_LINES) {
-    if ((s_exti_interrupts[interrupt_id].handler != NULL) && !s_exti_interrupts[interrupt_id].masked && s_exti_interrupts[interrupt_id].enabled) {
+    if ((s_exti_interrupts[interrupt_id].handler != NULL) && !s_exti_interrupts[interrupt_id].masked && s_exti_interrupts[interrupt_id].enabled && s_exti_interrupts[interrupt_id].pending) {
       s_exti_interrupts[interrupt_id].handler(interrupt_id);
     }
   }
@@ -151,12 +152,14 @@ void interrupt_init(void) {
   for (uint8_t i = 0U; i < NUM_STM32L433X_INTERRUPT_CHANNELS; i++) {
     s_nvic_handlers[i].enabled = false;
     s_nvic_handlers[i].masked = true;
+    s_nvic_handlers[i].pending = false;
     s_nvic_handlers[i].handler = s_default_handler;
   }
 
   for (uint8_t i = 0U; i < NUM_STM32L433X_EXTI_LINES; i++) {
     s_exti_interrupts[i].enabled = false;
     s_exti_interrupts[i].masked = true;
+    s_exti_interrupts[i].pending = false;
     s_exti_interrupts[i].handler = s_default_handler;
   }
 }
@@ -196,6 +199,7 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
 
 StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
   /* This function is for future expansion, in the situation we want to simulate NVIC interrupts */
+  //remember to change pending state to true
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
@@ -233,7 +237,9 @@ StatusCode interrupt_exti_trigger(uint8_t line) {
   if (line > NUM_STM32L433X_EXTI_LINES) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
+  
+  s_exti_interrupts[line].pending = true;
+  
   siginfo_t value_store;
   value_store.si_value.sival_int = line;
   sigqueue(s_pid, SIGRTMIN + (int)s_exti_interrupts[line].priority, value_store.si_value);
@@ -242,13 +248,29 @@ StatusCode interrupt_exti_trigger(uint8_t line) {
 }
 
 StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (line > NUM_STM32L433X_EXTI_LINES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  *pending_bit = (uint8_t) s_exti_interrupts[line].pending;
+  return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_exti_clear_pending(uint8_t line) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (line > NUM_STM32L433X_EXTI_LINES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_exti_interrupts[line].pending = false;
+  return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_exti_set_mask(uint8_t line, bool masked) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (line > NUM_STM32L433X_EXTI_LINES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_exti_interrupts[line].masked = masked;
+
+  return STATUS_CODE_OK;
 }
