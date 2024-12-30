@@ -35,7 +35,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
   HAL_NVIC_SetPriority(irq_channel, priority, 0U);
   HAL_NVIC_EnableIRQ(irq_channel);
   return STATUS_CODE_OK;
-} 
+}
 
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
   if (settings == NULL || address == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {

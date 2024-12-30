@@ -169,7 +169,6 @@ void interrupt_init(void) {
 }
 
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
-
   /* Validate priority and irq_channel */
   if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -189,7 +188,6 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
 }
 
 StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings) {
-
   /* Validate settings and channel */
   if (settings == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES || irq_channel > NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -202,21 +200,19 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
     s_nvic_handlers[irq_channel].handler = handler;
   }
 
-
   return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
-
   /* Validate channel */
-  if  irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
+  if irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
+      return STATUS_CODE_INVALID_ARGS;
+    }
 
   s_nvic_handlers[irq_channel].pending = true;
 
-  /* Add the interrupt to the signal queue */
-  /* https://man7.org/linux/man-pages/man3/sigqueue.3.html */
+  /* Add the interrupt to the signal queue
+     https://man7.org/linux/man-pages/man3/sigqueue.3.html */
   siginfo_t value_store;
   value_store.si_value.sival_int = irq_channel;
   sigqueue(s_pid, SIGRTMIN + (int)s_nvic_handlers[irq_channel].priority, value_store.si_value);
@@ -251,7 +247,6 @@ StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler han
     s_exti_interrupts[line].handler = handler;
   }
 
-
   return STATUS_CODE_OK;
 }
 
@@ -259,9 +254,9 @@ StatusCode interrupt_exti_trigger(uint8_t line) {
   if (line > NUM_STM32L433X_EXTI_LINES) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  
+
   s_exti_interrupts[line].pending = true;
-  
+
   siginfo_t value_store;
   value_store.si_value.sival_int = line;
   sigqueue(s_pid, SIGRTMIN + (int)s_exti_interrupts[line].priority, value_store.si_value);
@@ -274,7 +269,7 @@ StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  *pending_bit = (uint8_t) s_exti_interrupts[line].pending;
+  *pending_bit = (uint8_t)s_exti_interrupts[line].pending;
   return STATUS_CODE_OK;
 }
 
