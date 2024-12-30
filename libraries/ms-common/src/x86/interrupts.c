@@ -40,6 +40,7 @@ typedef struct {
   bool enabled;                /**< Interrupt Channel enabled state */
   bool masked;                 /**< Interrupt Channel masked state */
   x86InterruptHandler handler; /**< Interrupt Channel interrupt handler */
+  InterruptPriority priority;
 } X86Interrupt;
 
 /** @brief  Mock NVIC table that stores all function pointers */
@@ -163,14 +164,13 @@ void interrupt_init(void) {
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
   /* This function is for future expansion, in the situation we want to simulate NVIC interrupts */
 
-  // Dec 29, 2024
-
   if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_exti_interrupts[iqr_channel].enabled = true;
   s_exti_interrupts[iqr_channel].masked = false;
+  s_exti_interrupts[iqr_channel].priority = priority;
 
 
   return STATUS_CODE_OK;
