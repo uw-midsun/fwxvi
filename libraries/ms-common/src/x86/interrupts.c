@@ -162,16 +162,20 @@ void interrupt_init(void) {
 }
 
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority) {
-  /* This function is for future expansion, in the situation we want to simulate NVIC interrupts */
 
+  //Validate priority and irq_channel
   if ((priority >= NUM_INTERRUPT_PRIORITIES && priority < configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY) || irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  s_exti_interrupts[iqr_channel].enabled = true;
-  s_exti_interrupts[iqr_channel].masked = false;
-  s_exti_interrupts[iqr_channel].priority = priority;
+  if (s_nvic_handlers[irq_channel].enabled) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
 
+  // Enable the interrupt and set the priority
+  s_nvic_handlers[irq_channel].enabled = true;
+  s_nvic_handlers[irq_channel].masked = false;
+  s_nvic_handlers[irq_channel].priority = priority;
 
   return STATUS_CODE_OK;
 }
@@ -206,6 +210,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
 
   s_exti_interrupts[address->pin].enabled = true;
   s_exti_interrupts[address->pin].masked = false;
+  s_exti_interrupts[address->pin].priority = settings->priority;
 
   return STATUS_CODE_OK;
 }
@@ -225,7 +230,15 @@ StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler han
 }
 
 StatusCode interrupt_exti_trigger(uint8_t line) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (line > NUM_STM32L433X_EXTI_LINES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  siginfo_t value_store;
+  value_store.si_value.sival_int = line;
+  sigqueue(s_pid, SIGRTMIN + (int)s_exti_interrupts[line].priority, value_store.si_value);
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
