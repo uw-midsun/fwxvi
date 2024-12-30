@@ -63,6 +63,7 @@ static void s_nvic_handler(int signum, siginfo_t *info, void *context) {
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_INTERRUPT_CHANNELS) {
     if ((s_nvic_handlers[interrupt_id].handler != NULL) && !s_nvic_handlers[interrupt_id].masked && s_nvic_handlers[interrupt_id].enabled && s_nvic_handlers[interrupt_id].pending) {
       s_nvic_handlers[interrupt_id].handler(interrupt_id);
+      s_nvic_handlers[interrupt_id].pending = false;
     }
   }
 }
@@ -73,6 +74,7 @@ static void s_exti_handler(int signum, siginfo_t *info, void *context) {
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_EXTI_LINES) {
     if ((s_exti_interrupts[interrupt_id].handler != NULL) && !s_exti_interrupts[interrupt_id].masked && s_exti_interrupts[interrupt_id].enabled && s_exti_interrupts[interrupt_id].pending) {
       s_exti_interrupts[interrupt_id].handler(interrupt_id);
+      s_exti_interrupts[interrupt_id].pending = false;
     }
   }
 }
@@ -194,13 +196,24 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
     s_nvic_handlers[irq_channel].handler = handler;
   }
 
+
   return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
-  /* This function is for future expansion, in the situation we want to simulate NVIC interrupts */
-  //remember to change pending state to true
-  return STATUS_CODE_UNIMPLEMENTED;
+
+  if  irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+
+  s_nvic_handlers[irq_channel].pending = true;
+
+  siginfo_t value_store;
+  value_store.si_value.sival_int = irq_channel;
+  sigqueue(s_pid, SIGRTMIN + (int)s_nvic_handlers[irq_channel].priority, value_store.si_value);
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
@@ -229,6 +242,7 @@ StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler han
   } else {
     s_exti_interrupts[line].handler = handler;
   }
+
 
   return STATUS_CODE_OK;
 }
