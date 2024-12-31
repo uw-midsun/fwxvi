@@ -207,8 +207,8 @@ StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
   /* Validate channel */
 
   if (irq_channel >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
-      return STATUS_CODE_INVALID_ARGS;
-    }
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
   s_nvic_handlers[irq_channel].pending = true;
 
@@ -222,7 +222,6 @@ StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
 }
 
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
-
   if (settings == NULL || address == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
