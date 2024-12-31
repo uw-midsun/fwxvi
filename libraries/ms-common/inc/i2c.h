@@ -130,7 +130,7 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
  * @param   i2c Specifies which I2C port to update
  * @param   data Pointer to a buffer of data to set
  * @param   len Length of the data to set
- * @return  STATUS_CODE_OK if data is set succesfully
+ * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
@@ -140,7 +140,7 @@ StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
  * @param   i2c Specifies which I2C port to read from
  * @param   data Pointer to a buffer of data to fill
  * @param   len Length of the data to retrieve
- * @return  STATUS_CODE_OK if data is retrieved succesfully
+ * @return  STATUS_CODE_OK if data is retrieved successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);

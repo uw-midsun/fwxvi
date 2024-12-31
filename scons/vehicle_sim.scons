@@ -1,0 +1,57 @@
+from scons.common import parse_config
+from pathlib import Path
+
+Import("VARS")
+
+TARGET = VARS.get("TARGET")
+PLATFORM = VARS.get("PLATFORM")
+env = VARS.get("env")
+
+ROOT = Dir('#')
+
+BUILD_DIR = ROOT.Dir('build').Dir(PLATFORM)
+BIN_DIR = BUILD_DIR.Dir('bin')
+OBJ_DIR = BUILD_DIR.Dir('obj')
+TEST_DIR = BUILD_DIR.Dir('test')
+
+AUTOGEN_DIR = ROOT.Dir("autogen")
+
+###########################################################
+# Create appropriate targets for all projects and smoke projects
+###########################################################
+for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
+    config = parse_config(entry)
+
+    incs += map(ROOT.Dir, config.get("include", []))
+    srcs += map(OBJ_DIR.File, config.get("sources", []))
+
+    lib_deps = get_lib_deps(entry)
+    # SCons automagically handles object creation and linking
+    target = env.Program(
+        target=BIN_DIR.File(entry.path),
+        source=srcs,
+        CPPPATH=env['CPPPATH'] + incs + lib_incs,
+        # link each library twice so that dependency cycles are resolved
+        # See: https://stackoverflow.com/questions/45135
+        LIBS=env['LIBS'],
+        LIBPATH=[LIB_BIN_DIR],
+        CCFLAGS=env['CCFLAGS'] + config['cflags'],
+    )
+
+    Alias(entry.path, target)
+    Alias(entry.name, target)
+
+###########################################################
+# Python
+###########################################################
+for entry in PY_DIR.glob("*", exclude=["*.*", "__pycache__"]):
+    target = env.Command(entry.path, [],
+                         f"PYTHONPATH={PY_DIR.path} python3 {entry.path}/main.py")
+    config = parse_config(entry)
+    if config["can"]:
+        # Depends(target, PY_DIR.File("can/message.py"))
+        pass
+    Alias(entry.path, target)
+    Alias(entry.name, target)
+
+Default(TARGET or [e.path for e in PROJ_DIR.glob('*')])

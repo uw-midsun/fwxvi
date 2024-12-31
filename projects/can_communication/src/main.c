@@ -14,6 +14,7 @@
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
+#include "system_can.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -21,7 +22,7 @@
 
 static CanStorage s_can_storage = { 0 };
 const CanSettings can_settings = {
-  .device_id = 0U,
+  .device_id = SYSTEM_CAN_DEVICE_CAN_COMMUNICATION,
   .bitrate = CAN_HW_BITRATE_500KBPS,
   .tx = { GPIO_PORT_A, 12 },
   .rx = { GPIO_PORT_A, 11 },
