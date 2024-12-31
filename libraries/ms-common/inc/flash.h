@@ -57,7 +57,7 @@ StatusCode flash_init();
  * @param   address Memory address to read from. This value MUST be 4-byte aligned
  * @param   buffer Pointer to the buffer to store data
  * @param   buffer_len Length of the buffer. This value MUST be 4-byte aligned
- * @return  STATUS_CODE_OK if flash memory was read succesfully
+ * @return  STATUS_CODE_OK if flash memory was read successfully
  *          STATUS_CODE_OUT_OF_RANGE if address is out of range
  *          STATUS_CODE_INVALID_ARGS if address or read bytes is not aligned
  */
@@ -70,7 +70,7 @@ StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len);
  * @param   address Memory address to store the buffer. This value MUST be 4-byte aligned
  * @param   buffer Pointer to the buffer of data to store
  * @param   buffer_len Length of the buffer to write. This MUST also be 4-byte aligned
- * @return  STATUS_CODE_OK if flash memory was written succesfully
+ * @return  STATUS_CODE_OK if flash memory was written successfully
  *          STATUS_CODE_OUT_OF_RANGE if address is out of range
  *          STATUS_CODE_INTERNAL_ERROR if flash write failed
  */
@@ -80,7 +80,7 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len);
  * @brief   Erase pages of flash memory
  * @param   start_page First page to erase
  * @param   num_pages Number of pages to erase
- * @return  STATUS_CODE_OK if flash memory was erased succesfully
+ * @return  STATUS_CODE_OK if flash memory was erased successfully
  *          STATUS_CODE_INVALID_ARGS if incorrect arguments were passed in
  *          STATUS_CODE_INTERNAL_ERROR if flash erase failed
  */

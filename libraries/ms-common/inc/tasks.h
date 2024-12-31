@@ -96,7 +96,7 @@ typedef struct Task {
  * @param   priority The task priority: higher number is higher priority, and the maximum
  * @param   context Pointer to arguments that are passed to the task
  *          is configNUM_TASK_PRIORITIES - 1.
- * @return  STATUS_CODE_OK if succesfully initialize task.
+ * @return  STATUS_CODE_OK if successfully initialize task.
  */
 StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context);
 
@@ -109,7 +109,7 @@ void tasks_start(void);
 /**
  * @brief   Initialize the task module
  * @details Must be called before tasks are initialized or the scheduler is started.
- * @return  STATUS_CODE_OK if succesfully initialize the module.
+ * @return  STATUS_CODE_OK if successfully initialize the module.
  */
 StatusCode tasks_init(void);
 
@@ -124,7 +124,7 @@ StatusCode wait_tasks(uint16_t num_tasks);
 
 /**
  * @brief   A wrapper to give to the semaphore, to be called by tasks when they complete
- * @return  STATUS_CODE_OK if succesfully release sempahore
+ * @return  STATUS_CODE_OK if successfully release sempahore
  */
 StatusCode send_task_end(void);
 
