@@ -1,0 +1,26 @@
+var annotated_dup =
+[
+    [ "CanHwTiming", "structCanHwTiming.html", null ],
+    [ "CanId", "unionCanId.html", null ],
+    [ "CanMessage", "structCanMessage.html", "structCanMessage" ],
+    [ "CanQueue", "structCanQueue.html", null ],
+    [ "CanSettings", "structCanSettings.html", "structCanSettings" ],
+    [ "CanStorage", "structCanStorage.html", null ],
+    [ "Fsm", "structFsm.html", null ],
+    [ "GpioAddress", "structGpioAddress.html", "structGpioAddress" ],
+    [ "GpioInterrupt", "structGpioInterrupt.html", "structGpioInterrupt" ],
+    [ "I2CPortData", "structI2CPortData.html", "structI2CPortData" ],
+    [ "I2CSettings", "structI2CSettings.html", "structI2CSettings" ],
+    [ "InterruptSettings", "structInterruptSettings.html", "structInterruptSettings" ],
+    [ "MPURegion", "structMPURegion.html", null ],
+    [ "MPURegionSettings", "structMPURegionSettings.html", null ],
+    [ "Queue", "structQueue.html", "structQueue" ],
+    [ "Semaphore", "structSemaphore.html", "structSemaphore" ],
+    [ "SPIPortData", "structSPIPortData.html", "structSPIPortData" ],
+    [ "SpiSettings", "structSpiSettings.html", null ],
+    [ "State", "structState.html", null ],
+    [ "Task", "structTask.html", null ],
+    [ "UartPortData", "structUartPortData.html", "structUartPortData" ],
+    [ "UartSettings", "structUartSettings.html", "structUartSettings" ],
+    [ "X86Interrupt", "structX86Interrupt.html", "structX86Interrupt" ]
+];

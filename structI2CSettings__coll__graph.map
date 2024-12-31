@@ -1,0 +1,4 @@
+<map id="I2CSettings" name="I2CSettings">
+<area shape="rect" id="node1" title="I2C settings struct." alt="" coords="9,108,105,133"/>
+<area shape="rect" id="node2" href="$structGpioAddress.html" title="Port and pin data." alt="" coords="5,5,109,31"/>
+</map>

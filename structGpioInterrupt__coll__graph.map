@@ -1,0 +1,6 @@
+<map id="GpioInterrupt" name="GpioInterrupt">
+<area shape="rect" id="node1" title="Storage class for GPIO interrupts." alt="" coords="158,93,266,119"/>
+<area shape="rect" id="node2" href="$structInterruptSettings.html" title="Interrupt configuration structure." alt="" coords="5,5,136,31"/>
+<area shape="rect" id="node3" href="$structGpioAddress.html" title="Port and pin data." alt="" coords="160,5,264,31"/>
+<area shape="rect" id="node4" href="$structTask.html" title=" " alt="" coords="288,5,339,31"/>
+</map>
