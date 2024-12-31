@@ -163,12 +163,16 @@ elif COMMAND == "new":
     SConscript('scons/new_target.scons', exports='VARS')
 
 ###########################################################
-# HIL command
+# hil command
 ###########################################################
 elif COMMAND == "hil":
+    print(TEST_FILE)
     if not TEST_FILE:
+        #Error handling
         pass
+    
     SConscript('scons/pytest.scons', exports='VARS')
+
 
 ###########################################################
 # Clean

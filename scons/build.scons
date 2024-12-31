@@ -22,7 +22,7 @@ SMOKE_DIR = ROOT.Dir('smoke')
 LIB_BIN_DIR = BIN_DIR.Dir('libraries')
 LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
 
-AUTOGEN_DIR = ROOT.Dir("autogen")
+AUTOGEN_DIR = LIB_DIR.Dir("autogen")
 
 def src(path):
     # return all source files within a path
@@ -56,6 +56,12 @@ autogen_sources = list(Path(AUTOGEN_DIR.abspath).rglob("*"))
 autogen_sources += list(Path(ROOT.abspath).glob("can/boards/*"))
 
 env.Command(
+    PY_DIR.File("can/message.py"),
+    autogen_sources,
+    f"python3 -m autogen python_can -o py/can"
+)
+
+env.Command(
     LIBRARIES_INC_DIR.File("system_can.h"),
     autogen_sources,
     f"python3 -m autogen system_can -o can/inc"
@@ -67,17 +73,18 @@ def generate_can_files(env, project):
     output_files = []
 
     project_name = Path(project).stem
-    can_template_dir = Path(str(AUTOGEN_DIR), "templates/project_can")
+    can_template_dir = Path(str(AUTOGEN_DIR), "templates/can")
     for template in can_template_dir.glob('*/*.jinja'):
         template_path = template.relative_to(can_template_dir)
         output_name = str(template_path) \
-            .replace(r"{{project_name}}", project_name) \
+            .replace(r"{{board}}", project_name) \
             .replace(".jinja", "")
 
         output_files.append(project_can_dir.File(output_name))
 
+    # print([f.path for f in output_files])
     env.Command(output_files, autogen_sources,
-                f"python3 -m autogen project_can -o {project_can_dir.path}")
+                f"python3 -m autogen can -o {project_can_dir.path}")
 
     # Add a VariantDir that point to can folder. Create the can target specific for the project
     VariantDir(project_can_dir, ROOT.Dir('can'), duplicate=0)

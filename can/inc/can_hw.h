@@ -89,8 +89,6 @@ StatusCode can_hw_init(const CanQueue* rx_queue, const CanSettings *settings);
 
 /**
  * @brief   Sets a filter on the CAN interface
- * @details The filter works as such:
- *          if INCOMING_MSG_ID & mask == filter & mask, the message is handled
  * @param   mask Determines which bits in the received ID are considered during filtering
  * @param   filter Specifies the pattern the CAN ID must adhere to
  * @param   extended Boolean to use CAN extended ID feature
@@ -113,7 +111,7 @@ CanHwBusStatus can_hw_bus_status(void);
  * @param   extended Boolean to use CAN extended ID feature
  * @param   data Pointer to the data to transmit
  * @param   len Size of the data to transfer
- * @return  STATUS_CODE_OK if data is transmitted successfully
+ * @return  STATUS_CODE_OK if data is transmitted succesfully
  *          STATUS_CODE_RESOURCE_EXHAUSTED if CAN mailbox is full
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
@@ -125,7 +123,7 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size
  * @param   extended Pointer to a flag to indicate CAN extended ID feature
  * @param   data Pointer to a buffer to store data
  * @param   len Pointer to the number of CAN messages received
- * @return  true if data is retrieved successfully
+ * @return  true if data is retrieved succesfully
  *          false if one of the parameters are incorrect or internal error occurred
  */
 bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len);

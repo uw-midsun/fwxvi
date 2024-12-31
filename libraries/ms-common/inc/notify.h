@@ -53,7 +53,7 @@ bool notify_check_event(uint32_t *notification, Event event);
 /**
  * @brief   Get the current notification value for the calilng task without a timeout
  * @param   notification Pointer to a notification value that is updated upon success
- * @return  STATUS_CODE_OK if the value is retrieved successfully
+ * @return  STATUS_CODE_OK if the value is retrieved succesfully
  *          STATUS_CODE_TIMEOUT if the value cannot be retrieved
  */
 StatusCode notify_get(uint32_t *notification);
@@ -62,7 +62,7 @@ StatusCode notify_get(uint32_t *notification);
  * @brief   Get the current notification value for the calilng task with a maximum timeout
  * @param   notification Pointer to a notification value that is polled
  * @param   ms_to_wait Time in milliseconds to wait for a notification before timing out
- * @return  STATUS_CODE_OK if notification is received successfully
+ * @return  STATUS_CODE_OK if notification is received succesfully
  *          STATUS_CODE_TIMEOUT if a timeout has occurred
  */
 StatusCode notify_wait(uint32_t *notification, uint32_t ms_to_wait);

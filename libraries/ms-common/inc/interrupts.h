@@ -88,7 +88,7 @@ void interrupt_init(void);
  * @brief   Enables the nested interrupt vector controller for a given channel
  * @param   irq_channel Numeric ID of the interrupt channel from the NVIC
  * @param   priority Priority level of the interrupt
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority);
@@ -97,7 +97,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
  * @brief   Enables an external interrupt line with the given settings
  * @param   address Pointer to the GPIO address
  * @param   settings Pointer to the interrupt settings
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings);
@@ -105,7 +105,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
 /**
  * @brief   Triggers a software interrupt on a given external interrupt channel
  * @param   line Numeric ID of the EXTI line (GPIO Pin number)
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_trigger(uint8_t line);
@@ -114,7 +114,7 @@ StatusCode interrupt_exti_trigger(uint8_t line);
  * @brief   Get the pending flag for an external interrupt
  * @param   line Numeric ID of the EXTI line (GPIO Pin number)
  * @param   pending_bit Pointer to a variable that is updated with the pending bit
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit);
@@ -122,7 +122,7 @@ StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit);
 /**
  * @brief   Clears the pending flag for an external interrupt
  * @param   line Numeric ID of the EXTI line (GPIO Pin number)
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_clear_pending(uint8_t line);
@@ -131,7 +131,7 @@ StatusCode interrupt_exti_clear_pending(uint8_t line);
  * @brief   Masks or clears the external interrupt on a given line
  * @param   line Numeric ID of the EXTI line (GPIO Pin number)
  * @param   masked 0: Clears the interrupt 1: Mask the lines interrupt
- * @return  STATUS_CODE_OK if the channel is successfully initialized
+ * @return  STATUS_CODE_OK if the channel is succesfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode interrupt_exti_set_mask(uint8_t line, bool masked);
@@ -147,7 +147,7 @@ typedef void (*x86InterruptHandler)(uint8_t interrupt_id);
  * @param   irq_channel Numeric ID of the interrupt channel from the NVIC
  * @param   handler Function pointer to the interrupt handler. Can be left as NULL
  * @param   settings Pointer to the interrupt settings
- * @return  STATUS_CODE_OK if the interrupt handler is registered successfully
+ * @return  STATUS_CODE_OK if the interrupt handler is registered succesfully
  *          STATUS_CODE_INVALID_ARGS if  one of the parameters are incorrect
  */
 StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings);
@@ -158,7 +158,7 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
  * @param   line Numeric ID of the EXTI line (GPIO Pin number)
  * @param   handler Function pointer to the interrupt handler. Can be left as NULL
  * @param   settings Pointer to the interrupt settings
- * @return  STATUS_CODE_OK if the interrupt handler is registered successfully
+ * @return  STATUS_CODE_OK if the interrupt handler is registered succesfully
  *          STATUS_CODE_INVALID_ARGS if  one of the parameters are incorrect
  */
 StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings *settings);

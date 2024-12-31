@@ -53,37 +53,13 @@ void can_rx_all() {
     }
 }
 
-void clear_all_rx_received() {
+void clear_rx_received() {
 {%- for message in messages %}
     g_rx_struct.received_{{message.name}} = false;
 {%- endfor %}
 }
 
-void clear_fast_rx_received() {
-{%- for message in messages %}
-{%- if message.cycle == "fast" %}
-    g_rx_struct.received_{{message.name}} = false;
-{%- endif %}
-{%- endfor %}
-}
-
-void clear_medium_rx_received() {
-{%- for message in messages %}
-{%- if message.cycle == "medium" %}
-    g_rx_struct.received_{{message.name}} = false;
-{%- endif %}
-{%- endfor %}
-}
-
-void clear_slow_rx_received() {
-{%- for message in messages %}
-{%- if message.cycle == "slow" %}
-    g_rx_struct.received_{{message.name}} = false;
-{%- endif %}
-{%- endfor %}
-}
-
-StatusCode check_all_can_watchdogs() {
+StatusCode check_can_watchdogs() {
 {%- for message in messages %}
     {%- if message.receiver[project_name].watchdog != 0 %}
     if (!g_rx_struct.received_{{message.name}}) {
@@ -91,73 +67,12 @@ StatusCode check_all_can_watchdogs() {
         if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
             LOG_CRITICAL("DID NOT RECEIVE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
                             s_{{message.name}}_msg_watchdog.max_cycles);
-            s_{{message.name}}_msg_watchdog.missed = true;
+            s_{{message.name}}_msg_watchdog.missed = 1;
         } else {
-            s_{{message.name}}_msg_watchdog.missed = false;
+            s_{{message.name}}_msg_watchdog.missed = 0;
         }
     }
     {%- endif %}
 {%- endfor %}
     return STATUS_CODE_OK;
 }
-
-StatusCode check_fast_can_watchdogs() {
-{%- for message in messages %}
-{%- if message.cycle == "fast" %}
-    {%- if message.receiver[project_name].watchdog != 0 %}
-    if (!g_rx_struct.received_{{message.name}}) {
-        ++s_{{message.name}}_msg_watchdog.cycles_over;
-        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
-            LOG_CRITICAL("DID NOT RECEIVE FAST CYCLE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
-                            s_{{message.name}}_msg_watchdog.max_cycles);
-            s_{{message.name}}_msg_watchdog.missed = true;
-        } else {
-            s_{{message.name}}_msg_watchdog.missed = false;
-        }
-    }
-    {%- endif %}
-{%- endif %}
-{%- endfor %}
-    return STATUS_CODE_OK;
-}
-
-StatusCode check_medium_can_watchdogs() {
-{%- for message in messages %}
-{%- if message.cycle == "medium" %}
-    {%- if message.receiver[project_name].watchdog != 0 %}
-    if (!g_rx_struct.received_{{message.name}}) {
-        ++s_{{message.name}}_msg_watchdog.cycles_over;
-        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
-            LOG_CRITICAL("DID NOT RECEIVE MEDIUM CYCLE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
-                            s_{{message.name}}_msg_watchdog.max_cycles);
-            s_{{message.name}}_msg_watchdog.missed = true;
-        } else {
-            s_{{message.name}}_msg_watchdog.missed = false;
-        }
-    }
-    {%- endif %}
-{%- endif %}
-{%- endfor %}
-    return STATUS_CODE_OK;
-}
-
-StatusCode check_slow_can_watchdogs() {
-{%- for message in messages %}
-{%- if message.cycle == "slow" %}
-    {%- if message.receiver[project_name].watchdog != 0 %}
-    if (!g_rx_struct.received_{{message.name}}) {
-        ++s_{{message.name}}_msg_watchdog.cycles_over;
-        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
-            LOG_CRITICAL("DID NOT RECEIVE SLOW CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
-                            s_{{message.name}}_msg_watchdog.max_cycles);
-            s_{{message.name}}_msg_watchdog.missed = true;
-        } else {
-            s_{{message.name}}_msg_watchdog.missed = false;
-        }
-    }
-    {%- endif %}
-{%- endif %}
-{%- endfor %}
-    return STATUS_CODE_OK;
-}
-

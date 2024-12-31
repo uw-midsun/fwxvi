@@ -35,6 +35,6 @@ typedef enum {
 
 {% for message in messages %}
 #define SYSTEM_CAN_MESSAGE_{{ message.sender | upper }}_{{ message.name | upper }} \
-  {% if not message.critical %} SYSTEM_CAN_MESSAGE_PRIORITY_BIT + {% endif %}({{ message.id }} << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SYSTEM_CAN_DEVICE_{{ message.sender | upper }}
+  {% if not message.critical %} SYSTEM_CAN_MESSAGE_PRIORITY_BIT + {% endif %}({{ message.id }} << CAN_MESSAGE_ID_OFFSET) + SYSTEM_CAN_DEVICE_{{ message.sender | upper }}
 {% endfor %}
 /** @} */

@@ -31,10 +31,6 @@ extern rx_struct g_rx_struct;
 extern tx_struct g_tx_struct;
 
 void can_tx_all();
-void can_tx_fast_cycle();
-void can_tx_medium_cycle();
-void can_tx_slow_cycle();
-
 void can_rx_all();
 
 /** @} */

@@ -25,25 +25,8 @@
         afe_status:
           length: 8
 
-    battery_vt:
-      id: 2
-      critical: true
-      cycle: "fast"
-      target:
-        centre_console:
-          watchdog: 0
-      signals:
-        voltage:
-          length: 16
-        current:
-          length: 16
-        temperature:
-          length: 16
-        batt_perc:
-          length: 16
-    
     battery_info:
-      id: 3
+      id: 14
       critical: true
       cycle: "slow"
       target:
@@ -59,10 +42,27 @@
         min_cell_v:
           length: 16
 
+    battery_vt:
+      id: 15
+      critical: true
+      cycle: "fast"
+      target:
+        centre_console:
+          watchdog: 0
+      signals:
+        voltage:
+          length: 16
+        current:
+          length: 16
+        temperature:
+          length: 16
+        batt_perc:
+          length: 16
+
     AFE1_status:
           id: 61
           critical: false
-          cycle: "slow"
+          cycle: "medium"
           target:
             centre_console:
               watchdog: 0
@@ -83,7 +83,7 @@
     AFE2_status:
       id: 62
       critical: false
-      cycle: "slow"
+      cycle: "medium"
       target:
         centre_console:
           watchdog: 0
@@ -104,7 +104,7 @@
     AFE3_status:
       id: 63
       critical: false
-      cycle: "slow"
+      cycle: "medium"
       target:
         centre_console:
           watchdog: 0

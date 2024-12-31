@@ -63,10 +63,6 @@ Commands:
         (x86) Run the project's binary.
         - e.g. `scons sim --platform=x86 <target>` (`scons sim --platform=x86 --project=new_led`)
 
-    vehicle_sim
-        (x86) Runs a full vehicle simulation
-        - e.g. 'scons vehicle_sim --platform=x86'
-
     gdb
         (x86) Run the project's binary with gdb.
         - e.g. `scons gdb <target>` (`scons gdb --project=new_led`)
@@ -87,9 +83,6 @@ Commands:
 
     clean
         Delete the `build` directory.
-    
-    hil
-        Runs a HIL test. This is not fully implemented yet
     
     doxygen
         Build a local copy of the doxygen HTML

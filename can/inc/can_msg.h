@@ -23,9 +23,6 @@
  * @{
  */
 
-/** @brief  Maximum permitted CAN ID for 11-bit identifiers */
-#define CAN_MSG_MAX_STD_IDS (1 << 11)
-
 /**
  * @brief   CAN message ID
  * @details 11 Bits in standard mode
