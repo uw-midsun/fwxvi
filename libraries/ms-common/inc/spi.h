@@ -119,7 +119,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
  * @param   i2c Specifies which SPI port to read from
  * @param   data Pointer to a buffer of data to fill
  * @param   len Length of the data to retrieve
- * @return  STATUS_CODE_OK if data is retrieved succesfully
+ * @return  STATUS_CODE_OK if data is retrieved successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
@@ -129,7 +129,7 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
  * @param   spi Specifies which SPI port to update
  * @param   data Pointer to a buffer of data to set
  * @param   len Length of the data to set
- * @return  STATUS_CODE_OK if data is set succesfully
+ * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode spi_set_rx(SpiPort spi, uint8_t *data, uint8_t len);

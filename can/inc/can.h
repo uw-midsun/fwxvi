@@ -27,12 +27,15 @@
  * @{
  */
 
+/** @brief Maximum time permitted for a CAN transaction */
+#define CAN_TIMEOUT_MS      5U
+
 /**
  * @brief   Storage class for the device ID and RX data
  */
 typedef struct CanStorage {
-  volatile CanQueue rx_queue;
-  uint16_t device_id;
+  volatile CanQueue rx_queue;   /**< Global RX queue to store CAN messages */
+  uint16_t device_id;           /**< Device ID of the running device */
 } CanStorage;
 
 /**
@@ -48,62 +51,79 @@ StatusCode can_init(CanStorage *storage, const CanSettings *settings);
 /**
  * @brief   Sets a filter on the CAN interface
  * @param   msg_id Message ID of the message to filter
- * @return  STATUS_CODE_OK if adding the filter succeeded
+ * @return  STATUS_CODE_OK if the filter is added successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
 StatusCode can_add_filter_in(CanMessageId msg_id);
 
 /**
- * @brief   Initialize the CAN interface
+ * @brief   Transmits CAN data on the bus
  * @param   msg Pointer to the message to transmit
- * @return  STATUS_CODE_OK if data is transmitted succesfuully
+ * @return  STATUS_CODE_OK if data is transmitted successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
- *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ *          STATUS_CODE_UNINITIALIZED if the CAN bus is not initialized
  */
 StatusCode can_transmit(const CanMessage *msg);
 
 /**
- * @brief   Initialize the CAN interface
+ * @brief   Receives CAN data from the bus
  * @param   msg Pointer to the message to update on receive
- * @return  STATUS_CODE_OK if data is retrieved succesfuully
+ * @return  STATUS_CODE_OK if data is retrieved successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
- *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ *          STATUS_CODE_UNINITIALIZED if the CAN bus is not initialized
  */
 StatusCode can_receive(const CanMessage *msg);
 
 /**
- * @brief   Run the CAN TX cache to transmit all messages
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if the cache is cleared succesfuully
+ * @brief   Transmit all CAN data
+ * @return  STATUS_CODE_OK if the cache is cleared successfully
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode run_can_tx_cache();
+StatusCode run_can_tx_all();
 
 /**
- * @brief   Run the CAN RX cache to receive all messages
- * @param   rx_queue Pointer to the CAN RX queue
- * @param   settings Pointer to the CAN settings
- * @return  STATUS_CODE_OK if the cache is cleared succesfuully
+ * @brief   Transmit all fast-cycle CAN data
+ * @return  STATUS_CODE_OK if the cache is cleared successfully
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode run_can_rx_cache();
+StatusCode run_can_tx_fast();
 
 /**
- * @brief   Clear the RX cache
+ * @brief   Transmit all medium-cycle CAN data
+ * @return  STATUS_CODE_OK if the cache is cleared successfully
+ *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ */
+StatusCode run_can_tx_medium();
+
+/**
+ * @brief   Transmit all slow-cycle CAN data
+ * @return  STATUS_CODE_OK if the cache is cleared successfully
+ *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ */
+StatusCode run_can_tx_slow();
+
+/**
+ * @brief   Receive all CAN data
+ * @return  STATUS_CODE_OK if the cache is cleared successfully
+ *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
+ */
+StatusCode run_can_rx_all();
+
+/**
+ * @brief   Clear the RX data struct
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode clear_rx_cache();
+StatusCode clear_rx_struct();
 
 /**
- * @brief   Clear the TX cache
+ * @brief   Clear the TX data struct
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode clear_tx_cache();
+StatusCode clear_tx_struct();
 
 /** @} */

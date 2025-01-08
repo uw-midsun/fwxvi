@@ -14,6 +14,7 @@ def parse_config(entry):
         'mocks': {},
         'no_lint': False,
         "can": False,
+        "arm_only": False
     }
     config_file = entry.File('config.json')
     if not config_file.exists():

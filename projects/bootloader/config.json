@@ -1,0 +1,8 @@
+{
+    "arm_libs": [
+        "CMSIS",
+        "HAL"
+    ],
+    "can": false,
+    "arm_only": true
+}

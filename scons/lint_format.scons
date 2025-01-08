@@ -16,7 +16,7 @@ PROJ_DIRS = ROOT.glob('projects/*')
 LIB_DIRS = ROOT.glob('libraries/*')
 SMOKE_DIRS = ROOT.glob('smoke/*')
 PY_DIRS = ROOT.glob('py/*')
-
+SIMULATION_DIRS = ROOT.glob('simulation/*')
 
 ###########################################################
 # Linting and Formatting
@@ -26,10 +26,10 @@ def run_lint(target, source, env):
     PY_LINT_CMD = 'pylint --rcfile={}/.pylintrc'.format(ROOT.abspath)
 
     errors = 0
-    # Lint C source files
-    if len(c_files) > 0:
+    # Lint C and C++ source files
+    if len(c_files) > 0 or len(cpp_files > 0):
         print(f'\nLinting *.[ch] files ...')
-        errors += subprocess.run(f'{C_LINT_CMD} {c_files_str}',
+        errors += subprocess.run(f'{C_LINT_CMD} {c_files_str} {cpp_files_str}',
                                  shell=True).returncode
 
     # Lint Python files
@@ -54,9 +54,9 @@ def run_format(target, source, env):
     PY_FORMAT_CMD = 'autopep8 {} -i'.format(AUTOPEP8_CONFIG)
 
     # Format C source files
-    if len(c_files) > 0:
+    if len(c_files) > 0 or len(cpp_files > 0):
         print(f'\nFormatting *.[ch] files ...')
-        subprocess.run(f'{C_FORMAT_CMD} {c_files_str}', shell=True)
+        subprocess.run(f'{C_FORMAT_CMD} {c_files_str} {cpp_files_str}', shell=True)
 
     # Format Python source files
     if len(py_files) > 0:
@@ -67,6 +67,7 @@ def run_format(target, source, env):
 
 
 # Retrieve files to lint - returns a tuple (c_lint_files, py_lint_files)
+cpp_files = []
 c_files = []
 py_files = []
 # Get directories to lint based on PROJECT/LIBRARY args.
@@ -75,6 +76,7 @@ py_files = []
 if TARGET:
     target_dirs = [ROOT.Dir(TARGET)]
 else:
+    # TODO: add this to the end of this  '+ SIMULATION_DIRS'
     target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS
 
 for dir in target_dirs:
@@ -82,9 +84,11 @@ for dir in target_dirs:
     if config.get('no_lint'):  # Avoid linting/formatting external libraries
         continue
 
+    cpp_files += glob.glob(f'{dir.abspath}/**/*.[ch]pp', recursive=True) + glob.glob(f'{dir.abspath}/**/*.cc', recursive=True)
     c_files += glob.glob(f'{dir.abspath}/**/*.[ch]', recursive=True)
     py_files += glob.glob(f'{dir.abspath}/**/*.py', recursive=True)
 
+cpp_files_str = ' '.join(cpp_files)
 c_files_str = ' '.join(c_files)
 py_files_str = ' '.join(py_files)
 
