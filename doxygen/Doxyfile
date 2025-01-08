@@ -916,6 +916,7 @@ INPUT                  = projects \
                          libraries/master \
                          doxygen/main_page.md \
                          autogen \
+                         simulation \
                          build_system.md
 
 # This tag can be used to specify the character encoding of the source files

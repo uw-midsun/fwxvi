@@ -1,6 +1,6 @@
 ## @file   can_autogen.py
 #  @date    2024-12-21
-#  @author  Midnight Sun Team #24 - MSXVI
+#  @author  Aryan Kashem
 #  @brief   YAML parsing and validation module for CAN message configurations
 #
 #  @details This module provides functionality to parse and validate CAN message
@@ -94,6 +94,12 @@ def get_data(args):
     """
     boards = []
     messages = []
+    message_count = {
+        "fast_cycle" : 0,
+        "medium_cycle" : 0,
+        "slow_cycle" : 0,
+        "total" : 0,
+    }
 
     for yaml_path in Path("can/boards").glob("*.yaml"):
         # read yaml
@@ -134,9 +140,18 @@ def get_data(args):
                 "receiver": message["target"],
             })
 
+            # Update message counter
+            if message["cycle"] == "fast":
+                message_count["fast_cycle"] += 1
+            elif message["cycle"] == "medium":
+                message_count["medium_cycle"] += 1
+            elif message["cycle"] == "slow":
+                message_count["slow_cycle"] += 1
+
+            message_count["total"] +=1
+
     project_name = Path(args.output).parent.stem
 
     current_date = datetime.now()
     current_date = current_date.strftime("%Y-%m-%d")
-
-    return {"boards": boards, "messages": messages, "project_name": project_name, "current_date": current_date}
+    return {"boards": boards, "messages": messages, "message_count": message_count, "project_name": project_name, "current_date": current_date}
