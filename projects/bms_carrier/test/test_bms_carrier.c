@@ -3,7 +3,7 @@
  *
  * @brief  Test file for bms_carrier
  *
- * @date   2024-12-25
+ * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -22,5 +22,5 @@ void setup_test(void) {}
 void teardown_test(void) {}
 
 void test_example(void) {
-  TEST_ASSERT_TRUE(true);
+    TEST_ASSERT_TRUE(true);
 }
