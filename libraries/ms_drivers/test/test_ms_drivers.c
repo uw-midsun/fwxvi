@@ -1,9 +1,9 @@
 /************************************************************************************************
- * @file   test_bms_carrier_1.c
+ * @file   test_ms_drivers.c
  *
- * @brief  Test file for bms_carrier_1
+ * @brief  Test file for ms_drivers
  *
- * @date   2025-01-12
+ * @date   2025-01-13
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 

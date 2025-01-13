@@ -24,12 +24,20 @@
  */
 
 
-#define CURRENT_SENSE_I2C_PORT I2C_PORT_2
+#define CURRENT_SENSE_I2C_PORT I2C_PORT_1
 #define CURRENT_SENSE_I2C_SDA_PIN \
   { .port = GPIO_PORT_B, .pin = 11 }
 #define CURRENT_SENSE_I2C_SCL_PIN \
   { .port = GPIO_PORT_B, .pin = 10 }
 
+#define BMS_CAN_RX \
+  {.port=GPIO_PORT_A, .pin=1}
+#define BMS_CAN_TX\
+  {.port=GPIO_PORT_A, .pin=2}
+
+#define BMS_AFE_I2C_PORT I2C_PORT_2
+#define BMS_AFE_I@C
+{.port=GPIO}
   #define MAX17261_I2C_ADDR (0x36)
   
   #define LTC_AFE_I2C_ADDR (0x30)

@@ -1,11 +1,11 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bms_carrier_1.h
+ * @file   ms_drivers.h
  *
- * @brief  Header file for bms_carrier_1
+ * @brief  Header file for ms_drivers
  *
- * @date   2025-01-12
+ * @date   2025-01-13
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -16,8 +16,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup bms_carrier_1
- * @brief    bms_carrier_1 Firmware
+ * @defgroup ms_drivers
+ * @brief    ms_drivers Firmware
  * @{
  */
 

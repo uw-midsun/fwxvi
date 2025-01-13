@@ -1,9 +1,9 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for bms_carrier_1
+ * @brief  Main file for ms_drivers
  *
- * @date   2025-01-12
+ * @date   2025-01-13
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -17,7 +17,7 @@
 #include "master_tasks.h"
 
 /* Intra-component Headers */
-#include "bms_carrier_1.h"
+#include "ms_drivers.h"
 
 void pre_loop_init() {}
 
