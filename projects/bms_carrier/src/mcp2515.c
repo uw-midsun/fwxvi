@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "delay.h"
-#include "gpio_it.h"
+#include "gpio_interrupts.h"
 #include "log.h"
 
 // Storage
@@ -69,7 +69,7 @@ StatusCode run_mcp2515_tx_cycle() {
 
 StatusCode mcp2515_transmit(const CanMessage *msg) {
   if (s_storage == NULL) {
-    return status_code(STATUS_CODE_UNINITIALIZED);
+    return STATUS_CODE_UNINITIALIZED;
   }
 
   return mcp2515_hw_transmit(msg->id.raw, msg->extended, msg->data_u8, msg->dlc);
@@ -94,7 +94,7 @@ StatusCode mcp2515_init(Mcp2515Storage *storage, const Mcp2515Settings *settings
 
   status_ok_or_return(can_queue_init(&s_storage->rx_queue));
 
-  if (settings->can_settings.mode == CAN_CONTINUOUS) {
+  if (settings->can_settings.silent == false) {
     // Create RX and TX Tasks
     // ! Ensure the task priority is lower than the interrupt tasks in mcp2515_hw.c
     status_ok_or_return(tasks_init_task(MCP2515_TX, TASK_PRIORITY(2), NULL));

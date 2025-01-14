@@ -11,6 +11,8 @@
 
 /* Standard library Headers */
 /* Inter-component Headers */
+#include "spi.h"
+#include "gpio.h"
 /* Intra-component Headers */
 
 /**
@@ -42,7 +44,7 @@ typedef struct Mcp2515Storage {
   SpiPort spi_port;
   volatile CanQueue rx_queue;
   Mcp2515Errors errors;
-  bool loopback;
+  _Bool loopback;
 } Mcp2515Storage;
 
 // Initializes CAN using the specified settings.
@@ -50,9 +52,9 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *rx_queue, const Mcp2515Settings *sett
 
 // StatusCode mcp2515_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended);
 
-StatusCode mcp2515_hw_set_filter(CanMessageId *filters, bool loopback);
+StatusCode mcp2515_hw_set_filter(CanMessageId *filters, _Bool loopback);
 
 CanHwBusStatus mcp2515_hw_bus_status(void);
 
-StatusCode mcp2515_hw_transmit(uint32_t id, bool extended, uint8_t *data, size_t len);
+StatusCode mcp2515_hw_transmit(uint32_t id, _Bool extended, uint8_t *data, size_t len);
 /** @} */

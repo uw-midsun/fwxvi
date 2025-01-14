@@ -36,7 +36,7 @@
   {.port=GPIO_PORT_A, .pin=2}
 
 #define BMS_AFE_I2C_PORT I2C_PORT_2
-#define BMS_AFE_I@C
+#define BMS_AFE_I@C\
 {.port=GPIO}
   #define MAX17261_I2C_ADDR (0x36)
   

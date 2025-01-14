@@ -1,9 +1,10 @@
-
+#include <string.h>
 #include "mcp2515_hw.h"
 
 #include "delay.h"
-#include "gpio_it.h"
+#include "gpio_interrupts.h"
 #include "log.h"
+#include "can_hw.h"
 #include "mcp2515_defs.h"
 
 // TX/RX buffer ID registers - See Registers 3-3 to 3-7, 4-4 to 4-8
@@ -180,7 +181,8 @@ static StatusCode mcp2515_hw_init_after_schedular_start() {
     0x00,
     0x00,
   };
-  prv_write(MCP2515_CTRL_REG_CNF3, s_registers, SIZEOF_ARRAY(s_registers));
+  //SIZEOF_ARRAY
+  prv_write(MCP2515_CTRL_REG_CNF3, s_registers, sizeof(s_registers));
 
   // Sanity check: read register after first write
   // If new reg value corresponds to expected
@@ -235,7 +237,7 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
   if (settings->can_settings.bitrate > CAN_HW_BITRATE_500KBPS) {
     return status_msg(STATUS_CODE_INVALID_ARGS, "mcp2515 does not support this bitrate");
   }
-
+//BitRate
   mcp2515_bitrate = settings->can_settings.bitrate;
   mcp2515_loopback = settings->can_settings.loopback;
 
@@ -253,7 +255,7 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
     .priority = INTERRUPT_PRIORITY_NORMAL,
     .edge = INTERRUPT_EDGE_FALLING,
   };
-
+//idk
   status_ok_or_return(
       gpio_it_register_interrupt(&settings->interrupt_pin, &it_settings, 0, MCP2515_INTERRUPT));
   status_ok_or_return(
@@ -283,7 +285,7 @@ StatusCode mcp2515_hw_transmit(uint32_t id, bool extended, uint8_t *data, size_t
 
   if (tx_status == 0) {
     LOG_DEBUG("Failed to tx, buffer full\n");
-    return status_code(STATUS_CODE_RESOURCE_EXHAUSTED);
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
   // LOG_DEBUG("message on buffer %d\n", (tx_status - 3) / 2);
 

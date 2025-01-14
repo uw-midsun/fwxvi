@@ -32,7 +32,10 @@
 #define ACCERLATION_FORCE 1
 #define CRUISE_THROTTLE_THRESHOLD 0
 #define TORQUE_CONTROL_VEL 20000  // unobtainable rpm for current control
-#define VEL_TO_RPM_RATIO 0.57147  // TODO: set actual ratio, m/s to motor (rpm for m/s)
+
+#define MATH_PI 3.14
+#define WHEEL_DIAMETER 0.57147
+#define VEL_TO_RPM_RATIO (60/(2*MATH_PI)*WHEEL_DIAMETER)  // TODO: set actual ratio, m/s to motor (rpm for m/s)
 // wheel diameter 557mm
 // 1000 / (557 * pi) = 0.57147
 
@@ -46,4 +49,9 @@
 #define MOTOR_CONTROLLER_BASE_R 0x80  // TODO: set to actual values
 
 void init_motor_controller_can();
+float prv_get_float(uint32_t u);
+float prv_clamp_float(float value);
+float prv_one_pedal_threshold(float car_velocity);
+float prv_one_pedal_drive_current(float throttle_percent, float threshold, DriveState *drive_state);
+void prv_update_target_current_velocity();
 /** @} */
