@@ -13,6 +13,9 @@
 /* Inter-component Headers */
 #include "spi.h"
 #include "gpio.h"
+#include "can_queue.h"
+#include "can_msg.h"
+#include "can_hw.h"
 /* Intra-component Headers */
 
 /**

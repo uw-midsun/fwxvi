@@ -114,8 +114,6 @@ static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef *hi2c, bool is_rx
     return;
   }
 
-  __HAL_UART_CLEAR_IT(hi2c, is_rx ? I2C_IT_RXI : I2C_IT_TXI);
-
   xSemaphoreGiveFromISR(s_i2c_cmplt_handle[i2c], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }

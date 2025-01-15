@@ -44,9 +44,11 @@ typedef enum {
  * @brief Use to forward failures or continue on success.
  */
 #define status_ok_or_return(code)          \
-  ({                                       \
+  do {                                     \
     __typeof__(code) status_expr = (code); \
-    if (status_expr) return status_expr;   \
-  })
+    if (status_expr != STATUS_CODE_OK) {   \
+      return status_expr;                  \
+    }                                      \
+  } while (0)
 
 /** @} */

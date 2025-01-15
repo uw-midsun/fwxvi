@@ -235,7 +235,7 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
   status_ok_or_return(spi_init(settings->spi_port, &settings->spi_settings));
 
   if (settings->can_settings.bitrate > CAN_HW_BITRATE_500KBPS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "mcp2515 does not support this bitrate");
+    return STATUS_CODE_INVALID_ARGS;
   }
 //BitRate
   mcp2515_bitrate = settings->can_settings.bitrate;
@@ -251,17 +251,17 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
   status_ok_or_return(gpio_init_pin(&settings->RX1BF, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH));
 
   const InterruptSettings it_settings = {
-    .type = INTERRUPT_TYPE_INTERRUPT,
+    .class = INTERRUPT_TYPE_INTERRUPT,
     .priority = INTERRUPT_PRIORITY_NORMAL,
     .edge = INTERRUPT_EDGE_FALLING,
   };
 //idk
   status_ok_or_return(
-      gpio_it_register_interrupt(&settings->interrupt_pin, &it_settings, 0, MCP2515_INTERRUPT));
+      gpio_register_interrupt(&settings->interrupt_pin, &it_settings, 0, MCP2515_INTERRUPT));
   status_ok_or_return(
-      gpio_it_register_interrupt(&settings->RX0BF, &it_settings, 1, MCP2515_INTERRUPT));
+      gpio_register_interrupt(&settings->RX0BF, &it_settings, 1, MCP2515_INTERRUPT));
   status_ok_or_return(
-      gpio_it_register_interrupt(&settings->RX1BF, &it_settings, 2, MCP2515_INTERRUPT));
+      gpio_register_interrupt(&settings->RX1BF, &it_settings, 2, MCP2515_INTERRUPT));
 
   // ! Ensure the task priority is higher than the rx/tx tasks in mcp2515.c
   status_ok_or_return(tasks_init_task(MCP2515_INTERRUPT, TASK_PRIORITY(3), NULL));
