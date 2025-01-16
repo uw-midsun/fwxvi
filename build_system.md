@@ -34,6 +34,12 @@ options can occur anywhere in the command string
 
     --mem-report
         (arm) Reports the memory space after a build
+    
+    --flash=<application type>
+        Specify whether we are flashing the bootloader, bootloader-application or raw application.
+
+    --build-config=<Build type>
+        Specify if we are building in release or debug mode
 
 Commands:
     NONE
@@ -57,6 +63,10 @@ Commands:
         (x86) Run the project's binary.
         - e.g. `scons sim --platform=x86 <target>` (`scons sim --platform=x86 --project=new_led`)
 
+    vehicle_sim
+        (x86) Runs a full vehicle simulation
+        - e.g. 'scons vehicle_sim --platform=x86'
+
     gdb
         (x86) Run the project's binary with gdb.
         - e.g. `scons gdb <target>` (`scons gdb --project=new_led`)
@@ -77,6 +87,12 @@ Commands:
 
     clean
         Delete the `build` directory.
+    
+    hil
+        Runs a HIL test. This is not fully implemented yet
+    
+    doxygen
+        Build a local copy of the doxygen HTML
 
 Target:
 targest can be specified with an option.

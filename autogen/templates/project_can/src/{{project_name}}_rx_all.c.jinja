@@ -1,0 +1,163 @@
+/************************************************************************************************
+ * @file   {{ project_name }}_rx_all.c
+ *
+ * @brief  Source file for receiving all CAN messages
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "can.h"
+#include "system_can.h"
+
+/* Intra-component Headers */
+#include "can_codegen.h"
+#include "can_watchdog.h"
+{% set messages = messages | selectattr("receiver", "contains", project_name) | list -%}
+{%- for message in messages %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+CanWatchDog s_{{message.name}}_msg_watchdog = {0, {{message.receiver[project_name].watchdog | lower}}, 0};
+    {%- endif %}
+{%- endfor %}
+
+void can_rx_all() {
+    CanMessage msg = { 0 };
+    while (can_receive(&msg) == STATUS_CODE_OK) {
+        /* TODO: Not sure if loop is best way */
+        /* Might be O(n) */
+        /* If store all functions in callback array may be better? */
+        /* Or do some sort or binary search for O(lgn) */
+
+        /* Cache the data */
+        uint64_t data = msg.data;
+
+        switch (msg.id.raw) {
+        {%- for message in messages %}
+            case SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}:
+            {%- for signal in message.signals %}
+                g_rx_struct.{{message.name}}_{{signal.name}} = (data >> {{signal.start_bit}});
+            {%- endfor %}
+                g_rx_struct.received_{{message.name}} = true;
+            {%- if message.receiver[project_name].watchdog %}
+                s_{{message.name}}_msg_watchdog.cycles_over = 0;
+            {%- endif %}
+                break;
+        {%- endfor %}
+            default:
+                break;
+        }
+    }
+}
+
+void clear_all_rx_received() {
+{%- for message in messages %}
+    g_rx_struct.received_{{message.name}} = false;
+{%- endfor %}
+}
+
+void clear_fast_rx_received() {
+{%- for message in messages %}
+{%- if message.cycle == "fast" %}
+    g_rx_struct.received_{{message.name}} = false;
+{%- endif %}
+{%- endfor %}
+}
+
+void clear_medium_rx_received() {
+{%- for message in messages %}
+{%- if message.cycle == "medium" %}
+    g_rx_struct.received_{{message.name}} = false;
+{%- endif %}
+{%- endfor %}
+}
+
+void clear_slow_rx_received() {
+{%- for message in messages %}
+{%- if message.cycle == "slow" %}
+    g_rx_struct.received_{{message.name}} = false;
+{%- endif %}
+{%- endfor %}
+}
+
+StatusCode check_all_can_watchdogs() {
+{%- for message in messages %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+    if (!g_rx_struct.received_{{message.name}}) {
+        ++s_{{message.name}}_msg_watchdog.cycles_over;
+        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
+            LOG_CRITICAL("DID NOT RECEIVE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+                            s_{{message.name}}_msg_watchdog.max_cycles);
+            s_{{message.name}}_msg_watchdog.missed = true;
+        } else {
+            s_{{message.name}}_msg_watchdog.missed = false;
+        }
+    }
+    {%- endif %}
+{%- endfor %}
+    return STATUS_CODE_OK;
+}
+
+StatusCode check_fast_can_watchdogs() {
+{%- for message in messages %}
+{%- if message.cycle == "fast" %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+    if (!g_rx_struct.received_{{message.name}}) {
+        ++s_{{message.name}}_msg_watchdog.cycles_over;
+        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
+            LOG_CRITICAL("DID NOT RECEIVE FAST CYCLE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+                            s_{{message.name}}_msg_watchdog.max_cycles);
+            s_{{message.name}}_msg_watchdog.missed = true;
+        } else {
+            s_{{message.name}}_msg_watchdog.missed = false;
+        }
+    }
+    {%- endif %}
+{%- endif %}
+{%- endfor %}
+    return STATUS_CODE_OK;
+}
+
+StatusCode check_medium_can_watchdogs() {
+{%- for message in messages %}
+{%- if message.cycle == "medium" %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+    if (!g_rx_struct.received_{{message.name}}) {
+        ++s_{{message.name}}_msg_watchdog.cycles_over;
+        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
+            LOG_CRITICAL("DID NOT RECEIVE MEDIUM CYCLE CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+                            s_{{message.name}}_msg_watchdog.max_cycles);
+            s_{{message.name}}_msg_watchdog.missed = true;
+        } else {
+            s_{{message.name}}_msg_watchdog.missed = false;
+        }
+    }
+    {%- endif %}
+{%- endif %}
+{%- endfor %}
+    return STATUS_CODE_OK;
+}
+
+StatusCode check_slow_can_watchdogs() {
+{%- for message in messages %}
+{%- if message.cycle == "slow" %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+    if (!g_rx_struct.received_{{message.name}}) {
+        ++s_{{message.name}}_msg_watchdog.cycles_over;
+        if (s_{{message.name}}_msg_watchdog.cycles_over >= s_{{message.name}}_msg_watchdog.max_cycles) {
+            LOG_CRITICAL("DID NOT RECEIVE SLOW CAN MESSAGE: %u IN MAX CYCLES : %u\n", SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+                            s_{{message.name}}_msg_watchdog.max_cycles);
+            s_{{message.name}}_msg_watchdog.missed = true;
+        } else {
+            s_{{message.name}}_msg_watchdog.missed = false;
+        }
+    }
+    {%- endif %}
+{%- endif %}
+{%- endfor %}
+    return STATUS_CODE_OK;
+}
+

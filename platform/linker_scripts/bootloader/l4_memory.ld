@@ -24,7 +24,7 @@ _estack = _sram_start + _sram_size;
 
 MEMORY
 {
-  BOOTLOADER  (rx) : ORIGIN = _flash_start, LENGTH = _bootloader_size
+  BOOTLOADER  (rx) : ORIGIN = _bootloader_start, LENGTH = _bootloader_size
   APPLICATION (rx) : ORIGIN = _application_start, LENGTH = _application_size
   RAM        (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
 }

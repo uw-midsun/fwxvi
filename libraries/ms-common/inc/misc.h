@@ -1,19 +1,25 @@
 #pragma once
 
 /************************************************************************************************
- * misc.h
+ * @file   misc.h
  *
- * Common helper functions
+ * @brief  Common helper functions
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+
+/**
+ * @defgroup Miscellaneous
+ * @brief    Miscellaneous libraries
+ * @{
+ */
 
 #define SIZEOF_ARRAY(arr) (sizeof((arr)) / sizeof((arr)[0]))
 #define SIZEOF_FIELD(type, field) (sizeof(((type *)0)->field))
@@ -35,3 +41,5 @@
     __typeof__(b) _b = (b); \
     _a > _b ? _a : _b;      \
   })
+
+/** @} */

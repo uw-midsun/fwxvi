@@ -81,21 +81,34 @@ AddOption(
     help="Specifies which application to flash. The bootloader, application or the entire flash bank"
 )
 
+AddOption(
+    '--build-config',
+    dest='build_config',
+    type='choice',
+    choices=('debug', 'release'),
+    default='debug',
+    help="Specifies if the build optimizes for size or provides more debug informtation"
+)
+
 PLATFORM = GetOption('platform')
 TARGET = GetOption('name')
+BUILD_CONFIG = GetOption('build_config')
 FLASH_TYPE = GetOption('flash')
+TESTFILE = GetOption('testfile')
 
 ###########################################################
 # Environment setup
 ###########################################################
 
 # Retrieve the construction environment from the appropriate platform script
-env = SConscript(f'platform/{PLATFORM}.py', exports='FLASH_TYPE')
+env = SConscript(f'platform/{PLATFORM}.py', exports=['FLASH_TYPE', 'BUILD_CONFIG'])
 
 VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
     "FLASH_TYPE": FLASH_TYPE,
+    "TESTFILE": TESTFILE,
+    "BUILD_CONFIG": BUILD_CONFIG,
     "env": env,
 }
 
@@ -150,6 +163,14 @@ elif COMMAND == "new":
     SConscript('scons/new_target.scons', exports='VARS')
 
 ###########################################################
+# HIL command
+###########################################################
+elif COMMAND == "hil":
+    if not TEST_FILE:
+        pass
+    SConscript('scons/pytest.scons', exports='VARS')
+
+###########################################################
 # Clean
 ###########################################################
 elif COMMAND == "clean":
@@ -160,6 +181,18 @@ elif COMMAND == "clean":
 ###########################################################
 elif COMMAND == "lint" or COMMAND == "format":
     SConscript('scons/lint_format.scons', exports='VARS')
+
+###########################################################
+# Doxygen Generation
+###########################################################
+elif COMMAND == "doxygen":
+    AlwaysBuild(Command('#/doxygen', [], 'doxygen doxygen/Doxyfile'))
+
+###########################################################
+# Cantools Autogeneration Script
+###########################################################
+elif COMMAND == "cantools":
+    AlwaysBuild(Command('#/cantools', [], 'python3 -m autogen cantools -o can/tools'))
 
 ###########################################################
 # Build
@@ -200,8 +233,6 @@ if PLATFORM == 'arm' and TARGET:
     # flash the MCU using openocd
     def flash_run_target(target, source, env):
         serialData = flash_run(project_bin, FLASH_TYPE)
-        #while True:
-        #    line: str = serialData.readline().decode("utf-8")
-        #    print(line, end='')
+        exit(1)
 
     AlwaysBuild(Command('#/flash', project_bin, flash_run_target))

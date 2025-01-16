@@ -1,13 +1,13 @@
 /************************************************************************************************
- * static_alloc.c
+ * @file   static_alloc.c
  *
- * Static allocation helpers for FreeRTOS.
+ * @brief  Static allocation helpers for FreeRTOS.
  *
- * Created: 2024-10-27
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-27
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdint.h>
 
 /* Inter-component Headers */

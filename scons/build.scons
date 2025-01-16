@@ -20,14 +20,9 @@ LIB_DIR = ROOT.Dir('libraries')
 SMOKE_DIR = ROOT.Dir('smoke')
 
 LIB_BIN_DIR = BIN_DIR.Dir('libraries')
-
-CODEGEN_DIR = LIB_DIR.Dir("codegen")
-BOARDS_DIR = CODEGEN_DIR.Dir("boards")
-GENERATOR = CODEGEN_DIR.File("generator.py")
-TEMPLATES_DIR = CODEGEN_DIR.Dir("templates")
-
 LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
 
+AUTOGEN_DIR = ROOT.Dir("autogen")
 
 def src(path):
     # return all source files within a path
@@ -57,47 +52,36 @@ def get_lib_deps(entry):
 ###########################################################
 # Header file generation from jinja templates
 ###########################################################
-autogen_sources = [BOARDS_DIR.glob("*"), TEMPLATES_DIR.glob("*"), GENERATOR]
+autogen_sources = list(Path(AUTOGEN_DIR.abspath).rglob("*"))
+autogen_sources += list(Path(ROOT.abspath).glob("can/boards/*"))
 
 env.Command(
-    LIBRARIES_INC_DIR.File("can_board_ids.h"),
+    LIBRARIES_INC_DIR.File("system_can.h"),
     autogen_sources,
-    env.Action(f"python3 {GENERATOR} -f {LIBRARIES_INC_DIR} -t can_board_ids.h.jinja",
-               f"Autogen    {LIBRARIES_INC_DIR}/can_board_ids.h")
+    f"python3 -m autogen system_can -o can/inc"
 )
 
 
 def generate_can_files(env, project):
     project_can_dir = OBJ_DIR.Dir(project).Dir("can")
-    source_dir = project_can_dir.Dir("src")
-    header_dir = project_can_dir.Dir("inc")
-    header_files = []
-    source_files = []
-    source_command = f"-f {source_dir} -t"
-    header_command = f"-f {header_dir} -t"
+    output_files = []
 
-    # TODO: Fix up system_can.dbc output directory
-    # project specific files
-    header_command += " can_codegen.h.jinja"
-    header_files.append(header_dir.File("can_codegen.h"))
-    for template in TEMPLATES_DIR.glob('_*.jinja'):
-        # name of output file
-        file_name = Path(project).stem + Path(template.name).stem
-        if ".c" in file_name:
-            source_command += " " + template.name
-            source_files.append(source_dir.File(file_name))
-        else:
-            header_command += " " + template.name
-            header_files.append(header_dir.File(file_name))
+    project_name = Path(project).stem
+    can_template_dir = Path(str(AUTOGEN_DIR), "templates/project_can")
+    for template in can_template_dir.glob('*/*.jinja'):
+        template_path = template.relative_to(can_template_dir)
+        output_name = str(template_path) \
+            .replace(r"{{project_name}}", project_name) \
+            .replace(".jinja", "")
 
-    command = env.Action(f"python3 {GENERATOR} -b {Path(project).stem} {source_command} {header_command}",
-                         f"Autogen    {project} can files")
-    # print([f.path for f in header_files + source_files])
-    env.Command(header_files + source_files, autogen_sources, command)
+        output_files.append(project_can_dir.File(output_name))
+
+    env.Command(output_files, autogen_sources,
+                f"python3 -m autogen project_can -o {project_can_dir.path}")
 
     # Add a VariantDir that point to can folder. Create the can target specific for the project
     VariantDir(project_can_dir, ROOT.Dir('can'), duplicate=0)
-    return src(project_can_dir), [header_dir] + inc(ROOT.Dir("can"))
+    return src(project_can_dir), [project_can_dir.Dir("inc")] + inc(ROOT.Dir("can"))
 
 
 ###########################################################
@@ -141,16 +125,20 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
 
     lib_deps = get_lib_deps(entry)
     # SCons automagically handles object creation and linking
-    target = env.Program(
-        target=BIN_DIR.File(entry.path),
-        source=srcs,
-        CPPPATH=env['CPPPATH'] + incs + lib_incs,
-        # link each library twice so that dependency cycles are resolved
-        # See: https://stackoverflow.com/questions/45135
-        LIBS=env['LIBS'] + lib_deps * 2,
-        LIBPATH=[LIB_BIN_DIR],
-        CCFLAGS=env['CCFLAGS'] + config['cflags'],
-    )
+        
+    if PLATFORM == 'x86' and config['arm_only']:
+        print(f'Project: {entry} is only for ARM devices. Cannot build x86 version.')
+    else:
+        target = env.Program(
+            target=BIN_DIR.File(entry.path),
+            source=srcs,
+            CPPPATH=env['CPPPATH'] + incs + lib_incs,
+            # link each library twice so that dependency cycles are resolved
+            # See: https://stackoverflow.com/questions/45135
+            LIBS=env['LIBS'] + lib_deps * 2,
+            LIBPATH=[LIB_BIN_DIR],
+            CCFLAGS=env['CCFLAGS'] + config['cflags'],
+        )
 
     # .bin file only required for arm, not x86
     if PLATFORM == 'arm':
@@ -167,6 +155,10 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
 for entry in PY_DIR.glob("*", exclude=["*.*", "__pycache__"]):
     target = env.Command(entry.path, [],
                          f"PYTHONPATH={PY_DIR.path} python3 {entry.path}/main.py")
+    config = parse_config(entry)
+    if config["can"]:
+        # Depends(target, PY_DIR.File("can/message.py"))
+        pass
     Alias(entry.path, target)
     Alias(entry.name, target)
 

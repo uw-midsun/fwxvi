@@ -58,6 +58,8 @@ jobs:
           clang --version
           clang-format --version
           pylint --version
+          python3 --version
+          scons --version
       - name: Format and lint
         run: |
           scons format
@@ -75,17 +77,7 @@ jobs:
         id: build-stm32
         run: |
           scons --platform=arm --define="${DEFINES}"
-#       - name: Build and test
-#         id: build-test
-#         run: |
-#           # Setting up vcan
-#           sudo apt-get install -y linux-modules-extra-$(uname -r)
-#           sudo modprobe can
-#           sudo modprobe can_raw
-#           sudo modprobe vcan
-#           sudo ip link add dev vcan0 type vcan
-#           sudo ip link set up vcan0
-
-#           scons --platform=x86 --define="${DEFINES}"
-#           scons test --platform=x86 --define="${DEFINES}"
-#         # missing make pytest_all
+      - name: Build x86
+        id: build-x86
+        run: |
+          scons --platform=x86 --define="${DEFINES}"

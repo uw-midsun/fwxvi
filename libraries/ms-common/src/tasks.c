@@ -1,13 +1,13 @@
 /************************************************************************************************
- * tasks.c
+ * @file   tasks.c
  *
- * Source code for the RTOS tasks wrapper
+ * @brief  Source code for the RTOS tasks wrapper
  *
- * Created: 2024-10-30
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 
 /* Inter-component Headers */
@@ -22,14 +22,12 @@ static StaticSemaphore_t s_end_task_sem;
 static SemaphoreHandle_t s_end_task_handle = NULL;
 
 // Add any setup or teardown that needs to be done for every task here.
-static void prv_task(void *params) {
+static void s_task(void *params) {
   Task *task = params;
   if (task == NULL) {  // guard just in case, error should have been caught previously
     LOG_CRITICAL("CRITICAL: Tried to start null task!\n");
     return;
   }
-
-  LOG_DEBUG("Task %s starting.\n", task->name);
 
   // Call the task function. This shouldn't exit.
   task->task_func(task->context);
@@ -48,14 +46,12 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
 
   // Priorities range from 0 to configMAX_PRIORITIES-1 with a higher number meaning higher priority.
   if (priority >= configMAX_PRIORITIES) {
-    LOG_CRITICAL("CRITICAL: task '%s' priority is too high, not creating! Was %d, max is %d\n",
-                 task->name, (int)priority, configMAX_PRIORITIES - 1);
+    LOG_CRITICAL("CRITICAL: task '%s' priority is too high, not creating! Was %d, max is %d\n", task->name, (int)priority, configMAX_PRIORITIES - 1);
     return STATUS_CODE_INVALID_ARGS;
   }
 
   if (task->stack_size < TASK_MIN_STACK_SIZE) {
-    LOG_WARN("Task '%s' had too small stack size, defaulting to minimum %d\n", task->name,
-             TASK_MIN_STACK_SIZE);
+    LOG_WARN("Task '%s' had too small stack size, defaulting to minimum %d\n", task->name, TASK_MIN_STACK_SIZE);
     task->stack_size = TASK_MIN_STACK_SIZE;
   }
 
@@ -65,8 +61,7 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
   }
 
   task->context = context;
-  task->handle = xTaskCreateStatic(prv_task, task->name, task->stack_size, task, priority,
-                                   task->stack, &task->tcb);
+  task->handle = xTaskCreateStatic(s_task, task->name, task->stack_size, task, priority, task->stack, &task->tcb);
   if (task->handle == NULL) {
     LOG_CRITICAL("Failed to create Task %s\n", task->name);
   } else {

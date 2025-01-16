@@ -1,13 +1,13 @@
 /************************************************************************************************
- * tasks.c
+ * @file   tasks.c
  *
- * Source code for the RTOS tasks wrapper
+ * @brief  Source code for the RTOS tasks wrapper
  *
- * Created: 2024-10-30
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 

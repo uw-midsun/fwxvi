@@ -14,6 +14,7 @@ def parse_config(entry):
         'mocks': {},
         'no_lint': False,
         "can": False,
+        "arm_only": False
     }
     config_file = entry.File('config.json')
     if not config_file.exists():
@@ -44,6 +45,8 @@ def flash_run(entry, flash_type):
         '-s {}'.format(OPENOCD_SCRIPT_DIR),
         '-f interface/{}.cfg'.format(PROBE),
         '-f target/stm32l4x.cfg',
+        '-f {}/stm32l4-openocd.cfg'.format(PLATFORM_DIR),
+        '-c "stm32l4x.cpu configure -rtos FreeRTOS"',
     ]
     if flash_type == 'default':
         OPENOCD_CFG += [

@@ -1,15 +1,15 @@
 #pragma once
 
 /************************************************************************************************
- * log.h
+ * @file   log.h
  *
- * Header file for the logging library used to debug all modules
+ * @brief  Header file for the logging library used to debug all modules
  *
- * Created: 2024-11-02
- * Midnight Sun Team #24 - MSXVI
+ * @date   2024-11-02
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,6 +21,12 @@
 #include "semaphore.h"
 #include "tasks.h"
 #include "uart.h"
+
+/**
+ * @defgroup  Logger
+ * @brief     Logging library
+ * @{
+ */
 
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
@@ -34,10 +40,10 @@
 #endif
 
 typedef enum {
-  LOG_LEVEL_DEBUG = 0,
-  LOG_LEVEL_WARN,
-  LOG_LEVEL_CRITICAL,
-  NUM_LOG_LEVELS,
+  LOG_LEVEL_DEBUG = 0, /**< Debug level */
+  LOG_LEVEL_WARN,      /**< Warning level */
+  LOG_LEVEL_CRITICAL,  /**< Critical level */
+  NUM_LOG_LEVELS,      /**< Number of Log levels */
 } LogLevel;
 
 extern char g_log_buffer[MAX_LOG_SIZE];
@@ -48,29 +54,19 @@ extern UartSettings log_uart_settings;
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
-#ifdef MS_PLATFORM_X86
 #define log_init() \
-  { mutex_init(&s_log_mutex); }
-#else
-#define log_init()                              \
-  {                                             \
-    mutex_init(&s_log_mutex);                   \
-    uart_init(UART_PORT_1, &log_uart_settings); \
-  }
-#endif
+  { uart_init(UART_PORT_1, &log_uart_settings); }
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
 #else
-#define LOG(level, fmt, ...)                                                                 \
-  do {                                                                                       \
-    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                 \
-      if (mutex_lock(&s_log_mutex, LOG_TIMEOUT_MS) == STATUS_CODE_OK) {                      \
-        size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, \
-                                           (level), __FILE__, __LINE__, ##__VA_ARGS__);      \
-        uart_tx(UART_PORT_1, (uint8_t *)g_log_buffer, msg_size);                             \
-      }                                                                                      \
-      mutex_unlock(&s_log_mutex);                                                            \
-    }                                                                                        \
+#define LOG(level, fmt, ...)                                                                                                            \
+  do {                                                                                                                                  \
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
+      size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
+      uart_tx(UART_PORT_1, (uint8_t *)g_log_buffer, msg_size);                                                                          \
+    }                                                                                                                                   \
   } while (0)
 #endif
+
+/** @} */
