@@ -12,7 +12,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "bms.h"
+#include "bms_carrier.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
 #include "status.h"

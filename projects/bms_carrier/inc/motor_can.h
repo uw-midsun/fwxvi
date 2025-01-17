@@ -1,15 +1,15 @@
 #pragma once
 
-/************************************************************************************************
- * @file   mcp2515_defs.h
- *
- * @brief  Header file for mcdp2515.defs
- *
- * @date   2025-01-13
- * @author Midnight Sun Team #24 - MSXVI
- ************************************************************************************************/
+/**
+ * @file    mcp2515_defs.h
+ * @brief   Header file for mcdp2515.defs
+ * @date    2025-01-13
+ * @author  Midnight Sun Team #24 - MSXVI
+ */
 
 /* Standard library Headers */
+#include <stdint.h>
+
 /* Inter-component Headers */
 /* Intra-component Headers */
 
@@ -47,6 +47,34 @@
 #define DRIVER_CONTROL_BASE 0x500
 #define MOTOR_CONTROLLER_BASE_L 0x400
 #define MOTOR_CONTROLLER_BASE_R 0x80  // TODO: set to actual values
+typedef enum MotorControllerMessageIds {
+    IDENTIFICATION = 0x00,
+    STATUS,
+    BUS_MEASUREMENT,
+    VEL_MEASUREMENT,
+    PHASE_CURRENT,
+    MOTOR_VOLTAGE,
+    MOTOR_CURRENT,
+    MOTOR_BACK_EMF,
+    RAIL_15V,
+    RAIL_3V_9V,
+    RESERVED,
+    HEAT_SINK_MOTOR_TEMP,
+    DSP_BOARD_TEMP,
+    RESERVED_2,
+    ODOMETER_BUS_AMPHOUR,
+    SLIP_SPEED = 0x17,
+  } MotorControllerMessageIds;
+  
+  typedef enum DriveState {
+    // drive states defined by center console
+    NEUTRAL,
+    DRIVE,
+    REVERSE,
+    // extra drive state types used only by mci
+    CRUISE,
+    BRAKE,
+  } DriveState;
 
 void init_motor_controller_can();
 float prv_get_float(uint32_t u);

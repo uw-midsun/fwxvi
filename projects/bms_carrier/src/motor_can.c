@@ -3,42 +3,16 @@
 
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "log.h"
 #include "mcp2515.h"
-// #include "motor_controller_getters.h"
-// #include "motor_controller_setters.h"
+#include "bms_carrier_getters.h"
+#include "bms_carrier_setters.h"
 #include "motor_can.h"
 #include "tasks.h"
 
-typedef enum MotorControllerMessageIds {
-  IDENTIFICATION = 0x00,
-  STATUS,
-  BUS_MEASUREMENT,
-  VEL_MEASUREMENT,
-  PHASE_CURRENT,
-  MOTOR_VOLTAGE,
-  MOTOR_CURRENT,
-  MOTOR_BACK_EMF,
-  RAIL_15V,
-  RAIL_3V_9V,
-  RESERVED,
-  HEAT_SINK_MOTOR_TEMP,
-  DSP_BOARD_TEMP,
-  RESERVED_2,
-  ODOMETER_BUS_AMPHOUR,
-  SLIP_SPEED = 0x17,
-} MotorControllerMessageIds;
 
-typedef enum DriveState {
-  // drive states defined by center console
-  NEUTRAL,
-  DRIVE,
-  REVERSE,
-  // extra drive state types used only by mci
-  CRUISE,
-  BRAKE,
-} DriveState;
 
 static float s_target_current;
 static float s_target_velocity;
@@ -48,7 +22,7 @@ static float s_car_velocity_r = 0.0;
 void (*mcp2515_rx_all)();
 void (*mcp2515_tx_all)();
 
- float pget_float(uint32_t u) {
+ float get_float(uint32_t u) {
   union {
     float f;
     uint32_t u;
@@ -109,7 +83,7 @@ void (*mcp2515_tx_all)();
   // Regen returns a value btwn 0-100 to represent the max regen we can perform
   // 0 means our cells max voltage is close to 4.2V or regen is off so we should stop regen braking
   // 100 means we are below 4.0V so regen braking is allowed
-  float regen = get_float(get_cc_regen_percent());
+  float regen = get_float(get_cc_regen_percentage_percent());
   bool cruise = get_cc_info_cruise_control();
 
   if ((drive_state == DRIVE) && cruise && (throttle_percent <= opd_threshold)) {
@@ -181,6 +155,7 @@ static void motor_controller_tx_all() {
   // if (!get_pedal_output_brake_output()) return;
   // don't send drive command if not precharged
   //idk
+
   if (!g_tx_struct.mc_status_precharge_status) {
     LOG_DEBUG("no precharge\n");
     return;

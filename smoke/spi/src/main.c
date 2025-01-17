@@ -22,17 +22,16 @@
 GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
 
 
-
 TASK(SpiTest, TASK_STACK_512) {
   uint8_t tx_data=0xff;
   uint8_t rx_data=0x00;
-  SpiSettings spi_settings{;
+  SpiSettings spi_settings={
     .baudrate=10e6,
     .mode=SPI_MODE_0,
-    .sdo = { .pin = 5, .port = GPIO_PORT_B },
-    .sdi = { .pin = 6, .port = GPIO_PORT_B }, 
-    .sclk = { .pin = 7, .port = GPIO_PORT_B },
-    .cs = { .pin = 8, .port = GPIO_PORT_B },
+    .sdo = { .pin = 1, .port = GPIO_PORT_B },
+    .sdi = { .pin = 2, .port = GPIO_PORT_B }, 
+    .sclk = { .pin = 3, .port = GPIO_PORT_B },
+    .cs = { .pin = 4, .port = GPIO_PORT_B },
   };
   gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   while (true) {
@@ -55,7 +54,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(SpiTest, TASK_PRIORITY(3UL), NULL);
+  tasks_init_task(SpiTest, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
