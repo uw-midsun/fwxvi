@@ -54,7 +54,7 @@ typedef union CanId {
  */
 typedef struct CanMessage {
   CanId id;                 /**< CAN ID */
-  _Bool extended;            /**< Extended ID Flag */
+  bool extended;            /**< Extended ID Flag */
   size_t dlc;               /**< Data length Code */
   union {
     uint64_t data;          /**< Raw data in the form of 8 bytes */

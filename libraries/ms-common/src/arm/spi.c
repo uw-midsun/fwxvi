@@ -121,40 +121,48 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   if (s_spi_port_handle[spi] == NULL || s_spi_cmplt_handle[spi] == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  if (settings->sdo.pin==1||settings->sdo.pin==2){
-  gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
-}else{
-  gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
-}
-if (settings->sdo.pin==1||settings->sdo.pin==2){
-  gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
-}else{
-  gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
-}
-if (settings->sdo.pin==1||settings->sdo.pin==2){
-  gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
-}else{
-  gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
-}
-if (settings->sdo.pin==1||settings->sdo.pin==2){
-  gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
-}else{
-  gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
-}
+  if (spi == SPI_PORT_3) {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+  } else {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+  }
 
   s_spi_handles[spi].Instance = s_port[spi].base;
   s_spi_handles[spi].Init.Mode = SPI_MODE_MASTER;
   s_spi_handles[spi].Init.Direction =  SPI_DIRECTION_2LINES ;
   s_spi_handles[spi].Init.DataSize = SPI_DATASIZE_8BIT;
-  s_spi_handles[spi].Init.CLKPolarity =SPI_POLARITY_HIGH;
-  s_spi_handles[spi].Init.CLKPhase =SPI_PHASE_2EDGE;
+  
   s_spi_handles[spi].Init.NSS = SPI_NSS_SOFT;
   s_spi_handles[spi].Init.FirstBit = SPI_FIRSTBIT_MSB ;
-  s_spi_handles[spi].Init.TIMode = SPI_TIMODE_ENABLE ;
+  s_spi_handles[spi].Init.TIMode = SPI_TIMODE_DISABLE ;
   s_spi_handles[spi].Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   s_spi_handles[spi].Init.CRCPolynomial = 7;
-  s_spi_handles[spi].Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
-
+  s_spi_handles[spi].Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  switch(settings->mode) {
+    case SPI_MODE_0:
+        s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_LOW;
+        s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_1EDGE;
+        break;
+    case SPI_MODE_1:
+        s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_LOW;
+        s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_2EDGE;
+        break;
+    case SPI_MODE_2:
+        s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_HIGH;
+        s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_1EDGE;
+        break;
+    case SPI_MODE_3:
+        s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_HIGH;
+        s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_2EDGE;
+        break;
+    default:
+        return STATUS_CODE_INVALID_ARGS;
   s_port[spi].rcc_cmd();
 
   if (HAL_SPI_Init(&s_spi_handles[spi]) != HAL_OK) {
@@ -166,10 +174,6 @@ if (settings->sdo.pin==1||settings->sdo.pin==2){
   
 
 }
-// if (HAL_SPI_TransmitReceive_IT(&s_spi_handles[spi], tx_data, rx_data, tx_len > rx_len ? tx_len : rx_len, HAL_MAX_DELAY) != HAL_OK) {
-//   xSemaphoreGive(s_spi_port_handle[spi]);
-//   return STATUS_CODE_INTERNAL_ERROR;
-// }
 
 StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
   //return s_spi_transfer(spi, addr, rx_data, rx_len, true);
