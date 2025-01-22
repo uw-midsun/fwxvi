@@ -5,9 +5,10 @@
 #include "log.h"
 #include "tasks.h"
 #include "uart.h"
+#define SYSTEM_CAN_DEVICE_CAN_COMMUNICATION 0x01
 #define DATAGRAM_BUFFER_SIZE 64
 static CanStorage s_can_storage = { 0 };
-#define 
+#define DATAGRAM_QUEUE_SIZE 5
 
 static const CanSettings can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_CAN_COMMUNICATION,
@@ -33,8 +34,8 @@ static Queue datagram_queue = {
 
 Datagram datagram_buffer[DATAGRAM_BUFFER_SIZE]={ 
   .start_frame = 0xAA,
-  .id=msg->id.raw,
-  .dlc=msg1->dlc,
+  .id= msg->id.raw,
+  .dlc= msg1->dlc,
  }; 
  for (size_t i = 0; i < msg1->dlc; ++i) {
   datagram_buffer->data[i] = msg1->data_u8[i];
