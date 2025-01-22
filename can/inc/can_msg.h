@@ -12,6 +12,7 @@
 /* Standard library Headers */
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Inter-component Headers */
 

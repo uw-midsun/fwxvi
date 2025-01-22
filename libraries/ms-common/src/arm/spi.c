@@ -164,6 +164,7 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
     default:
         return STATUS_CODE_INVALID_ARGS;
   s_port[spi].rcc_cmd();
+  }
 
   if (HAL_SPI_Init(&s_spi_handles[spi]) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
@@ -171,7 +172,6 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
 
   s_port[spi].initialized = true;
   return STATUS_CODE_OK;
-  
 
 }
 
@@ -197,3 +197,4 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
   return STATUS_CODE_OK;
 
 }
+
