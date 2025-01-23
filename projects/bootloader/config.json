@@ -1,8 +1,7 @@
 {
     "arm_libs": [
-        "CMSIS",
-        "HAL"
+    "stm32f10x"
     ],
-    "can": false,
+    "no_lint": true,
     "arm_only": true
 }
