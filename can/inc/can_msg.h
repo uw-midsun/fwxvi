@@ -40,9 +40,9 @@ typedef uint32_t CanMessageId;
 typedef union CanId {
   CanMessageId raw;
   struct {
-    uint16_t source_id : 4;
-    uint16_t type : 1;
-    uint32_t msg_id : 24;
+    uint32_t source_id : 4;
+    uint32_t msg_id    : 6;
+    uint32_t priority  : 22;
   };
 } CanId;
 
@@ -56,7 +56,7 @@ typedef union CanId {
 typedef struct CanMessage {
   CanId id;                 /**< CAN ID */
   bool extended;            /**< Extended ID Flag */
-  size_t dlc;               /**< Data length Code */
+  uint8_t dlc;              /**< Data length Code */
   union {
     uint64_t data;          /**< Raw data in the form of 8 bytes */
     uint32_t data_u32[2];   /**< Data split in 4 bytes partitions */

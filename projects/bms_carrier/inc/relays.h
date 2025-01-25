@@ -21,9 +21,9 @@
 #include "interrupts.h"
 #include "log.h"
 #include "master_tasks.h"
-#include "timers.h"
 #include "status.h"
 #include "task.h"
+#include "timers.h"
 
 /* Intra-component Headers */
 

@@ -25,11 +25,8 @@
  * @{
  */
 
-
-
 #define CELL_INTERNAL_RESISTANCE_mOHMS 22
-#define PACK_INTERNAL_RESISTANCE_mOHMS \
-  (CELL_INTERNAL_RESISTANCE_mOHMS * 9 * 4) / 8  // 9 modules, each module is 8P4S
+#define PACK_INTERNAL_RESISTANCE_mOHMS (CELL_INTERNAL_RESISTANCE_mOHMS * 9 * 4) / 8  // 9 modules, each module is 8P4S
 #define VOLTS_TO_mV 1000
 #define LUT_SIZE 41
 

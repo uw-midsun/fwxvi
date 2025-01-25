@@ -36,15 +36,7 @@
 
 // select the ADC mode (trade-off between speed or minimizing noise)
 // see p.50 for conversion times and p.23 for noise
-typedef enum {
-  LTC_AFE_ADC_MODE_27KHZ = 0,
-  LTC_AFE_ADC_MODE_7KHZ,
-  LTC_AFE_ADC_MODE_26HZ,
-  LTC_AFE_ADC_MODE_14KHZ,
-  LTC_AFE_ADC_MODE_3KHZ,
-  LTC_AFE_ADC_MODE_2KHZ,
-  NUM_LTC_AFE_ADC_MODES
-} LtcAfeAdcMode;
+typedef enum { LTC_AFE_ADC_MODE_27KHZ = 0, LTC_AFE_ADC_MODE_7KHZ, LTC_AFE_ADC_MODE_26HZ, LTC_AFE_ADC_MODE_14KHZ, LTC_AFE_ADC_MODE_3KHZ, LTC_AFE_ADC_MODE_2KHZ, NUM_LTC_AFE_ADC_MODES } LtcAfeAdcMode;
 
 typedef struct LtcAfeBitset {
   uint16_t cell_bitset;

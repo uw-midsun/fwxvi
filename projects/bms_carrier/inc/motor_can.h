@@ -35,7 +35,7 @@
 
 #define MATH_PI 3.14
 #define WHEEL_DIAMETER 0.57147
-#define VEL_TO_RPM_RATIO (60/(2*MATH_PI)*WHEEL_DIAMETER)  // TODO: set actual ratio, m/s to motor (rpm for m/s)
+#define VEL_TO_RPM_RATIO (60 / (2 * MATH_PI) * WHEEL_DIAMETER)  // TODO: set actual ratio, m/s to motor (rpm for m/s)
 // wheel diameter 557mm
 // 1000 / (557 * pi) = 0.57147
 
@@ -48,33 +48,33 @@
 #define MOTOR_CONTROLLER_BASE_L 0x400
 #define MOTOR_CONTROLLER_BASE_R 0x80  // TODO: set to actual values
 typedef enum MotorControllerMessageIds {
-    IDENTIFICATION = 0x00,
-    STATUS,
-    BUS_MEASUREMENT,
-    VEL_MEASUREMENT,
-    PHASE_CURRENT,
-    MOTOR_VOLTAGE,
-    MOTOR_CURRENT,
-    MOTOR_BACK_EMF,
-    RAIL_15V,
-    RAIL_3V_9V,
-    RESERVED,
-    HEAT_SINK_MOTOR_TEMP,
-    DSP_BOARD_TEMP,
-    RESERVED_2,
-    ODOMETER_BUS_AMPHOUR,
-    SLIP_SPEED = 0x17,
-  } MotorControllerMessageIds;
-  
-  typedef enum DriveState {
-    // drive states defined by center console
-    NEUTRAL,
-    DRIVE,
-    REVERSE,
-    // extra drive state types used only by mci
-    CRUISE,
-    BRAKE,
-  } DriveState;
+  IDENTIFICATION = 0x00,
+  STATUS,
+  BUS_MEASUREMENT,
+  VEL_MEASUREMENT,
+  PHASE_CURRENT,
+  MOTOR_VOLTAGE,
+  MOTOR_CURRENT,
+  MOTOR_BACK_EMF,
+  RAIL_15V,
+  RAIL_3V_9V,
+  RESERVED,
+  HEAT_SINK_MOTOR_TEMP,
+  DSP_BOARD_TEMP,
+  RESERVED_2,
+  ODOMETER_BUS_AMPHOUR,
+  SLIP_SPEED = 0x17,
+} MotorControllerMessageIds;
+
+typedef enum DriveState {
+  // drive states defined by center console
+  NEUTRAL,
+  DRIVE,
+  REVERSE,
+  // extra drive state types used only by mci
+  CRUISE,
+  BRAKE,
+} DriveState;
 
 void init_motor_controller_can();
 float prv_get_float(uint32_t u);

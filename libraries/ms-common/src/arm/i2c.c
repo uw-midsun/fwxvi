@@ -72,16 +72,16 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  /* Take the mutex for this uart port */
+  /* Take the mutex for this I2C port */
   if (xSemaphoreTake(s_i2c_port_handle[i2c], pdMS_TO_TICKS(I2C_TIMEOUT_MS)) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }
 
   HAL_StatusTypeDef status;
   if (is_rx) {
-    status = HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr, data, len);
+    status = HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr << 1U, data, len);
   } else {
-    status = HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr, data, len);
+    status = HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr << 1U, data, len);
   }
 
   if (status != HAL_OK) {
@@ -101,20 +101,12 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
 /* Private helper to handle transfer complete */
 static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef *hi2c, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
-  I2CPort i2c = NUM_I2C_PORTS;
 
-  for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
-    if (&s_i2c_handles[i] == hi2c) {
-      i2c = i;
-      break;
-    }
+  if (hi2c->Instance == I2C1) {
+    xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_1], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_2], &higher_priority_task);
   }
-
-  if (i2c >= NUM_I2C_PORTS) {
-    return;
-  }
-
-  xSemaphoreGiveFromISR(s_i2c_cmplt_handle[i2c], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }
 
@@ -146,15 +138,11 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
   I2CPort i2c = NUM_I2C_PORTS;
-  for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
-    if (&s_i2c_handles[i] == hi2c) {
-      i2c = i;
-      break;
-    }
-  }
 
-  if (i2c >= NUM_I2C_PORTS) {
-    return;
+  if (hi2c->Instance == I2C1) {
+    i2c = I2C_PORT_1;
+  } else {
+    i2c = I2C_PORT_2;
   }
 
   uint32_t error = HAL_I2C_GetError(hi2c);
@@ -179,8 +167,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
     /* Future expansion */
   }
 
-  /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete
-   */
+  /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete */
   xSemaphoreGive(s_i2c_cmplt_handle[i2c]);
   xSemaphoreGive(s_i2c_port_handle[i2c]);
 

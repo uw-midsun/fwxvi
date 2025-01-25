@@ -7,11 +7,8 @@ static float voltage_weight = 1.0f;
 /* Cell voltage. 0.2A Load taken off this page
  * https://lygte-info.dk/review/batteries2012/LG%2021700%20M50%205000mAh%20(Grey)%20UK.html */
 /* Placeholder lookup for testing */
-static float voltage_lookup[LUT_SIZE] = { 2.80, 3.00, 3.12, 3.18, 3.22, 3.25, 3.28, 3.30, 3.32,
-                                          3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50,
-                                          3.52, 3.54, 3.56, 3.58, 3.60, 3.62, 3.64, 3.66, 3.68,
-                                          3.70, 3.72, 3.74, 3.76, 3.78, 3.80, 3.82, 3.84, 3.86,
-                                          3.89, 3.93, 3.98, 4.07, 4.15 };
+static float voltage_lookup[LUT_SIZE] = { 2.80, 3.00, 3.12, 3.18, 3.22, 3.25, 3.28, 3.30, 3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 3.52, 3.54, 3.56,
+                                          3.58, 3.60, 3.62, 3.64, 3.66, 3.68, 3.70, 3.72, 3.74, 3.76, 3.78, 3.80, 3.82, 3.84, 3.86, 3.89, 3.93, 3.98, 4.07, 4.15 };
 
 // Ramps the voltage when its less than 30% SOC or greater than 70% SOC
 // https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
@@ -36,8 +33,7 @@ float perdict_voltage() {
 }
 
 void coulomb_counting_soc() {
-  float d_time =
-      (float)(pdTICKS_TO_MS(xTaskGetTickCount()) - s_storage.last_time) / (1000.0f * 3600.0f);
+  float d_time = (float)(pdTICKS_TO_MS(xTaskGetTickCount()) - s_storage.last_time) / (1000.0f * 3600.0f);
 
   // Trapezoidal rule
   float integrated_current = 0.5f * (float)(bms->pack_current + s_storage.last_current) * (d_time);
@@ -57,7 +53,6 @@ void ocv_voltage_soc() {
 
   float pack_voltage = perdict_voltage();
 
- 
   if (pack_voltage >= (voltage_lookup[LUT_SIZE - 1] * bms->config.series_count * VOLTS_TO_mV)) {
     s_storage.v_soc = 100.0f;
     return;
@@ -67,8 +62,7 @@ void ocv_voltage_soc() {
   }
 
   for (uint8_t i = 0; i < LUT_SIZE - 1; i++) {
-    if (pack_voltage >= (voltage_lookup[i] * bms->config.series_count * VOLTS_TO_mV) &&
-        pack_voltage <= (voltage_lookup[i + 1] * bms->config.series_count * VOLTS_TO_mV)) {
+    if (pack_voltage >= (voltage_lookup[i] * bms->config.series_count * VOLTS_TO_mV) && pack_voltage <= (voltage_lookup[i + 1] * bms->config.series_count * VOLTS_TO_mV)) {
       low_index = i;
       upper_index = i + 1;
       break;
@@ -82,21 +76,18 @@ void ocv_voltage_soc() {
   float voltage_low = voltage_lookup[low_index] * bms->config.series_count * VOLTS_TO_mV;
   float voltage_high = voltage_lookup[upper_index] * bms->config.series_count * VOLTS_TO_mV;
   // Lookup table index = SOC, voltage = value
-    s_storage.v_soc = low_index + ((float)(upper_index - low_index) * (pack_voltage - voltage_low) /
-                                 (voltage_high - voltage_low));
-
+  s_storage.v_soc = low_index + ((float)(upper_index - low_index) * (pack_voltage - voltage_low) / (voltage_high - voltage_low));
 
   // We measure SOC over 2.5% increments
   // This means SOC = 2.5% * lookup_index
-  s_storage.v_soc *=(100.0f / (LUT_SIZE - 1));
+  s_storage.v_soc *= (100.0f / (LUT_SIZE - 1));
 }
 
 StatusCode update_state_of_chrage() {
   coulomb_counting_soc();
   ocv_voltage_soc();
 
-  s_storage.averaged_soc =
-      (voltage_weight * s_storage.v_soc) + ((1 - voltage_weight) * (s_storage.i_soc));
+  s_storage.averaged_soc = (voltage_weight * s_storage.v_soc) + ((1 - voltage_weight) * (s_storage.i_soc));
 
   set_battery_vt_batt_perc((uint16_t)s_storage.averaged_soc);
   ramp_voltage_weight();

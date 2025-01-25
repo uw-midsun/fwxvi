@@ -5,14 +5,11 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "log.h"
-#include "mcp2515.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
-#include "motor_can.h"
+#include "log.h"
+#include "mcp2515.h"
 #include "tasks.h"
-
-
 
 static float s_target_current;
 static float s_target_velocity;
@@ -22,7 +19,7 @@ static float s_car_velocity_r = 0.0;
 void (*mcp2515_rx_all)();
 void (*mcp2515_tx_all)();
 
- float get_float(uint32_t u) {
+float get_float(uint32_t u) {
   union {
     float f;
     uint32_t u;
@@ -30,17 +27,17 @@ void (*mcp2515_tx_all)();
   return fu.f;
 }
 
- float clamp_float(float value) {
+float clamp_float(float value) {
   if (value <= 0.05) {
     return 0.0f;
   } else {
-    return 0.5f+0.5f*value;
+    return value;
   }
 }
 
- float one_pedal_threshold(float car_velocity) {
+float one_pedal_threshold(float car_velocity) {
   float threshold = 0.0;
-  float car_velocity_mps=car_velocity*VEL_TO_RPM_RATIO;
+  float car_velocity_mps = car_velocity * VEL_TO_RPM_RATIO;
   if (car_velocity_mps <= MAX_OPD_SPEED) {
     threshold = car_velocity_mps * COASTING_THRESHOLD_SCALE;
   } else {
@@ -49,8 +46,7 @@ void (*mcp2515_tx_all)();
   return threshold;
 }
 
- float one_pedal_drive_current(float throttle_percent, float threshold,
-                                         DriveState *drive_state) {
+float one_pedal_drive_current(float throttle_percent, float threshold, DriveState *drive_state) {
   throttle_percent = clamp_float(throttle_percent);
 
   if (throttle_percent <= threshold + 0.05 && throttle_percent >= threshold - 0.05) {
@@ -70,7 +66,7 @@ void (*mcp2515_tx_all)();
   return 0.0;
 }
 
- void update_target_current_velocity() {
+void update_target_current_velocity() {
   float throttle_percent = get_float(get_cc_pedal_throttle_output());
   throttle_percent = clamp_float(throttle_percent);
   bool brake = get_cc_pedal_brake_output();
@@ -154,7 +150,7 @@ static void motor_controller_tx_all() {
   // }
   // if (!get_pedal_output_brake_output()) return;
   // don't send drive command if not precharged
-  //idk
+  // idk
 
   if (!g_tx_struct.mc_status_precharge_status) {
     LOG_DEBUG("no precharge\n");
@@ -201,19 +197,15 @@ static void motor_controller_rx_all() {
         set_motor_controller_vc_mc_voltage_r(get_float(msg.data_u32[0]) * VOLTAGE_SCALE);
         break;
 
-    #define VELOCITY_SCALE_MPS (VELOCITY_SCALE / 3.6)
+#define VELOCITY_SCALE_MPS (VELOCITY_SCALE / 3.6)
 
       case MOTOR_CONTROLLER_BASE_L + VEL_MEASUREMENT:
-        set_motor_velocity_velocity_l(
-            (uint16_t)fabs((get_float(msg.data_u32[1]) * VELOCITY_SCALE)));
-        s_car_velocity_l =
-            get_float(msg.data_u32[1]) * VELOCITY_SCALE * CONVERT_VELOCITY_TO_KPH;
+        set_motor_velocity_velocity_l((uint16_t)fabs((get_float(msg.data_u32[1]) * VELOCITY_SCALE)));
+        s_car_velocity_l = get_float(msg.data_u32[1]) * VELOCITY_SCALE * CONVERT_VELOCITY_TO_KPH;
         break;
       case MOTOR_CONTROLLER_BASE_R + VEL_MEASUREMENT:
-        set_motor_velocity_velocity_r(
-            (uint16_t)fabs((get_float(msg.data_u32[1]) * VELOCITY_SCALE)));
-        s_car_velocity_r =
-            get_float(msg.data_u32[1]) * VELOCITY_SCALE * CONVERT_VELOCITY_TO_KPH;
+        set_motor_velocity_velocity_r((uint16_t)fabs((get_float(msg.data_u32[1]) * VELOCITY_SCALE)));
+        s_car_velocity_r = get_float(msg.data_u32[1]) * VELOCITY_SCALE * CONVERT_VELOCITY_TO_KPH;
         break;
 
       case MOTOR_CONTROLLER_BASE_L + HEAT_SINK_MOTOR_TEMP:

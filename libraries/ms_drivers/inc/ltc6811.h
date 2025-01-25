@@ -29,13 +29,7 @@ typedef enum {
   NUM_LTC_AFE_REGISTERS
 } LtcAfeRegister;
 
-typedef enum {
-  LTC_AFE_VOLTAGE_REGISTER_A = 0,
-  LTC_AFE_VOLTAGE_REGISTER_B,
-  LTC_AFE_VOLTAGE_REGISTER_C,
-  LTC_AFE_VOLTAGE_REGISTER_D,
-  NUM_LTC_AFE_VOLTAGE_REGISTERS
-} LtcAfeVoltageRegister;
+typedef enum { LTC_AFE_VOLTAGE_REGISTER_A = 0, LTC_AFE_VOLTAGE_REGISTER_B, LTC_AFE_VOLTAGE_REGISTER_C, LTC_AFE_VOLTAGE_REGISTER_D, NUM_LTC_AFE_VOLTAGE_REGISTERS } LtcAfeVoltageRegister;
 
 typedef enum {
   LTC_AFE_DISCHARGE_TIMEOUT_DISABLED = 0,
@@ -115,8 +109,7 @@ typedef struct {
   // devices are ordered with the last slave first
   LtcAfeWriteDeviceConfigPacket devices[LTC_AFE_MAX_CELLS_PER_DEVICE];
 } _PACKED LtcAfeWriteConfigPacket;
-#define SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(devices) \
-  (LTC6811_CMD_SIZE + (devices) * sizeof(LtcAfeWriteDeviceConfigPacket))
+#define SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(devices) (LTC6811_CMD_SIZE + (devices) * sizeof(LtcAfeWriteDeviceConfigPacket))
 
 typedef union {
   uint16_t voltages[3];
@@ -130,16 +123,14 @@ typedef struct {
 
   uint16_t pec;
 } _PACKED LtcAfeVoltageRegisterGroup;
-static_assert(sizeof(LtcAfeVoltageRegisterGroup) == 8,
-              "LtcAfeVoltageRegisterGroup must be 8 bytes");
+static_assert(sizeof(LtcAfeVoltageRegisterGroup) == 8, "LtcAfeVoltageRegisterGroup must be 8 bytes");
 
 typedef struct {
   LtcAfeRegisterGroup reg;
 
   uint16_t pec;
 } _PACKED LtcAfeAuxRegisterGroupPacket;
-static_assert(sizeof(LtcAfeAuxRegisterGroupPacket) == 8,
-              "LtcAfeAuxRegisterGroupPacket must be 8 bytes");
+static_assert(sizeof(LtcAfeAuxRegisterGroupPacket) == 8, "LtcAfeAuxRegisterGroupPacket must be 8 bytes");
 
 // command codes
 // see Table 38 (p.59)

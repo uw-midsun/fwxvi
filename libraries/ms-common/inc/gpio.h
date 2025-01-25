@@ -118,7 +118,7 @@ typedef struct GpioAddress {
  * @brief   Initializes GPIO globally by disabling JTAG and enabling all GPIO clocks
  * @details ONLY CALL ONCE or it will deinit all current settings. Change pin setting by calling
  *          gpio_init_pin
- * @return  STATUS_CODE_OK if intialization succeeded.
+ * @return  STATUS_CODE_OK if intialization succeeded
  */
 StatusCode gpio_init(void);
 

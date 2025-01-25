@@ -11,25 +11,24 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
-#include "spi.h"
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
+#include "spi.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
 
 GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
 
-
 TASK(SpiTest, TASK_STACK_512) {
-  uint8_t tx_data=0xff;
-  uint8_t rx_data=0x00;
-  SpiSettings spi_settings={
-    .baudrate=10e6,
-    .mode=SPI_MODE_0,
+  uint8_t tx_data = 0xff;
+  uint8_t rx_data = 0x00;
+  SpiSettings spi_settings = {
+    .baudrate = 10e6,
+    .mode = SPI_MODE_0,
     .sdo = { .pin = 1, .port = GPIO_PORT_B },
-    .sdi = { .pin = 2, .port = GPIO_PORT_B }, 
+    .sdi = { .pin = 2, .port = GPIO_PORT_B },
     .sclk = { .pin = 3, .port = GPIO_PORT_B },
     .cs = { .pin = 4, .port = GPIO_PORT_B },
   };

@@ -25,7 +25,6 @@
  * @{
  */
 
-
 #define R2_OHMS 10000
 #define R1_OHMS 47000
 

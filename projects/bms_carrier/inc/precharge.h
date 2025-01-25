@@ -25,7 +25,6 @@
 
 // SPI commands: Table 12-1
 
-
 // Requires GPIO to be initialized
 // Requires GPIO interrupts to be initialized
 
@@ -38,5 +37,3 @@ typedef struct PrechargeSettings {
 
 StatusCode precharge_init(const PrechargeSettings *settings, Event event, const Task *task);
 /** @} */
-
-

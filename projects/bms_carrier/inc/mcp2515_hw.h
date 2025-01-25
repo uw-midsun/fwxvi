@@ -11,11 +11,11 @@
 
 /* Standard library Headers */
 /* Inter-component Headers */
-#include "spi.h"
-#include "gpio.h"
-#include "can_queue.h"
-#include "can_msg.h"
 #include "can_hw.h"
+#include "can_msg.h"
+#include "can_queue.h"
+#include "gpio.h"
+#include "spi.h"
 /* Intra-component Headers */
 
 /**

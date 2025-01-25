@@ -24,7 +24,6 @@
 
 // SPI commands: Table 12-1
 
-
 extern void (*mcp2515_rx_all)();
 
 extern void (*mcp2515_tx_all)();

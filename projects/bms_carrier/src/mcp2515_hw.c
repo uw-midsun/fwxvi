@@ -1,10 +1,11 @@
-#include <string.h>
 #include "mcp2515_hw.h"
 
+#include <string.h>
+
+#include "can_hw.h"
 #include "delay.h"
 #include "gpio_interrupts.h"
 #include "log.h"
-#include "can_hw.h"
 #include "mcp2515_defs.h"
 
 // TX/RX buffer ID registers - See Registers 3-3 to 3-7, 4-4 to 4-8
@@ -19,11 +20,7 @@ typedef union {
   uint8_t registers[4];
 } Mcp2515IdRegs;
 
-typedef enum {
-  MCP2515_FILTER_ID_RXF0 = 0,
-  MCP2515_FILTER_ID_RXF1,
-  NUM_MCP2515_FILTER_IDS
-} Mcp2515FiltersIds;
+typedef enum { MCP2515_FILTER_ID_RXF0 = 0, MCP2515_FILTER_ID_RXF1, NUM_MCP2515_FILTER_IDS } Mcp2515FiltersIds;
 
 typedef struct Mcp2515TxBuffer {
   uint8_t id;
@@ -153,18 +150,13 @@ static bool mcp2515_loopback;
 static StatusCode mcp2515_hw_init_after_schedular_start() {
   prv_reset();
   // Set to Config mode, CLKOUT /4
-  prv_bit_modify(MCP2515_CTRL_REG_CANCTRL,
-                 MCP2515_CANCTRL_OPMODE_MASK | MCP2515_CANCTRL_CLKOUT_MASK,
-                 MCP2515_CANCTRL_OPMODE_CONFIG | MCP2515_CANCTRL_CLKOUT_CLKPRE_4);
+  prv_bit_modify(MCP2515_CTRL_REG_CANCTRL, MCP2515_CANCTRL_OPMODE_MASK | MCP2515_CANCTRL_CLKOUT_MASK, MCP2515_CANCTRL_OPMODE_CONFIG | MCP2515_CANCTRL_CLKOUT_CLKPRE_4);
 
   // set RXB0CTRL.BUKT bit on to enable rollover to rx1
   prv_bit_modify(MCP2515_CTRL_REG_RXB0CTRL, MCP2515_RXB0CTRL_BUKT, MCP2515_RXB0CTRL_BUKT);
   // set RXnBF to be message buffer full interrupt
-  prv_bit_modify(
-      MCP2515_CTRL_REG_BFPCTRL,
-      MCP2515_BFPCTRL_B1BFE | MCP2515_BFPCTRL_B2BFE | MCP2515_BFPCTRL_B1BFM | MCP2515_BFPCTRL_B2BFM,
-      MCP2515_BFPCTRL_B1BFE | MCP2515_BFPCTRL_B2BFE | MCP2515_BFPCTRL_B1BFM |
-          MCP2515_BFPCTRL_B2BFM);
+  prv_bit_modify(MCP2515_CTRL_REG_BFPCTRL, MCP2515_BFPCTRL_B1BFE | MCP2515_BFPCTRL_B2BFE | MCP2515_BFPCTRL_B1BFM | MCP2515_BFPCTRL_B2BFM,
+                 MCP2515_BFPCTRL_B1BFE | MCP2515_BFPCTRL_B2BFE | MCP2515_BFPCTRL_B1BFM | MCP2515_BFPCTRL_B2BFM);
   // 5.7 Timing configurations:
   // In order:
   // CNF3: PHSEG2 Length = 6
@@ -174,14 +166,9 @@ static StatusCode mcp2515_hw_init_after_schedular_start() {
   // CANINTF: clear all IRQ flags
   // EFLG: clear all error flags
   const uint8_t s_registers[] = {
-    0x05,
-    MCP2515_CNF2_BTLMODE_CNF3 | MCP2515_CNF2_SAMPLE_3X | (0x07 << 3),
-    s_brp_lookup[mcp2515_bitrate],
-    MCP2515_CANINT_EFLAG,
-    0x00,
-    0x00,
+    0x05, MCP2515_CNF2_BTLMODE_CNF3 | MCP2515_CNF2_SAMPLE_3X | (0x07 << 3), s_brp_lookup[mcp2515_bitrate], MCP2515_CANINT_EFLAG, 0x00, 0x00,
   };
-  //SIZEOF_ARRAY
+  // SIZEOF_ARRAY
   prv_write(MCP2515_CTRL_REG_CNF3, s_registers, sizeof(s_registers));
 
   // Sanity check: read register after first write
@@ -197,8 +184,7 @@ static StatusCode mcp2515_hw_init_after_schedular_start() {
   }
 
   // Leave config mode
-  uint8_t opmode =
-      (mcp2515_loopback ? MCP2515_CANCTRL_OPMODE_LOOPBACK : MCP2515_CANCTRL_OPMODE_NORMAL);
+  uint8_t opmode = (mcp2515_loopback ? MCP2515_CANCTRL_OPMODE_LOOPBACK : MCP2515_CANCTRL_OPMODE_NORMAL);
   prv_bit_modify(MCP2515_CTRL_REG_CANCTRL, MCP2515_CANCTRL_OPMODE_MASK, opmode);
 
   return STATUS_CODE_OK;
@@ -237,7 +223,7 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
   if (settings->can_settings.bitrate > CAN_HW_BITRATE_500KBPS) {
     return STATUS_CODE_INVALID_ARGS;
   }
-//BitRate
+  // BitRate
   mcp2515_bitrate = settings->can_settings.bitrate;
   mcp2515_loopback = settings->can_settings.loopback;
 
@@ -245,8 +231,7 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
   s_storage->loopback = settings->can_settings.loopback;
 
   // active low
-  status_ok_or_return(
-      gpio_init_pin(&settings->interrupt_pin, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH));
+  status_ok_or_return(gpio_init_pin(&settings->interrupt_pin, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH));
   status_ok_or_return(gpio_init_pin(&settings->RX0BF, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH));
   status_ok_or_return(gpio_init_pin(&settings->RX1BF, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH));
 
@@ -255,13 +240,10 @@ StatusCode mcp2515_hw_init(Mcp2515Storage *storage, const Mcp2515Settings *setti
     .priority = INTERRUPT_PRIORITY_NORMAL,
     .edge = INTERRUPT_EDGE_FALLING,
   };
-//idk
-  status_ok_or_return(
-      gpio_register_interrupt(&settings->interrupt_pin, &it_settings, 0, MCP2515_INTERRUPT));
-  status_ok_or_return(
-      gpio_register_interrupt(&settings->RX0BF, &it_settings, 1, MCP2515_INTERRUPT));
-  status_ok_or_return(
-      gpio_register_interrupt(&settings->RX1BF, &it_settings, 2, MCP2515_INTERRUPT));
+  // idk
+  status_ok_or_return(gpio_register_interrupt(&settings->interrupt_pin, &it_settings, 0, MCP2515_INTERRUPT));
+  status_ok_or_return(gpio_register_interrupt(&settings->RX0BF, &it_settings, 1, MCP2515_INTERRUPT));
+  status_ok_or_return(gpio_register_interrupt(&settings->RX1BF, &it_settings, 2, MCP2515_INTERRUPT));
 
   // ! Ensure the task priority is higher than the rx/tx tasks in mcp2515.c
   status_ok_or_return(tasks_init_task(MCP2515_INTERRUPT, TASK_PRIORITY(3), NULL));
@@ -280,8 +262,7 @@ StatusCode mcp2515_hw_transmit(uint32_t id, bool extended, uint8_t *data, size_t
   // Get free transmit buffer
   uint8_t status = prv_read_status();
   // LOG_DEBUG("stats: %x\n", status); //
-  uint8_t tx_status = __builtin_ffs(
-      ~status & (MCP2515_STATUS_TX0REQ | MCP2515_STATUS_TX1REQ | MCP2515_STATUS_TX2REQ));
+  uint8_t tx_status = __builtin_ffs(~status & (MCP2515_STATUS_TX0REQ | MCP2515_STATUS_TX1REQ | MCP2515_STATUS_TX2REQ));
 
   if (tx_status == 0) {
     LOG_DEBUG("Failed to tx, buffer full\n");
@@ -309,8 +290,7 @@ StatusCode mcp2515_hw_transmit(uint32_t id, bool extended, uint8_t *data, size_t
   // Load ID: SIDH, SIDL, EID8, EID0, RTSnDLC
   uint8_t id_payload[] = {
     MCP2515_CMD_LOAD_TX | tx_buf->id,  // tx_id_regs 3-3 to 3-6
-    tx_id_regs.registers[3],          tx_id_regs.registers[2],
-    tx_id_regs.registers[1],          tx_id_regs.registers[0],
+    tx_id_regs.registers[3],          tx_id_regs.registers[2], tx_id_regs.registers[1], tx_id_regs.registers[0],
     (len & 0xf) | (false << 6),  // Reg 3-7 RTR and DLC
   };
   spi_tx(s_storage->spi_port, id_payload, sizeof(id_payload));
@@ -354,15 +334,13 @@ static void prv_configure_filters(CanMessageId *filters) {
     }
 
     uint8_t maskRegH = (i == MCP2515_FILTER_ID_RXF0) ? MCP2515_REG_RXM0SIDH : MCP2515_REG_RXM1SIDH;
-    size_t numMaskRegisters = id_regs.extended ? MCP2515_NUM_MASK_REGISTERS_EXTENDED
-                                               : MCP2515_NUM_MASK_REGISTERS_STANDARD;
+    size_t numMaskRegisters = id_regs.extended ? MCP2515_NUM_MASK_REGISTERS_EXTENDED : MCP2515_NUM_MASK_REGISTERS_STANDARD;
     // Set the filter masks to 0xff so we filter on the whole message
     for (size_t i = 0; i < numMaskRegisters; i++) {
       prv_bit_modify(maskRegH + i, 0xff, 0xff);
     }
 
-    uint8_t filterRegH =
-        (i == MCP2515_FILTER_ID_RXF0) ? MCP2515_REG_RXF0SIDH : MCP2515_REG_RXF1SIDH;
+    uint8_t filterRegH = (i == MCP2515_FILTER_ID_RXF0) ? MCP2515_REG_RXF0SIDH : MCP2515_REG_RXF1SIDH;
     // Set sidh
     prv_bit_modify(filterRegH, 0xff, id_regs.registers[3]);
     // Set sidl and eid16-17
@@ -376,9 +354,7 @@ static void prv_configure_filters(CanMessageId *filters) {
 
 StatusCode mcp2515_hw_set_filter(CanMessageId *filters, bool loopback) {
   // Set to Config mode, CLKOUT /4
-  prv_bit_modify(MCP2515_CTRL_REG_CANCTRL,
-                 MCP2515_CANCTRL_OPMODE_MASK | MCP2515_CANCTRL_CLKOUT_MASK,
-                 MCP2515_CANCTRL_OPMODE_CONFIG | MCP2515_CANCTRL_CLKOUT_CLKPRE_4);
+  prv_bit_modify(MCP2515_CTRL_REG_CANCTRL, MCP2515_CANCTRL_OPMODE_MASK | MCP2515_CANCTRL_CLKOUT_MASK, MCP2515_CANCTRL_OPMODE_CONFIG | MCP2515_CANCTRL_CLKOUT_CLKPRE_4);
 
   prv_configure_filters(filters);
 

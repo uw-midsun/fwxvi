@@ -117,7 +117,7 @@ CanHwBusStatus can_hw_bus_status(void);
  *          STATUS_CODE_RESOURCE_EXHAUSTED if CAN mailbox is full
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
+StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint8_t len);
 
 /**
  * @brief   Receives CAN data from the bus
@@ -128,6 +128,6 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size
  * @return  true if data is retrieved successfully
  *          false if one of the parameters are incorrect or internal error occurred
  */
-bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len);
+bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len);
 
 /** @} */

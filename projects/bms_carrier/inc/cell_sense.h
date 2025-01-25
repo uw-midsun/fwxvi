@@ -15,16 +15,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 /* Inter-component Headers */
-//idk
+// idk
 // #include "bms.h"
-#include "gpio.h"
+#include "bms_hw_defs.h"
+#include "delay.h"
 #include "fault_bps.h"
+#include "gpio.h"
 #include "ltc_afe.h"
 #include "ltc_afe_impl.h"
 #include "relays.h"
 #include "spi.h"
-#include "bms_hw_defs.h"
-#include "delay.h"
 
 /* Intra-component Headers */
 
@@ -33,7 +33,6 @@
  * @brief    bms_carrier Firmware
  * @{
  */
-
 
 #define CONV_DELAY_MS 10
 #define AUX_CONV_DELAY_MS 3

@@ -1,7 +1,4 @@
 {
-  "x86_libs": [
-    "x86"
-  ],
   "arm_libs": [
     "CMSIS",
     "HAL"

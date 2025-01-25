@@ -53,7 +53,6 @@ common_flags = [
     '-Wno-discarded-qualifiers',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
-    '-Wsign-conversion',
     '-Wpointer-arith',
     '-Wundef',
     '-Wdouble-promotion',
