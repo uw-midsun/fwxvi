@@ -14,22 +14,17 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "FreeRTOS.h"
 #include "log.h"
 #include "semphr.h"
 #include "status.h"
-#include "stm32l433xx.h"
-#include "stm32l4xx_hal_flash.h"
 
 /* Intra-component Headers */
 #include "flash.h"
-#include "misc.h"
 
 /* Symbols from linker-scripts */
 // None are used in this case
 
-#define FLASH_DEFAULT_FILENAME "Midsun_x86_flash"
-#define FLASH_USER_ENV "MIDSUN_X86_FLASH_FILE"
+#define FLASH_FILENAME "Midsun_x86_flash"
 
 static pthread_mutex_t s_flash_mutex;
 // TODO: Mutex need to be deleted from memory at some point
@@ -63,24 +58,23 @@ static StatusCode s_validate_address(uintptr_t address, size_t size) {
 }
 
 StatusCode flash_init() {
-  char *flash_filename = getenv(FLASH_USER_ENV);
+  char *flash_filename = FLASH_FILENAME;
 
-  if (flash_filename == NULL) {
-    flash_filename = FLASH_DEFAULT_FILENAME;
-  }
   LOG_DEBUG("Using flash file: %s\n", flash_filename);
 
+  // Opening the file or creating a new one if it does not exist
   s_flash_fp = fopen(flash_filename, "r+b");
   if (s_flash_fp == NULL) {
-    LOG_DEBUG("Setting up new flash file\n");
+    LOG_DEBUG("Setting up new flash file...\n");
     s_flash_fp = fopen(flash_filename, "w+b");
     if (s_flash_fp == NULL) {
       LOG_DEBUG("Error: could not open flash file\n");
       exit(EXIT_FAILURE);
     }
-    // TODO: Add erase code to simulate STM32 behavior
+    flash_erase(0, NUM_FLASH_PAGES);
   }
 
+  // Initializing the mutex
   if (pthread_mutex_init(&s_flash_mutex, NULL) == 0) {
     return STATUS_CODE_OK;
   } else {
@@ -89,19 +83,23 @@ StatusCode flash_init() {
 }
 
 StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
-  if (buffer == NULL) {
+  if (buffer == NULL || s_validate_address(address, buffer_len) != 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  // TODO: Add timeout
+
   pthread_mutex_lock(&s_flash_mutex);
 
-  if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
-    /* Direct memory read */
-    memcpy(buffer, (void *)address, buffer_len);
-  }
+  fseek(s_flash_fp, (intptr_t)address, SEEK_SET);
+  size_t read = fread(buffer, 1, buffer_len, s_flash_fp);
 
   pthread_mutex_unlock(&s_flash_mutex);
-  return STATUS_CODE_OK;
+
+  // Check if the number of objects read is less than buffer length to see if an error occured
+  if (read < buffer_len) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  } else {
+    return STATUS_CODE_OK;
+  }
 }
 
 StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
@@ -109,10 +107,15 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  // TODO: Add timeout
   pthread_mutex_lock(&s_flash_mutex);
 
-  // TODO: Add Write Code
+  // Erase all memory to overwrite
+  flash_erase(0, 128);
+
+  // Seek to memeory address and write
+  fseek(s_flash_fp, (intptr_t)address, SEEK_SET);
+  fwrite(buffer, 1, buffer_len, s_flash_fp);
+  fflush(s_flash_fp);
 
   pthread_mutex_unlock(&s_flash_mutex);
 
@@ -127,8 +130,14 @@ StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
   // TODO: Add timeout
   pthread_mutex_lock(&s_flash_mutex);
 
-  // TODO: Add read code
+  char buffer[(num_pages - start_page) * FLASH_PAGE_SIZE];
+  memset(buffer, 0xFF, sizeof(buffer));
+
+  fseek(s_flash_fp, (intptr_t)FLASH_PAGE_TO_ADDR(start_page), SEEK_SET);
+  fwrite(buffer, 1, sizeof(buffer), s_flash_fp);
+  fflush(s_flash_fp);
 
   pthread_mutex_unlock(&s_flash_mutex);
+
   return STATUS_CODE_OK;
 }
