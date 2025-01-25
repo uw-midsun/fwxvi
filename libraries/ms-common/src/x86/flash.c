@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,7 @@
 #include "FreeRTOS.h"
 #include "log.h"
 #include "semphr.h"
+#include "status.h"
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_flash.h"
 
@@ -29,8 +31,8 @@
 #define FLASH_DEFAULT_FILENAME "Midsun_x86_flash"
 #define FLASH_USER_ENV "MIDSUN_X86_FLASH_FILE"
 
-static StaticSemaphore_t s_flash_mutex;
-static SemaphoreHandle_t s_flash_handle;
+static pthread_mutex_t s_flash_mutex;
+// TODO: Mutex need to be deleted from memory at some point
 static FILE *s_flash_fp = NULL;
 
 #ifndef _flash_start
@@ -76,63 +78,43 @@ StatusCode flash_init() {
       LOG_DEBUG("Error: could not open flash file\n");
       exit(EXIT_FAILURE);
     }
-
-    for (int i = 0; i < NUM_FLASH_PAGES; i++) {
-      flash_erase((FlashPage)i);
-    }
+    // TODO: Add erase code to simulate STM32 behavior
   }
 
-  return STATUS_CODE_OK;
-
-  s_flash_handle = xSemaphoreCreateMutexStatic(&s_flash_mutex);
-  return s_flash_handle == NULL ? STATUS_CODE_INTERNAL_ERROR : STATUS_CODE_OK;
+  if (pthread_mutex_init(&s_flash_mutex, NULL) == 0) {
+    return STATUS_CODE_OK;
+  } else {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 }
 
 StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
-    return STATUS_CODE_TIMEOUT;
-  }
+  // TODO: Add timeout
+  pthread_mutex_lock(&s_flash_mutex);
 
   if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
     /* Direct memory read */
     memcpy(buffer, (void *)address, buffer_len);
   }
 
-  xSemaphoreGive(s_flash_handle);
+  pthread_mutex_unlock(&s_flash_mutex);
   return STATUS_CODE_OK;
 }
 
 StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
-  if (buffer == NULL) {
+  if (buffer == NULL || s_validate_address(address, buffer_len) != STATUS_CODE_OK) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
-    return STATUS_CODE_TIMEOUT;
-  }
+  // TODO: Add timeout
+  pthread_mutex_lock(&s_flash_mutex);
 
-  if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
-    HAL_FLASH_Unlock();
-    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
+  // TODO: Add Write Code
 
-    /* Program the flash double word by double word (64-bits) */
-    for (size_t i = 0U; i < buffer_len; i += 8U) {
-      uint64_t data = 0U;
-      memcpy(&data, &buffer[i], MIN(8U, buffer_len - i));
-
-      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, address + i, data) != HAL_OK) {
-        HAL_FLASH_Lock();
-        xSemaphoreGive(s_flash_handle);
-        return STATUS_CODE_INTERNAL_ERROR;
-      }
-    }
-    HAL_FLASH_Lock();
-  }
-  xSemaphoreGive(s_flash_handle);
+  pthread_mutex_unlock(&s_flash_mutex);
 
   return STATUS_CODE_OK;
 }
@@ -142,24 +124,11 @@ StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if (xSemaphoreTake(s_flash_handle, FLASH_TIMEOUT_MS) != pdTRUE) {
-    return STATUS_CODE_TIMEOUT;
-  }
+  // TODO: Add timeout
+  pthread_mutex_lock(&s_flash_mutex);
 
-  FLASH_EraseInitTypeDef erase_init = { .TypeErase = FLASH_TYPEERASE_PAGES, .Banks = FLASH_BANK_1, .Page = start_page, .NbPages = num_pages };
+  // TODO: Add read code
 
-  uint32_t page_error = 0U;
-  HAL_StatusTypeDef status;
-
-  HAL_FLASH_Unlock();
-  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
-  status = HAL_FLASHEx_Erase(&erase_init, &page_error);
-  HAL_FLASH_Lock();
-  xSemaphoreGive(s_flash_handle);
-
-  if (status != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
+  pthread_mutex_unlock(&s_flash_mutex);
   return STATUS_CODE_OK;
 }
