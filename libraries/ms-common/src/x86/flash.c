@@ -27,7 +27,6 @@
 #define FLASH_FILENAME "Midsun_x86_flash"
 
 static pthread_mutex_t s_flash_mutex;
-// TODO: Mutex need to be deleted from memory at some point
 static FILE *s_flash_fp = NULL;
 
 #ifndef _flash_start
@@ -127,7 +126,6 @@ StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  // TODO: Add timeout
   pthread_mutex_lock(&s_flash_mutex);
 
   char buffer[(num_pages - start_page) * FLASH_PAGE_SIZE];
