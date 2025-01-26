@@ -68,24 +68,150 @@ void SPI3_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_3]);
 }
 
-/* Callback functions for HAL SPI TX */
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {}
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  if (hspi->Instance == SPI1) {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_1], &xHigherPriorityTaskWoken);
+  } else if (hspi->Instance == SPI2) {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_2], &xHigherPriorityTaskWoken);
+  } else {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_3], &xHigherPriorityTaskWoken);
+  }
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
 
-/* Callback functions for HAL SPI RX */
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {}
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  if (hspi->Instance == SPI1) {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_1], &xHigherPriorityTaskWoken);
+  } else if (hspi->Instance == SPI2) {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_2], &xHigherPriorityTaskWoken);
+  } else {
+    xSemaphoreGiveFromISR(s_spi_cmplt_handle[SPI_PORT_3], &xHigherPriorityTaskWoken);
+  }
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
 
 StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (spi >= NUM_SPI_PORTS) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (s_port[spi].initialized) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+
+  s_spi_port_handle[spi] = xSemaphoreCreateMutexStatic(&s_spi_port_mutex[spi]);
+  s_spi_cmplt_handle[spi] = xSemaphoreCreateBinaryStatic(&s_spi_cmplt_sem[spi]);
+
+  if (s_spi_port_handle[spi] == NULL || s_spi_cmplt_handle[spi] == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  if (spi == SPI_PORT_3) {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+  } else {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->cs, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+  }
+
+  s_spi_handles[spi].Instance = s_port[spi].base;
+  s_spi_handles[spi].Init.Mode = SPI_MODE_MASTER;
+  s_spi_handles[spi].Init.Direction = SPI_DIRECTION_2LINES;
+  s_spi_handles[spi].Init.DataSize = SPI_DATASIZE_8BIT;
+
+  s_spi_handles[spi].Init.NSS = SPI_NSS_SOFT;
+  s_spi_handles[spi].Init.FirstBit = SPI_FIRSTBIT_MSB;
+  s_spi_handles[spi].Init.TIMode = SPI_TIMODE_DISABLE;
+  s_spi_handles[spi].Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  s_spi_handles[spi].Init.CRCPolynomial = 7;
+  s_spi_handles[spi].Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+
+  switch (settings->mode) {
+    case SPI_MODE_0:
+      s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_LOW;
+      s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_1EDGE;
+      break;
+    case SPI_MODE_1:
+      s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_LOW;
+      s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_2EDGE;
+      break;
+    case SPI_MODE_2:
+      s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_HIGH;
+      s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_1EDGE;
+      break;
+    case SPI_MODE_3:
+      s_spi_handles[spi].Init.CLKPolarity = SPI_POLARITY_HIGH;
+      s_spi_handles[spi].Init.CLKPhase = SPI_PHASE_2EDGE;
+      break;
+    default:
+      return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_port[spi].rcc_cmd();
+
+  if (HAL_SPI_Init(&s_spi_handles[spi]) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  s_port[spi].initialized = true;
+  return STATUS_CODE_OK;
 }
 
 StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
-  return STATUS_CODE_UNIMPLEMENTED;
-}
+  if (!s_port[spi].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
 
-StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len) {
-  return STATUS_CODE_UNIMPLEMENTED;
-}
+  if (spi >= NUM_SPI_PORTS || tx_data == NULL || rx_data == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
-StatusCode spi_set_rx(SpiPort spi, uint8_t *data, uint8_t len) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (tx_len > SPI_MAX_NUM_DATA || rx_len > SPI_MAX_NUM_DATA) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (xSemaphoreTake(s_spi_port_handle[spi], portMAX_DELAY) != pdTRUE) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+
+  HAL_StatusTypeDef status;
+
+  if (tx_len > 0) {
+    status = HAL_SPI_Transmit_IT(&s_spi_handles[spi], tx_data, tx_len);
+    if (status != HAL_OK) {
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) {
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_TIMEOUT;
+    }
+  }
+
+  if (rx_len > 0) {
+    status = HAL_SPI_Receive_IT(&s_spi_handles[spi], rx_data, rx_len);
+    if (status != HAL_OK) {
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+
+    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) {
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_TIMEOUT;
+    }
+  }
+
+  xSemaphoreGive(s_spi_port_handle[spi]);
+
+  return STATUS_CODE_OK;
 }

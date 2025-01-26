@@ -1,0 +1,9 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "master",
+        "FATFs"
+    ],
+    "can": true
+}

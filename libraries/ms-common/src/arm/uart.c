@@ -101,22 +101,12 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
 /* Private helper to handle transfer complete */
 static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
-  UartPort uart = NUM_UART_PORTS;
 
-  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
-    if (&s_uart_handles[i] == huart) {
-      uart = i;
-      break;
-    }
+  if (huart->Instance == USART1) {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_1], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
   }
-
-  if (uart >= NUM_UART_PORTS) {
-    return;
-  }
-
-  __HAL_UART_CLEAR_IT(huart, is_rx ? UART_IT_RXNE : UART_IT_TXE);
-
-  xSemaphoreGiveFromISR(s_uart_cmplt_handle[uart], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }
 

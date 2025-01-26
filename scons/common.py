@@ -70,3 +70,4 @@ def flash_run(entry, flash_type):
     subprocess.run(cmd, shell=True).check_returncode()
 
     print("Flash complete")
+    exit(0)

@@ -24,7 +24,8 @@
  * @{
  */
 
-#define QUEUE_DELAY_BLOCKING portMAX_DELAY
+/** @brief  Maximum delay time to block current thread */
+#define QUEUE_DELAY_BLOCKING 0xFFFFFFFFU
 
 /**
  * @brief   Queue storage and access struct
