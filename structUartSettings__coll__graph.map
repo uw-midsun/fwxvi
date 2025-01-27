@@ -1,0 +1,4 @@
+<map id="UartSettings" name="UartSettings">
+<area shape="rect" id="node1" title="UART Settings." alt="" coords="6,108,109,133"/>
+<area shape="rect" id="node2" href="$structGpioAddress.html" title="Port and pin data." alt="" coords="5,5,109,31"/>
+</map>

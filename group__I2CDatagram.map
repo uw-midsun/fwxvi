@@ -1,0 +1,6 @@
+<map id="I2CDatagram" name="I2CDatagram">
+<area shape="rect" id="node1" href="$group__GpioDatagram.html" title="Shared Gpio Datagram class." alt="" coords="243,5,360,31"/>
+<area shape="rect" id="node2" title="Shared I2C Datagram class." alt="" coords="5,55,113,80"/>
+<area shape="rect" id="node3" href="$group__MetadataDatagram.html" title="Shared Metadata Datagram class." alt="" coords="227,55,376,80"/>
+<area shape="rect" id="node4" href="$group__SPIDatagram.html" title="Shared SPI Datagram class." alt="" coords="248,104,355,129"/>
+</map>

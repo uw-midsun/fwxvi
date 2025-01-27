@@ -1,0 +1,8 @@
+<map id="Mcp2515Storage" name="Mcp2515Storage">
+<area shape="rect" id="node1" title=" " alt="" coords="73,269,204,295"/>
+<area shape="rect" id="node2" href="$structCanQueue.html" title="CAN queue data structure to store received CAN messages." alt="" coords="30,181,119,207"/>
+<area shape="rect" id="node3" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="5,93,69,119"/>
+<area shape="rect" id="node4" href="$structCanMessage.html" title="CAN message structure." alt="" coords="94,93,199,119"/>
+<area shape="rect" id="node5" href="$unionCanId.html" title="CAN message ID." alt="" coords="117,5,176,31"/>
+<area shape="rect" id="node6" href="$structMcp2515Errors.html" title=" " alt="" coords="143,181,262,207"/>
+</map>

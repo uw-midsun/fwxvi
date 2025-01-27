@@ -1,0 +1,6 @@
+<map id="Mcp2515Settings" name="Mcp2515Settings">
+<area shape="rect" id="node1" title=" " alt="" coords="91,244,225,269"/>
+<area shape="rect" id="node2" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="111,147,205,172"/>
+<area shape="rect" id="node3" href="$structGpioAddress.html" title="Port and pin data." alt="" coords="106,5,210,31"/>
+<area shape="rect" id="node4" href="$structCanSettings.html" title="CAN Settings." alt="" coords="229,147,329,172"/>
+</map>

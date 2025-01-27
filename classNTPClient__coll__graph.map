@@ -1,0 +1,5 @@
+<map id="NTPClient" name="NTPClient">
+<area shape="rect" id="node1" title="Class that represents the netowrk&#45;time&#45;protocol client that synchronizes with a server." alt="" coords="7,225,94,251"/>
+<area shape="rect" id="node2" href="$structNTPPacket.html" title="Structure representing an NTP packet." alt="" coords="5,137,96,163"/>
+<area shape="rect" id="node3" href="$structNTPTime.html" title="Structure representing NTP time format with seconds and fractional seconds." alt="" coords="10,5,91,31"/>
+</map>
