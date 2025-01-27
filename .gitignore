@@ -1,6 +1,9 @@
 # build directory
 build/*
 
+# the virtual environment directory for Python
+venv/*
+
 # scons cache
 .sconsign.dblite
 
@@ -8,6 +11,7 @@ build/*
 *.vscode
 .vs/
 build/
+venv/
 *.DS_Store
 .project
 *.code-workspace
