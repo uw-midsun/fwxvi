@@ -35,7 +35,7 @@ InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
   return NUM_INTERRUPT_PRIORITIES;
 }
 
-InterruptClass gpio_it_get_class(const GpioAddress *address) {
+InterruptType gpio_it_get_type(const GpioAddress *address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.type;
   }

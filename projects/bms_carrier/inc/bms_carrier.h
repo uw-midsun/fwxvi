@@ -26,11 +26,6 @@
  * @{
  */
 
-#define CELL_CAPACITY_MAH 4850
-#define NUM_SERIES_CELLS (4 * 9)
-#define NUM_PARALLEL_CELLS (8)
-#define PACK_CAPACITY_MAH (CELL_CAPACITY_MAH * NUM_PARALLEL_CELLS)
-
 /* Forward declarations of all storages */
 
 struct AuxSenseStorage;

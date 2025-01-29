@@ -13,6 +13,7 @@
 #include "log.h"
 #include "delay.h"
 #include "timers.h"
+#include "master_tasks.h"
 
 /* Intra-component Headers */
 #include "relays.h"
@@ -41,10 +42,8 @@ static StatusCode prv_close_relays(void) {
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
   gpio_set_state(&solar_relay_en, GPIO_STATE_HIGH);
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
-  GpioState sense_state;
   for (uint8_t i = 0; i < NUM_BMS_RELAYS; i++) {
-    gpio_get_state(&s_relays_sense[i], &sense_state);
-    if (sense_state != GPIO_STATE_HIGH) {
+    if (gpio_get_state(&s_relays_sense[i]) != GPIO_STATE_HIGH) {
       LOG_DEBUG("Relay %d not closed\n", i);
       // fault_bps_set(BMS_FAULT_RELAY_CLOSE_FAILED);
       // bms_relay_fault();
@@ -69,7 +68,7 @@ void bms_relay_fault() {
   gpio_set_state(&pos_relay_en, GPIO_STATE_LOW);
   gpio_set_state(&neg_relay_en, GPIO_STATE_LOW);
   gpio_set_state(&solar_relay_en, GPIO_STATE_LOW);
-  set_battery_relay_info_state(EE_RELAY_STATE_FAULT);
+  // set_battery_relay_info_state(EE_RELAY_STATE_FAULT);
 }
 
 StatusCode init_bms_relays(GpioAddress *killswitch) {
@@ -82,12 +81,10 @@ StatusCode init_bms_relays(GpioAddress *killswitch) {
   };
 
   gpio_init_pin(killswitch, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
-  gpio_register_interrupt(killswitch, &it_settings, KILLSWITCH_IT, get_master_task());
-  GpioState ks_state = GPIO_STATE_LOW;
-
+  gpio_register_interrupt(killswitch, &it_settings, KILLSWITCH_IT, get_1000hz_task());
   delay_ms(10);
-  gpio_get_state(killswitch, &ks_state);
-  if (ks_state == GPIO_STATE_LOW) {
+
+  if (gpio_get_state(killswitch) == GPIO_STATE_LOW) {
     LOG_DEBUG("KILLSWITCH SET");
     delay_ms(5);
     fault_bps_set(BMS_FAULT_KILLSWITCH);
@@ -103,6 +100,6 @@ StatusCode init_bms_relays(GpioAddress *killswitch) {
   gpio_init_pin(&solar_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
 
   status_ok_or_return(prv_close_relays());
-  set_battery_relay_info_state(EE_RELAY_STATE_CLOSE);
+  // set_battery_relay_info_state(EE_RELAY_STATE_CLOSE);
   return STATUS_CODE_OK;
 }
