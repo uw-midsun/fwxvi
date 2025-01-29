@@ -13,9 +13,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "log.h"
 #include "pwm.h"
 #include "status.h"
-#include "log.h"
 
 /**
  * @brief   PWM Timer details
