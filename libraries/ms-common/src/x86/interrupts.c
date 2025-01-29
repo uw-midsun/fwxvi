@@ -189,7 +189,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
 
 StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings) {
   /* Validate settings and channel */
-  if (settings == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES || irq_channel > NUM_STM32L433X_INTERRUPT_CHANNELS) {
+  if (settings == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES || irq_channel > NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -222,7 +222,7 @@ StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
 }
 
 StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
-  if (settings == NULL || address == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {
+  if (settings == NULL || address == NULL || settings->class >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -238,7 +238,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
 }
 
 StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings *settings) {
-  if (settings == NULL || settings->class >= NUM_INTERRUPT_CLASSES || settings->edge >= NUM_INTERRUPT_EDGES) {
+  if (settings == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 

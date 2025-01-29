@@ -1,37 +1,26 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for bms_carrier
+ * @brief  Smoke test for i2c_api
  *
- * @date   2025-01-12
+ * @date   2025-01-27
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "mcu.h"
 #include "gpio.h"
 #include "log.h"
-#include "master_tasks.h"
-#include "mcu.h"
 #include "tasks.h"
+#include "status.h"
+#include "delay.h"
 
 /* Intra-component Headers */
-#include "bms_carrier.h"
 
-void pre_loop_init() {}
-
-void run_1000hz_cycle() {
-  run_can_rx_all();
-
-  run_can_tx_fast();
-}
-void run_10hz_cycle() {
-  run_can_tx_medium();
-}
-
-void run_1hz_cycle() {
-  run_can_tx_slow();
+TASK(i2c_api, TASK_STACK_1024) {
+  while (true) {}
 }
 
 int main() {
@@ -39,7 +28,7 @@ int main() {
   tasks_init();
   log_init();
 
-  init_master_tasks();
+  tasks_init_task(i2c_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

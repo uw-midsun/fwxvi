@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bms_hw_defs.h
+ * @file   relays.h
  *
- * @brief  Header file for BMS hardware definitions
+ * @brief  Header file for Relays
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -13,17 +13,9 @@
 
 /* Inter-component Headers */
 #include "bms_carrier.h"
-#include "can.h"
-#include "delay.h"
-// #include "exported_enums.h"
 #include "gpio.h"
 #include "gpio_interrupts.h"
 #include "interrupts.h"
-#include "log.h"
-#include "master_tasks.h"
-#include "status.h"
-#include "task.h"
-#include "timers.h"
 
 /* Intra-component Headers */
 
@@ -54,4 +46,5 @@ void bms_close_solar();
 
 // Turns off GPIOs to open relays
 void bms_relay_fault(void);
+
 /** @} */

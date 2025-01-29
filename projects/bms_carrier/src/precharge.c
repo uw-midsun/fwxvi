@@ -22,7 +22,7 @@ StatusCode precharge_init(const PrechargeSettings *settings, Event event, const 
     return STATUS_CODE_OK;
   } else if (state == GPIO_STATE_LOW) {
     InterruptSettings monitor_it_settings = {
-      .class = INTERRUPT_TYPE_INTERRUPT,
+      .type = INTERRUPT_TYPE_INTERRUPT,
       .priority = INTERRUPT_PRIORITY_NORMAL,
       .edge = INTERRUPT_EDGE_RISING,
     };

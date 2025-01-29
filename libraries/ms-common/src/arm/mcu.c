@@ -8,6 +8,8 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdio.h>
+#include <string.h>
 
 /* Inter-component Headers */
 #include "stm32l4xx_hal.h"

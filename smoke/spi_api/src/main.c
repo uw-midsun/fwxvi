@@ -1,33 +1,26 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for [PROJECT NAME]
+ * @brief  Smoke test for spi_api
  *
- * @date   [YYYY/MM/DD]
+ * @date   2025-01-27
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "gpio.h"
-#include "i2c.h"
-#include "log.h"
-#include "master_tasks.h"
 #include "mcu.h"
+#include "gpio.h"
+#include "log.h"
 #include "tasks.h"
+#include "status.h"
+#include "delay.h"
 
 /* Intra-component Headers */
 
-GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
-
-TASK(Blinky, TASK_STACK_512) {
-  gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
-  while (true) {
-    LOG_DEBUG("Blinky!\n");
-    gpio_toggle_state(&pa0_led);
-    delay_ms(500);
-  }
+TASK(spi_api, TASK_STACK_1024) {
+  while (true) {}
 }
 
 int main() {
@@ -35,7 +28,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(Blinky, TASK_PRIORITY(3UL), NULL);
+  tasks_init_task(spi_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
