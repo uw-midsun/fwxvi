@@ -1,32 +1,45 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for [PROJECT NAME]
+ * @brief  Smoke test for i2c_api
  *
- * @date   [YYYY/MM/DD]
+ * @date   2025-01-14
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "gpio.h"
-#include "i2c.h"
-#include "log.h"
-#include "master_tasks.h"
 #include "mcu.h"
+#include "gpio.h"
+#include "log.h"
 #include "tasks.h"
+#include "status.h"
+#include "delay.h"
+#include "i2c.h"
 
 /* Intra-component Headers */
 
-GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
+I2CSettings i2c_test_settings = {
+  .speed = I2C_SPEED_STANDARD,
+  .sda = {.port = GPIO_PORT_A, .pin = 10},
+  .scl = {.port = GPIO_PORT_A, .pin = 9}
+};
 
-TASK(Blinky, TASK_STACK_512) {
-  gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+TASK(i2c_api, TASK_STACK_1024) {
+
+
+  i2c_init(I2C_PORT_1, &i2c_test_settings);
+  I2CAddress address = 100;
+  uint8_t data[5] = {0x10, 0x11, 0x12, 0x13, 0x14};
+  size_t length = 5;
+
+
+
   while (true) {
-    LOG_DEBUG("Blinky!\n");
-    gpio_toggle_state(&pa0_led);
+    i2c_write(I2C_PORT_1, address, data, length);
     delay_ms(500);
+    
   }
 }
 
@@ -35,7 +48,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(Blinky, TASK_PRIORITY(3UL), NULL);
+  tasks_init_task(i2c_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
