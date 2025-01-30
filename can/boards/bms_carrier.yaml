@@ -5,119 +5,208 @@
 # - 30-63: Data messages (usually not actionable by an onboard device)
 
 ---
-  Messages:
-    battery_status:
-      id: 1
-      critical: true
-      cycle: "medium"
-      target:
-        centre_console:
-          watchdog: 3
-        power_distribution:
-          watchdog: 5
-      signals:
-        fault:
-          length: 16
-        fault_val:
-          length: 16
-        aux_batt_v:
-          length: 16
-        afe_status:
-          length: 8
+Messages:
+  battery_status:
+    id: 1
+    critical: true
+    cycle: "medium"
+    target:
+      centre_console:
+        watchdog: 3
+      power_distribution:
+        watchdog: 5
+    signals:
+      fault:
+        length: 16
+      fault_val:
+        length: 16
+      aux_batt_v:
+        length: 16
+      afe_status:
+        length: 8
 
-    battery_vt:
-      id: 2
-      critical: true
-      cycle: "fast"
-      target:
-        centre_console:
-          watchdog: 0
-      signals:
-        voltage:
-          length: 16
-        current:
-          length: 16
-        temperature:
-          length: 16
-        batt_perc:
-          length: 16
+  battery_vt:
+    id: 2
+    critical: true
+    cycle: "fast"
+    target:
+      centre_console:
+        watchdog: 0
+    signals:
+      voltage:
+        length: 16
+      current:
+        length: 16
+      temperature:
+        length: 16
+      batt_perc:
+        length: 16
+  
+  battery_info:
+    id: 3
+    critical: true
+    cycle: "slow"
+    target:
+      centre_console:
+        watchdog: 0
+    signals:
+      fan1:
+        length: 8
+      fan2:
+        length: 8
+      max_cell_v:
+        length: 16
+      min_cell_v:
+        length: 16
+
+  AFE1_status:
+        id: 61
+        critical: false
+        cycle: "slow"
+        target:
+          centre_console:
+            watchdog: 0
+          power_distribution:
+            watchdog: 3
+        signals:
+          id:
+            length: 8
+          temp:
+            length: 8
+          v1:
+            length: 16
+          v2:
+            length: 16
+          v3:
+            length: 16
+
+  AFE2_status:
+    id: 62
+    critical: false
+    cycle: "slow"
+    target:
+      centre_console:
+        watchdog: 0
+      power_distribution:
+        watchdog: 3
+    signals:
+      id:
+        length: 8
+      temp:
+        length: 8
+      v1:
+        length: 16
+      v2:
+        length: 16
+      v3:
+        length: 16
+
+  AFE3_status:
+    id: 63
+    critical: false
+    cycle: "slow"
+    target:
+      centre_console:
+        watchdog: 0
+      power_distribution:
+        watchdog: 3
+    signals:
+      id:
+        length: 8
+      temp:
+        length: 8
+      v1:
+        length: 16
+      v2:
+        length: 16
+      v3:
+        length: 16
+  motor_controller_vc:
+    id: 57
+    cycle: "fast"
+    critical: false
+    target:
+      centre_console:
+        watchdog: 0
+    signals:
     
-    battery_info:
-      id: 3
-      critical: true
-      cycle: "slow"
-      target:
-        centre_console:
-          watchdog: 0
-      signals:
-        fan1:
-          length: 8
-        fan2:
-          length: 8
-        max_cell_v:
-          length: 16
-        min_cell_v:
-          length: 16
+      mc_voltage_l:
+        length: 16
+      mc_current_l:
+        length: 16
+      mc_voltage_r:
+        length: 16
+      mc_current_r:
+        length: 16
 
-    AFE1_status:
-          id: 61
-          critical: false
-          cycle: "slow"
-          target:
-            centre_console:
-              watchdog: 0
-            power_distribution:
-              watchdog: 3
-          signals:
-            id:
-              length: 8
-            temp:
-              length: 8
-            v1:
-              length: 16
-            v2:
-              length: 16
-            v3:
-              length: 16
+  motor_velocity:
+    id: 58
+    cycle: "fast"
+    critical: true
+    target:
+      centre_console:
+        watchdog: 0
+      power_distribution:
+        watchdog: 0
+    signals:
+      velocity_l:
+        length: 16
+      velocity_r:
+        length: 16
+      brakes_enabled:
+        length: 8
 
-    AFE2_status:
-      id: 62
-      critical: false
-      cycle: "slow"
-      target:
-        centre_console:
-          watchdog: 0
-        power_distribution:
-          watchdog: 3
-      signals:
-        id:
-          length: 8
-        temp:
-          length: 8
-        v1:
-          length: 16
-        v2:
-          length: 16
-        v3:
-          length: 16
+  motor_sink_temps:
+    id: 59
+    cycle: "fast"
+    critical: false
+    target:
+      centre_console:
+        watchdog: 0
+    signals:
+      motor_temp_l:
+        length: 16
+      heatsink_temp_l:
+        length: 16
+      motor_temp_r:
+        length: 16
+      heatsink_temp_r:
+        length: 16
 
-    AFE3_status:
-      id: 63
-      critical: false
-      cycle: "slow"
-      target:
-        centre_console:
-          watchdog: 0
-        power_distribution:
-          watchdog: 3
-      signals:
-        id:
-          length: 8
-        temp:
-          length: 8
-        v1:
-          length: 16
-        v2:
-          length: 16
-        v3:
-          length: 16
+  dsp_board_temps:
+    id: 60
+    cycle: "fast"
+    critical: false
+    target:
+      centre_console:
+        watchdog: 0
+    signals:
+      dsp_temp_l:
+        length: 16
+      dsp_temp_r:
+        length: 16
+
+  mc_status:  
+    id: 8
+    critical: true
+    cycle: "slow"
+    target:
+      centre_console:
+        watchdog: 0
+      power_distribution:
+        watchdog: 0
+    signals:
+      limit_bitset_l:
+        length: 8
+      error_bitset_l:
+        length: 8
+      limit_bitset_r:
+        length: 8
+      error_bitset_r:
+        length: 8
+      board_fault_bitset:
+        length: 8
+      overtemp_bitset:
+        length: 8
+      precharge_status:
+        length: 8

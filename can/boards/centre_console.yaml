@@ -11,7 +11,7 @@ Messages:
     critical: true
     cycle: "fast"
     target:
-      motor_controller:
+      bms_carrier:
         watchdog: 0
       power_distribution:
         watchdog: 0
@@ -26,7 +26,7 @@ Messages:
     critical: true
     cycle: "medium"
     target:
-      motor_controller:
+      bms_carrier:
         watchdog: 3
       power_distribution:
         watchdog: 3
@@ -49,7 +49,7 @@ Messages:
     target:
       power_distribution:
         watchdog: 0
-      motor_controller:
+      bms_carrier:
         watchdog: 0
     signals:
       input_cc:
@@ -62,7 +62,7 @@ Messages:
     critical: true
     cycle: "medium"
     target:
-      motor_controller:
+      bms_carrier:
         watchdog: 0
     signals:
       percent:
