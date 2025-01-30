@@ -1,0 +1,52 @@
+import struct
+import time
+from can import Message
+from can.interface import Bus
+from can.broadcastmanager import ThreadBasedCyclicSendTask
+{% include "system_can.py.jinja" %}
+
+messages_fast = []
+messages_medium = []
+messages_slow = []
+
+def pack(num, size):
+    if isinstance(num, float) and size == 32:
+        return struct.pack("f", num).hex()
+    elif size == 32:
+        return struct.pack("i", num).hex()
+    elif size == 16:
+        return struct.pack("h", num).hex()
+    elif size == 8:
+        return struct.pack("b", num).hex()
+    
+
+{%- for message in messages -%}
+{%- set msg = 'SYSTEM_CAN_MESSAGE_' ~ message.sender | upper ~ '_' ~ message.name | upper %}
+
+{{ msg }} = Message(
+arbitration_id = {% if not message.critical %} SYSTEM_CAN_MESSAGE_PRIORITY_BIT + {% endif -%}({{ message.id }} << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_{{ message.sender | upper }},
+data = bytearray([ {%- for signal in message.signals -%} pack({{ signal.name }}, {{ signal["length"] }}){{ ' + ' if not loop.last }} {%- endfor -%}]))
+
+{% if message.cycle == "fast" -%}
+messages_fast.append({{msg}})
+{%- elif message.cycle == "medium" -%}
+messages_medium.append({{msg}})
+{%- else -%}
+messages_slow.append({{msg}})
+{%- endif -%}
+
+{%- endfor %}
+
+def main():
+    bus = Bus(channel='virtual', bustype='socketcan')
+
+    task_fast = ThreadBasedCyclicSendTask(bus=bus, messages=messages_fast, period=0.01)
+    task_medium = ThreadBasedCyclicSendTask(bus=bus, messages=messages_medium, period=0.1)
+    task_slow = ThreadBasedCyclicSendTask(bus=bus, messages=messages_slow, period=1.0)
+
+    task_fast.start()
+    task_medium.start()
+    task_slow.start()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,10 @@
+from enum import Enum
+
+SYSTEM_CAN_MESSAGE_ID_OFFSET = 4
+SYSTEM_CAN_MESSAGE_PRIORITY_BIT = 0x400
+
+class SystemCanDevice(Enum):
+  {% for board in boards -%}
+    SYSTEM_CAN_DEVICE_{{ board | upper }} = {{ loop.index0 }}
+  {% endfor -%}
+  NUM_SYSTEM_CAN_DEVICES = {{ boards | length }}
