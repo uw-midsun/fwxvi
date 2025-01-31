@@ -15,10 +15,9 @@
 #include "stm32l4xx_hal_flash.h"
 
 /* Intra-component Headers */
-#include "bootloader_flash.h"
 #include "bootloader.h"
+#include "bootloader_flash.h"
 #include "misc.h"
-
 
 static BootloaderError s_validate_address(uintptr_t address, size_t size) {
   /* Check memory alignment */
