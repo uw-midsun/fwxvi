@@ -16,16 +16,9 @@
 
 /* Intra-component Headers */
 #include "bootloader_flash.h"
+#include "bootloader.h"
 #include "misc.h"
 
-/* Symbols from linker-scripts */
-extern uint32_t _flash_start;
-extern uint32_t _flash_size;
-extern uint32_t _flash_page_size;
-extern uint32_t _bootloader_start;
-extern uint32_t _application_start;
-extern uint32_t _bootloader_size;
-extern uint32_t _application_size;
 
 static BootloaderError s_validate_address(uintptr_t address, size_t size) {
   /* Check memory alignment */
@@ -34,8 +27,8 @@ static BootloaderError s_validate_address(uintptr_t address, size_t size) {
   }
 
   /* Ensure address is in range */
-  uint32_t flash_end = (uint32_t)&_flash_start + (uint32_t)&_flash_size;
-  if (address < (uint32_t)&_flash_start || address + size > flash_end) {
+  uint32_t flash_end = FLASH_START_ADDRESS + FLASH_SIZE;
+  if (address < FLASH_START_ADDRESS || address + size > flash_end) {
     return BOOTLOADER_FLASH_WRITE_OUT_OF_BOUNDS;
   }
 
@@ -102,18 +95,15 @@ BootloaderError boot_flash_read(uintptr_t address, uint8_t *buffer, size_t buffe
   return BOOTLOADER_ERROR_NONE;
 }
 
-BootloaderError boot_verify_flash_memory(void) {
-  uint8_t data[FLASH_SIZE];
+BootloaderError boot_verify_flash_memory() {
+  volatile uint32_t *flash_pointer = (volatile uint32_t *)APPLICATION_START_ADDRESS;
+  uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
 
-  BootloaderError read_success = boot_flash_read(_flash_start, data, FLASH_SIZE);
-
-  if (read_success == BOOTLOADER_ERROR_NONE) {
-    for (int i = 0; i < FLASH_SIZE; i++) {
-      if (data[i] != 0b11111111) {
-        return BOOTLOADER_FLASH_MEMORY_VERIFY_FAILED;
-      }
+  for (uint32_t i = 0; i < size_in_words; i++) {
+    if (flash_pointer[i] != 0xFFFFFFFF) {
+      return BOOTLOADER_ERROR_NONE;
     }
-
-    return BOOTLOADER_ERROR_NONE;
   }
+
+  return BOOTLOADER_FLASH_ERR;
 }
