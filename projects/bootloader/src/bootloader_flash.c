@@ -26,8 +26,8 @@ static BootloaderError s_validate_address(uintptr_t address, size_t size) {
   }
 
   /* Ensure address is in range */
-  uint32_t flash_end = FLASH_START_ADDRESS + FLASH_SIZE;
-  if (address < FLASH_START_ADDRESS || address + size > flash_end) {
+  uint32_t flash_end = FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE;
+  if (address < FLASH_START_ADDRESS_LINKERSCRIPT || address + size > flash_end) {
     return BOOTLOADER_FLASH_WRITE_OUT_OF_BOUNDS;
   }
 
