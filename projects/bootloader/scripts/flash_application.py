@@ -1,6 +1,7 @@
 from can_datagram import Datagram, DatagramSender
 import bootloader_id
 import os
+from log_manager import update_log
 
 class Flash_Application:
     def __init__(self, bin_path, sender=None) -> None:
@@ -49,8 +50,8 @@ class Flash_Application:
         for val in kwargs["node_ids"]:
             node_ids.append(val & 0xff)
 
-        print(f"Starting flash process")
-        print(f'Sending binary data with size of {self._bin_size}...\n\n')
+        update_log(f"Starting flash process")
+        update_log(f'Sending binary data with size of {self._bin_size}...\n\n')
 
         with open(self._bin_path, 'rb') as bin_data:
             bin_content = bytearray(bin_data.read())
@@ -80,4 +81,4 @@ class Flash_Application:
         self._sender.send(start_datagram)
         self._sender.send_data(flash_datagram)
 
-        print(f'\n\nFinished sending flash requirements to boards {node_ids}...')
+        update_log(f'\n\nFinished sending flash requirements to boards {node_ids}...')

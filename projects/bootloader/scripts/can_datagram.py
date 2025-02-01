@@ -4,6 +4,7 @@ import can
 import time
 from crc32 import CRC32
 from bootloader_id import *
+from log_manager import update_log
 
 DEFAULT_CHANNEL = 'can0'
 CAN_BITRATE = 500000
@@ -179,7 +180,7 @@ class DatagramSender:
                                   data=datagram,
                                   is_extended_id=message_extended_arbitration)
         self.bus.send(can_message)
-        print("Message was sent on {}".format(self.bus.channel_info))
+        update_log("Message was sent on {}".format(self.bus.channel_info))
 
         ack_received = False
         retry_count = 0
@@ -192,26 +193,26 @@ class DatagramSender:
                 if ack_msg and ack_msg.arbitration_id == ACK:
                     if ack_msg.data[0] == 0x01:
                         ack_received = True
-                        print(f"Received ACK for start message")
+                        update_log(f"Received ACK for start message")
                     elif ack_msg.data[0] == 0x00:
-                        print(f"Received NACK for start message, aborting")
+                        update_log(f"Received NACK for start message, aborting")
                         break
                     else:
-                        print(f"Received unknown response for start message, retrying...")
+                        update_log(f"Received unknown response for start message, retrying...")
                         retry_count += 1
                 else:
-                    print(f"No ACK/NACK received for start message, retrying...")
+                    update_log(f"No ACK/NACK received for start message, retrying...")
                     retry_count += 1
                 
             except can.CanError:
-                print(f"Error waiting for ACK/NACK for start message, retrying...")
+                update_log(f"Error waiting for ACK/NACK for start message, retrying...", error=True)
                 retry_count += 1
         
         if not ack_received:
             raise Exception(f"Failed to receive ACK for start message after {max_retries} attempts")
     
 
-        print(f"Start message received succesfully!")
+        update_log(f"Start message received succesfully!")
 
     def send_data(self, message, sender_id=0):
         '''Send a Datagram over CAN'''
@@ -252,7 +253,7 @@ class DatagramSender:
                     time.sleep(0.01)
                     self.bus.send(data_msg)
             
-            print(f"Sent {len(current_chunk) * 8} bytes for sequence {sequence_number}")
+            update_log(f"Sent {len(current_chunk) * 8} bytes for sequence {sequence_number}")
             
             if sequence_number > 0 or chunk_messages:
                 ack_received = False
@@ -266,20 +267,20 @@ class DatagramSender:
                         if ack_msg and ack_msg.arbitration_id == ACK:
                             if ack_msg.data[0] == 0x01:
                                 ack_received = True
-                                print(f"Received ACK for sequence {sequence_number}\n")
+                                update_log(f"Received ACK for sequence {sequence_number}\n")
                             elif ack_msg.data[0] == 0x00:
-                                print(f"Received NACK for sequence {sequence_number}, retrying...")
+                                update_log(f"Received NACK for sequence {sequence_number}, retrying...")
                                 retry_count += 1
                                 break
                             else:
-                                print(f"Received unknown response for sequence {sequence_number}, retrying...")
+                                update_log(f"Received unknown response for sequence {sequence_number}, retrying...")
                                 retry_count += 1
                         else:
-                            print(f"No ACK/NACK received for sequence {sequence_number}, retrying...")
+                            update_log(f"No ACK/NACK received for sequence {sequence_number}, retrying...")
                             retry_count += 1
                         
                     except can.CanError:
-                        print(f"Error waiting for ACK/NACK for sequence {sequence_number}, retrying...")
+                        update_log(f"Error waiting for ACK/NACK for sequence {sequence_number}, retrying...", error=True)
                         retry_count += 1
                 
                 if not ack_received:
@@ -289,9 +290,9 @@ class DatagramSender:
         
         end_time = time.time()
 
-        print("--------------------------------- COMPLETED ---------------------------------")
-        print(f"Time Elapsed: {end_time - start_time}")
-        print(f"All data sent successfully. Total sequences: {sequence_number}\n")
+        update_log("--------------------------------- COMPLETED ---------------------------------")
+        update_log(f"Time Elapsed: {end_time - start_time}")
+        update_log(f"All data sent successfully. Total sequences: {sequence_number}\n")
 
     @staticmethod
     def _chunkify(data, size):
