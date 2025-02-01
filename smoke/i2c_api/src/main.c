@@ -10,26 +10,22 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
-#include "gpio.h"
-#include "log.h"
-#include "tasks.h"
-#include "status.h"
 #include "delay.h"
+#include "gpio.h"
 #include "i2c.h"
+#include "log.h"
+#include "mcu.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
-I2CSettings i2c_test_settings = {
-  .speed = I2C_SPEED_STANDARD,
-  .sda = {.port = GPIO_PORT_B, .pin = 11},
-  .scl = {.port = GPIO_PORT_B, .pin = 10}
-};
+I2CSettings i2c_test_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
 
 TASK(i2c_api, TASK_STACK_1024) {
   i2c_init(I2C_PORT_2, &i2c_test_settings);
   I2CAddress address = 0x45;
-  uint8_t data[5] = {0x10, 0x11, 0x12, 0x13, 0x14};
+  uint8_t data[5] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
   size_t length = 5;
 
   while (true) {

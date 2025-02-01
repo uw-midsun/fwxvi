@@ -245,7 +245,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   }
 
   interrupt_nvic_enable(s_port[i2c].ev_irqn, INTERRUPT_PRIORITY_HIGH);
-  interrupt_nvic_enable(s_port[i2c].err_irqn,INTERRUPT_PRIORITY_HIGH);
+  interrupt_nvic_enable(s_port[i2c].err_irqn, INTERRUPT_PRIORITY_HIGH);
 
   s_port[i2c].initialized = true;
 
