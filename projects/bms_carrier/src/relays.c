@@ -14,6 +14,7 @@
 #include "delay.h"
 #include "timers.h"
 #include "master_tasks.h"
+#include "global_enums.h"
 
 /* Intra-component Headers */
 #include "relays.h"

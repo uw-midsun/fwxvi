@@ -1,16 +1,20 @@
 #pragma once
 
-/**
- * @file    mcp2515_defs.h
- * @brief   Header file for mcdp2515.defs
- * @date    2025-01-13
- * @author  Midnight Sun Team #24 - MSXVI
- */
+/************************************************************************************************
+ * @file   motor_can.h
+ *
+ * @brief  Source code for Motor controller CAN
+ *
+ * @date   2025-01-30
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
 /* Standard library Headers */
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
+
 /* Intra-component Headers */
 
 /**
@@ -36,17 +40,14 @@
 #define MATH_PI 3.14
 #define WHEEL_DIAMETER 0.57147
 #define VEL_TO_RPM_RATIO (60 / (2 * MATH_PI) * WHEEL_DIAMETER)  // TODO: set actual ratio, m/s to motor (rpm for m/s)
+#define CONVERT_VELOCITY_TO_KPH 13234
 // wheel diameter 557mm
 // 1000 / (557 * pi) = 0.57147
-
-#define MAX_COASTING_THRESHOLD 0.4     // Max pedal threshold when coasting at speeds > 8 km/h
-#define MAX_OPD_SPEED 8                // Max car speed before one pedal driving threshold maxes out
-#define CONVERT_VELOCITY_TO_KPH 3.6    // Converts m/s to km/h
-#define COASTING_THRESHOLD_SCALE 0.05  // Scaling value to determine coasting threshold
 
 #define DRIVER_CONTROL_BASE 0x500
 #define MOTOR_CONTROLLER_BASE_L 0x400
 #define MOTOR_CONTROLLER_BASE_R 0x80  // TODO: set to actual values
+
 typedef enum MotorControllerMessageIds {
   IDENTIFICATION = 0x00,
   STATUS,
@@ -66,20 +67,9 @@ typedef enum MotorControllerMessageIds {
   SLIP_SPEED = 0x17,
 } MotorControllerMessageIds;
 
-typedef enum DriveState {
-  // drive states defined by center console
-  NEUTRAL,
-  DRIVE,
-  REVERSE,
-  // extra drive state types used only by mci
-  CRUISE,
-  BRAKE,
-} DriveState;
-
 void init_motor_controller_can();
 float prv_get_float(uint32_t u);
-float prv_clamp_float(float value);
-float prv_one_pedal_threshold(float car_velocity);
-float prv_one_pedal_drive_current(float throttle_percent, float threshold, DriveState *drive_state);
+float clamp_float(float value);
 void prv_update_target_current_velocity();
+
 /** @} */

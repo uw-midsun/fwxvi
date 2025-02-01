@@ -1,21 +1,23 @@
 #pragma once
 
 /************************************************************************************************
- * @file   mcp2515_defs.h
+ * @file   mcp2515_hw.h
  *
- * @brief  Header file for mcdp2515.defs
+ * @brief  Header file for MCP2515 hardware
  *
- * @date   2025-01-13
+ * @date   2025-01-31
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+
 /* Inter-component Headers */
 #include "can_hw.h"
 #include "can_msg.h"
 #include "can_queue.h"
 #include "gpio.h"
 #include "spi.h"
+
 /* Intra-component Headers */
 
 /**

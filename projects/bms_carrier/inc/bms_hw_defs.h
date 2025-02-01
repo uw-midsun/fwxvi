@@ -118,6 +118,7 @@
 
 /** @brief  Number of modules in series */
 #define NUM_SERIES_MODULES 9U
+
 /** @brief  Number of series cells in a module */
 #define NUM_SERIES_CELLS_IN_MODULE 4U
 

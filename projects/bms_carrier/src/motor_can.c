@@ -1,15 +1,27 @@
+/************************************************************************************************
+ * @file   one_pedal_drive.c
+ *
+ * @brief  Source file for One pedal drive
+ *
+ * @date   2025-01-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "motor_can.h"
-
+/* Standard library Headers */
 #include <math.h>
 #include <stdint.h>
 #include <string.h>
 
+/* Inter-component Headers */
+#include "log.h"
+#include "tasks.h"
+
+/* Intra-component Headers */
+#include "motor_can.h"
+#include "one_pedal_drive.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
-#include "log.h"
 #include "mcp2515.h"
-#include "tasks.h"
 
 static float s_target_current;
 static float s_target_velocity;
@@ -35,44 +47,12 @@ float clamp_float(float value) {
   }
 }
 
-float one_pedal_threshold(float car_velocity) {
-  float threshold = 0.0;
-  float car_velocity_mps = car_velocity * VEL_TO_RPM_RATIO;
-  if (car_velocity_mps <= MAX_OPD_SPEED) {
-    threshold = car_velocity_mps * COASTING_THRESHOLD_SCALE;
-  } else {
-    threshold = MAX_COASTING_THRESHOLD;
-  }
-  return threshold;
-}
-
-float one_pedal_drive_current(float throttle_percent, float threshold, DriveState *drive_state) {
-  throttle_percent = clamp_float(throttle_percent);
-
-  if (throttle_percent <= threshold + 0.05 && throttle_percent >= threshold - 0.05) {
-    return 0.0;
-  }
-
-  if (throttle_percent >= threshold) {
-    set_motor_velocity_brakes_enabled(false);
-    return (throttle_percent - threshold) / (1 - threshold);
-  } else {
-    *drive_state = BRAKE;
-    // TODO (Aryan): Validate then make this true. Ran into issues at FSGP
-    set_motor_velocity_brakes_enabled(true);
-    return (throttle_percent) / (threshold);
-  }
-  LOG_DEBUG("ERROR: One pedal throttle not calculated\n");
-  return 0.0;
-}
-
 void update_target_current_velocity() {
   float throttle_percent = get_float(get_cc_pedal_throttle_output());
-  throttle_percent = clamp_float(throttle_percent);
   bool brake = get_cc_pedal_brake_output();
   float target_vel = (int)(get_cc_info_target_velocity()) * VEL_TO_RPM_RATIO;
   float car_vel = fabs((s_car_velocity_l + s_car_velocity_r) / 2);
-  float opd_threshold = one_pedal_threshold(car_vel);
+  float opd_thresh = opd_threshold(car_vel);
 
   DriveState drive_state = get_cc_info_drive_state();
 
@@ -82,20 +62,23 @@ void update_target_current_velocity() {
   float regen = get_float(get_cc_regen_percentage_percent());
   bool cruise = get_cc_info_cruise_control();
 
-  if ((drive_state == DRIVE) && cruise && (throttle_percent <= opd_threshold)) {
+  if ((drive_state == DRIVE) && cruise && (throttle_percent <= opd_thresh)) {
     drive_state = CRUISE;
   }
   if (brake || (throttle_percent == 0 && drive_state != CRUISE)) {
     drive_state = regen ? BRAKE : NEUTRAL;
   }
   if (drive_state == DRIVE || drive_state == REVERSE) {
-    throttle_percent = one_pedal_drive_current(throttle_percent, opd_threshold, &drive_state);
+    throttle_percent = opd_current(throttle_percent, opd_thresh, &drive_state);
   }
+
+  throttle_percent = clamp_float(throttle_percent);
+
   // LOG_DEBUG("throttle:%d\n", (int)(throttle_percent * 1000));
   // LOG_DEBUG("brake:%d\n", brake);
   // LOG_DEBUG("tar vel:%d\n", (int)(target_vel*1000));
   // LOG_DEBUG("car_vel:%d\n", (int)(car_vel *1000));
-  // LOG_DEBUG("opd_thresh:%d\n", (int)(opd_threshold*1000));
+  // LOG_DEBUG("opd_thresh:%d\n", (int)(opd_thresh*1000));
   // LOG_DEBUG("regen:%d\n", (int)(regen*1000));
   // LOG_DEBUG("cruise:%d\n", cruise);
 
