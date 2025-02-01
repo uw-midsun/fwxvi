@@ -252,6 +252,22 @@ bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) 
   return false;
 }
 
+void CAN1_TX_IRQHandler(void) {
+  HAL_CAN_IRQHandler(&s_can_handle);
+}
+
+void CAN1_RX0_IRQHandler(void) {
+  HAL_CAN_IRQHandler(&s_can_handle);
+}
+
+void CAN1_RX1_IRQHandler(void) {
+  HAL_CAN_IRQHandler(&s_can_handle);
+}
+
+void CAN1_SCE_IRQHandler(void) {
+  HAL_CAN_IRQHandler(&s_can_handle);
+}
+
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
   if (s_tx_full) {
     /* TX mailbox is no longer full once data is transmitted */
