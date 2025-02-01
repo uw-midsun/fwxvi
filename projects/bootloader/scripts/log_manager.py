@@ -1,4 +1,3 @@
-# log_manager.py
 def update_log(message, error=False):
     from gui import log_label, log_frame, canvas  # Import only inside function to prevent circular imports
 
@@ -12,7 +11,7 @@ def update_log(message, error=False):
     else:
         log_label.config(foreground="white")  # Default color for normal messages
 
-    log_label.config(wraplength=400)  # Ensure text wrapping
+    log_label.config(wraplength=400) 
 
     log_frame.update_idletasks()
     canvas.config(scrollregion=canvas.bbox("all"))
