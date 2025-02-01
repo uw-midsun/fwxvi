@@ -1,13 +1,9 @@
 #pragma once
 
-/************************************************************************************************
- * @file   bootloader.h
- *
- * @brief  Header file for bootloader
- *
- * @date   2025-01-08
- * @author Midnight Sun Team #24 - MSXVI
- ************************************************************************************************/
+#include "boot_can.h"
+#include "boot_flash.h"
+#include "bootloader_mcu.h"
+#include "can_datagram.h"
 
 /* Standard library Headers */
 #include <stdint.h>
@@ -64,51 +60,39 @@ extern uint32_t _sram_size;
  * @brief   Bootloader State Machine
  */
 typedef enum {
-  BOOTLOADER_UNINITIALIZED = 0, /**< Bootloader starts as unitialized */
-  BOOTLOADER_IDLE,              /**< Bootloader is initialized and waiting for messages */
-  BOOTLOADER_START,             /**< Bootloader is processing a start message */
-  BOOTLOADER_WAIT_SEQUENCING,   /**< Bootloader is waiting for the data sequencing packet */
-  BOOTLOADER_DATA_RECEIVE,      /**< Bootloader is receiving streamed data and flashing it in 2048 byte chunks */
-  BOOTLOADER_JUMP_APP,          /**< Bootloader is prompted to jump to application defined by APPLICATION_START_ADDRESS */
-  BOOTLOADER_FAULT              /**< Bootloader is in fault state */
+  /// @brief Bootloader starts unitialized
+  BOOTLOADER_UNINITIALIZED = 0,
+  /// @brief Bootloader is initialized and waiting for messages
+  BOOTLOADER_IDLE,
+  /// @brief Bootloader is processing a start message
+  BOOTLOADER_START,
+  /// @brief Bootloader is waiting for the first byte to be sent (CAN_ARBITRATION_SEQUENCING_ID)
+  BOOTLOADER_DATA_READY,
+  /// @brief Bootloader is receiving streamed data and flashing it immediately
+  /// (CAN_ARBITRATION_FLASH_ID)
+  BOOTLOADER_DATA_RECEIVE,
+  /// @brief Bootloader is prompted to jump to application defined by APP_START_ADDRESS
+  BOOTLOADER_JUMP_APP,
+  /// @brief Bootloader is in fault state
+  BOOTLOADER_FAULT
 } BootloaderStates;
 
-/**
- * @brief   Private Bootloader State Storage
- */
 typedef struct {
-  uintptr_t application_start;       /**< Application start address */
-  uintptr_t current_write_address;   /**< Current write address */
-  uint32_t bytes_written;            /**< Number of bytes written to flash */
-  uint32_t data_size;                /**< Data size (ie: Binary application size) */
-  uint32_t packet_crc32;             /**< Packet CRC32 if available */
-  uint16_t expected_sequence_number; /**< Next expected sequence number for validation */
-  uint16_t buffer_index;             /**< Data buffer index for correct reading/writing */
+  uintptr_t application_start;
+  uintptr_t current_address;
+  uint32_t bytes_written;
+  uint32_t binary_size;
+  uint32_t packet_crc32;
+  uint16_t expected_sequence_number;
+  uint16_t buffer_index;
 
-  BootloaderStates state;   /**< Internal state tracker */
-  BootloaderError error;    /**< Bootloader error tracker */
-  uint16_t target_nodes;    /**< Target MCU Ids */
-  bool first_byte_received; /**< Boolean flag to track if the first byte was received */
+  BootloaderStates state;
+  BootloaderError error;
+  uint16_t target_nodes;
+  bool first_byte_received;
+
 } BootloaderStateData;
 
-/**
- * @brief   Initialize the bootloader
- * @return  BOOTLOADER_ERROR_NONE if the bootloader is initialized succesfully
- */
 BootloaderError bootloader_init(void);
-
-/**
- * @brief   Run the bootloader
- * @param   msg Pointer to incoming CAN data to feed the bootloader
- * @return  BootloaderError collected through the state machine
- */
 BootloaderError bootloader_run(Boot_CanMessage *msg);
-
-/**
- * @brief   Jump application
- * @details Exits bootloader and jumps to main application
- * @return  BOOTLOADER_INTERNAL_ERR. This function should never return
- */
 BootloaderError bootloader_jump_app(void);
-
-/** @} */
