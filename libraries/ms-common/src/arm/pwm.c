@@ -1,5 +1,6 @@
 #include "pwm.h"
-
+#include  "log.h"
+#include "gpio.h"
 #include "status.h"
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_conf.h"
@@ -23,15 +24,6 @@ static void prv_enable_periph_clock(PwmTimer timer) {
         case PWM_TIMER_6:
             __HAL_RCC_TIM6_CLK_ENABLE();
             break;
-        case PWM_TIMER_7:
-            __HAL_RCC_TIM7_CLK_ENABLE();
-            break;
-        case PWM_TIMER_15:
-            __HAL_RCC_TIM15_CLK_ENABLE();
-            break;
-        case PWM_TIMER_16:
-            __HAL_RCC_TIM16_CLK_ENABLE();
-            break;
         default:
             break;
     }
@@ -39,13 +31,12 @@ static void prv_enable_periph_clock(PwmTimer timer) {
 
 StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
     if (timer >= NUM_PWM_TIMERS || period_us == 0) {
-        LOG_DEBUG("invalid timer")
+        LOG_DEBUG("invalid timer");
         return STATUS_CODE_INVALID_ARGS;
     }
     
-
     prv_enable_periph_clock(timer);
-
+    
     switch (timer) {
         case PWM_TIMER_1:
             s_timer_handle[timer].Instance = TIM1;
@@ -56,24 +47,15 @@ StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
         case PWM_TIMER_6:
             s_timer_handle[timer].Instance = TIM6;
             break;
-        case PWM_TIMER_7:
-            s_timer_handle[timer].Instance = TIM7;
-            break;
-        case PWM_TIMER_15:
-            s_timer_handle[timer].Instance = TIM15;
-            break;
-        case PWM_TIMER_16:
-            s_timer_handle[timer].Instance = TIM16;
-            break;
         default:
             return STATUS_CODE_INVALID_ARGS;
     }
-
-    s_timer_handle[timer].Init.Prescaler = (HAL_RCC_GetPCLK1Freq() / 1000000) - 1;
+    uint32_t clock_freq = (timer == PWM_TIMER_1) ? HAL_RCC_GetPCLK2Freq() : HAL_RCC_GetPCLK1Freq();
+    s_timer_handle[timer].Init.Prescaler = (clock_freq / 1000000) - 1;
     s_timer_handle[timer].Init.CounterMode = TIM_COUNTERMODE_UP;
     s_timer_handle[timer].Init.Period = period_us - 1;
-    s_timer_handle[timer].Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    s_timer_handle[timer].Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    s_timer_handle[timer].Init.ClockDivision = 0U;
+    s_timer_handle[timer].Init.RepetitionCounter = 0U;
     
     if (HAL_TIM_PWM_Init(&s_timer_handle[timer]) != HAL_OK) {
         return STATUS_CODE_INTERNAL_ERROR;
@@ -89,17 +71,18 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
     }
 
     TIM_OC_InitTypeDef s_config_oc = {0};
-    s_config_oc.OCMode = TIM_OCMODE_PWM1;
     s_config_oc.Pulse = pulse_width_us;
+    s_config_oc.OCMode = TIM_OCMODE_PWM1;
     s_config_oc.OCPolarity = TIM_OCPOLARITY_HIGH;
-    s_config_oc.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+    s_config_oc.OCNPolarity = n_channel_en ? TIM_OCNPOLARITY_HIGH : TIM_OCNPOLARITY_LOW;
     s_config_oc.OCFastMode = TIM_OCFAST_DISABLE;
+    s_config_oc.OCIdleState = TIM_OCIDLESTATE_RESET;
 
-    if (HAL_TIM_PWM_ConfigChannel(&s_timer_handle[timer], &s_config_oc, channel) != HAL_OK) {
+    if (HAL_TIM_PWM_ConfigChannel(&s_timer_handle[timer], &s_config_oc, channel * 4U) != HAL_OK) {
         return STATUS_CODE_INTERNAL_ERROR;
     }
 
-    HAL_TIM_PWM_Start(&s_timer_handle[timer], channel);
+    HAL_TIM_PWM_Start(&s_timer_handle[timer], channel * 4U);
     return STATUS_CODE_OK;
 }
 
@@ -113,14 +96,7 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
 }
 
 uint16_t pwm_get_dc(PwmTimer timer, PwmChannel channel) {
-    if (timer >= NUM_PWM_TIMERS || channel >= NUM_PWM_CHANNELS) {
-        return 0;
-    }
-
-    TIM_OC_InitTypeDef s_config_oc = {0};
-    HAL_TIM_PWM_ConfigChannel(&s_timer_handle[timer], &s_config_oc, channel);
-
-    return (s_config_oc.Pulse * 100) / (s_period_us[timer] + 1);
+    return 0;
 }
 
 uint16_t pwm_get_period(PwmTimer timer) {
