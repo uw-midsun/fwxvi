@@ -7,7 +7,7 @@
 ---
 Messages:
   cc_pedal:
-    id: 4
+    id: 5
     critical: true
     cycle: "fast"
     target:
@@ -22,7 +22,7 @@ Messages:
         length: 8
 
   cc_info: 
-    id: 5
+    id: 6
     critical: true
     cycle: "medium"
     target:
@@ -43,7 +43,7 @@ Messages:
         length: 8
 
   cc_steering:
-    id: 6
+    id: 7
     critical: true
     cycle: "medium"
     target:
@@ -58,7 +58,7 @@ Messages:
         length: 8
     
   cc_regen_percentage:
-    id: 7
+    id: 8
     critical: true
     cycle: "medium"
     target:

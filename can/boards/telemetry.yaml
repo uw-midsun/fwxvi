@@ -7,7 +7,7 @@
 ---
 Messages:
   telemetry:
-    id: 53
+    id: 52
     critical: false
     cycle: "slow"
     target:

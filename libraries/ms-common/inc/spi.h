@@ -38,6 +38,24 @@ typedef enum {
   NUM_SPI_PORTS,  /**< Number of SPI Ports */
 } SpiPort;
 
+/**
+ * @brief   SPI baudrate type
+ * @details These values are calculated with the following formula
+ *          APB_Frequency / Spi_Prescalers. Where APB frequency is 80MHz set in the mcu.c file
+ *          And Spi_prescalers are powers of 2 between 2^1 and 2^8
+ */
+typedef enum {
+  SPI_BAUDRATE_312_5KHZ = 0,    /**< 312.5 kHz */
+  SPI_BAUDRATE_625KHZ,          /**< 625 kHz */
+  SPI_BAUDRATE_1_25MHZ,         /**< 1.25 MHz */
+  SPI_BAUDRATE_2_5MHZ,          /**< 2.5 MHz */
+  SPI_BAUDRATE_5MHZ,            /**< 5 MHz */
+  SPI_BAUDRATE_10MHZ,           /**< 10 MHz */
+  SPI_BAUDRATE_20MHZ,           /**< 20 MHz */
+  SPI_BAUDRATE_40MHZ,           /**< 40 MHz */
+  NUM_SPI_BAUDRATE              /**< Number of Spi Baudrates */
+} SpiBaudrate;
+
 /** @brief   SPI Mode selection */
 typedef enum {
   SPI_MODE_0 = 0, /**< CPOL: 0 CPHA: 0. Sampled on rising edge. Idle low */
@@ -56,7 +74,7 @@ typedef enum {
  *          CS is the chip select pin which acts as an enable signal.
  */
 typedef struct {
-  uint32_t baudrate;
+  SpiBaudrate baudrate;
   SpiMode mode;
   GpioAddress sdo;
   GpioAddress sdi;

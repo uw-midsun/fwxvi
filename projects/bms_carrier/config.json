@@ -2,7 +2,11 @@
     "libs": [
         "FreeRTOS",
         "ms-common",
-        "master"
+        "master",
+        "ms-drivers"
     ],
-    "can": true
+    "can": true,
+    "mocks": {
+        "test_state_of_charge": ["xTaskGetTickCount"]
+    }
 }

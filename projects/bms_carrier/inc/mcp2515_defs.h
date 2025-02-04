@@ -3,14 +3,16 @@
 /************************************************************************************************
  * @file   mcp2515_defs.h
  *
- * @brief  Header file for mcdp2515.defs
+ * @brief  Header file for MCP2515 register definitions
  *
- * @date   2025-01-13
+ * @date   2025-01-31
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+
 /* Inter-component Headers */
+
 /* Intra-component Headers */
 
 /**

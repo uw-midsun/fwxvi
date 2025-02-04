@@ -15,17 +15,25 @@
 #include "master_tasks.h"
 #include "mcu.h"
 #include "tasks.h"
+#include "can.h"
 
 /* Intra-component Headers */
 #include "bms_carrier.h"
 
 void pre_loop_init() {}
 
-void run_1000hz_cycle() {}
+void run_1000hz_cycle() {
+  run_can_rx_all();
 
-void run_10hz_cycle() {}
+  run_can_tx_fast();
+}
+void run_10hz_cycle() {
+  run_can_tx_medium();
+}
 
-void run_1hz_cycle() {}
+void run_1hz_cycle() {
+  run_can_tx_slow();
+}
 
 int main() {
   mcu_init();
