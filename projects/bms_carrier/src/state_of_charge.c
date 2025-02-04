@@ -27,8 +27,8 @@ static BmsStorage *bms_storage;
 static float voltage_weight = 1.0f;
 
 /* Cell voltage. 0.2A Load taken off this page
- * https://lygte-info.dk/review/batteries2012/LG%2021700%20M50%205000mAh%20(Grey)%20UK.html */
-/* Placeholder lookup for testing */
+ * https://lygte-info.dk/review/batteries2012/LG%2021700%20M50%205000mAh%20(Grey)%20UK.html
+ */
 static float voltage_lookup[LUT_SIZE] = { 2.80, 3.00, 3.12, 3.18, 3.22, 3.25, 3.28, 3.30, 3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 3.52, 3.54, 3.56,
                                           3.58, 3.60, 3.62, 3.64, 3.66, 3.68, 3.70, 3.72, 3.74, 3.76, 3.78, 3.80, 3.82, 3.84, 3.86, 3.89, 3.93, 3.98, 4.07, 4.15 };
 
@@ -137,7 +137,7 @@ StatusCode state_of_charge_init(BmsStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-#if MS_TEST == 1U
+#ifdef MS_TEST
 void set_last_time(uint32_t last_time) {
   bms_storage->state_of_charge_storage->last_time = last_time;
 }

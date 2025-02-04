@@ -78,7 +78,7 @@ void ocv_voltage_soc();
  */
 float perdict_ocv_voltage();
 
-#if MS_TEST == 1U
+#ifdef MS_TEST
 
 /**
  * @brief   Ramps the voltage weight to account for non-linear regions of state of charge

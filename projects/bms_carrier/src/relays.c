@@ -20,60 +20,80 @@
 #include "relays.h"
 #include "fault_bps.h"
 #include "bms_hw_defs.h"
+#include "bms_carrier_getters.h"
+#include "bms_carrier_setters.h"
 
-static const GpioAddress pos_relay_en = BMS_POS_RELAY_ENABLE_GPIO;
-static const GpioAddress pos_relay_sense = BMS_POS_RELAY_SENSE_GPIO;
+static struct RelayStorage relay_storage = {
+  .pos_relay_en = BMS_POS_RELAY_ENABLE_GPIO,
+  .pos_relay_sense = BMS_POS_RELAY_SENSE_GPIO,
 
-static const GpioAddress neg_relay_en = BMS_NEG_RELAY_ENABLE_GPIO;
-static const GpioAddress neg_relay_sense =  BMS_NEG_RELAY_SENSE_GPIO;
+  .neg_relay_en = BMS_NEG_RELAY_ENABLE_GPIO,
+  .neg_relay_sense = BMS_NEG_RELAY_SENSE_GPIO,
 
-static const GpioAddress solar_relay_en = BMS_SOLAR_RELAY_ENABLE_GPIO;
-static const GpioAddress solar_relay_sense = BMS_SOLAR_RELAY_SENSE_GPIO;
+  .solar_relay_en = BMS_SOLAR_RELAY_ENABLE_GPIO,
+  .solar_relay_sense = BMS_SOLAR_RELAY_SENSE_GPIO,
 
-#define NUM_BMS_RELAYS 3
+  .killswitch_sense = BMS_KILLSWITCH_SENSE_GPIO
+};
 
-static const GpioAddress s_relays_sense[NUM_BMS_RELAYS] = { pos_relay_sense, neg_relay_sense,
-                                                            solar_relay_sense };
+static BmsStorage *bms_storage;
 
-static StatusCode prv_close_relays(void) {
-  // 200 MS GAP BETWEEN EACH RELAY BC OF CURRENT DRAW
-  gpio_set_state(&pos_relay_en, GPIO_STATE_HIGH);
+static const GpioAddress *s_relays_sense[NUM_BMS_RELAYS] = {
+  &relay_storage.pos_relay_sense,
+  &relay_storage.neg_relay_sense,
+  &relay_storage.solar_relay_sense
+};
+
+static StatusCode s_close_relays(void) {
+  /* 250 MS Gap between each relay closing due to the excessive current draw */
+  gpio_set_state(&bms_storage->relay_storage->pos_relay_en, GPIO_STATE_HIGH);
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
-  gpio_set_state(&neg_relay_en, GPIO_STATE_HIGH);
+
+  gpio_set_state(&bms_storage->relay_storage->neg_relay_en, GPIO_STATE_HIGH);
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
-  gpio_set_state(&solar_relay_en, GPIO_STATE_HIGH);
+
+  gpio_set_state(&bms_storage->relay_storage->solar_relay_en, GPIO_STATE_HIGH);
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
+
   for (uint8_t i = 0; i < NUM_BMS_RELAYS; i++) {
-    if (gpio_get_state(&s_relays_sense[i]) != GPIO_STATE_HIGH) {
+    if (gpio_get_state(s_relays_sense[i]) != GPIO_STATE_HIGH) {
       LOG_DEBUG("Relay %d not closed\n", i);
-      // fault_bps_set(BMS_FAULT_RELAY_CLOSE_FAILED);
-      // bms_relay_fault();
-      // return STATUS_CODE_INTERNAL_ERROR;
+      fault_bps_set(BMS_RELAY_STATE_FAULT);
+      bms_relay_fault();
+      return STATUS_CODE_INTERNAL_ERROR;
     }
   }
   return STATUS_CODE_OK;
 }
 
 inline void bms_open_solar() {
-  gpio_set_state(&solar_relay_en, GPIO_STATE_LOW);
+  gpio_set_state(&bms_storage->relay_storage->solar_relay_en, GPIO_STATE_LOW);
 }
 
 inline void bms_close_solar() {
-  gpio_set_state(&solar_relay_en, GPIO_STATE_HIGH);
+  gpio_set_state(&bms_storage->relay_storage->solar_relay_en, GPIO_STATE_HIGH);
   delay_ms(BMS_CLOSE_RELAYS_DELAY_MS);
 }
 
 void bms_relay_fault() {
   LOG_DEBUG("Transitioned to RELAYS_FAULT\n");
 
-  gpio_set_state(&pos_relay_en, GPIO_STATE_LOW);
-  gpio_set_state(&neg_relay_en, GPIO_STATE_LOW);
-  gpio_set_state(&solar_relay_en, GPIO_STATE_LOW);
-  // set_battery_relay_info_state(EE_RELAY_STATE_FAULT);
+  gpio_set_state(&bms_storage->relay_storage->pos_relay_en, GPIO_STATE_LOW);
+  gpio_set_state(&bms_storage->relay_storage->neg_relay_en, GPIO_STATE_LOW);
+  gpio_set_state(&bms_storage->relay_storage->solar_relay_en, GPIO_STATE_LOW);
+
+  set_battery_relay_info_state(BMS_RELAY_STATE_FAULT);
 }
 
-StatusCode init_bms_relays(GpioAddress *killswitch) {
-  // Set up kill switch
+StatusCode relays_init(BmsStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  bms_storage = storage;
+  bms_storage->relay_storage = &relay_storage;
+
+  /* Set up killswitch interrupt */
   interrupt_init();
   InterruptSettings it_settings = {
     .priority = INTERRUPT_PRIORITY_NORMAL,
@@ -81,26 +101,27 @@ StatusCode init_bms_relays(GpioAddress *killswitch) {
     .edge = INTERRUPT_EDGE_FALLING,
   };
 
-  gpio_init_pin(killswitch, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
-  gpio_register_interrupt(killswitch, &it_settings, KILLSWITCH_IT, get_1000hz_task());
-  delay_ms(10);
+  gpio_init_pin(&bms_storage->relay_storage->killswitch_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  gpio_register_interrupt(&bms_storage->relay_storage->killswitch_sense, &it_settings, KILLSWITCH_IT, get_1000hz_task());
+  
+  /* Debounce startup killswitch state */
+  delay_ms(10U);
 
-  if (gpio_get_state(killswitch) == GPIO_STATE_LOW) {
+  if (gpio_get_state(&bms_storage->relay_storage->killswitch_sense) == GPIO_STATE_LOW) {
     LOG_DEBUG("KILLSWITCH SET");
-    delay_ms(5);
     fault_bps_set(BMS_FAULT_KILLSWITCH);
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  gpio_init_pin(&pos_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
-  gpio_init_pin(&neg_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
-  gpio_init_pin(&solar_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->pos_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->neg_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->solar_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
-  gpio_init_pin(&pos_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
-  gpio_init_pin(&neg_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
-  gpio_init_pin(&solar_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->pos_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->neg_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  gpio_init_pin(&bms_storage->relay_storage->solar_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
 
-  status_ok_or_return(prv_close_relays());
-  // set_battery_relay_info_state(EE_RELAY_STATE_CLOSE);
+  status_ok_or_return(s_close_relays());
+  set_battery_relay_info_state(BMS_RELAY_STATE_CLOSE);
   return STATUS_CODE_OK;
 }

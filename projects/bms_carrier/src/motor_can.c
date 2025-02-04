@@ -1,7 +1,7 @@
 /************************************************************************************************
- * @file   one_pedal_drive.c
+ * @file   motor_can.c
  *
- * @brief  Source file for One pedal drive
+ * @brief  Source file for motor CAN
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -62,13 +62,13 @@ void update_target_current_velocity() {
   float regen = get_float(get_cc_regen_percentage_percent());
   bool cruise = get_cc_info_cruise_control();
 
-  if ((drive_state == DRIVE) && cruise && (throttle_percent <= opd_thresh)) {
-    drive_state = CRUISE;
+  if ((drive_state == VEHICLE_DRIVE) && cruise && (throttle_percent <= opd_thresh)) {
+    drive_state = VEHICLE_CRUISE;
   }
-  if (brake || (throttle_percent == 0 && drive_state != CRUISE)) {
-    drive_state = regen ? BRAKE : NEUTRAL;
+  if (brake || (throttle_percent == 0 && drive_state != VEHICLE_CRUISE)) {
+    drive_state = regen ? VEHICLE_BRAKE : VEHICLE_NEUTRAL;
   }
-  if (drive_state == DRIVE || drive_state == REVERSE) {
+  if (drive_state == VEHICLE_DRIVE || drive_state == VEHICLE_REVERSE) {
     throttle_percent = opd_current(throttle_percent, opd_thresh, &drive_state);
   }
 
@@ -87,19 +87,19 @@ void update_target_current_velocity() {
   // set target current and velocity based on drive state
   // https://tritiumcharging.com/wp-content/uploads/2020/11/TritiumWaveSculptor22_Manual.pdf 18.3
   switch (drive_state) {
-    case DRIVE:
+    case VEHICLE_DRIVE:
       s_target_current = throttle_percent;
       s_target_velocity = TORQUE_CONTROL_VEL;
       break;
-    case REVERSE:
+    case VEHICLE_REVERSE:
       s_target_current = throttle_percent;
       s_target_velocity = -TORQUE_CONTROL_VEL;
       break;
-    case CRUISE:
+    case VEHICLE_CRUISE:
       s_target_current = ACCERLATION_FORCE;
       s_target_velocity = target_vel;
       break;
-    case BRAKE:
+    case VEHICLE_BRAKE:
       if (throttle_percent > regen) {
         s_target_current = regen;
       } else {
@@ -107,7 +107,7 @@ void update_target_current_velocity() {
       }
       s_target_velocity = 0;
       break;
-    case NEUTRAL:
+    case VEHICLE_NEUTRAL:
       s_target_current = 0;
       s_target_velocity = 0;
       break;

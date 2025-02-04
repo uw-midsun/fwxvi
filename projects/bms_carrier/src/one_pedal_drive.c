@@ -19,8 +19,8 @@
 
 float opd_threshold(float car_velocity_kmh) {
   float threshold = 0.0f;
-  if (fabs(car_velocity_kmh) <= MAX_OPD_SPEED) {
-    threshold = fabs(car_velocity_kmh) * COASTING_THRESHOLD_SCALE;
+  if (fabsf(car_velocity_kmh) <= MAX_OPD_SPEED) {
+    threshold = fabsf(car_velocity_kmh) * COASTING_THRESHOLD_SCALE;
   } else {
     threshold = MAX_COASTING_THRESHOLD;
   }
@@ -30,7 +30,7 @@ float opd_threshold(float car_velocity_kmh) {
 float opd_current(float throttle_percent, float threshold, DriveState *drive_state) {
   /* Handle negative inputs */
   if (throttle_percent < 0.0f || threshold < 0.0f) {
-    *drive_state = BRAKE;
+    *drive_state = VEHICLE_BRAKE;
     return 0.0f;
   }
 
@@ -45,7 +45,7 @@ float opd_current(float throttle_percent, float threshold, DriveState *drive_sta
     return (throttle_percent - threshold) / (1.0f - threshold);
   } else {
     /* If less than the dynamic threshold, regen brake */
-    *drive_state = BRAKE;
+    *drive_state = VEHICLE_BRAKE;
 
     set_motor_velocity_brakes_enabled(true);
     return (threshold - throttle_percent) / (threshold);

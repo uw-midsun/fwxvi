@@ -37,11 +37,13 @@ TASK(can_communication, TASK_STACK_1024) {
     LOG_DEBUG("Failed to initialze CAN\n");
     while (true) {};
   }
+
   uint8_t can_data[4U] = {0xDE, 0xAD, 0xBE, 0xEF};
+
   LOG_DEBUG("Starting can_communication\n");
   while (true) {
     LOG_DEBUG("Running\n");
-    delay_ms(10);
+    delay_ms(500);
     can_hw_transmit(123, false, can_data, 4U);
     delay_ms(500);
   }

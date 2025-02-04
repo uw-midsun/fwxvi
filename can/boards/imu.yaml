@@ -7,7 +7,7 @@
 ---
 Messages:
   gyro_data:
-    id: 52
+    id: 51
     critical: false
     cycle: "medium"
     target:
@@ -21,7 +21,7 @@ Messages:
       z_axis:
         length: 16
   accel_data:
-    id: 51
+    id: 50
     critical: false
     cycle: "medium"
     target:

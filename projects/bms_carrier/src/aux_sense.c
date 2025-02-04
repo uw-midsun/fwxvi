@@ -39,7 +39,9 @@ StatusCode aux_sense_init(BmsStorage *storage) {
   bms_storage = storage;
   bms_storage->aux_sense_storage = &aux_sense_storage;
   gpio_init_pin(&bms_storage->aux_sense_storage->sense_adc, GPIO_ANALOG, GPIO_STATE_LOW);
+
   adc_add_channel(&bms_storage->aux_sense_storage->sense_adc);
+
   adc_init();
 
   return STATUS_CODE_OK;
@@ -47,11 +49,12 @@ StatusCode aux_sense_init(BmsStorage *storage) {
 
 StatusCode aux_sense_run() {
   adc_run();
+
   adc_read_converted(&bms_storage->aux_sense_storage->sense_adc, &bms_storage->aux_sense_storage->batt_voltage_mv);
 
   /* Reverse voltage divider calculation */
   bms_storage->aux_sense_storage->batt_voltage_mv =
-    (bms_storage->aux_sense_storage->batt_voltage_mv) * (R2_OHMS + R1_OHMS) / (R2_OHMS * 100);
+    (bms_storage->aux_sense_storage->batt_voltage_mv) * (R2_OHMS + R1_OHMS) / (R2_OHMS);
 
   LOG_DEBUG("AUX READING: %d\n", bms_storage->aux_sense_storage->batt_voltage_mv);
   set_battery_status_aux_batt_v(bms_storage->aux_sense_storage->batt_voltage_mv);

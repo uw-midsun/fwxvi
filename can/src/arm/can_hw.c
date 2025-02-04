@@ -24,11 +24,13 @@
 
 /* CAN has 3 transmit mailboxes and 2 receive FIFOs */
 #define CAN_HW_BASE CAN1
-#define MAX_TX_RETRIES 3
-#define MAX_TX_MS_TIMEOUT 20
+#define MAX_TX_RETRIES            3U
+#define MAX_TX_MS_TIMEOUT         20U
 
 /* STM32L4 has 14 filter banks */
-#define CAN_HW_NUM_FILTER_BANKS 14
+#define CAN_HW_NUM_FILTER_BANKS   14U
+
+#define CAN_NUM_MAILBOXES         3U
 
 /*
  * CAN Timing Explanation:
@@ -54,7 +56,7 @@ typedef struct CanHwTiming {
 static CanHwTiming s_timing[NUM_CAN_HW_BITRATES] = {
   [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
   [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
+  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 8, .bs1 = CAN_BS1_15TQ, .bs2 = CAN_BS2_2TQ },
   [CAN_HW_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ }
 };
 
@@ -141,7 +143,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_g_rx_queue = rx_queue;
 
   /* Create available mailbox semaphore */
-  s_can_tx_ready_sem_handle = xSemaphoreCreateBinaryStatic(&s_can_tx_ready_sem);
+  s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, CAN_NUM_MAILBOXES, &s_can_tx_ready_sem);
   configASSERT(s_can_tx_ready_sem_handle);
   s_tx_full = false;
 
@@ -206,19 +208,30 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
   };
 
   uint32_t tx_mailbox;
+
+  HAL_StatusTypeDef status;
+  TickType_t timeout = pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT);
+
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
-    if (HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, (uint8_t*)data, &tx_mailbox) != HAL_OK) {
-      s_tx_full = true;
-      /* Check if the TX mailbox is full */
-      if (xSemaphoreTake(s_can_tx_ready_sem_handle, pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT)) == pdFALSE) {
-        LOG_WARN("CAN HW TX failed");
-      }
-    } else {
+    status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, data, &tx_mailbox);
+    
+    if (status == HAL_OK) {
+      LOG_DEBUG("Sent data with id: %ld\n", id);
       return STATUS_CODE_OK;
     }
+    else if (status == HAL_BUSY) {
+      // Wait for mailbox to free up
+      if (xSemaphoreTake(s_can_tx_ready_sem_handle, timeout) != pdTRUE) {
+        LOG_WARN("CAN TX timeout");
+        continue;
+      }
+    }
+    else {
+      LOG_CRITICAL("CAN TX error: %d", status);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
   }
-
-  LOG_CRITICAL("CAN HW TX failed");
+  
   return STATUS_CODE_RESOURCE_EXHAUSTED;
 }
 
@@ -282,7 +295,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   
   if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
-    for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
+    for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
       if (can_filters[i] == rx_msg.id.raw) {
         s_filter_id_match = true;
@@ -305,7 +318,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   
   if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
     bool s_filter_id_match = false;
-    for (int i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
+    for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
       if (can_filters[i] == rx_msg.id.raw) {
         s_filter_id_match = true;
@@ -325,4 +338,10 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
   /* TODO: Add error notifications/handling */
   /* Aryan - Maybe reinitialize bus? */
+  uint32_t error = HAL_CAN_GetError(hcan);
+  
+  if (error & HAL_CAN_ERROR_BOF) {
+    HAL_CAN_ResetError(hcan);
+    HAL_CAN_Start(hcan);
+  }
 }

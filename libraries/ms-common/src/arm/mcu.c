@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "stm32l4xx_hal.h"
+#include "retarget.h"
 
 /* Intra-component Headers*/
 #include "gpio.h"
@@ -94,6 +95,7 @@ StatusCode mcu_init(void) {
   }
 
   gpio_init();
+  retarget_init();
 
   return SystemClock_Config();
 }

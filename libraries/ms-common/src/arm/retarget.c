@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
+#include "stm32l4xx_it.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_uart.h"
 #include "stm32l4xx_hal_gpio.h"
@@ -56,10 +57,11 @@ void retarget_init() {
   }
 }
 
-__attribute__((naked, section(".hardfault"))) void HardFault_Handler() {
-  // Get the appropriate stack pointer, depending on our mode,
-  // and use it as the parameter to the C handler. This function
-  // will never return
+void HardFault_Handler() {
+  /**
+   * Get the appropriate stack pointer, depending on our mode,
+   * and use it as the parameter to the C handler. This function will never return
+   */
 
   __asm(
       ".syntax unified                \n"
@@ -76,7 +78,7 @@ __attribute__((naked, section(".hardfault"))) void HardFault_Handler() {
   );
 }
 
-__attribute__((used, section(".hardfault"))) void HardFault_HandlerC(uint32_t *hardfault_args) {
+void HardFault_HandlerC(uint32_t *hardfault_args) {
   /* Disable all interrupts and initialize UART */
   __disable_irq();
   retarget_init();

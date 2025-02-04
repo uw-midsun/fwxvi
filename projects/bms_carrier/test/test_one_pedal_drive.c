@@ -145,24 +145,24 @@ TEST_IN_TASK
 void test_opd_current_throttle_at_threshold() {
     float test_throttle_percent = 0.5f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_above_threshold() {
     float test_throttle_percent = 0.7f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     float test_answer = (0.7f - 0.5f) / (1 - 0.5f);
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 
 }
 
@@ -170,130 +170,130 @@ TEST_IN_TASK
 void test_opd_current_throttle_at_zero() {
     float test_throttle_percent = 0.0f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* The output shall be 0 at a standstill */
     float test_answer = (0.5f - 0.0f) / 0.5f; // Expected calculation
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_at_full() {
     float test_throttle_percent = 1.0f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* The current output shall be maximum */
     float test_answer = 1.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_near_threshold() {
     float test_throttle_percent = 0.51f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* No acceleration, the user shall be coasting */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_near_threshold_lower() {
     float test_throttle_percent = 0.49f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* No acceleration, the user shall be coasting */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_at_threshold_with_brake_state() {
     float test_throttle_percent = 0.5f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = BRAKE;
+    DriveState test_drive_state = VEHICLE_BRAKE;
 
     /* If braking and throttle percent is the same as the threshold it shall return 0 */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state);
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_negative_threshold() {
     float test_throttle_percent = 0.3f;
     float test_threshold = -0.5f; /* Negative threshold (invalid case) */
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* Negative threshold is invalid, but the function should handle it gracefully by setting output to 0 */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state); /* Should enter BRAKE mode */
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state); /* Should enter BRAKE mode */
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_negative_throttle() {
     float test_throttle_percent = -0.2f; /* Negative throttle (invalid case) */
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* Negative throttle is invalid, but the function should handle it gracefully by setting output to 0 */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state); /* Should enter BRAKE mode */
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state); /* Should enter BRAKE mode */
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_below_threshold_with_regen() {
     float test_throttle_percent = 0.2f;
     float test_threshold = 0.5f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* Throttle below threshold should trigger regen braking */
     float test_answer = (0.5f - 0.2f) / 0.5f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state); /* Should enter BRAKE mode */
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state); /* Should enter BRAKE mode */
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_below_high_threshold_with_regen() {
     float test_throttle_percent = 0.6f;
     float test_threshold = 0.7f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* Throttle below threshold should trigger regen braking */
     float test_answer = (0.7f - 0.6f) / 0.7f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state); /* Should enter BRAKE mode */
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state); /* Should enter BRAKE mode */
 }
 
 TEST_IN_TASK
 void test_opd_current_throttle_below_low_threshold_with_regen() {
     float test_throttle_percent = 0.1f;
     float test_threshold = 0.3f;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* Throttle below threshold should trigger regen braking */
     float test_answer = (0.3f - 0.1f) / 0.3f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(BRAKE, test_drive_state); /* Should enter BRAKE mode */
+    TEST_ASSERT_EQUAL(VEHICLE_BRAKE, test_drive_state); /* Should enter BRAKE mode */
 }
 
 
@@ -301,11 +301,11 @@ TEST_IN_TASK
 void test_opd_current_throttle_equal_max_threshold() {
     float test_throttle_percent = MAX_COASTING_THRESHOLD;
     float test_threshold = MAX_COASTING_THRESHOLD;
-    DriveState test_drive_state = DRIVE;
+    DriveState test_drive_state = VEHICLE_DRIVE;
 
     /* There should be no output */
     float test_answer = 0.0f;
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, test_answer, opd_current(test_throttle_percent, test_threshold, &test_drive_state));
-    TEST_ASSERT_EQUAL(DRIVE, test_drive_state);
+    TEST_ASSERT_EQUAL(VEHICLE_DRIVE, test_drive_state);
 }

@@ -31,6 +31,7 @@
 struct AuxSenseStorage;
 struct FaultBpsStorage;
 struct StateOfChargeStorage;
+struct RelayStorage;
 
 /**
  * @brief   Battery management system configuration data
@@ -57,6 +58,7 @@ typedef struct {
   struct AuxSenseStorage *aux_sense_storage;
   struct FaultBpsStorage *fault_bps_storage;
   struct StateOfChargeStorage *state_of_charge_storage;
+  struct RelayStorage *relay_storage;
 } BmsStorage;
 
 /**
