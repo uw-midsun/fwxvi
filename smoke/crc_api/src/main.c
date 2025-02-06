@@ -19,9 +19,12 @@
 #include "crc.h"
 
 /* Intra-component Headers */
-
+//calculator: https://crccalc.com/?crc=1234566123&method=CRC-32/ISO-HDLC&datatype=ascii&outtype=hex
 TASK(crc_api, TASK_STACK_1024) {
-  while (true) {}
+  crc_init(CRC_LENGTH_32);
+  uint32_t arr []= {1234567};
+  LOG_DEBUG("Calculation: %ld\n", crc_calculate_32(arr, sizeof(arr)));
+  while (true) {} 
 }
 
 int main() {
