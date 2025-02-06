@@ -13,6 +13,9 @@ venv/
 *.DS_Store
 .project
 *.code-workspace
+.cache/
+.cache/*
+compile_commands.json
 
 # Vim
 tags
