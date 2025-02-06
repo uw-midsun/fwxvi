@@ -1,3 +1,4 @@
+from log_manager import update_log
 
 def read_and_display_hex(file_path):
     with open(file_path, 'rb') as bin_data:
@@ -15,7 +16,7 @@ def read_and_display_hex(file_path):
             )
             
             # Print the offset, hex representation, and ASCII representation
-            print(f"{offset:08x}  {hex_output:<48} |{ascii_output}|")
+            update_log(f"{offset:08x}  {hex_output:<48} |{ascii_output}|")
             offset += 16
 
 # Example usage
