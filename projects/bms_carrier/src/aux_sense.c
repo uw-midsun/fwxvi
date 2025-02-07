@@ -56,7 +56,6 @@ StatusCode aux_sense_run() {
   bms_storage->aux_sense_storage->batt_voltage_mv =
     (bms_storage->aux_sense_storage->batt_voltage_mv) * (R2_OHMS + R1_OHMS) / (R2_OHMS);
 
-  LOG_DEBUG("AUX READING: %d\n", bms_storage->aux_sense_storage->batt_voltage_mv);
   set_battery_status_aux_batt_v(bms_storage->aux_sense_storage->batt_voltage_mv);
 
   return STATUS_CODE_OK;

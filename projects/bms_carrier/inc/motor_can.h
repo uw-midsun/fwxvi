@@ -3,7 +3,7 @@
 /************************************************************************************************
  * @file   motor_can.h
  *
- * @brief  Source code for Motor controller CAN
+ * @brief  Header file for Motor controller CAN
  *
  * @date   2025-01-30
  * @author Midnight Sun Team #24 - MSXVI
@@ -22,10 +22,6 @@
  * @brief    motor_controller Firmware
  * @{
  */
-
-// SPI commands: Table 12-1
-// requires mcp2515
-// mcp2515 can be initialized before or after motor controller can
 
 #define CURRENT_SCALE 100
 #define VOLTAGE_SCALE 100
@@ -49,7 +45,7 @@
 #define MOTOR_CONTROLLER_BASE_R 0x80  // TODO: set to actual values
 
 typedef enum MotorControllerMessageIds {
-  IDENTIFICATION = 0x00,
+  IDENTIFICATION = 0,
   STATUS,
   BUS_MEASUREMENT,
   VEL_MEASUREMENT,

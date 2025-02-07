@@ -60,6 +60,6 @@ StatusCode fault_bps_clear(uint8_t fault_bitmask);
  * @brief   Initialize the Battery protection system faults
  * @return  Fault bitmask corresponding to BmsFault enum
  */
-uint8_t fault_bps_get(void);
+uint16_t fault_bps_get(void);
 
 /** @} */

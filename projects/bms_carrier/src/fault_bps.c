@@ -56,7 +56,7 @@ StatusCode fault_bps_clear(uint8_t fault_bitmask) {
   return STATUS_CODE_OK;
 }
 
-uint8_t fault_bps_get() {
+uint16_t fault_bps_get() {
   if (bms_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }

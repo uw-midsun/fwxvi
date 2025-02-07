@@ -5,7 +5,7 @@
  *
  * @brief  Header file for State of Charge
  *
- * @date   2025-01-12
+ * @date   2025-02-06
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 

@@ -1,7 +1,7 @@
 /************************************************************************************************
- * @file   state_of_charge.h
+ * @file   state_of_charge.c
  *
- * @brief  Header file for State of Charge
+ * @brief  Source file for State of Charge
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI

@@ -52,20 +52,11 @@
 #define AFE_BALANCING_UPPER_THRESHOLD 41500
 #define AFE_BALANCING_LOWER_THRESHOLD 40000
 
-#define AFE_SPI_PORT SPI_PORT_2
-#define AFE_SPI_CS \
-  { .port = GPIO_PORT_B, .pin = 12 }
-#define AFE_SPI_SCK \
-  { .port = GPIO_PORT_B, .pin = 13 }
-#define AFE_SPI_MISO \
-  { .port = GPIO_PORT_B, .pin = 14 }
-#define AFE_SPI_MOSI \
-  { .port = GPIO_PORT_B, .pin = 15 }
-
-StatusCode cell_sense_init(BmsStorage *bms_store);
+StatusCode cell_sense_init(BmsStorage *storage);
 
 // Mark cell for discharging (takes effect after config is re-written)
 // |cell| should be [0, settings.num_cells)
 
 StatusCode cell_discharge(LtcAfeStorage *afe);
+
 /** @} */

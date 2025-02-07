@@ -1,21 +1,24 @@
 #pragma once
 
 /************************************************************************************************
- * @file   mcp2515_defs.h
+ * @file   precharge.h
  *
- * @brief  Header file for mcdp2515.defs
+ * @brief  Header file for precharge
  *
- * @date   2025-01-13
+ * @date   2025-02-06
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 #include <stdbool.h>
+
 /* Inter-component Headers */
 #include "gpio.h"
 #include "notify.h"
 #include "status.h"
+
 /* Intra-component Headers */
+#include "bms_carrier.h"
 
 /**
  * @defgroup motor_controller
@@ -23,17 +26,25 @@
  * @{
  */
 
-// SPI commands: Table 12-1
+/** @brief  Precharge interrupt notification */
+#define PRECHARGE_EVENT_IT  0U
 
-// Requires GPIO to be initialized
-// Requires GPIO interrupts to be initialized
+/**
+ * @brief   Precharge settings
+ */
+struct PrechargeSettings {
+  GpioAddress motor_sw_en;          /**< Motor switch enable */
+  GpioAddress motor_sw_sense;       /**< Motor switch sense */
+  GpioAddress precharge_monitor;    /**< Precharge monitor */
+};
 
-#define PRECHARGE_EVENT 0
+/**
+ * @brief   Initialize precharge settings
+ * @details If precharge has already occurred during startup, an interrupt shall not be registered
+ *          If precharge has not occurred, an interrupt shall be registered
+ * @param   storage Pointer to the BMS storage
+ * @return  STATUS_CODE_OK
+ */
+StatusCode precharge_init(BmsStorage *storage, Event event, const Task *task);
 
-typedef struct PrechargeSettings {
-  GpioAddress motor_sw;
-  GpioAddress precharge_monitor;
-} PrechargeSettings;
-
-StatusCode precharge_init(const PrechargeSettings *settings, Event event, const Task *task);
 /** @} */

@@ -1,7 +1,7 @@
 /************************************************************************************************
- * @file   relays.h
+ * @file   relays.c
  *
- * @brief  Header file for Relays
+ * @brief  Source code for Relays
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -102,17 +102,11 @@ StatusCode relays_init(BmsStorage *storage) {
   };
 
   gpio_init_pin(&bms_storage->relay_storage->killswitch_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
-  gpio_register_interrupt(&bms_storage->relay_storage->killswitch_sense, &it_settings, KILLSWITCH_IT, get_1000hz_task());
+  gpio_register_interrupt(&bms_storage->relay_storage->killswitch_sense, &it_settings, KILLSWITCH_EVENT_IT, get_1000hz_task());
   
   /* Debounce startup killswitch state */
-  delay_ms(10U);
-
-  if (gpio_get_state(&bms_storage->relay_storage->killswitch_sense) == GPIO_STATE_LOW) {
-    LOG_DEBUG("KILLSWITCH SET");
-    fault_bps_set(BMS_FAULT_KILLSWITCH);
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
+  // delay_ms(10U);
+  
   gpio_init_pin(&bms_storage->relay_storage->pos_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->neg_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->solar_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
@@ -120,6 +114,11 @@ StatusCode relays_init(BmsStorage *storage) {
   gpio_init_pin(&bms_storage->relay_storage->pos_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->neg_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->solar_relay_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+
+  if (gpio_get_state(&bms_storage->relay_storage->killswitch_sense) == GPIO_STATE_LOW) {
+    fault_bps_set(BMS_FAULT_KILLSWITCH);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
   status_ok_or_return(s_close_relays());
   set_battery_relay_info_state(BMS_RELAY_STATE_CLOSE);

@@ -77,7 +77,7 @@
   { .port = GPIO_PORT_A, .pin = 9 }
 
 /** @brief  Motor relay sense pin */
-#define BMS_PRECHARGE_RELAY_SENNSE_GPIO \
+#define BMS_PRECHARGE_RELAY_SENSE_GPIO \
   { .port = GPIO_PORT_A, .pin = 10 }
 
 /** @brief  Positive relay enable pin */
@@ -119,6 +119,22 @@
 /** @brief  Aux sense ADC pin */
 #define BMS_AUX_BATT_VOLTAGE_ADC \
   { .port = GPIO_PORT_A, .pin = 5 }
+
+/************************************************************************************************
+ * Fan definitions
+ ************************************************************************************************/
+
+/** @brief  Fan sense pin */
+#define BMS_FAN_SENSE_1_GPIO \
+  { .port = GPIO_PORT_B, .pin = 0 }
+
+/** @brief  Fan sense pin */
+#define BMS_FAN_SENSE_2_GPIO \
+  { .port = GPIO_PORT_B, .pin = 1 }
+
+/** @brief  Fan PWM control pin */
+#define BMS_FAN_PWM_GPIO \
+  { .port = GPIO_PORT_A, .pin = 8 }
 
 /************************************************************************************************
  * Battery pack definitions
