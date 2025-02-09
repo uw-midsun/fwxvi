@@ -1,6 +1,5 @@
 # build directory
 build/*
-venv/*
 
 # scons cache
 .sconsign.dblite
@@ -9,13 +8,9 @@ venv/*
 *.vscode
 .vs/
 build/
-venv/
 *.DS_Store
 .project
 *.code-workspace
-.cache/
-.cache/*
-compile_commands.json
 
 # Vim
 tags
