@@ -30,6 +30,18 @@
  * @{
  */
 
+typedef struct PedalCalibrationData {
+  // When the pedal is considered fully unpressed
+  int16_t lower_value;
+  // When the pedal is considered fully pressed
+  int16_t upper_value;
+} PedalCalibrationData;
+
+typedef struct PedalCalibBlob {
+  PedalCalibrationData throttle_calib;
+  PedalCalibrationData brake_calib;
+} PedalCalibBlob;
+
 // Runs a pedal cycle to update throttle and brake values
 void pedal_run();
 
