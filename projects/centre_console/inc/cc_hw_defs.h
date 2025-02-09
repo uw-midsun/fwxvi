@@ -84,11 +84,11 @@
   { .port = GPIO_PORT_B, .pin = 2 }
 
 // All Displays
-#define ALL_DISPLAYS                                                    \
-  {                                                                     \
-    .A1 = SPEED_DISP1, .B1 = SPEED_DISP2, .C1 = SPEED_DISP3, .D1 = SPEED_DISP4, .A2 = BATT_CURR_DISP1, .B2 = BATT_CURR_DISP2, .C2 = BATT_CURR_DISP3, .D2 = BATT_CURR_DISP4, \ 
-  .A3 = BATT_VOLT_DISP1,                                                \
-    .B3 = BATT_VOLT_DISP2, .C3 = BATT_VOLT_DISP3, .D3 = BATT_VOLT_DISP4 \
+#define ALL_DISPLAYS                                                                            \
+  {                                                                                             \
+    .A1 = SPEED_DISP1, .B1 = SPEED_DISP2, .C1 = SPEED_DISP3, .D1 = SPEED_DISP4,                 \
+    .A2 = BATT_CURR_DISP1, .B2 = BATT_CURR_DISP2, .C2 = BATT_CURR_DISP3, .D2 = BATT_CURR_DISP4, \
+    .A3 = BATT_VOLT_DISP1, .B3 = BATT_VOLT_DISP2, .C3 = BATT_VOLT_DISP3, .D3 = BATT_VOLT_DISP4  \
   }
 
 /** @} */
