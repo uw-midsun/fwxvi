@@ -28,7 +28,7 @@ static void prv_enable_periph_clock(PwmTimer timer) {
             break;
     }
 }
-
+//
 StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
     if (timer >= NUM_PWM_TIMERS || period_us == 0) {
         LOG_DEBUG("invalid timer");

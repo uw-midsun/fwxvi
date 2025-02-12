@@ -89,3 +89,4 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 uint16_t pwm_get_dc(PwmTimer timer, PwmChannel channel);
+//
