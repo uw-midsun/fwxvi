@@ -2,9 +2,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bms_hw_defs.h
+ * @file   cell_sense.h
  *
- * @brief  Header file for BMS hardware definitions
+ * @brief  Header file for AFE cell sense
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,19 +14,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+
 /* Inter-component Headers */
-// idk
-// #include "bms.h"
-#include "bms_hw_defs.h"
-#include "delay.h"
-#include "fault_bps.h"
 #include "gpio.h"
-#include "ltc_afe.h"
-#include "ltc_afe_impl.h"
-#include "relays.h"
-#include "spi.h"
 
 /* Intra-component Headers */
+#include "bms_carrier.h"
 
 /**
  * @defgroup bms_carrier

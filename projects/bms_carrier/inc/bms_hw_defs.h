@@ -41,11 +41,11 @@
 #define CURRENT_SENSE_I2C_PORT I2C_PORT_1
 
 /** @brief  Current sense I2C serial data pin */
-#define CURRENT_SENSE_I2C_SDA_PIN \
+#define CURRENT_SENSE_I2C_SDA_GPIO \
   { .port = GPIO_PORT_B, .pin = 11 }
 
 /** @brief  Current sense I2C clock pin */
-#define CURRENT_SENSE_I2C_SCL_PIN \
+#define CURRENT_SENSE_I2C_SCL_GPIO \
   { .port = GPIO_PORT_B, .pin = 10 }
 
 /** @brief  Current sense slave address */
@@ -55,14 +55,47 @@
  * AFEs (LTC6811) SPI definitions
  ************************************************************************************************/
 
-#define LTC_AFE_I2C_ADDR (0x30)
-#define LTC_AFE_I2C_PORT BMS_I2C_PORT
-#define LTC_AFE_ALERT_PIN \
-  { .port = GPIO_PORT_A, .pin = 8 }
+/** @brief  AFE SPI port */
+#define LTC_AFE_SPI_PORT SPI_PORT_2
+
+/** @brief  AFE SPI Serial data out */
+#define LTC_AFE_SPI_SDO_GPIO \
+  { .port = GPIO_PORT_B, .pin = 15 }
+
+/** @brief  AFE SPI Serial data in */
+#define LTC_AFE_SPI_SDI_GPIO \
+  { .port = GPIO_PORT_B, .pin = 14 }
+
+/** @brief  AFE SPI Serial clock line */
+#define LTC_AFE_SPI_SCK_GPIO \
+  { .port = GPIO_PORT_B, .pin = 13 }
+
+/** @brief  AFE SPI Chip select line */
+#define LTC_AFE_SPI_CS_GPIO \
+  { .port = GPIO_PORT_B, .pin = 12 }
 
 /************************************************************************************************
  * Motor Controller SPI definitions
  ************************************************************************************************/
+
+/** @brief  MCP2515 SPI port */
+#define MCP2515_SPI_PORT SPI_PORT_3
+
+ /** @brief  MCP2515 SPI Serial data out */
+#define MCP2515_SPI_SDO_GPIO \
+{ .port = GPIO_PORT_B, .pin = 5 }
+
+/** @brief  MCP2515 SPI Serial data in */
+#define MCP2515_SPI_SDI_GPIO \
+{ .port = GPIO_PORT_B, .pin = 4 }
+
+/** @brief  MCP2515 SPI Serial clock line */
+#define MCP2515_SPI_SCK_GPIO \
+{ .port = GPIO_PORT_B, .pin = 3 }
+
+/** @brief  MCP2515 SPI Chip select line */
+#define MCP2515_SPI_CS_GPIO \
+{ .port = GPIO_PORT_A, .pin = 15 }
 
 /************************************************************************************************
  * Relays/Contactor definitions

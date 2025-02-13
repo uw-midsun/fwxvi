@@ -40,9 +40,7 @@ TASK(can_message_listener, TASK_STACK_256) {
   StatusCode status = STATUS_CODE_OK;
 
   while (true) {
-    /* Loop until new data has arrived. This is polling, maybe consider an interrupt-based version */
-    while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
-    }
+    while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {}
 
     decode_can_message(&datagram, &message);
 
