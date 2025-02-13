@@ -337,10 +337,9 @@ int calculate_temperature(uint16_t thermistor) {
 }
 
 StatusCode log_cell_sense() {
-  =
-      /* AFE messages are split into 3 (For each AFE) */
-      /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
-      if (s_cell_data_updated != true) {
+  /* AFE messages are split into 3 (For each AFE) */
+  /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
+  if (s_cell_data_updated != true) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 

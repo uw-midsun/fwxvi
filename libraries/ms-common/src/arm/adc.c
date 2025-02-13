@@ -8,13 +8,13 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include "stm32l4xx_hal_conf.h"
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "semaphore.h"
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_adc.h"
-#include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_dma.h"
 
 /* Intra-component Headers */
