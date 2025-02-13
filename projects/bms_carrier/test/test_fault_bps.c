@@ -13,13 +13,13 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
+#include "adc.h"
+#include "delay.h"
+#include "global_enums.h"
+#include "log.h"
+#include "tasks.h"
 #include "test_helpers.h"
 #include "unity.h"
-#include "delay.h"
-#include "tasks.h"
-#include "log.h"
-#include "adc.h"
-#include "global_enums.h"
 
 /* Intra-component Headers */
 #include "bms_carrier.h"
@@ -32,9 +32,7 @@
 /** @brief  Voltage divider R1 */
 #define R1_OHMS 47000
 
-static BmsStorage mock_bms_storage = { .bms_config = {  .series_count = NUM_SERIES_CELLS,
-                                                        .parallel_count = NUM_PARALLEL_CELLS,
-                                                        .pack_capacity = PACK_CAPACITY_MAH } };
+static BmsStorage mock_bms_storage = { .bms_config = { .series_count = NUM_SERIES_CELLS, .parallel_count = NUM_PARALLEL_CELLS, .pack_capacity = PACK_CAPACITY_MAH } };
 void setup_test(void) {
   fault_bps_init(&mock_bms_storage);
   relays_init(&mock_bms_storage);

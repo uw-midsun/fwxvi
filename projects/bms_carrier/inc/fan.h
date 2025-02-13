@@ -30,19 +30,19 @@
  * @brief   Fan settings
  */
 struct FanSettings {
-  GpioAddress fan1_sense;       /**< Fan 1 sense */
-  GpioAddress fan2_sense;       /**< Fan 2 sense */
-  GpioAddress fan_pwm_ctrl;     /**< Fan PWM control */
+  GpioAddress fan1_sense;   /**< Fan 1 sense */
+  GpioAddress fan2_sense;   /**< Fan 2 sense */
+  GpioAddress fan_pwm_ctrl; /**< Fan PWM control */
 };
 
 /** @brief  Period in ms. Frequency = 25,000 Hz */
-#define BMS_FAN_PERIOD_MS               40U
+#define BMS_FAN_PERIOD_MS 40U
 /** @brief  Threshold before fan is full strength */
-#define BMS_FAN_TEMP_UPPER_THRESHOLD    50U
+#define BMS_FAN_TEMP_UPPER_THRESHOLD 50U
 /** @brief  Threshold before fan is full strength */
-#define BMS_FAN_TEMP_LOWER_THRESHOLD    40U
+#define BMS_FAN_TEMP_LOWER_THRESHOLD 40U
 /** @brief  Base fan duty cycle when minimum temperature threshold is passed */
-#define BMS_FAN_BASE_DUTY_CYCLE         50U
+#define BMS_FAN_BASE_DUTY_CYCLE 50U
 
 /**
  * @brief   Initialize the BMS fans

@@ -10,39 +10,33 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "log.h"
 #include "delay.h"
-#include "timers.h"
-#include "master_tasks.h"
 #include "global_enums.h"
+#include "log.h"
+#include "master_tasks.h"
+#include "timers.h"
 
 /* Intra-component Headers */
-#include "relays.h"
-#include "fault_bps.h"
-#include "bms_hw_defs.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
+#include "bms_hw_defs.h"
+#include "fault_bps.h"
+#include "relays.h"
 
-static struct RelayStorage relay_storage = {
-  .pos_relay_en = BMS_POS_RELAY_ENABLE_GPIO,
-  .pos_relay_sense = BMS_POS_RELAY_SENSE_GPIO,
+static struct RelayStorage relay_storage = { .pos_relay_en = BMS_POS_RELAY_ENABLE_GPIO,
+                                             .pos_relay_sense = BMS_POS_RELAY_SENSE_GPIO,
 
-  .neg_relay_en = BMS_NEG_RELAY_ENABLE_GPIO,
-  .neg_relay_sense = BMS_NEG_RELAY_SENSE_GPIO,
+                                             .neg_relay_en = BMS_NEG_RELAY_ENABLE_GPIO,
+                                             .neg_relay_sense = BMS_NEG_RELAY_SENSE_GPIO,
 
-  .solar_relay_en = BMS_SOLAR_RELAY_ENABLE_GPIO,
-  .solar_relay_sense = BMS_SOLAR_RELAY_SENSE_GPIO,
+                                             .solar_relay_en = BMS_SOLAR_RELAY_ENABLE_GPIO,
+                                             .solar_relay_sense = BMS_SOLAR_RELAY_SENSE_GPIO,
 
-  .killswitch_sense = BMS_KILLSWITCH_SENSE_GPIO
-};
+                                             .killswitch_sense = BMS_KILLSWITCH_SENSE_GPIO };
 
 static BmsStorage *bms_storage;
 
-static const GpioAddress *s_relays_sense[NUM_BMS_RELAYS] = {
-  &relay_storage.pos_relay_sense,
-  &relay_storage.neg_relay_sense,
-  &relay_storage.solar_relay_sense
-};
+static const GpioAddress *s_relays_sense[NUM_BMS_RELAYS] = { &relay_storage.pos_relay_sense, &relay_storage.neg_relay_sense, &relay_storage.solar_relay_sense };
 
 static StatusCode s_close_relays(void) {
   /* 250 MS Gap between each relay closing due to the excessive current draw */
@@ -103,10 +97,10 @@ StatusCode relays_init(BmsStorage *storage) {
 
   gpio_init_pin(&bms_storage->relay_storage->killswitch_sense, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
   gpio_register_interrupt(&bms_storage->relay_storage->killswitch_sense, &it_settings, KILLSWITCH_EVENT_IT, get_1000hz_task());
-  
+
   /* Debounce startup killswitch state */
   // delay_ms(10U);
-  
+
   gpio_init_pin(&bms_storage->relay_storage->pos_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->neg_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&bms_storage->relay_storage->solar_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);

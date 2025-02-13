@@ -18,9 +18,9 @@
 /* Intra-component Headers */
 #include "adc.h"
 
-#define VREFINT_MV        3300U
-#define ADC_MAX_VAL       4095U
-#define MAX_ADC_READINGS  16U
+#define VREFINT_MV 3300U
+#define ADC_MAX_VAL 4095U
+#define MAX_ADC_READINGS 16U
 
 typedef struct AdcStatus {
   bool initialized;

@@ -17,11 +17,11 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "motor_can.h"
-#include "one_pedal_drive.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
 #include "mcp2515.h"
+#include "motor_can.h"
+#include "one_pedal_drive.h"
 
 static float s_target_current;
 static float s_target_velocity;

@@ -13,17 +13,17 @@
 #include "FreeRTOS.h"
 #include "semaphore.h"
 #include "stm32l433xx.h"
+#include "stm32l4xx_hal_adc.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_dma.h"
-#include "stm32l4xx_hal_adc.h"
 
 /* Intra-component Headers */
 #include "adc.h"
 #include "interrupts.h"
 
-#define VREFINT_MV        3300U
-#define ADC_MAX_VAL       4095U
-#define MAX_ADC_READINGS  16U
+#define VREFINT_MV 3300U
+#define ADC_MAX_VAL 4095U
+#define MAX_ADC_READINGS 16U
 
 typedef struct AdcStatus {
   bool initialized;
@@ -111,7 +111,7 @@ StatusCode adc_init(void) {
   s_adc_handle.Instance = ADC1;
   s_adc_handle.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   s_adc_handle.Init.Resolution = ADC_RESOLUTION12b;
-  s_adc_handle.Init.ScanConvMode = ENABLE;  /* Perform multiple conversions in the sequence of channel ranks */
+  s_adc_handle.Init.ScanConvMode = ENABLE; /* Perform multiple conversions in the sequence of channel ranks */
   s_adc_handle.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   s_adc_handle.Init.LowPowerAutoWait = DISABLE;
   s_adc_handle.Init.ContinuousConvMode = DISABLE;
@@ -128,7 +128,7 @@ StatusCode adc_init(void) {
 
   for (uint8_t i = 0; i < NUM_ADC_CHANNELS; i++) {
     if (s_check_channel_enabled(i) == STATUS_CODE_OK) {
-      ADC_ChannelConfTypeDef channel_conf = {0};
+      ADC_ChannelConfTypeDef channel_conf = { 0 };
       channel_conf.Channel = i;
       channel_conf.Rank = i + 1U;
       channel_conf.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
@@ -157,8 +157,7 @@ StatusCode adc_init(void) {
   }
   __HAL_LINKDMA(&s_adc_handle, DMA_Handle, s_dma_handle);
 
-  if (HAL_ADCEx_Calibration_Start(&s_adc_handle, ADC_SINGLE_ENDED) != HAL_OK)
-  {
+  if (HAL_ADCEx_Calibration_Start(&s_adc_handle, ADC_SINGLE_ENDED) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 

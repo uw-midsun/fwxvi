@@ -11,12 +11,12 @@
 
 /* Inter-component Headers */
 #include "can.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
 #include "system_can.h"
 #include "tasks.h"
-#include "delay.h"
 
 /* Intra-component Headers */
 #include "can_communication.h"
@@ -35,10 +35,10 @@ const CanSettings can_settings = {
 TASK(can_communication, TASK_STACK_1024) {
   if (can_init(&s_can_storage, &can_settings) != STATUS_CODE_OK) {
     LOG_DEBUG("Failed to initialze CAN\n");
-    while (true) {};
+    while (true) {}
   }
 
-  uint8_t can_data[4U] = {0xDE, 0xAD, 0xBE, 0xEF};
+  uint8_t can_data[4U] = { 0xDE, 0xAD, 0xBE, 0xEF };
 
   LOG_DEBUG("Starting can_communication\n");
   while (true) {

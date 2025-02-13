@@ -40,7 +40,8 @@ TASK(can_message_listener, TASK_STACK_256) {
   StatusCode status = STATUS_CODE_OK;
 
   while (true) {
-    while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {}
+    while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
+    }
 
     decode_can_message(&datagram, &message);
 

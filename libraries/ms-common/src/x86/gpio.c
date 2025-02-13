@@ -74,7 +74,6 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-
   taskENTER_CRITICAL();
 
   uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;

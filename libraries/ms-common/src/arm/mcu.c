@@ -12,8 +12,8 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "stm32l4xx_hal.h"
 #include "retarget.h"
+#include "stm32l4xx_hal.h"
 
 /* Intra-component Headers*/
 #include "gpio.h"

@@ -11,16 +11,15 @@
 
 /* Inter-component Headers */
 #include "delay.h"
-#include "spi.h"
 #include "global_enums.h"
-
 #include "ltc_afe.h"
 #include "ltc_afe_impl.h"
+#include "spi.h"
 
 /* Intra-component Headers */
-#include "cell_sense.h"
 #include "bms_carrier.h"
 #include "bms_hw_defs.h"
+#include "cell_sense.h"
 #include "fault_bps.h"
 #include "relays.h"
 
@@ -29,38 +28,28 @@
  ************************************************************************************************/
 
 /** @brief  Number of AFE messages */
-#define NUM_AFE_MSGS                    4U
+#define NUM_AFE_MSGS 4U
 /** @brief  Number of cell voltage readings per AFE message */
-#define READINGS_PER_AFE_MSG            3U
+#define READINGS_PER_AFE_MSG 3U
 /** @brief  Thermistor resistance value */
-#define TEMP_RESISTANCE                 10000
+#define TEMP_RESISTANCE 10000
 /** @brief  Voltage reference for LTC6811 ADCs in 100uV */
-#define VREF2                           30000.0f
+#define VREF2 30000.0f
 /** @brief  Voltage gain of LTC6811 ADCs in 100uV / sample */
-#define ADC_GAIN                        (VREF2 / ((1 << 15) - 1))
+#define ADC_GAIN (VREF2 / ((1 << 15) - 1))
 /** @brief  Thermistor resistance lookup table size */
-#define TABLE_SIZE                      125U
+#define TABLE_SIZE 125U
 /** @brief  Number of communication retries before throwing AFE fault */
-#define AFE_NUM_RETRIES                 5U
+#define AFE_NUM_RETRIES 5U
 /** @brief  Temperature threshold for invalid readings */
-#define CELL_TEMP_OUTLIER_THRESHOLD     80
+#define CELL_TEMP_OUTLIER_THRESHOLD 80
 /** @brief  Private define to lookup cell voltage */
 #define CELL_VOLTAGE_LOOKUP(cell) (ltc_afe_storage->cell_voltages[ltc_afe_storage->cell_result_lookup[cell]])
 
 /**
  * @brief   Thermistor mapping for the LTC6811 hardware schematic
  */
-typedef enum ThermistorMap {
-  THERMISTOR_2 = 0,
-  THERMISTOR_1,
-  THERMISTOR_0,
-  THERMISTOR_3,
-  THERMISTOR_4,
-  THERMISTOR_7,
-  THERMISTOR_5,
-  THERMISTOR_6,
-  NUM_THERMISTORS
-} ThermistorMap;
+typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERMISTOR_3, THERMISTOR_4, THERMISTOR_7, THERMISTOR_5, THERMISTOR_6, NUM_THERMISTORS } ThermistorMap;
 
 /************************************************************************************************
  * Private variables
@@ -71,22 +60,22 @@ typedef enum ThermistorMap {
 int calculate_temperature(uint16_t thermistor);
 
 static const LtcAfeSettings s_afe_settings = {
-    .mosi = LTC_AFE_SPI_SDO_GPIO,
-    .miso = LTC_AFE_SPI_SDI_GPIO,
-    .sclk = LTC_AFE_SPI_SCK_GPIO,
-    .cs = LTC_AFE_SPI_CS_GPIO,
-  
-    .spi_port = LTC_AFE_SPI_PORT,
-    .spi_baudrate = 750000,
-  
-    .adc_mode = LTC_AFE_ADC_MODE_7KHZ,
-  
-    .cell_bitset = { 0xFFF, 0xFFF, 0xFFF },
-    .aux_bitset = { 0x14, 0x15, 0x15 },
-  
-    .num_devices = 3,
-    .num_cells = 12,
-    .num_thermistors = NUM_THERMISTORS,
+  .mosi = LTC_AFE_SPI_SDO_GPIO,
+  .miso = LTC_AFE_SPI_SDI_GPIO,
+  .sclk = LTC_AFE_SPI_SCK_GPIO,
+  .cs = LTC_AFE_SPI_CS_GPIO,
+
+  .spi_port = LTC_AFE_SPI_PORT,
+  .spi_baudrate = 750000,
+
+  .adc_mode = LTC_AFE_ADC_MODE_7KHZ,
+
+  .cell_bitset = { 0xFFF, 0xFFF, 0xFFF },
+  .aux_bitset = { 0x14, 0x15, 0x15 },
+
+  .num_devices = 3,
+  .num_cells = 12,
+  .num_thermistors = NUM_THERMISTORS,
 };
 
 static LtcAfeStorage *ltc_afe_storage;
@@ -98,21 +87,17 @@ static bool s_cell_data_updated = false;
 uint8_t afe_message_index = 0U;
 
 static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
-  [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3,
-  [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
+  [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3, [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
 };
 
-static const uint16_t s_resistance_lookup[TABLE_SIZE] = {
-  27219U, 26076U, 24988U, 23951U, 22963U, 22021U, 21123U, 20267U, 19450U, 18670U, 17925U, 17214U, 16534U, 15886U,
-  15266U, 14674U, 14173U, 13718U, 13256U, 12805U, 12394U, 12081U, 11628U, 11195U, 10780U, 10000U, 9634U,  9283U,
-  8947U,  8624U,  8314U,  8018U,  7733U,  7460U,  7199U,  6947U,  6706U,  6475U,  6252U,  6039U,  5834U,  5636U,
-  5445U,  5262U,  5093U,  4927U,  4763U,  4601U,  4446U,  4300U,  4161U,  4026U,  3896U,  3771U,  3651U,  3535U,
-  3423U,  3315U,  3211U,  3111U,  3014U,  2922U,  2833U,  2748U,  2665U,  2586U,  2509U,  2435U,  2364U,  2294U,
-  2227U,  2162U,  2101U,  2040U,  1981U,  1925U,  1868U,  1817U,  1765U,  1716U,  1668U,  1622U,  1577U,  1533U,
-  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,  1078U,  1052U,
-  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
-  721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U
-};
+static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U, 23951U, 22963U, 22021U, 21123U, 20267U, 19450U, 18670U, 17925U, 17214U, 16534U, 15886U, 15266U, 14674U,
+                                                          14173U, 13718U, 13256U, 12805U, 12394U, 12081U, 11628U, 11195U, 10780U, 10000U, 9634U,  9283U,  8947U,  8624U,  8314U,  8018U,
+                                                          7733U,  7460U,  7199U,  6947U,  6706U,  6475U,  6252U,  6039U,  5834U,  5636U,  5445U,  5262U,  5093U,  4927U,  4763U,  4601U,
+                                                          4446U,  4300U,  4161U,  4026U,  3896U,  3771U,  3651U,  3535U,  3423U,  3315U,  3211U,  3111U,  3014U,  2922U,  2833U,  2748U,
+                                                          2665U,  2586U,  2509U,  2435U,  2364U,  2294U,  2227U,  2162U,  2101U,  2040U,  1981U,  1925U,  1868U,  1817U,  1765U,  1716U,
+                                                          1668U,  1622U,  1577U,  1533U,  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,
+                                                          1078U,  1052U,  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
+                                                          721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U };
 
 /************************************************************************************************
  * Private function definitions
@@ -155,10 +140,8 @@ static StatusCode s_check_thermistors() {
   /* Loop over all devices and thermistors */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
     for (uint8_t thermistor = 0U; thermistor < LTC_AFE_MAX_THERMISTORS_PER_DEVICE; thermistor++) {
-
       /* Check if the temperature ADC is enabled for the provided device and thermistor channel */
       if ((s_afe_settings.aux_bitset[device] >> thermistor) & 1U) {
-
         /* Calculate the ADC voltage index given the device and thermistor number */
         uint8_t index = device * LTC_AFE_MAX_THERMISTORS_PER_DEVICE + thermistor;
         ltc_afe_storage->aux_voltages[index] = calculate_temperature(ltc_afe_storage->aux_voltages[index]);
@@ -271,8 +254,7 @@ static StatusCode s_cell_sense_conversions() {
         delay_ms(RETRY_DELAY_MS);
       }
       if (status) {
-        LOG_DEBUG("Thermistor read trigger failed for thermistor %d,  %d\n", (uint8_t)thermistor,
-                  status);
+        LOG_DEBUG("Thermistor read trigger failed for thermistor %d,  %d\n", (uint8_t)thermistor, status);
         fault_bps_set(BMS_FAULT_COMMS_LOSS_AFE);
         return status;
       }
@@ -354,10 +336,11 @@ int calculate_temperature(uint16_t thermistor) {
   return thermistor;
 }
 
-StatusCode log_cell_sense() {=
-  /* AFE messages are split into 3 (For each AFE) */
-  /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
-  if (s_cell_data_updated != true) {
+StatusCode log_cell_sense() {
+  =
+      /* AFE messages are split into 3 (For each AFE) */
+      /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
+      if (s_cell_data_updated != true) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
@@ -380,13 +363,10 @@ StatusCode log_cell_sense() {=
   set_AFE3_status_v3(CELL_VOLTAGE_LOOKUP(read_index + 2));
 
   // Thermistors to send are at index 0, 2, 4 for each device
-  if (afe_message_index <
-    NUM_AFE_MSGS - 1) {  // Only 3 thermistors per device, so 4th message will be ignored
+  if (afe_message_index < NUM_AFE_MSGS - 1) {  // Only 3 thermistors per device, so 4th message will be ignored
     set_AFE1_status_temp(ltc_afe_storage->aux_voltages[afe_message_index * 2]);
-    set_AFE2_status_temp(
-        ltc_afe_storage->aux_voltages[LTC_AFE_MAX_THERMISTORS_PER_DEVICE + afe_message_index * 2]);
-    set_AFE3_status_temp(ltc_afe_storage->aux_voltages[LTC_AFE_MAX_THERMISTORS_PER_DEVICE * 2 +
-                                                       afe_message_index * 2]);
+    set_AFE2_status_temp(ltc_afe_storage->aux_voltages[LTC_AFE_MAX_THERMISTORS_PER_DEVICE + afe_message_index * 2]);
+    set_AFE3_status_temp(ltc_afe_storage->aux_voltages[LTC_AFE_MAX_THERMISTORS_PER_DEVICE * 2 + afe_message_index * 2]);
   }
 
   afe_message_index = (afe_message_index + 1) % NUM_AFE_MSGS;

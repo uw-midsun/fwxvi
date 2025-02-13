@@ -2,6 +2,7 @@
  * @file   retarget.c
  *
  * @brief  Retarget library for Hard fault handling
+ *         Reference: https://interrupt.memfault.com/blog/cortex-m-hardfault-debug
  *
  * @date   2025-01-28
  * @author Midnight Sun Team #24 - MSXVI
@@ -12,21 +13,19 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
-#include "stm32l4xx_it.h"
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_uart.h"
 #include "stm32l4xx_hal_gpio.h"
+#include "stm32l4xx_hal_uart.h"
+#include "stm32l4xx_it.h"
 
 /* Intra-component Headers */
 #include "retarget.h"
 
-/* Reference: https://interrupt.memfault.com/blog/cortex-m-hardfault-debug */
-
 static UART_HandleTypeDef hard_fault_uart;
 
 int _write(int file, char *ptr, int len) {
-    HAL_UART_Transmit(&hard_fault_uart, (uint8_t*)ptr, len, HAL_MAX_DELAY);
-    return len;
+  HAL_UART_Transmit(&hard_fault_uart, (uint8_t *)ptr, len, HAL_MAX_DELAY);
+  return len;
 }
 
 void retarget_init() {
@@ -34,7 +33,7 @@ void retarget_init() {
   __HAL_RCC_USART1_CLK_ENABLE();
 
   /* Debug UART is Pins B6 and B7 */
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitTypeDef GPIO_InitStruct = { 0 };
   GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -53,7 +52,7 @@ void retarget_init() {
 
   if (HAL_UART_Init(&hard_fault_uart) != HAL_OK) {
     /* Hang the program if the UART Init fails */
-    while (1);
+    while (1) {}
   }
 }
 
@@ -65,17 +64,16 @@ void HardFault_Handler() {
 
   __asm(
       ".syntax unified                \n"
-      "MOVS   R0, #4                  \n"   /* Move 0b0100 to R0 */
-      "MOV    R1, LR                  \n"   /* Move link-regsiter to R1 */
-      "TST    R0, R1                  \n"   /* Test link-register value to see if 3rd bit is set (SPSEL bit) */
-      "BEQ    _MSP                    \n"   /* If the 3rd bit is set, the MSP is being used for the SP */
-      "MRS    R0, PSP                 \n"   /* Move process stack pointer into R0 */
-      "B      HardFault_HandlerC      \n"   /* Branch to C version */
-      "_MSP:                          \n"   /* MSP function label */
-      "MRS    R0, MSP                 \n"   /* Move main stack pointer into R0 */
-      "B      HardFault_HandlerC      \n"   /* Branch to C version */  
-      ".syntax divided                \n"
-  );
+      "MOVS   R0, #4                  \n" /* Move 0b0100 to R0 */
+      "MOV    R1, LR                  \n" /* Move link-regsiter to R1 */
+      "TST    R0, R1                  \n" /* Test link-register value to see if 3rd bit is set (SPSEL bit) */
+      "BEQ    _MSP                    \n" /* If the 3rd bit is set, the MSP is being used for the SP */
+      "MRS    R0, PSP                 \n" /* Move process stack pointer into R0 */
+      "B      HardFault_HandlerC      \n" /* Branch to C version */
+      "_MSP:                          \n" /* MSP function label */
+      "MRS    R0, MSP                 \n" /* Move main stack pointer into R0 */
+      "B      HardFault_HandlerC      \n" /* Branch to C version */
+      ".syntax divided                \n");
 }
 
 void HardFault_HandlerC(uint32_t *hardfault_args) {

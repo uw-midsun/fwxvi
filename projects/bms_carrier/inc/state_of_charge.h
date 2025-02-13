@@ -26,23 +26,23 @@
  */
 
 /** @brief  Internal resistance of cells from testing */
-#define CELL_INTERNAL_RESISTANCE_mOHMS    22U
+#define CELL_INTERNAL_RESISTANCE_mOHMS 22U
 /** @brief  9 modules, each module is 8P4S */
-#define PACK_INTERNAL_RESISTANCE_mOHMS    (CELL_INTERNAL_RESISTANCE_mOHMS * 9U * 4U) / 8U
+#define PACK_INTERNAL_RESISTANCE_mOHMS (CELL_INTERNAL_RESISTANCE_mOHMS * 9U * 4U) / 8U
 /** @brief  Volts to millivolts conversion */
-#define VOLTS_TO_mV                       1000U
+#define VOLTS_TO_mV 1000U
 /** @brief  Lookup table size */
-#define LUT_SIZE                          41U
+#define LUT_SIZE 41U
 
 /**
  * @brief   State of charge storage
  */
 struct StateOfChargeStorage {
-  uint32_t last_time;       /**< Last measurement time */
-  float i_soc;              /**< Current state of charge with Coulomb Counting */
-  float v_soc;              /**< Voltage state of charge with voltage mapping */
-  float averaged_soc;       /**< Averaged state of charge */
-  int32_t last_current;     /**< Last current measurement */
+  uint32_t last_time;   /**< Last measurement time */
+  float i_soc;          /**< Current state of charge with Coulomb Counting */
+  float v_soc;          /**< Voltage state of charge with voltage mapping */
+  float averaged_soc;   /**< Averaged state of charge */
+  int32_t last_current; /**< Last current measurement */
 };
 
 /**
@@ -52,7 +52,6 @@ struct StateOfChargeStorage {
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode state_of_charge_init(BmsStorage *storage);
-
 
 /**
  * @brief   Updates the state of charge value

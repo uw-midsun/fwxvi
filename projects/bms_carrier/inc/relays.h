@@ -28,24 +28,24 @@
 /** @brief  Delay between consecutive relays being closed */
 #define BMS_CLOSE_RELAYS_DELAY_MS 250U
 /** @brief  Number of BMS relays */
-#define NUM_BMS_RELAYS            3U
+#define NUM_BMS_RELAYS 3U
 /** @brief  Killswitch interrupt notification */
-#define KILLSWITCH_EVENT_IT       3U
+#define KILLSWITCH_EVENT_IT 3U
 
 /**
  * @brief   Relay storage
  */
 struct RelayStorage {
-  GpioAddress pos_relay_en;         /**< Positive relay enable */
-  GpioAddress pos_relay_sense;      /**< Positive relay sense */
+  GpioAddress pos_relay_en;    /**< Positive relay enable */
+  GpioAddress pos_relay_sense; /**< Positive relay sense */
 
-  GpioAddress neg_relay_en;         /**< Negative relay enable */
-  GpioAddress neg_relay_sense;      /**< Negative relay sense */
+  GpioAddress neg_relay_en;    /**< Negative relay enable */
+  GpioAddress neg_relay_sense; /**< Negative relay sense */
 
-  GpioAddress solar_relay_en;       /**< Solar relay enable */
-  GpioAddress solar_relay_sense;    /**< Solar relay sense */
+  GpioAddress solar_relay_en;    /**< Solar relay enable */
+  GpioAddress solar_relay_sense; /**< Solar relay sense */
 
-  GpioAddress killswitch_sense;     /**< Killswitch sense */
+  GpioAddress killswitch_sense; /**< Killswitch sense */
 };
 
 /**

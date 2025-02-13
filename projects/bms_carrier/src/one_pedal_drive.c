@@ -14,8 +14,8 @@
 #include "log.h"
 
 /* Intra-component Headers */
-#include "one_pedal_drive.h"
 #include "bms_carrier_setters.h"
+#include "one_pedal_drive.h"
 
 float opd_threshold(float car_velocity_kmh) {
   float threshold = 0.0f;

@@ -15,9 +15,9 @@
 #include "bms_carrier.h"
 
 StatusCode bms_carrier_init(BmsStorage *storage, BmsConfig *config) {
-    if (storage == NULL || config == NULL) {
-        return STATUS_CODE_INVALID_ARGS;
-    }
+  if (storage == NULL || config == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
-    return STATUS_CODE_OK;
+  return STATUS_CODE_OK;
 }

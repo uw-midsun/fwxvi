@@ -13,26 +13,24 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
+#include "adc.h"
+#include "delay.h"
+#include "log.h"
+#include "tasks.h"
 #include "test_helpers.h"
 #include "unity.h"
-#include "delay.h"
-#include "tasks.h"
-#include "log.h"
-#include "adc.h"
 
 /* Intra-component Headers */
+#include "aux_sense.h"
 #include "bms_carrier.h"
 #include "bms_hw_defs.h"
-#include "aux_sense.h"
 
 /** @brief  Voltage divider R2 */
 #define R2_OHMS 10000
 /** @brief  Voltage divider R1 */
 #define R1_OHMS 47000
 
-static BmsStorage mock_bms_storage = { .bms_config = {  .series_count = NUM_SERIES_CELLS,
-                                                        .parallel_count = NUM_PARALLEL_CELLS,
-                                                        .pack_capacity = PACK_CAPACITY_MAH } };
+static BmsStorage mock_bms_storage = { .bms_config = { .series_count = NUM_SERIES_CELLS, .parallel_count = NUM_PARALLEL_CELLS, .pack_capacity = PACK_CAPACITY_MAH } };
 
 float voltage_divider = (float)R2_OHMS / (float)(R2_OHMS + R1_OHMS);
 

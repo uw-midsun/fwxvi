@@ -94,7 +94,6 @@ void ocv_voltage_soc() {
     return;
   }
 
-
   float voltage_low = voltage_lookup[low_index] * bms_storage->bms_config.series_count * VOLTS_TO_mV;
   float voltage_high = voltage_lookup[upper_index] * bms_storage->bms_config.series_count * VOLTS_TO_mV;
   // Lookup table index = SOC, voltage = value

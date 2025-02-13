@@ -28,17 +28,17 @@
  */
 
 /** @brief  Total Number of ADC channels (16 external, 3 internal) */
-#define NUM_ADC_CHANNELS    19U
+#define NUM_ADC_CHANNELS 19U
 /** @brief  Maximum time permitted for an ADC transaction */
-#define ADC_TIMEOUT_MS      100U
+#define ADC_TIMEOUT_MS 100U
 
 /**
  * @brief   Available ADC modes
  */
 typedef enum {
-  ADC_MODE_SINGLE = 0,      /**< Single mode */
-  ADC_MODE_CONTINUOUS,      /**< Continuous mode */
-  NUM_ADC_MODES,            /**< Number of ADC Ports */
+  ADC_MODE_SINGLE = 0, /**< Single mode */
+  ADC_MODE_CONTINUOUS, /**< Continuous mode */
+  NUM_ADC_MODES,       /**< Number of ADC Ports */
 } AdcMode;
 
 /**
@@ -55,7 +55,7 @@ StatusCode adc_init(void);
  * @brief   Adds an ADC channel for a given Gpio
  * @details Configures a Gpio to be used as an ADC channel
  *          Must be called for all pins in use before adc_init
- * @param   address Specifies which Gpio to set as an ADC channel 
+ * @param   address Specifies which Gpio to set as an ADC channel
  * @return  STATUS_CODE_OK if adding a channel succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
@@ -68,7 +68,7 @@ StatusCode adc_add_channel(GpioAddress *address);
  * @details Uses DMA to perform the transaction
  * @return  STATUS_CODE_OK if conversions succeeded
  *          STATUS_CODE_INTERNAL_ERROR if HAL transaction fails
- *          STATUS_CODE_TIMEOUT if ADC conversions exceed ADC_TIMEOUT_MS 
+ *          STATUS_CODE_TIMEOUT if ADC conversions exceed ADC_TIMEOUT_MS
  */
 StatusCode adc_run(void);
 

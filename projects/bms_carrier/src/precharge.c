@@ -10,23 +10,19 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "log.h"
 #include "delay.h"
 #include "gpio.h"
 #include "gpio_interrupts.h"
+#include "log.h"
 
 /* Intra-component Headers */
-#include "precharge.h"
-#include "fault_bps.h"
-#include "bms_hw_defs.h"
 #include "bms_carrier_getters.h"
 #include "bms_carrier_setters.h"
+#include "bms_hw_defs.h"
+#include "fault_bps.h"
+#include "precharge.h"
 
-struct PrechargeSettings precharge_settings = {
-  .motor_sw_en = BMS_PRECHARGE_RELAY_ENABLE_GPIO,
-  .motor_sw_sense = BMS_PRECHARGE_RELAY_SENSE_GPIO,
-  .precharge_monitor = BMS_PRECHARGE_STATUS_GPIO
-};
+struct PrechargeSettings precharge_settings = { .motor_sw_en = BMS_PRECHARGE_RELAY_ENABLE_GPIO, .motor_sw_sense = BMS_PRECHARGE_RELAY_SENSE_GPIO, .precharge_monitor = BMS_PRECHARGE_STATUS_GPIO };
 
 static BmsStorage *bms_storage;
 
@@ -44,7 +40,7 @@ StatusCode precharge_init(BmsStorage *storage, Event event, const Task *task) {
 
   /* Initialize precharge monitor */
   gpio_init_pin(&bms_storage->precharge_settings->precharge_monitor, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH);
-  
+
   /* Debounce */
   delay_ms(10U);
 

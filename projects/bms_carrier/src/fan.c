@@ -10,26 +10,21 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "log.h"
 #include "adc.h"
+#include "log.h"
 #include "pwm.h"
 
 /* Intra-component Headers */
-#include "fan.h"
 #include "bms_hw_defs.h"
+#include "fan.h"
 
-static struct FanSettings fan_settings ={
-  .fan1_sense = BMS_FAN_SENSE_1_GPIO,
-  .fan2_sense = BMS_FAN_SENSE_2_GPIO,
-  .fan_pwm_ctrl = BMS_FAN_PWM_GPIO
-};
+static struct FanSettings fan_settings = { .fan1_sense = BMS_FAN_SENSE_1_GPIO, .fan2_sense = BMS_FAN_SENSE_2_GPIO, .fan_pwm_ctrl = BMS_FAN_PWM_GPIO };
 
 static BmsStorage *bms_storage;
 
 uint8_t calculate_fan_dc(uint16_t temperature) {
   /* Scale percent based on temp range, starting at 50% if fan is set on */
-  uint8_t speed_perc = 100 * ((float)temperature - BMS_FAN_TEMP_LOWER_THRESHOLD) /
-                       (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
+  uint8_t speed_perc = 100 * ((float)temperature - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
   speed_perc = (speed_perc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
 
   if (speed_perc > 100U) {

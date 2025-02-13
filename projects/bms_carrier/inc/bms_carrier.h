@@ -48,21 +48,21 @@ typedef struct {
  * @brief   Battery management system storage
  */
 typedef struct {
-  int32_t pack_current;                                     /**< Pack current reading */
-  uint32_t pack_voltage;                                    /**< Pack voltage reading */
-  uint16_t temperature;                                     /**< Pack temperature reading */
+  int32_t pack_current;  /**< Pack current reading */
+  uint32_t pack_voltage; /**< Pack voltage reading */
+  uint16_t temperature;  /**< Pack temperature reading */
 
-  BmsConfig bms_config;                                     /**< BMS configuration settings */
-  LtcAfeStorage ltc_afe_storage;                            /**< LTC6811 AFE Storage */
-  Max17261Settings fuel_guage_settings;                     /**< MAX17261 Fuel gauge settings */
-  Max17261Storage fuel_guage_storage;                       /**< MAX17261 Fuel gauge storage */
+  BmsConfig bms_config;                 /**< BMS configuration settings */
+  LtcAfeStorage ltc_afe_storage;        /**< LTC6811 AFE Storage */
+  Max17261Settings fuel_guage_settings; /**< MAX17261 Fuel gauge settings */
+  Max17261Storage fuel_guage_storage;   /**< MAX17261 Fuel gauge storage */
 
-  struct PrechargeSettings *precharge_settings;             /**< Precharge settings */
-  struct FanSettings *fan_settings;                         /**< Fan settings */
-  struct AuxSenseStorage *aux_sense_storage;                /**< Aux sense storage */
-  struct FaultBpsStorage *fault_bps_storage;                /**< Fault BPS storage */
-  struct StateOfChargeStorage *state_of_charge_storage;     /**< State of charge storage */
-  struct RelayStorage *relay_storage;                       /**< Relay storage */
+  struct PrechargeSettings *precharge_settings;         /**< Precharge settings */
+  struct FanSettings *fan_settings;                     /**< Fan settings */
+  struct AuxSenseStorage *aux_sense_storage;            /**< Aux sense storage */
+  struct FaultBpsStorage *fault_bps_storage;            /**< Fault BPS storage */
+  struct StateOfChargeStorage *state_of_charge_storage; /**< State of charge storage */
+  struct RelayStorage *relay_storage;                   /**< Relay storage */
 } BmsStorage;
 
 /**

@@ -10,17 +10,17 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
-#include "status.h"
-#include "delay.h"
+#include "mcu.h"
 #include "spi.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
-#define TEST_DATA_SIZE  5U
+#define TEST_DATA_SIZE 5U
 
 SpiSettings spi_test_settings = {
   .baudrate = SPI_BAUDRATE_2_5MHZ,
@@ -34,7 +34,7 @@ SpiSettings spi_test_settings = {
 TASK(spi_api, TASK_STACK_1024) {
   spi_init(SPI_PORT_2, &spi_test_settings);
 
-  uint8_t tx_data[TEST_DATA_SIZE] = {0x10, 0x11, 0x12, 0x13, 0x14};
+  uint8_t tx_data[TEST_DATA_SIZE] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
   uint8_t rx_data[TEST_DATA_SIZE];
 
   while (true) {
@@ -45,7 +45,7 @@ TASK(spi_api, TASK_STACK_1024) {
       LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data[i]);
       delay_ms(5);
     }
-  
+
     delay_ms(500);
   }
 }

@@ -34,7 +34,7 @@
  * @brief   One pedal drive storage
  */
 struct OnePedalStorage {
-    float opd_threshold;        /**< Aux sense analog pin */
+  float opd_threshold; /**< Aux sense analog pin */
 };
 
 /**

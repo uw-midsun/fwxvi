@@ -27,15 +27,15 @@
  */
 
 /** @brief  Precharge interrupt notification */
-#define PRECHARGE_EVENT_IT  0U
+#define PRECHARGE_EVENT_IT 0U
 
 /**
  * @brief   Precharge settings
  */
 struct PrechargeSettings {
-  GpioAddress motor_sw_en;          /**< Motor switch enable */
-  GpioAddress motor_sw_sense;       /**< Motor switch sense */
-  GpioAddress precharge_monitor;    /**< Precharge monitor */
+  GpioAddress motor_sw_en;       /**< Motor switch enable */
+  GpioAddress motor_sw_sense;    /**< Motor switch sense */
+  GpioAddress precharge_monitor; /**< Precharge monitor */
 };
 
 /**

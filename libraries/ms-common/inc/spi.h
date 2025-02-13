@@ -45,15 +45,15 @@ typedef enum {
  *          And Spi_prescalers are powers of 2 between 2^1 and 2^8
  */
 typedef enum {
-  SPI_BAUDRATE_312_5KHZ = 0,    /**< 312.5 kHz */
-  SPI_BAUDRATE_625KHZ,          /**< 625 kHz */
-  SPI_BAUDRATE_1_25MHZ,         /**< 1.25 MHz */
-  SPI_BAUDRATE_2_5MHZ,          /**< 2.5 MHz */
-  SPI_BAUDRATE_5MHZ,            /**< 5 MHz */
-  SPI_BAUDRATE_10MHZ,           /**< 10 MHz */
-  SPI_BAUDRATE_20MHZ,           /**< 20 MHz */
-  SPI_BAUDRATE_40MHZ,           /**< 40 MHz */
-  NUM_SPI_BAUDRATE              /**< Number of Spi Baudrates */
+  SPI_BAUDRATE_312_5KHZ = 0, /**< 312.5 kHz */
+  SPI_BAUDRATE_625KHZ,       /**< 625 kHz */
+  SPI_BAUDRATE_1_25MHZ,      /**< 1.25 MHz */
+  SPI_BAUDRATE_2_5MHZ,       /**< 2.5 MHz */
+  SPI_BAUDRATE_5MHZ,         /**< 5 MHz */
+  SPI_BAUDRATE_10MHZ,        /**< 10 MHz */
+  SPI_BAUDRATE_20MHZ,        /**< 20 MHz */
+  SPI_BAUDRATE_40MHZ,        /**< 40 MHz */
+  NUM_SPI_BAUDRATE           /**< Number of Spi Baudrates */
 } SpiBaudrate;
 
 /** @brief   SPI Mode selection */

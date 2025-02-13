@@ -26,10 +26,10 @@
  */
 
 /**
- * @brief   Fault storage for battery-protection system 
+ * @brief   Fault storage for battery-protection system
  */
 struct FaultBpsStorage {
-  uint16_t fault_bitset;    /**< Fault bitset */
+  uint16_t fault_bitset; /**< Fault bitset */
 };
 
 /**

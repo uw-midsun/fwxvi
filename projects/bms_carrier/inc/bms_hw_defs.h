@@ -81,21 +81,21 @@
 /** @brief  MCP2515 SPI port */
 #define MCP2515_SPI_PORT SPI_PORT_3
 
- /** @brief  MCP2515 SPI Serial data out */
+/** @brief  MCP2515 SPI Serial data out */
 #define MCP2515_SPI_SDO_GPIO \
-{ .port = GPIO_PORT_B, .pin = 5 }
+  { .port = GPIO_PORT_B, .pin = 5 }
 
 /** @brief  MCP2515 SPI Serial data in */
 #define MCP2515_SPI_SDI_GPIO \
-{ .port = GPIO_PORT_B, .pin = 4 }
+  { .port = GPIO_PORT_B, .pin = 4 }
 
 /** @brief  MCP2515 SPI Serial clock line */
 #define MCP2515_SPI_SCK_GPIO \
-{ .port = GPIO_PORT_B, .pin = 3 }
+  { .port = GPIO_PORT_B, .pin = 3 }
 
 /** @brief  MCP2515 SPI Chip select line */
 #define MCP2515_SPI_CS_GPIO \
-{ .port = GPIO_PORT_A, .pin = 15 }
+  { .port = GPIO_PORT_A, .pin = 15 }
 
 /************************************************************************************************
  * Relays/Contactor definitions

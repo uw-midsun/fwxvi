@@ -10,14 +10,14 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "adc.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
-#include "status.h"
-#include "delay.h"
-#include "adc.h"
+#include "mcu.h"
 #include "misc.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -26,14 +26,10 @@
 /* Channels 13-14 are occupied by pins C4-C5 */
 /* Channels 15-16 are occupied by pins B0-B1 */
 static const GpioAddress adc_address[] = {
-  { .port = GPIO_PORT_A, .pin = 0U }, { .port = GPIO_PORT_A, .pin = 1U },
-  { .port = GPIO_PORT_A, .pin = 2U }, { .port = GPIO_PORT_A, .pin = 3U },
-  { .port = GPIO_PORT_A, .pin = 4U }, { .port = GPIO_PORT_A, .pin = 5U },
-  { .port = GPIO_PORT_A, .pin = 6U }, { .port = GPIO_PORT_A, .pin = 7U },
-  { .port = GPIO_PORT_B, .pin = 0U }, { .port = GPIO_PORT_B, .pin = 1U },
-  { .port = GPIO_PORT_C, .pin = 0U }, { .port = GPIO_PORT_C, .pin = 1U },
-  { .port = GPIO_PORT_C, .pin = 2U }, { .port = GPIO_PORT_C, .pin = 3U },
-  { .port = GPIO_PORT_C, .pin = 4U }, { .port = GPIO_PORT_C, .pin = 5U },
+  { .port = GPIO_PORT_A, .pin = 0U }, { .port = GPIO_PORT_A, .pin = 1U }, { .port = GPIO_PORT_A, .pin = 2U }, { .port = GPIO_PORT_A, .pin = 3U },
+  { .port = GPIO_PORT_A, .pin = 4U }, { .port = GPIO_PORT_A, .pin = 5U }, { .port = GPIO_PORT_A, .pin = 6U }, { .port = GPIO_PORT_A, .pin = 7U },
+  { .port = GPIO_PORT_B, .pin = 0U }, { .port = GPIO_PORT_B, .pin = 1U }, { .port = GPIO_PORT_C, .pin = 0U }, { .port = GPIO_PORT_C, .pin = 1U },
+  { .port = GPIO_PORT_C, .pin = 2U }, { .port = GPIO_PORT_C, .pin = 3U }, { .port = GPIO_PORT_C, .pin = 4U }, { .port = GPIO_PORT_C, .pin = 5U },
 };
 
 TASK(adc_api, TASK_STACK_1024) {
@@ -47,7 +43,7 @@ TASK(adc_api, TASK_STACK_1024) {
 
   while (true) {
     adc_run();
-  
+
     printf("\n\r\\\\------------------------ ADC Data ------------------------//\n\r");
     for (uint8_t i = 0U; i < SIZEOF_ARRAY(adc_address); i++) {
       adc_read_converted(&adc_address[i], &data);
@@ -60,7 +56,6 @@ TASK(adc_api, TASK_STACK_1024) {
 
     delay_ms(1000U);
   }
-
 }
 
 int main() {

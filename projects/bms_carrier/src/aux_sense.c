@@ -24,10 +24,7 @@
 /** @brief  Voltage divider R1 */
 #define R1_OHMS 47000U
 
-struct AuxSenseStorage aux_sense_storage = {
-  .batt_voltage_mv = 0U,
-  .sense_adc = BMS_AUX_BATT_VOLTAGE_ADC
-};
+struct AuxSenseStorage aux_sense_storage = { .batt_voltage_mv = 0U, .sense_adc = BMS_AUX_BATT_VOLTAGE_ADC };
 
 static BmsStorage *bms_storage;
 
@@ -53,8 +50,7 @@ StatusCode aux_sense_run() {
   adc_read_converted(&bms_storage->aux_sense_storage->sense_adc, &bms_storage->aux_sense_storage->batt_voltage_mv);
 
   /* Reverse voltage divider calculation */
-  bms_storage->aux_sense_storage->batt_voltage_mv =
-    (bms_storage->aux_sense_storage->batt_voltage_mv) * (R2_OHMS + R1_OHMS) / (R2_OHMS);
+  bms_storage->aux_sense_storage->batt_voltage_mv = (bms_storage->aux_sense_storage->batt_voltage_mv) * (R2_OHMS + R1_OHMS) / (R2_OHMS);
 
   set_battery_status_aux_batt_v(bms_storage->aux_sense_storage->batt_voltage_mv);
 

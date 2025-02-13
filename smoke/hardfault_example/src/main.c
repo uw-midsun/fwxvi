@@ -10,12 +10,12 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
+#include "mcu.h"
 #include "status.h"
-#include "delay.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 

@@ -13,11 +13,10 @@
 
 /* Intra-component Headers */
 #include "fault_bps.h"
+
 #include "relays.h"
 
-struct FaultBpsStorage fault_bps_storage = {
-    .fault_bitset = 0U
-};
+struct FaultBpsStorage fault_bps_storage = { .fault_bitset = 0U };
 
 static BmsStorage *bms_storage;
 

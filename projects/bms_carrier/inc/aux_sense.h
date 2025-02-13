@@ -26,8 +26,8 @@
  * @brief   Aux sense storage
  */
 struct AuxSenseStorage {
-    GpioAddress sense_adc;      /**< Aux sense analog pin */
-    uint16_t batt_voltage_mv;   /**< Aux sense battery voltage */
+  GpioAddress sense_adc;    /**< Aux sense analog pin */
+  uint16_t batt_voltage_mv; /**< Aux sense battery voltage */
 };
 
 /**

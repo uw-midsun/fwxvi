@@ -13,23 +13,20 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
+#include "delay.h"
+#include "log.h"
+#include "tasks.h"
 #include "test_helpers.h"
 #include "unity.h"
-#include "delay.h"
-#include "tasks.h"
-#include "log.h"
 
 /* Intra-component Headers */
 #include "bms_carrier.h"
 #include "bms_hw_defs.h"
 #include "state_of_charge.h"
 
-static BmsStorage mock_bms_storage = { .bms_config = {  .series_count = NUM_SERIES_CELLS,
-                                                        .parallel_count = NUM_PARALLEL_CELLS,
-                                                        .pack_capacity = PACK_CAPACITY_MAH } };
+static BmsStorage mock_bms_storage = { .bms_config = { .series_count = NUM_SERIES_CELLS, .parallel_count = NUM_PARALLEL_CELLS, .pack_capacity = PACK_CAPACITY_MAH } };
 
 static TickType_t mock_time = 1;
-
 
 TickType_t TEST_MOCK(xTaskGetTickCount)(void) {
   return mock_time;
@@ -149,16 +146,14 @@ TEST_IN_TASK
 void test_ramp_voltage_weight_high_soc(void) {
   set_averaged_soc(80.0f);
   ramp_voltage_weight();
-  TEST_ASSERT_FLOAT_WITHIN(0.00001f, 0.20f + ((0.6f / 30.0f) * (80.0f - 70.0f)),
-                           get_voltage_weight());
+  TEST_ASSERT_FLOAT_WITHIN(0.00001f, 0.20f + ((0.6f / 30.0f) * (80.0f - 70.0f)), get_voltage_weight());
 }
 
 TEST_IN_TASK
 void test_ramp_voltage_weight_low_soc(void) {
   set_averaged_soc(20.0f);
   ramp_voltage_weight();
-  TEST_ASSERT_FLOAT_WITHIN(0.00001f, 0.20f + ((0.6f / 30.0f) * (30.0f - 20.0f)),
-                           get_voltage_weight());
+  TEST_ASSERT_FLOAT_WITHIN(0.00001f, 0.20f + ((0.6f / 30.0f) * (30.0f - 20.0f)), get_voltage_weight());
 }
 
 TEST_IN_TASK
