@@ -1,0 +1,4 @@
+<map id="ClientSPIManager" name="ClientSPIManager">
+<area shape="rect" id="node1" title="SPIManager for the Client." alt="" coords="5,7,143,33"/>
+<area shape="rect" id="node2" href="$group__ServerSPIManager.html" title="SPIManager for the Server." alt="" coords="268,7,409,33"/>
+</map>
