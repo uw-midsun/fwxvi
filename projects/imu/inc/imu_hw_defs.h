@@ -33,14 +33,10 @@
 #define INT_STATUS_INT1 0x0D
 #define INT_STATUS_INT2 0x0E
 
-
-
 #define DUMMY_BYTE 0x00
 #define BMI_SET_LOW_BYTE 0x00FF
 #define BMI_SET_HIGH_BYTE 0xFF00
 #define BMI3_E_NULL_PTR INT8_C(-1)
-
-
 
 /*
 this might be 13 or 14 idk
@@ -68,12 +64,11 @@ this might be 13 or 14 idk
 
 /** @brief  IMU CAN RX Port */
 #define IMU_CAN_RX \
-{ .port = GPIO_PORT_B, .pin = 8 }
+  { .port = GPIO_PORT_B, .pin = 8 }
 
 /** @brief  IMU CAN TX Port */
 #define IMU_CAN_TX \
-{ .port = GPIO_PORT_B, .pin = 9 }
-
+  { .port = GPIO_PORT_B, .pin = 9 }
 
 /************************************************************************************************
  * IMU SPI definitions
@@ -82,21 +77,21 @@ this might be 13 or 14 idk
 #define IMU_SPI_PORT SPI_PORT_2
 
 #define IMU_SPI_MOSI \
-{ .port = GPIO_PORT_B, .pin = 15 }
+  { .port = GPIO_PORT_B, .pin = 15 }
 
 #define IMU_SPI_MISO \
-{ .port = GPIO_PORT_B, .pin = 14 }
+  { .port = GPIO_PORT_B, .pin = 14 }
 
 #define IMU_SPI_NSS \
-{ .port = GPIO_PORT_B, .pin = 12 }
+  { .port = GPIO_PORT_B, .pin = 12 }
 
 #define IMU_SPI_SCK \
-{ .port = GPIO_PORT_B, .pin = 13 }
+  { .port = GPIO_PORT_B, .pin = 13 }
 
 #define IMU_SPI_INT1 \
-{ .port = GPIO_PORT_B, .pin = 0 }
+  { .port = GPIO_PORT_B, .pin = 0 }
 
 #define IMU_SPI_INT2 \
-{ .port = GPIO_PORT_B, .pin = 1 }
+  { .port = GPIO_PORT_B, .pin = 1 }
 
 #define SPI_BAUDRATE 2500000
