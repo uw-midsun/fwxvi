@@ -12,7 +12,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include <spi.h>
+#include "spi.h"
 
 /* Intra-component Headers */
 
@@ -23,6 +23,30 @@
  */
 
 /** @} */
+
+typedef enum{
+  REG_BANK_SEL = 0x7F,
+  GYRO_REG_ADDR = 0x06,
+  ACCEL_REG_ADDR = 0x03
+}bmi323_registers;
+
+typedef enum {
+    ACC_DP_OFF_X = 0x60,
+    ACC_DP_DGAIN_X = 0x61,
+    ACC_DP_OFF_Y = 0x62,
+    ACC_DP_DGAIN_Y = 0x63,
+    ACC_DP_OFF_Z = 0x64,
+    ACC_DP_DGAIN_Z = 0x65
+}accel_go_registers;
+
+typedef enum {
+    GYR_DP_OFF_X = 0x66,
+    GYR_DP_DGAIN_X = 0x67,
+    GYR_DP_OFF_Y = 0x68,
+    GYR_DP_DGAIN_Y = 0x69,
+    GYR_DP_OFF_Z = 0x6A,
+    GYR_DP_DGAIN_Z = 0x6B
+}gyro_go_registers;
 
 typedef struct {
   SpiPort spi_port;
@@ -68,3 +92,12 @@ typedef struct {
   accel_gain_offset_values accel_go_values;
   gyro_gain_offset_values gyro_go_values;
 } IMUStorage;
+
+StatusCode imu_init(IMUSettings *settings);
+static StatusCode set_register(uint16_t reg_addr, uint16_t value);
+static StatusCode set_multi_register(uint8_t reg_addr, uint8_t *value, uint16_t len);
+static StatusCode get_register(bmi323_registers reg, uint8_t *value);
+static StatusCode get_multi_register(bmi323_registers reg, uint8_t *reg_val, uint8_t len);
+static StatusCode get_gyroscope_data(axes *gyro);
+static StatusCode get_accel_data(axes *accel);
+static StatusCode enable_feature_engine();
