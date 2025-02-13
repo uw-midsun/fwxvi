@@ -52,7 +52,6 @@ jobs:
           arm-none-eabi-objdump --version
           arm-none-eabi-size --version
           arm-none-eabi-gcc-ar --version
-          arm-none-eabi-gdb --version
           gcc --version
           make --version
           clang --version
