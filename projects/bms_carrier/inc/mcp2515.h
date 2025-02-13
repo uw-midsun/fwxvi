@@ -1,15 +1,16 @@
 #pragma once
 
 /************************************************************************************************
- * @file   mcp2515_defs.h
+ * @file   mcp2515.h
  *
- * @brief  Header file for mcdp2515.defs
+ * @brief  Header file for MCP2515
  *
  * @date   2025-01-13
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+
 /* Inter-component Headers */
 #include "can.h"
 #include "mcp2515_defs.h"

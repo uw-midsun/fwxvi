@@ -34,8 +34,7 @@ static SemaphoreHandle_t s_can_tx_handle;
 static StaticSemaphore_t s_can_rx_mutex;
 static SemaphoreHandle_t s_can_rx_handle;
 
-StatusCode can_init(CanStorage *storage, const CanSettings *settings)
-{
+StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
   if (settings->device_id >= NUM_SYSTEM_CAN_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }

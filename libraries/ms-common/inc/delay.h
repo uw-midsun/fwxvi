@@ -38,6 +38,6 @@ void non_blocking_delay_ms(uint32_t time_ms);
  * @brief   Blocking delay for some amount of time in seconds
  * @param   time_ms Amount of time to delay for
  */
-#define delay_s(time) delay_ms((time)*1000)
+#define delay_s(time) delay_ms((time) * 1000)
 
 /** @} */
