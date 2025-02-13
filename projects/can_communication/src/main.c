@@ -35,7 +35,8 @@ const CanSettings can_settings = {
 TASK(can_communication, TASK_STACK_1024) {
   if (can_init(&s_can_storage, &can_settings) != STATUS_CODE_OK) {
     LOG_DEBUG("Failed to initialze CAN\n");
-    while (true) {}
+    while (true) {
+    }
   }
 
   uint8_t can_data[4U] = { 0xDE, 0xAD, 0xBE, 0xEF };

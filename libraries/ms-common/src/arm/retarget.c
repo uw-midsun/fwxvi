@@ -52,7 +52,8 @@ void retarget_init() {
 
   if (HAL_UART_Init(&hard_fault_uart) != HAL_OK) {
     /* Hang the program if the UART Init fails */
-    while (1) {}
+    while (1) {
+    }
   }
 }
 
