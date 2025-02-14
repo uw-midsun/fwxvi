@@ -1,50 +1,50 @@
-#pragma once
+#ifndef EKF_H
+#define EKF_H
+
 #include <stdio.h>
 #include <math.h>
+
+// Constants
 #define STATE_SIZE 9
-#define MEASUREMENT_SIZE 6
+#define MEASUREMENT_SIZE 6  // (x, y, z), (ax, ay, az), (a, b, y)
 #define DT 1
 
+// State Variables
+extern float x[STATE_SIZE];  // state matrix
+extern float P[STATE_SIZE][STATE_SIZE];  // state covariance matrix
+extern float U[MEASUREMENT_SIZE];  // input controls (ax, ay, az)
 
-//state matrix
-double x[STATE_SIZE]={};
-//state covariance matrix
-double P[STATE_SIZE][STATE_SIZE]={};
-//input controls (ax, ay, az)
-double U[MEASUREMENT_SIZE];
+//  Matrices
+extern float Q[STATE_SIZE][STATE_SIZE];  // process noise covariance matrix
+extern float R[MEASUREMENT_SIZE][MEASUREMENT_SIZE];  // measurement noise covariance matrix
+extern float A[STATE_SIZE][STATE_SIZE];  // state transition matrix
+extern float B[MEASUREMENT_SIZE][MEASUREMENT_SIZE];
 
-//process noise and noise state covariance matrix
-double Q[STATE_SIZE][STATE_SIZE]={}; //9x9 matrix w/covariance in position, velocity, and orientation angle noise
+// matrix Operation Functions
+void matrix_mult(int row1, int col1, float first[][col1],
+                int row2, int col2, float second[][col2],
+                float result[][col2]);
 
-double R[MEASUREMENT_SIZE][MEASUREMENT_SIZE]=
-{{1, 0, 0, 0, 0, 0},
-{0, 1, 0, 0, 0, 0},
-{0, 0, 1, 0, 0, 0},
-{0, 0, 0, 1, 0, 0},
-{0, 0, 0, 0, 1, 0},
-{0, 0, 0, 0, 0, 1}
-};//since readings are independent from each other, just initialize to an identity matrix initially
+void matrix_transpose(float matrix[][STATE_SIZE],
+                     float transpose[][STATE_SIZE]);
 
-double A[STATE_SIZE][STATE_SIZE] = {
-    {1, 0, 0, DT, 0, 0,  0,  0,  0},
-    {0, 1, 0, 0, DT, 0,  0,  0,  0},
-    {0, 0, 1, 0, 0, DT,  0,  0,  0},
-    {0, 0, 0, 1, 0, 0,   0,  0,  0},
-    {0, 0, 0, 0, 1, 0,   0,  0,  0},
-    {0, 0, 0, 0, 0, 1,   0,  0,  0},
-    {0, 0, 0, 0, 0, 0,   1, DT, 0},
-    {0, 0, 0, 0, 0, 0,   0, 1, DT},
-    {0, 0, 0, 0, 0, 0,   0, 0, 1}
-};//iniitialzie with time derivatives
-double B[MEASUREMENT_SIZE][MEASUREMENT_SIZE];
+float determinant(float matrix[][STATE_SIZE], int n);
 
+void cofactor(float matrix[][STATE_SIZE],
+             float temp[][STATE_SIZE],
+             int p, int q, int n);
 
-void multiply_matrices(double firstMatrix[][STATE_SIZE], double secondMatrix[][STATE_SIZE], double result[][STATE_SIZE]);
-void transponse_matrix(double matrix[][STATE_SIZE], double transpose[][STATE_SIZE]);
+void adjoint(float matrix[][STATE_SIZE],
+            float adj[][STATE_SIZE],
+            int n);
 
-void noise_covariance();
-void predict_state();
-void predict_prev_state();//pk-1|k-1
-void predict_covariance();//pk|k-1
-void update_state();
+int inverse(float matrix[][STATE_SIZE],
+           float inverse[][STATE_SIZE],
+           int n);
 
+// EKF Core Functions
+void predict_state(float x[STATE_SIZE]);
+void predict_covariance(void);
+void update_state(float x[STATE_SIZE]);
+
+#endif /* EKF_H */
