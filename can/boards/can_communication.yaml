@@ -7,7 +7,7 @@
 ---
 Messages:
   fast_one_shot_msg:
-    id: 56
+    id: 55
     critical: false
     cycle: "fast"
     target:
@@ -19,7 +19,7 @@ Messages:
       sig2:
         length: 16
   medium_one_shot_msg:
-    id: 55
+    id: 54
     critical: false
     cycle: "medium"
     target:
@@ -31,7 +31,7 @@ Messages:
       sig2:
         length: 16
   slow_one_shot_msg:
-    id: 54
+    id: 53
     critical: false
     cycle: "slow"
     target:
