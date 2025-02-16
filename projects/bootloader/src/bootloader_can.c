@@ -20,7 +20,7 @@
 #define MAX_TX_MS_TIMEOUT 20
 
 static CAN_HandleTypeDef hcan;
-
+static CAN_HandleTypeDef *hcanLoc = NULL;
 
 BootloaderError boot_can_init(const Boot_CanSettings *settings) {
   if (settings == NULL) return BOOTLOADER_INVALID_ARGS;
@@ -59,6 +59,9 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings) {
 }
 
 BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+
+  if (!hcanLoc) return BOOTLOADER_ERROR_UNINITIALIZED;
+
   if (data == NULL) {
     return BOOTLOADER_INVALID_ARGS;
   }
@@ -78,7 +81,7 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
 
   uint32_t tx_mailbox;
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
-    if (HAL_CAN_AddTxMessage(&hcan, &tx_header, (uint8_t*)data, &tx_mailbox) != HAL_OK) {
+    if (HAL_CAN_AddTxMessage(hcan, &tx_header, (uint8_t*)data, &tx_mailbox) != HAL_OK) {
       return BOOLOADER_CAN_TRANSMISSION_ERROR;
     }
   }
@@ -87,6 +90,8 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
 }
 
 BootloaderError boot_can_receive(Boot_CanMessage *msg) {
+  
+  if (!hcanLoc) return BOOTLOADER_ERROR_UNINITIALIZED;
 
   if (msg->id == NULL || msg->extended == NULL || msg->dlc == NULL || msg->data == NULL){
     return BOOTLOADER_CAN_RECEIVE_ERROR;
@@ -101,7 +106,7 @@ BootloaderError boot_can_receive(Boot_CanMessage *msg) {
       msg->id = msg->extended ? rx_header.ExtId : rx_header.StdId;
       msg->dlc = rx_header.DLC;
 
-      // how to know with data to use? there are 4 diff types in union
+      // how to know with data to use? there are 4 diff types in union 
       memcpy(msg->data, rx_data, rx_header.DLC);
       return BOOTLOADER_ERROR_NONE;
     }
