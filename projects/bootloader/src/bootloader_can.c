@@ -54,6 +54,7 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings) {
     return BOOTLOADER_INTERNAL_ERR;
   }
   
+  hcanLoc = &hcan;
 
   return BOOTLOADER_ERROR_NONE;
 }
