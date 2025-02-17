@@ -13,6 +13,7 @@
 
 /* Intra-component Headers */
 #include "imu.h"
+
 #include <stdio.h>
 
 #include "imu_hw_defs.h"
@@ -449,13 +450,104 @@ StatusCode imu_init(IMUSettings *settings) {
   spi_init(s_storage->settings->spi_port, &spi_settings);
 
   const CanSettings can_settings = {
-    .device_id = SYSTEM_CAN_DEVICE_IMU, // Not sure where this value is defined
+    .device_id = SYSTEM_CAN_DEVICE_IMU,  // Not sure where this value is defined
     .bitrate = CAN_HW_BITRATE_500KBPS,
     .tx = IMU_CAN_TX,
     .rx = IMU_CAN_RX,
     .loopback = 0,
   };
   can_init(&s_can_storage, &can_settings);
+
+  /* TRIGGER SOFT RESET (page 138) */
+  StatusCode reset = set_register(CMD, 0xDEAF);
+  if (reset != STATUS_CODE_OK) return reset;
+
+  /* VERIFY CHIP ID */
+  uint8_t chip_id;
+  get_register(0x00, &chip_id);
+  if (chip_id != 0x43) return STATUS_CODE_INTERNAL_ERROR;
+
+  /* CONFIGURE ACCELEROMETER
+   * Set range
+   * Set ODR
+   * Enable (in high performance mode)
+   */
+  uint8_t acc_conf;
+  get_register(ACC_CONF, &acc_conf);
+
+  acc_conf &= ~(0b111 << 4);
+  acc_conf |= (settings->accel_range << 4);
+  acc_conf &= ~(0b1111);
+  acc_conf |= 0b1110;
+  acc_conf &= ~(0b111 << 12);
+  acc_conf |= (0x7 << 12);
+
+  set_register(ACC_CONF, (uint16_t)acc_conf);
+
+  /* CONFIGURE GYROSCOPE
+   * Set range
+   * Set ODR
+   * Enable (in high performance mode)
+   */
+  uint8_t gyr_conf;
+  get_register(GYR_CONF, &gyr_conf);
+
+  gyr_conf &= ~(0b111 << 4);
+  gyr_conf |= (settings->gyro_range << 4);
+  gyr_conf &= ~(0b1111);
+  gyr_conf |= 0b1110;
+  gyr_conf &= ~(0b111 << 12);
+  gyr_conf |= (0x7 << 12);
+
+  set_register(GYR_CONF, (uint16_t)gyr_conf);
+
+  /* CALCULATE AND SET ACCELEROMETER OFFSET */
+  int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
+
+  for (int i = 0; i < 100; ++i) {
+    get_accel_data(&s_storage->accel);
+
+    accel_x_off += s_storage->accel.x;
+    accel_y_off += s_storage->accel.y;
+    accel_z_off += s_storage->accel.z;
+  }
+
+  accel_x_off /= 100;
+  accel_y_off /= 100;
+  accel_z_off /= 100;
+  accel_x_off = -accel_x_off;
+  accel_y_off = -accel_y_off;
+  accel_z_off = -accel_z_off;
+
+  s_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
+  s_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
+  s_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
+
+  set_accel_offset_gain(&s_storage->accel_go_values);
+
+  /* CALCULATE AND SET GYROMETER OFFSET */
+  int16_t gyr_x_off = 0, gyr_y_off = 0, gyr_z_off = 0;
+
+  for (int i = 0; i < 100; ++i) {
+    get_gyroscope_data(&s_storage->gyro);
+
+    gyr_x_off += s_storage->gyro.x;
+    gyr_y_off += s_storage->gyro.y;
+    gyr_z_off += s_storage->gyro.z;
+  }
+
+  gyr_x_off /= 100;
+  gyr_y_off /= 100;
+  gyr_z_off /= 100;
+  gyr_x_off = -gyr_x_off;
+  gyr_y_off = -gyr_y_off;
+  gyr_z_off = -gyr_z_off;
+
+  s_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
+  s_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
+  s_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
+
+  set_gyro_offset_gain(&s_storage->gyro_go_values);
 
   StatusCode status = enable_feature_engine();
 

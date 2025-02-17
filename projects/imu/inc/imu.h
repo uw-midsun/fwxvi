@@ -12,9 +12,9 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "spi.h"
 #include "can.h"
 #include "can_board_ids.h"
+#include "spi.h"
 
 /* Intra-component Headers */
 
@@ -32,6 +32,10 @@ typedef enum { ACC_DP_OFF_X = 0x60, ACC_DP_DGAIN_X = 0x61, ACC_DP_OFF_Y = 0x62, 
 
 typedef enum { GYR_DP_OFF_X = 0x66, GYR_DP_DGAIN_X = 0x67, GYR_DP_OFF_Y = 0x68, GYR_DP_DGAIN_Y = 0x69, GYR_DP_OFF_Z = 0x6A, GYR_DP_DGAIN_Z = 0x6B } gyro_go_registers;
 
+typedef enum { IMU_ACCEL_RANGE_2G, IMU_ACCEL_RANGE_4G, IMU_ACCEL_RANGE_8G, IMU_ACCEL_RANGE_16G, NUM_IMU_ACCEL_RANGE } IMUAccelRange;
+
+typedef enum { IMU_GYRO_RANGE_125_DEG, IMU_GYRO_RANGE_250_DEG, IMU_GYRO_RANGE_500_DEG, IMU_GYRO_RANGE_1000_DEG, IMU_GYRO_RANGE_2000_DEG, NUM_IMU_GYRO_RANGES } IMUGyroRange;
+
 typedef struct {
   SpiPort spi_port;
   uint32_t spi_baudrate;
@@ -41,6 +45,8 @@ typedef struct {
   GpioAddress cs;
   GpioAddress int1;
   GpioAddress int2;
+  IMUAccelRange accel_range;
+  IMUGyroRange gyro_range;
 } IMUSettings;
 
 typedef struct {

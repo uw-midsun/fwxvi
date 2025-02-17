@@ -29,6 +29,8 @@
 #define FEATURE_IO2 0x12
 #define FEATURE_IO3 0x13
 #define FEATURE_IO_STATUS 0x14
+#define ACC_CONF 0x20
+#define GYR_CONF 0x21
 #define FEATURE_CTRL 0x40
 #define INT_STATUS_INT1 0x0D
 #define INT_STATUS_INT2 0x0E
