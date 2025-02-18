@@ -28,6 +28,26 @@ static const LtcAfeSettings s_afe_settings = {
 
 */
 
+static StatusCode get_register(bmi323_registers reg, uint8_t *value);
+static StatusCode get_multi_register(bmi323_registers reg, uint8_t *reg_val, uint8_t len);
+static StatusCode set_register(uint16_t reg_addr, uint16_t value);
+static StatusCode set_multi_register(uint8_t reg_addr, uint8_t *value, uint16_t len);
+
+static StatusCode get_gyroscope_data(Axes *gyro);
+static StatusCode get_accel_data(Axes *accel);
+
+static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
+static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
+static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
+static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
+
+static StatusCode enable_feature_engine();
+
+static StatusCode gyro_crt_calibration();
+
+static void s_calculate_accel_offset();
+static void s_calculate_gyro_offset();
+
 // read operation requires 1 dummy byte before payload
 static StatusCode get_register(bmi323_registers reg, uint8_t *value) {
   // register length of 2 bytes, 2nd one is dummy byte
@@ -72,7 +92,7 @@ static StatusCode set_multi_register(uint8_t reg_addr, uint8_t *value, uint16_t 
   return status_data;
 }
 
-static StatusCode get_gyroscope_data(axes *gyro) {
+static StatusCode get_gyroscope_data(Axes *gyro) {
   uint8_t data[6] = { 0 };
 
   StatusCode status = get_multi_register(GYRO_REG_ADDR, data, 6);
@@ -89,7 +109,7 @@ static StatusCode get_gyroscope_data(axes *gyro) {
   return status;
 }
 
-static StatusCode get_accel_data(axes *accel) {
+static StatusCode get_accel_data(Axes *accel) {
   uint8_t data[6] = { 0 };
   StatusCode status = get_multi_register(ACCEL_REG_ADDR, data, 6);
 
@@ -102,7 +122,7 @@ static StatusCode get_accel_data(axes *accel) {
   return status;
 }
 
-static StatusCode get_gyro_offset_gain(gyro_gain_offset_values *gyro_go_values) {
+static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
   StatusCode result;
   uint8_t data[12] = { 0 };
 
@@ -135,7 +155,7 @@ static StatusCode get_gyro_offset_gain(gyro_gain_offset_values *gyro_go_values) 
   return result;
 }
 
-static StatusCode set_gyro_offset_gain(gyro_gain_offset_values *gyro_go_values) {
+static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
   StatusCode result;
   uint8_t data[12] = { 0 };
 
@@ -168,7 +188,7 @@ static StatusCode set_gyro_offset_gain(gyro_gain_offset_values *gyro_go_values) 
   return result;
 }
 
-static StatusCode get_accel_offset_gain(accel_gain_offset_values *accel_go_values) {
+static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
   StatusCode result;
   uint8_t data[12] = { 0 };
 
@@ -200,7 +220,7 @@ static StatusCode get_accel_offset_gain(accel_gain_offset_values *accel_go_value
   return result;
 }
 
-static StatusCode set_accel_offset_gain(accel_gain_offset_values *accel_go_values) {
+static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
   StatusCode result;
 
   uint8_t data[12] = { 0 };
