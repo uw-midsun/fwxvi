@@ -27,13 +27,13 @@
  */
 
 /**
- * @brief   Interrupt class selection
+ * @brief   Interrupt type selection
  */
 typedef enum {
   INTERRUPT_TYPE_INTERRUPT = 0, /**< Interrupt type runs a callback as soon as the interrupt is triggered */
   INTERRUPT_TYPE_EVENT,         /**< Event type wakes the device without running a callback */
-  NUM_INTERRUPT_CLASSES,        /**< Number of supported interrupt classes */
-} InterruptClass;
+  NUM_INTERRUPT_TYPES,          /**< Number of supported interrupt classes */
+} InterruptType;
 
 /**
  * @brief   Interrupt priority level selection
@@ -66,7 +66,7 @@ typedef enum {
  * @brief   Interrupt configuration structure
  */
 typedef struct InterruptSettings {
-  InterruptClass class;       /**< Interrupt class selection */
+  InterruptType type;         /**< Interrupt type selection */
   InterruptPriority priority; /**< Interrupt priority selection */
   InterruptEdge edge;         /**< Interrupt edge selection */
 } InterruptSettings;

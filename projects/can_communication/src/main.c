@@ -11,6 +11,7 @@
 
 /* Inter-component Headers */
 #include "can.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
@@ -21,18 +22,31 @@
 #include "can_communication.h"
 
 static CanStorage s_can_storage = { 0 };
+
 const CanSettings can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_CAN_COMMUNICATION,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = { GPIO_PORT_A, 12 },
-  .rx = { GPIO_PORT_A, 11 },
+  .tx = { GPIO_PORT_B, 9 },
+  .rx = { GPIO_PORT_B, 8 },
   .loopback = false,
   .silent = false,
 };
 
-TASK(can_communication, TASK_STACK_512) {
+TASK(can_communication, TASK_STACK_1024) {
+  if (can_init(&s_can_storage, &can_settings) != STATUS_CODE_OK) {
+    LOG_DEBUG("Failed to initialze CAN\n");
+    while (true) {
+    }
+  }
+
+  uint8_t can_data[4U] = { 0xDE, 0xAD, 0xBE, 0xEF };
+
+  LOG_DEBUG("Starting can_communication\n");
   while (true) {
-    LOG_DEBUG("BLINKY\n");
+    LOG_DEBUG("Running\n");
+    delay_ms(500);
+    can_hw_transmit(123, false, can_data, 4U);
+    delay_ms(500);
   }
 }
 

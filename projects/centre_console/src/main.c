@@ -1,9 +1,9 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for [PROJECT NAME]
+ * @brief  Main file for centre_console
  *
- * @date   [YYYY/MM/DD]
+ * @date   2025-01-30
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -11,31 +11,28 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
-#include "i2c.h"
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "centre_console.h"
 
-GpioAddress pa0_led = { .pin = 0U, .port = GPIO_PORT_A };
+void pre_loop_init() {}
 
-TASK(Blinky, TASK_STACK_512) {
-  gpio_init_pin(&pa0_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
-  while (true) {
-    LOG_DEBUG("Blinky!\n");
-    gpio_toggle_state(&pa0_led);
-    delay_ms(500);
-  }
-}
+void run_1000hz_cycle() {}
+
+void run_10hz_cycle() {}
+
+void run_1hz_cycle() {}
 
 int main() {
   mcu_init();
   tasks_init();
   log_init();
 
-  tasks_init_task(Blinky, TASK_PRIORITY(3UL), NULL);
+  init_master_tasks();
 
   tasks_start();
 

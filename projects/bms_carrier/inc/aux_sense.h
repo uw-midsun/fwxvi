@@ -3,20 +3,17 @@
 /************************************************************************************************
  * @file   aux_sense.h
  *
- * @brief  Header file for bms_carrier
+ * @brief  Source code for Aux Battery sense
  *
- * @date   2025-01-13
+ * @date   2025-01-25
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "adc.h"
-#include "bms.h"
-#include "bms_carrier_getters.h"
-#include "bms_carrier_setters.h"
-#include "gpio.h"
+#include "bms_carrier.h"
+
 /* Intra-component Headers */
 
 /**
@@ -25,10 +22,27 @@
  * @{
  */
 
-#define R2_OHMS 10000
-#define R1_OHMS 47000
+/**
+ * @brief   Aux sense storage
+ */
+struct AuxSenseStorage {
+  GpioAddress sense_adc;    /**< Aux sense analog pin */
+  uint16_t batt_voltage_mv; /**< Aux sense battery voltage */
+};
 
+/**
+ * @brief   Initialize the aux sense interface
+ * @param   storage Pointer to the BMS storage
+ * @return  STATUS_CODE_OK if aux sense initialization succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
 StatusCode aux_sense_init(BmsStorage *storage);
 
+/**
+ * @brief   Run the aux sense interface
+ * @return  STATUS_CODE_OK if aux sense run succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
 StatusCode aux_sense_run(void);
+
 /** @} */

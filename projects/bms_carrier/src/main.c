@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -21,11 +22,18 @@
 
 void pre_loop_init() {}
 
-void run_1000hz_cycle() {}
+void run_1000hz_cycle() {
+  run_can_rx_all();
 
-void run_10hz_cycle() {}
+  run_can_tx_fast();
+}
+void run_10hz_cycle() {
+  run_can_tx_medium();
+}
 
-void run_1hz_cycle() {}
+void run_1hz_cycle() {
+  run_can_tx_slow();
+}
 
 int main() {
   mcu_init();
