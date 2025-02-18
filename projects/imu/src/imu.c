@@ -17,5 +17,3 @@
 #include <stdio.h>
 
 #include "imu_hw_defs.h"
-
-

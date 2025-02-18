@@ -4,5 +4,5 @@
         "ms-common",
         "master"
     ],
-    "can": false
+    "can": true
 }
