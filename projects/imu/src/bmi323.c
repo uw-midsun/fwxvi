@@ -423,6 +423,52 @@ static StatusCode gyro_crt_calibration() {
   return STATUS_CODE_OK;
 }
 
+static void s_calculate_accel_offset() {
+  int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
+
+  for (int i = 0; i < 100; ++i) {
+    get_accel_data(&s_storage->accel);
+
+    accel_x_off += s_storage->accel.x;
+    accel_y_off += s_storage->accel.y;
+    accel_z_off += s_storage->accel.z;
+  }
+
+  accel_x_off /= 100;
+  accel_y_off /= 100;
+  accel_z_off /= 100;
+  accel_x_off = -accel_x_off;
+  accel_y_off = -accel_y_off;
+  accel_z_off = -accel_z_off;
+
+  s_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
+  s_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
+  s_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
+}
+
+static void s_calculate_gyro_offset() {
+  int16_t gyr_x_off = 0, gyr_y_off = 0, gyr_z_off = 0;
+
+  for (int i = 0; i < 100; ++i) {
+    get_gyroscope_data(&s_storage->gyro);
+
+    gyr_x_off += s_storage->gyro.x;
+    gyr_y_off += s_storage->gyro.y;
+    gyr_z_off += s_storage->gyro.z;
+  }
+
+  gyr_x_off /= 100;
+  gyr_y_off /= 100;
+  gyr_z_off /= 100;
+  gyr_x_off = -gyr_x_off;
+  gyr_y_off = -gyr_y_off;
+  gyr_z_off = -gyr_z_off;
+
+  s_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
+  s_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
+  s_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
+}
+
 StatusCode imu_init(bmi323_settings *settings) {
   spi_init(settings->spi_port, &settings->spi_settings);
 
@@ -478,52 +524,10 @@ StatusCode imu_init(bmi323_settings *settings) {
 
   set_register(GYR_CONF, (uint16_t)gyr_conf);
 
-  /* CALCULATE AND SET ACCELEROMETER OFFSET */
-  int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
-
-  for (int i = 0; i < 100; ++i) {
-    get_accel_data(&s_storage->accel);
-
-    accel_x_off += s_storage->accel.x;
-    accel_y_off += s_storage->accel.y;
-    accel_z_off += s_storage->accel.z;
-  }
-
-  accel_x_off /= 100;
-  accel_y_off /= 100;
-  accel_z_off /= 100;
-  accel_x_off = -accel_x_off;
-  accel_y_off = -accel_y_off;
-  accel_z_off = -accel_z_off;
-
-  s_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
-  s_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
-  s_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
-
+  s_calculate_accel_offset();
   set_accel_offset_gain(&s_storage->accel_go_values);
 
-  /* CALCULATE AND SET GYROMETER OFFSET */
-  int16_t gyr_x_off = 0, gyr_y_off = 0, gyr_z_off = 0;
-
-  for (int i = 0; i < 100; ++i) {
-    get_gyroscope_data(&s_storage->gyro);
-
-    gyr_x_off += s_storage->gyro.x;
-    gyr_y_off += s_storage->gyro.y;
-    gyr_z_off += s_storage->gyro.z;
-  }
-
-  gyr_x_off /= 100;
-  gyr_y_off /= 100;
-  gyr_z_off /= 100;
-  gyr_x_off = -gyr_x_off;
-  gyr_y_off = -gyr_y_off;
-  gyr_z_off = -gyr_z_off;
-
-  s_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
-  s_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
-  s_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
-
+  s_calculate_gyro_offset();
   set_gyro_offset_gain(&s_storage->gyro_go_values);
 
   StatusCode status = enable_feature_engine();
