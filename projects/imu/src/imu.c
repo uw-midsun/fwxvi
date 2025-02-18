@@ -439,15 +439,7 @@ static StatusCode enable_feature_engine() {
 }
 
 StatusCode imu_init(IMUSettings *settings) {
-  const SpiSettings spi_settings = {
-    .baudrate = settings->spi_baudrate,
-    .mode = SPI_MODE_1,
-    .sdi = settings->mosi,
-    .sdo = settings->miso,
-    .sclk = settings->sclk,
-    .cs = settings->cs,
-  };
-  spi_init(s_storage->settings->spi_port, &spi_settings);
+    spi_init(settings->spi_port, settings->spi_settings);
 
   const CanSettings can_settings = {
     .device_id = SYSTEM_CAN_DEVICE_IMU,  // Not sure where this value is defined

@@ -38,11 +38,7 @@ typedef enum { IMU_GYRO_RANGE_125_DEG, IMU_GYRO_RANGE_250_DEG, IMU_GYRO_RANGE_50
 
 typedef struct {
   SpiPort spi_port;
-  SpiBaudrate spi_baudrate;
-  GpioAddress mosi;
-  GpioAddress miso;
-  GpioAddress sclk;
-  GpioAddress cs;
+  SpiSettings *spi_settings;
   GpioAddress int1;
   GpioAddress int2;
   IMUAccelRange accel_range;
