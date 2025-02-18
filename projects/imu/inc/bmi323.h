@@ -105,3 +105,5 @@ typedef struct {
   AccelGainOffsetValues accel_go_values;
   GyroGainOffsetValues gyro_go_values;
 } bmi323_storage;
+
+StatusCode imu_init(bmi323_settings *settings);
