@@ -123,6 +123,7 @@ static StatusCode get_accel_data(Axes *accel) {
   return status;
 }
 
+/*
 static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
   StatusCode result;
   uint8_t data[12] = { 0 };
@@ -155,8 +156,8 @@ static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
 
   return result;
 }
+*/
 
-/*
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
   StatusCode result;
   uint8_t data[12] = { 0 };
@@ -189,7 +190,6 @@ static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
 
   return result;
 }
-*/
 
 static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
   StatusCode result;
