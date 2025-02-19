@@ -13,7 +13,6 @@
 
 /* Inter-component Headers */
 #include "can.h"
-#include "can_board_ids.h"
 #include "spi.h"
 
 /* Intra-component Headers */
