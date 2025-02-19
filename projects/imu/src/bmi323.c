@@ -37,7 +37,7 @@ static StatusCode set_multi_register(uint8_t reg_addr, uint8_t *value, uint16_t 
 static StatusCode get_gyroscope_data(Axes *gyro);
 static StatusCode get_accel_data(Axes *accel);
 
-static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
+// static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
 static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
