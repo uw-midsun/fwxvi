@@ -13,11 +13,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+/* Inter-component Headers */
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_rcc.h"
-
-/* Inter-component Headers */
 
 /* Intra-component Headers */
 #include "bootloader_error.h"
@@ -40,8 +40,7 @@
  *          Higher bitrates require shorter time quantas
  *          Bitrate selection impacts signal reliability and bus length
  */
-
-typedef struct BootCanTiming {
+typedef struct {
   uint16_t prescaler;
   uint32_t bs1;
   uint32_t bs2;
@@ -54,13 +53,6 @@ typedef enum {
   BOOT_CAN_BITRATE_1000KBPS, /**< 1000 KBits per second */
   NUM_BOOT_CAN_BITRATES      /**< Number of supported bit rates */
 } Boot_CanBitrate;
-
-static BootCanTiming s_timing[NUM_BOOT_CAN_BITRATES] = {
-  [BOOT_CAN_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [BOOT_CAN_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [BOOT_CAN_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [BOOT_CAN_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ }
-};
 
 typedef enum { CAN_CONTINUOUS = 0, CAN_ONE_SHOT_MODE, NUM_CAN_MODES } Boot_CanMode;
 
@@ -125,7 +117,5 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
  *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
  */
 BootloaderError boot_can_receive(Boot_CanMessage *msg);
-
-#
 
 /** @} */
