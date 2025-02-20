@@ -20,8 +20,10 @@
 
 /* Intra-component Headers */
 
-void setup_test(void) {
-  log_init();
-}
+void setup_test(void) {}
 
 void teardown_test(void) {}
+
+void test_example(void) {
+  TEST_ASSERT_TRUE(true);
+}

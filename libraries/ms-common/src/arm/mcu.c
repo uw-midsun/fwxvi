@@ -8,8 +8,11 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdio.h>
+#include <string.h>
 
 /* Inter-component Headers */
+#include "retarget.h"
 #include "stm32l4xx_hal.h"
 
 /* Intra-component Headers*/
@@ -92,6 +95,7 @@ StatusCode mcu_init(void) {
   }
 
   gpio_init();
+  retarget_init();
 
   return SystemClock_Config();
 }

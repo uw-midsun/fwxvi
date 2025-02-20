@@ -1,11 +1,11 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bms_hw_defs.h
+ * @file   relays.h
  *
- * @brief  Header file for BMS hardware definitions
+ * @brief  Header file for Relays
  *
- * @date   2025-01-12
+ * @date   2025-02-06
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -13,17 +13,9 @@
 
 /* Inter-component Headers */
 #include "bms_carrier.h"
-#include "can.h"
-#include "delay.h"
-// #include "exported_enums.h"
 #include "gpio.h"
 #include "gpio_interrupts.h"
 #include "interrupts.h"
-#include "log.h"
-#include "master_tasks.h"
-#include "status.h"
-#include "task.h"
-#include "timers.h"
 
 /* Intra-component Headers */
 
@@ -33,25 +25,55 @@
  * @{
  */
 
-#define BMS_CLOSE_RELAYS_DELAY_MS 200
-#define KILLSWITCH_IT 3
+/** @brief  Delay between consecutive relays being closed */
+#define BMS_CLOSE_RELAYS_DELAY_MS 250U
+/** @brief  Number of BMS relays */
+#define NUM_BMS_RELAYS 3U
+/** @brief  Killswitch interrupt notification */
+#define KILLSWITCH_EVENT_IT 3U
 
-// Enumerated set of relays to be closed
-typedef enum RelayType {
-  NO_RELAYS = 0,
-  POS_RELAY,
-  NEG_RELAY,
-  SOLAR_RELAY,
-  RELAY_CHECK,
-} RelayType;
+/**
+ * @brief   Relay storage
+ */
+struct RelayStorage {
+  GpioAddress pos_relay_en;    /**< Positive relay enable */
+  GpioAddress pos_relay_sense; /**< Positive relay sense */
 
-// Closes relays in sequence
-StatusCode init_bms_relays(GpioAddress *killswitch);
+  GpioAddress neg_relay_en;    /**< Negative relay enable */
+  GpioAddress neg_relay_sense; /**< Negative relay sense */
 
-// Independent solar control
+  GpioAddress solar_relay_en;    /**< Solar relay enable */
+  GpioAddress solar_relay_sense; /**< Solar relay sense */
+
+  GpioAddress killswitch_sense; /**< Killswitch sense */
+};
+
+/**
+ * @brief   Close POS, NEG, and SOLAR relays in sequence
+ * @details There shall be a delay of BMS_CLOSE_RELAYS_DELAY_MS between each relay closure
+ *          The killswitch interrupt will also be configured, and if it is already pressed, a fault shall be thrown
+ * @param   storage Pointer to the BMS storage
+ * @return  STATUS_CODE_OK if state of charge initialization succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode relays_init(BmsStorage *storage);
+
+/**
+ * @brief   Open the SOLAR relay
+ * @details This is used to prevent overcharging of the pack
+ */
 void bms_open_solar();
+
+/**
+ * @brief   Close the SOLAR relay
+ * @details This is used to recover from overcharging of the pack
+ */
 void bms_close_solar();
 
-// Turns off GPIOs to open relays
+/**
+ * @brief   Open the POS, NEG and SOLAR relay
+ * @details This is called when any BMS fault occurs to disconnect the main pack
+ */
 void bms_relay_fault(void);
+
 /** @} */
