@@ -1,5 +1,5 @@
 #pragma once
-//
+
 /************************************************************************************************
  * @file   pwm.h
  *
@@ -22,10 +22,9 @@ typedef enum {
   PWM_TIMER_1 = 0,  // advanced control
   PWM_TIMER_2,      // general purpose
   PWM_TIMER_3,      // general purpose
+  PWM_TIMER_4,      // general purpose
+  PWM_TIMER_5,      // general purpose
   PWM_TIMER_6,      // basic
-  PWM_TIMER_7,      // basic
-  PWM_TIMER_15,     // general purpose
-  PWM_TIMER_16,     // general purpose
   NUM_PWM_TIMERS,
 } PwmTimer;
 
@@ -90,3 +89,4 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 uint16_t pwm_get_dc(PwmTimer timer, PwmChannel channel);
+//
