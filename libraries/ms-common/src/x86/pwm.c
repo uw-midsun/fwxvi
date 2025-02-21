@@ -18,7 +18,7 @@
 #include "status.h"
 
 /**
- * @brief   PWM Timer details
+ * @brief   PWM Timer detail
  * @details Stores period and dc while tracking enabled (n) channels
  */
 typedef struct PwmInfo {
