@@ -15,9 +15,6 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#include "stm32l433xx.h"
-#include "stm32l4xx_hal_can.h"
-#include "stm32l4xx_hal_rcc.h"
 
 /* Intra-component Headers */
 #include "bootloader_error.h"
@@ -116,6 +113,6 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
  * @return  BOOTLOADER_ERROR_NONE if the message is received succesfully
  *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
  */
-BootloaderError boot_can_receive(Boot_CanMessage *msg);
+BootloaderError boot_can_receive(Boot_CanMessage *const msg);
 
 /** @} */

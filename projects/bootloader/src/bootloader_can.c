@@ -8,15 +8,20 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <string.h>
 
 /* Inter-component Headers */
+#include "stm32l433xx.h"
+#include "stm32l4xx_hal_conf.h"
+#include "stm32l4xx_hal_can.h"
+#include "stm32l4xx_hal_rcc.h"
 
 /* Intra-component Headers */
 #include "bootloader_can.h"
 
 /* CAN has 3 transmit mailboxes and 2 receive FIFOs */
-#define CAN_HW_BASE CAN1
-#define MAX_TX_RETRIES 3
+#define CAN_HW_BASE       CAN1
+#define MAX_TX_RETRIES    3
 #define MAX_TX_MS_TIMEOUT 20
 
 static CAN_HandleTypeDef s_can_handle;
@@ -28,30 +33,41 @@ static BootCanTiming s_timing[NUM_BOOT_CAN_BITRATES] = {
   [BOOT_CAN_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ }
 };
 
-BootloaderError boot_can_init(const Boot_CanSettings *settings) {
+static BootloaderError s_can_gpio_init() {
+  return BOOTLOADER_ERROR_NONE;
+}
 
-  if (settings == NULL) return BOOTLOADER_INVALID_ARGS;
+BootloaderError boot_can_init(const Boot_CanSettings *settings) {
+  if (settings == NULL) {
+    return BOOTLOADER_INVALID_ARGS;
+  }
+
+  if (s_can_gpio_init()  != BOOTLOADER_ERROR_NONE) {
+    return BOOTLOADER_CAN_INIT_ERR;
+  }
 
   __HAL_RCC_CAN1_CLK_ENABLE();
 
-
   uint32_t can_mode = CAN_MODE_NORMAL;
-  can_mode |= (settings->loopback)? CAN_MODE_LOOPBACK: 0x0;
-  can_mode |= (settings->silent)? CAN_MODE_SILENT: 0x0;
+  if (settings->loopback) {
+    can_mode |= CAN_MODE_LOOPBACK;
+  }
+  if (settings->silent) {
+    can_mode |= CAN_MODE_SILENT;
+  }
 
-  s_can_handle.Instance = (CAN_HandleTypeDef *) settings->device_id;
-  s_can_handle.State = HAL_CAN_STATE_READY;
+  s_can_handle.Instance = CAN_HW_BASE;
   s_can_handle.Init.Prescaler = s_timing[settings->bitrate].prescaler;
   s_can_handle.Init.Mode = can_mode;
-  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;
-  s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;
+  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
+  s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;   /* Time permitted before sample point (Prop + Phase seg) */
+  s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;   /* Time permitted after sample point */
+  s_can_handle.Init.TimeTriggeredMode = DISABLE;                  /* Traditional CAN behaviour based on priority and arbitration */
   s_can_handle.Init.AutoBusOff = ENABLE;                          /* Auto error handling. Turns bus off when many errors detected */
   s_can_handle.Init.AutoWakeUp = DISABLE;                         /* Node stays in sleep until explicitly woken  */
   s_can_handle.Init.AutoRetransmission = DISABLE;                 /* We use one-shot transmission since auto retransmit can cause timing issues */  
   s_can_handle.Init.ReceiveFifoLocked = DISABLE;                  /* Ensures latest data is always available */
-  s_can_handle.Init.TransmitFifoPriority = DISABLE;
-  s_can_handle.ErrorCode = HAL_CAN_ERROR_NONE;
+  s_can_handle.Init.TransmitFifoPriority = DISABLE;               /* Message priority is driven off ID rather than order in FIFO */
 
   if (HAL_CAN_Init(&s_can_handle) != HAL_OK) {
     return BOOTLOADER_INTERNAL_ERR;
@@ -65,9 +81,6 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings) {
 }
 
 BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
-
-  if (s_can_handle.State != HAL_CAN_STATE_READY) return BOOTLOADER_ERROR_UNINITIALIZED;
-
   if (data == NULL) {
     return BOOTLOADER_INVALID_ARGS;
   }
@@ -86,21 +99,29 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
   };
 
   uint32_t tx_mailbox;
+  HAL_StatusTypeDef status;
+
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
-    if (HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, (uint8_t*)data, &tx_mailbox) != HAL_OK) {
-      return BOOLOADER_CAN_TRANSMISSION_ERROR;
+    status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, data, &tx_mailbox);
+    
+    if (status == HAL_OK) {
+      return BOOTLOADER_ERROR_NONE;
+    }
+    else if (status == HAL_BUSY) {
+      /* For future expansion, delay for MAX_TX_MS_TIMEOUT */
+      continue;
+    }
+    else {
+      return BOOTLOADER_CAN_TRANSMIT_ERROR;
     }
   }
   
-  return BOOTLOADER_ERROR_NONE;
+  return BOOTLOADER_INTERNAL_ERR;
 }
 
-BootloaderError boot_can_receive(Boot_CanMessage *msg) {
-  
-  if (s_can_handle.State != HAL_CAN_STATE_READY) return BOOTLOADER_ERROR_UNINITIALIZED;
-
-  if (msg->id == NULL || msg->extended == NULL || msg->dlc == NULL || msg->data == NULL){
-    return BOOTLOADER_CAN_RECEIVE_ERROR;
+BootloaderError boot_can_receive(Boot_CanMessage *const msg) {
+  if (msg == NULL) {
+    return BOOTLOADER_INVALID_ARGS;
   }
 
   CAN_RxHeaderTypeDef rx_header;
@@ -112,8 +133,7 @@ BootloaderError boot_can_receive(Boot_CanMessage *msg) {
       msg->id = msg->extended ? rx_header.ExtId : rx_header.StdId;
       msg->dlc = rx_header.DLC;
 
-      // how to know with data to use? there are 4 diff types in union 
-      memcpy(msg->data, rx_data, rx_header.DLC);
+      memcpy(&msg->data, rx_data, rx_header.DLC);
       return BOOTLOADER_ERROR_NONE;
     }
   } else if (HAL_CAN_GetRxFifoFillLevel(&s_can_handle, CAN_RX_FIFO1) > 0) {
@@ -121,10 +141,10 @@ BootloaderError boot_can_receive(Boot_CanMessage *msg) {
       msg->extended = (rx_header.IDE == CAN_ID_EXT);
       msg->id = msg->extended  ? rx_header.ExtId : rx_header.StdId;
       msg->dlc = rx_header.DLC;
-      memcpy(msg->data, rx_data, rx_header.DLC);
+      memcpy(&msg->data, rx_data, rx_header.DLC);
       return BOOTLOADER_ERROR_NONE;
     }
   }
 
-  return BOOTLOADER_FLASH_READ_FAILED;
+  return BOOTLOADER_CAN_RECEIVE_ERROR;
 }
