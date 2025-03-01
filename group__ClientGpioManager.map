@@ -1,0 +1,4 @@
+<map id="ClientGpioManager" name="ClientGpioManager">
+<area shape="rect" id="node1" title="GpioManager for the Client." alt="" coords="5,7,152,33"/>
+<area shape="rect" id="node2" href="$group__ServerGpioManager.html" title="GpioManager for the Server." alt="" coords="288,7,439,33"/>
+</map>

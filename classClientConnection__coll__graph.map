@@ -1,0 +1,5 @@
+<map id="ClientConnection" name="ClientConnection">
+<area shape="rect" id="node1" title="Class that represents a connection between the server and a client." alt="" coords="5,196,139,221"/>
+<area shape="rect" id="node2" title=" " alt="" coords="43,5,101,31"/>
+<area shape="rect" id="node3" href="$classServer.html" title="Class that represents the central server that connects to multiple clients." alt="" coords="188,108,252,133"/>
+</map>

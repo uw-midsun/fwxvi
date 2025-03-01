@@ -1,0 +1,143 @@
+var annotated_dup =
+[
+    [ "can_datagram", "namespacecan__datagram.html", [
+      [ "Datagram", "classcan__datagram_1_1Datagram.html", "classcan__datagram_1_1Datagram" ],
+      [ "DatagramListener", "classcan__datagram_1_1DatagramListener.html", "classcan__datagram_1_1DatagramListener" ],
+      [ "DatagramSender", "classcan__datagram_1_1DatagramSender.html", "classcan__datagram_1_1DatagramSender" ],
+      [ "DatagramTypeError", "classcan__datagram_1_1DatagramTypeError.html", null ]
+    ] ],
+    [ "can_simulator", null, [
+      [ "SystemCanDevice", "classcan__simulator_1_1SystemCanDevice.html", null ],
+      [ "SystemCanMessageId", "classcan__simulator_1_1SystemCanMessageId.html", null ]
+    ] ],
+    [ "crc", null, [
+      [ "CRC16", "classcrc_1_1CRC16.html", "classcrc_1_1CRC16" ],
+      [ "CRC32", "classcrc_1_1CRC32.html", "classcrc_1_1CRC32" ],
+      [ "CRC8", "classcrc_1_1CRC8.html", "classcrc_1_1CRC8" ]
+    ] ],
+    [ "crc32", null, [
+      [ "CRC32", "classcrc32_1_1CRC32.html", null ]
+    ] ],
+    [ "Datagram", null, [
+      [ "Gpio", "classDatagram_1_1Gpio.html", "classDatagram_1_1Gpio" ],
+      [ "I2C", "classDatagram_1_1I2C.html", "classDatagram_1_1I2C" ],
+      [ "Metadata", "classDatagram_1_1Metadata.html", "classDatagram_1_1Metadata" ],
+      [ "SPI", "classDatagram_1_1SPI.html", "classDatagram_1_1SPI" ]
+    ] ],
+    [ "flash_application", null, [
+      [ "Flash_Application", "classflash__application_1_1Flash__Application.html", "classflash__application_1_1Flash__Application" ]
+    ] ],
+    [ "jump_application", null, [
+      [ "Jump_Application", "classjump__application_1_1Jump__Application.html", null ]
+    ] ],
+    [ "jump_bootloader", null, [
+      [ "Jump_Bootloader", "classjump__bootloader_1_1Jump__Bootloader.html", null ]
+    ] ],
+    [ "system_can", null, [
+      [ "SystemCanDevice", "classsystem__can_1_1SystemCanDevice.html", null ],
+      [ "SystemCanMessageId", "classsystem__can_1_1SystemCanMessageId.html", null ]
+    ] ],
+    [ "test_can_datagram", null, [
+      [ "TestCanDatagram", "classtest__can__datagram_1_1TestCanDatagram.html", "classtest__can__datagram_1_1TestCanDatagram" ],
+      [ "TestCanDatagramListener", "classtest__can__datagram_1_1TestCanDatagramListener.html", "classtest__can__datagram_1_1TestCanDatagramListener" ],
+      [ "TestCanDatagramSender", "classtest__can__datagram_1_1TestCanDatagramSender.html", null ]
+    ] ],
+    [ "test_flash_application", null, [
+      [ "TestFlashApplication", "classtest__flash__application_1_1TestFlashApplication.html", null ]
+    ] ],
+    [ "test_jump_application", null, [
+      [ "TestJumpApplication", "classtest__jump__application_1_1TestJumpApplication.html", null ]
+    ] ],
+    [ "_PACKED", "struct__PACKED.html", null ],
+    [ "AdcStatus", "structAdcStatus.html", null ],
+    [ "afe1_status", "structafe1__status.html", "structafe1__status" ],
+    [ "afe2_status", "structafe2__status.html", "structafe2__status" ],
+    [ "afe3_status", "structafe3__status.html", "structafe3__status" ],
+    [ "AuxSenseStorage", "structAuxSenseStorage.html", "structAuxSenseStorage" ],
+    [ "battery_info", "structbattery__info.html", "structbattery__info" ],
+    [ "battery_status", "structbattery__status.html", "structbattery__status" ],
+    [ "battery_vt", "structbattery__vt.html", "structbattery__vt" ],
+    [ "BmsConfig", "structBmsConfig.html", null ],
+    [ "BmsStorage", "structBmsStorage.html", "structBmsStorage" ],
+    [ "Boot_CanMessage", "structBoot__CanMessage.html", "structBoot__CanMessage" ],
+    [ "BootloaderDatagram", "structBootloaderDatagram.html", "structBootloaderDatagram" ],
+    [ "BootloaderStateData", "structBootloaderStateData.html", "structBootloaderStateData" ],
+    [ "CanHwTiming", "structCanHwTiming.html", null ],
+    [ "CanId", "unionCanId.html", null ],
+    [ "CanListener", "classCanListener.html", "classCanListener" ],
+    [ "CanMessage", "structCanMessage.html", "structCanMessage" ],
+    [ "CanQueue", "structCanQueue.html", null ],
+    [ "CanScheduler", "classCanScheduler.html", "classCanScheduler" ],
+    [ "CanSettings", "structCanSettings.html", "structCanSettings" ],
+    [ "CanStorage", "structCanStorage.html", "structCanStorage" ],
+    [ "CanWatchDog", "structCanWatchDog.html", "structCanWatchDog" ],
+    [ "cc_info", "structcc__info.html", "structcc__info" ],
+    [ "cc_pedal", "structcc__pedal.html", "structcc__pedal" ],
+    [ "cc_regen_percentage", "structcc__regen__percentage.html", "structcc__regen__percentage" ],
+    [ "cc_steering", "structcc__steering.html", "structcc__steering" ],
+    [ "Client", "classClient.html", "classClient" ],
+    [ "ClientConnection", "classClientConnection.html", "classClientConnection" ],
+    [ "ClientI2CManager", "classClientI2CManager.html", null ],
+    [ "ClientSPIManager", "classClientSPIManager.html", null ],
+    [ "Datagram", "structDatagram.html", "structDatagram" ],
+    [ "DatagramGpio", "classDatagramGpio.html", null ],
+    [ "DatagramI2C", "classDatagramI2C.html", null ],
+    [ "DatagramMetadata", "classDatagramMetadata.html", null ],
+    [ "DatagramSPI", "classDatagramSPI.html", null ],
+    [ "FanSettings", "structFanSettings.html", "structFanSettings" ],
+    [ "fast_one_shot_msg", "structfast__one__shot__msg.html", "structfast__one__shot__msg" ],
+    [ "FaultBpsStorage", "structFaultBpsStorage.html", "structFaultBpsStorage" ],
+    [ "Fsm", "structFsm.html", null ],
+    [ "GpioAddress", "structGpioAddress.html", "structGpioAddress" ],
+    [ "GpioInterrupt", "structGpioInterrupt.html", "structGpioInterrupt" ],
+    [ "GpioManager", "classGpioManager.html", "classGpioManager" ],
+    [ "I2CManager", "classI2CManager.html", "classI2CManager" ],
+    [ "I2CPortData", "structI2CPortData.html", "structI2CPortData" ],
+    [ "I2CSettings", "structI2CSettings.html", "structI2CSettings" ],
+    [ "InterruptSettings", "structInterruptSettings.html", "structInterruptSettings" ],
+    [ "JSONManager", "classJSONManager.html", "classJSONManager" ],
+    [ "LtcAfeBitset", "structLtcAfeBitset.html", null ],
+    [ "LtcAfeRegisterGroup", "unionLtcAfeRegisterGroup.html", null ],
+    [ "LtcAfeSettings", "structLtcAfeSettings.html", null ],
+    [ "LtcAfeStorage", "structLtcAfeStorage.html", null ],
+    [ "Max17261Settings", "structMax17261Settings.html", null ],
+    [ "Max17261Storage", "structMax17261Storage.html", null ],
+    [ "Max27261Params", "structMax27261Params.html", null ],
+    [ "Mcp2515Errors", "structMcp2515Errors.html", null ],
+    [ "Mcp2515IdRegs", "unionMcp2515IdRegs.html", null ],
+    [ "Mcp2515RxBuffer", "structMcp2515RxBuffer.html", null ],
+    [ "Mcp2515Settings", "structMcp2515Settings.html", null ],
+    [ "Mcp2515Storage", "structMcp2515Storage.html", null ],
+    [ "Mcp2515TxBuffer", "structMcp2515TxBuffer.html", null ],
+    [ "medium_one_shot_msg", "structmedium__one__shot__msg.html", "structmedium__one__shot__msg" ],
+    [ "MPURegion", "structMPURegion.html", null ],
+    [ "MPURegionSettings", "structMPURegionSettings.html", null ],
+    [ "NTPClient", "classNTPClient.html", "classNTPClient" ],
+    [ "NTPPacket", "structNTPPacket.html", "structNTPPacket" ],
+    [ "NTPServer", "classNTPServer.html", "classNTPServer" ],
+    [ "NTPTime", "structNTPTime.html", "structNTPTime" ],
+    [ "OnePedalStorage", "structOnePedalStorage.html", "structOnePedalStorage" ],
+    [ "PedalCalibBlob", "structPedalCalibBlob.html", null ],
+    [ "PedalCalibrationData", "structPedalCalibrationData.html", null ],
+    [ "PrechargeSettings", "structPrechargeSettings.html", "structPrechargeSettings" ],
+    [ "PwmInfo", "structPwmInfo.html", null ],
+    [ "Queue", "structQueue.html", "structQueue" ],
+    [ "RelayStorage", "structRelayStorage.html", "structRelayStorage" ],
+    [ "Semaphore", "structSemaphore.html", "structSemaphore" ],
+    [ "Server", "classServer.html", "classServer" ],
+    [ "ServerI2CManager", "classServerI2CManager.html", null ],
+    [ "ServerSPIManager", "classServerSPIManager.html", null ],
+    [ "slow_one_shot_msg", "structslow__one__shot__msg.html", "structslow__one__shot__msg" ],
+    [ "SPIManager", "classSPIManager.html", "classSPIManager" ],
+    [ "SPIPortData", "structSPIPortData.html", "structSPIPortData" ],
+    [ "SpiSettings", "structSpiSettings.html", null ],
+    [ "State", "structState.html", null ],
+    [ "StateOfChargeStorage", "structStateOfChargeStorage.html", "structStateOfChargeStorage" ],
+    [ "Task", "structTask.html", null ],
+    [ "TelemetryConfig", "structTelemetryConfig.html", "structTelemetryConfig" ],
+    [ "TelemetryStorage", "structTelemetryStorage.html", "structTelemetryStorage" ],
+    [ "Terminal", "classTerminal.html", "classTerminal" ],
+    [ "UartPortData", "structUartPortData.html", "structUartPortData" ],
+    [ "UartSettings", "structUartSettings.html", "structUartSettings" ],
+    [ "X86Interrupt", "structX86Interrupt.html", "structX86Interrupt" ]
+];
