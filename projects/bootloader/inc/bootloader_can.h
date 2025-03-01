@@ -37,6 +37,12 @@
  *          Higher bitrates require shorter time quantas
  *          Bitrate selection impacts signal reliability and bus length
  */
+typedef struct {
+  uint16_t prescaler;
+  uint32_t bs1;
+  uint32_t bs2;
+} BootCanTiming;
+
 typedef enum {
   BOOT_CAN_BITRATE_125KBPS,  /**< 125 KBits per second */
   BOOT_CAN_BITRATE_250KBPS,  /**< 250 KBits per second */
@@ -46,6 +52,8 @@ typedef enum {
 } Boot_CanBitrate;
 
 typedef enum { CAN_CONTINUOUS = 0, CAN_ONE_SHOT_MODE, NUM_CAN_MODES } Boot_CanMode;
+
+#define CAN_HW_BASE CAN1
 
 /**
  * @brief   CAN Settings
@@ -105,6 +113,6 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
  * @return  BOOTLOADER_ERROR_NONE if the message is received succesfully
  *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
  */
-BootloaderError boot_can_receive(Boot_CanMessage *msg);
+BootloaderError boot_can_receive(Boot_CanMessage *const msg);
 
 /** @} */
