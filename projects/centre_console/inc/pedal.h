@@ -30,6 +30,9 @@
  * @{
  */
 
+// TODO: ALPHA NEEDS TO BE TUNED
+#define ALPHA 1
+
 // Runs a pedal cycle to update throttle and brake values
 void pedal_run();
 
