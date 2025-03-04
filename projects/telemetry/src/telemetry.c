@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "can.h"
 #include "datagram.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -57,6 +58,7 @@ TASK(can_message_listener, TASK_STACK_256) {
 TASK(can_message_processor, TASK_STACK_256) {
   Datagram tx_datagram = { 0U };
   StatusCode status = STATUS_CODE_OK;
+  uint32_t delay_time_ms = (1U / telemetry_storage->config->message_transmit_frequency_hz) * 1000U;
 
   while (true) {
     /* Wait for new data to be in the queue */
@@ -66,6 +68,8 @@ TASK(can_message_processor, TASK_STACK_256) {
       if (status != STATUS_CODE_OK) {
         LOG_DEBUG("Failed to transmit to telemetry transceiver!\n");
       }
+
+      delay_ms(delay_time_ms);
     }
   }
 }

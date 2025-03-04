@@ -180,6 +180,8 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
 uint16_t pwm_get_dc(PwmTimer timer, PwmChannel channel) {
   uint32_t pulse = 0U;
 
+  /* CCRX stores the value that is loaded into the capture/compare 2 register */
+
   switch (channel * 4U) {
     case TIM_CHANNEL_1:
       pulse = s_timer_handle[timer].Instance->CCR1;
