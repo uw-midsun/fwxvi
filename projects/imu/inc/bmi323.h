@@ -5,8 +5,6 @@
 #include "spi.h"
 
 #define CMD 0x7E
-#define WRITE 0x7F
-#define READ 0x80
 #define FEATURE_IO0 0x10
 #define FEATURE_IO1 0x11
 #define FEATURE_IO2 0x12
@@ -43,16 +41,22 @@ this might be 13 or 14 idk
 #define BMI3_GYR_DP_OFF_Z_MASK UINT16_C(0x03FF)
 #define BMI3_GYR_DP_DGAIN_Z_MASK UINT16_C(0x007F)
 
-/** @brief IMU Accel range */
-typedef enum { IMU_ACCEL_RANGE_2G /**< +- 2gs */, IMU_ACCEL_RANGE_4G /**< +- 4gs */, IMU_ACCEL_RANGE_8G /**< +- 8gs */, IMU_ACCEL_RANGE_16G /**< +- 16gs */, NUM_IMU_ACCEL_RANGE } IMUAccelRange;
-
-/** @brief IMU Gyro range */
+/** @brief  IMU Accel range, in units of gravity acceleration (9.81m/s^2) */
 typedef enum {
-  IMU_GYRO_RANGE_125_DEG /**< +- 125deg */,
-  IMU_GYRO_RANGE_250_DEG /**< +- 250deg */,
-  IMU_GYRO_RANGE_500_DEG /**< +- 500deg */,
-  IMU_GYRO_RANGE_1000_DEG /**< +- 1000deg */,
-  IMU_GYRO_RANGE_2000_DEG /**< +- 2000deg */,
+  IMU_ACCEL_RANGE_2G,     /**< +- 2Gs */
+  IMU_ACCEL_RANGE_4G,     /**< +- 4Gs */
+  IMU_ACCEL_RANGE_8G,     /**< +- 8Gs */
+  IMU_ACCEL_RANGE_16G,    /**< +- 16Gs */
+  NUM_IMU_ACCEL_RANGE     /**< Number of IMU Accelerometer ranges */
+} IMUAccelRange;
+
+/** @brief  IMU Gyro range in units of degrees */
+typedef enum {
+  IMU_GYRO_RANGE_125_DEG    /**< +- 125deg */,
+  IMU_GYRO_RANGE_250_DEG    /**< +- 250deg */,
+  IMU_GYRO_RANGE_500_DEG    /**< +- 500deg */,
+  IMU_GYRO_RANGE_1000_DEG   /**< +- 1000deg */,
+  IMU_GYRO_RANGE_2000_DEG   /**< +- 2000deg */,
   NUM_IMU_GYRO_RANGES
 } IMUGyroRange;
 
@@ -96,14 +100,14 @@ typedef struct {
   GpioAddress int2;
   IMUAccelRange accel_range;
   IMUGyroRange gyro_range;
-} bmi323_settings;
+} Bmi323Settings;
 
 typedef struct {
-  bmi323_settings *settings;
+  Bmi323Settings *settings;
   Axes accel;
   Axes gyro;
   AccelGainOffsetValues accel_go_values;
   GyroGainOffsetValues gyro_go_values;
-} bmi323_storage;
+} Bmi323Storage;
 
-StatusCode imu_init(bmi323_settings *settings);
+StatusCode bmi323_init(Bmi323Storage *storage);

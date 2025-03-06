@@ -16,11 +16,14 @@
 #include "spi.h"
 
 /* Intra-component Headers */
+#include "bmi323.h"
 
 /**
  * @defgroup imu
  * @brief    imu Firmware
  * @{
  */
+
+StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings);
 
 /** @} */

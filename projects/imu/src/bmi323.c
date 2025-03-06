@@ -1,33 +1,13 @@
 #include "bmi323.h"
-
+#include "status.h"
 #include "imu_hw_defs.h"
 #include "system_can.h"
 
-static bmi323_storage *s_storage;
+#define WRITE_MASK  0x7F
+#define READ_BIT    0x80
+
+static Bmi323Storage *imu_storage;
 static CanStorage s_can_storage = { 0 };
-
-/*
-static const LtcAfeSettings s_afe_settings = {
-  .mosi = AFE_SPI_MOSI,
-  .miso = AFE_SPI_MISO,
-  .sclk = AFE_SPI_SCK,
-  .cs = AFE_SPI_CS,
-
-  .spi_port = AFE_SPI_PORT,
-  .spi_baudrate = 750000,
-
-  .adc_mode = LTC_AFE_ADC_MODE_7KHZ,
-
-  .cell_bitset = { 0xFFF, 0xFFF, 0xFFF },
-  .aux_bitset = { 0x14, 0x15, 0x15 },
-
-  .num_devices = 3,
-  .num_cells = 12,
-  .num_thermistors = NUM_THERMISTORS,
-};
-
-
-*/
 
 static StatusCode get_register(bmi323_registers reg, uint8_t *value);
 static StatusCode get_multi_register(bmi323_registers reg, uint8_t *reg_val, uint8_t len);
@@ -56,7 +36,9 @@ static StatusCode get_register(bmi323_registers reg, uint8_t *value) {
   reg8[0] = READ | reg;
   reg8[1] = DUMMY_BYTE;
   // prv_set_user_bank(user_bank);
-  StatusCode status = spi_exchange(s_storage->settings->spi_port, reg8, sizeof(uint8_t) * 2, value, sizeof(uint16_t));
+  StatusCode status = spi_exchange(imu_storage->settings->spi_port, reg8, sizeof(uint8_t) * 2, value, sizeof(uint16_t));
+
+  *value = reg8[1];
   return status;
 }
 
@@ -65,7 +47,7 @@ static StatusCode get_multi_register(bmi323_registers reg, uint8_t *reg_val, uin
   reg8[0] = READ | reg;
   reg8[1] = 0x00;
   // prv_set_user_bank(user_bank);
-  StatusCode status = spi_exchange(s_storage->settings->spi_port, reg8, sizeof(uint8_t) * 2, reg_val, sizeof(uint16_t) * len);
+  StatusCode status = spi_exchange(imu_storage->settings->spi_port, reg8, sizeof(uint8_t) * 2, reg_val, sizeof(uint16_t) * len);
   return status;
 }
 
@@ -75,7 +57,7 @@ static StatusCode set_register(uint16_t reg_addr, uint16_t value) {
   tx_buff[0] = WRITE & reg_addr;
   tx_buff[1] = value;
 
-  StatusCode status = spi_exchange(s_storage->settings->spi_port, tx_buff, sizeof(tx_buff), NULL, 0);
+  StatusCode status = spi_exchange(imu_storage->settings->spi_port, tx_buff, sizeof(tx_buff), NULL, 0);
 
   return status;
 }
@@ -83,12 +65,12 @@ static StatusCode set_register(uint16_t reg_addr, uint16_t value) {
 static StatusCode set_multi_register(uint8_t reg_addr, uint8_t *value, uint16_t len) {
   uint8_t reg_mask = WRITE & reg_addr;
 
-  StatusCode status_addr = spi_exchange(s_storage->settings->spi_port, &reg_mask, sizeof(reg_mask), NULL, 0);
+  StatusCode status_addr = spi_exchange(imu_storage->settings->spi_port, &reg_mask, sizeof(reg_mask), NULL, 0);
   if (status_addr != STATUS_CODE_OK) {
     return status_addr;
   }
 
-  StatusCode status_data = spi_exchange(s_storage->settings->spi_port, value, len, NULL, 0);
+  StatusCode status_data = spi_exchange(imu_storage->settings->spi_port, value, len, NULL, 0);
 
   return status_data;
 }
@@ -441,7 +423,7 @@ static StatusCode gyro_crt_calibration() {
     return STATUS_CODE_INCOMPLETE;
   }
 
-  get_accel_offset_gain(&s_storage->accel_go_values);
+  get_accel_offset_gain(&imu_storage->accel_go_values);
 
   return STATUS_CODE_OK;
 }
@@ -450,11 +432,11 @@ static void s_calculate_accel_offset() {
   int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
 
   for (int i = 0; i < 100; ++i) {
-    get_accel_data(&s_storage->accel);
+    get_accel_data(&imu_storage->accel);
 
-    accel_x_off += s_storage->accel.x;
-    accel_y_off += s_storage->accel.y;
-    accel_z_off += s_storage->accel.z;
+    accel_x_off += imu_storage->accel.x;
+    accel_y_off += imu_storage->accel.y;
+    accel_z_off += imu_storage->accel.z;
   }
 
   accel_x_off /= 100;
@@ -464,20 +446,20 @@ static void s_calculate_accel_offset() {
   accel_y_off = -accel_y_off;
   accel_z_off = -accel_z_off;
 
-  s_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
-  s_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
-  s_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
+  imu_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
+  imu_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
+  imu_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
 }
 
 static void s_calculate_gyro_offset() {
   int16_t gyr_x_off = 0, gyr_y_off = 0, gyr_z_off = 0;
 
   for (int i = 0; i < 100; ++i) {
-    get_gyroscope_data(&s_storage->gyro);
+    get_gyroscope_data(&imu_storage->gyro);
 
-    gyr_x_off += s_storage->gyro.x;
-    gyr_y_off += s_storage->gyro.y;
-    gyr_z_off += s_storage->gyro.z;
+    gyr_x_off += imu_storage->gyro.x;
+    gyr_y_off += imu_storage->gyro.y;
+    gyr_z_off += imu_storage->gyro.z;
   }
 
   gyr_x_off /= 100;
@@ -487,23 +469,13 @@ static void s_calculate_gyro_offset() {
   gyr_y_off = -gyr_y_off;
   gyr_z_off = -gyr_z_off;
 
-  s_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
-  s_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
-  s_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
+  imu_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
+  imu_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
+  imu_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
 }
 
-StatusCode imu_init(bmi323_settings *settings) {
-  spi_init(settings->spi_port, &settings->spi_settings);
-
-  const CanSettings can_settings = {
-    .device_id = SYSTEM_CAN_DEVICE_IMU,  // Not sure where this value is defined
-    .bitrate = CAN_HW_BITRATE_500KBPS,
-    .tx = IMU_CAN_TX,
-    .rx = IMU_CAN_RX,
-    .loopback = 0,
-  };
-  can_init(&s_can_storage, &can_settings);
-
+StatusCode bmi323_init(Bmi323Storage *storage) {
+  imu_storage = storage;
   /* TRIGGER SOFT RESET (page 138) */
   StatusCode reset = set_register(CMD, 0xDEAF);
   if (reset != STATUS_CODE_OK) return reset;
@@ -511,6 +483,7 @@ StatusCode imu_init(bmi323_settings *settings) {
   /* VERIFY CHIP ID */
   uint8_t chip_id;
   get_register(0x00, &chip_id);
+
   if (chip_id != 0x43) return STATUS_CODE_INTERNAL_ERROR;
 
   /* CONFIGURE ACCELEROMETER
@@ -522,7 +495,7 @@ StatusCode imu_init(bmi323_settings *settings) {
   get_register(ACC_CONF, &acc_conf);
 
   acc_conf &= ~(0b111 << 4);
-  acc_conf |= (settings->accel_range << 4);
+  acc_conf |= (imu_storage->settings->accel_range << 4);
   acc_conf &= ~(0b1111);
   acc_conf |= 0b1110;
   acc_conf &= ~(0b111 << 12);
@@ -539,7 +512,7 @@ StatusCode imu_init(bmi323_settings *settings) {
   get_register(GYR_CONF, &gyr_conf);
 
   gyr_conf &= ~(0b111 << 4);
-  gyr_conf |= (settings->gyro_range << 4);
+  gyr_conf |= (imu_storage->settings->gyro_range << 4);
   gyr_conf &= ~(0b1111);
   gyr_conf |= 0b1110;
   gyr_conf &= ~(0b111 << 12);
@@ -548,10 +521,10 @@ StatusCode imu_init(bmi323_settings *settings) {
   set_register(GYR_CONF, (uint16_t)gyr_conf);
 
   s_calculate_accel_offset();
-  set_accel_offset_gain(&s_storage->accel_go_values);
+  set_accel_offset_gain(&imu_storage->accel_go_values);
 
   s_calculate_gyro_offset();
-  set_gyro_offset_gain(&s_storage->gyro_go_values);
+  set_gyro_offset_gain(&imu_storage->gyro_go_values);
 
   StatusCode status = enable_feature_engine();
 

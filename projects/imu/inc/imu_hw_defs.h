@@ -39,16 +39,16 @@
 
 #define IMU_SPI_PORT SPI_PORT_2
 
-#define IMU_SPI_MOSI \
+#define IMU_SPI_SDO \
   { .port = GPIO_PORT_B, .pin = 15 }
 
-#define IMU_SPI_MISO \
+#define IMU_SPI_SDI \
   { .port = GPIO_PORT_B, .pin = 14 }
 
 #define IMU_SPI_NSS \
   { .port = GPIO_PORT_B, .pin = 12 }
 
-#define IMU_SPI_SCK \
+#define IMU_SPI_SCLK \
   { .port = GPIO_PORT_B, .pin = 13 }
 
 #define IMU_SPI_INT1 \
