@@ -39,7 +39,6 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
 
 //   status_ok_or_return(can_init(&s_can_storage, &s_can_settings));
 
-  LOG_DEBUG("Here\n");
   status_ok_or_return(bmi323_init(storage));
 
   return STATUS_CODE_OK;

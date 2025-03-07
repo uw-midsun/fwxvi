@@ -24,10 +24,10 @@
 Bmi323Storage bmi323_storage;
 
 Bmi323Settings bmi323_settings = {
-  .spi_port = SPI_PORT_2,
+  .spi_port = IMU_SPI_PORT,
   .spi_settings = {
-    .baudrate = SPI_BAUDRATE_1_25MHZ,
-    .mode = SPI_MODE_3,
+    .baudrate = IMU_SPI_BAUDRATE,
+    .mode = IMU_SPI_MODE,
     .sdo = IMU_SPI_SDO,
     .sdi = IMU_SPI_SDI,
     .sclk = IMU_SPI_SCLK,
@@ -37,13 +37,13 @@ Bmi323Settings bmi323_settings = {
   .gyro_range = IMU_GYRO_RANGE_500_DEG,
 };
 
-void pre_loop_init() {}
+void pre_loop_init() {
+  imu_init(&bmi323_storage, &bmi323_settings);
+}
 
 void run_1000hz_cycle() {}
 
-void run_10hz_cycle() {
-
-}
+void run_10hz_cycle() {}
 
 void run_1hz_cycle() {}
 
@@ -51,8 +51,6 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
-
-  imu_init(&bmi323_storage, &bmi323_settings);
 
   init_master_tasks();
 

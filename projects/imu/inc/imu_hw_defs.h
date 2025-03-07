@@ -3,9 +3,9 @@
 /************************************************************************************************
  * @file   imu_hw_defs.h
  *
- * @brief  Header file for IMU hardware definitions
+ * @brief  Header file for imu hardware definitions
  *
- * @date   2025-01-12
+ * @date   2025-03-06
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -57,4 +57,11 @@
 #define IMU_SPI_INT2 \
   { .port = GPIO_PORT_B, .pin = 1 }
 
-#define SPI_BAUDRATE 2500000
+
+#define IMU_SPI_BAUDRATE  SPI_BAUDRATE_2_5MHZ
+
+#define IMU_SPI_MODE      SPI_MODE_3
+
+#define IMU_SPI_PORT      SPI_PORT_2
+
+/** @} */
