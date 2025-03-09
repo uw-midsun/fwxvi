@@ -35,12 +35,14 @@
  * @brief   Bootloader reserved CAN arbitration IDs
  */
 typedef enum {
-  BOOTLOADER_CAN_SEQUENCING_ID = 30,  /**< Data sequencing command (Highest priority) */
-  BOOTLOADER_CAN_FLASH_ID,            /**< Incoming flash data command */
-  BOOTLOADER_CAN_JUMP_APPLICATION_ID, /**< Jump to application command */
-  BOOTLOADER_CAN_ACK_ID,              /**< Bootloader ACK/NACK message */
-  BOOTLOADER_CAN_START_ID,            /**< Start DFU command */
-  BOOTLOADER_CAN_JUMP_BOOTLOADER      /**< Jump to bootloader command */
+  BOOTLOADER_CAN_SEQUENCING_ID = 30,       /**< Data sequencing command (Highest priority) */
+  BOOTLOADER_CAN_FLASH_ID,                 /**< Incoming flash data command */
+  BOOTLOADER_CAN_JUMP_APPLICATION_ID,      /**< Jump to application command */
+  BOOTLOADER_CAN_ACK_ID,                   /**< Bootloader ACK/NACK message */
+  BOOTLOADER_CAN_START_ID,                 /**< Start DFU command */
+  BOOTLOADER_CAN_JUMP_BOOTLOADER ,         /**< Jump to bootloader command */
+  BOOTLOADER_CAN_ARBITRATION_PING,         /**< */
+  BOOTLOADER_CAN_ARBITRATION_PING_RECEIVE  /**< */
 } BootloaderCanID;
 
 /**
@@ -90,6 +92,17 @@ typedef struct {
       uint8_t ack_status;        /**< 0: ACK 1: NACK */
       uint16_t bootloader_error; /**< Bootloader error as per BootloaderError definition */
     } ack;
+
+    /**
+     * @brief Ping message definition
+     */
+    struct {
+      // node_id
+      uint16_t node_ids;
+      uint32_t crc32;
+      // Request and Length of data being sent
+      uint16_t req : 4, data_len : 12;
+    } ping;
   } payload;
 } BootloaderDatagram;
 
