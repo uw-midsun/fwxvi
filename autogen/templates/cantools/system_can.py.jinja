@@ -1,15 +1,22 @@
+## @file    system_can.py
+#  @date    2025-03-09
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Defines all the CAN ID's used in our vehicle system
+#
+#  @ingroup CANSimulator
+
 from enum import Enum
 
 SYSTEM_CAN_MESSAGE_ID_OFFSET = 4
 SYSTEM_CAN_MESSAGE_PRIORITY_BIT = 0x400
 
-class SystemCanDevice(Enum):
+class SystemCanDevice(int, Enum):
   {% for board in boards -%}
     SYSTEM_CAN_DEVICE_{{ board | upper }} = {{ loop.index0 }}
   {% endfor -%}
   NUM_SYSTEM_CAN_DEVICES = {{ boards | length }}
   
-class SystemCanMessageId(Enum):
+class SystemCanMessageId(int, Enum):
   {%- for message in messages -%}
     {%- set msg = 'SYSTEM_CAN_MESSAGE_' ~ message.sender | upper ~ '_' ~ message.name | upper %}
     {{ msg }}_ID = {% if not message.critical %} SYSTEM_CAN_MESSAGE_PRIORITY_BIT + {% endif -%}({{ message.id }} << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_{{ message.sender | upper }}
