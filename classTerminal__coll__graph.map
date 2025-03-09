@@ -1,0 +1,6 @@
+<map id="Terminal" name="Terminal">
+<area shape="rect" id="node1" title="Class that interfaces with the simulation API via a terminal UI." alt="" coords="5,284,84,309"/>
+<area shape="rect" id="node2" href="$classServer.html" title="Class that represents the central server that connects to multiple clients." alt="" coords="15,108,79,133"/>
+<area shape="rect" id="node4" href="$classClientConnection.html" title="Class that represents a connection between the server and a client." alt="" coords="114,196,247,221"/>
+<area shape="rect" id="node3" title=" " alt="" coords="85,5,143,31"/>
+</map>

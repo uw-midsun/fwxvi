@@ -1,0 +1,5 @@
+<map id="GpioManager" name="GpioManager">
+<area shape="rect" id="node1" title="Class that manages receiving and transmitting Gpio commands and JSON logging." alt="" coords="5,181,115,207"/>
+<area shape="rect" id="node2" href="$classDatagram_1_1Gpio.html" title=" " alt="" coords="34,93,86,119"/>
+<area shape="rect" id="node3" href="$structDatagram_1_1Gpio_1_1Payload.html" title="Gpio Datagram payload storage." alt="" coords="23,5,97,31"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="CAN" name="CAN">
+<area shape="rect" id="node1" title="CAN library." alt="" coords="5,7,56,33"/>
+<area shape="rect" id="node2" href="$group__bootloader.html" title="bootloader Firmware" alt="" coords="183,7,276,33"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="CanScheduler" name="CanScheduler">
+<area shape="rect" id="node1" title="Class that handles message scheduling over a SocketCAN interface." alt="" coords="5,152,116,177"/>
+<area shape="rect" id="node2" title=" " alt="" coords="31,5,90,31"/>
+</map>

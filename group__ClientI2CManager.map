@@ -1,0 +1,4 @@
+<map id="ClientI2CManager" name="ClientI2CManager">
+<area shape="rect" id="node1" title="I2CManager for the Client." alt="" coords="5,7,144,33"/>
+<area shape="rect" id="node2" href="$group__ServerI2CManager.html" title="I2CManager for the Server." alt="" coords="271,7,413,33"/>
+</map>
