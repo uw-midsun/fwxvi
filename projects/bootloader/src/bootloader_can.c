@@ -15,6 +15,8 @@
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_rcc.h"
+#include "stm32l4xx_hal_gpio.h"
+#include "gpio.h"
 
 /* Intra-component Headers */
 #include "bootloader_can.h"
@@ -34,6 +36,16 @@ static BootCanTiming s_timing[NUM_BOOT_CAN_BITRATES] = {
 };
 
 static BootloaderError s_can_gpio_init() {
+
+  GPIO_InitTypeDef rx_init = { .Pin = 8, .Mode = GPIO_MODE_AF_PP, .Pull = 0x00000000u, .Speed = 0x00000003u, .Alternate = 0x09 };
+  GPIO_InitTypeDef tx_init = { .Pin = 9, .Mode = GPIO_MODE_AF_PP, .Pull = 0x00000000u, .Speed = 0x00000003u, .Alternate = 0x09 };
+
+  GPIO_TypeDef *rx_gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef *tx_gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
+
+  HAL_GPIO_Init(rx_gpio_port, &rx_init);
+  HAL_GPIO_Init(tx_gpio_port, &tx_init);
+
   return BOOTLOADER_ERROR_NONE;
 }
 
