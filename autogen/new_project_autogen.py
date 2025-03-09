@@ -5,7 +5,7 @@
 #
 #  @details This module provides functionality to autogenerate template selection, config.json, and new project naming
 #
-# @ingroup autogen
+#  @ingroup autogen
 
 from pathlib    import Path
 from datetime   import datetime

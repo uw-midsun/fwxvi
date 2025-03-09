@@ -1,41 +1,29 @@
-import struct
-import time
-from can import Message
-from can.interface import Bus
-from can.broadcastmanager import ThreadBasedCyclicSendTask
-from enum import Enum
+## @defgroup CANSimulator CAN Simulation tools
+#  This package contains CAN simulation tools for testing the full vehicle
+#
+## @file    can_simulator.py
+#  @date    2025-03-09
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Main simulation script
+#
+#  @ingroup CANSimulator
 
-SYSTEM_CAN_MESSAGE_ID_OFFSET = 4
-SYSTEM_CAN_MESSAGE_PRIORITY_BIT = 0x400
+import  struct
+import  time
+from    threading import Lock, Thread
 
-class SystemCanDevice(Enum):
-  SYSTEM_CAN_DEVICE_BMS_CARRIER = 0
-  SYSTEM_CAN_DEVICE_CAN_COMMUNICATION = 1
-  SYSTEM_CAN_DEVICE_CENTRE_CONSOLE = 2
-  SYSTEM_CAN_DEVICE_TELEMETRY = 3
-  NUM_SYSTEM_CAN_DEVICES = 4
+from    can                     import Message
+from    can.interface           import Bus
+from    can.broadcastmanager    import ThreadBasedCyclicSendTask
 
-  
-class SystemCanMessageId(Enum):
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_STATUS_ID = (1 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT_ID = (2 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO_ID = (3 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE1_STATUS_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (61 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE2_STATUS_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (62 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (63 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_CONTROLLER_VC_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (57 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_VELOCITY_ID = (58 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_SINK_TEMPS_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (59 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (60 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_BMS_CARRIER_MC_STATUS_ID = (8 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_BMS_CARRIER
-    SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (56 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CAN_COMMUNICATION
-    SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (55 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CAN_COMMUNICATION
-    SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (54 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CAN_COMMUNICATION
-    SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL_ID = (4 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CENTRE_CONSOLE
-    SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO_ID = (5 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CENTRE_CONSOLE
-    SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING_ID = (6 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CENTRE_CONSOLE
-    SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_ID = (7 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_CENTRE_CONSOLE
-    SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY_ID =  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + (53 << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SystemCanDevice.SYSTEM_CAN_DEVICE_TELEMETRY
+from    system_can              import *
+from    can_simulator_cache     import *
+
+RETRY_TRANSMIT_S = 0.05
+
+FAST_CYCLE_PERIOD = 0.5
+MEDIUM_CYCLE_PERIOD = 5
+SLOW_CYCLE_PERIOD = 10
 
 messages_fast = []
 messages_medium = []
@@ -43,138 +31,214 @@ messages_slow = []
 
 def pack(num, size):
     if isinstance(num, float) and size == 32:
-        return struct.pack("f", num).hex()
+        return struct.pack("f", num)
     elif size == 32:
-        return struct.pack("i", num).hex()
+        return struct.pack("I", num)
     elif size == 16:
-        return struct.pack("h", num).hex()
+        return struct.pack("H", num)
     elif size == 8:
-        return struct.pack("b", num).hex()
+        return struct.pack("B", num)
+    elif size == 64:
+        return struct.pack("Q", num)
+    else:
+        raise ValueError(f"Unknown size {size} for number {num}")
 
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_STATUS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_STATUS_ID,
-data = bytearray([pack(fault, 16) + pack(fault_val, 16) + pack(aux_batt_v, 16) + pack(afe_status, 8)]))
+can_data_cache = CanSimulatorDataCache()
 
-messages_medium.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_STATUS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT_ID,
-data = bytearray([pack(voltage, 16) + pack(current, 16) + pack(temperature, 16) + pack(batt_perc, 16)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO_ID,
-data = bytearray([pack(fan1, 8) + pack(fan2, 8) + pack(max_cell_v, 16) + pack(min_cell_v, 16)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE1_STATUS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE1_STATUS_ID,
-data = bytearray([pack(id, 8) + pack(temp, 8) + pack(v1, 16) + pack(v2, 16) + pack(v3, 16)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE1_STATUS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE2_STATUS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE2_STATUS_ID,
-data = bytearray([pack(id, 8) + pack(temp, 8) + pack(v1, 16) + pack(v2, 16) + pack(v3, 16)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE2_STATUS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS_ID,
-data = bytearray([pack(id, 8) + pack(temp, 8) + pack(v1, 16) + pack(v2, 16) + pack(v3, 16)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_CONTROLLER_VC = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_CONTROLLER_VC_ID,
-data = bytearray([pack(mc_voltage_l, 16) + pack(mc_current_l, 16) + pack(mc_voltage_r, 16) + pack(mc_current_r, 16)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_CONTROLLER_VC)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_VELOCITY = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_VELOCITY_ID,
-data = bytearray([pack(velocity_l, 16) + pack(velocity_r, 16) + pack(brakes_enabled, 8)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_VELOCITY)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_SINK_TEMPS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_SINK_TEMPS_ID,
-data = bytearray([pack(motor_temp_l, 16) + pack(heatsink_temp_l, 16) + pack(motor_temp_r, 16) + pack(heatsink_temp_r, 16)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_SINK_TEMPS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS_ID,
-data = bytearray([pack(dsp_temp_l, 16) + pack(dsp_temp_r, 16)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS)
-
-SYSTEM_CAN_MESSAGE_BMS_CARRIER_MC_STATUS = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MC_STATUS_ID,
-data = bytearray([pack(limit_bitset_l, 8) + pack(error_bitset_l, 8) + pack(limit_bitset_r, 8) + pack(error_bitset_r, 8) + pack(board_fault_bitset, 8) + pack(overtemp_bitset, 8) + pack(precharge_status, 8)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_BMS_CARRIER_MC_STATUS)
-
-SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID,
-data = bytearray([pack(sig1, 16) + pack(sig2, 16)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG)
-
-SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID,
-data = bytearray([pack(sig1, 16) + pack(sig2, 16)]))
-
-messages_medium.append(SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG)
-
-SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID,
-data = bytearray([pack(sig1, 16) + pack(sig2, 16)]))
-
-messages_slow.append(SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG)
-
-SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL_ID,
-data = bytearray([pack(throttle_output, 32) + pack(brake_output, 8)]))
-
-messages_fast.append(SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL)
-
-SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO_ID,
-data = bytearray([pack(target_velocity, 32) + pack(drive_state, 8) + pack(cruise_control, 8) + pack(regen_braking, 8) + pack(hazard_enabled, 8)]))
-
-messages_medium.append(SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO)
-
-SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING_ID,
-data = bytearray([pack(input_cc, 8) + pack(input_lights, 8)]))
-
-messages_medium.append(SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING)
-
-SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_ID,
-data = bytearray([pack(percent, 32)]))
-
-messages_medium.append(SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE)
-
-SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY = Message(
+system_can_message_telemetry_telemetry = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY_ID,
-data = bytearray([pack(data, 64)]))
+data = bytearray(pack(can_data_cache.get("telemetry_telemetry", "data"), 64)))
 
-messages_slow.append(SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY)
+messages_slow.append(system_can_message_telemetry_telemetry)
+
+system_can_message_can_communication_fast_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig2"), 16)))
+
+messages_fast.append(system_can_message_can_communication_fast_one_shot_msg)
+
+system_can_message_can_communication_medium_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig2"), 16)))
+
+messages_medium.append(system_can_message_can_communication_medium_one_shot_msg)
+
+system_can_message_can_communication_slow_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig2"), 16)))
+
+messages_slow.append(system_can_message_can_communication_slow_one_shot_msg)
+
+system_can_message_imu_gyro_data = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA_ID,
+data = bytearray(pack(can_data_cache.get("imu_gyro_data", "x_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "y_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "z_axis"), 16)))
+
+messages_medium.append(system_can_message_imu_gyro_data)
+
+system_can_message_imu_accel_data = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_ACCEL_DATA_ID,
+data = bytearray(pack(can_data_cache.get("imu_accel_data", "x_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "y_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "z_axis"), 16)))
+
+messages_medium.append(system_can_message_imu_accel_data)
+
+system_can_message_bms_carrier_battery_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_battery_status", "fault"), 16) + pack(can_data_cache.get("bms_carrier_battery_status", "fault_val"), 16) + pack(can_data_cache.get("bms_carrier_battery_status", "aux_batt_v"), 16) + pack(can_data_cache.get("bms_carrier_battery_status", "afe_status"), 8)))
+
+messages_medium.append(system_can_message_bms_carrier_battery_status)
+
+system_can_message_bms_carrier_battery_vt = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_battery_vt", "voltage"), 16) + pack(can_data_cache.get("bms_carrier_battery_vt", "current"), 16) + pack(can_data_cache.get("bms_carrier_battery_vt", "temperature"), 16) + pack(can_data_cache.get("bms_carrier_battery_vt", "batt_perc"), 16)))
+
+messages_fast.append(system_can_message_bms_carrier_battery_vt)
+
+system_can_message_bms_carrier_battery_info = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_battery_info", "fan1"), 8) + pack(can_data_cache.get("bms_carrier_battery_info", "fan2"), 8) + pack(can_data_cache.get("bms_carrier_battery_info", "max_cell_v"), 16) + pack(can_data_cache.get("bms_carrier_battery_info", "min_cell_v"), 16)))
+
+messages_slow.append(system_can_message_bms_carrier_battery_info)
+
+system_can_message_bms_carrier_mc_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MC_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_mc_status", "limit_bitset_l"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "error_bitset_l"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "limit_bitset_r"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "error_bitset_r"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "board_fault_bitset"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "overtemp_bitset"), 8) + pack(can_data_cache.get("bms_carrier_mc_status", "precharge_status"), 8)))
+
+messages_medium.append(system_can_message_bms_carrier_mc_status)
+
+system_can_message_bms_carrier_motor_controller_vc = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_CONTROLLER_VC_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_motor_controller_vc", "mc_voltage_l"), 16) + pack(can_data_cache.get("bms_carrier_motor_controller_vc", "mc_current_l"), 16) + pack(can_data_cache.get("bms_carrier_motor_controller_vc", "mc_voltage_r"), 16) + pack(can_data_cache.get("bms_carrier_motor_controller_vc", "mc_current_r"), 16)))
+
+messages_medium.append(system_can_message_bms_carrier_motor_controller_vc)
+
+system_can_message_bms_carrier_motor_velocity = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_VELOCITY_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_motor_velocity", "velocity_l"), 16) + pack(can_data_cache.get("bms_carrier_motor_velocity", "velocity_r"), 16) + pack(can_data_cache.get("bms_carrier_motor_velocity", "brakes_enabled"), 8)))
+
+messages_medium.append(system_can_message_bms_carrier_motor_velocity)
+
+system_can_message_bms_carrier_motor_sink_temps = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_MOTOR_SINK_TEMPS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_motor_sink_temps", "motor_temp_l"), 16) + pack(can_data_cache.get("bms_carrier_motor_sink_temps", "heatsink_temp_l"), 16) + pack(can_data_cache.get("bms_carrier_motor_sink_temps", "motor_temp_r"), 16) + pack(can_data_cache.get("bms_carrier_motor_sink_temps", "heatsink_temp_r"), 16)))
+
+messages_medium.append(system_can_message_bms_carrier_motor_sink_temps)
+
+system_can_message_bms_carrier_dsp_board_temps = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_dsp_board_temps", "dsp_temp_l"), 16) + pack(can_data_cache.get("bms_carrier_dsp_board_temps", "dsp_temp_r"), 16)))
+
+messages_medium.append(system_can_message_bms_carrier_dsp_board_temps)
+
+system_can_message_bms_carrier_battery_relay_info = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_RELAY_INFO_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_battery_relay_info", "state"), 8)))
+
+messages_slow.append(system_can_message_bms_carrier_battery_relay_info)
+
+system_can_message_bms_carrier_afe1_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE1_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_afe1_status", "id"), 8) + pack(can_data_cache.get("bms_carrier_afe1_status", "temp"), 8) + pack(can_data_cache.get("bms_carrier_afe1_status", "v1"), 16) + pack(can_data_cache.get("bms_carrier_afe1_status", "v2"), 16) + pack(can_data_cache.get("bms_carrier_afe1_status", "v3"), 16)))
+
+messages_slow.append(system_can_message_bms_carrier_afe1_status)
+
+system_can_message_bms_carrier_afe2_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE2_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_afe2_status", "id"), 8) + pack(can_data_cache.get("bms_carrier_afe2_status", "temp"), 8) + pack(can_data_cache.get("bms_carrier_afe2_status", "v1"), 16) + pack(can_data_cache.get("bms_carrier_afe2_status", "v2"), 16) + pack(can_data_cache.get("bms_carrier_afe2_status", "v3"), 16)))
+
+messages_slow.append(system_can_message_bms_carrier_afe2_status)
+
+system_can_message_bms_carrier_afe3_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("bms_carrier_afe3_status", "id"), 8) + pack(can_data_cache.get("bms_carrier_afe3_status", "temp"), 8) + pack(can_data_cache.get("bms_carrier_afe3_status", "v1"), 16) + pack(can_data_cache.get("bms_carrier_afe3_status", "v2"), 16) + pack(can_data_cache.get("bms_carrier_afe3_status", "v3"), 16)))
+
+messages_slow.append(system_can_message_bms_carrier_afe3_status)
+
+system_can_message_centre_console_cc_pedal = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL_ID,
+data = bytearray(pack(can_data_cache.get("centre_console_cc_pedal", "throttle_output"), 32) + pack(can_data_cache.get("centre_console_cc_pedal", "brake_output"), 8)))
+
+messages_fast.append(system_can_message_centre_console_cc_pedal)
+
+system_can_message_centre_console_cc_info = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO_ID,
+data = bytearray(pack(can_data_cache.get("centre_console_cc_info", "target_velocity"), 32) + pack(can_data_cache.get("centre_console_cc_info", "drive_state"), 8) + pack(can_data_cache.get("centre_console_cc_info", "cruise_control"), 8) + pack(can_data_cache.get("centre_console_cc_info", "regen_braking"), 8) + pack(can_data_cache.get("centre_console_cc_info", "hazard_enabled"), 8)))
+
+messages_medium.append(system_can_message_centre_console_cc_info)
+
+system_can_message_centre_console_cc_steering = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING_ID,
+data = bytearray(pack(can_data_cache.get("centre_console_cc_steering", "input_cc"), 8) + pack(can_data_cache.get("centre_console_cc_steering", "input_lights"), 8)))
+
+messages_medium.append(system_can_message_centre_console_cc_steering)
+
+system_can_message_centre_console_cc_regen_percentage = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_ID,
+data = bytearray(pack(can_data_cache.get("centre_console_cc_regen_percentage", "percent"), 32)))
+
+messages_medium.append(system_can_message_centre_console_cc_regen_percentage)
+def periodic_sender(bus, messages, period, stop_event):
+    # Send messages with small delays between each one to avoid buffer overflow
+    while not stop_event.is_set():
+        start_time = time.time()
+
+        # Calculate time per message to spread them over the period
+        if len(messages) > 0:
+            message_delay = min(0.01, period / (len(messages) * 2))  # Don't use more than half the period for delays
+        else:
+            message_delay = 0
+            
+        for msg in messages:
+            try:
+                bus.send(msg)
+                time.sleep(message_delay)
+            except Exception as e:
+                print(f"Error sending message {msg.arbitration_id}: {e}")
+                time.sleep(RETRY_TRANSMIT_S)
+                try:
+                    bus.send(msg)
+                except Exception as e2:
+                    print(f"Failed retry for {msg.arbitration_id}: {e2}")
+
+        # Calculate remaining time in the period
+        elapsed = time.time() - start_time
+        sleep_time = max(0, period - elapsed)
+        time.sleep(sleep_time)
 
 def main():
-    bus = Bus(channel='virtual', bustype='socketcan')
+    can_bus = Bus(channel='can0', interface='socketcan')
 
-    task_fast = ThreadBasedCyclicSendTask(bus=bus, messages=messages_fast, period=0.001)
-    task_medium = ThreadBasedCyclicSendTask(bus=bus, messages=messages_medium, period=0.1)
-    task_slow = ThreadBasedCyclicSendTask(bus=bus, messages=messages_slow, period=1.0)
+    stop_event = threading.Event()
 
-    task_fast.start()
-    task_medium.start()
-    task_slow.start()
+    fast_thread = Thread(
+        target=periodic_sender,
+        args=(can_bus, messages_fast, FAST_CYCLE_PERIOD, stop_event),
+        daemon=True
+    )
+    
+    medium_thread = Thread(
+        target=periodic_sender,
+        args=(can_bus, messages_medium, MEDIUM_CYCLE_PERIOD, stop_event),
+        daemon=True
+    )
+    
+    slow_thread = Thread(
+        target=periodic_sender,
+        args=(can_bus, messages_slow, SLOW_CYCLE_PERIOD, stop_event),
+        daemon=True
+    )
+
+    fast_thread.start()
+    medium_thread.start()
+    slow_thread.start()
+    
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Shutting down CAN simulator...")
+        stop_event.set()
+        time.sleep(0.5)
 
 if __name__ == "__main__":
+    import threading
     main()
