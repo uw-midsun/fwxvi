@@ -1,46 +1,49 @@
 # pylint: skip-file
 """This Module Tests methods in ping_application.py"""
-import random
-import time
 import unittest
-
 import can
+from unittest.mock import MagicMock, call
 from ping_application import Ping_Application
+from bootloader_id import ACK, PING_METADATA, PING_DATA
+from can_datagram import DatagramSender
 
-TEST_CHANNEL = "vcan0"
-TEST_DATAGRAM_TYPE_ID = 36  # This is also the start ID
-
+TEST_DATA = "TestingData"
+TEST_NODE_IDS = [1, 2, 3]
 
 class TestPingApplication(unittest.TestCase):
-    """Test the Ping_Application class"""
+    def setUp(self):
+        self.mock_sender = MagicMock(DatagramSender)
+        self.mock_sender.bus = MagicMock()
+        self.app = Ping_Application(sender = self.mock_sender)
 
+    def test_ping_application_metadata(self):
+        self.app.ping_application(node_ids = TEST_NODE_IDS, data = TEST_DATA)
 
-    def test_unpacking(self):
-        """Tests CAN datagram message unpacking
-        UNFINISHED"""
-        test_bytes = bytearray(
-            [
-                TEST_NODES_RAW1,  # Node ID's RAW
-                TEST_NODES_RAW2,  # Node ID's RAW
-                26,
-                0,  # Data Size, little-endian
-            ]
-        )
-        message = Datagram._unpack(test_bytes, TEST_DATAGRAM_TYPE_ID)
-        self.assertEqual(message._node_ids, TEST_NODES)
+        self.mock_sender.send.assert_called_once()
 
-    def test_ping_application_success(self):
-        """Test a successful ping process with valid inputs
-        UNFINISHED"""
-        node_id = [1, 2, 3]
-        data = "TestData"
+        #extract sent datagram 
+        actual_datagram = self.mock_sender.send.call_args[0][0]
 
-        try:
-            ping_app = Ping_Application(SENDER)
-            ping_app.ping_application(node_id=node_id, ping_type="ping", data=data)
-        except Exception as e:
-            self.fail(f"ping_application raised an exception unexpectedly: {e}")
+        #compare attributes to expected values
+        self.assertEqual(actual_datagram.datagram_type_id, PING_METADATA)
+        self.assertEqual(actual_datagram.node_ids, [])
+        self.assertEqual(actual_datagram.data, bytearray(b'PING'))
 
+    def test_ping_application_data(self):
+        expected_chunks = list(DatagramSender._chunkify(self.app.string_to_bytearray(TEST_DATA), 8))
+        expected_calls = [
+            call(can.Message(arbitration_id=PING_DATA, data=chunk, is_extended_id=False))
+            for chunk in expected_chunks
+        ]
+
+        #mock ack response
+        ack_msg = can.Message(arbitration_id=ACK, data=[0x01], is_extended_id=False)
+        self.mock_sender.bus.recv.return_value = ack_msg
+
+        self.app.ping_application(node_ids=[0], data=TEST_DATA)
+        
+        self.assertEqual(repr(expected_calls), repr(self.mock_sender.bus.send.call_args_list).replace("\n","")) #normalize formatting for comparison
+        self.assertEqual(self.mock_sender.bus.send.call_count, len(expected_chunks))
 
 if __name__ == "__main__":
     unittest.main()

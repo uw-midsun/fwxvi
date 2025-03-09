@@ -1,45 +1,46 @@
+import can
+import time
 from bootloader_id import *
 from can_datagram import Datagram, DatagramSender
-
-
-def string_to_bytearray(self, string: str) -> bytearray:
-    data = []
-    for i in range(len(string)):
-        data.append((string[i] >> (i * 8)) & 0xFF)
-        # [(something[i] >> (i * 8)) & 0xff for i in range(len(something))]
-    return bytearray(data)
-
+from log_manager import update_log
 
 class Ping_Application:
-    def __init__(self, sender=None) -> None:
+    def __init__(self, sender = None) -> None:
         if sender:
-            self._sender = sender
+            self._sender = sender 
         else:
             self._sender = DatagramSender()
+   
+    #bytearray contains ascii value associated to each char
+    def string_to_bytearray(self, string: str) -> bytearray:
+        if not isinstance(string, str):
+            raise TypeError(f"Expected a string, but got {type(string).__name__}")
+        return bytearray(string, 'utf-8')
 
     def ping_application(self, **kwargs):
         start_time = time.time()
-        # node_id = kwargs.get("node_id")
 
-        # Represents the ping_type, along with the data being sent
-        ping_type = kwargs.get("ping_type")
-
+        node_ids = kwargs.get("node_ids")
         data = kwargs.get("data")
+        message_extended_arbitration = kwargs.get("message_extended_arbitration", False)
 
         # Set state to PING
         meta_datagram = Datagram(
-            datagram_type_id=PING_METADATA,
-            request=0,  # this represents the type of request
-            node_ids=0,
-            data=string_to_bytearray(len(data)),
+            datagram_type_id = PING_METADATA,
+            node_ids = [],
+            data = self.string_to_bytearray("PING"),
         )
 
-        print(f"Starting ping application process for boards {node_id}...")
+        update_log("Starting ping application process for boards {}...".format(node_ids))
 
         self._sender.send(meta_datagram)
 
-        # Start chunking the data and sending it
-        chunk_messages = list(self._chunkify(string_to_bytearray(data), 8))
+        #Below is an altered send_data() from can_datagram.py
+
+        # Start chunking the data (8 chars per chunk)
+
+        
+        chunk_messages = list(DatagramSender._chunkify(self.string_to_bytearray(data), 8))
         sequence_number = 0
 
         while chunk_messages:
@@ -47,24 +48,20 @@ class Ping_Application:
             current_chunk = chunk_messages[:128]
             chunk_messages = chunk_messages[128:]
 
-            crc_chunk = b"".join(current_chunk)
-            crc32_value = crc32.calculate(crc_chunk)
-            crc_data = crc32_value.to_bytes(4, byteorder="little")
-
             # Send data chunks (up to 1024 bytes)
             for chunk in current_chunk:
                 try:
                     data_msg = can.Message(
-                        arbitration_id=PING_DATA,
-                        data=chunk,
-                        is_extended_id=message_extended_arbitration,
+                        arbitration_id = PING_DATA,
+                        data = chunk,
+                        is_extended_id = message_extended_arbitration,
                     )
-                    self.bus.send(data_msg)
+                    self._sender.bus.send(data_msg)
                 except BaseException:
                     time.sleep(0.01)
-                    self.bus.send(data_msg)
+                    self._sender.bus.send(data_msg)
 
-            print(f"Sent {len(current_chunk) * 8} bytes")
+            update_log("Sent {} bytes".format(len(current_chunk) * 8))
 
             if chunk_messages:
                 ack_received = False
@@ -73,50 +70,42 @@ class Ping_Application:
 
                 while not ack_received and retry_count < max_retries:
                     try:
-                        ack_msg = self.bus.recv(timeout=5.0)
+                        ack_msg = self._sender.bus.recv(timeout=5.0)
 
                         if ack_msg and ack_msg.arbitration_id == ACK:
                             if ack_msg.data[0] == 0x01:
                                 ack_received = True
-                                print(f"Received ACK for sequence {sequence_number}\n")
+                                update_log("Received ACK for sequence\n".format({sequence_number}))
                             elif ack_msg.data[0] == 0x00:
-                                print(
-                                    f"Received NACK for sequence {sequence_number}, retrying..."
-                                )
+                                update_log("Received NACK for sequence {}, retrying...".format(sequence_number))
                                 retry_count += 1
                                 break
                             else:
-                                print(
-                                    f"Received unknown response for sequence {sequence_number}, retrying..."
-                                )
+                                update_log("Received unknown response for sequence {}, retrying...".format(sequence_number))
                                 retry_count += 1
                         else:
-                            print(
-                                f"No ACK/NACK received for sequence {sequence_number}, retrying..."
-                            )
+                            update_log("No ACK/NACK received for sequence {}, retrying...".format(sequence_number))
                             retry_count += 1
 
                     except can.CanError:
-                        print(
-                            f"Error waiting for ACK/NACK for sequence {sequence_number}, retrying..."
-                        )
+                        update_log("Error waiting for ACK/NACK for sequence {}, retrying...".format(sequence_number))
                         retry_count += 1
+                    
 
                 if not ack_received:
                     raise Exception(
                         f"Failed to receive ACK for sequence {sequence_number} after {max_retries} attempts"
                     )
-
+                
+            sequence_number += 1
         end_time = time.time()
 
-        print(
-            "--------------------------------- COMPLETED ---------------------------------"
-        )
-        print(f"Time Elapsed: {end_time - start_time}")
-        print(f"All data sent successfully. Total sequences: {sequence_number}\n")
+        update_log("--------------------------------- COMPLETED ---------------------------------")
+        update_log(f"Time Elapsed: {end_time - start_time}")
+        update_log(f"All data sent successfully. Total sequences: {sequence_number}\n")
 
         ### End
         # Separate enum that each ECU will read and process accordingly
         # datagram = Datagram(datagram_type_id=PING_DATA, data=string_to_bytearray(data))
         # self._sender.send(datagram)
-        print(f"Ping application completed for boards {node_id}")
+        update_log("Ping application completed for boards {node_ids}")
