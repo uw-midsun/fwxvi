@@ -10,11 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "datagram.h"
-
+#include "delay.h"
 #include "log.h"
 
 /* Intra-component Headers */
+#include "datagram.h"
 #include "telemetry.h"
 
 /** @brief  Flip the endianess of 2 bytes. Used to flip the CAN ID from little-endian to big-endian */
@@ -37,10 +37,4 @@ void log_decoded_message(Datagram *datagram) {
   LOG_DEBUG("Start frame: 0x%0x. End frame: 0x%0x\n", datagram->start_frame, datagram->data[datagram->dlc]);
   LOG_DEBUG("Message ID: 0x%0x\n", datagram->id);
   LOG_DEBUG("Datagram DLC: 0x%0x\n", datagram->dlc);
-
-  LOG_DEBUG("Data:\n");
-  for (size_t i = 0; i < datagram->dlc; ++i) {
-    delay_ms(5);
-    LOG_DEBUG("Byte %d: 0x%0x\n", i, datagram->data[i]);
-  }
 }
