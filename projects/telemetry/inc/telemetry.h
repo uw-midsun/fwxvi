@@ -12,8 +12,10 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "queue.h"
 
 /* Intra-component Headers */
+#include "datagram.h"
 
 /**
  * @defgroup telemetry
