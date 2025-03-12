@@ -30,6 +30,8 @@ std::string I2C::serialize(const CommandCode &commandCode) const {
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_i2cDatagram.i2cPort));
   serializeInteger(serializedData, static_cast<uint16_t>(m_i2cDatagram.bufferLength));
   serializedData.append(reinterpret_cast<const char *>(m_i2cDatagram.buffer), m_i2cDatagram.bufferLength);
+
+  return serializedData;
 }
 
 void I2C::deserialize(std::string &i2cDatagramPayload) {

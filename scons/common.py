@@ -13,6 +13,7 @@ def parse_config(entry):
         'cflags': [],
         'mocks': {},
         'no_lint': False,
+        "mpxe": False,
         "can": False,
         "arm_only": False
     }
