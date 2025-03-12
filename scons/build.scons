@@ -7,6 +7,10 @@ TARGET = VARS.get("TARGET")
 PLATFORM = VARS.get("PLATFORM")
 env = VARS.get("env")
 
+# Clone the C env and clear C flags
+cxx_env = env.Clone()
+cxx_env['CCFLAGS'] = []
+
 ROOT = Dir('#')
 
 BUILD_DIR = ROOT.Dir('build').Dir(PLATFORM)
@@ -27,13 +31,13 @@ AUTOGEN_DIR = ROOT.Dir("autogen")
 def src(path):
     # return all source files within a path
     srcs = []
-    for file in path.glob("src/*.[cs]") + path.glob(f"src/{PLATFORM}/*.[cs]"):
+    for file in path.glob("src/*.[cs]") + path.glob("src/*.cc") + path.glob("src/*.cpp") + \
+               path.glob(f"src/{PLATFORM}/*.[cs]") + path.glob(f"src/{PLATFORM}/*.cc") + path.glob(f"src/{PLATFORM}/*.cpp"):
         if file.abspath.startswith(OBJ_DIR.abspath):
             srcs.append(file)
         else:
             srcs.append(OBJ_DIR.File(file.path))
     return srcs
-
 
 def inc(path):
     # return all include directories within a path
@@ -48,7 +52,6 @@ def get_lib_deps(entry):
         deps += get_lib_deps(LIB_DIR.Dir(dep))
     return deps
 
-
 ###########################################################
 # Header file generation from jinja templates
 ###########################################################
@@ -60,7 +63,6 @@ env.Command(
     autogen_sources,
     f"python3 -m autogen system_can -o can/inc"
 )
-
 
 def generate_can_files(env, project):
     project_can_dir = OBJ_DIR.Dir(project).Dir("can")
@@ -85,25 +87,153 @@ def generate_can_files(env, project):
 
 
 ###########################################################
-# Create appropriate targets for all libraries
+# Library Build Functions
 ###########################################################
-# Just include all library headers
-# This resolves dependency issues like ms-freertos including FreeRTOS headers
-# even though FreeRTOS depends on ms-freertos, not the other way around
+
+# Dictionary to store all library targets
+library_targets = {}
+
+# Include all library headers
 lib_incs = [inc(lib_dir) for lib_dir in LIB_DIR.glob('*')]
-for entry in LIB_DIR.glob('*'):
+
+def build_library(library_name, dependencies=None):
+    # Skip if already built
+    if library_name in library_targets:
+        return library_targets[library_name]
+    
+    print(f"Building library: {library_name}")
+    
+    entry = LIB_DIR.Dir(library_name)
     config = parse_config(entry)
-    lib_deps = get_lib_deps(entry)
+
+    # Get dependencies and build them first
+    lib_deps = []
+    if dependencies:
+        lib_deps = dependencies
+    else:
+        lib_deps = get_lib_deps(entry)
+
+    # Build all dependencies first
+    dep_targets = []
+    for dep in lib_deps:
+        if dep not in library_targets and LIB_DIR.Dir(dep).exists():
+            dep_target = build_library(dep)
+            dep_targets.append(dep_target)
+    
+    # Build this library
     target = env.Library(
         target=LIB_BIN_DIR.File(f'lib{entry.name}.a'),
         source=src(entry),
         LIBS=env['LIBS'] + lib_deps * 2,
         LIBPATH=[LIB_BIN_DIR],
         CPPPATH=env['CPPPATH'] + lib_incs,
-        CCFLAGS=env['CCFLAGS'] + config['cflags'],
+        CCFLAGS=env['CCFLAGS'] + config.get('cflags', [])
     )
+
+    # Register the target
+    library_targets[library_name] = target
+
+    # Create aliases
     Alias(entry.path, target)
     Alias(entry.name, target)
+
+    return target
+
+###########################################################
+# MPXE Library Generation
+###########################################################
+
+def create_mpxe_common_lib():
+    mpxe_dir = ROOT.Dir("mpxe")
+    mpxe_common_dir = mpxe_dir.Dir("common")
+
+    # Build ms-common first if it doesn't exist yet
+    if 'ms-common' not in library_targets:
+        build_library('ms-common')
+
+    # Convert Path objects to SCons File nodes
+    common_srcs = src(mpxe_common_dir)
+    common_incs = inc(mpxe_common_dir)
+
+    # Create the common library
+    common_lib = cxx_env.Library(
+        target=LIB_BIN_DIR.File('libmpxe_common.a'),
+        source=common_srcs,
+        LIBS=env['LIBS'],
+        LIBPATH=[LIB_BIN_DIR],
+        CPPPATH=env['CPPPATH'] + common_incs,
+        CXXFLAGS=env['CXXFLAGS'],
+    )
+
+    # Register the target
+    library_targets['mpxe_common'] = common_lib
+
+    # Create alias
+    Alias('mpxe_common', common_lib)
+
+    return common_lib
+
+def create_mpxe_client_lib():
+    if 'ms-common' not in library_targets:
+        build_library('ms-common')
+    
+    if 'mpxe_common' not in library_targets:
+        create_mpxe_common_lib()
+
+    mpxe_dir = ROOT.Dir("mpxe")
+    mpxe_client_dir = mpxe_dir.Dir("client")
+    mpxe_client_util_dir = mpxe_client_dir.Dir("utils")
+    mpxe_client_app_dir = mpxe_client_dir.Dir("app")
+    mpxe_common_dir = mpxe_dir.Dir("common")
+
+    # Convert Path objects to SCons File nodes
+    client_srcs = []
+    client_srcs += src(mpxe_client_util_dir)
+    client_srcs += src(mpxe_client_app_dir)
+
+    client_incs = []
+    client_incs += inc(mpxe_client_util_dir)
+    client_incs += inc(mpxe_client_app_dir)
+    client_incs += inc(mpxe_common_dir)
+    client_incs += inc(LIB_DIR.Dir("ms-common"))
+
+    # Create the client library
+    client_lib = cxx_env.Library(
+        target=LIB_BIN_DIR.File('libmpxe_client.a'),
+        source=client_srcs,
+        LIBS=env['LIBS'] + ['mpxe_common', 'ms-common'],
+        LIBPATH=[LIB_BIN_DIR],
+        CPPPATH=env['CPPPATH'] + client_incs,
+        CXXFLAGS=env['CXXFLAGS'],
+    )
+
+    # Register the target
+    library_targets['mpxe_client'] = client_lib
+
+    # Create alias
+    Alias('mpxe_client', client_lib)
+
+    return client_lib
+
+###########################################################
+# Build Process
+###########################################################
+
+# 1. Build ms-common first
+ms_common_lib = build_library('ms-common')
+
+# 2. Build all other non-MPXE libraries
+for entry in LIB_DIR.glob('*'):
+    if entry.name not in ['ms-common', 'ms-mpxe']:
+        build_library(entry.name)
+
+# 3. Build MPXE common and client libraries
+mpxe_common_lib = create_mpxe_common_lib()
+mpxe_client_lib = create_mpxe_client_lib()
+
+# 4. Build ms-mpxe last, with explicit dependencies on MPXE libs
+if LIB_DIR.Dir('ms-mpxe').exists():
+    ms_mpxe_lib = build_library('ms-mpxe', ['mpxe_common', 'mpxe_client', 'ms-common'])
 
 ###########################################################
 # Create appropriate targets for all projects and smoke projects
@@ -124,8 +254,8 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
     lib_deps = get_lib_deps(entry)
+
     # SCons automagically handles object creation and linking
-        
     if PLATFORM == 'x86' and config['arm_only']:
         print(f'Project: {entry} is only for ARM devices. Cannot build x86 version.')
     else:
