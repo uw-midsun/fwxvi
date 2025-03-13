@@ -1,0 +1,7 @@
+<map id="BmsStorage" name="BmsStorage">
+<area shape="rect" id="node1" title="Battery management system storage." alt="" coords="201,269,302,295"/>
+<area shape="rect" id="node2" href="$structBmsConfig.html" title="Battery management system configuration data." alt="" coords="5,93,97,119"/>
+<area shape="rect" id="node3" title=" " alt="" coords="131,93,190,119"/>
+<area shape="rect" id="node4" href="$structMax17261Settings.html" title=" " alt="" coords="292,5,435,31"/>
+<area shape="rect" id="node5" href="$structMax17261Storage.html" title=" " alt="" coords="503,93,643,119"/>
+</map>
