@@ -21,4 +21,11 @@
  * @{
  */
 
+struct SteeringStorage;
+
+typedef struct {
+    struct SteeringStorage *steering_storage;
+} CentreConsoleStorage;
+
+
 /** @} */

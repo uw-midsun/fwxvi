@@ -1,0 +1,17 @@
+scons: Reading SConscript files ...
+Project: /home/firmware/fwxvi/projects/bootloader is only for ARM devices. Cannot build x86 version.
+scons: done reading SConscript files.
+scons: Building targets ...
+Autogen    projects/centre_console/test/test_steering.c test_runner
+Compiling  build/x86/test/projects/centre_console/test/test_steering.o
+Compiling  build/x86/obj/projects/centre_console/test/test_steering.o
+Linking    build/x86/test/projects/centre_console/bin/test_steering
+Running tests:
+projects/centre_console/test/test_centre_console.c:24:test_example:PASS
+
+-----------------------
+1 Tests 0 Failures 0 Ignored 
+OK
+2 Files tested 1 Failures
+  scons/test/projects/centre_console/test_steering
+scons: done building targets.
