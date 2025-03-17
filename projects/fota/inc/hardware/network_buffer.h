@@ -1,15 +1,35 @@
 #pragma once
+
+/************************************************************************************************
+ * @file   network_buffer.h
+ *
+ * @brief  Circular Buffer class implementation for firmware over the air (FOTA) updates
+ *
+ * @date   2025-03-16
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+
+/* Standard library Headers */
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_PACKETS 8 //TODO: Figure out what this size is
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/* Constants */
+//subject to change, but these were numbers I got from confluence
+#define MAX_PACKETS 8 
 #define PACKET_BYTES 256
-
-
 
 /**
  * @brief struct containing details of circular buffer
  * 
+ * @param data pointer to internally held data
+ * @param size size of circular buffer
+ * @param insert current insert index
+ * @param head current read index
  */
 typedef struct NetworkBuffer {
     packet *data;
@@ -23,32 +43,29 @@ typedef struct NetworkBuffer {
  * 
  */
 typedef enum returnStatus {
-    SUCCESS,
+    SUCCESS = 0,
     ALREADY_INITALISED,
-    FAILED
+    BUFFER_INACTIVE
 } returnStatus;
 
 
 /**
- * @brief data packet which contains 256 bytes
- * 
+ * @brief data packet
+ * @param data pointer to data bytes
  */
 typedef struct packet {
     uint8_t data[PACKET_BYTES];
 } packet;
 
-static packet data[MAX_PACKETS];
-static NetworkBuffer circular_buffer = {data, MAX_PACKETS, 0, 0 };
 
-static bool init = false;
 
 
 /**
  * @brief Initalizes circular buffer for use, by initalizing assocated structs
  * 
- * @return returnStatus: status of initalization
- */
-returnStatus initCircularBuffer();
+ * @return returnStatus
+*/
+returnStatus network_buffer_init();
 
 /**
  * @brief Insert data packet 
@@ -56,7 +73,7 @@ returnStatus initCircularBuffer();
  * @param data pointer to data packet to insert
  * @return returnStatus 
  */
-returnStatus insertNetworkBuffer(packet *data);
+returnStatus network_buffer_insert(packet *data);
 
 /**
  * @brief 
@@ -64,4 +81,4 @@ returnStatus insertNetworkBuffer(packet *data);
  * @param buf reads packet from circular buffer into a provided buffer
  * @return returnStatus 
  */
-returnStatus readNetworkBuffer(packet *buf);
+returnStatus network_buffer_read(packet *buf);
