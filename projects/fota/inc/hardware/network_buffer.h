@@ -78,7 +78,7 @@ returnStatus network_buffer_insert(packet *data);
 /**
  * @brief 
  * 
- * @param buf reads packet from circular buffer into a provided buffer
+ * @param buf reads packet from circular buffer into a provided location
  * @return returnStatus 
  */
-returnStatus network_buffer_read(packet *buf);
+returnStatus network_buffer_read(packet *loc);
