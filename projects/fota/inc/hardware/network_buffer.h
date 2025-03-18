@@ -45,20 +45,16 @@ typedef struct NetworkBuffer {
 typedef enum returnStatus {
     SUCCESS = 0,
     ALREADY_INITALISED,
-    BUFFER_INACTIVE
+    NOT_INITALIZED
 } returnStatus;
-
 
 /**
  * @brief data packet
  * @param data pointer to data bytes
  */
 typedef struct packet {
-    uint8_t data[PACKET_BYTES];
+    uint8_t internal[PACKET_BYTES];
 } packet;
-
-
-
 
 /**
  * @brief Initalizes circular buffer for use, by initalizing assocated structs
