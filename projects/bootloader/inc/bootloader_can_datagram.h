@@ -31,6 +31,10 @@
 /** @brief  NACK defined as 1 */
 #define NACK 1U
 
+/** @brief  NACK defined as 1 */
+
+#define DGRAM_MAX_MSG_SIZE 8
+
 /**
  * @brief   Bootloader reserved CAN arbitration IDs
  */
@@ -41,8 +45,8 @@ typedef enum {
   BOOTLOADER_CAN_ACK_ID,                   /**< Bootloader ACK/NACK message */
   BOOTLOADER_CAN_START_ID,                 /**< Start DFU command */
   BOOTLOADER_CAN_JUMP_BOOTLOADER ,         /**< Jump to bootloader command */
-  BOOTLOADER_CAN_ARBITRATION_PING,         /**< */
-  BOOTLOADER_CAN_ARBITRATION_PING_RECEIVE  /**< */
+  BOOTLOADER_CAN_PING_METADATA_ID,         /**< Incoming ping metadata */
+  BOOTLOADER_CAN_PING_DATA_ID               /**< Incoming ping data */
 } BootloaderCanID;
 
 /**
@@ -97,11 +101,9 @@ typedef struct {
      * @brief Ping message definition
      */
     struct {
-      // node_id
       uint16_t node_ids;
+      uint16_t req : 4 , data_len : 12;
       uint32_t crc32;
-      // Request and Length of data being sent
-      uint16_t req : 4, data_len : 12;
     } ping;
   } payload;
 } BootloaderDatagram;

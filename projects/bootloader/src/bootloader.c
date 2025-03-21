@@ -24,8 +24,7 @@ static uint8_t *flash_buffer;
 static BootloaderDatagram datagram;
 static BootloaderStateData prv_bootloader = { .state = BOOTLOADER_UNINITIALIZED, .error = BOOTLOADER_ERROR_NONE, .first_byte_received = false , .first_ping_received = false};
 
-BootloaderError bootloader_init(uint8_t *buffer) {
-  flash_buffer = buffer;
+BootloaderError bootloader_init(void) {
   prv_bootloader.bytes_written = 0;
   prv_bootloader.data_size = 0;
   prv_bootloader.application_start = APPLICATION_START_ADDRESS;
@@ -101,7 +100,7 @@ static BootloaderError bootloader_switch_states(const BootloaderStates new_state
 
     case BOOTLOADER_PING:
     if (new_state == BOOTLOADER_START || new_state == BOOTLOADER_JUMP_APP ||
-        new_state == BOOTLOADER_DATA_READY || new_state == BOOTLOADER_FAULT ||
+        new_state == BOOTLOADER_WAIT_SEQUENCING || new_state == BOOTLOADER_FAULT ||
         new_state == BOOTLOADER_PING) {
       prv_bootloader.state = new_state;
     } else {
@@ -129,7 +128,7 @@ static BootloaderError bootloader_handle_arbitration_id(Boot_CanMessage *msg) {
       return bootloader_switch_states(BOOTLOADER_DATA_RECEIVE);
     case BOOTLOADER_CAN_JUMP_APPLICATION_ID:
       return bootloader_switch_states(BOOTLOADER_JUMP_APP);
-    case CAN_ARBITRATION_PING:
+    case BOOTLOADER_CAN_PING_DATA_ID:
     return bootloader_switch_states(BOOTLOADER_PING);
     default:
       return BOOTLOADER_INVALID_ARGS;
@@ -250,24 +249,6 @@ static BootloaderError bootloader_fault() {
 static BootloaderError bootloader_ping() {
   BootloaderError error = BOOTLOADER_ERROR_NONE;
 
-  // typedef struct {
-  //   uintptr_t application_start;
-  //   uintptr_t current_address;
-  //   uint32_t bytes_written;
-  //   uint32_t data_size;
-  //   uint32_t packet_crc32;
-  //   uint16_t expected_sequence_number;
-  //   uint16_t buffer_index;
-  //   BootloaderPingStates ping_type;
-  //   uint8_t ping_data_len;
-
-  //   BootloaderStates state;
-  //   BootloaderError error;
-  //   uint16_t target_nodes;
-  //   bool first_byte_received;
-  //   bool first_ping_received;
-  // } BootloaderStateData;
-
   if (!prv_bootloader.first_ping_received) {
     prv_bootloader.buffer_index = 0;
 
@@ -278,7 +259,7 @@ static BootloaderError bootloader_ping() {
     prv_bootloader.bytes_written = 0;
   } else {
     // Start handling the rest of the datagrams (ping data)
-    memcpy(flash_buffer + prv_bootloader.buffer_index, datagram.payload.data.binary_data, 8);
+    memcpy(flash_buffer + prv_bootloader.buffer_index, datagram.payload.data.data, 8);
     prv_bootloader.buffer_index += 8;
 
     if (prv_bootloader.buffer_index > BOOTLOADER_PAGE_BYTES) {
@@ -295,10 +276,9 @@ static BootloaderError bootloader_ping() {
         return BOOTLOADER_CRC_MISMATCH_BEFORE_WRITE;
       }
 
-      error |= boot_flash_erase(BOOTLOADER_ADDR_TO_PAGE(prv_bootloader.current_address));
-      error |=
-          boot_flash_write(prv_bootloader.current_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
-      error |= boot_flash_read(prv_bootloader.current_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
+      error |= boot_flash_erase(BOOTLOADER_ADDR_TO_PAGE(prv_bootloader.current_write_address), 1U);
+      error |= boot_flash_write(prv_bootloader.current_write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
+      error |= boot_flash_read(prv_bootloader.current_write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
 
       if (error != BOOTLOADER_ERROR_NONE) {
         send_ack_datagram(NACK, error);

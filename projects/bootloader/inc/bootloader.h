@@ -98,7 +98,7 @@ typedef struct {
   uint32_t packet_crc32;             /**< Packet CRC32 if available */
   uint16_t expected_sequence_number; /**< Next expected sequence number for validation */
   uint16_t buffer_index;             /**< Data buffer index for correct reading/writing */
-  BootloaderPingStates ping_type;    /**< Pin state of bootloader */
+  BootloaderPingStates ping_type;    /**< Ping state of bootloader */
   uint8_t ping_data_len;             /**< Length of ping data */
   BootloaderStates state;   /**< Internal state tracker */
   BootloaderError error;    /**< Bootloader error tracker */
@@ -111,7 +111,7 @@ typedef struct {
  * @brief   Initialize the bootloader
  * @return  BOOTLOADER_ERROR_NONE if the bootloader is initialized succesfully
  */
-BootloaderError bootloader_init(uint8_t flash_buffer[BOOTLOADER_PAGE_BYTES]); //temporary input to the buffer array
+BootloaderError bootloader_init(void);
 
 /**
  * @brief   Run the bootloader
