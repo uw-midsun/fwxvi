@@ -16,6 +16,12 @@
 
 /* Intra-component Headers */
 
+/**
+ * @defgroup telemetry
+ * @brief    telemetry Firmware
+ * @{
+ */
+
 /** @brief  Datagram buffer size */
 #define DATAGRAM_BUFFER_SIZE 64U
 /** @brief  Start of frame indicator */
@@ -32,7 +38,10 @@
  */
 #define DATAGRAM_METADATA_SIZE 5U
 
-#pragma pack(push, 1)  // Ensure tight packing of the structure
+#pragma pack(push, 1)
+/**
+ * @brief   Datagram storage class
+ */
 typedef struct {
   uint8_t start_frame; /**< Should always be initialized to 0xAA */
   uint16_t id;         /**< CAN message ID */
@@ -47,3 +56,11 @@ typedef struct {
  * @param   msg Pointer to the new CAN data
  */
 void decode_can_message(Datagram *datagram, CanMessage *msg);
+
+/**
+ * @brief   Log the decoded datagram for debug purposes
+ * @param   datagram Pointer to the datagram to be debugged
+ */
+void log_decoded_message(Datagram *datagram);
+
+/** @} */

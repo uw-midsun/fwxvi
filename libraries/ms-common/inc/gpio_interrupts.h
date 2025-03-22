@@ -65,12 +65,12 @@ InterruptEdge gpio_it_get_edge(const GpioAddress *address);
 InterruptPriority gpio_it_get_priority(const GpioAddress *address);
 
 /**
- * @brief   Gets the GPIO interrupt class
+ * @brief   Gets the GPIO interrupt type
  * @param   address Pointer to the GPIO address
- * @return  The corresponding GPIO's interrupt class
- *          NUM_INTERRUPT_CLASSES if the interrupt has not been registered
+ * @return  The corresponding GPIO's interrupt type
+ *          NUM_INTERRUPT_TYPES if the interrupt has not been registered
  */
-InterruptClass gpio_it_get_class(const GpioAddress *address);
+InterruptType gpio_it_get_type(const GpioAddress *address);
 
 /**
  * @brief   Gets the GPIO interrupt task

@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "can.h"
 #include "datagram.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -40,7 +41,6 @@ TASK(can_message_listener, TASK_STACK_256) {
   StatusCode status = STATUS_CODE_OK;
 
   while (true) {
-    /* Loop until new data has arrived. This is polling, maybe consider an interrupt-based version */
     while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
     }
 
@@ -58,6 +58,7 @@ TASK(can_message_listener, TASK_STACK_256) {
 TASK(can_message_processor, TASK_STACK_256) {
   Datagram tx_datagram = { 0U };
   StatusCode status = STATUS_CODE_OK;
+  uint32_t delay_time_ms = (1U / telemetry_storage->config->message_transmit_frequency_hz) * 1000U;
 
   while (true) {
     /* Wait for new data to be in the queue */
@@ -67,6 +68,8 @@ TASK(can_message_processor, TASK_STACK_256) {
       if (status != STATUS_CODE_OK) {
         LOG_DEBUG("Failed to transmit to telemetry transceiver!\n");
       }
+
+      delay_ms(delay_time_ms);
     }
   }
 }

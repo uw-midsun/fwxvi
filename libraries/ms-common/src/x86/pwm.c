@@ -31,13 +31,10 @@ typedef struct PwmInfo {
 
 /** @brief  Number of channels associated to each PWM timer*/
 static const uint8_t num_channels[NUM_PWM_TIMERS] = {
-  6,  // TIM1 - 6 channels
-  4,  // TIM2 - 4 channels
-  4,  // TIM3 - 4 channels
-  0,  // TIM6 - 0 channels
-  0,  // TIM7 - 0 channels
-  2,  // TIM15 - 2 channels
-  1   // TIM16 - 1 channel
+  6U, /**< TIM1 - 6 channels */
+  4U, /**< TIM2 - 4 channels */
+  2U, /**< TIM15 - 2 channels */
+  1U  /**< TIM16 - 1 channel */
 };
 
 PwmInfo pwm[NUM_PWM_TIMERS];

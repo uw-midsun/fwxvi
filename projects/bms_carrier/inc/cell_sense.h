@@ -2,9 +2,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bms_hw_defs.h
+ * @file   cell_sense.h
  *
- * @brief  Header file for BMS hardware definitions
+ * @brief  Header file for AFE cell sense
  *
  * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,19 +14,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+
 /* Inter-component Headers */
-// idk
-// #include "bms.h"
-#include "bms_hw_defs.h"
-#include "delay.h"
-#include "fault_bps.h"
 #include "gpio.h"
-#include "ltc_afe.h"
-#include "ltc_afe_impl.h"
-#include "relays.h"
-#include "spi.h"
 
 /* Intra-component Headers */
+#include "bms_carrier.h"
 
 /**
  * @defgroup bms_carrier
@@ -52,20 +45,11 @@
 #define AFE_BALANCING_UPPER_THRESHOLD 41500
 #define AFE_BALANCING_LOWER_THRESHOLD 40000
 
-#define AFE_SPI_PORT SPI_PORT_2
-#define AFE_SPI_CS \
-  { .port = GPIO_PORT_B, .pin = 12 }
-#define AFE_SPI_SCK \
-  { .port = GPIO_PORT_B, .pin = 13 }
-#define AFE_SPI_MISO \
-  { .port = GPIO_PORT_B, .pin = 14 }
-#define AFE_SPI_MOSI \
-  { .port = GPIO_PORT_B, .pin = 15 }
-
-StatusCode cell_sense_init(BmsStorage *bms_store);
+StatusCode cell_sense_init(BmsStorage *storage);
 
 // Mark cell for discharging (takes effect after config is re-written)
 // |cell| should be [0, settings.num_cells)
 
 StatusCode cell_discharge(LtcAfeStorage *afe);
+
 /** @} */

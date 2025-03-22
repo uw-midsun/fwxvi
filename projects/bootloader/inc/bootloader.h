@@ -23,13 +23,24 @@
  * @brief    bootloader Firmware
  * @{
  */
-
+extern uint32_t _flash_start;
+extern uint32_t _flash_size;
+extern uint32_t _flash_page_size;
 extern uint32_t _application_start;
 extern uint32_t _application_size;
 extern uint32_t _bootloader_start;
 extern uint32_t _bootloader_size;
 extern uint32_t _sram_start;
 extern uint32_t _sram_size;
+
+/** @brief  Flash start address as defined in the linkerscripts */
+#define FLASH_START_ADDRESS_LINKERSCRIPT ((uint32_t)&_flash_start)
+
+/** @brief  Flash size as defined in the linkerscripts */
+#define FLASH_SIZE_LINKERSCRIPT ((size_t)&_flash_size)
+
+/** @brief  Flash page size as defined in the linkerscripts */
+#define FLASH_PAGE_SIZE_LINKERSCRIPT ((size_t)&_flash_page_size)
 
 /** @brief  Application start address as defined in the linkerscripts */
 #define APPLICATION_START_ADDRESS ((uint32_t) & _application_start)

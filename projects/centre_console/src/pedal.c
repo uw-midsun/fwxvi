@@ -18,6 +18,7 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "centre_console_setters.h"
 #include "pedal.h"
 
 static const GpioAddress brake = BRAKE_LIMIT_SWITCH;
@@ -31,8 +32,8 @@ static float prev_output = 0;
 static float output = 0;
 
 static void s_read_throttle_data(uint32_t *reading) {
-  volatile uint16_t adc_reading;
-  adc_read_raw(&throttle, &adc_reading);
+  volatile uint16_t adc_reading = s_calib_blob->throttle_calib.lower_value;
+  // adc_read_raw(&throttle, &adc_reading);
 
   // Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
   // to get percentage press. Brake is now just a GPIO. Negatives and > 100 values will be
@@ -50,7 +51,6 @@ static void s_read_throttle_data(uint32_t *reading) {
   } else if (calculated_reading > 1) {
     calculated_reading = 1;
   }
-
   // TODO: ALPHA NEEDS TO BE TUNED
   output = (1 - ALPHA) * adc_reading + ALPHA * prev_output;
 

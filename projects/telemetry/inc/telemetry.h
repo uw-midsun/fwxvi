@@ -12,8 +12,10 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "queue.h"
 
 /* Intra-component Headers */
+#include "datagram.h"
 
 /**
  * @defgroup telemetry
@@ -30,6 +32,9 @@ typedef struct {
   uint32_t message_transmit_frequency_hz; /**< Transmission frequency of telemetry data packets */
 } TelemetryConfig;
 
+/**
+ * @brief   Telemetry storage
+ */
 typedef struct {
   Datagram datagram_buffer[DATAGRAM_BUFFER_SIZE]; /**< Buffer to store the datagram */
   Queue datagram_queue;                           /**< Queue handle for the datagram buffer */
