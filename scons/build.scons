@@ -292,12 +292,6 @@ def create_mpxe_server():
     server_incs += inc(mpxe_common_dir)
     server_incs += inc(LIB_DIR.Dir("ms-common"))
 
-    for file in server_incs:
-        print(f"Include: {file.name}")
-    
-    for file in server_srcs:
-        print(f"Source: {file.name}")
-
     # Create the client library
     server_exe = cxx_env.Program(
         target=BIN_DIR.Dir('projects').File('mpxe_server'),
@@ -309,8 +303,6 @@ def create_mpxe_server():
     )
 
     Default(server_exe)
-
-    print(server_exe)
 
     # Register the target
     library_targets['mpxe_server'] = server_exe
