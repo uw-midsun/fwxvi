@@ -13,9 +13,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "semaphore.h"
+#include "ms_semaphore.h"
 
-StatusCode mutex_init(Mutex *mutex) {
+StatusCode ms_mutex_init(Mutex *mutex) {
   mutex->handle = xSemaphoreCreateMutexStatic(&mutex->buffer);
   if (mutex->handle == NULL) {
     return STATUS_CODE_UNINITIALIZED;
@@ -24,7 +24,7 @@ StatusCode mutex_init(Mutex *mutex) {
   }
 }
 
-StatusCode mutex_lock(Mutex *mutex, uint16_t ms_to_wait) {
+StatusCode ms_mutex_lock(Mutex *mutex, uint16_t ms_to_wait) {
   TickType_t ticks_to_wait;
 
   /* Handle invalid args */
@@ -43,7 +43,7 @@ StatusCode mutex_lock(Mutex *mutex, uint16_t ms_to_wait) {
   return STATUS_CODE_OK;
 }
 
-StatusCode mutex_unlock(Mutex *mutex) {
+StatusCode ms_mutex_unlock(Mutex *mutex) {
   /* Handle invalid args */
   if (mutex == NULL || mutex->handle == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -55,7 +55,7 @@ StatusCode mutex_unlock(Mutex *mutex) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count) {
+StatusCode ms_sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count) {
   if (sem == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -67,7 +67,7 @@ StatusCode sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count) 
   }
 }
 
-StatusCode sem_wait(Semaphore *sem, uint32_t timeout_ms) {
+StatusCode ms_sem_wait(Semaphore *sem, uint32_t timeout_ms) {
   if (sem == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -77,7 +77,7 @@ StatusCode sem_wait(Semaphore *sem, uint32_t timeout_ms) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sem_post(Semaphore *sem) {
+StatusCode ms_sem_post(Semaphore *sem) {
   if (sem == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -87,7 +87,7 @@ StatusCode sem_post(Semaphore *sem) {
   return STATUS_CODE_OK;
 }
 
-uint32_t sem_num_items(Semaphore *sem) {
+uint32_t ms_sem_num_items(Semaphore *sem) {
   if (sem == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

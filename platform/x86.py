@@ -5,7 +5,6 @@ commonflags = [
     '-Os',
     '-Wall',
     '-Wextra',
-    '-Werror',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
     '-Wpointer-arith',
@@ -17,6 +16,7 @@ commonflags = [
 cflags = [
     '-std=gnu11',
     '-Wno-discarded-qualifiers',
+    '-Werror',
 ] + commonflags
 
 cxxflags = [

@@ -37,7 +37,7 @@
  */
 class JSONManager {
  private:
-  static constexpr const char *DEFAULT_JSON_PATH = "./Simulation_JSON/"; /**< Default JSON folder path */
+  static constexpr const char *DEFAULT_JSON_PATH = "./mpxe/Simulation_JSON/"; /**< Default JSON folder path */
   std::filesystem::path m_projectBasePath;                               /**<  Temporary variable to store project file path */
 
   /**

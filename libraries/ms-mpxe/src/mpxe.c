@@ -17,8 +17,8 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "mpxe.h"
 #include "client_interface.h"
+#include "mpxe.h"
 
 static ClientInstance *client = NULL;
 

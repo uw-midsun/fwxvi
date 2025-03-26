@@ -61,8 +61,8 @@ void *processMessagesProcedureWrapper(void *param) {
 
   try {
     client->processMessagesProcedure();
-  } catch (...) {
-    std::cerr << "Process Messages Thread Error" << std::endl;
+  } catch (std::exception &e) {
+    std::cerr << "Process Messages Thread Error " << e.what() << std::endl;
   }
 
   return nullptr;
@@ -96,6 +96,7 @@ void Client::connectServer() {
 
     if (connect(m_clientSocket, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
       close(m_clientSocket);
+      std::cout << "Port number " << m_port << "Address: " << m_host << std::endl;
       throw std::runtime_error("Error connecting socket");
     }
 

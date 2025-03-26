@@ -18,6 +18,8 @@
 #include "app.h"
 #include "app_callback.h"
 
+GpioManager clientGpioManager;
+
 std::string projectName = DEFAULT_PROJECT_NAME;
 std::string hardwareModel = DEFAULT_HARDWARE_MODEL;
 

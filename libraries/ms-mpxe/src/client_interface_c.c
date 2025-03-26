@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 /* Inter-component Headers */
@@ -103,6 +104,7 @@ void client_destroy(ClientInstance *instance) {
 /* Internal callback function for message events, redirects to user callback */
 static void internal_message_callback(void *context, const char *message, int length) {
   ClientInstance *instance = (ClientInstance *)context;
+  printf("MESSAGE CALL BACK\n");
   if (instance && instance->msg_cb) {
     instance->msg_cb(instance->user_context, message, length);
   }
@@ -111,6 +113,7 @@ static void internal_message_callback(void *context, const char *message, int le
 /* Internal callback function for connect events, redirects to user callback */
 static void internal_connect_callback(void *context) {
   ClientInstance *instance = (ClientInstance *)context;
+  printf("CONNECT CALL BACK\n");
   if (instance && instance->con_cb) {
     instance->con_cb(instance->user_context);
   }

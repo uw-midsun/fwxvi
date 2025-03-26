@@ -42,7 +42,7 @@ typedef Semaphore Mutex;
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_UNINITIALIZED on failure
  */
-StatusCode mutex_init(Mutex *mutex);
+StatusCode ms_mutex_init(Mutex *mutex);
 
 /**
  * @brief   Locks a Mutex
@@ -55,7 +55,7 @@ StatusCode mutex_init(Mutex *mutex);
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_TIMEOUT on timeout
  */
-StatusCode mutex_lock(Mutex *mutex, uint16_t ms_to_wait);
+StatusCode ms_mutex_lock(Mutex *mutex, uint16_t ms_to_wait);
 
 /**
  * @brief   Unlocks a Mutex
@@ -67,7 +67,7 @@ StatusCode mutex_lock(Mutex *mutex, uint16_t ms_to_wait);
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_INTERNAL_ERROR on failure
  */
-StatusCode mutex_unlock(Mutex *mutex);
+StatusCode ms_mutex_unlock(Mutex *mutex);
 
 /**
  * @brief   Initializes counting semaphore with max and initial count
@@ -77,7 +77,7 @@ StatusCode mutex_unlock(Mutex *mutex);
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_UNINITIALIZED on pxSemaphoreBuffer is NULL
  */
-StatusCode sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count);
+StatusCode ms_sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count);
 
 /**
  * @brief   Obtains previously initiated semaphore and decrements the counting semaphore
@@ -87,7 +87,7 @@ StatusCode sem_init(Semaphore *sem, uint32_t max_count, uint32_t initial_count);
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_TIMEOUT if xTicksToWait expires
  */
-StatusCode sem_wait(Semaphore *sem, uint32_t timeout_ms);
+StatusCode ms_sem_wait(Semaphore *sem, uint32_t timeout_ms);
 
 /**
  * @brief   Releases a semaphore and increments the counting semaphore
@@ -97,6 +97,6 @@ StatusCode sem_wait(Semaphore *sem, uint32_t timeout_ms);
  * @return  STATUS_CODE_OK if semaphore is released
  *          STATUS_CODE_INTERNAL_ERROR on error
  */
-StatusCode sem_post(Semaphore *sem);
+StatusCode ms_sem_post(Semaphore *sem);
 
 /** @} */

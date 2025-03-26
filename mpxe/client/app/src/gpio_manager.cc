@@ -47,7 +47,7 @@ std::string GpioManager::processGpioPinState(std::string &payload) {
   m_gpioDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_gpioDatagram.getGpioPort()), .pin = m_gpioDatagram.getGpioPin() };
-  uint8_t pinState = static_cast<uint8_t>(gpio_peek_state(&pinAddress));
+  uint8_t pinState = static_cast<uint8_t>(gpio_get_state(&pinAddress));
 
   m_gpioDatagram.clearBuffer();
   m_gpioDatagram.setBuffer(&pinState, sizeof(pinState));
@@ -67,7 +67,7 @@ std::string GpioManager::processGpioAllStates() {
     size_t blockIndex = i / 32U;
     size_t bitPosition = i % 32U;
     GpioAddress pinAddress = { .port = static_cast<GpioPort>(i / 16U), .pin = i % 16U };
-    GpioState pinState = gpio_peek_state(&pinAddress);
+    GpioState pinState = gpio_get_state(&pinAddress);
     gpioStateBitsetArray[blockIndex] |= (static_cast<uint32_t>(pinState << bitPosition));
   }
   m_gpioDatagram.setGpioPort(Datagram::Gpio::Port::NUM_GPIO_PORTS);

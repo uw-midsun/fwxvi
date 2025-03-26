@@ -195,6 +195,12 @@ elif COMMAND == "cantools":
     AlwaysBuild(Command('#/cantools', [], 'python3 -m autogen cantools -o can/tools'))
 
 ###########################################################
+# Cantools Autogeneration Script
+###########################################################
+elif COMMAND == "mpxe":
+    SConscript('scons/mpxe.scons', exports='VARS')
+
+###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build
