@@ -66,6 +66,12 @@ env.Command(
     f"python3 -m autogen system_can -o can/inc"
 )
 
+env.Command(
+    LIBRARIES_INC_DIR.File("system_can.h"),
+    autogen_sources,
+    f"python3 -m autogen system_can -o mpxe/server/app/inc"
+)
+
 def generate_can_files(env, project):
     project_can_dir = OBJ_DIR.Dir(project).Dir("can")
     output_files = []
