@@ -9,6 +9,7 @@
 
 /* Standard library Headers */
 #include <iostream>
+#include <cstdint>
 
 /* Inter-component Headers */
 

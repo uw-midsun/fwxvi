@@ -11,6 +11,7 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#include <cstdint>
 
 /* Inter-component Headers */
 

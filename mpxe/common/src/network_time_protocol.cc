@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <cstring>
 #include <iostream>
+#include <cstdint>
 
 /* Inter-component Headers */
 #include <arpa/inet.h>
