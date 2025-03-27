@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['ack_0',['ack',['../structBootloaderDatagram.html#a92a91ed0932a3397b8120946da5f3ff1',1,'BootloaderDatagram']]],
+  ['ack_1',['ACK',['../group__bootloader.html#ga6f6489887e08bff4887d0bc5dcf214d8',1,'bootloader_can_datagram.h']]],
+  ['ack_5fstatus_2',['ack_status',['../structBootloaderDatagram.html#aae49b34652786faea6f27749d3e61fb6',1,'BootloaderDatagram']]],
+  ['adc_3',['ADC',['../group__ADC.html',1,'']]],
+  ['adc_5fadd_5fchannel_4',['adc_add_channel',['../group__ADC.html#gaf06780ab770142b33c305765a721b34b',1,'adc_add_channel(GpioAddress *address):&#160;adc.c'],['../group__ADC.html#gaf06780ab770142b33c305765a721b34b',1,'adc_add_channel(GpioAddress *address):&#160;adc.c'],['../group__ADC.html#gaf06780ab770142b33c305765a721b34b',1,'adc_add_channel(GpioAddress *address):&#160;adc.c']]],
+  ['adc_5fdeinit_5',['adc_deinit',['../group__ADC.html#gafbb7b142da6d12286623980f437dfe4a',1,'adc_deinit(void):&#160;adc.c'],['../group__ADC.html#gafbb7b142da6d12286623980f437dfe4a',1,'adc_deinit(void):&#160;adc.c'],['../group__ADC.html#gafbb7b142da6d12286623980f437dfe4a',1,'adc_deinit(void):&#160;adc.c']]],
+  ['adc_5finit_6',['adc_init',['../group__ADC.html#gae681f533e6b6b249b39bf95c12188d4c',1,'adc_init(void):&#160;adc.c'],['../group__ADC.html#gae681f533e6b6b249b39bf95c12188d4c',1,'adc_init(void):&#160;adc.c'],['../group__ADC.html#gae681f533e6b6b249b39bf95c12188d4c',1,'adc_init(void):&#160;adc.c']]],
+  ['adc_5fmode_5fcontinuous_7',['ADC_MODE_CONTINUOUS',['../group__ADC.html#ggafa9c4a198302f727ed38717edf8f7a31a92e8c710f599e77a25df33ee26a2307e',1,'adc.h']]],
+  ['adc_5fmode_5fsingle_8',['ADC_MODE_SINGLE',['../group__ADC.html#ggafa9c4a198302f727ed38717edf8f7a31a25edc83881f7fcf73f101ed72149a3d4',1,'adc.h']]],
+  ['adc_5fread_5fconverted_9',['adc_read_converted',['../group__ADC.html#gaf9a7702416ee5ee8fc3dda1672daba97',1,'adc_read_converted(GpioAddress *address, uint16_t *reading):&#160;adc.c'],['../group__ADC.html#gaf9a7702416ee5ee8fc3dda1672daba97',1,'adc_read_converted(GpioAddress *address, uint16_t *reading):&#160;adc.c'],['../group__ADC.html#gaf9a7702416ee5ee8fc3dda1672daba97',1,'adc_read_converted(GpioAddress *address, uint16_t *reading):&#160;adc.c']]],
+  ['adc_5fread_5fraw_10',['adc_read_raw',['../group__ADC.html#ga551d10a11b086c3a7f2b5df6b73ca437',1,'adc_read_raw(GpioAddress *address, uint16_t *reading):&#160;adc.c'],['../group__ADC.html#ga551d10a11b086c3a7f2b5df6b73ca437',1,'adc_read_raw(GpioAddress *address, uint16_t *reading):&#160;adc.c'],['../group__ADC.html#ga551d10a11b086c3a7f2b5df6b73ca437',1,'adc_read_raw(GpioAddress *address, uint16_t *reading):&#160;adc.c']]],
+  ['adc_5frun_11',['adc_run',['../group__ADC.html#ga5611182832e4283ddd9ae5a0ff892699',1,'adc_run(void):&#160;adc.c'],['../group__ADC.html#ga5611182832e4283ddd9ae5a0ff892699',1,'adc_run(void):&#160;adc.c'],['../group__ADC.html#ga5611182832e4283ddd9ae5a0ff892699',1,'adc_run(void):&#160;adc.c']]],
+  ['adc_5ftimeout_5fms_12',['ADC_TIMEOUT_MS',['../group__ADC.html#gadff52ac383a7699b0c50b3d946a1fe60',1,'adc.h']]],
+  ['adcmode_13',['AdcMode',['../group__ADC.html#gafa9c4a198302f727ed38717edf8f7a31',1,'adc.h']]],
+  ['adcstatus_14',['AdcStatus',['../structAdcStatus.html',1,'']]],
+  ['address_15',['address',['../structGpioInterrupt.html#abbde6988f7d8200e1d7b6f1234a86750',1,'GpioInterrupt']]],
+  ['application_5fsize_16',['APPLICATION_SIZE',['../group__bootloader.html#ga7b22e4404e2c0e77f4a419c0e1539603',1,'bootloader.h']]],
+  ['application_5fstart_17',['application_start',['../structBootloaderStateData.html#a3f42c41b619e5bc939f2114855e0ae95',1,'BootloaderStateData']]],
+  ['application_5fstart_5faddress_18',['APPLICATION_START_ADDRESS',['../group__bootloader.html#ga3cd1c5fb530c5758a80413ee8611d70b',1,'bootloader.h']]],
+  ['autogeneration_20tools_19',['Autogeneration tools',['../group__autogen.html',1,'']]],
+  ['aux_5fsense_5finit_20',['aux_sense_init',['../group__bms__carrier.html#ga773ac4a1273adfd95710b48cd63f9beb',1,'aux_sense_init(BmsStorage *storage):&#160;aux_sense.c'],['../group__bms__carrier.html#ga773ac4a1273adfd95710b48cd63f9beb',1,'aux_sense_init(BmsStorage *storage):&#160;aux_sense.c']]],
+  ['aux_5fsense_5frun_21',['aux_sense_run',['../group__bms__carrier.html#ga0911d1fbb3a16d088ffcbccd53429f71',1,'aux_sense_run(void):&#160;aux_sense.c'],['../group__bms__carrier.html#ga0911d1fbb3a16d088ffcbccd53429f71',1,'aux_sense_run():&#160;aux_sense.c']]],
+  ['aux_5fsense_5fstorage_22',['aux_sense_storage',['../structBmsStorage.html#a80b92d2f2a84681ca7ca92f9040b08d8',1,'BmsStorage']]],
+  ['auxsensestorage_23',['AuxSenseStorage',['../structAuxSenseStorage.html',1,'']]],
+  ['averaged_5fsoc_24',['averaged_soc',['../structStateOfChargeStorage.html#a83e8ed14293b5aaea9ca34b89455ac1a',1,'StateOfChargeStorage']]]
+];

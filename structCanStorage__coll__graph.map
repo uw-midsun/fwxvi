@@ -1,0 +1,6 @@
+<map id="CanStorage" name="CanStorage">
+<area shape="rect" id="node1" title="Storage class for the device ID and RX data." alt="" coords="31,181,129,207"/>
+<area shape="rect" id="node2" href="$structCanQueue.html" title="CAN queue data structure to store received CAN messages." alt="" coords="35,93,125,119"/>
+<area shape="rect" id="node3" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="5,5,69,31"/>
+<area shape="rect" id="node4" title=" " alt="" coords="93,5,152,31"/>
+</map>
