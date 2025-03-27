@@ -113,7 +113,6 @@ static void internal_message_callback(void *context, const char *message, int le
 /* Internal callback function for connect events, redirects to user callback */
 static void internal_connect_callback(void *context) {
   ClientInstance *instance = (ClientInstance *)context;
-  printf("CONNECT CALL BACK\n");
   if (instance && instance->con_cb) {
     instance->con_cb(instance->user_context);
   }
