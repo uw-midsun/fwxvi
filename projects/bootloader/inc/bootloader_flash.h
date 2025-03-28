@@ -31,6 +31,9 @@
 /** @brief  2KB per flash page as per datasheet */
 #define BOOTLOADER_PAGE_BYTES ((size_t)0x800)
 
+/** @brief  4KB max per ping */
+#define BOOTLOADER_PING_BYTES ((size_t)0x1000) //
+
 /** @brief  ARM32 Word size is 4 bytes */
 #define BOOTLOADER_FLASH_WORD_SIZE 4U
 

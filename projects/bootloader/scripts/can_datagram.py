@@ -218,7 +218,7 @@ class DatagramSender:
         '''Send a Datagram over CAN'''
         assert isinstance(message, Datagram)
         start_time = time.time()
-        message_extended_arbitration = False
+        message_extended_arbitration = bool(message.message_extended_arbitration)
         chunk_messages = list(self._chunkify(message.data, 8))
         sequence_number = 0
         
@@ -241,11 +241,11 @@ class DatagramSender:
                                     is_extended_id=message_extended_arbitration)
             
             self.bus.send(sequence_msg)
-            
+
             # Send data chunks (up to 1024 bytes)
             for chunk in current_chunk:
                 try:
-                    data_msg = can.Message(arbitration_id=FLASH,
+                    data_msg = can.Message(arbitration_id=message.datagram_type_id,
                                         data=chunk,
                                         is_extended_id=message_extended_arbitration)
                     self.bus.send(data_msg)
@@ -293,6 +293,7 @@ class DatagramSender:
         update_log("--------------------------------- COMPLETED ---------------------------------")
         update_log(f"Time Elapsed: {end_time - start_time}")
         update_log(f"All data sent successfully. Total sequences: {sequence_number}\n")
+
 
     @staticmethod
     def _chunkify(data, size):

@@ -17,6 +17,7 @@
 /* Intra-component Headers */
 #include "bootloader_can.h"
 #include "bootloader_error.h"
+#include "bootloader_flash.h"
 
 /**
  * @defgroup bootloader
@@ -70,8 +71,21 @@ typedef enum {
   BOOTLOADER_WAIT_SEQUENCING,   /**< Bootloader is waiting for the data sequencing packet */
   BOOTLOADER_DATA_RECEIVE,      /**< Bootloader is receiving streamed data and flashing it in 2048 byte chunks */
   BOOTLOADER_JUMP_APP,          /**< Bootloader is prompted to jump to application defined by APPLICATION_START_ADDRESS */
-  BOOTLOADER_FAULT              /**< Bootloader is in fault state */
+  BOOTLOADER_FAULT,             /**< Bootloader is in fault state */
+  BOOTLOADER_PING               /**< Bootloader is ready to start receiving data */
 } BootloaderStates;
+
+/**
+ * @brief Bootloader Ping States
+ */
+typedef enum {
+  /// @brief Bootloader should start pinging MCU's
+  BOOTLOADER_PING_NODES = 0,
+  /// @brief Bootloader ping should do branch stuff
+  BOOTLOADER_PING_BRANCH,
+  /// @brief Bootloader ping should do group stuff
+  BOOTLOADER_PING_PROJECT,
+} BootloaderPingStates;
 
 /**
  * @brief   Private Bootloader State Storage
@@ -84,11 +98,13 @@ typedef struct {
   uint32_t packet_crc32;             /**< Packet CRC32 if available */
   uint16_t expected_sequence_number; /**< Next expected sequence number for validation */
   uint16_t buffer_index;             /**< Data buffer index for correct reading/writing */
-
+  BootloaderPingStates ping_type;    /**< Ping state of bootloader */
+  uint8_t ping_data_len;             /**< Length of ping data */
   BootloaderStates state;   /**< Internal state tracker */
   BootloaderError error;    /**< Bootloader error tracker */
   uint16_t target_nodes;    /**< Target MCU Ids */
   bool first_byte_received; /**< Boolean flag to track if the first byte was received */
+  bool first_ping_received; /**< Boolean flag to track if the first ping was received */
 } BootloaderStateData;
 
 /**
