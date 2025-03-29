@@ -1,4 +1,5 @@
 #include "ltc_afe.h"
+#include "ltc_afe_regs.h"
 
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
   return STATUS_CODE_UNIMPLEMENTED;

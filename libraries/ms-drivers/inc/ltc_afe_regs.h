@@ -1,5 +1,6 @@
 #pragma once
 #include <assert.h>
+#include <stdint.h>
 
 // used internally by the LTC AFE driver
 #define LTC6811_CELLS_IN_REG 3
