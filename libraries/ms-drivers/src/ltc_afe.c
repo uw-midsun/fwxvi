@@ -2,6 +2,22 @@
 #include "ltc_afe_regs.h"
 
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
+  // Check if arguments are valid
+
+  // Initialize memory
+
+  // Calculate offsets
+
+  // Initialize CRC stuff??? (look at fwxv)
+
+  // Initialize SPI settings
+
+  // Configure GPIO
+
+  // Set PWM cycle settings
+
+  // Actually write configuration settings to AFE fr fr
+  
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
