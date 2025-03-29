@@ -84,13 +84,6 @@ typedef struct LtcAfeStorage {
   LtcAfeSettings settings;
 } LtcAfeStorage;
 
-// Initialize the LTC6811.
-// |settings.cell_bitset| and |settings.aux_bitset| should be an array of bitsets where bits 0 to 11
-// represent whether we should monitor the cell input for the given device.
-// |settings.cell_result_cb| and |settings.aux_result_cb| will be called when the corresponding
-// conversion is completed.
-StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings);
-
 // Helper functions for the LTC6811
 //
 // This module is mostly exposed for the FSM. Do not use functions in this module directly.
@@ -102,11 +95,12 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings);
 // Note that all units are in 100uV.
 //
 // This module supports AFEs with fewer than 12 cells using the |input_bitset|.
-#include "ltc_afe.h"
 
 // Initialize the LTC6811.
 // |settings.cell_bitset| and |settings.aux_bitset| should be an array of bitsets where bits 0 to 11
 // represent whether we should monitor the cell input for the given device.
+// |settings.cell_result_cb| and |settings.aux_result_cb| will be called when the corresponding
+// conversion is completed.
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings);
 
 // Write an LTC config based on the given storage settings
