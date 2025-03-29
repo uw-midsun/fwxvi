@@ -1,6 +1,5 @@
 #pragma once
 #include <assert.h>
-#include <stdint.h>
 
 // used internally by the LTC AFE driver
 #define LTC6811_CELLS_IN_REG 3
@@ -224,4 +223,3 @@ static_assert(sizeof(LtcAfeAuxRegisterGroupPacket) == 8, "LtcAfeAuxRegisterGroup
 
 // see Table 17 (p. 38)
 #define LTC6811_PWMC_DC_100 (0xF)
-
