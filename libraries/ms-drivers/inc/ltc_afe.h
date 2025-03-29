@@ -19,7 +19,7 @@
 #include "gpio.h"
 #include "spi.h"
 #include "status.h"
-#include "ltc_afe.h"
+
 
 // This is an arbitrary limitation, can be increased/decreased if needed
 #define LTC_AFE_MAX_DEVICES 3
