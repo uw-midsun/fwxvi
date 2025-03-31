@@ -75,6 +75,10 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
 
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
   // Check if arguments are valid
+  if (settings->num_devices > LTC_AFE_MAX_DEVICES
+    ) {
+      // In progress
+  }
 
   // Initialize memory
 

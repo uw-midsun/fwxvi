@@ -18,8 +18,7 @@
 #include "fsm.h"
 #include "gpio.h"
 #include "spi.h"
-#include "status.h"
-
+#include "status.h" 
 
 // This is an arbitrary limitation, can be increased/decreased if needed
 #define LTC_AFE_MAX_DEVICES 3
