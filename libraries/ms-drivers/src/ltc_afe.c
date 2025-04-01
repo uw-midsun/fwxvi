@@ -75,9 +75,14 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
 
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
   // Check if arguments are valid
-  if (settings->num_devices > LTC_AFE_MAX_DEVICES
-    ) {
-      // In progress
+  if (settings->num_devices > LTC_AFE_MAX_DEVICES) {
+    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
+  }
+  if (settings->num_cells > LTC_AFE_MAX_CELLS) {
+    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured cell count exceeds device limitations.");
+  }
+  if (settings->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
+    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured thermistor count exceeds limitations.");
   }
 
   // Initialize memory
