@@ -119,13 +119,13 @@ class Adc {
   uint8_t getGpioPin() const;
 
   /**
-   * @brief   Gets the Gpio buffer length
+   * @brief   Gets the Adc buffer length
    * @return  Buffer length
    */
   uint8_t getBufferLength() const;
 
   /**
-   * @brief   Gets the Gpio buffer
+   * @brief   Gets the Adc buffer
    * @return  Pointer to the buffer array
    */
   const uint8_t *getBuffer() const;
