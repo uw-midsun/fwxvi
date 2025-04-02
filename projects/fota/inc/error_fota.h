@@ -1,3 +1,4 @@
+#pragma once
 
 typedef enum FotaError {
     FOTA_ERROR_SUCCESS,
