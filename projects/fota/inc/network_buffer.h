@@ -23,6 +23,8 @@
 #define MAX_PACKETS 8 
 #define PACKET_BYTES 256
 
+#define MAX_BYTES 1024
+
 /**
  * @brief struct containing details of circular buffer
  * 
@@ -45,7 +47,8 @@ typedef struct NetworkBuffer {
 typedef enum returnStatus {
     SUCCESS = 0,
     ALREADY_INITALISED,
-    NOT_INITALIZED
+    NOT_INITALIZED,
+    BUFFER_ERROR
 } returnStatus;
 
 /**
