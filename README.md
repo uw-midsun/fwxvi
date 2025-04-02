@@ -12,6 +12,7 @@ This repository contains all firmware for the [University of Waterloo](https://u
 - UART Controller (UART CLI)
 - IMU Board
 - CAN Autogen
+- MPXE (Multi-Project x86 Emulation)
 
 ## Getting Started
 
