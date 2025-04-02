@@ -2,7 +2,7 @@
 
 // x^{15} + x^{14} + x^{10} + x^{8} + x^{7} + x^{4} + x^{3} + x^{0}
 // so divisor is: 0b1100010110011001 (0xC599)
-// 0xC599 - (2^15) == 0x4599
+// 0xC599 - (2^15) == 0x4599 (Since crc15, 15th bit HAS to be 1)
 #define CRC_POLYNOMIAL 0x4599
 
 static uint16_t s_crc15_table[256];

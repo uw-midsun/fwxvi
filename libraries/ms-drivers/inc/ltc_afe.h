@@ -28,6 +28,7 @@
 #define LTC_AFE_MAX_CELLS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_CELLS_PER_DEVICE)
 #define LTC_AFE_MAX_THERMISTORS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_THERMISTORS_PER_DEVICE)
 
+// Remove padding, if possible
 #if defined(__GNUC__)
 #define _PACKED __attribute__((packed))
 #else
@@ -113,6 +114,7 @@ StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell);
 // Reads converted voltages from the AFE into the storage result arrays.
 StatusCode ltc_afe_read_cells(LtcAfeStorage *afe);
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell);
+
 // Mark cell for discharging (takes effect after config is re-written)
 // |cell| should be [0, LTC_AFE_MAX_CELLS)
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge);
