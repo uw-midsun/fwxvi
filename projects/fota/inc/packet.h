@@ -5,6 +5,11 @@
 
 #define PAYLOAD_SIZE 256
 
+typedef enum {
+    HEADER_PACKET,
+    DATA_PACKET,
+    ERROR_PACKET
+} PacketType;
 typedef struct {
     uint8_t sof;
     PacketType packet_type; 
@@ -14,14 +19,6 @@ typedef struct {
     uint8_t eof;
 } Packet;
 
-typedef enum PacketType {
-    HEADER_PACKET,
-    DATA_PACKET,
-    ERROR_PACKET
-};
-
 FotaError encode_packet(Packet* packet, uint8_t* payload);
 
 FotaError decode_packet(Packet* packet, uint8_t* payload);
-
-

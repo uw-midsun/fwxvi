@@ -14,4 +14,3 @@ typedef struct {
 FotaError crc_check(PacketManager* packet_manager);
 
 FotaError transmit_packet(PacketManager* packet_manager);
-
