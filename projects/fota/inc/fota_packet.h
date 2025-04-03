@@ -1,23 +1,21 @@
 #pragma once
 
 /************************************************************************************************
- * @file   packet_manager.h
+ * @file   fota_packet.h
  *
- * @brief  Packet manager class for firmware over the air (FOTA) updates
+ * @brief  Packet implementation for firmware over the air (FOTA) updates
  *
  * @date   2025-03-16
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdbool.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
 #include "fota_error.h"
-#include "fota_packet.h"
 
 /**
  * @defgroup FOTA
@@ -25,17 +23,20 @@
  * @{
  */
 
-#define PACKET_NUM 8
+#define PAYLOAD_SIZE 256
 
+typedef enum { HEADER_PACKET, DATA_PACKET, ERROR_PACKET } PacketType;
 typedef struct {
-  Packet rx_packets[PACKET_NUM];
-  uint32_t crc32_expected;
-  uint32_t crc32_calculated;
-  Packet tx_packet;
-} PacketManager;
+  uint8_t sof;
+  PacketType packet_type;
+  uint8_t sequence_num;
+  uint16_t payload_length;
+  uint8_t payload[PAYLOAD_SIZE];
+  uint8_t eof;
+} Packet;
 
-FotaError crc_check(PacketManager *packet_manager);
+FotaError encode_packet(Packet *packet, uint8_t *payload);
 
-FotaError transmit_packet(PacketManager *packet_manager);
+FotaError decode_packet(Packet *packet, uint8_t *payload);
 
 /** @} */

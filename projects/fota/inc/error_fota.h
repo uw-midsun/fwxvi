@@ -1,8 +1,0 @@
-#pragma once
-
-typedef enum {
-    FOTA_ERROR_SUCCESS,
-    FOTA_ERROR_INVALID_ARGS,
-    FOTA_ERROR_INTERNAL_ERROR,
-    FOTA_ERROR_CRC_MISMATCH
-} FotaError;
