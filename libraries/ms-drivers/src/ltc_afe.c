@@ -94,8 +94,7 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
 
   // Initialize memory
   memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
-  // Copy LtcAfeSetting struct members (settings) to address of the LtcAfeSetting struct within afe (also named "settings")
-  /// Probably could make this clearer?
+  // Copy values of config struct members to address of the settings struct within afe
   memcpy(&afe->settings, config, sizeof(afe->settings));  
 
   // Calculate offsets
