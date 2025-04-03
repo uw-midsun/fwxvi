@@ -77,17 +77,17 @@ static StatusCode prv_read_voltage(LtcAfeStorage *afe, LtcAfeVoltageRegister reg
   return prv_read_register(afe, reg, (uint8_t *)all_devices_data, len);
 }
 
-StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
+StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   // Check if arguments are valid
-  if (settings->num_devices > LTC_AFE_MAX_DEVICES) {
+  if (config->num_devices > LTC_AFE_MAX_DEVICES) {
     return status_msg(STATUS_CODE_INVALID_ARGS, 
                       "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
   }
-  if (settings->num_cells > LTC_AFE_MAX_CELLS) {
+  if (config->num_cells > LTC_AFE_MAX_CELLS) {
     return status_msg(STATUS_CODE_INVALID_ARGS, 
                       "AFE: Configured cell count exceeds device limitations.");
   }
-  if (settings->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
+  if (config->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
     return status_msg(STATUS_CODE_INVALID_ARGS,
                       "AFE: Configured thermistor count exceeds limitations.");
   }
@@ -96,7 +96,7 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
   memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
   // Copy LtcAfeSetting struct members (settings) to address of the LtcAfeSetting struct within afe (also named "settings")
   /// Probably could make this clearer?
-  memcpy(&afe->settings, settings, sizeof(afe->settings));  
+  memcpy(&afe->settings, config, sizeof(afe->settings));  
 
   // Calculate offsets
 
