@@ -98,7 +98,8 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
 }
 
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  
+  return STATUS_CODE_OK;
 }
 
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
@@ -158,8 +159,36 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
 }
 
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
+  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeAuxData devices_reg_data[LTC_AFE_MAX_DEVICES] = { 0 };
 
-  return STATUS_CODE_UNIMPLEMENTED;
+  size_t len = settings->num_devices * sizeof(LtcAfeAuxData);
+  status_ok_or_return(prv_read_register(afe, LTC_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len));
+
+  // Loop through devices
+  for (uint16_t device = 0; device < settings->num_devices; ++device) {
+    uint16_t received_pec = devices_reg_data[device].pec >> 8 | devices_reg_data[device].pec << 8;
+    uint16_t data_pec = crc15_calculate((uint8_t *)&devices_reg_data[device], 6);
+
+    if (received_pec != data_pec) {
+      // return early on failure
+      LOG_DEBUG("Communication Failed with device: %d\n\r", device);
+      LOG_DEBUG("RECEIVED_PEC: %d\n\r", received_pec);
+      LOG_DEBUG("DATA_PEC: %d\n\r", data_pec);
+      return status_code(STATUS_CODE_INTERNAL_ERROR);
+    }
+
+    // data comes in in the form { 1, 1, 2, 2, 3, 3, PEC, PEC }
+    // we only care about GPIO4 and the PEC
+    uint16_t voltage = devices_reg_data[device].reg.voltages[0];
+
+    if ((settings->aux_bitset[device] >> device_cell) & 0x1) {
+      // Input enabled - store result
+      uint16_t index = device * LTC_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
+      afe->aux_voltages[index] = voltage;
+    }
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge) {

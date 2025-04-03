@@ -135,8 +135,8 @@ typedef struct {
   LtcAfeRegisterData reg;
 
   uint16_t pec;
-} _PACKED LtcAfeAuxRegisterGroupPacket;
-static_assert(sizeof(LtcAfeAuxRegisterGroupPacket) == 8, "LtcAfeAuxRegisterGroupPacket must be 8 bytes");
+} _PACKED LtcAfeAuxData;
+static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 
 // command codes
 // see Table 38 (p.59)
