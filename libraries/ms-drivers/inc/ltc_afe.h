@@ -44,6 +44,7 @@ typedef struct LtcAfeBitset {
   uint16_t aux_bitset;
 } LtcAfeBitset;
 
+// Configuration Data (used once at setup)
 typedef struct LtcAfeSettings {
   GpioAddress cs;
   GpioAddress mosi;
@@ -65,6 +66,7 @@ typedef struct LtcAfeSettings {
   void *result_context;
 } LtcAfeSettings;
 
+// Runtime Data (updates over time)
 typedef struct LtcAfeStorage {
   // Only used for storage in the FSM so we store data for the correct cells
   uint16_t aux_index;
@@ -101,7 +103,7 @@ typedef struct LtcAfeStorage {
 // represent whether we should monitor the cell input for the given device.
 // |settings.cell_result_cb| and |settings.aux_result_cb| will be called when the corresponding
 // conversion is completed.
-StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings);
+StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
 
 // Write an LTC config based on the given storage settings
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe);

@@ -73,19 +73,25 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
 
 }
 
-StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
+StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   // Check if arguments are valid
-  if (settings->num_devices > LTC_AFE_MAX_DEVICES) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
+  if (config->num_devices > LTC_AFE_MAX_DEVICES) {
+    return status_msg(STATUS_CODE_INVALID_ARGS, 
+                      "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
   }
-  if (settings->num_cells > LTC_AFE_MAX_CELLS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured cell count exceeds device limitations.");
+  if (config->num_cells > LTC_AFE_MAX_CELLS) {
+    return status_msg(STATUS_CODE_INVALID_ARGS, 
+                      "AFE: Configured cell count exceeds device limitations.");
   }
-  if (settings->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, "AFE: Configured thermistor count exceeds limitations.");
+  if (config->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
+    return status_msg(STATUS_CODE_INVALID_ARGS,
+                      "AFE: Configured thermistor count exceeds limitations.");
   }
 
   // Initialize memory
+  memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
+  // Copy values of config struct members to address of the settings struct within afe
+  memcpy(&afe->settings, config, sizeof(afe->settings));  
 
   // Calculate offsets
 
