@@ -35,8 +35,9 @@ static void prv_wakeup_idle(LtcAfeStorage *afe) {
   }
 }
 
-static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint8_t *all_devices_data, size_t len){
-  if (reg >= NUM_LTC_AFE_REGISTERS || all_devices_data == NULL || len == 0){
+// Read data from register and store it in devices_data
+static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint8_t *devices_data, size_t len){
+  if (reg >= NUM_LTC_AFE_REGISTERS || devices_data == NULL || len == 0){
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
@@ -46,7 +47,7 @@ static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint
   prv_build_cmd(reg_cmd, cmd, LTC6811_CMD_SIZE);
 
   prv_wakeup_idle(afe);
-  return spi_exchange(afe->settings.spi_port, cmd, LTC6811_CMD_SIZE, all_devices_data, len);
+  return spi_exchange(afe->settings.spi_port, cmd, LTC6811_CMD_SIZE, devices_data, len);
 }
 
 // Split command into 8 byte chunks and add PEC to full command
@@ -65,16 +66,6 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
   // Layout of command: 0xCMD[0]\0xCMD[1]\0xCMD[2]\0xCMD[3]
 
   return STATUS_CODE_OK;
-}
-
-// read from a voltage register
-static StatusCode prv_read_voltage(LtcAfeStorage *afe, LtcAfeVoltageRegister reg, LtcAfeVoltageData *all_devices_data) {
-  if (reg > NUM_LTC_AFE_VOLTAGE_REGISTERS) {
-    return status_code(STATUS_CODE_INVALID_ARGS);
-  }
-
-  size_t len = sizeof(LtcAfeVoltageData) * afe->settings.num_devices;
-  return prv_read_register(afe, reg, (uint8_t *)all_devices_data, len);
 }
 
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
@@ -124,14 +115,17 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
   for (LtcAfeVoltageRegister v_reg_group = LTC_AFE_VOLTAGE_REGISTER_A;
        v_reg_group < NUM_LTC_AFE_VOLTAGE_REGISTERS;
        ++v_reg_group) {
+
     // Max devices macro used because value must be known at runtime
-    LtcAfeVoltageData afe_device[LTC_AFE_MAX_DEVICES] = { 0 };
-    status_ok_or_return(prv_read_voltage(afe, v_reg_group, afe_device));
+    LtcAfeVoltageData devices_data[LTC_AFE_MAX_DEVICES] = { 0 };
+
+    size_t len = sizeof(LtcAfeVoltageData) * afe->settings.num_devices;
+    status_ok_or_return(prv_read_register(afe, v_reg_group, (uint8_t *)devices_data, len));
 
     // Loop through the number of AFE devices connected for each voltage group
     for (uint8_t device = 0; device < settings->num_devices; ++device) {
-      uint16_t received_pec = afe_device[device].pec >> 8 | afe_device[device].pec << 8; // Swap endianness
-      uint16_t data_pec = crc15_calculate((uint8_t *)&afe_device[device], 6);
+      uint16_t received_pec = devices_data[device].pec >> 8 | devices_data[device].pec << 8; // Swap endianness
+      uint16_t data_pec = crc15_calculate((uint8_t *)&devices_data[device], 6);
 
       // Check if there is an error in the data
       if (data_pec != received_pec) {
@@ -139,15 +133,15 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
         LOG_DEBUG("RECEIVED_PEC: %d\n\r", received_pec);
         LOG_DEBUG("DATA_PEC: %d\n\r", data_pec);
         LOG_DEBUG("Voltage: %d %d %d\n\r", 
-                  afe_device[device].reg.voltages[0],
-                  afe_device[device].reg.voltages[1],
-                  afe_device[device].reg.voltages[2]);
+                  devices_data[device].reg.voltages[0],
+                  devices_data[device].reg.voltages[1],
+                  devices_data[device].reg.voltages[2]);
         return STATUS_CODE_INTERNAL_ERROR;
       }
 
       // Loop through voltages in each register in the register group
       for (uint16_t cell = 0; cell < LTC6811_CELLS_IN_REG; ++cell) {
-        uint16_t voltage = afe_device[device].reg.voltages[cell];
+        uint16_t voltage = devices_data[device].reg.voltages[cell];
 
         // Determine index of the battery cell
         uint16_t device_cell = cell + (v_reg_group * LTC6811_CELLS_IN_REG);
@@ -164,6 +158,7 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
 }
 
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
+
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
