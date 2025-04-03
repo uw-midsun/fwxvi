@@ -44,6 +44,7 @@ typedef struct LtcAfeBitset {
   uint16_t aux_bitset;
 } LtcAfeBitset;
 
+// Configuration Data (static)
 typedef struct LtcAfeSettings {
   GpioAddress cs;
   GpioAddress mosi;
@@ -65,6 +66,7 @@ typedef struct LtcAfeSettings {
   void *result_context;
 } LtcAfeSettings;
 
+// Runtime Data (dynamic)
 typedef struct LtcAfeStorage {
   // Only used for storage in the FSM so we store data for the correct cells
   uint16_t aux_index;
