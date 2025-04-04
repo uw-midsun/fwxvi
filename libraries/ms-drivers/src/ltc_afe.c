@@ -70,6 +70,39 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
 
 static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins){
   LtcAfeSettings *settings = &afe->settings;
+  LtcAfeWriteConfigPacket config_packet = { 0 };
+
+  prv_build_cmd(LTC6811_WRCFG_RESERVED, config_packet.wrcfg, SIZEOF_ARRAY(config_packet.wrcfg));
+
+  /*
+   * Each set of CFGR registers (containing config data) is shifted through the chain of devices,
+   * so the first set sent reaches the last device (like a shift register).
+   * Therefore, we send config settings starting with the last slave in the stack.
+  */
+  for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
+    uint16_t undervoltage = 0;
+    uint16_t overvoltage = 0;
+
+    config_packet.devices[curr_device].reg.discharge_bitset = afe->discharge_bitset[curr_device];
+    config_packet.devices[curr_device].reg.discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
+
+    config_packet.devices[curr_device].reg.adcopt = ((settings->adc_mode + 1) > 3);
+    config_packet.devices[curr_device].reg.dten = true;
+
+    config_packet.devices[curr_device].reg.undervoltage = undervoltage;
+    config_packet.devices[curr_device].reg.overvoltage = overvoltage;
+
+    /* Shift 3 since bitfield uses the last 5 bits */
+    config_packet.devices[curr_device].reg.gpio = (gpio_enable_pins >> 3);
+
+    uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet.devices[curr_device].reg, 6);
+    config_packet.devices[curr_device].pec = cfgr_pec >> 8 | cfgr_pec << 8; /* Swap endianness */
+  }
+
+  size_t len = SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(settings->num_devices);
+  prv_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, (uint8_t *)&config_packet, len, NULL, 0);
+
 
 }
 
