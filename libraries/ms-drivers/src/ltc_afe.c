@@ -160,7 +160,9 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   // Calculate offsets
   prv_calc_offsets(afe);
 
-  // Initialize CRC stuff??? (look at fwxv)
+  // Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation
+  crc15_init_table();
+
 
   // Initialize SPI settings
 
