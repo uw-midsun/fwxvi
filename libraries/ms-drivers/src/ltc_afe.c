@@ -106,8 +106,35 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
 
 }
 
+static void prv_calc_offsets(LtcAfeStorage *afe) {
+  // Our goal is to populate result arrays as if the ignored inputs don't exist. This requires
+  // converting the actual LTC6811 cell index to some potentially smaller result index.
+  //
+  // Since we access the same register across multiple devices, we can't just keep a counter and
+  // increment it for each new value we get during register access. Instead, we precompute each
+  // input's corresponding result index. Inputs that are ignored will not be copied into the result
+  // array.
+  //
+  // Similarly, we do the opposite mapping for discharge.
+  LtcAfeSettings *settings = &afe->settings;
+  size_t cell_index = 0;
+  for (size_t device = 0; device < settings->num_devices; device++) {
+    size_t device_offset = device * LTC_AFE_MAX_CELLS_PER_DEVICE;  // Pre-compute offset
+    for (size_t device_cell = 0; device_cell < LTC_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
+      size_t cell = device_offset + device_cell;
+
+      if ((settings->cell_bitset[device] >> device_cell) & 0x1) {
+        // Cell input enabled - store the index that this input should be stored in
+        // when copying to the result array and the opposite for discharge
+        afe->discharge_cell_lookup[cell_index] = cell;
+        afe->cell_result_lookup[cell] = cell_index++;
+      }
+    }
+  }
+}
+
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
-  // Check if arguments are valid
+  /* Validate configuration settings based on device limitations */
   if (config->num_devices > LTC_AFE_MAX_DEVICES) {
     return status_msg(STATUS_CODE_INVALID_ARGS, 
                       "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
@@ -121,12 +148,12 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
                       "AFE: Configured thermistor count exceeds limitations.");
   }
 
-  // Initialize memory
+  /* Initialize memory */
   memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
-  // Copy values of config struct members to address of the settings struct within afe
-  memcpy(&afe->settings, config, sizeof(afe->settings));  
+  memcpy(&afe->settings, config, sizeof(afe->settings));  // Copy values of config struct members to address of the settings struct within afe
 
   // Calculate offsets
+  prv_calc_offsets(afe);
 
   // Initialize CRC stuff??? (look at fwxv)
 
