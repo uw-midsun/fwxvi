@@ -116,18 +116,23 @@ static void prv_calc_offsets(LtcAfeStorage *afe) {
   // array.
   //
   // Similarly, we do the opposite mapping for discharge.
+
   LtcAfeSettings *settings = &afe->settings;
-  size_t cell_index = 0;
+  size_t enabled_cell_index = 0;
+
   for (size_t device = 0; device < settings->num_devices; device++) {
     size_t device_offset = device * LTC_AFE_MAX_CELLS_PER_DEVICE;  // Pre-compute offset
-    for (size_t device_cell = 0; device_cell < LTC_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
-      size_t cell = device_offset + device_cell;
+    uint16_t bitmask = settings->cell_bitset[device];  // Extract bitmask once, showing enabled cells
 
-      if ((settings->cell_bitset[device] >> device_cell) & 0x1) {
+    for (size_t device_cell = 0; device_cell < LTC_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
+      size_t raw_cell_index = device_offset + device_cell;  // Absolute index of cell in current device across all devices
+
+      // Check if current cell is enabled through the given bitmask
+      if ((bitmask >> device_cell) & 0x1) {
         // Cell input enabled - store the index that this input should be stored in
         // when copying to the result array and the opposite for discharge
-        afe->discharge_cell_lookup[cell_index] = cell;
-        afe->cell_result_lookup[cell] = cell_index++;
+        afe->discharge_cell_lookup[enabled_cell_index] = raw_cell_index;
+        afe->cell_result_lookup[raw_cell_index] = enabled_cell_index++; 
       }
     }
   }
