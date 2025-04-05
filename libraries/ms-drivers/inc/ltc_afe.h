@@ -66,7 +66,7 @@ typedef struct LtcAfeSettings {
   void *result_context;
 } LtcAfeSettings;
 
-// Runtime Data (updates over time)
+/** @brief Runtime Data (updates over time) */
 typedef struct LtcAfeStorage {
   // Only used for storage in the FSM so we store data for the correct cells
   uint16_t aux_index;
@@ -105,7 +105,13 @@ typedef struct LtcAfeStorage {
 // conversion is completed.
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
 
-// Write an LTC config based on the given storage settings
+
+/**
+ * @brief   Writes configuration bits onto CFGR (Configuration Register Group)
+ * @details Writes configuration bits to each of the AFE devices' configuration register bits.      
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
+ * @return  Status code indicating success or failure
+ * */
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 
 // Triggers a conversion. Note that we need to wait for the conversions to complete before the
@@ -113,8 +119,25 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe);
 StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell);
 
-// Reads converted voltages from the AFE into the storage result arrays.
+/**
+ * @brief   Reads and stores cell voltages from the voltage cell registers of each afe 
+ * @details RDCVx (x = A, B, C, D) command is sent to read converted voltage from respective register group
+ *          Received PEC and PEC of data is compared to see if data is valid
+ *          Voltages are stored in the `afe->cell_voltages` array, if cell status is enabled
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
+ * @return  Status code indiciating success or failure
+ */
 StatusCode ltc_afe_read_cells(LtcAfeStorage *afe);
+
+/**
+ * @brief   Reads and stores auxillary input from GPIO4 of each afe 
+ * @details RDAUXB command is sent through SPI, and converted values are read from cell register group B
+ *          Only GPIO4 value is stored, as well as the PEC. 
+ *          PEC of data is compared to PEC read to check for validity
+ *          Values are stored in the `afe->aux_voltages` array
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
+ * @return  Status code indicating success or failure
+ */
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell);
 
 // Mark cell for discharging (takes effect after config is re-written)

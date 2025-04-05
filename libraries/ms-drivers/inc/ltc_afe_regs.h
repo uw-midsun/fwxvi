@@ -1,36 +1,39 @@
 #pragma once
 #include <assert.h>
 
-/* used internally by the LTC AFE driver (number of regs per reg group) */
+/** @brief  Used internally by the LTC AFE driver (number of regs per reg group) */
 #define LTC6811_CELLS_IN_REG 3
 #define LTC6811_GPIOS_IN_REG 3
 
-/* Used for the external mux (ADG731) connected to the AFE */
+/** @brief  Used for the external mux (ADG731) connected to the AFE */
 #define AUX_ADG731_NUM_PINS 32
 
-/* Size of command code (2 bytes) + PEC (2 bytes) */
+/** @brief  Size of command code (2 bytes) + PEC (2 bytes) */
 #define LTC6811_CMD_SIZE 4
 
-/* 3 bytes are required to send 24 clock cycles with our SPI driver for the STCOMM command */
+/** @brief  3 bytes are required to send 24 clock cycles with our SPI driver for the STCOMM command */
 #define LTC6811_NUM_COMM_REG_BYTES 3
 
-/* List of Registers (Latter mapped to s_read_reg[] array in ltc_afe.c)*/
+/**
+ * @brief List of LTC AFE registers
+ * @details These registers are mapped to the `s_read_reg[]` array in `ltc_afe.c`
+ */
 typedef enum {
-  LTC_AFE_REGISTER_CONFIG = 0,
-  LTC_AFE_REGISTER_CELL_VOLTAGE_A,
-  LTC_AFE_REGISTER_CELL_VOLTAGE_B,
-  LTC_AFE_REGISTER_CELL_VOLTAGE_C,
-  LTC_AFE_REGISTER_CELL_VOLTAGE_D,
-  LTC_AFE_REGISTER_AUX_A,
-  LTC_AFE_REGISTER_AUX_B,
-  LTC_AFE_REGISTER_STATUS_A,
-  LTC_AFE_REGISTER_STATUS_B,
-  LTC_AFE_REGISTER_READ_COMM,
-  LTC_AFE_REGISTER_START_COMM,
-  NUM_LTC_AFE_REGISTERS
+  LTC_AFE_REGISTER_CONFIG = 0,     /**< Configuration register */
+  LTC_AFE_REGISTER_CELL_VOLTAGE_A, /**< Cell voltage register A */
+  LTC_AFE_REGISTER_CELL_VOLTAGE_B, /**< Cell voltage register B */
+  LTC_AFE_REGISTER_CELL_VOLTAGE_C, /**< Cell voltage register C */
+  LTC_AFE_REGISTER_CELL_VOLTAGE_D, /**< Cell voltage register D */
+  LTC_AFE_REGISTER_AUX_A,          /**< Auxiliary register A */
+  LTC_AFE_REGISTER_AUX_B,          /**< Auxiliary register B */
+  LTC_AFE_REGISTER_STATUS_A,       /**< Status register A */
+  LTC_AFE_REGISTER_STATUS_B,       /**< Status register B */
+  LTC_AFE_REGISTER_READ_COMM,      /**< Read communication register */
+  LTC_AFE_REGISTER_START_COMM,     /**< Start communication register */
+  NUM_LTC_AFE_REGISTERS            /**< Total number of LTC AFE registers */
 } LtcAfeRegister;
 
-/* For easy mapping to LtcAfeRegister */
+/** @brief Voltage registers for easy mapping to `LtcAfeRegister` */
 typedef enum {
   LTC_AFE_VOLTAGE_REGISTER_A = LTC_AFE_REGISTER_CELL_VOLTAGE_A,
   LTC_AFE_VOLTAGE_REGISTER_B = LTC_AFE_REGISTER_CELL_VOLTAGE_B,
@@ -39,89 +42,90 @@ typedef enum {
   NUM_LTC_AFE_VOLTAGE_REGISTERS
 } LtcAfeVoltageRegister;
 
-/* For AFE discharge timeout (see Table 52 on Page 65 - DCTO & see LtcAfeConfigRegisterData struct)*/
+/**
+ * @brief Discharge timeout options for the AFE
+ * @details See Table 52 on Page 65 for more details
+ */
 typedef enum {
-  LTC_AFE_DISCHARGE_TIMEOUT_DISABLED = 0,
-  LTC_AFE_DISCHARGE_TIMEOUT_30_S,
-  LTC_AFE_DISCHARGE_TIMEOUT_1_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_2_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_3_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_4_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_5_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_10_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_15_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_20_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_30_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_40_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_60_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_75_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_90_MIN,
-  LTC_AFE_DISCHARGE_TIMEOUT_120_MIN
+  LTC_AFE_DISCHARGE_TIMEOUT_DISABLED = 0, /**< Discharge timeout disabled */
+  LTC_AFE_DISCHARGE_TIMEOUT_30_S,         /**< 30-second timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_1_MIN,        /**< 1-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_2_MIN,        /**< 2-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_3_MIN,        /**< 3-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_4_MIN,        /**< 4-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_5_MIN,        /**< 5-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_10_MIN,       /**< 10-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_15_MIN,       /**< 15-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_20_MIN,       /**< 20-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_30_MIN,       /**< 30-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_40_MIN,       /**< 40-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_60_MIN,       /**< 60-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_75_MIN,       /**< 75-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_90_MIN,       /**< 90-minute timeout */
+  LTC_AFE_DISCHARGE_TIMEOUT_120_MIN       /**< 120-minute timeout */
 } LtcAfeDischargeTimeout;
 
-/*
- * @brief   Config for configuration register group
- * @details See page 62 Table 40 for exact layout, but the config consists of:
- *          - ADC Mode Option Bit (adcopt) - Determines modes for ADC conversion commands (see table 52)
- *          - Discharge Timer Enable (dten) - Enable/disable discharge timer (0 disable, 1 enable)
- *          - References sPowered Up (refon) - 1 -> References Remain Powered Up Until Watchdog Timeout
- *                                             0 -> References Shut Down After Conversions (Default)
- *          - gpio - Pin pull down config (0 ON, 1 OFF)
- *          - Unvervoltage Comparison Voltage (undervoltage): Undervoltage threshold value
- *          - Overvoltage Comparison Voltage (overvoltage): 
- *          - Discharge Cell bitset: Shorting switch On (1) or Off (0) for cell x (x = 1-12)
- *          - Discharge Timeout: How long discharge switches timed out 
- * @note    For thorough notes + values check out page 65 table 52
+/**
+ * @brief   Configuration for the AFE configuration register group (CFGR).
+ * @details The configuration includes:
+ *          - ADC Mode Option Bit (`adcopt`):             Determines ADC conversion modes
+ *          - Discharge Timer Enable (`dten`):            Enable/disable discharge timer
+ *          - References Powered Up (`refon`):            Keeps references powered up until watchdog timeout
+ *          - GPIO Pin Pull-Down Config (`gpio`):         Configures GPIO pull-downs
+ *          - Undervoltage Threshold (`undervoltage`):    Sets undervoltage threshold
+ *          - Overvoltage Threshold (`overvoltage`):      Sets overvoltage threshold
+ *          - Discharge Cell Bitset (`discharge_bitset`): Enables/disables discharge for specific cells
+ *          - Discharge Timeout (`discharge_timeout`):    Sets discharge timeout duration
+ * @note    See Table 40 on Page 62 for the exact layout.
  */
 typedef struct {
-  uint8_t adcopt : 1;
-  uint8_t dten : 1;
-  uint8_t refon : 1;
+  uint8_t adcopt : 1;             /**< ADC Mode Option Bit */
+  uint8_t dten : 1;               /**< Dicharge Timer Enable */
+  uint8_t refon : 1;              /**< References Powered Up */
 
-  uint8_t gpio : 5; 
+  uint8_t gpio : 5;               /**< GPIO PD Config */
 
-  uint32_t undervoltage : 12;
-  uint32_t overvoltage : 12; 
+  uint32_t undervoltage : 12;     /**< Undervoltage Threshold */
+  uint32_t overvoltage : 12;      /**< Overvoltage Threshold */
 
-  uint16_t discharge_bitset : 12;
-  uint8_t discharge_timeout : 4;
-  
+  uint16_t discharge_bitset : 12; /**< Discharge Cell Bitset */
+  uint8_t discharge_timeout : 4;  /**< Discharge Timeout */
+
 } _PACKED LtcAfeConfigRegisterData;
 static_assert(sizeof(LtcAfeConfigRegisterData) == 6, "LtcAfeConfigRegisterData must be 6 bytes");
 
-/* 
+/**
  * @brief   COMM Register Config, refer to pg 64 table 49
  * @details The following outline the config settings variables:
- *          - Initial communication control bits (ICOMx) - For write, determine CSB signal behaviour (SPI)
- *                                                       - For the read code it will be 0111 (SPI)
- *          - Communication Data byte (Dx) - Data transmitted transmitted or received from slave
- *          - Final Communication Control Bits (FCOMx) - Specific signals for master/slave acknowledgments and stop conditions.
+ *          - Initial communication control bits (`ICOMx`): For SPI. Determine CSB signal behaviour (Write code). Value is 0111 (Read code)
+ *          - Communication Data byte (`Dx`):               Data transmitted transmitted or received from slave
+ *          - Final Communication Control Bits (`FCOMx`):   Specific signals for master/slave acknowledgments and stop conditions.
  * @note    For detailed notes check out Table 20 (p40), Table 21 (p40), Table 52 (p66)
- */ 
+ */
 typedef struct {
-  uint8_t icom0 : 4;
-  uint8_t d0 : 8;
+  uint8_t icom0 : 4; 
+  uint8_t d0 : 8;    
   uint8_t fcom0 : 4;
 
-  uint8_t icom1 : 4;
-  uint8_t d1 : 8;
-  uint8_t fcom1 : 4;
+  uint8_t icom1 : 4; 
+  uint8_t d1 : 8;    
+  uint8_t fcom1 : 4; 
 
-  uint8_t icom2 : 4;
-  uint8_t d2 : 8;
-  uint8_t fcom2 : 4;
+  uint8_t icom2 : 4; 
+  uint8_t d2 : 8;   
+  uint8_t fcom2 : 4; 
 
 } _PACKED LtcAfeCommRegisterData;
 static_assert(sizeof(LtcAfeCommRegisterData) == 6, "LtcAfeCommRegisterData must be 6 bytes");
 
-/* Configuration Register Group (CFGR) packet */
+/** @brief Configuration Register Group (CFGR) packet */
 typedef struct {
   LtcAfeConfigRegisterData reg;
   uint16_t pec;
 
 } _PACKED LtcAfeWriteDeviceConfigPacket;
 
-/* WRCOMM + mux pin */
+/** @brief WRCOMM + mux pin */
 typedef struct {
   uint8_t wrcomm[LTC6811_CMD_SIZE];
   LtcAfeCommRegisterData reg;
@@ -129,14 +133,14 @@ typedef struct {
 
 } _PACKED LtcAfeWriteCommRegPacket;
 
-/* STMCOMM + clock cycles */
+/** @brief STMCOMM + clock cycles */
 typedef struct {
   uint8_t stcomm[LTC6811_CMD_SIZE];
   uint8_t clk[LTC6811_NUM_COMM_REG_BYTES];
 
 } _PACKED LtcAfeSendCommRegPacket;
 
-/* WRCFG + all slave registers */
+/** @brief WRCFG + all slave registers */
 typedef struct {
   uint8_t wrcfg[LTC6811_CMD_SIZE];
 
@@ -146,10 +150,10 @@ typedef struct {
 #define SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(devices) (LTC6811_CMD_SIZE + (devices) * sizeof(LtcAfeWriteDeviceConfigPacket))
 
 typedef union {
-  uint16_t voltages[3]; /* 3 voltage readings stored as 16-bit values */
-  uint8_t  values[6];   /* Byte-wise view for SPI transmission */
+  uint16_t voltages[3]; /**< 3 voltage readings stored as 16-bit values */
+  uint8_t values[6];    /**< Byte-wise view for SPI transmission */
 
-} LtcAfeRegisterData;  
+} LtcAfeRegisterData;
 static_assert(sizeof(LtcAfeRegisterData) == 6, "LtcAfeRegisterData must be 6 bytes");
 
 typedef struct {
@@ -166,59 +170,40 @@ typedef struct {
 } _PACKED LtcAfeAuxData;
 static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 
-/* 
+/**
  * @brief Command codes
  * @note  See Table 38 (p.59)
  */
 #define LTC6811_WRCFG_RESERVED (1 << 0)
-
 #define LTC6811_RDCFG_RESERVED (1 << 1)
-
 #define LTC6811_RDCVA_RESERVED (1 << 2)
-
 #define LTC6811_RDCVB_RESERVED (1 << 2) | (1 << 1)
-
 #define LTC6811_RDCVC_RESERVED (1 << 3)
-
 #define LTC6811_RDCVD_RESERVED (1 << 3) | (1 << 1)
-
 #define LTC6811_RDAUXA_RESERVED ((1 << 3) | (1 << 2))
-
 #define LTC6811_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)
-
 #define LTC6811_RDSTATA_RESERVED (1 << 4)
-
 #define LTC6811_RDSTATB_RESERVED (1 << 4) | (1 << 1)
-
 #define LTC6811_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))
-
 #define LTC6811_ADCOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))
-
 #define LTC6811_CVST_RESERVED ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 9))
-
 #define LTC6811_ADAX_RESERVED (1 << 10) | (1 << 6) | (1 << 5)
-
 #define LTC6811_CLRCELL_RESERVED (1 << 0) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_CLRAUX_RESERVED (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_CLRSTAT_RESERVED (1 << 0) | (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_PLADC_RESERVED (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_DIAGNC_RESERVED (1 << 0) | (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_WRCOMM_RESERVED (1 << 0) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_STCOMM_RESERVED (1 << 0) | (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
-
 #define LTC6811_WRPWM_RESERVED (1 << 5)
-
 #define LTC6811_RDPWM_RESERVED (1 << 5) | (1 << 2)
 
-/* Config bits for Config Reg Group (See Table 40 p62 & LtcAfeConfigRegisterData struct) */
+
+/**
+ * @brief GPIO pull-down configuration for the Config Register Group.
+ * @note  See Table 40 (p.62) and `LtcAfeConfigRegisterData` struct for details.
+ */
 #define LTC6811_GPIO1_PD_ON (0 << 3)
 #define LTC6811_GPIO1_PD_OFF (1 << 3)
 #define LTC6811_GPIO2_PD_ON (0 << 4)
@@ -230,37 +215,46 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 #define LTC6811_GPIO5_PD_ON (0 << 7)
 #define LTC6811_GPIO5_PD_OFF (1 << 7)
 
-/* For ADCV command, determines which cells to convert */
-#define LTC6811_CNVT_CELL_ALL 0x00
-#define LTC6811_CNVT_CELL_1_7 0x01
-#define LTC6811_CNVT_CELL_2_8 0x02
-#define LTC6811_CNVT_CELL_3_9 0x03
-#define LTC6811_CNVT_CELL_4_10 0x04
-#define LTC6811_CNVT_CELL_5_11 0x05
-#define LTC6811_CNVT_CELL_6_12 0x06
+/**
+ * @brief   ADCV command macros for cell conversion.
+ * @details Determines which cells to convert during ADCV commands.
+ */
+#define LTC6811_CNVT_CELL_ALL 0x00    /**< Convert all cells. */
+#define LTC6811_CNVT_CELL_1_7 0x01    /**< Convert cells 1 and 7. */
+#define LTC6811_CNVT_CELL_2_8 0x02    /**< Convert cells 2 and 8. */
+#define LTC6811_CNVT_CELL_3_9 0x03    /**< Convert cells 3 and 9. */
+#define LTC6811_CNVT_CELL_4_10 0x04   /**< Convert cells 4 and 10. */
+#define LTC6811_CNVT_CELL_5_11 0x05   /**< Convert cells 5 and 11. */
+#define LTC6811_CNVT_CELL_6_12 0x06   /**< Convert cells 6 and 12. */
 
-/* For ADCV commands, determines if cell discharge is permitted or not */
+/**
+ * @brief   ADCV discharge permission macros.
+ * @details Determines if cell discharge is permitted during ADCV commands.
+ */
 #define LTC6811_ADCV_DISCHARGE_NOT_PERMITTED (0 << 4)
 #define LTC6811_ADCV_DISCHARGE_PERMITTED (1 << 4)
 
-/* For COMM reg config */
+/** @brief COMM Register config macros */
 #define LTC6811_ADCOPT (1 << 0)
 #define LTC6811_SWTRD (1 << 1)
 
-/* ADAX command macros */
+/** @brief ADAX command macros */
 #define LTC6811_ADAX_GPIO1 0x01
 #define LTC6811_ADAX_GPIO4 0x04
 #define LTC6811_ADAX_MODE_FAST (0 << 8) | (1 << 7)
 
-/* Write Codes for ICOMn (n = 1, 2, 3) */
-#define LTC6811_ICOM_CSBM_LOW (1 << 3)                                      /* CSBM low signal */
-#define LTC6811_ICOM_CSBM_FALL_EDGE (1 << 3) | (1 << 0)                     /* CSBM high then low signal*/
-#define LTC6811_ICOM_CSBM_HIGH (1 << 3) | (1 << 1)                          /* CSBM high signal */
-#define LTC6811_ICOM_NO_TRANSMIT (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)  /* No Data is tranmitted*/
+/** @brief Write Codes for ICOMn (n = 1, 2, 3) */
+#define LTC6811_ICOM_CSBM_LOW (1 << 3)                                      /**< CSBM low signal */
+#define LTC6811_ICOM_CSBM_FALL_EDGE (1 << 3) | (1 << 0)                     /**< CSBM high then low signal*/
+#define LTC6811_ICOM_CSBM_HIGH (1 << 3) | (1 << 1)                          /**< CSBM high signal */
+#define LTC6811_ICOM_NO_TRANSMIT (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)  /**< No Data is tranmitted*/
 
-/* Write Codes for FCOMn (n = 1, 2, 3) */
-#define LTC6811_FCOM_CSBM_LOW (0 << 0)              /* Holds CSBM low at end of transmission*/
-#define LTC6811_FCOM_CSBM_HIGH (1 << 3) | (1 << 0)  /* Transitions CSBM high at end of transmission*/
+/** @brief Write Codes for FCOMn (n = 1, 2, 3) */
+#define LTC6811_FCOM_CSBM_LOW (0 << 0)             /**< Holds CSBM low at end of transmission */
+#define LTC6811_FCOM_CSBM_HIGH (1 << 3) | (1 << 0) /**< Transitions CSBM high at end of transmission */
 
-// see Table 17 (p. 38)
+/**
+ * @brief PWM duty cycle configuration.
+ * @note See Table 17 (p.38) for details.
+ */
 #define LTC6811_PWMC_DC_100 (0xF)
