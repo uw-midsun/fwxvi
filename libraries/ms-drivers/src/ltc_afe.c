@@ -27,6 +27,7 @@ static const uint16_t s_read_reg_cmd[NUM_LTC_AFE_REGISTERS] = {
 /* p. 52 - Daisy chain wakeup method 2 - pair of long -1, +1 for each device */
 static void prv_wakeup_idle(LtcAfeStorage *afe) {
   LtcAfeSettings *settings = &afe->settings;
+
   for (size_t i = 0; i < settings->num_devices; i++) {
     gpio_set_state(&settings->cs, GPIO_STATE_LOW);
     gpio_set_state(&settings->cs, GPIO_STATE_HIGH);
@@ -52,7 +53,7 @@ static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint
 
 /* Split command into 8 byte chunks and add PEC to full command */ 
 static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
-  if (len != LTC6811_CMD_SIZE){
+  if (len != LTC6811_CMD_SIZE) {
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
@@ -184,9 +185,8 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   // Set PWM cycle settings
   status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
 
-  // Actually write configuration settings to AFE fr fr
-  
-  return STATUS_CODE_UNIMPLEMENTED;
+  // Write configuration settings to AFE
+  return prv_write_config(afe, gpio_bitmask);
 }
 
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
@@ -295,8 +295,29 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle) {
   LtcAfeSettings *settings = &afe->settings;
 
-  uint8_t cmd[4 + (6 * 3)] = { 0 };
-  prv_build_cmd(LTC6811_WRPWM_RESERVED, cmd, 4);
+  // Initialize a buffer for writing to the 6 registers in the PWM Register Group
+  // Account for max number of devices in buffer because of settings->num_devices and variable-length arrays
+  // settings->num_devices is not determined at compile time, so the array cannot be initialized
+  uint8_t cmd_with_pwm[LTC6811_CMD_SIZE + (LTC8611_NUM_PWM_REGS * LTC_AFE_MAX_DEVICES)] = { 0 };
+  // Prepare command to be sent, disregarding the PWM configuration data
+  prv_build_cmd(LTC6811_WRPWM_RESERVED, cmd_with_pwm, 4);
 
-  return STATUS_CODE_UNIMPLEMENTED;
+  // Pack 4-bit PWM duty cycle configuration for two PWM channels in an 8-bit PWM register
+  uint8_t packed_duty_cycle = (duty_cycle << 4) | duty_cycle;
+
+  // For every device, set all 6 PWM registers to the same config
+  for (uint8_t device = 0; device < settings->num_devices; device++) {
+    // Each device has 12 PWM channels (PWM1-12)
+    // Each PWM register stores two 4-bit PWM values in a byte
+    // Thus, there are 6 registers to iterate through and 2 PWM channels are configured at a time
+    for (int pwm_reg = 0; pwm_reg < 6; pwm_reg++) {
+      // Set both of the 2 PWM channels in the PWM register to the given configuration
+      cmd_with_pwm[4 + (device * 6) + pwm_reg] = packed_duty_cycle;
+    }
+  }
+
+  size_t cmd_with_pwm_len = LTC6811_CMD_SIZE + (LTC8611_NUM_PWM_REGS * settings->num_devices);
+  prv_wakeup_idle(afe);
+
+  return spi_exchange(settings->spi_port, cmd_with_pwm, cmd_with_pwm_len, NULL, 0);
 }

@@ -14,6 +14,9 @@
 /** @brief  3 bytes are required to send 24 clock cycles with our SPI driver for the STCOMM command */
 #define LTC6811_NUM_COMM_REG_BYTES 3
 
+/** @brief  Number of registers in PWM Register Group. See Table 51 on page 64. */
+#define LTC8611_NUM_PWM_REGS 6
+
 /**
  * @brief List of LTC AFE registers
  * @details These registers are mapped to the `s_read_reg[]` array in `ltc_afe.c`
@@ -254,7 +257,7 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 #define LTC6811_FCOM_CSBM_HIGH (1 << 3) | (1 << 0) /**< Transitions CSBM high at end of transmission */
 
 /**
- * @brief PWM duty cycle configuration.
+ * @brief PWM duty cycle configuration (100%).
  * @note See Table 17 (p.38) for details.
  */
 #define LTC6811_PWMC_DC_100 (0xF)
