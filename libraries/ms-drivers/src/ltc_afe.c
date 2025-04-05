@@ -157,18 +157,32 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
   memcpy(&afe->settings, config, sizeof(afe->settings));  // Copy values of config struct members to address of the settings struct within afe
 
+  /* Initialize SPI */
+  SpiSettings spi_config = {
+    .baudrate = config->spi_baudrate,
+    .mode = SPI_MODE_3,
+    .mosi = config->mosi,
+    .miso = config->miso,
+    .sclk = config->sclk,
+    .cs = config->cs,
+  };
+  spi_init(config->spi_port, &spi_config);
+
   // Calculate offsets
   prv_calc_offsets(afe);
 
   // Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation
   crc15_init_table();
 
-
-  // Initialize SPI settings
-
-  // Configure GPIO
+  /* Configure GPIO pins with pull-down off: GPIO1 as analog input and GPIO3-5 for SPI */
+  uint8_t gpio_bitmask =
+      LTC6811_GPIO1_PD_OFF | 
+      LTC6811_GPIO3_PD_OFF | 
+      LTC6811_GPIO4_PD_OFF | 
+      LTC6811_GPIO5_PD_OFF;
 
   // Set PWM cycle settings
+  status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
 
   // Actually write configuration settings to AFE fr fr
   
@@ -277,6 +291,12 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
+// Sets the duty cycle to the same value for all cells on all afes
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle) {
+  LtcAfeSettings *settings = &afe->settings;
+
+  uint8_t cmd[4 + (6 * 3)] = { 0 };
+  prv_build_cmd(LTC6811_WRPWM_RESERVED, cmd, 4);
+
   return STATUS_CODE_UNIMPLEMENTED;
 }
