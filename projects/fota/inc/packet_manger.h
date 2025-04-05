@@ -34,6 +34,8 @@ typedef struct {
   Packet tx_packet;
 } PacketManager;
 
+FotaError packet_manager_init(PacketManager *packet_manager);
+
 FotaError crc_check(PacketManager *packet_manager);
 
 FotaError transmit_packet(PacketManager *packet_manager);
