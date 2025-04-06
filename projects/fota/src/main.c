@@ -22,6 +22,15 @@
 int main() {
   mcu_init();
 
+  static UartSettings uart2_settings = {
+    .tx = {.port = GPIO_PORT_A, .pin=2},
+    .rx = {.port = GPIO_PORT_A, .pin=3},
+    .baudrate=115200,
+    .flow_control=UART_FLOW_CONTROL_NONE
+  };
+
+  uart_init(UART_PORT_2, &uart2_settings);
+
   while (true) {
   }
 
