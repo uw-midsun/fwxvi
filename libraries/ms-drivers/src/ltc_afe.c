@@ -7,8 +7,10 @@
 #include "log.h"
 #include "ltc_afe_regs.h"
 
-/* Table 38 (p 59)
- * Commands for reading registers + STCOMM */
+/** 
+ * @brief Commands for reading registers + STCOMM
+ * @note  Table 38 (p 59)
+ **/
 static const uint16_t s_read_reg_cmd[NUM_LTC_AFE_REGISTERS] = {
   [LTC_AFE_REGISTER_CONFIG] = LTC6811_RDCFG_RESERVED,
   [LTC_AFE_REGISTER_CELL_VOLTAGE_A] = LTC6811_RDCVA_RESERVED,
@@ -69,11 +71,12 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
   return STATUS_CODE_OK;
 }
 
+/* Used as a wrapper internally, since in some functions we don't want the default gpio_pins */
 static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins){
   LtcAfeSettings *settings = &afe->settings;
-  LtcAfeWriteConfigPacket config_packet = { 0 };
+  LtcAfeWriteConfigPacket *config_packet = &afe->device_configs;
 
-  prv_build_cmd(LTC6811_WRCFG_RESERVED, config_packet.wrcfg, SIZEOF_ARRAY(config_packet.wrcfg));
+  prv_build_cmd(LTC6811_WRCFG_RESERVED, config_packet->wrcfg, SIZEOF_ARRAY(config_packet->wrcfg));
 
   /*
    * Each set of CFGR registers (containing config data) is shifted through the chain of devices,
@@ -81,30 +84,27 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
    * Therefore, we send config settings starting with the last slave in the stack.
   */
   for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
-    uint16_t undervoltage = 0;
-    uint16_t overvoltage = 0;
 
-    config_packet.devices[curr_device].reg.discharge_bitset = afe->discharge_bitset[curr_device];
-    config_packet.devices[curr_device].reg.discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
+    config_packet->devices[curr_device].reg.discharge_bitset = 0;
+    config_packet->devices[curr_device].reg.discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
 
-    config_packet.devices[curr_device].reg.adcopt = ((settings->adc_mode + 1) > 3);
-    config_packet.devices[curr_device].reg.dten = true;
+    config_packet->devices[curr_device].reg.adcopt = ((settings->adc_mode + 1) > 3);
+    config_packet->devices[curr_device].reg.dten = true;
+    config_packet->devices[curr_device].reg.refon = 0;
 
-    config_packet.devices[curr_device].reg.undervoltage = undervoltage;
-    config_packet.devices[curr_device].reg.overvoltage = overvoltage;
+    config_packet->devices[curr_device].reg.undervoltage = 0;
+    config_packet->devices[curr_device].reg.overvoltage = 0;
 
     /* Shift 3 since bitfield uses the last 5 bits */
-    config_packet.devices[curr_device].reg.gpio = (gpio_enable_pins >> 3);
+    config_packet->devices[curr_device].reg.gpio = (gpio_enable_pins >> 3);
 
-    uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet.devices[curr_device].reg, 6);
-    config_packet.devices[curr_device].pec = cfgr_pec >> 8 | cfgr_pec << 8; /* Swap endianness */
+    uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet->devices[curr_device].reg, 6);
+    config_packet->devices[curr_device].pec = cfgr_pec >> 8 | cfgr_pec << 8; /* Swap endianness */
   }
 
   size_t len = SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(settings->num_devices);
   prv_wakeup_idle(afe);
   return spi_exchange(settings->spi_port, (uint8_t *)&config_packet, len, NULL, 0);
-
-
 }
 
 static void prv_calc_offsets(LtcAfeStorage *afe) {
@@ -162,8 +162,8 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   SpiSettings spi_config = {
     .baudrate = config->spi_baudrate,
     .mode = SPI_MODE_3,
-    .mosi = config->mosi,
-    .miso = config->miso,
+    .sdo = config->sdo,
+    .sdi = config->sdi,
     .sclk = config->sclk,
     .cs = config->cs,
   };
@@ -175,26 +175,24 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   // Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation
   crc15_init_table();
 
-  /* Configure GPIO pins with pull-down off: GPIO1 as analog input and GPIO3-5 for SPI */
-  uint8_t gpio_bitmask =
-      LTC6811_GPIO1_PD_OFF | 
-      LTC6811_GPIO3_PD_OFF | 
-      LTC6811_GPIO4_PD_OFF | 
-      LTC6811_GPIO5_PD_OFF;
-
   // Set PWM cycle settings
   status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
 
-  // Write configuration settings to AFE
-  return prv_write_config(afe, gpio_bitmask);
+  /**
+   * Write configuration settings to AFE.
+   * GPIO pins are configured with pull-down off: GPIO1 as analog input and GPIO3-5 for SPI
+  */
+  return ltc_afe_write_config(afe);
 }
 
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
   uint8_t gpio_bits = 
-    LTC6811_GPIO1_PD_OFF | LTC6811_GPIO3_PD_OFF | LTC6811_GPIO4_PD_OFF | LTC6811_GPIO5_PD_OFF;
-  
+    LTC6811_GPIO1_PD_OFF | 
+    LTC6811_GPIO3_PD_OFF | 
+    LTC6811_GPIO4_PD_OFF | 
+    LTC6811_GPIO5_PD_OFF;
 
-  return STATUS_CODE_OK;
+  return prv_write_config(&afe, gpio_bits);
 }
 
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
@@ -258,10 +256,19 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
   LtcAfeAuxData devices_reg_data[LTC_AFE_MAX_DEVICES] = { 0 };
 
   size_t len = settings->num_devices * sizeof(LtcAfeAuxData);
+
   status_ok_or_return(prv_read_register(afe, LTC_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len));
 
   /* Loop through devices */
   for (uint16_t device = 0; device < settings->num_devices; ++device) {
+    /* If pin not available - move on */
+    if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
+      LOG_DEBUG("Device: %u\n" \
+                "Device Cell: %u\n" \
+                "Not available.\n", device, device_cell);
+      continue;
+    }
+
     uint16_t received_pec = devices_reg_data[device].pec >> 8 | devices_reg_data[device].pec << 8;
     uint16_t data_pec = crc15_calculate((uint8_t *)&devices_reg_data[device], 6);
 
@@ -273,22 +280,34 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
       return status_code(STATUS_CODE_INTERNAL_ERROR);
     }
 
-    /* data will be stored in voltages member in LtcAfeRegisterData struct in the form:
-     * {GPIO4, AUXB2, AUXB3, PEC}
-     * we only care about GPIO4 and the PEC */
     uint16_t voltage = devices_reg_data[device].reg.voltages[0];
-
-    /* If input enabled - store result */ 
-    if ((settings->aux_bitset[device] >> device_cell) & 0x1) {
-      uint16_t index = device * LTC_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-      afe->aux_voltages[index] = voltage;
-    }
+     
+    uint16_t index = device * LTC_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
+    afe->aux_voltages[index] = voltage;
   }
   return STATUS_CODE_OK;
 }
 
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  if (cell > LTC_AFE_MAX_CELLS){
+    return status_msg(STATUS_CODE_INVALID_ARGS, "Cell number is out of bounds");
+  }
+
+  uint16_t cell_in_lookup = afe->discharge_cell_lookup[cell];
+  uint16_t device_index = cell_in_lookup / LTC_AFE_MAX_CELLS_PER_DEVICE;
+  uint16_t device = afe->settings.num_devices - device_index - 1; /* devices are reverse indexed cz of daisy chain config */
+
+  uint16_t device_cell_bit = cell_in_lookup % LTC_AFE_MAX_CELLS_PER_DEVICE;  
+
+  LtcAfeConfigRegisterData *config_reg_data = &afe->device_configs.devices[device].reg; 
+
+  if (discharge) {
+    config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
+  } else {
+    config_reg_data->discharge_bitset &= ~(1 << (device_cell_bit));
+  }
+
+  return STATUS_CODE_OK;
 }
 
 // Sets the duty cycle to the same value for all cells on all afes

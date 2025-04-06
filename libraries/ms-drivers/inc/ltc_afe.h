@@ -18,7 +18,7 @@
 #include "fsm.h"
 #include "gpio.h"
 #include "spi.h"
-#include "status.h" 
+#include "status.h"
 
 // This is an arbitrary limitation, can be increased/decreased if needed
 #define LTC_AFE_MAX_DEVICES 3
@@ -35,55 +35,66 @@
 #define _PACKED
 #endif
 
-// select the ADC mode (trade-off between speed or minimizing noise)
-// see p.50 for conversion times and p.23 for noise
-typedef enum { LTC_AFE_ADC_MODE_27KHZ = 0, LTC_AFE_ADC_MODE_7KHZ, LTC_AFE_ADC_MODE_26HZ, LTC_AFE_ADC_MODE_14KHZ, LTC_AFE_ADC_MODE_3KHZ, LTC_AFE_ADC_MODE_2KHZ, NUM_LTC_AFE_ADC_MODES } LtcAfeAdcMode;
+/** 
+ * @brief   Select the ADC mode
+ * @details Trade-off between speed or minimizing noise
+ * @note    See p 50 for conversion times and p 23 (table 3) for noise 
+ */
+typedef enum { 
+  LTC_AFE_ADC_MODE_27KHZ = 0, 
+  LTC_AFE_ADC_MODE_7KHZ, 
+  LTC_AFE_ADC_MODE_26HZ, 
+  LTC_AFE_ADC_MODE_14KHZ, 
+  LTC_AFE_ADC_MODE_3KHZ, 
+  LTC_AFE_ADC_MODE_2KHZ, 
+  NUM_LTC_AFE_ADC_MODES 
+} LtcAfeAdcMode;
 
-typedef struct LtcAfeBitset {
-  uint16_t cell_bitset;
-  uint16_t aux_bitset;
-} LtcAfeBitset;
-
-// Configuration Data (used once at setup)
+/**
+ * @brief   Afe Settings Data 
+ * @details Set by the user when `ltc_afe_init` is called
+ *          Stores SPI information, which cell and aux inputs are enabled, and number of things
+ */
 typedef struct LtcAfeSettings {
   GpioAddress cs;
-  GpioAddress mosi;
-  GpioAddress miso;
+  GpioAddress sdo;
+  GpioAddress sdi;
   GpioAddress sclk;
 
   const SpiPort spi_port;
   uint32_t spi_baudrate;
 
-  LtcAfeAdcMode adc_mode;
+  LtcAfeAdcMode adc_mode;                    /**< Determines ADC Mode */
 
-  uint16_t cell_bitset[LTC_AFE_MAX_DEVICES];
-  uint16_t aux_bitset[LTC_AFE_MAX_DEVICES];
+  uint16_t cell_bitset[LTC_AFE_MAX_DEVICES]; /**< Bitset showing cells are enabled for each device */
+  uint16_t aux_bitset[LTC_AFE_MAX_DEVICES];  /**< Bitset showing aux inputs enabled for each device */
 
-  size_t num_devices;
-  size_t num_cells;
-  size_t num_thermistors;
+  size_t num_devices;                        /**< Number of AFE devices */
+  size_t num_cells;                          /**< Number of TOTAL cells across all devices */
+  size_t num_thermistors;                    /**< Number of TOTAL thermistors (aux inputs) across all devices */
 
   void *result_context;
 } LtcAfeSettings;
 
-/** @brief Runtime Data (updates over time) */
+/** 
+ * @brief   Runtime Data Storage
+ * @details Stores settings, configs, and voltages for all AFE devices
+ * @note    Raw indices mean
+ *          - Index `0` corresponds to the first cell/aux value of the first AFE device.
+ *          - Index `n * max_x_per_device` corresponds to the first value of the (n+1)th AFE device.
+ *          - Each AFE's data (voltages, lookups, etc.) is stored contiguously before the next AFE's data.
+ */
 typedef struct LtcAfeStorage {
-  // Only used for storage in the FSM so we store data for the correct cells
-  uint16_t aux_index;
-  uint16_t retry_count;
-  uint16_t device_cell;
+  uint16_t cell_voltages[LTC_AFE_MAX_CELLS];            /**< Stores cell voltages for all devices */
+  uint16_t aux_voltages[LTC_AFE_MAX_THERMISTORS];       /**< Stores aux voltages for all devices */
 
-  uint16_t cell_voltages[LTC_AFE_MAX_CELLS];
-  uint16_t aux_voltages[LTC_AFE_MAX_THERMISTORS];
+  uint16_t cell_result_lookup[LTC_AFE_MAX_CELLS];       /**< Map raw cell indices read from AFE to `cell_voltages` */
+  uint16_t aux_result_lookup[LTC_AFE_MAX_THERMISTORS];  /**< Map raw aux input indices read from AFE to `aux_voltages` */
+  uint16_t discharge_cell_lookup[LTC_AFE_MAX_CELLS];    /**< Map indicies of `cell_voltages` to raw cell indices */
 
-  uint16_t discharge_bitset[LTC_AFE_MAX_DEVICES];
-
-  uint16_t cell_result_lookup[LTC_AFE_MAX_CELLS];
-  uint16_t aux_result_lookup[LTC_AFE_MAX_THERMISTORS];
-  uint16_t discharge_cell_lookup[LTC_AFE_MAX_CELLS];
-  uint16_t max_temp;
-
-  LtcAfeSettings settings;
+  LtcAfeSettings settings;                              /**< Stores settings for AFE devices, set by the user */
+  LtcAfeWriteConfigPacket device_configs;               /**< Stores the Configuration of each device in the CFGR register */
+  
 } LtcAfeStorage;
 
 // Helper functions for the LTC6811
@@ -105,13 +116,15 @@ typedef struct LtcAfeStorage {
 // conversion is completed.
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
 
-
 /**
  * @brief   Writes configuration bits onto CFGR (Configuration Register Group)
- * @details Writes configuration bits to each of the AFE devices' configuration register bits.      
- * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
- * @return  Status code indicating success or failure
- * */
+ * @details Writes configuration bits to each of the AFE devices' configuration register bits
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
+ * @return  STATUS_CODE_OK if configs were written onto register
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters in `spi_exchange` is incorrect in `prv_write_config`
+ *          STATUS_CODE_INTERNAL_ERROR if HAL transmission/receiving fails
+ *          STATUS_CODE_TIMEOUT if transmission/receiving takes too long
+ */
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 
 // Triggers a conversion. Note that we need to wait for the conversions to complete before the
@@ -120,28 +133,43 @@ StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe);
 StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell);
 
 /**
- * @brief   Reads and stores cell voltages from the voltage cell registers of each afe 
+ * @brief   Reads and stores cell voltages from the voltage cell registers of each afe
  * @details RDCVx (x = A, B, C, D) command is sent to read converted voltage from respective register group
  *          Received PEC and PEC of data is compared to see if data is valid
  *          Voltages are stored in the `afe->cell_voltages` array, if cell status is enabled
- * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
- * @return  Status code indiciating success or failure
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
+ * @return  STATUS_CODE_OK if cells were read correctly
+ *          STATUS_CODE_INTERNAL_ERROR if read PEC and calcualted PEC do not match up
+ *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `prv_read_register`
  */
 StatusCode ltc_afe_read_cells(LtcAfeStorage *afe);
 
 /**
- * @brief   Reads and stores auxillary input from GPIO4 of each afe 
+ * @brief   Reads and stores auxillary input from GPIO4 of each afe
  * @details RDAUXB command is sent through SPI, and converted values are read from cell register group B
- *          Only GPIO4 value is stored, as well as the PEC. 
+ *          Data in the register will be the form: {GPIO4, AUXB2, AUXB3, PEC}
+ *          Only GPIO4 value is stored, as well as the PEC.
  *          PEC of data is compared to PEC read to check for validity
- *          Values are stored in the `afe->aux_voltages` array
- * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE 
- * @return  Status code indicating success or failure
+ *          Values are stored in the `afe->aux_voltages` array, if device_cell for device is enabled
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
+ * @param   device_cell The GPIO port we want to read from
+ * @return  STATUS_CODE_OK if auxillary input was read correctly
+ *          STATUS_CODE_INTERNAL_ERROR if data PEC and PEC read are not the same
+ *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `prv_read_register`
  */
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell);
 
-// Mark cell for discharging (takes effect after config is re-written)
-// |cell| should be [0, LTC_AFE_MAX_CELLS)
+/**
+ * @brief   Mark cell for discharging in each device 
+ * @details Device number is reverse indexed, since `ltc_afe_write_config` writes configs in reverse order
+ *          Appropriate bit in `discharge_bitset` in `LtcAfeConfigRegisterData` is marked (see `ltc_afe_regs.h`)
+ *          Only takes effect when config is rewritten with `ltc_afe_write_config`
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
+ * @param   cell Index of cell at device x (cell = cell # in device + (# of cells * device_number))
+ * @param   discharge Is cell being discharged or not?
+ * @return  STATUS_CODE_OK if cell discharge was correctly toggled correctly
+ *          STATUS_CODE_INVALID_ARGS if `cell` index is invalid
+ */
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge);
 
 // Sets the duty cycle to the same value for all cells on all afes

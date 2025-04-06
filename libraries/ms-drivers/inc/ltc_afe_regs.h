@@ -121,12 +121,6 @@ typedef struct {
 } _PACKED LtcAfeCommRegisterData;
 static_assert(sizeof(LtcAfeCommRegisterData) == 6, "LtcAfeCommRegisterData must be 6 bytes");
 
-/** @brief Configuration Register Group (CFGR) packet */
-typedef struct {
-  LtcAfeConfigRegisterData reg;
-  uint16_t pec;
-
-} _PACKED LtcAfeWriteDeviceConfigPacket;
 
 /** @brief WRCOMM + mux pin */
 typedef struct {
@@ -143,12 +137,20 @@ typedef struct {
 
 } _PACKED LtcAfeSendCommRegPacket;
 
-/** @brief WRCFG + all slave registers */
+/** @brief Configuration Register Group (CFGR) packet for EACH device */
 typedef struct {
-  uint8_t wrcfg[LTC6811_CMD_SIZE];
+  LtcAfeConfigRegisterData reg;
+  uint16_t pec;
 
-  /* devices are ordered with the last slave first */
-  LtcAfeWriteDeviceConfigPacket devices[LTC_AFE_MAX_CELLS_PER_DEVICE];
+} _PACKED LtcAfeWriteDeviceConfigPacket;
+
+/** 
+ * @brief WRCFG + all slave registers
+ * @note  Devices are ordered with the last slave first */
+typedef struct {
+  uint8_t wrcfg[LTC6811_CMD_SIZE];                                      /**< Command for writing onto config register */
+
+  LtcAfeWriteDeviceConfigPacket devices[LTC_AFE_MAX_CELLS_PER_DEVICE];  /**< Config for EACH device */
 } _PACKED LtcAfeWriteConfigPacket;
 #define SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(devices) (LTC6811_CMD_SIZE + (devices) * sizeof(LtcAfeWriteDeviceConfigPacket))
 
