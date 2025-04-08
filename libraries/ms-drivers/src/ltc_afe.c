@@ -140,7 +140,7 @@ static void prv_calc_offsets(LtcAfeStorage *afe) {
 }
 
 
-/*  */
+/* Initialize the LTC8611 AFE system with the given configuration */
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   /* Validate configuration settings based on device limitations */
   if (config->num_devices > LTC_AFE_MAX_DEVICES) {
@@ -156,28 +156,28 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
                       "AFE: Configured thermistor count exceeds limitations.");
   }
 
-  /* Initialize memory */
-  memset(afe, 0, sizeof(*afe));  // Reset value of all afe struct members to 0
-  memcpy(&afe->settings, config, sizeof(afe->settings));  // Copy values of config struct members to address of the settings struct within afe
+  /* Initialize memory of AFE structure: reset values and copy configuration settings */
+  memset(afe, 0, sizeof(*afe));
+  memcpy(&afe->settings, config, sizeof(afe->settings));
 
-  /* Initialize SPI */
+  /* Set up SPI communication based on provided settings */
   SpiSettings spi_config = {
     .baudrate = config->spi_baudrate,
     .mode = SPI_MODE_3,
-    .sdo = config->sdo,
-    .sdi = config->sdi,
+    .sdo = config->sdo,  // TODO: Resolve sdo vs miso
+    .sdi = config->sdi,  // TODO: Resolve sdi vs mosi
     .sclk = config->sclk,
     .cs = config->cs,
   };
   spi_init(config->spi_port, &spi_config);
 
-  // Calculate offsets
+  /* Calculate offset for cell result array due to some cells being disabled */
   prv_calc_offsets(afe);
 
-  // Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation
+  /* Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation */
   crc15_init_table();
 
-  // Set PWM cycle settings
+  /* Set same duty cycle for all cells in the AFE system */
   status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
 
   /**
