@@ -107,31 +107,27 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
   return spi_exchange(settings->spi_port, (uint8_t *)&config_packet, len, NULL, 0);
 }
 
+/**
+ * Calculate the cell result and discharge cell index mappings for the enabled cells across all AFEs.
+ * 
+ * Disabled cells are ignored, so the enabled cells are mapped to a smaller, but continuous, 
+ * index for storing cell results.
+ */
 static void prv_calc_offsets(LtcAfeStorage *afe) {
-  // Our goal is to populate result arrays as if the ignored inputs don't exist. This requires
-  // converting the actual LTC6811 cell index to some potentially smaller result index.
-  //
-  // Since we access the same register across multiple devices, we can't just keep a counter and
-  // increment it for each new value we get during register access. Instead, we precompute each
-  // input's corresponding result index. Inputs that are ignored will not be copied into the result
-  // array.
-  //
-  // Similarly, we do the opposite mapping for discharge.
-
   LtcAfeSettings *settings = &afe->settings;
+
   size_t enabled_cell_index = 0;
 
   for (size_t device = 0; device < settings->num_devices; device++) {
-    size_t device_offset = device * LTC_AFE_MAX_CELLS_PER_DEVICE;  // Pre-compute offset
-    uint16_t bitmask = settings->cell_bitset[device];  // Extract bitmask once, showing enabled cells
+    size_t device_offset = device * LTC_AFE_MAX_CELLS_PER_DEVICE;  /* Device-level offset */
+    uint16_t bitmask = settings->cell_bitset[device];  /* Extract bitmask once, revealing enabled cells */
 
     for (size_t device_cell = 0; device_cell < LTC_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
-      size_t raw_cell_index = device_offset + device_cell;  // Absolute index of cell in current device across all devices
+      size_t raw_cell_index = device_offset + device_cell;  /* Absolute index of cell in current device across all devices */
 
-      // Check if current cell is enabled through the given bitmask
+      /* Check if current cell is enabled through the given bitmask */
       if ((bitmask >> device_cell) & 0x1) {
-        // Cell input enabled - store the index that this input should be stored in
-        // when copying to the result array and the opposite for discharge
+        /* Map enabled cell to result and discharge arrays to separate handling of cell measurement and discharge */
         afe->discharge_cell_lookup[enabled_cell_index] = raw_cell_index;
         afe->cell_result_lookup[raw_cell_index] = enabled_cell_index++; 
       }
@@ -180,7 +176,7 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   /* Set same duty cycle for all cells in the AFE system */
   status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
 
-  /**
+  /*
    * Write configuration settings to AFE.
    * GPIO pins are configured with pull-down off: GPIO1 as analog input and GPIO3-5 for SPI
   */
