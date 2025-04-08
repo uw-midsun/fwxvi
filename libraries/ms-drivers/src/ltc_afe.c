@@ -308,33 +308,38 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
   return STATUS_CODE_OK;
 }
 
-// Sets the duty cycle to the same value for all cells on all afes
+/* Set same duty cycle for all 12 PWM channels (for all 12 cells) across each AFE */
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle) {
   LtcAfeSettings *settings = &afe->settings;
 
-  // Initialize a buffer for writing to the 6 registers in the PWM Register Group
-  // Account for max number of devices in buffer because of settings->num_devices and variable-length arrays
-  // settings->num_devices is not determined at compile time, so the array cannot be initialized
+  /** 
+   * Initialize a buffer to store the PWM configuration command, while also accounting for 
+   * the number of registers to write to (6) for each AFE, which is not known at compile time.
+  */
   uint8_t cmd_with_pwm[LTC6811_CMD_SIZE + (LTC8611_NUM_PWM_REGS * LTC_AFE_MAX_DEVICES)] = { 0 };
-  // Prepare command to be sent, disregarding the PWM configuration data
+
+  /* Prepare command to be sent, disregarding the PWM configuration data */
   prv_build_cmd(LTC6811_WRPWM_RESERVED, cmd_with_pwm, 4);
 
-  // Pack 4-bit PWM duty cycle configuration for two PWM channels in an 8-bit PWM register
+  /* Pack 4-bit duty cycle configuration for two PWM channels in an 8-bit PWM register */ 
   uint8_t packed_duty_cycle = (duty_cycle << 4) | duty_cycle;
 
-  // For every device, set all 6 PWM registers to the same config
+  /* Set all 6 PWM registers to the same configuration for each AFE */
   for (uint8_t device = 0; device < settings->num_devices; device++) {
-    // Each device has 12 PWM channels (PWM1-12)
-    // Each PWM register stores two 4-bit PWM values in a byte
-    // Thus, there are 6 registers to iterate through and 2 PWM channels are configured at a time
-    for (int pwm_reg = 0; pwm_reg < 6; pwm_reg++) {
-      // Set both of the 2 PWM channels in the PWM register to the given configuration
-      cmd_with_pwm[4 + (device * 6) + pwm_reg] = packed_duty_cycle;
+    /**
+     * Since each AFE has 12 PWM channels and each PWM register stores two 4-bit PWM values in a byte,
+     * there are 6 registers to iterate through and 2 PWM channels are configured at a time.
+     */
+    for (int pwm_reg = 0; pwm_reg < LTC8611_NUM_PWM_REGS; pwm_reg++) {
+      /* Set both of the 2 PWM channels in the PWM register to the given configuration */ 
+      cmd_with_pwm[LTC6811_CMD_SIZE + (device * LTC8611_NUM_PWM_REGS) + pwm_reg] = packed_duty_cycle;
     }
   }
 
   size_t cmd_with_pwm_len = LTC6811_CMD_SIZE + (LTC8611_NUM_PWM_REGS * settings->num_devices);
+  /* Wake up the devices if they are idle before sending the command */
   prv_wakeup_idle(afe);
 
+  /* Send PWM configuration command to all AFEs */
   return spi_exchange(settings->spi_port, cmd_with_pwm, cmd_with_pwm_len, NULL, 0);
 }
