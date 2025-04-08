@@ -139,6 +139,8 @@ static void prv_calc_offsets(LtcAfeStorage *afe) {
   }
 }
 
+
+/*  */
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   /* Validate configuration settings based on device limitations */
   if (config->num_devices > LTC_AFE_MAX_DEVICES) {
