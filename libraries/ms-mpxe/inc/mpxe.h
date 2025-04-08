@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * @file   fota.h
+ * @file   mpxe.h
  *
- * @brief  Header file for fota
+ * @brief  Multi Project x86 Emulation library
  *
- * @date   2025-03-12
- * @author Midnight Sun Team #24 - MSXVI
+ * @date   2025-03-09
+ * @author Aryan Kashem
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -16,9 +16,11 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup FOTA
- * @brief    Firmware Over the Air (FOTA) Update system
+ * @defgroup MPXE
+ * @brief    Multi Project x86 Emulation Client Interface library for C applications
  * @{
  */
+
+void mpxe_init(int argc, char *argv[]);
 
 /** @} */

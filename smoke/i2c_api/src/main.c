@@ -24,7 +24,7 @@ I2CSettings i2c_test_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = 
 
 TASK(i2c_api, TASK_STACK_1024) {
   i2c_init(I2C_PORT_2, &i2c_test_settings);
-  I2CAddress address = 0x45;
+  I2CAddress address = 0x0;
   uint8_t data[5] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
   size_t length = 5;
 

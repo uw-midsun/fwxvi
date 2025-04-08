@@ -14,5 +14,5 @@ Messages:
       telemetry:
         watchdog: 0
     signals:
-      data:
+      telemetry_data:
         length: 64

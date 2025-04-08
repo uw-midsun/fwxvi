@@ -1,11 +1,9 @@
-#pragma once
-
 /************************************************************************************************
- * @file   fota.h
+ * @file   fota_packet.c
  *
- * @brief  Header file for fota
+ * @brief  Packet implementation for firmware over the air (FOTA) updates
  *
- * @date   2025-03-12
+ * @date   2025-04-03
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -14,11 +12,4 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-
-/**
- * @defgroup FOTA
- * @brief    Firmware Over the Air (FOTA) Update system
- * @{
- */
-
-/** @} */
+#include "fota_packet.h"

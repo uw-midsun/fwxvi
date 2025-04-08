@@ -128,3 +128,19 @@ GpioState gpio_get_state(const GpioAddress *address) {
 
   return s_gpio_pin_state[index];
 }
+
+GpioMode gpio_peek_mode(GpioAddress *address) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+    return NUM_GPIO_MODES;
+  } else {
+    return s_gpio_pin_modes[(address->port * GPIO_PINS_PER_PORT) + address->pin];
+  }
+}
+
+GpioAlternateFunctions gpio_peek_alt_function(GpioAddress *address) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+    return GPIO_ALT_NONE;
+  } else {
+    return s_gpio_alt_functions[(address->port * GPIO_PINS_PER_PORT) + address->pin];
+  }
+}
