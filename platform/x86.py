@@ -1,13 +1,10 @@
 import os
 
-cflags = [
+commonflags = [
     '-g',
     '-Os',
     '-Wall',
     '-Wextra',
-    '-Werror',
-    '-std=gnu11',
-    '-Wno-discarded-qualifiers',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
     '-Wpointer-arith',
@@ -16,10 +13,21 @@ cflags = [
     '-I/usr/local/include',
 ]
 
+cflags = [
+    '-std=gnu11',
+    '-Wno-discarded-qualifiers',
+    '-Werror',
+] + commonflags
+
+cxxflags = [
+    '-std=c++17',
+] + commonflags
+
 defines = [
     'MS_PLATFORM_X86',
     '_GNU_SOURCE',
 ]
+
 define_flags = ['-D{}'.format(define) for define in defines]
 
 link_flags = [
@@ -32,7 +40,9 @@ x86_env = Environment(
     ENV = { 'PATH': os.environ['PATH'] },
 
     CC='gcc',
+    CXX='g++',
     CCFLAGS=cflags + define_flags,
+    CXXFLAGS=cxxflags + define_flags,
     CPPPATH=[],
 
     LINKFLAGS=link_flags,

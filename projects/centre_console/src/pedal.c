@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "cc_hw_defs.h"
 #include "gpio.h"
 #include "log.h"
@@ -21,11 +22,17 @@
 #include "centre_console_setters.h"
 #include "pedal.h"
 
+#define PEDAL_ALPHA 0.25f
+
 static const GpioAddress brake = BRAKE_LIMIT_SWITCH;
 static const GpioAddress throttle = ADC_HALL_SENSOR;
 
 // TODO: Implement the calibrate file
 static PedalCalibBlob *s_calib_blob;
+
+// TODO: Put these in a PedalStorage Struct that also stores the calibration data.
+static float prev_output = 0;
+static float output = 0;
 
 static void s_read_throttle_data(uint32_t *reading) {
   volatile uint16_t adc_reading = s_calib_blob->throttle_calib.lower_value;
@@ -47,7 +54,12 @@ static void s_read_throttle_data(uint32_t *reading) {
   } else if (calculated_reading > 1) {
     calculated_reading = 1;
   }
-  memcpy(reading, &calculated_reading, sizeof(calculated_reading));
+
+  output = (1 - PEDAL_ALPHA) * adc_reading + PEDAL_ALPHA * prev_output;
+
+  memcpy(reading, &output, sizeof(output));
+
+  prev_output = calculated_reading;
 }
 
 // TODO: Add a high pass filter that smoothens out high frequency data
@@ -71,7 +83,7 @@ StatusCode pedal_init(PedalCalibBlob *calib_blob) {
   interrupt_init();
   gpio_init_pin(&brake, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
   gpio_init_pin(&throttle, GPIO_ANALOG, GPIO_STATE_LOW);
-  // adc_add_channel(throttle);
+  adc_add_channel(&throttle);
   s_calib_blob = calib_blob;
   return STATUS_CODE_OK;
 }
