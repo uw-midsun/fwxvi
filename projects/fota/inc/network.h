@@ -28,9 +28,10 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "stm32l4xx_hal_gpio.h"
 
 /* Intra-component Headers */
-#include "gpio.h"
+
 
 /** @brief   UART Port selection */
 typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
@@ -59,6 +60,18 @@ typedef enum {
  *          Both devices must agree on the baudrate with a tolerance of +-3%.
  *          Flow control is of type UartFlowControl.
  */
+
+typedef enum {
+  GPIO_PORT_A = 0, /**< Gpio port A */
+  GPIO_PORT_B,     /**< Gpio port B */
+  NUM_GPIO_PORTS   /**< Number of Gpio Ports */
+} GpioPort;
+
+typedef struct {
+  GpioPort port;
+  uint32_t pin;
+} GpioAddress;
+
 typedef struct {
   GpioAddress tx;               /**< GPIO Pin for UART TX */
   GpioAddress rx;               /**< GPIO Pin for UART RX */
@@ -75,7 +88,7 @@ typedef struct {
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
-StatusCode uart_init(UartPort uart, UartSettings *settings);
+StatusCode network_init(UartPort uart, UartSettings *settings);
 
 /**
  * @brief   Receive data from the UART port
@@ -89,7 +102,7 @@ StatusCode uart_init(UartPort uart, UartSettings *settings);
  *          STATUS_CODE_INTERNAL_ERROR if HAL receiving fails
  *          STATUS_CODE_TIMEOUT if receiving takes too long
  */
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
+StatusCode network_rx(UartPort uart, uint8_t *data, size_t len);
 
 /**
  * @brief   Transmit data from the UART port
@@ -103,6 +116,6 @@ StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len);
+StatusCode network_tx(UartPort uart, uint8_t *data, size_t len);
 
 /** @} */

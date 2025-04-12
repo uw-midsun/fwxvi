@@ -15,13 +15,13 @@
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_rcc_ex.h"
 #include "stm32l4xx_hal_uart.h"
+#include "stm32l4xx_hal_gpio_ex.h"
+
+#include <stdbool.h>
 
 /* Intra-component Headers */
-#include "gpio.h"
-#include "interrupts.h"
-#include "queues.h"
 #include "status.h"
-#include "fota.h"
+#include "network.h"
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
@@ -32,7 +32,7 @@ static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();   // For PA2/PA3 with USART2
 }
-
+bool i = true;
 /** @brief  UART Port data */
 typedef struct {
   USART_TypeDef *base;   /**< UART HW Base address */
@@ -54,24 +54,19 @@ static const uint16_t s_uart_flow_control_map[] = {
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
-
-
+static GPIO_InitTypeDef gpio_uart_handles[NUM_UART_PORTS][2];
 
 /* Private helper for common TX/RX operations */
 static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
+  // check params
   if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
   if (!s_port[uart].initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  /* Take the mutex for this uart port */
-  if (xSemaphoreTake(s_uart_port_handle[uart], pdMS_TO_TICKS(UART_TIMEOUT_MS)) != pdTRUE) {
-    return STATUS_CODE_TIMEOUT;
-  }
-
+  // do either rx or tx command
   HAL_StatusTypeDef status;
   if (is_rx) {
     status = HAL_UART_Receive_IT(&s_uart_handles[uart], data, len);
@@ -80,7 +75,6 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
   }
 
   if (status != HAL_OK) {
-    xSemaphoreGive(s_uart_port_handle[uart]);
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -88,8 +82,6 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
     xSemaphoreGive(s_uart_port_handle[uart]);
     return STATUS_CODE_TIMEOUT;
   }
-
-  xSemaphoreGive(s_uart_port_handle[uart]);
   return STATUS_CODE_OK;
 }
 
@@ -123,15 +115,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   s_uart_transfer_complete_callback(huart, true);
 }
 
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode network_rx(UartPort uart, uint8_t *data, size_t len) {
   return s_uart_transfer(uart, data, len, true);
 }
 
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode network_tx(UartPort uart, uint8_t *data, size_t len) {
   return s_uart_transfer(uart, data, len, false);
 }
 
-StatusCode uart_init(UartPort uart, UartSettings *settings) {
+StatusCode network_init(UartPort uart, UartSettings *settings) {
   // check input parameters
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -143,19 +135,39 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
-  // enable UART functionality clock
+  // enable UART and GPIO clock
   s_port[uart].rcc_cmd();
 
-  // initialize gpio pins in alternate function mode of usart
+  // select uart clock
+  RCC_PeriphCLKInitTypeDef periph_clk_init = { 0U };
+
   if (uart == UART_PORT_1) {
-    gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
-    gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART1);
-  }
-  else{
-    gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART2);
-    gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT7_USART2);
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    periph_clk_init.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  } else {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+    periph_clk_init.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   }
 
+  if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  // initialize gpio pins in alternate function mode of usart
+  gpio_uart_handles[uart][0].Pin = &settings->tx.pin; // pin
+  gpio_uart_handles[uart][0].Mode = GPIO_MODE_AF_PP; // alternate function
+  gpio_uart_handles[uart][0].Pull = GPIO_NOPULL; // no pull up or down resistor internally
+  gpio_uart_handles[uart][0].Speed = GPIO_SPEED_FREQ_VERY_HIGH; // mainly for tx pin
+  gpio_uart_handles[uart][0].Alternate = (uint8_t)0x07; // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
+  HAL_GPIO_Init(((&settings->tx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][0]);
+
+  gpio_uart_handles[uart][1].Pin = &settings->rx.pin; // pin
+  gpio_uart_handles[uart][1].Mode = GPIO_MODE_AF_PP; // alternate function
+  gpio_uart_handles[uart][1].Pull = GPIO_NOPULL; // no pull up or down resistor internally
+  gpio_uart_handles[uart][1].Speed = GPIO_SPEED_FREQ_VERY_HIGH; // mainly for tx pin
+  gpio_uart_handles[uart][1].Alternate = (uint8_t)0x07; // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
+  HAL_GPIO_Init(((&settings->rx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][1]);
+  
   // see if there is flow control in settings
   uint32_t uart_flow_control = UART_HWCONTROL_NONE;
   if (settings->flow_control) {
@@ -172,30 +184,16 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   s_uart_handles[uart].Init.HwFlowCtl = uart_flow_control;
   s_uart_handles[uart].Init.OverSampling = UART_OVERSAMPLING_16;
 
-  // init uart peripheral
+  // init uart peripheral with settings
   if (HAL_UART_Init(&s_uart_handles[uart]) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
   
-  RCC_PeriphCLKInitTypeDef periph_clk_init = { 0U };
+  /* Initialize interrupts, using highest priority */
+  HAL_NVIC_SetPriority(s_port[uart].irq, 0, 0);
+  HAL_NVIC_EnableIRQ(s_port[uart].irq);
 
-  if (uart == UART_PORT_1) {
-    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;
-    periph_clk_init.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  } else {
-    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART2;
-    periph_clk_init.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
-  }
-
-  if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  
-
-  /* Initialize interrupts */
-  interrupt_nvic_enable(s_port[uart].irq, INTERRUPT_PRIORITY_HIGH);
-
+  // change status to initialized
   s_port[uart].initialized = true;
 
   return STATUS_CODE_OK;
