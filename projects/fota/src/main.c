@@ -18,8 +18,6 @@
 #include "network_buffer.h"
 
 int main() {
-  HAL_Init();
-
   static UartSettings uart2_settings = {
     .tx = {.port = GPIO_PORT_A, .pin=GPIO_PIN_2},
     .rx = {.port = GPIO_PORT_A, .pin=GPIO_PIN_3},
