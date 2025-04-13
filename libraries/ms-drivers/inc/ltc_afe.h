@@ -41,9 +41,11 @@
  * @note    See p 50 for conversion times and p 23 (table 3) for noise 
  */
 typedef enum { 
-  LTC_AFE_ADC_MODE_27KHZ = 0, 
-  LTC_AFE_ADC_MODE_7KHZ, 
-  LTC_AFE_ADC_MODE_26HZ, 
+  LTC_AFE_ADC_MODE_422KHZ = 0,
+  LTC_AFE_ADC_MODE_27KHZ,       /**< Normal */
+  LTC_AFE_ADC_MODE_7KHZ,        /**< Fast */
+  LTC_AFE_ADC_MODE_26HZ,        /**< Filtered */
+  LTC_AFE_ADC_MODE_1KHZ,
   LTC_AFE_ADC_MODE_14KHZ, 
   LTC_AFE_ADC_MODE_3KHZ, 
   LTC_AFE_ADC_MODE_2KHZ, 

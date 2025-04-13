@@ -193,8 +193,22 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
   return prv_write_config(&afe, gpio_bits);
 }
 
+/* Start cell voltage ADC conversion and poll status for all cells */ 
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  LtcAfeSettings *settings = &afe->settings;
+
+  /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
+  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_LTC_AFE_ADC_MODES / 2));
+
+  /* ADVC Command Code (see Table 38 (p. 60)) */
+  uint16_t adcv = LTC6811_ADCV_RESERVED | LTC6811_ADCV_DISCHARGE_NOT_PERMITTED |
+                  LTC6811_CNVT_CELL_ALL | (md_cmd_bits << 7);
+
+  uint8_t cmd[LTC6811_CMD_SIZE] = { 0 };
+  prv_build_cmd(adcv, cmd, LTC6811_CMD_SIZE);
+
+  prv_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, LTC6811_CMD_SIZE, NULL, 0);
 }
 
 StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell) {
