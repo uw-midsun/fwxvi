@@ -78,6 +78,23 @@ int client_cpp_send_message(void *cpp_client, const char *message, int length) {
   }
 }
 
+int client_cpp_set_name(void *cpp_client, const char *message) {
+  if (cpp_client == NULL || message == NULL) {
+    return -1;
+  }
+
+  try {
+    Client *client = static_cast<Client *>(cpp_client);
+
+    std::string name(message, strlen(message));
+
+    client->setClientName(name);
+    return 0;
+  } catch (std::exception &e) {
+    return -2;
+  }
+}
+
 int client_cpp_disconnect(void *cpp_client) {
   if (cpp_client == NULL) {
     return -1;
@@ -99,4 +116,5 @@ void client_cpp_destroy(void *cpp_client) {
     delete client;
   }
 }
+
 }

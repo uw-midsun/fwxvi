@@ -37,14 +37,19 @@ void mpxe_init(int argc, char *argv[]) {
   /* Default connection parameters */
   const char *server_ip = "127.0.0.1";
   int server_port = 8080;
+  const char *client_name = NULL;
 
   /* Parse command line arguments if provided */
   if (argc >= 2) {
-    server_ip = argv[1];
+    client_name = argv[1];
   }
 
   if (argc >= 3) {
     server_port = atoi(argv[2]);
+  }
+
+  if (argc >= 4) {
+    server_ip = argv[3];
   }
 
   printf("Starting client application...\n");
@@ -59,6 +64,10 @@ void mpxe_init(int argc, char *argv[]) {
   if (!client) {
     printf("Failed to create client instance\n");
     return;
+  }
+
+  if (client_name != NULL) {
+    client_set_name(client, client_name);
   }
 
   /* Connect to the server */

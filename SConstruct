@@ -209,7 +209,7 @@ if PLATFORM == 'x86' and TARGET:
 
     def sim_run(target, source, env):
         print('Simulating', project_elf)
-        subprocess.run([project_elf.path])
+        subprocess.run([project_elf.path, TARGET.split("/")[-1]])
 
     AlwaysBuild(Command('#/sim', project_elf, sim_run))
 

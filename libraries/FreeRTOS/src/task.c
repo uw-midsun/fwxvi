@@ -5772,6 +5772,19 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
          * is responsible for freeing the deleted task's TCB and stack. */
         prvCheckTasksWaitingTermination();
 
+        #if defined(MS_PLATFORM_X86)
+        {
+            #include <time.h>
+
+            /* This small sleep was added because of x86 simulations taking up 100% of the CPU */
+            /* The Idle task never relinquished control and attempted to context switch */
+            struct timespec ts;
+            ts.tv_sec = 0;
+            ts.tv_nsec = 1000000; /* 1 millisecond */
+            nanosleep(&ts, NULL);
+        }
+        #endif
+
         #if ( configUSE_PREEMPTION == 0 )
         {
             /* If we are not using preemption we keep forcing a task switch to
