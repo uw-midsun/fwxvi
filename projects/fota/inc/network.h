@@ -30,6 +30,8 @@
 /* Inter-component Headers */
 #include "stm32l4xx_hal_gpio.h"
 
+#include "fota_error.h"
+
 /* Intra-component Headers */
 
 
@@ -88,7 +90,7 @@ typedef struct {
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
-StatusCode network_init(UartPort uart, UartSettings *settings);
+FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer);
 
 /**
  * @brief   Receive data from the UART port
@@ -102,7 +104,7 @@ StatusCode network_init(UartPort uart, UartSettings *settings);
  *          STATUS_CODE_INTERNAL_ERROR if HAL receiving fails
  *          STATUS_CODE_TIMEOUT if receiving takes too long
  */
-StatusCode network_rx(UartPort uart, uint8_t *data, size_t len);
+FotaError network_read(UartPort uart, uint8_t *data, size_t len);
 
 /**
  * @brief   Transmit data from the UART port
@@ -116,6 +118,7 @@ StatusCode network_rx(UartPort uart, uint8_t *data, size_t len);
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode network_tx(UartPort uart, uint8_t *data, size_t len);
+FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
 
+bool isTimeout(bool is_tx);
 /** @} */

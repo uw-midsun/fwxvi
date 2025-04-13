@@ -11,6 +11,7 @@
 
 /* Inter-component Headers */
 #include "stm32l433xx.h"
+#include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_rcc_ex.h"
@@ -22,6 +23,19 @@
 /* Intra-component Headers */
 #include "status.h"
 #include "network.h"
+#include "network_buffer.h"
+
+// Global variables:
+NetworkBuffer *s_network_buffer; /**< Local pointer to the network buffer */
+uint8_t rx_data; /**< Local data reference for receiving */
+
+uint32_t txStartTime;
+bool isSent;
+
+uint32_t readStartTime;
+bool isRead;
+
+uint32_t timeoutValMs = 1000;
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
@@ -57,46 +71,40 @@ static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
 static GPIO_InitTypeDef gpio_uart_handles[NUM_UART_PORTS][2];
 
 /* Private helper for common TX/RX operations */
-static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
-  // check params
-  if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-  if (!s_port[uart].initialized) {
-    return STATUS_CODE_UNINITIALIZED;
-  }
+static FotaError s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
+  // // check params
+  // if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
+  //   return STATUS_CODE_INVALID_ARGS;
+  // }
+  // if (!s_port[uart].initialized) {
+  //   return STATUS_CODE_UNINITIALIZED;
+  // }
 
-  // do either rx or tx command
-  HAL_StatusTypeDef status;
-  if (is_rx) {
-    status = HAL_UART_Receive_IT(&s_uart_handles[uart], data, len);
-  } else {
-    status = HAL_UART_Transmit_IT(&s_uart_handles[uart], data, len);
-  }
+  // // do either rx or tx command
+  // HAL_StatusTypeDef status;
+  // if (is_rx) {
+  //   status = HAL_UART_Receive_IT(&s_uart_handles[uart], data, len);
+  // } else {
+  //   status = HAL_UART_Transmit_IT(&s_uart_handles[uart], data, len);
+  // }
 
-  if (status != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
+  // if (status != HAL_OK) {
+  //   return FOTA_ERROR_INTERNAL_ERROR;
+  // }
 
-  if (xSemaphoreTake(s_uart_cmplt_handle[uart], pdMS_TO_TICKS(UART_TIMEOUT_MS)) != pdTRUE) {
-    xSemaphoreGive(s_uart_port_handle[uart]);
-    return STATUS_CODE_TIMEOUT;
-  }
-  return STATUS_CODE_OK;
+  // return FOTA_ERROR_SUCCESS;
 }
 
 /* Private helper to handle transfer complete */
 static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
-  BaseType_t higher_priority_task = pdFALSE;
-
-  if (huart->Instance == USART1) {
-    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_1], &higher_priority_task);
-  } else {
-    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
-  }
-  portYIELD_FROM_ISR(higher_priority_task);
+  // if (is_rx){
+    
+  // } else {
+    
+  // }
 }
 
+// IRQ handler functions
 void USART1_IRQHandler(void) {
   HAL_UART_IRQHandler(&s_uart_handles[UART_PORT_1]);
 }
@@ -107,34 +115,96 @@ void USART2_IRQHandler(void) {
 
 /* Callback functions for HAL UART TX */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-  s_uart_transfer_complete_callback(huart, false);
+  isSent = true;
 }
 
 /* Callback functions for HAL UART RX */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-  s_uart_transfer_complete_callback(huart, true);
+  if (huart->Instance == USART2){
+    // add updated rx_data to buffer
+    network_buffer_write(&s_network_buffer, &rx_data);
+    // rearm interrupt
+    HAL_UART_Receive_IT(huart, &rx_data, sizeof(rx_data));
+  }
 }
 
-StatusCode network_rx(UartPort uart, uint8_t *data, size_t len) {
-  return s_uart_transfer(uart, data, len, true);
+bool isTimeout(bool is_tx) {
+  if (is_tx){
+    if (!isSent && HAL_GetTick() - txStartTime > timeoutValMs){
+      return true;
+    }
+  } else {
+    if (!isRead && HAL_GetTick() - readStartTime > timeoutValMs){
+      return true;
+    }
+  }
+
+  return false;
 }
 
-StatusCode network_tx(UartPort uart, uint8_t *data, size_t len) {
-  return s_uart_transfer(uart, data, len, false);
+FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
+  if (data == NULL || uart >= NUM_UART_PORTS || len > NETWORK_BUFFER_SIZE) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
+  if (!s_port[uart].initialized) {
+    return FOTA_RESOURCE_EXHAUSTED;
+  }
+
+  isRead = false;
+  readStartTime=HAL_GetTick();
+
+  for (int i=0; i < len; i++) {
+    if (isTimeout(false)){
+      return FOTA_RESOURCE_EXHAUSTED;
+    }
+
+    if (network_buffer_read(&s_network_buffer, data) != FOTA_ERROR_SUCCESS){
+      return FOTA_ERROR_INTERNAL_ERROR;
+    }
+  }
+
+  isRead = true;
+  return FOTA_ERROR_SUCCESS;
 }
 
-StatusCode network_init(UartPort uart, UartSettings *settings) {
+FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
+  // check params
+  if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
+  if (!s_port[uart].initialized) {
+    return FOTA_RESOURCE_EXHAUSTED;
+  }
+  HAL_StatusTypeDef status = HAL_UART_Transmit_IT(&s_uart_handles[uart], data, len);
+
+  if (status != HAL_OK) {
+    return FOTA_ERROR_INTERNAL_ERROR;
+  }
+
+  isSent = false;
+  txStartTime=HAL_GetTick();
+
+  return FOTA_ERROR_SUCCESS;
+}
+
+FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer) {
   // check input parameters
   if (settings == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
+    return FOTA_ERROR_INVALID_ARGS;
   }
   if (uart >= NUM_UART_PORTS) {
-    return STATUS_CODE_INVALID_ARGS;
+    return FOTA_ERROR_INVALID_ARGS;
   }
   if (s_port[uart].initialized) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
+    return FOTA_RESOURCE_EXHAUSTED;
   }
 
+  // init network buffer
+  s_network_buffer = network_buffer;
+  if (network_buffer_init(&s_network_buffer) != FOTA_ERROR_SUCCESS){
+    return FOTA_ERROR_INTERNAL_ERROR;
+  }
+  
   // enable UART and GPIO clock
   s_port[uart].rcc_cmd();
 
@@ -150,7 +220,7 @@ StatusCode network_init(UartPort uart, UartSettings *settings) {
   }
 
   if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
+    return FOTA_ERROR_INTERNAL_ERROR;
   }
 
   // initialize gpio pins in alternate function mode of usart
@@ -186,15 +256,18 @@ StatusCode network_init(UartPort uart, UartSettings *settings) {
 
   // init uart peripheral with settings
   if (HAL_UART_Init(&s_uart_handles[uart]) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
+    return FOTA_ERROR_INTERNAL_ERROR;
   }
   
   /* Initialize interrupts, using highest priority */
   HAL_NVIC_SetPriority(s_port[uart].irq, 0, 0);
   HAL_NVIC_EnableIRQ(s_port[uart].irq);
-
+  
+  // Arm the RX interrupt
+  HAL_UART_Receive_IT(&s_uart_handles[uart], &rx_data, sizeof(rx_data));
+  
   // change status to initialized
   s_port[uart].initialized = true;
 
-  return STATUS_CODE_OK;
+  return FOTA_ERROR_SUCCESS;
 }
