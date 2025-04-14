@@ -76,7 +76,7 @@ typedef struct LtcAfeSettings {
   size_t num_thermistors;                    /**< Number of TOTAL thermistors (aux inputs) across all devices */
 
   void *result_context;
-} LtcAfeSettings;
+}   LtcAfeSettings;
 
 /** 
  * @brief   Runtime Data Storage
@@ -111,11 +111,17 @@ typedef struct LtcAfeStorage {
 //
 // This module supports AFEs with fewer than 12 cells using the |input_bitset|.
 
-// Initialize the LTC6811.
-// |settings.cell_bitset| and |settings.aux_bitset| should be an array of bitsets where bits 0 to 11
-// represent whether we should monitor the cell input for the given device.
-// |settings.cell_result_cb| and |settings.aux_result_cb| will be called when the corresponding
-// conversion is completed.
+/**
+ * @brief   Initializes the LTC AFE system with provided configuration settings
+ * @details Validates user-defined configuration parameters, sets up SPI communication, 
+ *          calculates result buffer offsets, initializes the CRC15 lookup table, 
+ *          and writes configuration settings to all AFE devices
+ * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
+ * @param   config Pointer to constant LtcAfeSettings struct, contains user-specified configuration parameters
+ * @return  STATUS_CODE_OK if initialization is successful
+ *          STATUS_CODE_INVALID_ARGS if device, cell, or thermistor counts exceed defined maximums
+ *          STATUS_CODE_INTERNAL_ERROR if SPI or configuration writes fail during setup
+ */
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
 
 /**
@@ -129,9 +135,29 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
  */
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 
-// Triggers a conversion. Note that we need to wait for the conversions to complete before the
-// readback will be valid.
+/**
+ * @brief   Triggers ADC conversion for all enabled cell voltage inputs
+ * @details Builds and transmits the ADCV command using the configured ADC mode to start 
+ *          cell voltage conversion across all AFE devices. Puts device into active mode 
+ *          before initiating conversion.
+ * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
+ * @return  STATUS_CODE_OK if the ADCV command was successfully transmitted
+ *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
+ *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
+ */
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe);
+
+/**
+ * @brief   Triggers ADC conversion for an auxiliary (thermistor) input
+ * @details Selects the specified thermistor by configuring GPIO bits, then builds and transmits
+ *          the ADAX command to begin auxiliary ADC conversion using GPIO4. Supports thermistors 
+ *          mapped to 5 available GPIO inputs across devices.
+ * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
+ * @param   thermistor Index of the thermistor to measure (0-7 across devices)
+ * @return  STATUS_CODE_OK if the ADAX command was successfully transmitted
+ *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
+ *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
+ */
 StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell);
 
 /**
@@ -174,5 +200,15 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell);
  */
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge);
 
-// Sets the duty cycle to the same value for all cells on all afes
+/**
+ * @brief   Sets the same discharge PWM duty cycle for all cells across all AFE devices
+ * @details Configures the PWM duty cycle registers on each AFE device so that all 12 cell discharge 
+ *          channels operate at the same specified duty cycle. Each register controls 2 channels, so 
+ *          6 registers are written per device. Prepares a write command and transmits it to all AFE devices.
+ * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
+ * @param   duty_cycle 4-bit duty cycle value (0x0 to 0xF) to set for all PWM channels
+ * @return  STATUS_CODE_OK if the PWM configuration was successfully transmitted
+ *          STATUS_CODE_INVALID_ARGS if parameters passed to spi_exchange are invalid
+ *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
+ */
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle);

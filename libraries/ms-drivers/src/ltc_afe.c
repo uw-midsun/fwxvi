@@ -135,8 +135,6 @@ static void prv_calc_offsets(LtcAfeStorage *afe) {
   }
 }
 
-
-/* Initialize the LTC8611 AFE system with the given configuration */
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   /* Validate configuration settings based on device limitations */
   if (config->num_devices > LTC_AFE_MAX_DEVICES) {
@@ -221,7 +219,7 @@ StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t thermistor) {
 
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_LTC_AFE_ADC_MODES / 2));
-  // ADAX Command Code (see Table 38 on pg. 60)
+  /* ADAX Command Code (see Table 38 on pg. 60) */ 
   uint16_t adax = LTC6811_ADAX_RESERVED | LTC6811_ADAX_GPIO4 | (md_cmd_bits << 7);
 
   uint8_t cmd[LTC6811_CMD_SIZE] = { 0 };
