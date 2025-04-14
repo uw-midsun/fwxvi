@@ -96,7 +96,6 @@ typedef struct LtcAfeStorage {
 
   LtcAfeSettings settings;                              /**< Stores settings for AFE devices, set by the user */
   LtcAfeWriteConfigPacket device_configs;               /**< Stores the Configuration of each device in the CFGR register */
-  
 } LtcAfeStorage;
 
 // Helper functions for the LTC6811

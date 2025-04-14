@@ -1,11 +1,13 @@
+#include "ltc_afe_crc15.h"
 #include "ltc_afe.h"
+#include "ltc_afe_regs.h"
+
 #include <stddef.h>
 #include <string.h>
 
-#include "ltc_afe_crc15.h"
 #include "delay.h"
 #include "log.h"
-#include "ltc_afe_regs.h"
+
 
 /** 
  * @brief Commands for reading registers + STCOMM
