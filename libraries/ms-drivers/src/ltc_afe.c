@@ -95,7 +95,7 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
     config_packet->devices[curr_device].reg.undervoltage = 0;
     config_packet->devices[curr_device].reg.overvoltage = 0;
 
-    /* Shift 3 since bitfield uses the last 5 bits */
+    /* Shift 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
     config_packet->devices[curr_device].reg.gpio = (gpio_enable_pins >> 3);
 
     uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet->devices[curr_device].reg, 6);
@@ -200,7 +200,7 @@ StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_LTC_AFE_ADC_MODES / 2));
 
-  /* ADVC Command Code (see Table 38 (p. 60)) */
+  /* ADVC Command Code (see Table 38 on p. 60) */
   uint16_t adcv = LTC6811_ADCV_RESERVED | LTC6811_ADCV_DISCHARGE_NOT_PERMITTED |
                   LTC6811_CNVT_CELL_ALL | (md_cmd_bits << 7);
 
@@ -211,8 +211,24 @@ StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
   return spi_exchange(settings->spi_port, cmd, LTC6811_CMD_SIZE, NULL, 0);
 }
 
-StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t device_cell) {
-  return STATUS_CODE_UNIMPLEMENTED;
+/* Start GPIOs ADC conversion and poll status for XXXXX */
+StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t thermistor) {
+  LtcAfeSettings *settings = &afe->settings;
+
+  /* Left=shift by 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
+  uint8_t gpio_bits = (thermistor << 3) | LTC6811_GPIO4_PD_OFF;
+  prv_write_config(afe, gpio_bits);
+
+  /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
+  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_LTC_AFE_ADC_MODES / 2));
+  // ADAX Command Code (see Table 38 on pg. 60)
+  uint16_t adax = LTC6811_ADAX_RESERVED | LTC6811_ADAX_GPIO4 | (md_cmd_bits << 7);
+
+  uint8_t cmd[LTC6811_CMD_SIZE] = { 0 };
+  prv_build_cmd(adax, cmd, LTC6811_CMD_SIZE);
+
+  prv_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, LTC6811_CMD_SIZE, NULL, 0);
 }
 
 StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
