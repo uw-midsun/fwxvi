@@ -8,7 +8,6 @@
 #include "delay.h"
 #include "log.h"
 
-
 /** 
  * @brief Commands for reading registers + STCOMM
  * @note  Table 38 (p 59)
@@ -26,7 +25,6 @@ static const uint16_t s_read_reg_cmd[NUM_LTC_AFE_REGISTERS] = {
   [LTC_AFE_REGISTER_READ_COMM] = LTC6811_RDCOMM_RESERVED,
   [LTC_AFE_REGISTER_START_COMM] = LTC6811_STCOMM_RESERVED
 };
-
 
 /* p. 52 - Daisy chain wakeup method 2 - pair of long -1, +1 for each device */
 static void prv_wakeup_idle(LtcAfeStorage *afe) {
@@ -61,14 +59,13 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
     return status_code(STATUS_CODE_INVALID_ARGS);
   }
 
+  /* Layout of command: CMD0, CMD1, PEC0, PEC1 */ 
   cmd[0] = (uint8_t) (command >> 8);
   cmd[1] = (uint8_t) (command & 0xFF);
 
   uint16_t cmd_pec = crc15_calculate(cmd, 2);
   cmd[2] = (uint8_t) (cmd_pec >> 8);
   cmd[3] = (uint8_t) (cmd_pec & 0xFF);
-
-  /* Layout of command: CMD0, CMD1, PEC0, PEC1 */ 
 
   return STATUS_CODE_OK;
 }
@@ -86,7 +83,6 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
    * Therefore, we send config settings starting with the last slave in the stack.
   */
   for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
-
     config_packet->devices[curr_device].reg.discharge_bitset = 0;
     config_packet->devices[curr_device].reg.discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
 
@@ -160,8 +156,8 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   SpiSettings spi_config = {
     .baudrate = config->spi_baudrate,
     .mode = SPI_MODE_3,
-    .sdo = config->sdo,  // TODO: Resolve sdo vs miso
-    .sdi = config->sdi,  // TODO: Resolve sdi vs mosi
+    .sdo = config->sdo,
+    .sdi = config->sdi,
     .sclk = config->sclk,
     .cs = config->cs,
   };
@@ -313,6 +309,7 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
     uint16_t index = device * LTC_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
     afe->aux_voltages[index] = voltage;
   }
+  
   return STATUS_CODE_OK;
 }
 

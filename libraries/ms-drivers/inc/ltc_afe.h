@@ -1,7 +1,16 @@
 #pragma once
+
+/************************************************************************************************
+ * @file   ltc_afe.h
+ *
+ * @brief  LTC6811 AFE Driver Header File
+ *
+ * @date   2025-04-13
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 // Driver for LTC6811 AFE chip
 
-// TODO(SOFT-9): Need to update GPIO/ADC part
 
 // Requires GPIO, Interrupts, Soft Timers, and Event Queue to be initialized
 
