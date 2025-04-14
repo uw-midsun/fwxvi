@@ -18,7 +18,7 @@
 /* Intra-component Headers */
 #include "fota_error.h"
 #include "fota_packet.h"
-
+#include "network_buffer.h"
 /**
  * @defgroup FOTA
  * @brief    Firmware Over the Air (FOTA) Update system
@@ -39,5 +39,8 @@ FotaError packet_manager_init(PacketManager *packet_manager);
 FotaError crc_check(PacketManager *packet_manager);
 
 FotaError transmit_packet(PacketManager *packet_manager);
+FotaError packet_manager_encode(Packet *packet, NetworkBuffer *net_buff);
+FotaError packet_manager_decode(Packet *packet, NetworkBuffer *net_buff) {
+  FotaError transmit_packet(PacketManager * packet_manager);
 
-/** @} */
+  /** @} */

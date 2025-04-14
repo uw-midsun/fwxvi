@@ -24,15 +24,16 @@
  */
 
 #define PAYLOAD_SIZE 256
+#define SOF 1
+#define EOF 2
 
-
-typedef union{
+typedef union {
   uint8_t raw_payload[PAYLOAD_SIZE];
-  struct{
+  struct {
     uint32_t crc;
-    uint8_t data[PAYLOAD_SIZE-sizeof(uint32_t)];
-  }data_pakcet;
-  }PacketPayload;
+    uint8_t data[PAYLOAD_SIZE - sizeof(uint32_t)];
+  } data_pakcet;
+} PacketPayload;
 typedef enum { HEADER_PACKET, DATA_PACKET, ERROR_PACKET } PacketType;
 typedef struct {
   uint8_t sof;
@@ -43,9 +44,9 @@ typedef struct {
   uint8_t eof;
 } Packet;
 
-void packet_init(Packet* Packet, uint);
+void packet_init(Packet *packet, PacketType type, uint8_t sequence, uint16_t length);
 FotaError encode_packet(Packet *packet, uint8_t *payload);
 
-FotaError decode_packet(CircularBuffer *buffer);
+FotaError decode_packet(const uint8_t *buffer, size_t len, Packet *Out_Packet);
 
 /** @} */
