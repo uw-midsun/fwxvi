@@ -1,12 +1,24 @@
-#include "ltc_afe_crc15.h"
-#include "ltc_afe.h"
-#include "ltc_afe_regs.h"
+/************************************************************************************************
+ * @file   ltc_afe.c
+ *
+ * @brief  Source file for the LTC8611 AFE driver
+ *
+ * @date   2025-04-13
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <stddef.h>
 #include <string.h>
 
+/* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
+
+ /* Intra-component Headers */
+ #include "ltc_afe_crc15.h"
+ #include "ltc_afe.h"
+ #include "ltc_afe_regs.h"
 
 /** 
  * @brief Commands for reading registers + STCOMM
@@ -189,7 +201,6 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
   return prv_write_config(&afe, gpio_bits);
 }
 
-/* Start cell voltage ADC conversion and poll status for all cells */ 
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
   LtcAfeSettings *settings = &afe->settings;
 
@@ -335,7 +346,6 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
   return STATUS_CODE_OK;
 }
 
-/* Set same duty cycle for all 12 PWM channels (for all 12 cells) across each AFE */
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle) {
   LtcAfeSettings *settings = &afe->settings;
 

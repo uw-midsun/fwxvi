@@ -1,5 +1,14 @@
 #pragma once
-// crc15 implementation for the LTC6811
+
+/************************************************************************************************
+ * @file   ltc_afe.h
+ *
+ * @brief  Header file to implement CRC15 for the LTC8611 AFE
+ *
+ * @date   2025-04-13
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include <stddef.h>
 #include <stdint.h>
 

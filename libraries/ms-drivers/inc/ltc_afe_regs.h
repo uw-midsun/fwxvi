@@ -1,4 +1,15 @@
 #pragma once
+
+/************************************************************************************************
+ * @file   ltc_afe_regs.h
+ *
+ * @brief  Header file to define the LTC8611 AFE's register layout, configuration, and command code structures
+ *
+ * @date   2025-04-13
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
 #include <assert.h>
 
 /** @brief  Used internally by the LTC AFE driver (number of regs per reg group) */

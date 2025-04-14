@@ -1,10 +1,20 @@
-#include "ltc_afe_crc15.h"
+/************************************************************************************************
+ * @file   ltc_afe_crc15.c
+ *
+ * @brief  Source file to implement CRC15 for the LTC8611 AFE
+ *
+ * @date   2025-04-13
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/* 
- * x^{15} + x^{14} + x^{10} + x^{8} + x^{7} + x^{4} + x^{3} + x^{0}
- * so divisor is: 0b1100010110011001 (0xC599)
- * 0xC599 - (2^15) == 0x4599 (Since crc15, 15th bit HAS to be 1)
+/** 
+ * @note x^{15} + x^{14} + x^{10} + x^{8} + x^{7} + x^{4} + x^{3} + x^{0}
+ * @note Thus, divisor is: 0b1100010110011001 (0xC599)
+ * @note 0xC599 - (2^15) == 0x4599 (Since crc15, 15th bit HAS to be 1)
  */
+
+/* Intra-component Headers */
+#include "ltc_afe_crc15.h"
 
 #define CRC_POLYNOMIAL 0x4599
 

@@ -3,30 +3,32 @@
 /************************************************************************************************
  * @file   ltc_afe.h
  *
- * @brief  LTC6811 AFE Driver Header File
+ * @brief  Header file for the LTC8611 AFE driver
  *
  * @date   2025-04-13
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-// Driver for LTC6811 AFE chip
+/**
+ * @note Requires GPIO, Interrupts, Soft Timers, and the Event Queue to be initialized before use.
+ * @note All voltage units are in 100 µV.
+ * @note This module supports AFEs with 12 or more cells using the cell/aux bitset.
+ * @note Due to long conversion delays, the driver uses a finite state machine (FSM)
+ *       to return control to the application during conversions.
+ */
 
-
-// Requires GPIO, Interrupts, Soft Timers, and Event Queue to be initialized
-
-// Note that all units are in 100uV.
-
-// This module supports AFEs with >=12 cells using the |cell/aux_bitset|.
-// Note that due to the long conversion delays required, we use an FSM to return control to the
-// application.
+/* Standard library Headers */
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "fsm.h"
+/* Inter-component Headers */
 #include "gpio.h"
 #include "spi.h"
+
+/* Intra-component Headers */
+#include "fsm.h"
 #include "status.h"
 
 // This is an arbitrary limitation, can be increased/decreased if needed
