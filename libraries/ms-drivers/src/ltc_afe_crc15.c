@@ -25,7 +25,7 @@ void crc15_init_table(void) {
     uint32_t remainder = i << 7;
     for (uint8_t bit = 8; bit > 0; --bit) {
       if (remainder & 0x4000) {
-        // check MSB
+        /* check MSB */
         remainder = (remainder << 1);
         remainder = (remainder ^ CRC_POLYNOMIAL);
       } else {
@@ -38,7 +38,7 @@ void crc15_init_table(void) {
 }
 
 uint16_t crc15_calculate(uint8_t *data, size_t len) {
-  // CRC should be initialized to 16 (see datasheet p.53)
+  /* CRC should be initialized to 16 (see datasheet p.53) */
   uint16_t remainder = 16;
 
   for (size_t i = 0; i < len; i++) {

@@ -15,6 +15,7 @@
  * @note This module supports AFEs with 12 or more cells using the cell/aux bitset.
  * @note Due to long conversion delays, the driver uses a finite state machine (FSM)
  *       to return control to the application during conversions.
+ * @note This module is mostly exposed for the FSM. Do not use functions in this module directly.
  */
 
 /* Standard library Headers */
@@ -31,20 +32,31 @@
 #include "fsm.h"
 #include "status.h"
 
-// This is an arbitrary limitation, can be increased/decreased if needed
-#define LTC_AFE_MAX_DEVICES 3
-// This is a device limitation
-#define LTC_AFE_MAX_CELLS_PER_DEVICE 12
-#define LTC_AFE_MAX_THERMISTORS_PER_DEVICE 8
-#define LTC_AFE_MAX_CELLS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_CELLS_PER_DEVICE)
-#define LTC_AFE_MAX_THERMISTORS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_THERMISTORS_PER_DEVICE)
-
-// Remove padding, if possible
+/* Removes padding, if possible */
 #if defined(__GNUC__)
 #define _PACKED __attribute__((packed))
 #else
 #define _PACKED
 #endif
+
+/** 
+ * @brief Maximum AFE devices in daisy chain config
+ * @note This is an arbitrary limitation, can be increased/decreased if needed 
+ */
+#define LTC_AFE_MAX_DEVICES 3
+
+/** 
+ * @brief Maximum x of each device
+ * @note This is a device limitation 
+ */
+#define LTC_AFE_MAX_CELLS_PER_DEVICE 12
+#define LTC_AFE_MAX_THERMISTORS_PER_DEVICE 8
+
+/**
+ * @brief Maximum across all devices
+ */
+#define LTC_AFE_MAX_CELLS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_CELLS_PER_DEVICE)
+#define LTC_AFE_MAX_THERMISTORS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_THERMISTORS_PER_DEVICE)
 
 /** 
  * @brief   Select the ADC mode
@@ -108,18 +120,6 @@ typedef struct LtcAfeStorage {
   LtcAfeSettings settings;                              /**< Stores settings for AFE devices, set by the user */
   LtcAfeWriteConfigPacket device_configs;               /**< Stores the Configuration of each device in the CFGR register */
 } LtcAfeStorage;
-
-// Helper functions for the LTC6811
-//
-// This module is mostly exposed for the FSM. Do not use functions in this module directly.
-// Requires SPI, soft timers to be initialized
-//
-// Assumes that:
-// Requires GPIO, Interrupts and Soft Timers to be initialized
-//
-// Note that all units are in 100uV.
-//
-// This module supports AFEs with fewer than 12 cells using the |input_bitset|.
 
 /**
  * @brief   Initializes the LTC AFE system with provided configuration settings

@@ -187,40 +187,39 @@ typedef struct {
 static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 
 /**
- * @brief Command codes
- * @note  See Table 38 (p.59)
+ * @brief Command codes for LTC6811 AFE
+ * @details  See Table 38 (p.59)
  */
-#define LTC6811_WRCFG_RESERVED (1 << 0)
-#define LTC6811_RDCFG_RESERVED (1 << 1)
-#define LTC6811_RDCVA_RESERVED (1 << 2)
-#define LTC6811_RDCVB_RESERVED (1 << 2) | (1 << 1)
-#define LTC6811_RDCVC_RESERVED (1 << 3)
-#define LTC6811_RDCVD_RESERVED (1 << 3) | (1 << 1)
-#define LTC6811_RDAUXA_RESERVED ((1 << 3) | (1 << 2))
-#define LTC6811_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)
-#define LTC6811_RDSTATA_RESERVED (1 << 4)
-#define LTC6811_RDSTATB_RESERVED (1 << 4) | (1 << 1)
-#define LTC6811_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))
-#define LTC6811_ADCOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))
-#define LTC6811_CVST_RESERVED ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 9))
-#define LTC6811_ADAX_RESERVED (1 << 10) | (1 << 6) | (1 << 5)
-#define LTC6811_CLRCELL_RESERVED (1 << 0) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_CLRAUX_RESERVED (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_CLRSTAT_RESERVED (1 << 0) | (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_PLADC_RESERVED (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_DIAGNC_RESERVED (1 << 0) | (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_WRCOMM_RESERVED (1 << 0) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
+#define LTC6811_WRCFG_RESERVED (1 << 0)                           /**< Write Config Reg Group A */
+#define LTC6811_RDCFG_RESERVED (1 << 1)                           /**< Read Config Reg Group A */
+#define LTC6811_RDCVA_RESERVED (1 << 2)                           /**< Read Cell Voltage Reg Group A */
+#define LTC6811_RDCVB_RESERVED (1 << 2) | (1 << 1)                /**< Read Cell Voltage Reg Group B */
+#define LTC6811_RDCVC_RESERVED (1 << 3)                           /**< Read Cell Voltage Reg Group C */
+#define LTC6811_RDCVD_RESERVED (1 << 3) | (1 << 1)                /**< Read Cell Voltage Reg Group D */
+#define LTC6811_RDAUXA_RESERVED ((1 << 3) | (1 << 2))             /**< Read Auxillary Reg Group A */
+#define LTC6811_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)  /**< Read Auxillary Reg Group B */
+#define LTC6811_RDSTATA_RESERVED (1 << 4)                         /**< Read Status Register Group A */
+#define LTC6811_RDSTATB_RESERVED (1 << 4) | (1 << 1)              /**< Read Status Register Group B */
+#define LTC6811_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))    /**< Start Cell Voltage ADC Conversion and Poll Status */
+#define LTC6811_ADOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))    /**< Start Open Wire ADC Conversion and Poll Status */
+#define LTC6811_CVST_RESERVED ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 9)) /**< Start Self Test Cell Voltage Conversion and Poll Status */
+#define LTC6811_ADAX_RESERVED (1 << 10) | (1 << 6) | (1 << 5)     /**< Start GPIOs ADC Conversion and Poll Status */
+#define LTC6811_CLRCELL_RESERVED (1 << 0) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)  /**< Clear Cell Voltage Register Groups */
+#define LTC6811_CLRAUX_RESERVED (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Clear Auxillary Register Groups */
+#define LTC6811_CLRSTAT_RESERVED (1 << 0) | (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10) /**< Clear Status Register Groups */
+#define LTC6811_PLADC_RESERVED (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)    /**< Poll ADC Conversion Status */
+#define LTC6811_DIAGN_RESERVED (1 << 0) | (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)  /**< Diagnose MUX and Poll Status */
+#define LTC6811_WRCOMM_RESERVED (1 << 0) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Write COMM Register Group */
+#define LTC6811_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Read COMM Register Group */
 #define LTC6811_STCOMM_RESERVED (1 << 0) | (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
-#define LTC6811_WRPWM_RESERVED (1 << 5)
-#define LTC6811_RDPWM_RESERVED (1 << 5) | (1 << 2)
-
+#define LTC6811_WRPWM_RESERVED (1 << 5)            /**< Write PWM Register Group */
+#define LTC6811_RDPWM_RESERVED (1 << 5) | (1 << 2) /**< Read PWM Register Group */
 
 /**
  * @brief GPIO pull-down configuration for the Config Register Group.
  * @note  See Table 40 (p.62) and `LtcAfeConfigRegisterData` struct for details.
  */
-#define LTC6811_GPIO1_PD_ON (0 << 3)
+#define LTC6811_GPIO1_PD_ON (0 << 3)    
 #define LTC6811_GPIO1_PD_OFF (1 << 3)
 #define LTC6811_GPIO2_PD_ON (0 << 4)
 #define LTC6811_GPIO2_PD_OFF (1 << 4)
@@ -250,14 +249,10 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 #define LTC6811_ADCV_DISCHARGE_NOT_PERMITTED (0 << 4)
 #define LTC6811_ADCV_DISCHARGE_PERMITTED (1 << 4)
 
-/** @brief COMM Register config macros */
-#define LTC6811_ADCOPT (1 << 0)
-#define LTC6811_SWTRD (1 << 1)
-
 /** @brief ADAX command macros */
-#define LTC6811_ADAX_GPIO1 0x01
-#define LTC6811_ADAX_GPIO4 0x04
-#define LTC6811_ADAX_MODE_FAST (0 << 8) | (1 << 7)
+#define LTC6811_ADAX_GPIO1 0x01                      /**< Select GPIO 1 for ADC Conversion */
+#define LTC6811_ADAX_GPIO4 0x04                      /**< Select GPIO 4 for ADC Conversion */
+#define LTC6811_ADAX_MODE_FAST (0 << 8) | (1 << 7)   /**< Select fast ADC mode */
 
 /** @brief Write Codes for ICOMn (n = 1, 2, 3) */
 #define LTC6811_ICOM_CSBM_LOW (1 << 3)                                      /**< CSBM low signal */
