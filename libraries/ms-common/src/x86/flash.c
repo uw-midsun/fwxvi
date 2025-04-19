@@ -128,13 +128,21 @@ StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
 
   pthread_mutex_lock(&s_flash_mutex);
 
-  char buffer[(num_pages - start_page) * FLASH_PAGE_SIZE];
-  memset(buffer, 0xFF, sizeof(buffer));
+  size_t buffer_size = (num_pages - start_page) * FLASH_PAGE_SIZE;
+  char *buffer = malloc(buffer_size);
+
+  if (buffer == NULL) {
+    pthread_mutex_unlock(&s_flash_mutex);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  memset(buffer, 0xFF, buffer_size);
 
   fseek(s_flash_fp, (intptr_t)FLASH_PAGE_TO_ADDR(start_page), SEEK_SET);
-  fwrite(buffer, 1, sizeof(buffer), s_flash_fp);
+  fwrite(buffer, 1, buffer_size, s_flash_fp);
   fflush(s_flash_fp);
 
+  free(buffer);
   pthread_mutex_unlock(&s_flash_mutex);
 
   return STATUS_CODE_OK;

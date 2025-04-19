@@ -2,9 +2,6 @@
 build/*
 venv/*
 
-# the virtual environment directory for Python
-venv/*
-
 # scons cache
 .sconsign.dblite
 
