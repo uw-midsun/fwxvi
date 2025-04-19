@@ -1,6 +1,19 @@
+## @file    test_fota_tx.py
+#  @date    2025-04-19
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Test module for FOTA TX
+#
+#  @details Designed and implemented for the XBee interface over a serial connection
+#
+#  @ingroup fota_validation
+
 import serial
 
+
 def send_data(ser, data):
+    """
+    @brief Transmits data with the XBee
+    """
     try:
         data_in_bytes = bytes.fromhex(data)
         print(f"Sending user data: {data_in_bytes}")
@@ -8,14 +21,18 @@ def send_data(ser, data):
     except ValueError:
         print("Invalid input. Please try entering a proper hexidecimal value")
 
+
 def main():
-    PORT = "/dev/ttyUSB2"
-    BAUDRATE = 115200
-    TIMEOUT = 1
+    """
+    @brief Main transmit loop
+    """
+    port = "/dev/ttyUSB2"  # CHANGE THIS BASED ON WHICH PORT XBEE IS CONNECTED TO
+    baudrate = 115200
+    timeout = 1
 
     try:
-        ser = serial.Serial(PORT, BAUDRATE, timeout=TIMEOUT)
-        print(f"\nConnected to port {PORT} at {BAUDRATE} baud!\n")
+        ser = serial.Serial(port, baudrate, timeout=timeout)
+        print(f"\nConnected to port {port} at {baudrate} baud!\n")
 
         # Test transmission during startup
         sample_data = b'\xAA\x00\x00\x00\x01\x07\x01\x01\x01\x01\x01\x01\x01\xBB'
@@ -37,7 +54,8 @@ def main():
     finally:
         if ser.is_open:
             ser.close()
-            print(f"\nConnection to port {PORT} closed!\n")
+            print(f"\nConnection to port {port} closed!\n")
+
 
 if __name__ == "__main__":
     main()

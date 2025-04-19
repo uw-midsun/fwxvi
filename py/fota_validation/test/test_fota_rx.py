@@ -1,7 +1,20 @@
-import serial
+## @file    test_fota_rx.py
+#  @date    2025-04-19
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Test module for FOTA RX
+#
+#  @details Designed and implemented for the XBee interface over a serial connection
+#
+#  @ingroup fota_validation
+
 import time
+import serial
+
 
 def receive_data(ser):
+    """
+    @brief Receives data from the XBee
+    """
     try:
         if ser.in_waiting > 0:
             data = ser.read(ser.in_waiting)
@@ -11,14 +24,18 @@ def receive_data(ser):
     except Exception as e:
         print(f"Error while receiving data: {e}")
 
+
 def main():
-    PORT = "/dev/ttyUSB0"
-    BAUDRATE = 115200
-    TIMEOUT = 1
+    """
+    @brief Main receiving loop
+    """
+    port = "/dev/ttyUSB0"  # CHANGE THIS BASED ON WHICH PORT XBEE IS CONNECTED TO
+    baudrate = 115200
+    timeout = 1
 
     try:
-        ser = serial.Serial(PORT, BAUDRATE, timeout=TIMEOUT)
-        print(f"\nConnected to port {PORT} at {BAUDRATE} baud!\n")
+        ser = serial.Serial(port, baudrate, timeout=timeout)
+        print(f"\nConnected to port {port} at {baudrate} baud!\n")
 
         while True:
             receive_data(ser)
@@ -29,7 +46,8 @@ def main():
     finally:
         if ser.is_open:
             ser.close()
-            print(f"\nConnection to port {PORT} closed!\n")
+            print(f"\nConnection to port {port} closed!\n")
+
 
 if __name__ == "__main__":
     main()
