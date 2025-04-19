@@ -72,16 +72,16 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  /* Take the mutex for this uart port */
+  /* Take the mutex for this I2C port */
   if (xSemaphoreTake(s_i2c_port_handle[i2c], pdMS_TO_TICKS(I2C_TIMEOUT_MS)) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }
 
   HAL_StatusTypeDef status;
   if (is_rx) {
-    status = HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr, data, len);
+    status = HAL_I2C_Master_Receive_IT(&s_i2c_handles[i2c], addr << 1U, data, len);
   } else {
-    status = HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr, data, len);
+    status = HAL_I2C_Master_Transmit_IT(&s_i2c_handles[i2c], addr << 1U, data, len);
   }
 
   if (status != HAL_OK) {
@@ -94,6 +94,11 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
     return STATUS_CODE_TIMEOUT;
   }
 
+  if (s_i2c_handles[i2c].ErrorCode != HAL_I2C_ERROR_NONE) {
+    xSemaphoreGive(s_i2c_port_handle[i2c]);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
   xSemaphoreGive(s_i2c_port_handle[i2c]);
   return STATUS_CODE_OK;
 }
@@ -101,22 +106,12 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
 /* Private helper to handle transfer complete */
 static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef *hi2c, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
-  I2CPort i2c = NUM_I2C_PORTS;
 
-  for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
-    if (&s_i2c_handles[i] == hi2c) {
-      i2c = i;
-      break;
-    }
+  if (hi2c->Instance == I2C1) {
+    xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_1], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_2], &higher_priority_task);
   }
-
-  if (i2c >= NUM_I2C_PORTS) {
-    return;
-  }
-
-  __HAL_UART_CLEAR_IT(hi2c, is_rx ? I2C_IT_RXI : I2C_IT_TXI);
-
-  xSemaphoreGiveFromISR(s_i2c_cmplt_handle[i2c], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }
 
@@ -148,15 +143,12 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
   I2CPort i2c = NUM_I2C_PORTS;
-  for (I2CPort i = 0; i < NUM_I2C_PORTS; i++) {
-    if (&s_i2c_handles[i] == hi2c) {
-      i2c = i;
-      break;
-    }
-  }
+  BaseType_t higher_priority_task = pdFALSE;
 
-  if (i2c >= NUM_I2C_PORTS) {
-    return;
+  if (hi2c->Instance == I2C1) {
+    i2c = I2C_PORT_1;
+  } else {
+    i2c = I2C_PORT_2;
   }
 
   uint32_t error = HAL_I2C_GetError(hi2c);
@@ -181,10 +173,9 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
     /* Future expansion */
   }
 
-  /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete
-   */
-  xSemaphoreGive(s_i2c_cmplt_handle[i2c]);
-  xSemaphoreGive(s_i2c_port_handle[i2c]);
+  /* Release the semaphores to prevent a deadlock where these are never returned from XFR complete */
+  xSemaphoreGiveFromISR(s_i2c_cmplt_handle[i2c], &higher_priority_task);
+  portYIELD_FROM_ISR(higher_priority_task);
 
   /* Soft reset */
   HAL_I2C_DeInit(hi2c);
@@ -211,8 +202,9 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
-  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
+  /* The I2C pins need to be configured in push pull instead of Open drain mode. TODO: Research why */
+  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
 
   s_i2c_handles[i2c].Instance = s_port[i2c].base;
   s_i2c_handles[i2c].Init.Timing = s_i2c_timing[settings->speed];
@@ -252,8 +244,8 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  interrupt_nvic_enable(s_port[i2c].ev_irqn, INTERRUPT_PRIORITY_NORMAL);
-  interrupt_nvic_enable(s_port[i2c].err_irqn, INTERRUPT_PRIORITY_NORMAL);
+  interrupt_nvic_enable(s_port[i2c].ev_irqn, INTERRUPT_PRIORITY_HIGH);
+  interrupt_nvic_enable(s_port[i2c].err_irqn, INTERRUPT_PRIORITY_HIGH);
 
   s_port[i2c].initialized = true;
 

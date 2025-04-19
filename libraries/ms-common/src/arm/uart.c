@@ -32,13 +32,6 @@ static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
 }
 
-static const uint16_t s_uart_flow_control_map[] = {
-  [UART_FLOW_CONTROL_NONE] = UART_HWCONTROL_NONE,
-  [UART_FLOW_CONTROL_RTS] = UART_HWCONTROL_RTS,
-  [UART_FLOW_CONTROL_CTS] = UART_HWCONTROL_CTS,
-  [UART_FLOW_CONTROL_RTS_CTS] = UART_HWCONTROL_RTS_CTS,
-};
-
 /** @brief  UART Port data */
 typedef struct {
   USART_TypeDef *base;   /**< UART HW Base address */
@@ -50,6 +43,13 @@ typedef struct {
 static UartPortData s_port[NUM_UART_PORTS] = {
   [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
   [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
+};
+
+static const uint16_t s_uart_flow_control_map[] = {
+  [UART_FLOW_CONTROL_NONE] = UART_HWCONTROL_NONE,
+  [UART_FLOW_CONTROL_RTS] = UART_HWCONTROL_RTS,
+  [UART_FLOW_CONTROL_CTS] = UART_HWCONTROL_CTS,
+  [UART_FLOW_CONTROL_RTS_CTS] = UART_HWCONTROL_RTS_CTS,
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
@@ -101,22 +101,12 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
 /* Private helper to handle transfer complete */
 static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
-  UartPort uart = NUM_UART_PORTS;
 
-  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
-    if (&s_uart_handles[i] == huart) {
-      uart = i;
-      break;
-    }
+  if (huart->Instance == USART1) {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_1], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
   }
-
-  if (uart >= NUM_UART_PORTS) {
-    return;
-  }
-
-  __HAL_UART_CLEAR_IT(huart, is_rx ? UART_IT_RXNE : UART_IT_TXE);
-
-  xSemaphoreGiveFromISR(s_uart_cmplt_handle[uart], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }
 

@@ -3,7 +3,7 @@
  *
  * @brief  Main file for bms_carrier
  *
- * @date   2024-12-25
+ * @date   2025-01-12
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -27,7 +27,6 @@ void run_1000hz_cycle() {
 
   run_can_tx_fast();
 }
-
 void run_10hz_cycle() {
   run_can_tx_medium();
 }

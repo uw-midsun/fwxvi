@@ -18,7 +18,7 @@
 #include "task.h"
 
 /* Intra-component Headers */
-#include "semaphore.h"
+#include "ms_semaphore.h"
 #include "tasks.h"
 #include "uart.h"
 

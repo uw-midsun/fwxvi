@@ -13,6 +13,7 @@ def parse_config(entry):
         'cflags': [],
         'mocks': {},
         'no_lint': False,
+        "mpxe": False,
         "can": False,
         "arm_only": False
     }
@@ -70,3 +71,4 @@ def flash_run(entry, flash_type):
     subprocess.run(cmd, shell=True).check_returncode()
 
     print("Flash complete")
+    exit(0)

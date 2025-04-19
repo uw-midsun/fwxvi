@@ -29,11 +29,10 @@ CanHwBusStatus can_hw_bus_status(void) {
     return CAN_HW_BUS_STATUS_OK;
 }
 
-
-StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint8_t len) {
     return STATUS_CODE_UNIMPLEMENTED;
 }
 
-bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, size_t *len) {
+bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
     return true;
 }

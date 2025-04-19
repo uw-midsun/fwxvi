@@ -1,5 +1,6 @@
 # build directory
 build/*
+venv/*
 
 # the virtual environment directory for Python
 venv/*
@@ -15,6 +16,8 @@ venv/
 *.DS_Store
 .project
 *.code-workspace
+.cache/
+.cache/*
 
 # Vim
 tags

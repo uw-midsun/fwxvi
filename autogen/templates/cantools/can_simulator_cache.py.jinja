@@ -1,0 +1,26 @@
+## @file    can_simulator_cache.py
+#  @date    2025-03-09
+#  @author  Midnight Sun Team #24 - MSXVI
+#  @brief   Stores a cache class for all the CAN simulator data
+#
+#  @ingroup CANSimulator
+
+class CanSimulatorDataCache:
+    def __init__(self):
+        self.data = {
+{% for message in messages %}
+            "{{ message.sender | lower }}_{{ message.name | lower }}": {
+                # {{ message.name | lower }} cache definitions{% for signal in message.signals %}
+                "{{ signal.name }}": 0,{% endfor %}
+            }{% if not loop.last %},{% endif %}
+{% endfor %}
+        }
+
+    def get(self, message_name, parameter):
+        return self.data.get(message_name, {}).get(parameter, 0)
+    
+    def set(self, message_name, parameter, value):
+        if message_name in self.data and parameter in self.data[message_name]:
+            self.data[message_name][parameter] = value
+            return True
+        return False
