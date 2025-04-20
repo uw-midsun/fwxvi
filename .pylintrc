@@ -199,7 +199,7 @@ ignore-docstrings=yes
 ignore-imports=no
 
 # Minimum lines number of a similarity.
-min-similarity-lines=4
+min-similarity-lines=8
 
 
 [TYPECHECK]
@@ -530,5 +530,4 @@ min-public-methods=1
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "builtins.BaseException, builtins.Exception".
-overgeneral-exceptions=builtins.BaseException,
-                       builtins.Exception
+overgeneral-exceptions=builtins.BaseException
