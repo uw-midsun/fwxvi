@@ -269,7 +269,7 @@ static BootloaderError bootloader_ping() {
     }
 
     if (prv_bootloader.bytes_written == prv_bootloader.data_size) {
-      uint32_t calculated_crc32 = boot_crc_calculate((const uint32_t *)flash_buffer,
+      uint32_t calculated_crc32 = boot_crc32_calculate((const uint32_t *)flash_buffer,
                                                      BYTES_TO_WORD(prv_bootloader.buffer_index));
       if (calculated_crc32 != prv_bootloader.packet_crc32) {
         send_ack_datagram(NACK, BOOTLOADER_CRC_MISMATCH_BEFORE_WRITE);
@@ -285,7 +285,7 @@ static BootloaderError bootloader_ping() {
         return error;
       }
 
-      calculated_crc32 = boot_crc_calculate((const uint32_t *)flash_buffer,
+      calculated_crc32 = boot_crc32_calculate((const uint32_t *)flash_buffer,
                                             BYTES_TO_WORD(prv_bootloader.buffer_index));
       if (calculated_crc32 != prv_bootloader.packet_crc32) {
         send_ack_datagram(NACK, BOOTLOADER_CRC_MISMATCH_AFTER_WRITE);

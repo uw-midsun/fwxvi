@@ -12,9 +12,10 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
-#include "flash.h" //..?
-#include "core_cm4.h" //..?
-#include "system_stm32l4xx.h" //..?
+#include "flash.h"
+#include "stm32l4xx.h"
+#include "system_stm32l4xx.h"
+#include "core_cm4.h"
 
 /* Intra-component Headers */
 #include "bootloader.h"
@@ -45,6 +46,7 @@ int main() {
   SCB->VTOR = FLASH_BASE_ADDR;
   boot_can_init(&can_settings);
   bootloader_init();
+
   if(SysTick_Config(SystemCoreClock / 1000)) {
     send_ack_datagram(0, BOOTLOADER_INTERNAL_ERR);
     while(true); // Hang
