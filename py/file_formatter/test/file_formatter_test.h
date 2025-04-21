@@ -18,9 +18,9 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup file
- * @brief    file Firmware
- * @{{
+ * @defgroup file_formatter_test
+ * @brief    file_formatter_test Firmware
+ * @{
  */
 
 typedef enum { TEST_ENUM_1, TEST_ENUM_2, NUM_TEST_ENUM } FileFormatterTestEnum;

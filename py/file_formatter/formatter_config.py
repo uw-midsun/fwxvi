@@ -14,6 +14,7 @@ IGNORE_DIRS = [
     "libraries/unity",
     "libraries/FATFs",
     "libraries/CMSIS",
+    "libraries/core",
     "mpxe",
     "build"
 ]

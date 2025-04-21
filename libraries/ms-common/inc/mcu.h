@@ -13,7 +13,7 @@
 
 /* Inter-component Headers */
 
-/* Intra-component Headers*/
+/* Intra-component Headers */
 #include "status.h"
 
 /**

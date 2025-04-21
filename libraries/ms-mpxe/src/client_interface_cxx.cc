@@ -116,5 +116,4 @@ void client_cpp_destroy(void *cpp_client) {
     delete client;
   }
 }
-
 }

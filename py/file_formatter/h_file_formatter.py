@@ -191,13 +191,13 @@ class HFileFormatter:
         """
         formatted = []
         if not data["doxygen_groups"]["defgroup_matches"] and data["file_name"].endswith(".h"):
-            component = data["file_name"].split("_")[0]
+            component = data["file_name"].split(".")[0]
             formatted.extend([
                 "\n",
                 "/**\n",
                 f" * @defgroup {component}\n",
                 f" * @brief    {component} Firmware\n",
-                " * @{{\n",
+                " * @{\n",
                 " */\n",
                 "\n"
             ])
