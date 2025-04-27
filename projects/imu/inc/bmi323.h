@@ -138,14 +138,21 @@ typedef enum {
   BMI323_REG_ERROR_REG = 0x2B,       /**< Error Register */
 
   /* Other Registers */
-  BMI323_REG_CMD = 0x7E /**< Command Register (often used for resets and other operations) */
-} Bmi323Registers;
+  BMI323_REG_CMD = 0x7E, /**< Command Register (often used for resets and other operations) */
 
-/** @brief  IMU Accel Gain and Offset Registers */
-typedef enum { ACC_DP_OFF_X = 0x60, ACC_DP_DGAIN_X = 0x61, ACC_DP_OFF_Y = 0x62, ACC_DP_DGAIN_Y = 0x63, ACC_DP_OFF_Z = 0x64, ACC_DP_DGAIN_Z = 0x65 } accel_go_registers;
-
-/** @brief  IMU Accel Gain and Offset Registers */
-typedef enum { GYR_DP_OFF_X = 0x66, GYR_DP_DGAIN_X = 0x67, GYR_DP_OFF_Y = 0x68, GYR_DP_DGAIN_Y = 0x69, GYR_DP_OFF_Z = 0x6A, GYR_DP_DGAIN_Z = 0x6B } gyro_go_registers;
+  ACC_DP_OFF_X = 0x60,
+  ACC_DP_DGAIN_X = 0x61,
+  ACC_DP_OFF_Y = 0x62,
+  ACC_DP_DGAIN_Y = 0x63,
+  ACC_DP_OFF_Z = 0x64,
+  ACC_DP_DGAIN_Z = 0x65,
+  GYR_DP_OFF_X = 0x66,
+  GYR_DP_DGAIN_X = 0x67,
+  GYR_DP_OFF_Y = 0x68,
+  GYR_DP_DGAIN_Y = 0x69,
+  GYR_DP_OFF_Z = 0x6A,
+  GYR_DP_DGAIN_Z = 0x6B
+} Bmi323RegistersGeneral;
 
 typedef struct {
   uint16_t accel_offset_x;
