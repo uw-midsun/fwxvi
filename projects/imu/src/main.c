@@ -17,9 +17,9 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "bmi323.h"
 #include "imu.h"
 #include "imu_hw_defs.h"
-#include "bmi323.h"
 
 Bmi323Storage bmi323_storage;
 
@@ -43,7 +43,9 @@ void pre_loop_init() {
 
 void run_1000hz_cycle() {}
 
-void run_10hz_cycle() {}
+void run_10hz_cycle() {
+  bmi323_update(&bmi323_storage);
+}
 
 void run_1hz_cycle() {}
 

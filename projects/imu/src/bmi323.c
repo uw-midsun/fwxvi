@@ -19,11 +19,10 @@
 #include "bmi323.h"
 #include "imu_hw_defs.h"
 
+#define DUMMY_BYTE 0x00U
 
-#define DUMMY_BYTE  0x00U
-
-#define WRITE_MASK  0x7FU
-#define READ_BIT    0x80U
+#define WRITE_MASK 0x7FU
+#define READ_BIT 0x80U
 
 static Bmi323Storage *imu_storage;
 
@@ -41,12 +40,12 @@ static StatusCode get_accel_data(Axes *accel);
 
 // static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
-static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
+// static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 
-static StatusCode enable_feature_engine();
+// static StatusCode enable_feature_engine();
 
-static StatusCode gyro_crt_calibration();
+// static StatusCode gyro_crt_calibration();
 
 static void s_calculate_accel_offset();
 static void s_calculate_gyro_offset();
@@ -77,7 +76,7 @@ static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t *data, uint
 static StatusCode s_set_register(Bmi323Registers reg, uint16_t data) {
   uint8_t tx_buffer[3U];
 
-  tx_buffer[0U] = WRITE_MASK & reg;
+  tx_buffer[0U] = reg & WRITE_MASK;
   tx_buffer[1U] = data & 0xFFU;
   tx_buffer[2U] = (data >> 8U) & 0xFFU;
 
@@ -119,141 +118,131 @@ static StatusCode get_accel_data(Axes *accel) {
 
   if (status == STATUS_CODE_OK) {
     accel->x = (int16_t)(data[0]);
-    accel->y = (int16_t)(data[2]);
-    accel->z = (int16_t)(data[4]);
+    accel->y = (int16_t)(data[1]);
+    accel->z = (int16_t)(data[2]);
   }
 
   return status;
 }
-
 /*
 static StatusCode get_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
-  StatusCode result;
-  uint8_t data[12] = { 0 };
+        uint16_t data[6U] = { 0U };
 
-  uint16_t gyro_off_x, gyro_off_y, gyro_off_z;
-  uint8_t gyro_gain_x, gyro_gain_y, gyro_gain_z;
+        uint16_t gyro_off_x, gyro_off_y, gyro_off_z;
+        uint8_t gyro_gain_x, gyro_gain_y, gyro_gain_z;
 
-  if (gyro_go_values != NULL) {
-    result = s_get_multi_register(GYR_DP_OFF_X, data, 12);
+        if (gyro_go_values == NULL) return BMI3_E_NULL_PTR;
 
-    if (result == STATUS_CODE_OK) {
-      gyro_off_x = (uint16_t)(data[1] << 8 | data[0]);
-      gyro_gain_x = (uint8_t)(data[2]);
-      gyro_off_y = (uint16_t)(data[5] << 8 | data[4]);
-      gyro_gain_y = (uint8_t)(data[6]);
-      gyro_off_z = (uint16_t)(data[9] << 8 | data[8]);
-      gyro_gain_z = (uint8_t)(data[10]);
+        StatusCode result = s_get_multi_register(GYR_DP_OFF_X, data, 6);
 
-      gyro_go_values->gyro_offset_x = gyro_off_x & BMI3_GYR_DP_OFF_X_MASK;
-      gyro_go_values->gyro_gain_x = gyro_gain_x & BMI3_GYR_DP_DGAIN_X_MASK;
-      gyro_go_values->gyro_offset_y = gyro_off_y & BMI3_GYR_DP_OFF_Y_MASK;
-      gyro_go_values->gyro_gain_y = gyro_gain_y & BMI3_GYR_DP_DGAIN_Y_MASK;
-      gyro_go_values->gyro_offset_z = gyro_off_z & BMI3_GYR_DP_OFF_Z_MASK;
-      gyro_go_values->gyro_gain_z = gyro_gain_z & BMI3_GYR_DP_DGAIN_Z_MASK;
-    }
+        if (result != STATUS_CODE_OK) return result;
 
-  } else {
-    result = BMI3_E_NULL_PTR;
-  }
+        gyro_off_x = data[0];
+        gyro_off_y = data[2];
+        gyro_off_z = data[4];
 
-  return result;
+        gyro_gain_x = (uint8_t) data[1];
+        gyro_gain_y = (uint8_t) data[3];
+        gyro_gain_z = (uint8_t) data[5];
+
+        gyro_go_values->gyro_offset_x = (uint16_t) (gyro_off_x & BMI3_GYR_DP_OFF_X_MASK);
+        gyro_go_values->gyro_offset_y = (uint16_t) (gyro_off_y & BMI3_GYR_DP_OFF_Y_MASK);
+        gyro_go_values->gyro_offset_z = (uint16_t) (gyro_off_z & BMI3_GYR_DP_OFF_Z_MASK);
+
+        gyro_go_values->gyro_gain_x = gyro_gain_x;
+        gyro_go_values->gyro_gain_y = gyro_gain_y;
+        gyro_go_values->gyro_gain_z = gyro_gain_z;
+
+        return result;
 }
 */
-
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
-  StatusCode result;
-  uint8_t data[12] = { 0 };
+  uint16_t data[6U] = { 0U };
 
   uint16_t gyro_off_x, gyro_off_y, gyro_off_z;
   uint8_t gyro_gain_x, gyro_gain_y, gyro_gain_z;
 
-  if (gyro_go_values != NULL) {
-    gyro_off_x = gyro_go_values->gyro_offset_x & BMI3_GYR_DP_OFF_X_MASK;
-    gyro_gain_x = gyro_go_values->gyro_gain_x & BMI3_GYR_DP_DGAIN_X_MASK;
-    gyro_off_y = gyro_go_values->gyro_offset_y & BMI3_GYR_DP_OFF_Y_MASK;
-    gyro_gain_y = gyro_go_values->gyro_gain_y & BMI3_GYR_DP_DGAIN_Y_MASK;
-    gyro_off_z = gyro_go_values->gyro_offset_z & BMI3_GYR_DP_OFF_Z_MASK;
-    gyro_gain_z = gyro_go_values->gyro_gain_z & BMI3_GYR_DP_DGAIN_Z_MASK;
+  if (gyro_go_values == NULL) return BMI3_E_NULL_PTR;
 
-    data[0] = (uint8_t)(gyro_off_x & BMI_SET_LOW_BYTE);
-    data[1] = (uint8_t)(gyro_off_x & BMI_SET_HIGH_BYTE) >> 8;
-    data[2] = (uint8_t)(gyro_gain_x);
-    data[4] = (uint8_t)(gyro_off_y & BMI_SET_LOW_BYTE);
-    data[5] = (uint8_t)(gyro_off_y & BMI_SET_HIGH_BYTE) >> 8;
-    data[6] = (uint8_t)(gyro_gain_y);
-    data[8] = (uint8_t)(gyro_off_z & BMI_SET_LOW_BYTE);
-    data[9] = (uint8_t)(gyro_off_z & BMI_SET_HIGH_BYTE) >> 8;
-    data[10] = (uint8_t)(gyro_gain_z);
+  gyro_off_x = gyro_go_values->gyro_offset_x & BMI3_GYR_DP_OFF_X_MASK;
+  gyro_off_y = gyro_go_values->gyro_offset_y & BMI3_GYR_DP_OFF_Y_MASK;
+  gyro_off_z = gyro_go_values->gyro_offset_z & BMI3_GYR_DP_OFF_Z_MASK;
 
-    result = s_set_multi_register(GYR_DP_OFF_X, (uint16_t *)data, 12);
-  } else {
-    result = BMI3_E_NULL_PTR;
-  }
+  gyro_gain_x = gyro_go_values->gyro_gain_x & BMI3_GYR_DP_DGAIN_X_MASK;
+  gyro_gain_y = gyro_go_values->gyro_gain_y & BMI3_GYR_DP_DGAIN_Y_MASK;
+  gyro_gain_z = gyro_go_values->gyro_gain_z & BMI3_GYR_DP_DGAIN_Z_MASK;
+
+  data[0] = gyro_off_x;
+  data[1] = (uint16_t)gyro_gain_x;
+
+  data[2] = gyro_off_y;
+  data[3] = (uint16_t)gyro_gain_y;
+
+  data[4] = gyro_off_z;
+  data[5] = (uint16_t)gyro_gain_z;
+
+  StatusCode result = s_set_multi_register(GYR_DP_OFF_X, data, 6);
 
   return result;
 }
 
-static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
-  StatusCode result = STATUS_CODE_OK;
-  uint8_t data[12] = { 0 };
-
-  uint16_t accel_off_x, accel_off_y, accel_off_z;
-  uint8_t accel_gain_x, accel_gain_y, accel_gain_z;
-
-  if (accel_go_values != NULL) {
-    // result = s_get_multi_register(ACC_DP_OFF_X, data, 12);
-
-    if (result == STATUS_CODE_OK) {
-      accel_off_x = (uint16_t)(data[1] << 8 | data[0]);
-      accel_gain_x = (uint8_t)data[2];
-      accel_off_y = (uint16_t)(data[5] << 8 | data[4]);
-      accel_gain_y = (uint8_t)data[6];
-      accel_off_z = (uint16_t)(data[9] << 8 | data[8]);
-      accel_gain_z = (uint8_t)data[10];
-
-      accel_go_values->accel_offset_x = (accel_off_x & BMI3_ACC_DP_DOFFSET_X_MASK);
-      accel_go_values->accel_gain_x = (accel_gain_x & BMI3_ACC_DP_DGAIN_X_MASK);
-      accel_go_values->accel_offset_y = (accel_off_y & BMI3_ACC_DP_DOFFSET_Y_MASK);
-      accel_go_values->accel_gain_y = (accel_gain_y & BMI3_ACC_DP_DGAIN_Y_MASK);
-      accel_go_values->accel_offset_z = (accel_off_z & BMI3_ACC_DP_DOFFSET_Z_MASK);
-      accel_go_values->accel_gain_z = (accel_gain_z & BMI3_ACC_DP_DGAIN_Z_MASK);
-    }
-  } else {
-    result = BMI3_E_NULL_PTR;
-  }
-
-  return result;
-}
+// static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
+//     uint16_t data[6U] = { 0U };
+//
+//     uint16_t accel_off_x, accel_off_y, accel_off_z;
+//     uint8_t accel_gain_x, accel_gain_y, accel_gain_z;
+//
+//     if (accel_go_values == NULL) return BMI3_E_NULL_PTR;
+//
+//     StatusCode result = s_get_multi_register(ACC_DP_OFF_X, data, 6);
+//
+//     if (result != STATUS_CODE_OK) return result;
+//
+//     accel_off_x = data[0];
+//     accel_off_y = data[2];
+//     accel_off_z = data[4];
+//
+//     accel_gain_x = (uint8_t) data[1];
+//     accel_gain_y = (uint8_t) data[3];
+//     accel_gain_z = (uint8_t) data[5];
+//
+//     accel_go_values->accel_offset_x = (uint16_t) (accel_off_x & BMI3_ACC_DP_DOFFSET_X_MASK);
+//     accel_go_values->accel_offset_y = (uint16_t) (accel_off_y & BMI3_ACC_DP_DOFFSET_Y_MASK);
+//     accel_go_values->accel_offset_z = (uint16_t) (accel_off_z & BMI3_ACC_DP_DOFFSET_Y_MASK);
+//
+//     accel_go_values->accel_gain_x = accel_gain_x;
+//     accel_go_values->accel_gain_y = accel_gain_y;
+//     accel_go_values->accel_gain_z = accel_gain_z;
+//
+//     return result;
+// }
 
 static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
-  StatusCode result;
+  uint16_t data[6U] = { 0U };
 
-  uint8_t data[12] = { 0 };
-
-  uint16_t accel_off_x, accel_off_y, accel_off_z;
+  uint16_t accel_off_X, accel_off_y, accel_off_z;
   uint8_t accel_gain_x, accel_gain_y, accel_gain_z;
-  if (accel_go_values != NULL) {
-    accel_off_x = accel_go_values->accel_offset_x & BMI3_ACC_DP_DOFFSET_X_MASK;
-    accel_gain_x = accel_go_values->accel_gain_x & BMI3_ACC_DP_DGAIN_X_MASK;
-    accel_off_y = accel_go_values->accel_offset_y & BMI3_ACC_DP_DOFFSET_Y_MASK;
-    accel_gain_y = accel_go_values->accel_gain_y & BMI3_ACC_DP_DGAIN_Y_MASK;
-    accel_off_z = accel_go_values->accel_offset_z & BMI3_ACC_DP_DOFFSET_Z_MASK;
-    accel_gain_z = accel_go_values->accel_gain_z & BMI3_ACC_DP_DGAIN_Z_MASK;
 
-    data[0] = (uint8_t)(accel_off_x & BMI_SET_LOW_BYTE);
-    data[1] = (uint8_t)(accel_off_x & BMI_SET_HIGH_BYTE) >> 8;
-    data[2] = (uint8_t)(accel_gain_x);
-    data[4] = (uint8_t)(accel_off_y & BMI_SET_LOW_BYTE);
-    data[5] = (uint8_t)(accel_off_y & BMI_SET_HIGH_BYTE) >> 8;
-    data[6] = (uint8_t)(accel_gain_y);
-    data[8] = (uint8_t)(accel_off_z & BMI_SET_LOW_BYTE);
-    data[9] = (uint8_t)(accel_off_z & BMI_SET_HIGH_BYTE) >> 8;
-    data[10] = (uint8_t)(accel_gain_z);
-    result = s_set_multi_register(ACC_DP_OFF_X, (uint16_t *)data, 12);
-  } else {
-    result = BMI3_E_NULL_PTR;
-  }
+  if (accel_go_values == NULL) return BMI3_E_NULL_PTR;
+
+  accel_off_X = accel_go_values->accel_offset_x & BMI3_ACC_DP_DOFFSET_X_MASK;
+  accel_off_y = accel_go_values->accel_offset_y & BMI3_ACC_DP_DOFFSET_Y_MASK;
+  accel_off_z = accel_go_values->accel_offset_z & BMI3_ACC_DP_DOFFSET_Z_MASK;
+
+  accel_gain_x = accel_go_values->accel_gain_x & BMI3_ACC_DP_DGAIN_X_MASK;
+  accel_gain_y = accel_go_values->accel_gain_y & BMI3_ACC_DP_DGAIN_Y_MASK;
+  accel_gain_z = accel_go_values->accel_gain_z & BMI3_ACC_DP_DGAIN_Z_MASK;
+
+  data[0] = accel_off_X;
+  data[1] = (uint16_t)accel_gain_x;
+
+  data[2] = accel_off_y;
+  data[3] = (uint16_t)accel_gain_y;
+
+  data[4] = accel_off_z;
+  data[5] = (uint16_t)accel_gain_z;
+
+  StatusCode result = s_set_multi_register(ACC_DP_OFF_X, data, 6);
 
   return result;
 }
@@ -303,32 +292,33 @@ by default, results of the self-calibration are written to data path registers:
                 0b0 -> failure
 */
 
-static StatusCode enable_feature_engine() {
-  s_set_register(FEATURE_IO2, 0x012C);
-  s_set_register(FEATURE_IO_STATUS, 0x0001);
+// static StatusCode enable_feature_engine() {
+//  s_set_register(FEATURE_IO2, 0x012C);
+//  s_set_register(FEATURE_IO_STATUS, 0x0001);
 
-  uint16_t feature_ctrl;
+//  uint16_t feature_ctrl = 0b1;
 
-  s_get_register(FEATURE_CTRL, &feature_ctrl);
+//  s_set_register(FEATURE_CTRL, feature_ctrl);
 
-  // set FEATURE_CTRL.engine_en to 0b1
-  feature_ctrl &= 1;
+//  uint16_t feat_state = 0b000;
 
-  s_set_register(FEATURE_CTRL, feature_ctrl);
+//  for (uint32_t i = 0U; i < 5000U; i++) {
+//     if ((feat_state & (0b1111)) == 0b001) {
+//       break;
+//     }
+//     s_get_register(FEATURE_IO1, &feat_state);
+//     s_get_register(FEATURE_IO1, &feat_state);
+//     delay_ms(10U);
+//   }
 
-  uint16_t feat_state;
+//  uint8_t state = feat_state & (0b1111);
 
-  s_get_register(FEATURE_IO1, &feat_state);
+//  if (state != 0b001) return STATUS_CODE_TIMEOUT;
 
-  uint8_t state = feat_state & (0b1111);
+//  return STATUS_CODE_OK;  // should only return if we didnt timeout
+// }
 
-  while (state != 0b001) {
-    // add a timeout here
-  }
-
-  return STATUS_CODE_OK;  // should only return if we didnt timeout
-}
-
+/*
 static StatusCode gyro_crt_calibration() {
   StatusCode enable_status = enable_feature_engine();
 
@@ -446,7 +436,7 @@ static StatusCode gyro_crt_calibration() {
 
   return STATUS_CODE_OK;
 }
-
+*/
 static void s_calculate_accel_offset() {
   int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
 
@@ -512,7 +502,8 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
 
   imu_storage = storage;
 
-  StatusCode status = STATUS_CODE_OK;
+  s_set_register(BMI323_REG_CMD, 0xDEAF);  // soft reset
+
   uint16_t data = DUMMY_BYTE;
 
   /* Write dummy byte to initialize SPI as per datasheet */
@@ -568,18 +559,25 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
 
   s_set_register(BMI323_REG_GYRO_CONF, (uint16_t)gyr_conf);
 
+  uint16_t activate_config;
+  s_get_register(BMI323_REG_CHIP_ID, &activate_config);
+
   s_calculate_accel_offset();
   set_accel_offset_gain(&imu_storage->accel_go_values);
 
   s_calculate_gyro_offset();
   set_gyro_offset_gain(&imu_storage->gyro_go_values);
 
-  gyro_crt_calibration();
+  // gyro_crt_calibration();
 
   return STATUS_CODE_OK;
 }
 
-StatusCode bmi323_update() {
+StatusCode bmi323_update(Bmi323Storage *storage) {
   /* Update GYRO/ACCEL readings */
+
+  get_accel_data(&storage->accel);
+  get_gyroscope_data(&storage->gyro);
+
   return STATUS_CODE_OK;
 }

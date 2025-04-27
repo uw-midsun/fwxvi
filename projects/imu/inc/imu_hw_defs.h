@@ -57,11 +57,10 @@
 #define IMU_SPI_INT2 \
   { .port = GPIO_PORT_B, .pin = 1 }
 
+#define IMU_SPI_BAUDRATE SPI_BAUDRATE_5MHZ
 
-#define IMU_SPI_BAUDRATE  SPI_BAUDRATE_2_5MHZ
+#define IMU_SPI_MODE SPI_MODE_3
 
-#define IMU_SPI_MODE      SPI_MODE_3
-
-#define IMU_SPI_PORT      SPI_PORT_2
+#define IMU_SPI_PORT SPI_PORT_2
 
 /** @} */
