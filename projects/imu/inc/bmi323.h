@@ -152,7 +152,7 @@ typedef enum {
   GYR_DP_DGAIN_Y = 0x69,
   GYR_DP_OFF_Z = 0x6A,
   GYR_DP_DGAIN_Z = 0x6B
-} Bmi323RegistersGeneral;
+} Bmi323Registers;
 
 typedef struct {
   uint16_t accel_offset_x;
