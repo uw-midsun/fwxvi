@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   network.c
  *
- * @brief  FOTA tx rx Library Source Code
+ * @brief  Tx Rx UART implementation for firmware over the air (FOTA) updates
  *
  * @date   2025-03-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -13,21 +13,19 @@
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_conf.h"
+#include "stm32l4xx_hal_gpio_ex.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_rcc_ex.h"
 #include "stm32l4xx_hal_uart.h"
-#include "stm32l4xx_hal_gpio_ex.h"
-
-#include <stdbool.h>
 
 /* Intra-component Headers */
-#include "status.h"
 #include "network.h"
 #include "network_buffer.h"
 
+
 // Global variables:
 NetworkBuffer *s_network_buffer; /**< Local pointer to the network buffer */
-uint8_t rx_data; /**< Local data reference for receiving */
+uint8_t rx_data;                 /**< Local data reference for receiving */
 
 uint32_t txStartTime;
 bool isSent;
@@ -35,16 +33,15 @@ bool isSent;
 uint32_t readStartTime;
 bool isRead;
 
-uint32_t timeoutValMs = 1000;
+uint32_t timeoutValMs = FOTA_UART_TIMEOUT_MS;
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();   // For PB6/PB7 with USART1
-
+  __HAL_RCC_GPIOB_CLK_ENABLE();  // For PB6/PB7 with USART1
 }
 static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();   // For PA2/PA3 with USART2
+  __HAL_RCC_GPIOA_CLK_ENABLE();  // For PA2/PA3 with USART2
 }
 bool i = true;
 /** @brief  UART Port data */
@@ -70,7 +67,6 @@ static const uint16_t s_uart_flow_control_map[] = {
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
 static GPIO_InitTypeDef gpio_uart_handles[NUM_UART_PORTS][2];
 
-
 // IRQ handler functions
 void USART1_IRQHandler(void) {
   HAL_UART_IRQHandler(&s_uart_handles[UART_PORT_1]);
@@ -87,7 +83,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 /* Callback functions for HAL UART RX */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-  if (huart->Instance == USART2){
+  if (huart->Instance == USART2) {
     // add updated rx_data to buffer
     network_buffer_write(&s_network_buffer, &rx_data);
     // rearm interrupt
@@ -96,12 +92,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 }
 
 bool isTimeout(bool is_tx) {
-  if (is_tx){
-    if (!isSent && HAL_GetTick() - txStartTime > timeoutValMs){
+  if (is_tx) {
+    if (!isSent && HAL_GetTick() - txStartTime > timeoutValMs) {
       return true;
     }
   } else {
-    if (!isRead && HAL_GetTick() - readStartTime > timeoutValMs){
+    if (!isRead && HAL_GetTick() - readStartTime > timeoutValMs) {
       return true;
     }
   }
@@ -118,14 +114,14 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
   }
 
   isRead = false;
-  readStartTime=HAL_GetTick();
+  readStartTime = HAL_GetTick();
 
-  for (int i=0; i < len; i++) {
-    if (isTimeout(false)){
-      return FOTA_RESOURCE_EXHAUSTED;
+  for (size_t i = 0; i < len; i++) {
+    if (isTimeout(false)) {
+      return FOTA_ERROR_INTERNAL_ERROR;
     }
 
-    if (network_buffer_read(&s_network_buffer, data) != FOTA_ERROR_SUCCESS){
+    if (network_buffer_read(&s_network_buffer, data+i) != FOTA_ERROR_SUCCESS) {
       return FOTA_ERROR_INTERNAL_ERROR;
     }
   }
@@ -149,17 +145,14 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
   }
 
   isSent = false;
-  txStartTime=HAL_GetTick();
+  txStartTime = HAL_GetTick();
 
   return FOTA_ERROR_SUCCESS;
 }
 
 FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer) {
   // check input parameters
-  if (settings == NULL) {
-    return FOTA_ERROR_INVALID_ARGS;
-  }
-  if (uart >= NUM_UART_PORTS) {
+  if (settings == NULL || network_buffer == NULL || uart >= NUM_UART_PORTS) {
     return FOTA_ERROR_INVALID_ARGS;
   }
   if (s_port[uart].initialized) {
@@ -168,10 +161,10 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
 
   // init network buffer
   s_network_buffer = network_buffer;
-  if (network_buffer_init(&s_network_buffer) != FOTA_ERROR_SUCCESS){
+  if (network_buffer_init(&s_network_buffer) != FOTA_ERROR_SUCCESS) {
     return FOTA_ERROR_INTERNAL_ERROR;
   }
-  
+
   // enable UART and GPIO clock
   s_port[uart].rcc_cmd();
 
@@ -191,20 +184,20 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
   }
 
   // initialize gpio pins in alternate function mode of usart
-  gpio_uart_handles[uart][0].Pin = &settings->tx.pin; // pin
-  gpio_uart_handles[uart][0].Mode = GPIO_MODE_AF_PP; // alternate function
-  gpio_uart_handles[uart][0].Pull = GPIO_NOPULL; // no pull up or down resistor internally
-  gpio_uart_handles[uart][0].Speed = GPIO_SPEED_FREQ_VERY_HIGH; // mainly for tx pin
-  gpio_uart_handles[uart][0].Alternate = (uint8_t)0x07; // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
+  gpio_uart_handles[uart][0].Pin = &settings->tx.pin;            // pin
+  gpio_uart_handles[uart][0].Mode = GPIO_MODE_AF_PP;             // alternate function
+  gpio_uart_handles[uart][0].Pull = GPIO_NOPULL;                 // no pull up or down resistor internally
+  gpio_uart_handles[uart][0].Speed = GPIO_SPEED_FREQ_VERY_HIGH;  // mainly for tx pin
+  gpio_uart_handles[uart][0].Alternate = (uint8_t)0x07;          // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
   HAL_GPIO_Init(((&settings->tx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][0]);
 
-  gpio_uart_handles[uart][1].Pin = &settings->rx.pin; // pin
-  gpio_uart_handles[uart][1].Mode = GPIO_MODE_AF_PP; // alternate function
-  gpio_uart_handles[uart][1].Pull = GPIO_NOPULL; // no pull up or down resistor internally
-  gpio_uart_handles[uart][1].Speed = GPIO_SPEED_FREQ_VERY_HIGH; // mainly for tx pin
-  gpio_uart_handles[uart][1].Alternate = (uint8_t)0x07; // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
+  gpio_uart_handles[uart][1].Pin = &settings->rx.pin;            // pin
+  gpio_uart_handles[uart][1].Mode = GPIO_MODE_AF_PP;             // alternate function
+  gpio_uart_handles[uart][1].Pull = GPIO_NOPULL;                 // no pull up or down resistor internally
+  gpio_uart_handles[uart][1].Speed = GPIO_SPEED_FREQ_VERY_HIGH;  // mainly for tx pin
+  gpio_uart_handles[uart][1].Alternate = (uint8_t)0x07;          // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
   HAL_GPIO_Init(((&settings->rx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][1]);
-  
+
   // see if there is flow control in settings
   uint32_t uart_flow_control = UART_HWCONTROL_NONE;
   if (settings->flow_control) {
@@ -225,14 +218,14 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
   if (HAL_UART_Init(&s_uart_handles[uart]) != HAL_OK) {
     return FOTA_ERROR_INTERNAL_ERROR;
   }
-  
+
   /* Initialize interrupts, using highest priority */
   HAL_NVIC_SetPriority(s_port[uart].irq, 0, 0);
   HAL_NVIC_EnableIRQ(s_port[uart].irq);
-  
+
   // Arm the RX interrupt
   HAL_UART_Receive_IT(&s_uart_handles[uart], &rx_data, sizeof(rx_data));
-  
+
   // change status to initialized
   s_port[uart].initialized = true;
 
