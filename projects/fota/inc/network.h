@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   fota.h
+ * @file   network.h
  *
- * @brief  Header file for fota
+ * @brief  Header file for network layer
  *
  * @date   2025-03-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -18,22 +18,16 @@
 /**
  * @defgroup fota
  * @brief    fota Firmware
- * @{
- */
-
-/** @} */
 
 
 /* Standard library Headers */
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "fota_error.h"
 #include "stm32l4xx_hal_gpio.h"
 
-#include "fota_error.h"
-
 /* Intra-component Headers */
-
 
 /** @brief   UART Port selection */
 typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;

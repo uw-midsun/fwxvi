@@ -21,10 +21,7 @@ int main() {
   HAL_Init();
 
   static UartSettings uart2_settings = {
-    .tx = {.port = GPIO_PORT_A, .pin=GPIO_PIN_2},
-    .rx = {.port = GPIO_PORT_A, .pin=GPIO_PIN_3},
-    .baudrate=115200,
-    .flow_control=UART_FLOW_CONTROL_NONE
+    .tx = { .port = GPIO_PORT_A, .pin = GPIO_PIN_2 }, .rx = { .port = GPIO_PORT_A, .pin = GPIO_PIN_3 }, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE
   };
 
   NetworkBuffer network_buffer;
@@ -35,7 +32,7 @@ int main() {
 
   uint8_t rx_data[8];
   network_read(UART_PORT_2, rx_data, sizeof(rx_data));
-  
+
   while (true) {
     if (isTimeout(true)) {
       // tx timeout, rx timeout is built into function to return error if timeout
