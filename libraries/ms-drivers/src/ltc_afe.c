@@ -11,14 +11,20 @@
 #include <stddef.h>
 #include <string.h>
 
+/* Macro to calculate the size of an array */
+#define SIZEOF_ARRAY(arr) (sizeof(arr) / sizeof((arr)[0]))
+
 /* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
+#include "status.h"
 
  /* Intra-component Headers */
  #include "ltc_afe_crc15.h"
  #include "ltc_afe.h"
  #include "ltc_afe_regs.h"
+
+static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len);
 
 /** 
  * @brief Commands for reading registers + STCOMM
@@ -40,11 +46,11 @@ static const uint16_t s_read_reg_cmd[NUM_LTC_AFE_REGISTERS] = {
 
 /* p. 52 - Daisy chain wakeup method 2 - pair of long -1, +1 for each device */
 static void prv_wakeup_idle(LtcAfeStorage *afe) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   for (size_t i = 0; i < settings->num_devices; i++) {
-    gpio_set_state(&settings->cs, GPIO_STATE_LOW);
-    gpio_set_state(&settings->cs, GPIO_STATE_HIGH);
+    gpio_set_state(&settings->spi_settings.cs, GPIO_STATE_LOW);
+    gpio_set_state(&settings->spi_settings.cs, GPIO_STATE_HIGH);
     delay_ms(1);
   }
 }
@@ -52,10 +58,11 @@ static void prv_wakeup_idle(LtcAfeStorage *afe) {
 /* Read data from register and store it in devices_data */
 static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint8_t *devices_data, size_t len){
   if (reg >= NUM_LTC_AFE_REGISTERS || devices_data == NULL || len == 0){
-    return status_code(STATUS_CODE_INVALID_ARGS);
+    LOG_DEBUG("Invalid arguments: Can't read register ");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   uint16_t reg_cmd = s_read_reg_cmd[reg];
   uint8_t cmd[LTC6811_CMD_SIZE] = {0};  /* Stores SPI command byte */ 
@@ -68,7 +75,8 @@ static StatusCode prv_read_register(LtcAfeStorage *afe, LtcAfeRegister reg, uint
 /* Split command into 8 byte chunks and add PEC to full command */ 
 static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
   if (len != LTC6811_CMD_SIZE) {
-    return status_code(STATUS_CODE_INVALID_ARGS);
+    LOG_DEBUG("Command length is not the correct size");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   /* Layout of command: CMD0, CMD1, PEC0, PEC1 */ 
@@ -84,8 +92,8 @@ static StatusCode prv_build_cmd(uint16_t command, uint8_t *cmd, size_t len){
 
 /* Used as a wrapper internally, since in some functions we don't want the default gpio_pins */
 static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins){
-  LtcAfeSettings *settings = &afe->settings;
-  LtcAfeWriteConfigPacket *config_packet = &afe->device_configs;
+  LtcAfeSettings *settings = afe->settings;
+  LtcAfeWriteConfigPacket *config_packet = afe->device_configs;
 
   prv_build_cmd(LTC6811_WRCFG_RESERVED, config_packet->wrcfg, SIZEOF_ARRAY(config_packet->wrcfg));
 
@@ -124,7 +132,7 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
  * index for storing cell results.
  */
 static void prv_calc_offsets(LtcAfeStorage *afe) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   size_t enabled_cell_index = 0;
 
@@ -148,31 +156,25 @@ static void prv_calc_offsets(LtcAfeStorage *afe) {
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   /* Validate configuration settings based on device limitations */
   if (config->num_devices > LTC_AFE_MAX_DEVICES) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, 
-                      "AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
+    LOG_DEBUG("AFE: Configured device count exceeds user-defined limit. Update LTC_AFE_MAX_DEVICES if necessary.");
+    return STATUS_CODE_INVALID_ARGS;
   }
   if (config->num_cells > LTC_AFE_MAX_CELLS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS, 
-                      "AFE: Configured cell count exceeds device limitations.");
+    LOG_DEBUG("AFE: Configured cell count exceeds device limitations.");
+    return STATUS_CODE_INVALID_ARGS;
   }
   if (config->num_thermistors > LTC_AFE_MAX_THERMISTORS) {
-    return status_msg(STATUS_CODE_INVALID_ARGS,
-                      "AFE: Configured thermistor count exceeds limitations.");
+    LOG_DEBUG("AFE: Configured thermistor count exceeds limitations.");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   /* Initialize memory of AFE structure: reset values and copy configuration settings */
   memset(afe, 0, sizeof(*afe));
-  memcpy(&afe->settings, config, sizeof(afe->settings));
+  memcpy(afe->settings, config, sizeof(LtcAfeSettings));
 
   /* Set up SPI communication based on provided settings */
-  SpiSettings spi_config = {
-    .baudrate = config->spi_baudrate,
-    .mode = SPI_MODE_3,
-    .sdo = config->sdo,
-    .sdi = config->sdi,
-    .sclk = config->sclk,
-    .cs = config->cs,
-  };
+  SpiSettings spi_config = afe->settings->spi_settings;
+
   spi_init(config->spi_port, &spi_config);
 
   /* Calculate offset for cell result array due to some cells being disabled */
@@ -198,11 +200,11 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
     LTC6811_GPIO4_PD_OFF | 
     LTC6811_GPIO5_PD_OFF;
 
-  return prv_write_config(&afe, gpio_bits);
+  return prv_write_config(afe, gpio_bits);
 }
 
 StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_LTC_AFE_ADC_MODES / 2));
@@ -220,7 +222,7 @@ StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe) {
 
 /* Start GPIOs ADC conversion and poll status for XXXXX */
 StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t thermistor) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   /* Left=shift by 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
   uint8_t gpio_bits = (thermistor << 3) | LTC6811_GPIO4_PD_OFF;
@@ -239,7 +241,7 @@ StatusCode ltc_afe_trigger_aux_conv(LtcAfeStorage *afe, uint8_t thermistor) {
 }
 
 StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   for (LtcAfeVoltageRegister v_reg_group = LTC_AFE_VOLTAGE_REGISTER_A;
        v_reg_group < NUM_LTC_AFE_VOLTAGE_REGISTERS;
@@ -249,7 +251,7 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
     LtcAfeVoltageData devices_data[LTC_AFE_MAX_DEVICES] = { 0 };
 
     size_t len = sizeof(LtcAfeVoltageData) * settings->num_devices;
-    status_ok_or_return(prv_read_register(afe, v_reg_group, (uint8_t *)devices_data, len));
+    status_ok_or_return(prv_read_register(afe, (LtcAfeRegister) v_reg_group, (uint8_t *)devices_data, len));
 
     /* Loop through the number of AFE devices connected for each voltage group */
     for (uint8_t device = 0; device < settings->num_devices; ++device) {
@@ -287,7 +289,7 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
 }
 
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
   LtcAfeAuxData devices_reg_data[LTC_AFE_MAX_DEVICES] = { 0 };
 
   size_t len = settings->num_devices * sizeof(LtcAfeAuxData);
@@ -312,7 +314,7 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
       LOG_DEBUG("Communication Failed with device: %d\n\r", device);
       LOG_DEBUG("RECEIVED_PEC: %d\n\r", received_pec);
       LOG_DEBUG("DATA_PEC: %d\n\r", data_pec);
-      return status_code(STATUS_CODE_INTERNAL_ERROR);
+      return STATUS_CODE_INTERNAL_ERROR;
     }
 
     uint16_t voltage = devices_reg_data[device].reg.voltages[0];
@@ -326,16 +328,17 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
 
 StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool discharge) {
   if (cell > LTC_AFE_MAX_CELLS){
-    return status_msg(STATUS_CODE_INVALID_ARGS, "Cell number is out of bounds");
+    LOG_DEBUG("Cell number is out of bounds");
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   uint16_t cell_in_lookup = afe->discharge_cell_lookup[cell];
   uint16_t device_index = cell_in_lookup / LTC_AFE_MAX_CELLS_PER_DEVICE;
-  uint16_t device = afe->settings.num_devices - device_index - 1; /* devices are reverse indexed cz of daisy chain config */
+  uint16_t device = afe->settings->num_devices - device_index - 1; /* devices are reverse indexed cz of daisy chain config */
 
   uint16_t device_cell_bit = cell_in_lookup % LTC_AFE_MAX_CELLS_PER_DEVICE;  
 
-  LtcAfeConfigRegisterData *config_reg_data = &afe->device_configs.devices[device].reg; 
+  LtcAfeConfigRegisterData *config_reg_data = &afe->device_configs->devices[device].reg; 
 
   if (discharge) {
     config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
@@ -347,7 +350,7 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
 }
 
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle) {
-  LtcAfeSettings *settings = &afe->settings;
+  LtcAfeSettings *settings = afe->settings;
 
   /** 
    * Initialize a buffer to store the PWM configuration command, while also accounting for 

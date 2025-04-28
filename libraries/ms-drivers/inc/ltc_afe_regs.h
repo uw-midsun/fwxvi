@@ -12,6 +12,19 @@
 /* Standard library Headers */
 #include <assert.h>
 
+/**
+ * @defgroup LTC6811
+ * @brief    LTC6811 library
+ * @{
+ */
+
+/** @brief Stores all member variables in a struct without padding */
+#if defined(__GNUC__)
+#define _PACKED __attribute__((packed))
+#else
+#define _PACKED
+#endif
+
 /** @brief  Used internally by the LTC AFE driver (number of regs per reg group) */
 #define LTC6811_CELLS_IN_REG 3
 #define LTC6811_GPIOS_IN_REG 3
@@ -28,6 +41,8 @@
 /** @brief  Number of registers in PWM Register Group. See Table 51 on page 64. */
 #define LTC8611_NUM_PWM_REGS 6
 
+/** @brief Number of voltage cells connected to each device */
+#define LTC_AFE_MAX_CELLS_PER_DEVICE 12
 /**
  * @brief List of LTC AFE registers
  * @details These registers are mapped to the `s_read_reg[]` array in `ltc_afe.c`
@@ -269,3 +284,5 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
  * @note See Table 17 (p.38) for details.
  */
 #define LTC6811_PWMC_DC_100 (0xF)
+
+/** @} */

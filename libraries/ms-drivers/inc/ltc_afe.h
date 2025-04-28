@@ -28,9 +28,17 @@
 #include "gpio.h"
 #include "spi.h"
 
+
 /* Intra-component Headers */
 #include "fsm.h"
 #include "status.h"
+#include "ltc_afe_regs.h"
+
+/**
+ * @defgroup LTC6811
+ * @brief    LTC6811 library
+ * @{
+ */
 
 /* Removes padding, if possible */
 #if defined(__GNUC__)
@@ -75,20 +83,14 @@ typedef enum {
   NUM_LTC_AFE_ADC_MODES 
 } LtcAfeAdcMode;
 
+
 /**
  * @brief   Afe Settings Data 
  * @details Set by the user when `ltc_afe_init` is called
  *          Stores SPI information, which cell and aux inputs are enabled, and number of things
+ * @note    For more info on `SpiSettings` refer to `spi.h`
  */
 typedef struct LtcAfeSettings {
-  GpioAddress cs;
-  GpioAddress sdo;
-  GpioAddress sdi;
-  GpioAddress sclk;
-
-  const SpiPort spi_port;
-  uint32_t spi_baudrate;
-
   LtcAfeAdcMode adc_mode;                    /**< Determines ADC Mode */
 
   uint16_t cell_bitset[LTC_AFE_MAX_DEVICES]; /**< Bitset showing cells are enabled for each device */
@@ -99,7 +101,9 @@ typedef struct LtcAfeSettings {
   size_t num_thermistors;                    /**< Number of TOTAL thermistors (aux inputs) across all devices */
 
   void *result_context;
-}   LtcAfeSettings;
+  SpiSettings spi_settings;                  /**< SPI settings for AFE */
+  const SpiPort spi_port;                    /**< Determines which SPI port to use */
+} LtcAfeSettings;
 
 /** 
  * @brief   Runtime Data Storage
@@ -117,8 +121,8 @@ typedef struct LtcAfeStorage {
   uint16_t aux_result_lookup[LTC_AFE_MAX_THERMISTORS];  /**< Map raw aux input indices read from AFE to `aux_voltages` */
   uint16_t discharge_cell_lookup[LTC_AFE_MAX_CELLS];    /**< Map indicies of `cell_voltages` to raw cell indices */
 
-  LtcAfeSettings settings;                              /**< Stores settings for AFE devices, set by the user */
-  LtcAfeWriteConfigPacket device_configs;               /**< Stores the Configuration of each device in the CFGR register */
+  LtcAfeSettings *settings;                              /**< Stores settings for AFE devices, set by the user */
+  LtcAfeWriteConfigPacket *device_configs;               /**< Stores the Configuration of each device in the CFGR register */
 } LtcAfeStorage;
 
 /**
@@ -222,3 +226,5 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle);
+
+/** @} */
