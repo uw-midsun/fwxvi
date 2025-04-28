@@ -3,15 +3,15 @@
 /************************************************************************************************
  * @file   network.h
  *
- * @brief  Header file for network layer Tx Rx UART implementation for firmware over the air (FOTA) updates 
+ * @brief  Header file for network layer Tx Rx UART implementation for firmware over the air (FOTA) updates
  *
  * @date   2025-03-12
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 #include "stm32l4xx_hal_gpio.h"
@@ -45,7 +45,6 @@ typedef enum {
   UART_FLOW_CONTROL_RTS_CTS /**< Enable both request-to-send and clear-to-send flow control */
 } UartFlowControl;
 
-
 /**
  * @brief   UART Settings
  * @details TX Pin will transmit data. RX pin will receive data.
@@ -71,7 +70,6 @@ typedef struct {
   UartFlowControl flow_control; /**< UART Flow control settings */
 } UartSettings;
 
-
 /**
  * @brief   Initialize UART instance, assuming standard 8 bits 1 stop bit
  * @param   uart Specifies which UART port to initialize
@@ -83,7 +81,6 @@ typedef struct {
  *          FOTA_RESOURCE_EXHAUSTED if already initialized
  */
 FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer);
-
 
 /**
  * @brief   Read data from the network buffer
@@ -99,7 +96,6 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
  */
 FotaError network_read(UartPort uart, uint8_t *data, size_t len);
 
-
 /**
  * @brief   Transmit data from the UART port
  * @details Sends length bytes of data from UART TX queue to specified UART port.
@@ -114,7 +110,6 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len);
  *          FOTA_ERROR_INTERNAL_ERROR if HAL transmission fails
  */
 FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
-
 
 /** @brief Maximum time permitted for a FOTA UART transaction */
 #define FOTA_UART_TIMEOUT_MS 10U

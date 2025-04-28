@@ -22,7 +22,6 @@
 #include "network.h"
 #include "network_buffer.h"
 
-
 // Global variables:
 NetworkBuffer *s_network_buffer; /**< Local pointer to the network buffer */
 uint8_t rx_data;                 /**< Local data reference for receiving */
@@ -121,7 +120,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
       return FOTA_ERROR_INTERNAL_ERROR;
     }
 
-    if (network_buffer_read(&s_network_buffer, data+i) != FOTA_ERROR_SUCCESS) {
+    if (network_buffer_read(&s_network_buffer, data + i) != FOTA_ERROR_SUCCESS) {
       return FOTA_ERROR_INTERNAL_ERROR;
     }
   }
