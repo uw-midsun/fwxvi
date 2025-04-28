@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "network_buffer.h"
 
 /**
  * @defgroup fota
