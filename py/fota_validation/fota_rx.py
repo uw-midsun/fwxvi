@@ -1,4 +1,4 @@
-## @file    fota_rx.py
+# @file    fota_rx.py
 #  @date    2025-03-12
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Core module for fota_validation
