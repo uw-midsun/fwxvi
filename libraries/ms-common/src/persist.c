@@ -1,9 +1,21 @@
-#include "persist.h"
+/************************************************************************************************
+ * @file    persist.c
+ *
+ * @brief   Persist
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <inttypes.h>
 
+/* Inter-component Headers */
 #include "flash.h"
 #include "log.h"
+#include "persist.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
 // Erased flash defaults to all 1's

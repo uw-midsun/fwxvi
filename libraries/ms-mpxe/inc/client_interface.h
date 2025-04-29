@@ -62,6 +62,13 @@ int client_connect(ClientInstance *instance);
 int client_send_message(ClientInstance *instance, const char *message, int length);
 
 /**
+ * @brief   Set the client name
+ * @param   instance Client instance
+ * @param   name Pointer to the name buffer
+ */
+int client_set_name(ClientInstance *instance, const char *name);
+
+/**
  * @brief   Disconnect from the server
  * @param   instance Client instance
  * @return  0 on success, negative error code on failure
