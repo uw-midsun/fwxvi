@@ -100,6 +100,12 @@ TESTFILE = GetOption('testfile')
 # Environment setup
 ###########################################################
 
+COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
+
+# Force x86 if the command is for MPXE
+if COMMAND == "mpxe":
+    PLATFORM = "x86"
+
 # Retrieve the construction environment from the appropriate platform script
 env = SConscript(f'platform/{PLATFORM}.py', exports=['FLASH_TYPE', 'BUILD_CONFIG'])
 
@@ -111,8 +117,6 @@ VARS = {
     "BUILD_CONFIG": BUILD_CONFIG,
     "env": env,
 }
-
-COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
 
 # Parse asan / tsan and Adding Sanitizer Argument to Environment Flags
 # Note platform needs to be explicitly set to x86
@@ -195,6 +199,19 @@ elif COMMAND == "cantools":
     AlwaysBuild(Command('#/cantools', [], 'python3 -m autogen cantools -o can/tools'))
 
 ###########################################################
+# Run MPXE Server
+###########################################################
+elif COMMAND == "mpxe":
+    SConscript('scons/build.scons', exports='VARS')
+    mpxe_elf = BIN_DIR.Dir("projects").File("mpxe_server")
+
+    def mpxe_run(target, source, env):
+        print('Running MPXE Server', mpxe_elf)
+        subprocess.run(mpxe_elf.path)
+
+    AlwaysBuild(Command('#/mpxe', mpxe_elf, mpxe_run))
+
+###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build
@@ -209,7 +226,7 @@ if PLATFORM == 'x86' and TARGET:
 
     def sim_run(target, source, env):
         print('Simulating', project_elf)
-        subprocess.run([project_elf.path])
+        subprocess.run([project_elf.path, TARGET.split("/")[-1]])
 
     AlwaysBuild(Command('#/sim', project_elf, sim_run))
 

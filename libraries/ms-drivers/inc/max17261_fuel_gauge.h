@@ -1,8 +1,28 @@
 #pragma once
+
+/************************************************************************************************
+ * @file    max17261_fuel_gauge.h
+ *
+ * @brief   Max17261 Fuel Gauge
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
 #include <stdint.h>
 
+/* Inter-component Headers */
 #include "i2c.h"
 #include "max17261_fuel_gauge_defs.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup max17261_fuel_gauge
+ * @brief    max17261_fuel_gauge Firmware
+ * @{
+ */
 
 /* Notes:
  * 3 things are required for configuring the max17261:
@@ -113,3 +133,5 @@ StatusCode max17261_init(Max17261Storage *storage, Max17261Settings *settings, M
 
 StatusCode max17261_set_learned_params(Max17261Storage *storage, Max27261Params *params);
 StatusCode max17261_get_learned_params(Max17261Storage *storage, Max27261Params *params);
+
+/** @} */

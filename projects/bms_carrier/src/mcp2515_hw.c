@@ -1,12 +1,24 @@
-#include "mcp2515_hw.h"
+/************************************************************************************************
+ * @file    mcp2515_hw.c
+ *
+ * @brief   Mcp2515 Hw
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <string.h>
 
+/* Inter-component Headers */
 #include "can_hw.h"
 #include "delay.h"
 #include "gpio_interrupts.h"
 #include "log.h"
 #include "mcp2515_defs.h"
+#include "mcp2515_hw.h"
+
+/* Intra-component Headers */
 
 // TX/RX buffer ID registers - See Registers 3-3 to 3-7, 4-4 to 4-8
 typedef union {

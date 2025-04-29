@@ -33,3 +33,5 @@ x86_flash
 # Doxygen HTML
 doxygen/html
 
+# MPXE Simulation
+mpxe/Simulation_JSON/*
