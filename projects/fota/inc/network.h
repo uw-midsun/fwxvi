@@ -122,3 +122,5 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
  *          false if time elapsed is less than FOTA_UART_TIMEOUT_MS
  */
 bool isTimeout(bool is_tx);
+
+/** @} */
