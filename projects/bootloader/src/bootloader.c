@@ -245,7 +245,6 @@ static BootloaderError bootloader_fault() {
   return BOOTLOADER_INTERNAL_ERR;
 }
 
-
 static BootloaderError bootloader_ping() {
   BootloaderError error = BOOTLOADER_ERROR_NONE;
 

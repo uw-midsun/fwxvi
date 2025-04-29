@@ -11,6 +11,7 @@
 
 /* Standard library Headers */
 #include <stdint.h>
+#include <stddef.h>
 
 /* Inter-component Headers */
 

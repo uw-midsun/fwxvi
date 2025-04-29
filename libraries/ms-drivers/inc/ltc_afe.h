@@ -1,4 +1,34 @@
 #pragma once
+
+/************************************************************************************************
+ * @file    ltc_afe.h
+ *
+ * @brief   Ltc Afe
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <assert.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "fsm.h"
+#include "gpio.h"
+
+/* Intra-component Headers */
+#include "spi.h"
+#include "status.h"
+
+/**
+ * @defgroup ltc_afe
+ * @brief    ltc_afe Firmware
+ * @{
+ */
+
 // Driver for LTC6811 AFE chip
 
 // TODO(SOFT-9): Need to update GPIO/ADC part
@@ -10,15 +40,6 @@
 // This module supports AFEs with >=12 cells using the |cell/aux_bitset|.
 // Note that due to the long conversion delays required, we use an FSM to return control to the
 // application.
-#include <assert.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "fsm.h"
-#include "gpio.h"
-#include "spi.h"
-#include "status.h"
 
 // This is an arbitrary limitation, can be increased/decreased if needed
 #define LTC_AFE_MAX_DEVICES 3
@@ -89,3 +110,5 @@ typedef struct LtcAfeStorage {
 // |settings.cell_result_cb| and |settings.aux_result_cb| will be called when the corresponding
 // conversion is completed.
 StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *settings);
+
+/** @} */

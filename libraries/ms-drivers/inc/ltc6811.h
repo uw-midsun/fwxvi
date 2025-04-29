@@ -1,5 +1,26 @@
 #pragma once
+
+/************************************************************************************************
+ * @file    ltc6811.h
+ *
+ * @brief   Ltc6811
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
 #include <assert.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup ltc6811
+ * @brief    ltc6811 Firmware
+ * @{
+ */
 
 // used internally by the LTC AFE driver
 #define LTC6811_CELLS_IN_REG 3
@@ -223,3 +244,5 @@ static_assert(sizeof(LtcAfeAuxRegisterGroupPacket) == 8, "LtcAfeAuxRegisterGroup
 
 // see Table 17 (p. 38)
 #define LTC6811_PWMC_DC_100 (0xF)
+
+/** @} */
