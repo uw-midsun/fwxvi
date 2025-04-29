@@ -84,7 +84,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart->Instance == USART2) {
     // add updated rx_data to buffer
-    network_buffer_write(&s_network_buffer, &rx_data);
+    network_buffer_write(s_network_buffer, &rx_data);
     // rearm interrupt
     HAL_UART_Receive_IT(huart, &rx_data, sizeof(rx_data));
   }
@@ -120,7 +120,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
       return FOTA_ERROR_INTERNAL_ERROR;
     }
 
-    if (network_buffer_read(&s_network_buffer, data + i) != FOTA_ERROR_SUCCESS) {
+    if (network_buffer_read(s_network_buffer, data + i) != FOTA_ERROR_SUCCESS) {
       return FOTA_ERROR_INTERNAL_ERROR;
     }
   }
@@ -160,7 +160,7 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
 
   // init network buffer
   s_network_buffer = network_buffer;
-  if (network_buffer_init(&s_network_buffer) != FOTA_ERROR_SUCCESS) {
+  if (network_buffer_init(s_network_buffer) != FOTA_ERROR_SUCCESS) {
     return FOTA_ERROR_INTERNAL_ERROR;
   }
 
@@ -183,19 +183,19 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
   }
 
   // initialize gpio pins in alternate function mode of usart
-  gpio_uart_handles[uart][0].Pin = &settings->tx.pin;            // pin
+  gpio_uart_handles[uart][0].Pin = settings->tx.pin;             // pin
   gpio_uart_handles[uart][0].Mode = GPIO_MODE_AF_PP;             // alternate function
   gpio_uart_handles[uart][0].Pull = GPIO_NOPULL;                 // no pull up or down resistor internally
   gpio_uart_handles[uart][0].Speed = GPIO_SPEED_FREQ_VERY_HIGH;  // mainly for tx pin
   gpio_uart_handles[uart][0].Alternate = (uint8_t)0x07;          // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
-  HAL_GPIO_Init(((&settings->tx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][0]);
+  HAL_GPIO_Init(((settings->tx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][0]);
 
-  gpio_uart_handles[uart][1].Pin = &settings->rx.pin;            // pin
+  gpio_uart_handles[uart][1].Pin = settings->rx.pin;             // pin
   gpio_uart_handles[uart][1].Mode = GPIO_MODE_AF_PP;             // alternate function
   gpio_uart_handles[uart][1].Pull = GPIO_NOPULL;                 // no pull up or down resistor internally
   gpio_uart_handles[uart][1].Speed = GPIO_SPEED_FREQ_VERY_HIGH;  // mainly for tx pin
   gpio_uart_handles[uart][1].Alternate = (uint8_t)0x07;          // all usart are AF7: GPIO_AF7_USART1, GPIO_ALT7_USART1, (uint8_t)0x07?
-  HAL_GPIO_Init(((&settings->rx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][1]);
+  HAL_GPIO_Init(((settings->rx.port == GPIO_PORT_A) ? GPIOA : GPIOB), &gpio_uart_handles[uart][1]);
 
   // see if there is flow control in settings
   uint32_t uart_flow_control = UART_HWCONTROL_NONE;
