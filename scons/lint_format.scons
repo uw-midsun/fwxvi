@@ -53,8 +53,11 @@ def run_format(target, source, env):
     # Specific commands to protect Python Doxygen comments
     PY_FORMAT_CMD = 'autopep8 {} -i'.format(AUTOPEP8_CONFIG)
 
+    # Custom formatter library
+    CUSTOM_FORMATTER_CMD = 'python3 py/file_formatter/main.py'
+
     # Format C source files
-    if len(c_files) > 0 or len(cpp_files > 0):
+    if len(c_files) > 0 or len(cpp_files) > 0:
         print(f'\nFormatting *.[ch] files ...')
         subprocess.run(f'{C_FORMAT_CMD} {c_files_str} {cpp_files_str}', shell=True)
 
@@ -62,6 +65,8 @@ def run_format(target, source, env):
     if len(py_files) > 0:
         print('\nFormatting *.py files ...')
         subprocess.run(f'{PY_FORMAT_CMD} {py_files_str}', shell=True)
+    
+    subprocess.run(f'{CUSTOM_FORMATTER_CMD}', shell=True)
 
     print('Done Formatting.')
 

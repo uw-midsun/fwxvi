@@ -6,9 +6,3 @@
 #  @details
 #
 #  @ingroup file_formatter
-
-from pathlib import Path
-from datetime import datetime
-
-import argparse
-import re

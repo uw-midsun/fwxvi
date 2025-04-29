@@ -15,7 +15,6 @@ from pathlib import Path
 import argparse
 
 from cstyle_file_formatter import CStyleFileFormatter
-from py_file_formatter import *
 from formatter_config import *
 
 cstyle_file_formatter = CStyleFileFormatter()
@@ -24,7 +23,6 @@ cstyle_file_formatter = CStyleFileFormatter()
 def process_directory(directory_path: Path):
     """
     @brief Processes all Python and header files in the given directory and its subdirectories
-
     @param directory_path (Path) The root directory to process
     """
     if not directory_path.is_dir():
@@ -52,7 +50,6 @@ def process_directory(directory_path: Path):
 def main():
     """
     @brief Main function for file_formatter
-
     @details Parser expects an entry for project folder orr if left empty, it will autoformat every file
     """
     parser = argparse.ArgumentParser()
@@ -64,7 +61,6 @@ def main():
 
     if args.project is not None:
         process_directory(Path.cwd() / Path("projects") / Path(args.project))
-        # print(Path.cwd() / Path("projects") / Path(args.project))
 
     if args.smoke is not None:
         process_directory(Path.cwd() / Path("smoke") / Path(args.smoke))

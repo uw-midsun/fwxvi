@@ -177,10 +177,10 @@ class CStyleFileFormatter(TemplateFileFormatter):
             if data["file_type"] == ".h":
                 # H files
                 return formatted + self._handle_doxygen_group(filtered, data)
-            else:
-                # C files
-                formatted.extend(filtered)
-                return formatted
+
+            # C files
+            formatted.extend(filtered)
+            return formatted
 
         # Else if the include categories do exist, get the line number of the end of the include section
         # Then copy the remaining content beyond this point
@@ -192,13 +192,13 @@ class CStyleFileFormatter(TemplateFileFormatter):
             formatted.extend(lines[base_start:last_include_end])
             remaining = lines[last_include_end:]
             return formatted + self._handle_doxygen_group(remaining, data)
-        else:
-            # C files
-            base_start = data["header_block"]["end_index"] + 1
-            formatted.extend(lines[base_start:last_include_end])
-            remaining = lines[last_include_end:]
-            formatted.extend(remaining)
-            return formatted
+
+        # C files
+        base_start = data["header_block"]["end_index"] + 1
+        formatted.extend(lines[base_start:last_include_end])
+        remaining = lines[last_include_end:]
+        formatted.extend(remaining)
+        return formatted
 
     def _handle_doxygen_group(self, content: List[str], data: Dict) -> List[str]:
         """

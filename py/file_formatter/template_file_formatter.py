@@ -13,12 +13,16 @@ from typing import List, Dict
 
 
 class TemplateFileFormatter(ABC):
+    """
+    @brief Abstract template class
+    """
+
     @abstractmethod
     def format_file(self, file_path: Path):
         """
         @brief Format the file
         """
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def format_files(self, file_paths: List[Path]):
         """
@@ -29,18 +33,18 @@ class TemplateFileFormatter(ABC):
             self.format_file(path)
 
     @abstractmethod
-    def _analyze(self, lines: List[str], file_name: str) -> Dict:
+    def _analyze(self, lines: List[str], file_name: str, file_type: str) -> Dict:
         """
         @brief Analyze the contents of a file to collect structural info
         """
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     @abstractmethod
     def _generate(self, lines: List[str], data: Dict, file_name: str) -> List[str]:
         """
         @brief Generate the new content of the file based on analysis
         """
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _collapse_blank_lines(self, lines: List[str], max_blank: int = 1) -> List[str]:
         """
