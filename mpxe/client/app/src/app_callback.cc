@@ -72,6 +72,10 @@ void applicationMessageCallback(Client *client, std::string &message) {
 void applicationConnectCallback(Client *client) {
   std::cout << "Connected :-)" << std::endl;
 
+  if (!client->getClientName().empty()) {
+    projectName = client->getClientName();
+  }
+
   Datagram::Metadata::Payload initialData = { .projectName = projectName, .projectStatus = "RUNNING", .hardwareModel = hardwareModel };
   Datagram::Metadata projectMetadata(initialData);
 

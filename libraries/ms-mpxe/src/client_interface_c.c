@@ -29,6 +29,7 @@ static void internal_connect_callback(void *context);
 extern void *client_cpp_create(const char *ip_address, int port, void (*msg_callback)(void *, const char *, int), void (*connect_callback)(void *), void *context);
 extern int client_cpp_connect(void *cpp_client);
 extern int client_cpp_send_message(void *cpp_client, const char *message, int length);
+extern int client_cpp_set_name(void *cpp_client, const char *message);
 extern int client_cpp_disconnect(void *cpp_client);
 extern void client_cpp_destroy(void *cpp_client);
 
@@ -78,6 +79,14 @@ int client_send_message(ClientInstance *instance, const char *message, int lengt
   }
 
   return client_cpp_send_message(instance->cpp_client, message, length);
+}
+
+int client_set_name(ClientInstance *instance, const char *name) {
+  if (instance == NULL || instance->cpp_client == NULL || name == NULL) {
+    return -1;
+  }
+
+  return client_cpp_set_name(instance->cpp_client, name);
 }
 
 int client_disconnect(ClientInstance *instance) {

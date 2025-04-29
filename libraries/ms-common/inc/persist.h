@@ -19,6 +19,12 @@
 #include "flash.h"
 #include "status.h"
 
+/**
+ * @defgroup persist
+ * @brief    persist Firmware
+ * @{
+ */
+
 // Commit data every second if dirty
 #define PERSIST_COMMIT_TIMEOUT_MS 1000
 
@@ -40,3 +46,5 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
 
 // Force a data commit - this should be avoided if possible.
 StatusCode persist_commit(PersistStorage *persist);
+
+/** @} */

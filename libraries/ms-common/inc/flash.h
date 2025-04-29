@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stddef.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
