@@ -12,5 +12,3 @@ from datetime import datetime
 
 import argparse
 import re
-
-# def format_py_file(file_path: Path):

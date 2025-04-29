@@ -11,17 +11,14 @@
 #  @ingroup file_formatter
 
 from pathlib import Path
-from datetime import datetime
 
 import argparse
-import re
 
-from h_file_formatter import *
-from c_file_formatter import *
+from cstyle_file_formatter import CStyleFileFormatter
 from py_file_formatter import *
 from formatter_config import *
 
-h_file_formatter = HFileFormatter()
+cstyle_file_formatter = CStyleFileFormatter()
 
 
 def process_directory(directory_path: Path):
@@ -48,12 +45,8 @@ def process_directory(directory_path: Path):
             #     # header = create_python_header(filepath.name)
             #     # update_header(filepath, header)
 
-            if filepath.suffix == ".h":
-                h_file_formatter.format_file(filepath)
-
-            # elif filepath.suffix == ".c":
-            #     header = create_c_h_header(filepath.name)
-            #     update_header(filepath, header)
+            if filepath.suffix in [".h", ".c"]:
+                cstyle_file_formatter.format_file(filepath)
 
 
 def main():

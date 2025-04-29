@@ -1,7 +1,7 @@
-## @file    h_file_formatter.py
+## @file    cstyle_file_formatter.py
 #  @date    2025-04-20
 #  @author  Midnight Sun Team #24 - MSXVI
-#  @brief   Header file formatter
+#  @brief   C style file formatter for [.c, .h] files
 #
 #  @details
 #
@@ -12,12 +12,12 @@ import re
 from pathlib import Path
 from datetime import datetime
 from typing import List, Optional, Dict
-from formatter_utils import *
+from template_file_formatter import TemplateFileFormatter
 
 
-class HFileFormatter:
+class CStyleFileFormatter(TemplateFileFormatter):
     """
-    @brief Header file formatter class
+    @brief C style file formatter for '.c' and '.h' files
     """
 
     INCLUDE_CATEGORIES = [
@@ -36,32 +36,26 @@ class HFileFormatter:
         """
         try:
             lines = file_path.read_text().splitlines(keepends=True)
-            data = self._analyze(lines, file_path.name)
+            data = self._analyze(lines, file_path.name, self._get_file_type(file_path))
             formatted_lines = self._generate(lines, data, file_path.name)
             file_path.write_text("".join(formatted_lines))
-            print(f"[✓] Formatted: {file_path}")
+            self._log_success(f"[✓] Formatted: {file_path}")
         except FileNotFoundError:
-            print(f"[!] File not found: {file_path}")
+            self._log_error(f"File not found: {file_path}")
         except Exception as e:
-            print(f"[!] Error in {file_path}: {e}")
+            self._log_error(f"Error in {file_path}: {e}")
 
-    def format_files(self, file_paths: List[Path]):
-        """
-        @brief Formats multiple files to Midnight Sun standards
-        @param file_paths List[Path] List of absolute file path to modify
-        """
-        for path in file_paths:
-            self.format_file(path)
-
-    def _analyze(self, lines: List[str], file_name: str) -> Dict:
+    def _analyze(self, lines: List[str], file_name: str, file_type: str) -> Dict:
         """
         @brief Analyzes a file for data in a one-pass approach
         @param lines List[str] List containing file content/text to analyze
         @param file_name Name of the file being analyzed
-        @return Dictionary containing header file data such as file_name, header_block, pragma_once, etc.
+        @param file_type File extension code. For example ".py", ".c" or ".h"
+        @return Dictionary containing header file data such as file_name, header_block, etc.
         """
         data = {
             "file_name": file_name,
+            "file_type": file_type,
             "header_block": {"lines": None, "info": {}, "start_index": -1, "end_index": -1},
             "pragma_once": {"found": False, "index": -1},
             "includes": {"lines": [], "indices": [], "categories": {cat["name"]: [] for cat in self.INCLUDE_CATEGORIES}},
@@ -85,10 +79,11 @@ class HFileFormatter:
         group_end_pattern = r'@\}'
 
         for i, line in enumerate(lines):
-            if lines[i:i + len(header_lines)] == header_lines:
-                # If we reached the start of the header and its a direct replica (Surely there isn't two copies of the header in one file)
-                data["header_block"]["start_index"] = i
-                data["header_block"]["end_index"] = i + len(header_lines) - 1
+            if header_lines is not None:
+                if lines[i:i + len(header_lines)] == header_lines:
+                    # If we reached the start of the header and its a direct replica (Surely there isn't two copies of the header in one file)
+                    data["header_block"]["start_index"] = i
+                    data["header_block"]["end_index"] = i + len(header_lines) - 1
 
             if line.strip() == "#pragma once":
                 data["pragma_once"].update({"found": True, "index": i})
@@ -116,21 +111,21 @@ class HFileFormatter:
         @param file_name Name of the file being analyzed
         @return List[str] of the modified file contents
         """
-        output = ["#pragma once\n\n"]
-        header_info = data["header_block"]["info"]
+        output = ["#pragma once\n\n"] if data["file_type"] == ".h" else [""]
+        source_info = data["header_block"]["info"]
 
-        if data["header_block"]["lines"] and all(k in header_info for k in ['file', 'brief', 'date', 'author']):
+        if data["header_block"]["lines"] and all(k in source_info for k in ['file', 'brief', 'date', 'author']):
             output.extend(data["header_block"]["lines"])
         else:
-            output.extend(self._create_new_header(header_info, file_name))
+            output.extend(self._create_new_header(source_info, file_name))
 
         output.extend(self._organize_includes_and_content(lines, data))
-        return collapse_blank_lines(output)
+        return self._collapse_blank_lines(output)
 
-    def _create_new_header(self, header_info: Dict, file_name: str) -> List[str]:
+    def _create_new_header(self, source_info: Dict, file_name: str) -> List[str]:
         """
         @brief Creates a new header for the file given a dictionary of header information
-        @param header_info Dict containing file name, brief, author, date, etc.
+        @param source_info Dict containing file name, brief, author, date, etc.
         @param file_name Name of the file being analyzed
         @return List[str] of the new header
         """
@@ -139,13 +134,14 @@ class HFileFormatter:
         author = "Midnight Sun Team #24 - MSXVI"
         return [
             "/************************************************************************************************\n",
-            f" * @file    {header_info.get('file', file_name).strip()}\n",
+            f" * @file    {source_info.get('file', file_name).strip()}\n",
             " *\n",
-            f" * @brief   {header_info.get('brief', default_brief).strip()}\n",
+            f" * @brief   {source_info.get('brief', default_brief).strip()}\n",
             " *\n",
             f" * @date    {now}\n",
             f" * @author  {author}\n",
-            " ************************************************************************************************/\n"
+            " ************************************************************************************************/\n",
+            ""
         ]
 
     def _organize_includes_and_content(self, lines: List[str], data: Dict) -> List[str]:
@@ -161,10 +157,15 @@ class HFileFormatter:
                 formatted.append(f"\n/* {cat['name']} */\n")
                 formatted.extend(sorted(data["includes"]["categories"].get(cat["name"], [])))
 
-            content_start = max(
-                data["header_block"]["end_index"] + 1 if data["header_block"]["end_index"] >= 0 else 0,
-                data["pragma_once"]["index"] + 1 if data["pragma_once"]["index"] >= 0 else 0
-            )
+            if data["file_type"] == ".h":
+                # H files
+                content_start = max(
+                    data["header_block"]["end_index"] + 1 if data["header_block"]["end_index"] >= 0 else 0,
+                    data["pragma_once"]["index"] + 1 if data["pragma_once"]["index"] >= 0 else 0
+                )
+            else:
+                # C files
+                content_start = data["header_block"]["end_index"] + 1 if data["header_block"]["end_index"] >= 0 else 0
 
             filtered = [
                 line for i, line in enumerate(lines)
@@ -172,15 +173,32 @@ class HFileFormatter:
                 and i not in data["includes"]["indices"]
                 and not any(h in line.strip() for h in [cat["name"] for cat in self.INCLUDE_CATEGORIES])
             ]
-            return formatted + self._handle_doxygen_group(filtered, data)
+
+            if data["file_type"] == ".h":
+                # H files
+                return formatted + self._handle_doxygen_group(filtered, data)
+            else:
+                # C files
+                formatted.extend(filtered)
+                return formatted
 
         # Else if the include categories do exist, get the line number of the end of the include section
         # Then copy the remaining content beyond this point
         last_include_end = self._find_last_include_boundary(lines, data)
-        base_start = max(data["header_block"]["end_index"], data["pragma_once"]["index"]) + 1
-        formatted.extend(lines[base_start:last_include_end])
-        remaining = lines[last_include_end:]
-        return formatted + self._handle_doxygen_group(remaining, data)
+
+        if data["file_type"] == ".h":
+            # H files
+            base_start = max(data["header_block"]["end_index"], data["pragma_once"]["index"]) + 1
+            formatted.extend(lines[base_start:last_include_end])
+            remaining = lines[last_include_end:]
+            return formatted + self._handle_doxygen_group(remaining, data)
+        else:
+            # C files
+            base_start = data["header_block"]["end_index"] + 1
+            formatted.extend(lines[base_start:last_include_end])
+            remaining = lines[last_include_end:]
+            formatted.extend(remaining)
+            return formatted
 
     def _handle_doxygen_group(self, content: List[str], data: Dict) -> List[str]:
         """
@@ -220,10 +238,15 @@ class HFileFormatter:
         @param data Dict containing analysis information
         @return int line number for the end of the include section
         """
-        last_include_index = max(
-            data["header_block"]["end_index"],
-            data["pragma_once"]["index"]
-        ) + 1
+        if data["file_type"] == ".h":
+            # H files
+            last_include_index = max(
+                data["header_block"]["end_index"],
+                data["pragma_once"]["index"]
+            ) + 1
+        else:
+            # C files
+            last_include_index = data["header_block"]["end_index"] + 1
 
         in_include_section = False
         category_count = 0
@@ -262,10 +285,9 @@ class HFileFormatter:
                     # Check if this block contains @file
                     if any('@file' in l for l in header_lines):
                         return header_lines
-                    else:
-                        # This was just a section banner — ignore it
-                        header_lines = []
-                        in_header = False
+                    # This was just a section banner — ignore it
+                    header_lines = []
+                    in_header = False
         return None
 
     def _parse_header_block(self, header_lines: List[str]) -> Dict:
