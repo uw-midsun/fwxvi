@@ -1,9 +1,7 @@
-#pragma once
-
 /************************************************************************************************
- * @file   fota.h
+ * @file   fota.c
  *
- * @brief  Header file for fota
+ * @brief  Source file for fota
  *
  * @date   2025-03-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,14 +12,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "fota_encryption.h"
 #include "fota_error.h"
 
-/**
- * @defgroup FOTA
- * @brief    Firmware Over the Air (FOTA) Update system
- * @{
- */
-
-FotaError fota_init();
-
-/** @} */
+FotaError fota_init() {
+  fota_encryption_init();
+}

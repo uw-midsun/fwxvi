@@ -23,30 +23,94 @@
  * @{
  */
 
-#define PAYLOAD_SIZE 256
-#define SOF 1
-#define EOF 2
+/**
+ * FotaPacket Serialized Format:
+ *
+ *  +------------+----------------+------------------+----------------+-------------------+
+ *  | Field      | Size (bytes)   | Description      | Example Value  | Notes             |
+ *  +------------+----------------+------------------+----------------+-------------------+
+ *  | sof        | 1              | Start of Frame   | 0xAA           | Always 0xAA       |
+ *  | packet_type| 1              | Packet Type Enum | 0x01           | Type identifier   |
+ *  | datagram_id| 4              | Datagram ID      | 0x00000005     | Big/little endian |
+ *  | sequence_num| 1             | Packet Index     | 0x02           | 0–7 in a datagram |
+ *  | payload_len| 2              | Payload Length   | 0x0040         | In bytes          |
+ *  | payload    | N (variable)   | Payload Data     | [...]          | Up to defined max |
+ *  | crc32      | 4              | CRC32 Checksum   | 0xDEADBEEF     | On payload        |
+ *  | eof        | 1              | End of Frame     | 0xBB           | Always 0xBB       |
+ *  +------------+----------------+------------------+----------------+-------------------+
+ *
+ * Total Size: 14 bytes of header/footer + N bytes payload
+ */
 
-typedef union {
-  uint8_t raw_payload[PAYLOAD_SIZE];
-  struct {
-    uint32_t crc;
-    uint8_t data[PAYLOAD_SIZE - sizeof(uint32_t)];
-  } data_pakcet;
-} PacketPayload;
-typedef enum { HEADER_PACKET, DATA_PACKET, ERROR_PACKET } PacketType;
+/** @brief  FOTA packet payload size */
+#define FOTA_PACKET_PAYLOAD_SIZE 256U
+/** @brief  FOTA packet start of frame */
+#define FOTA_PACKET_SOF 0xAAU
+/** @brief FOTA packet end of frame */
+#define FOTA_PACKET_EOF 0xBBU
+/** @brief FOTA packet minimum size */
+#define FOTA_PACKET_MINIMUM_SIZE 14U
+
+/**
+ * @brief   FOTA Packet Type
+ */
+typedef enum {
+  FOTA_PACKET_TYPE_DATA,   /**< Data packet */
+  FOTA_PACKET_TYPE_HEADER, /**< Header packet */
+  FOTA_PACKET_TYPE_ACK,    /**< Acknowledgment packet */
+  FOTA_PACKET_TYPE_NACK,   /**< Not Acknowledged packet */
+  FOTA_PACKET_TYPE_ERROR   /**< Error packet */
+} FotaPacketType;
+
+/**
+ * @brief   FOTA Packet structure
+ */
 typedef struct {
-  uint8_t sof;
-  PacketType packet_type;
-  uint8_t sequence_num;
-  uint16_t payload_length;
-  uint8_t payload[PAYLOAD_SIZE];
-  uint8_t eof;
-} Packet;
+  uint32_t crc32;                            /**< CRC32 on the packet */
+  uint32_t datagram_id;                      /**< Datagram ID to match the packet to */
+  FotaPacketType packet_type;                /**< Packet type */
+  uint16_t payload_length;                   /**< Payload length */
+  uint8_t sequence_num;                      /**< Sequence number of the packet within the 8-packet datagram */
+  uint8_t sof;                               /**< Packet start of frame (0xAA) */
+  uint8_t eof;                               /**< Packet end of frame (0xBB) */
+  uint8_t _reserved_padding;                 /**< Reserved padding byte */
+  uint8_t payload[FOTA_PACKET_PAYLOAD_SIZE]; /**< Payload data */
+} FotaPacket;
 
-void packet_init(Packet *packet, PacketType type, uint8_t sequence, uint16_t length);
-FotaError encode_packet(Packet *packet, uint8_t *payload);
+/**
+ * @brief   Initialize a packet structure
+ * @param   packet Pointer to the packet to initialize
+ * @param   type Type of packet
+ * @param   sequence Sequence number
+ * @param   length Payload length
+ * @return  FotaError  Error code
+ */
+FotaError fota_packet_init(FotaPacket *packet, FotaPacketType type, uint8_t sequence, uint16_t length);
 
-FotaError decode_packet(const uint8_t *buffer, size_t len, Packet *Out_Packet);
+/**
+ * @brief   Calculate and set the CRC for a packet
+ * @param   packet Pointer to packet
+ * @return  FotaError  Error code
+ */
+FotaError fota_packet_set_crc(FotaPacket *packet);
+
+/**
+ * @brief   Serialize packet into a buffer for transmission
+ * @param   packet Packet to serialize
+ * @param   buffer Output buffer
+ * @param   buf_size Size of output buffer
+ * @param   bytes_written Number of bytes written
+ * @return  FotaError  Error code
+ */
+FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size, uint32_t *bytes_written);
+
+/**
+ * @brief   Deserialize packet from received data
+ * @param   packet Output packet structure
+ * @param   buffer Input buffer containing serialized packet
+ * @param   buf_size Size of input buffer
+ * @return  FotaError  Error code
+ */
+FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size);
 
 /** @} */

@@ -1,53 +1,39 @@
+/************************************************************************************************
+ * @file    packet_manager.c
+ *
+ * @brief   Packet Manager Source File
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "packet_manager.h"
+/* Standard library Headers */
 
-#include <string.h>
+/* Inter-component Headers */
 
-#include "fota_error.h"
-#include "network_buffer.h"
-#include "stm32l433xx.h"
-#include "stm32l4xx_hal_conf.h"
-#include "stm32l4xx_hal_crc.h"
-#include "stm32l4xx_hal_rcc.h"
+/* Intra-component Headers */
+#include "packet_manger.h"
 
-static CRC_HandleTypeDef s_crc_handle;
-
-FotaError packet_manager_init(PacketManager *packet_manager) {
-  __HAL_RCC_CRC_CLK_ENABLE();
-  s_crc_handle.Instance = CRC;
-  s_crc_handle.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_DISABLE;
-  s_crc_handle.Init.CRCLength = CRC_POLYLENGTH_32B;
-  s_crc_handle.InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
-  s_crc_handle.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
-  s_crc_handle.Init.InitValue = 0xFFFFFFFFU;
-  s_crc_handle.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
-  s_crc_handle.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-
-  if (HAL_CRC_Init(&s_crc_handle) != HAL_OK) {
-    return FOTA_ERROR_INTERNAL;
-  }
-
+FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buffer, void (*callback)(FotaDatagram *datagram)) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError crc_check(NetworkBuffer *net_buf, uint32_t received_crc) {
-  if (net_buf == NULL) return FOTA_ERROR_INVALID_ARGS;
-  uint32_t computed_crc = HAL_CRC_Calculate(&s_crc_handle, (uint32_t *)net_buf->data, net_buf->num_items);
-
-  if (computed_crc != received_crc) {
-    return FOTA_ERROR_CRC_MISMATCH;
-  }
-
+FotaError packet_manager_process(PacketManager *manager) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError packet_manager_encode(Packet *packet, NetworkBuffer *net_buff) {
-  return encode_packet(packet, net_buff);
+FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *datagram, FotaError (*send_func)(int8_t *data, uint32_t length)) {
+  return FOTA_ERROR_SUCCESS;
 }
 
-FotaError packet_manager_decode(Packet *packet, NetworkBuffer *net_buff) {
-  return decode_packet(packet, net_buff);
+FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramType type, uint8_t *data, uint32_t length, FotaDatagram *datagram) {
+  return FOTA_ERROR_SUCCESS;
 }
-FotaError transmit_packet(PacketManager *packet_manager) {
-  // TODO
+
+FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_id, FotaDatagram **datagram) {
+  return FOTA_ERROR_SUCCESS;
+}
+
+FotaError packet_manager_free_datagram(PacketManager *manager, uint32_t datagram_id) {
+  return FOTA_ERROR_SUCCESS;
 }
