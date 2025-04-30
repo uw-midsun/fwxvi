@@ -17,4 +17,6 @@
 
 FotaError fota_init() {
   fota_encryption_init();
+
+  return FOTA_ERROR_SUCCESS;
 }
