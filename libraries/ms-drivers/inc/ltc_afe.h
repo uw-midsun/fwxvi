@@ -146,6 +146,7 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters in `spi_exchange` is incorrect in `prv_write_config`
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission/receiving fails
  *          STATUS_CODE_TIMEOUT if transmission/receiving takes too long
+ * @note    Only for initial config
  */
 StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 

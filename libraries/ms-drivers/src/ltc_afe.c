@@ -103,16 +103,7 @@ static StatusCode prv_write_config(LtcAfeStorage *afe, uint8_t gpio_enable_pins)
    * Therefore, we send config settings starting with the last slave in the stack.
   */
   for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
-    config_packet->devices[curr_device].reg.discharge_bitset = 0;
-    config_packet->devices[curr_device].reg.discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
-
-    config_packet->devices[curr_device].reg.adcopt = ((settings->adc_mode + 1) > 3);
-    config_packet->devices[curr_device].reg.dten = true;
-    config_packet->devices[curr_device].reg.refon = 0;
-
-    config_packet->devices[curr_device].reg.undervoltage = 0;
-    config_packet->devices[curr_device].reg.overvoltage = 0;
-
+    
     /* Shift 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
     config_packet->devices[curr_device].reg.gpio = (gpio_enable_pins >> 3);
 
@@ -199,6 +190,22 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe) {
     LTC6811_GPIO3_PD_OFF | 
     LTC6811_GPIO4_PD_OFF | 
     LTC6811_GPIO5_PD_OFF;
+
+  LtcAfeSettings *settings = afe->settings;
+
+  for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
+    LtcAfeConfigRegisterData *reg = &afe->device_configs->devices[curr_device].reg;
+
+    reg->discharge_bitset = 0;
+    reg->discharge_timeout = LTC_AFE_DISCHARGE_TIMEOUT_30_S;
+
+    reg->adcopt = ((settings->adc_mode + 1) > 3);
+    reg->dten = true;
+    reg->refon = 0;
+
+    reg->undervoltage = 0;
+    reg->overvoltage = 0;
+  }
 
   return prv_write_config(afe, gpio_bits);
 }
