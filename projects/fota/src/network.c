@@ -109,7 +109,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
     return FOTA_ERROR_INVALID_ARGS;
   }
   if (!s_port[uart].initialized) {
-    return FOTA_RESOURCE_EXHAUSTED;
+    return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }
 
   isRead = false;
@@ -135,7 +135,7 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
     return FOTA_ERROR_INVALID_ARGS;
   }
   if (!s_port[uart].initialized) {
-    return FOTA_RESOURCE_EXHAUSTED;
+    return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }
   HAL_StatusTypeDef status = HAL_UART_Transmit_IT(&s_uart_handles[uart], data, len);
 
@@ -155,7 +155,7 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
     return FOTA_ERROR_INVALID_ARGS;
   }
   if (s_port[uart].initialized) {
-    return FOTA_RESOURCE_EXHAUSTED;
+    return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }
 
   // init network buffer

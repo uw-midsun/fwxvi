@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   fota.h
+ * @file   fota_log.h
  *
- * @brief  Header file for fota
+ * @brief  Header file for FOTA logging system
  *
  * @date   2025-03-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,7 +14,6 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "fota_error.h"
 
 /**
  * @defgroup FOTA
@@ -22,6 +21,11 @@
  * @{
  */
 
-FotaError fota_init();
+/** @brief  Debug log */
+#define LOG_FOTA_DEBUG(msg) printf("[FOTA DEBUG]: %s\n");
+/** @brief Warning log */
+#define LOG_FOTA_WARNING(msg) printf("[FOTA WARNING]: %s\n");
+/** @brief Error log */
+#define LOG_FOTA_ERROR(msg) printf("[FOTA ERROR]: %s\n");
 
 /** @} */

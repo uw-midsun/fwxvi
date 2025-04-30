@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************************************
- * @file   bootloader_can_flash.h
+ * @file   bootloader_flash.h
  *
  * @brief  Header file for the flash API in the bootloader
  *
