@@ -13,6 +13,7 @@
 
 /* Intra-component Headers */
 #include "fota_datagram.h"
+#include "fota_encryption.h"
 
 FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint32_t datagram_id, uint8_t *data, uint32_t length) {
   return FOTA_ERROR_SUCCESS;
@@ -31,5 +32,5 @@ bool fota_datagram_is_complete(FotaDatagram *datagram) {
 }
 
 FotaError fota_datagram_verify(FotaDatagram *datagram) {
-  return FOTA_ERROR_SUCCESS;
+  return fota_verify_datagram_encryption(datagram); 
 }
