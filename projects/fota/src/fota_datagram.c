@@ -24,11 +24,20 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
 }
 
 FotaError fota_datagram_process_packet(FotaDatagram *datagram, FotaPacket *packet) {
-  return FOTA_ERROR_SUCCESS;
+  if (fota_verify_packet_encryption(packet) != packet->crc32) return FOTA_ERROR_INTERNAL_ERROR;
+  if ((datagram->header).datagram_id != packet->datagram_id) return FOTA_ERROR_INTERNAL_ERROR;
+  if (datagram->packet_received[packet->sequence_num]) return FOTA_ERROR_INTERNAL_ERROR; 
+
+  ++(datagram->packets_received); 
+  datagram->packet_received[packet->sequence_num] = true; 
+
+  for (int i = 0; i < packet->payload_length; ++i) {
+        datagram->data[packet->sequence_num * 256 + i] = packet->payload[i]; 
+  }
 }
 
 bool fota_datagram_is_complete(FotaDatagram *datagram) {
-  return datagram->is_complete = (datagram->packets_received == datagram->header.num_packets);
+  return datagram->is_complete = (datagram->packets_received == (datagram->header).num_packets);
 }
 
 FotaError fota_datagram_verify(FotaDatagram *datagram) {
