@@ -27,7 +27,7 @@ FotaError fota_datagram_process_packet(FotaDatagram *datagram, FotaPacket *packe
 }
 
 bool fota_datagram_is_complete(FotaDatagram *datagram) {
-  return FOTA_ERROR_SUCCESS;
+  return datagram->is_complete = (datagram->packets_received == datagram->header.num_packets);
 }
 
 FotaError fota_datagram_verify(FotaDatagram *datagram) {
