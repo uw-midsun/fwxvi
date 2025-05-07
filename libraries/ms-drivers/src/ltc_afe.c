@@ -175,7 +175,12 @@ StatusCode ltc_afe_init(LtcAfeStorage *afe, const LtcAfeSettings *config) {
   crc15_init_table();
 
   /* Set same duty cycle for all cells in the AFE system */
-  status_ok_or_return(ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100));
+  StatusCode status = ltc_afe_set_discharge_pwm_cycle(afe, LTC6811_PWMC_DC_100);
+  
+  if (status != STATUS_CODE_OK){
+    LOG_DEBUG("Read register failed"); 
+    return status; 
+  }
 
   /*
    * Write configuration settings to AFE.
@@ -258,7 +263,13 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe) {
     LtcAfeVoltageData devices_data[LTC_AFE_MAX_DEVICES] = { 0 };
 
     size_t len = sizeof(LtcAfeVoltageData) * settings->num_devices;
-    status_ok_or_return(prv_read_register(afe, (LtcAfeRegister) v_reg_group, (uint8_t *)devices_data, len));
+    StatusCode status = prv_read_register(afe, (LtcAfeRegister) v_reg_group, (uint8_t *)devices_data, len);
+    
+    if (status != STATUS_CODE_OK){
+      LOG_DEBUG("Read register failed"); 
+      return status; 
+    }
+    
 
     /* Loop through the number of AFE devices connected for each voltage group */
     for (uint8_t device = 0; device < settings->num_devices; ++device) {
@@ -301,7 +312,12 @@ StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(LtcAfeAuxData);
 
-  status_ok_or_return(prv_read_register(afe, LTC_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len));
+  StatusCode status = (afe, LTC_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);
+
+  if (status != STATUS_CODE_OK){
+    LOG_DEBUG("Read register failed"); 
+    return status; 
+  }
 
   /* Loop through devices */
   for (uint16_t device = 0; device < settings->num_devices; ++device) {
