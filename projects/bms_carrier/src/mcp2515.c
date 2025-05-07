@@ -1,11 +1,23 @@
-#include "mcp2515.h"
+/************************************************************************************************
+ * @file    mcp2515.c
+ *
+ * @brief   Mcp2515
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <stddef.h>
 #include <string.h>
 
+/* Inter-component Headers */
 #include "delay.h"
 #include "gpio_interrupts.h"
 #include "log.h"
+#include "mcp2515.h"
+
+/* Intra-component Headers */
 
 // Storage
 static Mcp2515Storage *s_storage;

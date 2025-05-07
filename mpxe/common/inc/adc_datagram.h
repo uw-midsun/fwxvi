@@ -33,7 +33,7 @@ namespace Datagram {
  */
 class Adc {
  public:
-  static const constexpr uint8_t MAX_ADC_READINGS = 16U; /**< Supported Pins per Port */
+  static const constexpr uint8_t NUM_ADC_CHANNELS = 19U; /**< Total Number of ADC Channels */
   
   /**
    * @brief   GPIO Port definition
@@ -45,8 +45,8 @@ class Adc {
   };
 
 
-  /** Maximum buffer size dependent on the Pins per port and Number of Gpio ports */
-  static constexpr size_t ADC_MAX_BUFFER_SIZE = MAX_ADC_READINGS*2;
+  /** Maximum buffer size dependent on the Max number of ADC channels */
+  static constexpr size_t ADC_MAX_BUFFER_SIZE = NUM_ADC_CHANNELS*2;
 
   /**
   * @brief   Adc Datagram payload storage

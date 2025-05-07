@@ -1,4 +1,18 @@
+/************************************************************************************************
+ * @file    ltc_afe_impl.c
+ *
+ * @brief   Ltc Afe Impl
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "ltc_afe_impl.h"
+
+/* Intra-component Headers */
 
 StatusCode ltc_afe_impl_init(LtcAfeStorage *afe, const LtcAfeSettings *settings) {
   return STATUS_CODE_UNIMPLEMENTED;

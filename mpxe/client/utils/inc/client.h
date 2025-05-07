@@ -63,6 +63,8 @@ class Client {
   int m_port;                         /**< The clients port to connect on */
   struct sockaddr_in m_serverAddress; /**< The servers address */
 
+  std::string m_clientName; /**< Local client name for server access */
+
  public:
   /**
    * @brief   Constructs a Client object
@@ -122,6 +124,18 @@ class Client {
    * @param   message String message value to be sent
    */
   void sendMessage(const std::string &message);
+
+  /**
+   * @brief   Set client name
+   * @param   name String name for client
+   */
+  void setClientName(const std::string &name);
+
+  /**
+   * @brief   Get client name
+   * @return  String name for client
+   */
+  std::string getClientName() const;
 };
 
 /** @} */
