@@ -47,6 +47,16 @@ enum class CommandCode {
 
   /* FLASH Commands */
 
+  /* ADC Commands */
+  ADC_SET_RAW,                /**< Set the raw reading of an ADC Channel */
+  ADC_SET_CONVERTED,          /**< Set the converted reading of an ADC Channel */
+  ADC_SET_ALL_RAW,            /**< Set the raw reading of all ADC Channels */
+  ADC_SET_ALL_CONVERTED,      /**< Set the converted reading of all ADC Channels */
+  ADC_GET_RAW,                /**< Get the raw reading of an ADC Channel */
+  ADC_GET_ALL_RAW,            /**< Get the raw reading of all ADC Channels */
+  ADC_GET_CONVERTED,          /**< Get the converted reading of an ADC Channel */
+  ADC_GET_ALL_CONVERTED,      /**< Get the converted reading of all ADC Channels */
+
   NUM_COMMAND_CODES /**< Number of command codes */
 };
 

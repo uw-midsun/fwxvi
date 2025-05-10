@@ -17,9 +17,7 @@
 
 /* Intra-component Headers */
 #include "gpio.h"
-#include "notify.h"
 #include "status.h"
-#include "tasks.h"
 
 /**
  * @defgroup ADC
