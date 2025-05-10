@@ -197,7 +197,6 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
     return STATUS_CODE_INVALID_ARGS;
   }
 
-
   CAN_TxHeaderTypeDef tx_header = {
     .StdId = id,
     .ExtId = id,

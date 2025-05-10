@@ -12,12 +12,12 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "retarget.h"
-#include "stm32l4xx_hal.h"
-
-/* Intra-component Headers*/
 #include "gpio.h"
 #include "mcu.h"
+#include "retarget.h"
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 static StatusCode SystemClock_Config(void) {
   RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0U };

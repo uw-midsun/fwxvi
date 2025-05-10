@@ -97,7 +97,7 @@ void Terminal::run() {
     input.erase(0, input.find_first_not_of(" \t"));
     input.erase(input.find_last_not_of(" \t") + 1);
 
-    if (toLower(input) == "exit") {
+    if (toLower(input) == "quit") {
       break;
     }
 
@@ -115,7 +115,7 @@ void Terminal::run() {
     input.erase(0, input.find_first_not_of(" \t"));
     input.erase(input.find_last_not_of(" \t") + 1);
 
-    if (toLower(input) == "exit") {
+    if (toLower(input) == "quit") {
       break;
     }
 

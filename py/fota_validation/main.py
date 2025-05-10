@@ -1,7 +1,7 @@
-## @defgroup fota_validation
+# @defgroup fota_validation
 #  This is a python package for fota_validation
 #
-## @file    fota_validation.py
+# @file    fota_validation.py
 #  @date    2025-03-12
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Core module for fota_validation

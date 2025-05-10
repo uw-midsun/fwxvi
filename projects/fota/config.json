@@ -4,5 +4,6 @@
         "ms-common",
         "master"
     ],
-    "can": false
+    "can": false,
+    "arm_only": true
 }
