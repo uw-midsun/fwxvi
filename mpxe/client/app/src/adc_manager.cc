@@ -49,7 +49,7 @@ void AdcManager::setAdcAllRaw(std::string &payload) {
   /* ADC Channels 1-4, 13-14 (C0-C3, C4,C5) */
   for (uint8_t i = 0U; i < 6U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(2U),
+      .port = GPIO_PORT_C,
       .pin = i
     };
     adc_set_reading(&pinAddress, receivedReading);
@@ -58,7 +58,7 @@ void AdcManager::setAdcAllRaw(std::string &payload) {
   /* ADC Channels 5-12 (A0-A7) */
   for (uint8_t i = 0U; i < 8U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(0U),
+      .port = GPIO_PORT_A,
       .pin = i
     };
     adc_set_reading(&pinAddress, receivedReading);
@@ -67,14 +67,14 @@ void AdcManager::setAdcAllRaw(std::string &payload) {
   /* ADC Channels 15-16 (B0-B1) */
   for (uint8_t i = 0U; i < 2U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(1U),
+      .port = GPIO_PORT_B,
       .pin = i
     };
     adc_set_reading(&pinAddress, receivedReading);
   }
 }
 
-std::string AdcManager::processAdcRaw(std::string &payload) {
+std::string AdcManager::processReadAdcRaw(std::string &payload) {
   m_adcDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { 
@@ -92,17 +92,17 @@ std::string AdcManager::processAdcRaw(std::string &payload) {
   m_adcDatagram.clearBuffer();
   m_adcDatagram.setBuffer(byteArray.data(), byteArray.size());
 
-  return m_adcDatagram.serialize(CommandCode::GPIO_GET_PIN_STATE);
+  return m_adcDatagram.serialize(CommandCode::ADC_GET_RAW);
 }
 
-std::string AdcManager::processAdcAllRaw() {
+std::string AdcManager::processReadAdcAllRaw() {
   std::vector<uint8_t> byteArray;
   uint16_t pinReading;
 
   /* ADC Channels 1-4 (C0-C3) */
-  for (uint8_t i = 0U; i < 5U; i++) {
+  for (uint8_t i = 0U; i < 4U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(2U),
+      .port = GPIO_PORT_C,
       .pin = i
     };
     adc_read_raw(&pinAddress, &pinReading);
@@ -114,7 +114,7 @@ std::string AdcManager::processAdcAllRaw() {
   /* ADC Channels 5-12 (A0-A7) */
   for (uint8_t i = 0U; i < 8U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(0U),
+      .port = GPIO_PORT_A,
       .pin = i
     };
     adc_read_raw(&pinAddress, &pinReading);
@@ -126,7 +126,7 @@ std::string AdcManager::processAdcAllRaw() {
   /* ADC Channels 13-14 (C4-C5) */
   for (uint8_t i = 4U; i < 6U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(2U),
+      .port = GPIO_PORT_C,
       .pin = i
     };
     adc_read_raw(&pinAddress, &pinReading);
@@ -138,7 +138,7 @@ std::string AdcManager::processAdcAllRaw() {
   /* ADC Channels 15-16 (B0-B1) */
   for (uint8_t i = 0U; i < 2U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(1U),
+      .port = GPIO_PORT_B,
       .pin = i
     };
     adc_read_raw(&pinAddress, &pinReading);
@@ -150,11 +150,11 @@ std::string AdcManager::processAdcAllRaw() {
   m_adcDatagram.clearBuffer();
   m_adcDatagram.setBuffer(byteArray.data(), byteArray.size());
 
-  return m_adcDatagram.serialize(CommandCode::GPIO_GET_ALL_STATES);
+  return m_adcDatagram.serialize(CommandCode::ADC_GET_ALL_RAW);
 }
 
 
-std::string AdcManager::processAdcConverted(std::string &payload) {
+std::string AdcManager::processReadAdcConverted(std::string &payload) {
   m_adcDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { 
@@ -172,18 +172,18 @@ std::string AdcManager::processAdcConverted(std::string &payload) {
   m_adcDatagram.clearBuffer();
   m_adcDatagram.setBuffer(byteArray.data(), byteArray.size());
 
-  return m_adcDatagram.serialize(CommandCode::GPIO_GET_PIN_STATE);
+  return m_adcDatagram.serialize(CommandCode::ADC_GET_CONVERTED);
 }
 
 
-std::string AdcManager::processAdcAllConverted() {
+std::string AdcManager::processReadAdcAllConverted() {
   std::vector<uint8_t> byteArray;
   uint16_t pinReading;
 
   /* ADC Channels 1-4 (C0-C3) */
   for (uint8_t i = 0U; i < 4U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(2U),
+      .port = GPIO_PORT_C,
       .pin = i
     };
     adc_read_converted(&pinAddress, &pinReading);
@@ -195,7 +195,7 @@ std::string AdcManager::processAdcAllConverted() {
   /* ADC Channels 5-12 (A0-A7) */
   for (uint8_t i = 0U; i < 8U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(0U),
+      .port = GPIO_PORT_A,
       .pin = i
     };
     adc_read_converted(&pinAddress, &pinReading);
@@ -207,7 +207,7 @@ std::string AdcManager::processAdcAllConverted() {
   /* ADC Channels 13-14 (C4-C5) */
   for (uint8_t i = 4U; i < 6U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(2U),
+      .port = GPIO_PORT_C,
       .pin = i
     };
     adc_read_converted(&pinAddress, &pinReading);
@@ -219,7 +219,7 @@ std::string AdcManager::processAdcAllConverted() {
   /* ADC Channels 15-16 (B0-B1) */
   for (uint8_t i = 0U; i < 2U; i++) {
     GpioAddress pinAddress = { 
-      .port = static_cast<GpioPort>(1U),
+      .port = GPIO_PORT_B,
       .pin = i
     };
     adc_read_converted(&pinAddress, &pinReading);
@@ -231,5 +231,5 @@ std::string AdcManager::processAdcAllConverted() {
   m_adcDatagram.clearBuffer();
   m_adcDatagram.setBuffer(byteArray.data(), byteArray.size());
 
-  return m_adcDatagram.serialize(CommandCode::GPIO_GET_ALL_STATES);
+  return m_adcDatagram.serialize(CommandCode::ADC_GET_ALL_CONVERTED);
 }
