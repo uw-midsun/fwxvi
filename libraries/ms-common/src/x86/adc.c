@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "delay.h"
+#include "semphr.h"
 
 /* Intra-component Headers */
 #include "adc.h"
