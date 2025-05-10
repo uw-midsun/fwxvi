@@ -16,6 +16,7 @@ PROJ_DIRS = ROOT.glob('projects/*')
 LIB_DIRS = ROOT.glob('libraries/*')
 SMOKE_DIRS = ROOT.glob('smoke/*')
 PY_DIRS = ROOT.glob('py/*')
+MPXE_DIRS = ROOT.glob('mpxe/*')
 SIMULATION_DIRS = ROOT.glob('simulation/*')
 
 ###########################################################
@@ -82,7 +83,7 @@ if TARGET:
     target_dirs = [ROOT.Dir(TARGET)]
 else:
     # TODO: add this to the end of this  '+ SIMULATION_DIRS'
-    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS
+    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS + MPXE_DIRS
 
 for dir in target_dirs:
     config = parse_config(dir)

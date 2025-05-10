@@ -60,17 +60,23 @@ def get_lib_deps(entry):
 autogen_sources = list(Path(AUTOGEN_DIR.abspath).rglob("*"))
 autogen_sources += list(Path(ROOT.abspath).glob("can/boards/*"))
 
-env.Command(
+AlwaysBuild(env.Command(
     LIBRARIES_INC_DIR.File("system_can.h"),
     autogen_sources,
     f"python3 -m autogen system_can -o can/inc"
-)
+))
 
-env.Command(
+AlwaysBuild(env.Command(
     ROOT.Dir("mpxe").Dir("server").Dir("app").Dir("inc").File("system_can.h"),
     None,
     f"python3 -m autogen system_can -o mpxe/server/app/inc"
-)
+))
+
+AlwaysBuild(env.Command(
+    None,
+    None,
+    f"python3 -m autogen simulation_app -o mpxe/server/app"
+))
 
 def generate_can_files(env, project):
     project_can_dir = OBJ_DIR.Dir(project).Dir("can")

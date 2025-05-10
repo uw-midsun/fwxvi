@@ -49,11 +49,11 @@ TASK(can_communication, TASK_STACK_1024) {
     delay_ms(250U);
 
     if (can_transmit(&tx_msg) == STATUS_CODE_OK) {
-      #ifdef MS_PLATFORM_X86
+#ifdef MS_PLATFORM_X86
       LOG_DEBUG("Transmitted CAN message -- ID: %u DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
-      #else
+#else
       LOG_DEBUG("Transmitted CAN message -- ID: %lu DLC: %u\n", tx_msg.id.raw, tx_msg.dlc);
-      #endif
+#endif
 
       for (uint8_t i = 0; i < 8U; i++) {
         delay_ms(10U);
@@ -64,11 +64,11 @@ TASK(can_communication, TASK_STACK_1024) {
     delay_ms(250U);
 
     if (can_receive(&rx_msg) == STATUS_CODE_OK) {
-      #ifdef MS_PLATFORM_X86
+#ifdef MS_PLATFORM_X86
       LOG_DEBUG("Received CAN message -- ID: %u DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
-      #else
+#else
       LOG_DEBUG("Received CAN message -- ID: %lu DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
-      #endif
+#endif
 
       for (uint8_t i = 0; i < 8U; i++) {
         delay_ms(10U);
@@ -78,7 +78,13 @@ TASK(can_communication, TASK_STACK_1024) {
   }
 }
 
+#ifdef MS_PLATFORM_X86
+#include "mpxe.h"
+int main(int argc, char *argv[]) {
+  mpxe_init(argc, argv);
+#else
 int main() {
+#endif
   mcu_init();
   tasks_init();
   log_init();

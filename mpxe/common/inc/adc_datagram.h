@@ -28,13 +28,13 @@ namespace Datagram {
 
 /**
  * @class   DatagramAdc
- * @brief   
- * @details 
+ * @brief
+ * @details
  */
 class Adc {
  public:
   static const constexpr uint8_t MPXE_NUM_ADC_CHANNELS = 19U; /**< Total Number of ADC Channels */
-  
+
   /**
    * @brief   GPIO Port definition
    */
@@ -44,17 +44,16 @@ class Adc {
     NUM_GPIO_PORTS   /**< Number of GPIO Ports */
   };
 
-
   /** Maximum buffer size dependent on the Max number of ADC channels */
   static constexpr size_t ADC_MAX_BUFFER_SIZE = MPXE_NUM_ADC_CHANNELS * 2U;
 
   /**
-  * @brief   Adc Datagram payload storage
-  */
+   * @brief   Adc Datagram payload storage
+   */
   struct Payload {
-    Port gpioPort;                        /**< Gpio port used for ADC*/
-    uint8_t gpioPin;                      /**< Gpio pin used for ADC*/
-    uint8_t bufferLength;                 /**< Data buffer length */
+    Port gpioPort;                       /**< Gpio port used for ADC*/
+    uint8_t gpioPin;                     /**< Gpio pin used for ADC*/
+    uint8_t bufferLength;                /**< Data buffer length */
     uint8_t buffer[ADC_MAX_BUFFER_SIZE]; /**< Data buffer */
   };
 
@@ -80,7 +79,7 @@ class Adc {
    * @brief   Deserializes Adc data from payload string
    * @param   gpioDatagramPayload String containing serialized Gpio data
    */
-  void deserialize(std::string &AdcDatagramPayload);  
+  void deserialize(std::string &AdcDatagramPayload);
 
   /**
    * @brief   Sets the target Gpio port for Adc
@@ -130,10 +129,10 @@ class Adc {
    */
   const uint8_t *getBuffer() const;
 
- private: 
+ private:
   Payload m_adcDatagram; /**< Private datagram payload */
 };
 
-} // namespace Adc
+}  // namespace Datagram
 
 /** @} */

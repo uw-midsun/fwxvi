@@ -4,5 +4,8 @@
         "ms-common",
         "master"
     ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
     "can": true
 }
