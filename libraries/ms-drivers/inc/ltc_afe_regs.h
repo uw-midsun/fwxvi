@@ -108,14 +108,14 @@ typedef enum {
  * @note    See Table 40 on Page 62 for the exact layout.
  */
 typedef struct {
-  uint8_t adcopt : 1;             /**< ADC Mode Option Bit */
-  uint8_t dten : 1;               /**< Dicharge Timer Enable */
-  uint8_t refon : 1;              /**< References Powered Up */
+  uint8_t adcopt : 1; /**< ADC Mode Option Bit */
+  uint8_t dten : 1;   /**< Dicharge Timer Enable */
+  uint8_t refon : 1;  /**< References Powered Up */
 
-  uint8_t gpio : 5;               /**< GPIO PD Config */
+  uint8_t gpio : 5; /**< GPIO PD Config */
 
-  uint32_t undervoltage : 12;     /**< Undervoltage Threshold */
-  uint32_t overvoltage : 12;      /**< Overvoltage Threshold */
+  uint32_t undervoltage : 12; /**< Undervoltage Threshold */
+  uint32_t overvoltage : 12;  /**< Overvoltage Threshold */
 
   uint16_t discharge_bitset : 12; /**< Discharge Cell Bitset */
   uint8_t discharge_timeout : 4;  /**< Discharge Timeout */
@@ -132,21 +132,20 @@ static_assert(sizeof(LtcAfeConfigRegisterData) == 6, "LtcAfeConfigRegisterData m
  * @note    For detailed notes check out Table 20 (p40), Table 21 (p40), Table 52 (p66)
  */
 typedef struct {
-  uint8_t icom0 : 4; 
-  uint8_t d0 : 8;    
+  uint8_t icom0 : 4;
+  uint8_t d0 : 8;
   uint8_t fcom0 : 4;
 
-  uint8_t icom1 : 4; 
-  uint8_t d1 : 8;    
-  uint8_t fcom1 : 4; 
+  uint8_t icom1 : 4;
+  uint8_t d1 : 8;
+  uint8_t fcom1 : 4;
 
-  uint8_t icom2 : 4; 
-  uint8_t d2 : 8;   
-  uint8_t fcom2 : 4; 
+  uint8_t icom2 : 4;
+  uint8_t d2 : 8;
+  uint8_t fcom2 : 4;
 
 } _PACKED LtcAfeCommRegisterData;
 static_assert(sizeof(LtcAfeCommRegisterData) == 6, "LtcAfeCommRegisterData must be 6 bytes");
-
 
 /** @brief WRCOMM + mux pin */
 typedef struct {
@@ -170,13 +169,13 @@ typedef struct {
 
 } _PACKED LtcAfeWriteDeviceConfigPacket;
 
-/** 
+/**
  * @brief WRCFG + all slave registers
  * @note  Devices are ordered with the last slave first */
 typedef struct {
-  uint8_t wrcfg[LTC6811_CMD_SIZE];                                      /**< Command for writing onto config register */
+  uint8_t wrcfg[LTC6811_CMD_SIZE]; /**< Command for writing onto config register */
 
-  LtcAfeWriteDeviceConfigPacket devices[LTC_AFE_MAX_CELLS_PER_DEVICE];  /**< Config for EACH device */
+  LtcAfeWriteDeviceConfigPacket devices[LTC_AFE_MAX_CELLS_PER_DEVICE]; /**< Config for EACH device */
 } _PACKED LtcAfeWriteConfigPacket;
 #define SIZEOF_LTC_AFE_WRITE_CONFIG_PACKET(devices) (LTC6811_CMD_SIZE + (devices) * sizeof(LtcAfeWriteDeviceConfigPacket))
 
@@ -205,27 +204,27 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
  * @brief Command codes for LTC6811 AFE
  * @details  See Table 38 (p.59)
  */
-#define LTC6811_WRCFG_RESERVED (1 << 0)                           /**< Write Config Reg Group A */
-#define LTC6811_RDCFG_RESERVED (1 << 1)                           /**< Read Config Reg Group A */
-#define LTC6811_RDCVA_RESERVED (1 << 2)                           /**< Read Cell Voltage Reg Group A */
-#define LTC6811_RDCVB_RESERVED (1 << 2) | (1 << 1)                /**< Read Cell Voltage Reg Group B */
-#define LTC6811_RDCVC_RESERVED (1 << 3)                           /**< Read Cell Voltage Reg Group C */
-#define LTC6811_RDCVD_RESERVED (1 << 3) | (1 << 1)                /**< Read Cell Voltage Reg Group D */
-#define LTC6811_RDAUXA_RESERVED ((1 << 3) | (1 << 2))             /**< Read Auxillary Reg Group A */
-#define LTC6811_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)  /**< Read Auxillary Reg Group B */
-#define LTC6811_RDSTATA_RESERVED (1 << 4)                         /**< Read Status Register Group A */
-#define LTC6811_RDSTATB_RESERVED (1 << 4) | (1 << 1)              /**< Read Status Register Group B */
-#define LTC6811_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))    /**< Start Cell Voltage ADC Conversion and Poll Status */
-#define LTC6811_ADOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))    /**< Start Open Wire ADC Conversion and Poll Status */
-#define LTC6811_CVST_RESERVED ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 9)) /**< Start Self Test Cell Voltage Conversion and Poll Status */
-#define LTC6811_ADAX_RESERVED (1 << 10) | (1 << 6) | (1 << 5)     /**< Start GPIOs ADC Conversion and Poll Status */
-#define LTC6811_CLRCELL_RESERVED (1 << 0) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)  /**< Clear Cell Voltage Register Groups */
-#define LTC6811_CLRAUX_RESERVED (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Clear Auxillary Register Groups */
+#define LTC6811_WRCFG_RESERVED (1 << 0)                                                           /**< Write Config Reg Group A */
+#define LTC6811_RDCFG_RESERVED (1 << 1)                                                           /**< Read Config Reg Group A */
+#define LTC6811_RDCVA_RESERVED (1 << 2)                                                           /**< Read Cell Voltage Reg Group A */
+#define LTC6811_RDCVB_RESERVED (1 << 2) | (1 << 1)                                                /**< Read Cell Voltage Reg Group B */
+#define LTC6811_RDCVC_RESERVED (1 << 3)                                                           /**< Read Cell Voltage Reg Group C */
+#define LTC6811_RDCVD_RESERVED (1 << 3) | (1 << 1)                                                /**< Read Cell Voltage Reg Group D */
+#define LTC6811_RDAUXA_RESERVED ((1 << 3) | (1 << 2))                                             /**< Read Auxillary Reg Group A */
+#define LTC6811_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)                                  /**< Read Auxillary Reg Group B */
+#define LTC6811_RDSTATA_RESERVED (1 << 4)                                                         /**< Read Status Register Group A */
+#define LTC6811_RDSTATB_RESERVED (1 << 4) | (1 << 1)                                              /**< Read Status Register Group B */
+#define LTC6811_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))                                    /**< Start Cell Voltage ADC Conversion and Poll Status */
+#define LTC6811_ADOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))                                    /**< Start Open Wire ADC Conversion and Poll Status */
+#define LTC6811_CVST_RESERVED ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 9))                         /**< Start Self Test Cell Voltage Conversion and Poll Status */
+#define LTC6811_ADAX_RESERVED (1 << 10) | (1 << 6) | (1 << 5)                                     /**< Start GPIOs ADC Conversion and Poll Status */
+#define LTC6811_CLRCELL_RESERVED (1 << 0) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)            /**< Clear Cell Voltage Register Groups */
+#define LTC6811_CLRAUX_RESERVED (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)             /**< Clear Auxillary Register Groups */
 #define LTC6811_CLRSTAT_RESERVED (1 << 0) | (1 << 1) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10) /**< Clear Status Register Groups */
-#define LTC6811_PLADC_RESERVED (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)    /**< Poll ADC Conversion Status */
-#define LTC6811_DIAGN_RESERVED (1 << 0) | (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)  /**< Diagnose MUX and Poll Status */
-#define LTC6811_WRCOMM_RESERVED (1 << 0) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Write COMM Register Group */
-#define LTC6811_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Read COMM Register Group */
+#define LTC6811_PLADC_RESERVED (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)              /**< Poll ADC Conversion Status */
+#define LTC6811_DIAGN_RESERVED (1 << 0) | (1 << 2) | (1 << 4) | (1 << 8) | (1 << 9) | (1 << 10)   /**< Diagnose MUX and Poll Status */
+#define LTC6811_WRCOMM_RESERVED (1 << 0) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)             /**< Write COMM Register Group */
+#define LTC6811_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)             /**< Read COMM Register Group */
 #define LTC6811_STCOMM_RESERVED (1 << 0) | (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
 #define LTC6811_WRPWM_RESERVED (1 << 5)            /**< Write PWM Register Group */
 #define LTC6811_RDPWM_RESERVED (1 << 5) | (1 << 2) /**< Read PWM Register Group */
@@ -234,7 +233,7 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
  * @brief GPIO pull-down configuration for the Config Register Group.
  * @note  See Table 40 (p.62) and `LtcAfeConfigRegisterData` struct for details.
  */
-#define LTC6811_GPIO1_PD_ON (0 << 3)    
+#define LTC6811_GPIO1_PD_ON (0 << 3)
 #define LTC6811_GPIO1_PD_OFF (1 << 3)
 #define LTC6811_GPIO2_PD_ON (0 << 4)
 #define LTC6811_GPIO2_PD_OFF (1 << 4)
@@ -249,13 +248,13 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
  * @brief   ADCV command macros for cell conversion.
  * @details Determines which cells to convert during ADCV commands.
  */
-#define LTC6811_CNVT_CELL_ALL 0x00    /**< Convert all cells. */
-#define LTC6811_CNVT_CELL_1_7 0x01    /**< Convert cells 1 and 7. */
-#define LTC6811_CNVT_CELL_2_8 0x02    /**< Convert cells 2 and 8. */
-#define LTC6811_CNVT_CELL_3_9 0x03    /**< Convert cells 3 and 9. */
-#define LTC6811_CNVT_CELL_4_10 0x04   /**< Convert cells 4 and 10. */
-#define LTC6811_CNVT_CELL_5_11 0x05   /**< Convert cells 5 and 11. */
-#define LTC6811_CNVT_CELL_6_12 0x06   /**< Convert cells 6 and 12. */
+#define LTC6811_CNVT_CELL_ALL 0x00  /**< Convert all cells. */
+#define LTC6811_CNVT_CELL_1_7 0x01  /**< Convert cells 1 and 7. */
+#define LTC6811_CNVT_CELL_2_8 0x02  /**< Convert cells 2 and 8. */
+#define LTC6811_CNVT_CELL_3_9 0x03  /**< Convert cells 3 and 9. */
+#define LTC6811_CNVT_CELL_4_10 0x04 /**< Convert cells 4 and 10. */
+#define LTC6811_CNVT_CELL_5_11 0x05 /**< Convert cells 5 and 11. */
+#define LTC6811_CNVT_CELL_6_12 0x06 /**< Convert cells 6 and 12. */
 
 /**
  * @brief   ADCV discharge permission macros.
@@ -265,15 +264,15 @@ static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");
 #define LTC6811_ADCV_DISCHARGE_PERMITTED (1 << 4)
 
 /** @brief ADAX command macros */
-#define LTC6811_ADAX_GPIO1 0x01                      /**< Select GPIO 1 for ADC Conversion */
-#define LTC6811_ADAX_GPIO4 0x04                      /**< Select GPIO 4 for ADC Conversion */
-#define LTC6811_ADAX_MODE_FAST (0 << 8) | (1 << 7)   /**< Select fast ADC mode */
+#define LTC6811_ADAX_GPIO1 0x01                    /**< Select GPIO 1 for ADC Conversion */
+#define LTC6811_ADAX_GPIO4 0x04                    /**< Select GPIO 4 for ADC Conversion */
+#define LTC6811_ADAX_MODE_FAST (0 << 8) | (1 << 7) /**< Select fast ADC mode */
 
 /** @brief Write Codes for ICOMn (n = 1, 2, 3) */
-#define LTC6811_ICOM_CSBM_LOW (1 << 3)                                      /**< CSBM low signal */
-#define LTC6811_ICOM_CSBM_FALL_EDGE (1 << 3) | (1 << 0)                     /**< CSBM high then low signal*/
-#define LTC6811_ICOM_CSBM_HIGH (1 << 3) | (1 << 1)                          /**< CSBM high signal */
-#define LTC6811_ICOM_NO_TRANSMIT (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)  /**< No Data is tranmitted*/
+#define LTC6811_ICOM_CSBM_LOW (1 << 3)                                     /**< CSBM low signal */
+#define LTC6811_ICOM_CSBM_FALL_EDGE (1 << 3) | (1 << 0)                    /**< CSBM high then low signal*/
+#define LTC6811_ICOM_CSBM_HIGH (1 << 3) | (1 << 1)                         /**< CSBM high signal */
+#define LTC6811_ICOM_NO_TRANSMIT (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0) /**< No Data is tranmitted*/
 
 /** @brief Write Codes for FCOMn (n = 1, 2, 3) */
 #define LTC6811_FCOM_CSBM_LOW (0 << 0)             /**< Holds CSBM low at end of transmission */

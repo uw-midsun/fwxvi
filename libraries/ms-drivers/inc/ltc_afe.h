@@ -28,11 +28,10 @@
 #include "gpio.h"
 #include "spi.h"
 
-
 /* Intra-component Headers */
 #include "fsm.h"
-#include "status.h"
 #include "ltc_afe_regs.h"
+#include "status.h"
 
 /**
  * @defgroup LTC6811
@@ -47,15 +46,15 @@
 #define _PACKED
 #endif
 
-/** 
+/**
  * @brief Maximum AFE devices in daisy chain config
- * @note This is an arbitrary limitation, can be increased/decreased if needed 
+ * @note This is an arbitrary limitation, can be increased/decreased if needed
  */
 #define LTC_AFE_MAX_DEVICES 3
 
-/** 
+/**
  * @brief Maximum x of each device
- * @note This is a device limitation 
+ * @note This is a device limitation
  */
 #define LTC_AFE_MAX_CELLS_PER_DEVICE 12
 #define LTC_AFE_MAX_THERMISTORS_PER_DEVICE 8
@@ -66,46 +65,44 @@
 #define LTC_AFE_MAX_CELLS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_CELLS_PER_DEVICE)
 #define LTC_AFE_MAX_THERMISTORS (LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_THERMISTORS_PER_DEVICE)
 
-/** 
+/**
  * @brief   Select the ADC mode
  * @details Trade-off between speed or minimizing noise
- * @note    See p 50 for conversion times and p 23 (table 3) for noise 
+ * @note    See p 50 for conversion times and p 23 (table 3) for noise
  */
-typedef enum { 
+typedef enum {
   LTC_AFE_ADC_MODE_422KHZ = 0,
-  LTC_AFE_ADC_MODE_27KHZ,       /**< Normal */
-  LTC_AFE_ADC_MODE_7KHZ,        /**< Fast */
-  LTC_AFE_ADC_MODE_26HZ,        /**< Filtered */
+  LTC_AFE_ADC_MODE_27KHZ, /**< Normal */
+  LTC_AFE_ADC_MODE_7KHZ,  /**< Fast */
+  LTC_AFE_ADC_MODE_26HZ,  /**< Filtered */
   LTC_AFE_ADC_MODE_1KHZ,
-  LTC_AFE_ADC_MODE_14KHZ, 
-  LTC_AFE_ADC_MODE_3KHZ, 
-  LTC_AFE_ADC_MODE_2KHZ, 
-  NUM_LTC_AFE_ADC_MODES 
+  LTC_AFE_ADC_MODE_14KHZ,
+  LTC_AFE_ADC_MODE_3KHZ,
+  LTC_AFE_ADC_MODE_2KHZ,
+  NUM_LTC_AFE_ADC_MODES
 } LtcAfeAdcMode;
 
-
 /**
- * @brief   Afe Settings Data 
+ * @brief   Afe Settings Data
  * @details Set by the user when `ltc_afe_init` is called
  *          Stores SPI information, which cell and aux inputs are enabled, and number of things
  * @note    For more info on `SpiSettings` refer to `spi.h`
  */
 typedef struct LtcAfeSettings {
-  LtcAfeAdcMode adc_mode;                    /**< Determines ADC Mode */
+  LtcAfeAdcMode adc_mode; /**< Determines ADC Mode */
 
   uint16_t cell_bitset[LTC_AFE_MAX_DEVICES]; /**< Bitset showing cells are enabled for each device */
   uint16_t aux_bitset[LTC_AFE_MAX_DEVICES];  /**< Bitset showing aux inputs enabled for each device */
 
-  size_t num_devices;                        /**< Number of AFE devices */
-  size_t num_cells;                          /**< Number of TOTAL cells across all devices */
-  size_t num_thermistors;                    /**< Number of TOTAL thermistors (aux inputs) across all devices */
+  size_t num_devices;     /**< Number of AFE devices */
+  size_t num_cells;       /**< Number of TOTAL cells across all devices */
+  size_t num_thermistors; /**< Number of TOTAL thermistors (aux inputs) across all devices */
 
-  void *result_context;
-  SpiSettings spi_settings;                  /**< SPI settings for AFE */
-  const SpiPort spi_port;                    /**< Determines which SPI port to use */
+  SpiSettings spi_settings; /**< SPI settings for AFE */
+  const SpiPort spi_port;   /**< Determines which SPI port to use */
 } LtcAfeSettings;
 
-/** 
+/**
  * @brief   Runtime Data Storage
  * @details Stores settings, configs, and voltages for all AFE devices
  * @note    Raw indices mean
@@ -114,21 +111,21 @@ typedef struct LtcAfeSettings {
  *          - Each AFE's data (voltages, lookups, etc.) is stored contiguously before the next AFE's data.
  */
 typedef struct LtcAfeStorage {
-  uint16_t cell_voltages[LTC_AFE_MAX_CELLS];            /**< Stores cell voltages for all devices */
-  uint16_t aux_voltages[LTC_AFE_MAX_THERMISTORS];       /**< Stores aux voltages for all devices */
+  uint16_t cell_voltages[LTC_AFE_MAX_CELLS];      /**< Stores cell voltages for all devices */
+  uint16_t aux_voltages[LTC_AFE_MAX_THERMISTORS]; /**< Stores aux voltages for all devices */
 
-  uint16_t cell_result_lookup[LTC_AFE_MAX_CELLS];       /**< Map raw cell indices read from AFE to `cell_voltages` */
-  uint16_t aux_result_lookup[LTC_AFE_MAX_THERMISTORS];  /**< Map raw aux input indices read from AFE to `aux_voltages` */
-  uint16_t discharge_cell_lookup[LTC_AFE_MAX_CELLS];    /**< Map indicies of `cell_voltages` to raw cell indices */
+  uint16_t cell_result_lookup[LTC_AFE_MAX_CELLS];      /**< Map raw cell indices read from AFE to `cell_voltages` */
+  uint16_t aux_result_lookup[LTC_AFE_MAX_THERMISTORS]; /**< Map raw aux input indices read from AFE to `aux_voltages` */
+  uint16_t discharge_cell_lookup[LTC_AFE_MAX_CELLS];   /**< Map indicies of `cell_voltages` to raw cell indices */
 
-  LtcAfeSettings *settings;                              /**< Stores settings for AFE devices, set by the user */
-  LtcAfeWriteConfigPacket *device_configs;               /**< Stores the Configuration of each device in the CFGR register */
+  LtcAfeSettings *settings;                /**< Stores settings for AFE devices, set by the user */
+  LtcAfeWriteConfigPacket *device_configs; /**< Stores the Configuration of each device in the CFGR register */
 } LtcAfeStorage;
 
 /**
  * @brief   Initializes the LTC AFE system with provided configuration settings
- * @details Validates user-defined configuration parameters, sets up SPI communication, 
- *          calculates result buffer offsets, initializes the CRC15 lookup table, 
+ * @details Validates user-defined configuration parameters, sets up SPI communication,
+ *          calculates result buffer offsets, initializes the CRC15 lookup table,
  *          and writes configuration settings to all AFE devices
  * @param   afe Pointer to LtcAfeStorage struct, stores runtime data and settings of AFE
  * @param   config Pointer to constant LtcAfeSettings struct, contains user-specified configuration parameters
@@ -152,8 +149,8 @@ StatusCode ltc_afe_write_config(LtcAfeStorage *afe);
 
 /**
  * @brief   Triggers ADC conversion for all enabled cell voltage inputs
- * @details Builds and transmits the ADCV command using the configured ADC mode to start 
- *          cell voltage conversion across all AFE devices. Puts device into active mode 
+ * @details Builds and transmits the ADCV command using the configured ADC mode to start
+ *          cell voltage conversion across all AFE devices. Puts device into active mode
  *          before initiating conversion.
  * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
  * @return  STATUS_CODE_OK if the ADCV command was successfully transmitted
@@ -165,7 +162,7 @@ StatusCode ltc_afe_trigger_cell_conv(LtcAfeStorage *afe);
 /**
  * @brief   Triggers ADC conversion for an auxiliary (thermistor) input
  * @details Selects the specified thermistor by configuring GPIO bits, then builds and transmits
- *          the ADAX command to begin auxiliary ADC conversion using GPIO4. Supports thermistors 
+ *          the ADAX command to begin auxiliary ADC conversion using GPIO4. Supports thermistors
  *          mapped to 5 available GPIO inputs across devices.
  * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
  * @param   thermistor Index of the thermistor to measure (0-7 across devices)
@@ -203,7 +200,7 @@ StatusCode ltc_afe_read_cells(LtcAfeStorage *afe);
 StatusCode ltc_afe_read_aux(LtcAfeStorage *afe, uint8_t device_cell);
 
 /**
- * @brief   Mark cell for discharging in each device 
+ * @brief   Mark cell for discharging in each device
  * @details Device number is reverse indexed, since `ltc_afe_write_config` writes configs in reverse order
  *          Appropriate bit in `discharge_bitset` in `LtcAfeConfigRegisterData` is marked (see `ltc_afe_regs.h`)
  *          Only takes effect when config is rewritten with `ltc_afe_write_config`
@@ -217,8 +214,8 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
 
 /**
  * @brief   Sets the same discharge PWM duty cycle for all cells across all AFE devices
- * @details Configures the PWM duty cycle registers on each AFE device so that all 12 cell discharge 
- *          channels operate at the same specified duty cycle. Each register controls 2 channels, so 
+ * @details Configures the PWM duty cycle registers on each AFE device so that all 12 cell discharge
+ *          channels operate at the same specified duty cycle. Each register controls 2 channels, so
  *          6 registers are written per device. Prepares a write command and transmits it to all AFE devices.
  * @param   afe Pointer to LtcAfeStorage struct containing runtime data and settings
  * @param   duty_cycle 4-bit duty cycle value (0x0 to 0xF) to set for all PWM channels
