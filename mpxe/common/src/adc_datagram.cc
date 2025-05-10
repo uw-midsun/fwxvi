@@ -7,11 +7,11 @@
  * @author Shahzaib Siddiqui
  ************************************************************************************************/
 
- /* Standard library Headers */
+/* Standard library Headers */
+#include <cstdint>
 #include <cstring>
 #include <iostream>
 #include <vector>
-#include <cstdint>
 
 /* Inter-component Headers */
 
@@ -90,4 +90,4 @@ const uint8_t *Adc::getBuffer() const {
   return m_adcDatagram.buffer;
 }
 
-} //namespace Datagram
+}  // namespace Datagram

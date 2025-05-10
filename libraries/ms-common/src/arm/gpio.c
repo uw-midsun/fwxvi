@@ -105,7 +105,9 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
 
   taskENTER_CRITICAL();
 
-  GPIO_InitTypeDef init = { .Pin = 1U << (address->pin), .Mode = s_gpio_mode_map[pin_mode], .Pull = GPIO_NOPULL, .Speed = GPIO_SPEED_FREQ_VERY_HIGH, .Alternate = alt_func };
+  GPIO_InitTypeDef init = {
+    .Pin = 1U << (address->pin), .Mode = s_gpio_mode_map[pin_mode], .Pull = pin_mode == GPIO_ALTFN_OPEN_DRAIN ? GPIO_PULLUP : GPIO_NOPULL, .Speed = GPIO_SPEED_FREQ_VERY_HIGH, .Alternate = alt_func
+  };
 
   GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_Init(gpio_port, &init);

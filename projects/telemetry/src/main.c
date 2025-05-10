@@ -30,7 +30,13 @@ TelemetryConfig telemetry_config = { .message_transmit_frequency_hz = 1000U,
                                      .uart_settings = {
                                          .tx = { .port = GPIO_PORT_A, .pin = 2 }, .rx = { .port = GPIO_PORT_A, .pin = 3 }, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE } };
 
+#ifdef MS_PLATFORM_X86
+#include "mpxe.h"
+int main(int argc, char *argv[]) {
+  mpxe_init(argc, argv);
+#else
 int main() {
+#endif
   mcu_init();
   tasks_init();
 

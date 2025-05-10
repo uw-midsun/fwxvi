@@ -80,7 +80,7 @@ StatusCode can_add_filter_in(CanMessageId msg_id) {
   return can_hw_add_filter_in(mask.raw, can_id.raw, false);
 }
 
-StatusCode can_transmit(const CanMessage *msg) {
+StatusCode can_transmit(CanMessage *msg) {
   if (s_can_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -88,7 +88,7 @@ StatusCode can_transmit(const CanMessage *msg) {
   return can_hw_transmit(msg->id.raw, msg->extended, msg->data_u8, msg->dlc);
 }
 
-StatusCode can_receive(const CanMessage *msg) {
+StatusCode can_receive(CanMessage *msg) {
   if (s_can_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }

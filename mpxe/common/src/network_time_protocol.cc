@@ -8,9 +8,9 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <cstdint>
 #include <cstring>
 #include <iostream>
-#include <cstdint>
 
 /* Inter-component Headers */
 #include <arpa/inet.h>

@@ -24,8 +24,8 @@
 
 #define PEDAL_ALPHA 0.25f
 
-static const GpioAddress brake = BRAKE_LIMIT_SWITCH;
-static const GpioAddress throttle = ADC_HALL_SENSOR;
+static GpioAddress brake = BRAKE_LIMIT_SWITCH;
+static GpioAddress throttle = ADC_HALL_SENSOR;
 
 // TODO: Implement the calibrate file
 static PedalCalibBlob *s_calib_blob;

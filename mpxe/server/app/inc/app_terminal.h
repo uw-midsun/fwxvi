@@ -62,7 +62,7 @@ class Terminal {
    *          The constructor shall bind to the server
    * @param   server Pointer to a server instance
    */
-  Terminal(Server *server);
+  explicit Terminal(Server *server);
 
   /**
    * @brief   While true spin-loop to handle shell inputs
