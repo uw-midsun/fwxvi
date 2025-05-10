@@ -1,0 +1,4 @@
+<map id="FotaDatagram" name="FotaDatagram">
+<area shape="rect" id="node1" title="Structure representing datagram." alt="" coords="29,93,144,119"/>
+<area shape="rect" id="node2" href="$structFotaDatagramHeader.html" title="Structure representing the datagram header." alt="" coords="5,5,168,31"/>
+</map>

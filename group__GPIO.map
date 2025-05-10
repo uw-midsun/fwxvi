@@ -1,0 +1,4 @@
+<map id="GPIO" name="GPIO">
+<area shape="rect" id="node1" href="$group__FOTA.html" title="Firmware Over the Air (FOTA) Update system." alt="" coords="191,7,247,33"/>
+<area shape="rect" id="node2" title="GPIO library." alt="" coords="5,7,60,33"/>
+</map>
