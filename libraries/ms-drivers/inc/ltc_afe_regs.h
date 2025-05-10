@@ -12,6 +12,10 @@
 /* Standard library Headers */
 #include <assert.h>
 
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
  * @defgroup LTC6811
  * @brief    LTC6811 library
@@ -119,7 +123,6 @@ typedef struct {
 
   uint16_t discharge_bitset : 12; /**< Discharge Cell Bitset */
   uint8_t discharge_timeout : 4;  /**< Discharge Timeout */
-
 } _PACKED LtcAfeConfigRegisterData;
 static_assert(sizeof(LtcAfeConfigRegisterData) == 6, "LtcAfeConfigRegisterData must be 6 bytes");
 
@@ -143,7 +146,6 @@ typedef struct {
   uint8_t icom2 : 4;
   uint8_t d2 : 8;
   uint8_t fcom2 : 4;
-
 } _PACKED LtcAfeCommRegisterData;
 static_assert(sizeof(LtcAfeCommRegisterData) == 6, "LtcAfeCommRegisterData must be 6 bytes");
 
@@ -152,21 +154,18 @@ typedef struct {
   uint8_t wrcomm[LTC6811_CMD_SIZE];
   LtcAfeCommRegisterData reg;
   uint8_t pec;
-
 } _PACKED LtcAfeWriteCommRegPacket;
 
 /** @brief STMCOMM + clock cycles */
 typedef struct {
   uint8_t stcomm[LTC6811_CMD_SIZE];
   uint8_t clk[LTC6811_NUM_COMM_REG_BYTES];
-
 } _PACKED LtcAfeSendCommRegPacket;
 
 /** @brief Configuration Register Group (CFGR) packet for EACH device */
 typedef struct {
   LtcAfeConfigRegisterData reg;
   uint16_t pec;
-
 } _PACKED LtcAfeWriteDeviceConfigPacket;
 
 /**
@@ -182,20 +181,17 @@ typedef struct {
 typedef union {
   uint16_t voltages[3]; /**< 3 voltage readings stored as 16-bit values */
   uint8_t values[6];    /**< Byte-wise view for SPI transmission */
-
 } LtcAfeRegisterData;
 static_assert(sizeof(LtcAfeRegisterData) == 6, "LtcAfeRegisterData must be 6 bytes");
 
 typedef struct {
   LtcAfeRegisterData reg;
   uint16_t pec;
-
 } _PACKED LtcAfeVoltageData;
 static_assert(sizeof(LtcAfeVoltageData) == 8, "LtcAfeVoltageData must be 8 bytes");
 
 typedef struct {
   LtcAfeRegisterData reg;
-
   uint16_t pec;
 } _PACKED LtcAfeAuxData;
 static_assert(sizeof(LtcAfeAuxData) == 8, "LtcAfeAuxData must be 8 bytes");

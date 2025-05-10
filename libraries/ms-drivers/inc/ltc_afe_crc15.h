@@ -13,6 +13,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
  * @defgroup LTC6811
  * @brief    LTC6811 library
