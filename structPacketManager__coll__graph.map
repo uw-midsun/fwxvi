@@ -1,0 +1,7 @@
+<map id="PacketManager" name="PacketManager">
+<area shape="rect" id="node1" title="Packet manager context structure." alt="" coords="136,181,257,207"/>
+<area shape="rect" id="node2" href="$structNetworkBuffer.html" title="struct containing details of circular buffer" alt="" coords="5,93,121,119"/>
+<area shape="rect" id="node3" href="$structFotaPacket.html" title="FOTA Packet structure." alt="" coords="151,93,243,119"/>
+<area shape="rect" id="node4" href="$structFotaDatagram.html" title="Structure representing datagram." alt="" coords="271,93,386,119"/>
+<area shape="rect" id="node5" href="$structFotaDatagramHeader.html" title="Structure representing the datagram header." alt="" coords="247,5,410,31"/>
+</map>

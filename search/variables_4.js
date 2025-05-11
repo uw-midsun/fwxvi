@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['data_0',['data',['../structBootloaderDatagram.html#abe222f6d3581e7920dcad5306cc906a8',1,'BootloaderDatagram::data()'],['../structBootloaderDatagram.html#aaf91bd1ac281890ac2bc9db7553af719',1,'BootloaderDatagram::data()'],['../structFotaDatagram.html#a64b98a4bb52780702e7f2edc5b80a597',1,'FotaDatagram::data()'],['../structDatagram.html#a9bbf88b3f57aa549e5d2e63b192b991d',1,'Datagram::data()'],['../structCanMessage.html#ae421a8889820e685feae3e58e1d5fca0',1,'CanMessage::data()'],['../structBoot__CanMessage.html#ae421a8889820e685feae3e58e1d5fca0',1,'Boot_CanMessage::data()']]],
+  ['data_5flen_1',['data_len',['../structBootloaderDatagram.html#a231d88a2076c53df88d8ffd7eb1c50ec',1,'BootloaderDatagram']]],
+  ['data_5fsize_2',['data_size',['../structBootloaderStateData.html#ab670c6c21aced4765ecd6b29283f22b0',1,'BootloaderStateData']]],
+  ['data_5fu16_3',['data_u16',['../structBoot__CanMessage.html#aa88ec61d43ae34485a761bb68e02800c',1,'Boot_CanMessage::data_u16()'],['../structCanMessage.html#aa88ec61d43ae34485a761bb68e02800c',1,'CanMessage::data_u16()']]],
+  ['data_5fu32_4',['data_u32',['../structBoot__CanMessage.html#aaec9b05087dd4bd4da8d0b92155e7f08',1,'Boot_CanMessage::data_u32()'],['../structCanMessage.html#aaec9b05087dd4bd4da8d0b92155e7f08',1,'CanMessage::data_u32()']]],
+  ['data_5fu8_5',['data_u8',['../structBoot__CanMessage.html#a792f15c58c3ba5d49cba465594cde0d7',1,'Boot_CanMessage::data_u8()'],['../structCanMessage.html#a792f15c58c3ba5d49cba465594cde0d7',1,'CanMessage::data_u8()']]],
+  ['datagram_5fbuffer_6',['datagram_buffer',['../structTelemetryStorage.html#a6be5e2a21ffccac5b11ad891f671e1c8',1,'TelemetryStorage']]],
+  ['datagram_5fid_7',['datagram_id',['../structFotaDatagramHeader.html#a021854bc25283604733eee28e7d40bf5',1,'FotaDatagramHeader::datagram_id()'],['../structFotaPacket.html#a021854bc25283604733eee28e7d40bf5',1,'FotaPacket::datagram_id()']]],
+  ['datagram_5fqueue_8',['datagram_queue',['../structTelemetryStorage.html#ae6d7dd5d50cbad5c5576bdfa4890e4c4',1,'TelemetryStorage']]],
+  ['datagram_5ftype_5fid_9',['datagram_type_id',['../structBootloaderDatagram.html#aca08e185fe6b5e780c8975917393eaef',1,'BootloaderDatagram']]],
+  ['device_5fconfigs_10',['device_configs',['../structLtcAfeStorage.html#a37bf0a3f3933ad659d51cca669020c3d',1,'LtcAfeStorage']]],
+  ['device_5fid_11',['device_id',['../structCanSettings.html#adc401e0e7465eda38f9444eeb6169a10',1,'CanSettings::device_id()'],['../structCanStorage.html#adc401e0e7465eda38f9444eeb6169a10',1,'CanStorage::device_id()']]],
+  ['devices_12',['devices',['../struct__PACKED.html#ade97c11b7836ed7b1b075466df88cd84',1,'_PACKED']]],
+  ['discharge_5fbitset_13',['discharge_bitset',['../struct__PACKED.html#a674071fb0b4a043191b66465fa5279de',1,'_PACKED']]],
+  ['discharge_5fcell_5flookup_14',['discharge_cell_lookup',['../structLtcAfeStorage.html#a6a12430e1143501d916e9b0de819afc0',1,'LtcAfeStorage']]],
+  ['discharge_5ftimeout_15',['discharge_timeout',['../struct__PACKED.html#acde86af90c0ace6e805b6cd70d5f18e8',1,'_PACKED']]],
+  ['dlc_16',['dlc',['../structBoot__CanMessage.html#a0f4e7ff32a1c38cd230fdffe88727418',1,'Boot_CanMessage::dlc()'],['../structDatagram.html#a19defed5d87587252d55e15cf3d5432d',1,'Datagram::dlc()'],['../structCanMessage.html#a19defed5d87587252d55e15cf3d5432d',1,'CanMessage::dlc()']]],
+  ['dten_17',['dten',['../struct__PACKED.html#af4f4d97fa3b44299524db9bdc15177ef',1,'_PACKED']]]
+];
