@@ -93,12 +93,12 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   if (rx_queue == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  
-  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
-  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
 
   __HAL_RCC_CAN1_CLK_ENABLE();
-  
+
+  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
+  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
+
   uint32_t can_mode = CAN_MODE_NORMAL;
   if (settings->loopback) {
     can_mode |= CAN_MODE_LOOPBACK;
@@ -123,21 +123,25 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   if (HAL_CAN_Init(&s_can_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  
+
+  /* Allow all messages by default, but reset the filter count so it's overwritten on the first filter */
+  s_add_filter_in(0, 0, 0);
+  s_num_filters = 0;
+
+  if (HAL_CAN_Start(&s_can_handle) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
   /* Enable all interrupts */
-  HAL_CAN_ActivateNotification(&s_can_handle, CAN_IT_TX_MAILBOX_EMPTY |
-                                          CAN_IT_RX_FIFO0_MSG_PENDING |
-                                          CAN_IT_RX_FIFO1_MSG_PENDING |
-                                          CAN_IT_ERROR);
-  
   interrupt_nvic_enable(CAN1_TX_IRQn, INTERRUPT_PRIORITY_HIGH);
   interrupt_nvic_enable(CAN1_RX0_IRQn, INTERRUPT_PRIORITY_HIGH);
   interrupt_nvic_enable(CAN1_RX1_IRQn, INTERRUPT_PRIORITY_HIGH);
   interrupt_nvic_enable(CAN1_SCE_IRQn, INTERRUPT_PRIORITY_HIGH);
 
-  /* Allow all messages by default, but reset the filter count so it's overwritten on the first filter */
-  s_add_filter_in(0, 0, 0);
-  s_num_filters = 0;
+  HAL_CAN_ActivateNotification(&s_can_handle, CAN_IT_TX_MAILBOX_EMPTY |
+                                          CAN_IT_RX_FIFO0_MSG_PENDING |
+                                          CAN_IT_RX_FIFO1_MSG_PENDING |
+                                          CAN_IT_ERROR);
 
   /* Initialize CAN queue */
   s_g_rx_queue = rx_queue;
@@ -146,10 +150,6 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, CAN_NUM_MAILBOXES, &s_can_tx_ready_sem);
   configASSERT(s_can_tx_ready_sem_handle);
   s_tx_full = false;
-
-  if (HAL_CAN_Start(&s_can_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
 
   LOG_DEBUG("CAN HW initialized on %s\n", CAN_HW_DEV_INTERFACE);
 
@@ -215,7 +215,6 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
     status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, data, &tx_mailbox);
     
     if (status == HAL_OK) {
-      LOG_DEBUG("Sent data with id: %ld\n", id);
       return STATUS_CODE_OK;
     }
     else if (status == HAL_BUSY) {

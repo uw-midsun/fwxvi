@@ -3,5 +3,8 @@
         "FreeRTOS",
         "ms-common"
     ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
     "can": false
 }

@@ -11,8 +11,8 @@
 
 /* Standard library Headers */
 #include <atomic>
-#include <cstring>
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <unordered_map>
 #include <vector>

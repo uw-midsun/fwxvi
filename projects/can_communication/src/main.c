@@ -33,24 +33,58 @@ const CanSettings can_settings = {
 };
 
 TASK(can_communication, TASK_STACK_1024) {
+  LOG_DEBUG("Starting can_communication\n");
+
   if (can_init(&s_can_storage, &can_settings) != STATUS_CODE_OK) {
-    LOG_DEBUG("Failed to initialze CAN\n");
+    LOG_DEBUG("\nFailed to initialze CAN\n");
     while (true) {
     }
   }
 
-  uint8_t can_data[4U] = { 0xDE, 0xAD, 0xBE, 0xEF };
+  CanMessage rx_msg;
 
-  LOG_DEBUG("Starting can_communication\n");
+  CanMessage tx_msg = { .id.raw = 0x123, .data_u8 = { 0xDE, 0xAD, 0xBE, 0xEF }, .dlc = 4U, .extended = false };
+
   while (true) {
-    LOG_DEBUG("Running\n");
-    delay_ms(500);
-    can_hw_transmit(123, false, can_data, 4U);
-    delay_ms(500);
+    delay_ms(250U);
+
+    if (can_transmit(&tx_msg) == STATUS_CODE_OK) {
+#ifdef MS_PLATFORM_X86
+      LOG_DEBUG("Transmitted CAN message -- ID: %u DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
+#else
+      LOG_DEBUG("Transmitted CAN message -- ID: %lu DLC: %u\n", tx_msg.id.raw, tx_msg.dlc);
+#endif
+
+      for (uint8_t i = 0; i < 8U; i++) {
+        delay_ms(10U);
+        LOG_DEBUG("Byte %d: 0x%02X\n", i, tx_msg.data_u8[i]);
+      }
+    }
+
+    delay_ms(250U);
+
+    if (can_receive(&rx_msg) == STATUS_CODE_OK) {
+#ifdef MS_PLATFORM_X86
+      LOG_DEBUG("Received CAN message -- ID: %u DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
+#else
+      LOG_DEBUG("Received CAN message -- ID: %lu DLC: %u\n", rx_msg.id.raw, rx_msg.dlc);
+#endif
+
+      for (uint8_t i = 0; i < 8U; i++) {
+        delay_ms(10U);
+        LOG_DEBUG("Byte %d: 0x%02X\n", i, rx_msg.data_u8[i]);
+      }
+    }
   }
 }
 
+#ifdef MS_PLATFORM_X86
+#include "mpxe.h"
+int main(int argc, char *argv[]) {
+  mpxe_init(argc, argv);
+#else
 int main() {
+#endif
   mcu_init();
   tasks_init();
   log_init();
