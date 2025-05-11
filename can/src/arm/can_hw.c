@@ -93,12 +93,12 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   if (rx_queue == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  
+
+  __HAL_RCC_CAN1_CLK_ENABLE();
+
   gpio_init_pin_af(&settings->tx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
   gpio_init_pin_af(&settings->rx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
 
-  __HAL_RCC_CAN1_CLK_ENABLE();
-  
   uint32_t can_mode = CAN_MODE_NORMAL;
   if (settings->loopback) {
     can_mode |= CAN_MODE_LOOPBACK;
