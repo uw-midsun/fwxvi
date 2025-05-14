@@ -55,4 +55,6 @@ FotaError can_bootloader_receive(uint32_t id, uint8_t *data, uint8_t *len);
 
 FotaError can_bootloader_poll(void);
 
-FotaError can_bootloader_recover_bus(void);
+FotaError can_bootloader_chunkify(void);
+
+// state machine (switch) function + struct
