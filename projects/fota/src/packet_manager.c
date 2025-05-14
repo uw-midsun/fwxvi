@@ -54,8 +54,11 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
   FotaError err = fota_datagram_to_packets(datagram, packets, &packet_num, FOTA_MAX_PACKETS_PER_DATAGRAM);
 
   for (uint16_t i = 0; i < packet_num; i++) { 
-    
+    // convert to bytes
+  
+
     // TODO SEND DATA
+
   }
 
   return FOTA_ERROR_SUCCESS;
@@ -80,8 +83,7 @@ FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramTyp
       manager->datagram_active[i] = true;
       datagram_id++;
 
-      // only make 1 datagram
-      return FOTA_ERROR_SUCCESS;
+      return FOTA_ERROR_SUCCESS; // create a 1 datagram 
     }
   }
   

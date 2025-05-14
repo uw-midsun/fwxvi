@@ -51,7 +51,8 @@ typedef struct {
   /* Packet reception */
   PacketReceiverState rx_state;
   uint16_t bytes_received;
-  uint8_t packet_buffer[sizeof(FotaPacket)];
+  uint8_t rx_packet_buffer[sizeof(FotaPacket)];
+  uint8_t transmit_buffer[sizeof(FotaPacket)];
   FotaPacket current_packet;
 
   /* Datagram handling */
