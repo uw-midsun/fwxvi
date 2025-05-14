@@ -90,7 +90,16 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
  * @param    packet Received packet
  * @return   FotaError  Error code
  */
-FotaError fota_datagram_process_packet(FotaDatagram *datagram, FotaPacket *packet);
+FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *packet);
+
+/**
+ * @brief    Process a received header packet and incorporate it into a datagram
+ * @param    datagram Datagram being reconstructed
+ * @param    packet Received header packet
+ * @return   FotaError  Error code
+ */
+FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket *packet);
+
 
 /**
  * @brief    Check if a datagram has been completely received
