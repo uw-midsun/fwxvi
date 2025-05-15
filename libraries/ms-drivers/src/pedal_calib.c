@@ -17,17 +17,16 @@
 /* Intra-component Headers */
 #include "adc.h"
 #include "gpio.h"
-#include "gpio_it.h"
 #include "i2c.h"
-#include "interrupt.h"
+#include "interrupts.h"
 #include "log.h"
 
 // Pedal Calibration function
-StStatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage,
-                                PedalCalibrationData *data, PedalState state,
-                                GpioAddress *address) {
+StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage,
+                              PedalCalibrationData *data, PedalState state,
+                              GpioAddress *address) {
   // Erase existing data at storage location
-  memset(storage, 0, sizeof(*storage));
+  memset(calib_storage, 0, sizeof(*calib_storage));
 
   // Reset variables for pedal calibration storage
   int32_t average_value = 0;
@@ -40,15 +39,20 @@ StStatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage,
     // Read the values from the MAX, at this point the pedal should be in either
     // a fully pressed or released state
     uint16_t adc_reading;
-    status = adc_read_raw(*address, &adc_reading);
+    status = adc_read_raw(address, &adc_reading);
     if (status != STATUS_CODE_OK) {
       return STATUS_CODE_INCOMPLETE;
     }
     uint16_t reading = (uint16_t)adc_reading;
     calib_storage->sample_counter++;
     average_value += reading;
-    calib_storage->min_reading = MIN(calib_storage->min_reading, reading);
-    calib_storage->max_reading = MAX(calib_storage->max_reading, reading);
+    if (calib_storage->min_reading > reading) {
+      calib_storage->min_reading = reading;
+    }
+
+    if (calib_storage->max_reading < reading) {
+      calib_storage->max_reading = reading;
+    }
   }
 
   if (state == PEDAL_PRESSED) {
