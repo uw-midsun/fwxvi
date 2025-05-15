@@ -27,12 +27,42 @@ typedef enum {
     DFU_FAULT
 } DFUStates;
 
+typedef struct {
 
+    /// @brief Start of application in memory. Flashing will start here.
+    uintptr_t application_start;
 
+    /// @brief Current address that will be flashed
+    uintptr_t current_address;
 
+    /// @brief number of bytes flashed
+    uint32_t bytes_written;
 
+    /// @brief Size of application bin being flashed
+    uint32_t binary_size;
 
+    /// @brief CRC check for validation of packet. validated after / before writing to flash
+    uint32_t packet_crc32;
 
+    /// @brief Validation of sequencing of packets. Checked when sequencing message is recieved
+    uint16_t expected_sequence_number;
 
+    /// @brief Increment when data message is recieved, 8 bytes at a time (message length)
+    uint16_t buffer_index;
 
+    /// @brief (TBD/ need to revise): Current State of DFU
+    DFUStates states;
+} DFUStateData;
 
+/// @brief Initializes DFU
+/// @return 
+DFU_ERRORS dfu_init(void);
+
+/// @brief Finite State Machine for DFU
+/// @param new_state next state to be processed
+/// @return error code
+DFU_ERRORS dfu_run(DFUStates new_state);
+
+/// @brief jumps to application layer mentioned in ld script
+/// @return error code
+DFU_ERRORS dfu_jump_app(void); 
