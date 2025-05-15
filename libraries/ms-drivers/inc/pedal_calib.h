@@ -72,3 +72,5 @@ extern PedalCalibBlob global_calib_blob;
  * @return STATUS_CODE_OK on success
  */
 StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address);
+
+/** @} */
