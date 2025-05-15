@@ -50,7 +50,7 @@ float clamp_float(float value) {
 void update_target_current_velocity() {
   float throttle_percent = get_float(get_cc_pedal_throttle_output());
   bool brake = get_cc_pedal_brake_output();
-  float target_vel = (int)(get_cc_info_target_velocity()) * VEL_TO_RPM_RATIO;
+  float target_vel = (int)(get_cc_info_target_velocity())*VEL_TO_RPM_RATIO;
   float car_vel = fabs((s_car_velocity_l + s_car_velocity_r) / 2);
   float opd_thresh = opd_threshold(car_vel);
 
