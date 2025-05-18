@@ -26,10 +26,12 @@
  ************************************************************************************************/
 
 /** @brief  BMS CAN RX Port */
-#define BMS_CAN_RX { .port = GPIO_PORT_B, .pin = 8 }
+#define BMS_CAN_RX \
+  { .port = GPIO_PORT_B, .pin = 8 }
 
 /** @brief  BMS CAN TX Port */
-#define BMS_CAN_TX { .port = GPIO_PORT_B, .pin = 9 }
+#define BMS_CAN_TX \
+  { .port = GPIO_PORT_B, .pin = 9 }
 
 /************************************************************************************************
  * Current sense I2C definitions
@@ -39,10 +41,12 @@
 #define CURRENT_SENSE_I2C_PORT I2C_PORT_1
 
 /** @brief  Current sense I2C serial data pin */
-#define CURRENT_SENSE_I2C_SDA_GPIO { .port = GPIO_PORT_B, .pin = 11 }
+#define CURRENT_SENSE_I2C_SDA_GPIO \
+  { .port = GPIO_PORT_B, .pin = 11 }
 
 /** @brief  Current sense I2C clock pin */
-#define CURRENT_SENSE_I2C_SCL_GPIO { .port = GPIO_PORT_B, .pin = 10 }
+#define CURRENT_SENSE_I2C_SCL_GPIO \
+  { .port = GPIO_PORT_B, .pin = 10 }
 
 /** @brief  Current sense slave address */
 #define CURRENT_SENSE_MAX17261_I2C_ADDR (0x36U)
@@ -58,16 +62,20 @@
 #define LTC_AFE_SPI_BAUDRATE SPI_BAUDRATE_1_25MHZ
 
 /** @brief  AFE SPI Serial data out */
-#define LTC_AFE_SPI_SDO_GPIO { .port = GPIO_PORT_B, .pin = 15 }
+#define LTC_AFE_SPI_SDO_GPIO \
+  { .port = GPIO_PORT_B, .pin = 15 }
 
 /** @brief  AFE SPI Serial data in */
-#define LTC_AFE_SPI_SDI_GPIO { .port = GPIO_PORT_B, .pin = 14 }
+#define LTC_AFE_SPI_SDI_GPIO \
+  { .port = GPIO_PORT_B, .pin = 14 }
 
 /** @brief  AFE SPI Serial clock line */
-#define LTC_AFE_SPI_SCK_GPIO { .port = GPIO_PORT_B, .pin = 13 }
+#define LTC_AFE_SPI_SCK_GPIO \
+  { .port = GPIO_PORT_B, .pin = 13 }
 
 /** @brief  AFE SPI Chip select line */
-#define LTC_AFE_SPI_CS_GPIO { .port = GPIO_PORT_B, .pin = 12 }
+#define LTC_AFE_SPI_CS_GPIO \
+  { .port = GPIO_PORT_B, .pin = 12 }
 
 /************************************************************************************************
  * Motor Controller SPI definitions
@@ -77,74 +85,92 @@
 #define MCP2515_SPI_PORT SPI_PORT_3
 
 /** @brief  MCP2515 SPI Serial data out */
-#define MCP2515_SPI_SDO_GPIO { .port = GPIO_PORT_B, .pin = 5 }
+#define MCP2515_SPI_SDO_GPIO \
+  { .port = GPIO_PORT_B, .pin = 5 }
 
 /** @brief  MCP2515 SPI Serial data in */
-#define MCP2515_SPI_SDI_GPIO { .port = GPIO_PORT_B, .pin = 4 }
+#define MCP2515_SPI_SDI_GPIO \
+  { .port = GPIO_PORT_B, .pin = 4 }
 
 /** @brief  MCP2515 SPI Serial clock line */
-#define MCP2515_SPI_SCK_GPIO { .port = GPIO_PORT_B, .pin = 3 }
+#define MCP2515_SPI_SCK_GPIO \
+  { .port = GPIO_PORT_B, .pin = 3 }
 
 /** @brief  MCP2515 SPI Chip select line */
-#define MCP2515_SPI_CS_GPIO { .port = GPIO_PORT_A, .pin = 15 }
+#define MCP2515_SPI_CS_GPIO \
+  { .port = GPIO_PORT_A, .pin = 15 }
 
 /************************************************************************************************
  * Relays/Contactor definitions
  ************************************************************************************************/
 
 /** @brief  Precharge status pin for sensing precharge completion */
-#define BMS_PRECHARGE_STATUS_GPIO { .port = GPIO_PORT_A, .pin = 3 }
+#define BMS_PRECHARGE_STATUS_GPIO \
+  { .port = GPIO_PORT_A, .pin = 3 }
 
 /** @brief  Motor relay enable pin */
-#define BMS_PRECHARGE_RELAY_ENABLE_GPIO { .port = GPIO_PORT_A, .pin = 9 }
+#define BMS_PRECHARGE_RELAY_ENABLE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 9 }
 
 /** @brief  Motor relay sense pin */
-#define BMS_PRECHARGE_RELAY_SENSE_GPIO { .port = GPIO_PORT_A, .pin = 10 }
+#define BMS_PRECHARGE_RELAY_SENSE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 10 }
 
 /** @brief  Positive relay enable pin */
-#define BMS_POS_RELAY_ENABLE_GPIO { .port = GPIO_PORT_A, .pin = 4 }
+#define BMS_POS_RELAY_ENABLE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 4 }
 
 /** @brief  Positive relay sense pin */
-#define BMS_POS_RELAY_SENSE_GPIO { .port = GPIO_PORT_A, .pin = 15 }
+#define BMS_POS_RELAY_SENSE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 15 }
 
 /** @brief  Negative relay enable pin */
-#define BMS_NEG_RELAY_ENABLE_GPIO { .port = GPIO_PORT_A, .pin = 13 }
+#define BMS_NEG_RELAY_ENABLE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 13 }
 
 /** @brief  Negtaive relay sense pin */
-#define BMS_NEG_RELAY_SENSE_GPIO { .port = GPIO_PORT_A, .pin = 12 }
+#define BMS_NEG_RELAY_SENSE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 12 }
 
 /** @brief  Solar relay enable pin */
-#define BMS_SOLAR_RELAY_ENABLE_GPIO { .port = GPIO_PORT_C, .pin = 13 }
+#define BMS_SOLAR_RELAY_ENABLE_GPIO \
+  { .port = GPIO_PORT_C, .pin = 13 }
 
 /** @brief  Solar relay sense pin */
-#define BMS_SOLAR_RELAY_SENSE_GPIO { .port = GPIO_PORT_A, .pin = 6 }
+#define BMS_SOLAR_RELAY_SENSE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 6 }
 
 /************************************************************************************************
  * Killswitch definitions
  ************************************************************************************************/
 
 /** @brief  Killswitch sense pin */
-#define BMS_KILLSWITCH_SENSE_GPIO { .port = GPIO_PORT_A, .pin = 11 }
+#define BMS_KILLSWITCH_SENSE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 11 }
 
 /************************************************************************************************
  * Aux sense definitions
  ************************************************************************************************/
 
 /** @brief  Aux sense ADC pin */
-#define BMS_AUX_BATT_VOLTAGE_ADC { .port = GPIO_PORT_A, .pin = 5 }
+#define BMS_AUX_BATT_VOLTAGE_ADC \
+  { .port = GPIO_PORT_A, .pin = 5 }
 
 /************************************************************************************************
  * Fan definitions
  ************************************************************************************************/
 
 /** @brief  Fan sense pin */
-#define BMS_FAN_SENSE_1_GPIO { .port = GPIO_PORT_B, .pin = 0 }
+#define BMS_FAN_SENSE_1_GPIO \
+  { .port = GPIO_PORT_B, .pin = 0 }
 
 /** @brief  Fan sense pin */
-#define BMS_FAN_SENSE_2_GPIO { .port = GPIO_PORT_B, .pin = 1 }
+#define BMS_FAN_SENSE_2_GPIO \
+  { .port = GPIO_PORT_B, .pin = 1 }
 
 /** @brief  Fan PWM control pin */
-#define BMS_FAN_PWM_GPIO { .port = GPIO_PORT_A, .pin = 8 }
+#define BMS_FAN_PWM_GPIO \
+  { .port = GPIO_PORT_A, .pin = 8 }
 
 /************************************************************************************************
  * Battery pack definitions
