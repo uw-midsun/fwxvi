@@ -41,27 +41,27 @@ void teardown_test(void) {}
 
 TEST_IN_TASK
 void test_fan_state_lower_thresh_40c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = BMS_FAN_TEMP_LOWER_THRESHOLD;
+  mock_bms_storage.max_temperature = BMS_FAN_TEMP_LOWER_THRESHOLD;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
 
   TEST_ASSERT_EQUAL(test_fan_dc, BMS_FAN_BASE_DUTY_CYCLE);
 }
 
 TEST_IN_TASK
 void test_fan_state_upper_thresh_50c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = BMS_FAN_TEMP_UPPER_THRESHOLD;
+  mock_bms_storage.max_temperature = BMS_FAN_TEMP_UPPER_THRESHOLD;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
 
   TEST_ASSERT_EQUAL(test_fan_dc, 100U);
 }
 
 TEST_IN_TASK
 void test_fan_state_42c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = 42U;
+  mock_bms_storage.max_temperature = 42U;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
   uint8_t expected_fan_dc = 100 * ((float)42U - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
 
   expected_fan_dc = (expected_fan_dc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
@@ -71,9 +71,9 @@ void test_fan_state_42c(void) {
 
 TEST_IN_TASK
 void test_fan_state_44c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = 44U;
+  mock_bms_storage.max_temperature = 44U;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
   uint8_t expected_fan_dc = 100 * ((float)44U - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
 
   expected_fan_dc = (expected_fan_dc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
@@ -83,9 +83,9 @@ void test_fan_state_44c(void) {
 
 TEST_IN_TASK
 void test_fan_state_45c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = 45U;
+  mock_bms_storage.max_temperature = 45U;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
   uint8_t expected_fan_dc = 100 * ((float)45U - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
 
   expected_fan_dc = (expected_fan_dc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
@@ -95,9 +95,9 @@ void test_fan_state_45c(void) {
 
 TEST_IN_TASK
 void test_fan_state_46c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = 46U;
+  mock_bms_storage.max_temperature = 46U;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
   uint8_t expected_fan_dc = 100 * ((float)46U - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
 
   expected_fan_dc = (expected_fan_dc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
@@ -107,9 +107,9 @@ void test_fan_state_46c(void) {
 
 TEST_IN_TASK
 void test_fan_state_48c(void) {
-  mock_bms_storage.ltc_afe_storage.max_temp = 48U;
+  mock_bms_storage.max_temperature = 48U;
 
-  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.ltc_afe_storage.max_temp);
+  uint8_t test_fan_dc = calculate_fan_dc(mock_bms_storage.max_temperature);
   uint8_t expected_fan_dc = 100 * ((float)48U - BMS_FAN_TEMP_LOWER_THRESHOLD) / (float)(BMS_FAN_TEMP_UPPER_THRESHOLD - BMS_FAN_TEMP_LOWER_THRESHOLD);
 
   expected_fan_dc = (expected_fan_dc / 2U + BMS_FAN_BASE_DUTY_CYCLE);
