@@ -155,7 +155,7 @@ VariantDir(OBJ_DIR, '.', duplicate=0)
 ###########################################################
 if COMMAND == "test":
     # Add flags when compiling a test
-    TEST_CFLAGS = ['-DMS_TEST=1']
+    TEST_CFLAGS = ['-DMS_TEST']
     env['CCFLAGS'] += TEST_CFLAGS
     SConscript('scons/test.scons', exports='VARS')
     SConscript('scons/build.scons', exports='VARS')
