@@ -9,7 +9,7 @@ env = VARS.get("env")
 
 # Clone the C env and clear C flags
 cxx_env = env.Clone()
-cxx_env['CCFLAGS'] = ['-DMS_PLATFORM_X86', '-D_GNU_SOURCE',]
+cxx_env['CCFLAGS'] = ['-DMS_PLATFORM_X86', '-D_GNU_SOURCE'] + (['-DMS_TEST'] if '-DMS_TEST' in env['CCFLAGS'] else [])
 cxx_env['LINK'] = 'g++'
 
 ROOT = Dir('#')
