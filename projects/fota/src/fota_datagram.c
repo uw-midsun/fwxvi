@@ -82,14 +82,15 @@ FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *
 FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket *packet) {
   datagram->header.crc32 = packet->crc32;
   datagram->header.datagram_id = packet->datagram_id;
-  datagram->header.num_packets = packet->payload;
+  datagram->header.num_packets = (packet->payload[1U] << 8U) | (packet->payload[0U]);
   datagram->header.total_length = datagram->header.num_packets * FOTA_PACKET_PAYLOAD_SIZE;
 
   return FOTA_ERROR_SUCCESS;
 }
 
 bool fota_datagram_is_complete(FotaDatagram *datagram) {
-  return datagram->is_complete = (datagram->packets_received == (datagram->header).num_packets);
+  datagram->is_complete = (datagram->packets_received == datagram->header.num_packets);
+  return datagram->is_complete;
 }
 
 FotaError fota_datagram_verify(FotaDatagram *datagram) {

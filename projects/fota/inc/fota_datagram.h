@@ -100,7 +100,6 @@ FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *
  */
 FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket *packet);
 
-
 /**
  * @brief    Check if a datagram has been completely received
  * @param    datagram Datagram to check
