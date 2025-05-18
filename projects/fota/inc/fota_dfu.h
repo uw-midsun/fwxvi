@@ -1,8 +1,35 @@
 #pragma once 
 
+/************************************************************************************************
+ * @file  fota_dfu.h
+ *
+ * @brief  State machine for Device Firmware Update (DFU)
+ *
+ * @date   2025-05-14
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+
+/* Intra-component Headers */
 #include "fota_flash.h"
 #include "fota_datagram.h"
 #include "fota_error.h"
+#include "fota_dfu_mcu.h"
+
+/**
+ * @defgroup FOTA
+ * @brief    Firmware Over the Air (FOTA) Update system
+ * @{
+ */
+
+/**
+ * @brief  implementation of dfu state machine 
+ */
+
 
 typedef enum {
     /// @brief DFU starts uninitalized
