@@ -18,6 +18,7 @@
 #include "fota_flash.h"
 #include "fota_datagram.h"
 #include "fota_error.h"
+#include "packet_manger.h"
 
 /**
  * @defgroup FOTA
@@ -67,25 +68,27 @@ typedef struct {
     /// @brief Size of application bin being flashed
     uint32_t binary_size;
 
-    /// @brief Validation of sequencing of packets. Checked when sequencing message is recieved
-    uint16_t expected_sequence_number;
+    /// @brief Validation of sequencing of packets. Checked when sequencing message is recieved. Incremented by 1 for each DFU datagram processed.
+    uint16_t expected_datagram_id;
 
     /// @brief Increment when data message is recieved, 8 bytes at a time (message length)
     uint16_t buffer_index;
 
-    /// @brief (TBD/ need to revise): Current State of DFU
+    /// @brief States of the DFU state machine
     DFUStates states;
+
+    /// @brief Packet manager context structure for interfacing with processed packets.
+    PacketManager *packet_manager;
 } DFUStateData;
 
 /// @brief Initializes DFU
 /// @return 
-FotaError dfu_init(void);
+FotaError fota_dfu_init(void);
 
-/// @brief Finite State Machine for DFU
-/// @param new_state next state to be processed
+/// @brief Run Finite State Machine for DFU
 /// @return error code
-FotaError dfu_run(DFUStates new_state);
+FotaError fota_dfu_run(void);
 
 /// @brief jumps to application layer mentioned in ld script
 /// @return error code
-FotaError dfu_jump_app(void); 
+FotaError fota_dfu_jump_app(void); 
