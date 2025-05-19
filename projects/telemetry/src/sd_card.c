@@ -1,5 +1,3 @@
-
-
 #include "sd_card.h"
 
 #include <string.h>
@@ -12,12 +10,19 @@
 /*--------------------------------------------------------------------------*/
 /*  Constants & macros                                                      */
 
+#define SD_BLOCK_SIZE 512U
+
+#define SD_TOKEN_START_BLOCK 0xFE
+#define SD_TOKEN_MULTI_WRITE 0xFC
+#define SD_TOKEN_STOP_TRAN 0xFD
+
 #define R1_IDLE 0x01
+#define R1_ILLEGAL 0x04
 
 #define DATA_ACCEPTED 0x05
 
-#define CRC_CMD0 0x95   /* valid CRC for CMD0 arg = 0   */
-#define CRC_CMD8 0x87   /* valid CRC for CMD8 arg = 0x1AA */
+#define CRC_CMD0 0x95 /* valid CRC for CMD0 arg = 0   */
+#define CRC_CMD8 0x87 /* valid CRC for CMD8 arg = 0x1AA */
 
 #define T_INIT_MS 1000U
 #define T_RW_MS 250U
@@ -40,11 +45,7 @@ enum {
 /*--------------------------------------------------------------------------*/
 /*  Local helpers                                                           */
 
-static inline SPI_HandleTypeDef *prv_port_to_handle(SpiPort p) {
-  return (p == SPI_PORT_1) ? &hspi1 : (p == SPI_PORT_2) ? &hspi2 : &hspi3;
-}
-
-/* May CHange, based on spi.h implementation */
+/* May Change, based on spi.h implementation */
 static inline void prv_cs_low(SpiPort p) {
   if (p == SPI_PORT_1)
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -62,9 +63,26 @@ static inline void prv_cs_high(SpiPort p) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
-/* Wrapper around HAL_SPI_TransmitReceive */
-static HAL_StatusTypeDef prv_txrx(SpiPort p, uint8_t *tx, uint8_t *rx, uint16_t len) {
-  return HAL_SPI_TransmitReceive(prv_port_to_handle(p), tx, rx, len, HAL_MAX_DELAY);
+/* Wrapper around spi_exchange */
+static void prv_txrx(SpiPort spi, uint8_t *tx, /* may be NULL */
+                     uint8_t *rx, uint16_t len) {
+  /* Sending + receive Data */
+  if (tx) {
+    spi_exchange(spi, tx, len, rx, len);
+  } 
+  /* Reading Data */
+  else {
+    static uint8_t ff = 0xFF;
+    for (uint16_t i = 0; i < len; i++) {
+      spi_exchange(spi, &ff, 1, &rx[i], 1); /* send 0xFF, read 1 */
+    }
+  }
+}
+
+static inline uint8_t prv_transfer_byte(SpiPort p, uint8_t b) {
+  uint8_t r;
+  prv_txrx(p, &b, &r, 1);
+  return r;
 }
 
 static uint8_t prv_transfer_byte(SpiPort p, uint8_t b) {
@@ -75,11 +93,12 @@ static uint8_t prv_transfer_byte(SpiPort p, uint8_t b) {
 
 static uint32_t prv_wait_ready(SpiPort p, uint32_t timeout_ms) {
   uint32_t start = HAL_GetTick();
-  while (HAL_GetTick() - start < timeout_ms)
+  while (HAL_GetTick() - start < timeout_ms) {
     if (prv_transfer_byte(p, 0xFF) == 0xFF) {
       return 0;
     }
-  
+  }
+
   LOG_DEBUG("sd_card: wait ready timed out\n");
   return 1; /* timed-out */
 }
@@ -131,7 +150,7 @@ StatusCode sd_card_init(SpiPort p) {
     prv_cs_high(p);
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  
+
   /* voltage check */
   if (prv_send_cmd(p, CMD8_SEND_IF_COND, 0x1AA, CRC_CMD8) != R1_IDLE) {
     prv_cs_high(p);
@@ -141,11 +160,10 @@ StatusCode sd_card_init(SpiPort p) {
   prv_txrx(p, r7, r7, 4); /* discard echo bytes */
 
   /* ACMD41 loop */
-  uint32_t start = HAL_GetTick(); 
+  uint32_t start = HAL_GetTick();
   do {
     prv_send_cmd(p, CMD55_APP_CMD, 0, 0xFF); /* Initiliazes in prep for ACMD command */
-    if (prv_send_cmd(p, ACMD41_SD_OP_COND, 1UL << 30, 0xFF) == 0) 
-      break;
+    if (prv_send_cmd(p, ACMD41_SD_OP_COND, 1UL << 30, 0xFF) == 0) break;
   } while (HAL_GetTick() - start < T_INIT_MS);
 
   if (HAL_GetTick() - start >= T_INIT_MS) {
@@ -155,7 +173,7 @@ StatusCode sd_card_init(SpiPort p) {
   }
 
   /* Dk what type of card it is -> So read OCR to check CCS */
-  if (prv_send_cmd(p, CMD58_READ_OCR, 0, 0xFF) != 0) { 
+  if (prv_send_cmd(p, CMD58_READ_OCR, 0, 0xFF) != 0) {
     prv_cs_high(p);
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -205,7 +223,7 @@ StatusCode sd_read_blocks(SpiPort p, uint8_t *dst, uint32_t lba, uint32_t number
 }
 
 StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t number_of_blocks) {
- uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
+  uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
 
   if (number_of_blocks == 1) {
     if (prv_send_cmd(p, CMD24_WRITE_SINGLE, arg, 0xFF) != 0) {
@@ -266,19 +284,18 @@ StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_is_initialized(SpiPort p)
-{
-    /* is the card still busy with a write? */
-    if (prv_wait_ready(p, 10) != 0) {          
-        return STATUS_CODE_RESOURCE_EXHAUSTED; /* let FatFs retry later */
-    }
+StatusCode sd_is_initialized(SpiPort p) {
+  /* is the card still busy with a write? */
+  if (prv_wait_ready(p, 10) != 0) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED; /* let FatFs retry later */
+  }
 
-    /* Ask the card for its status (CMD13 → R2) */
-    uint8_t r1 = prv_send_cmd(p, CMD13_SEND_STATUS, 0, 0xFF); 
-    uint8_t r2 = prv_xfer_byte(p, 0xFF);                     
+  /* Ask the card for its status (CMD13 → R2) */
+  uint8_t r1 = prv_send_cmd(p, CMD13_SEND_STATUS, 0, 0xFF);
+  uint8_t r2 = prv_transfer_byte(p, 0xFF);
 
-    prv_cs_high(p);                                          
-    prv_xfer_byte(p, 0xFF);                                 
+  prv_cs_high(p);
+  prv_xfer_byte(p, 0xFF);
 
-    return (r1 == 0 && r2 == 0) ? STATUS_CODE_OK : STATUS_CODE_INTERNAL_ERROR;
+  return (r1 == 0 && r2 == 0) ? STATUS_CODE_OK : STATUS_CODE_INTERNAL_ERROR;
 }
