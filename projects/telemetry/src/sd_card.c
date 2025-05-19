@@ -26,6 +26,7 @@
 enum {
   CMD0_GO_IDLE = 0,
   CMD8_SEND_IF_COND = 8,
+  CMD13_SEND_STATUS = 13,
   CMD16_SET_BLKLEN = 16,
   CMD17_READ_SINGLE = 17,
   CMD24_WRITE_SINGLE = 24,
@@ -168,28 +169,34 @@ StatusCode sd_card_init(SpiPort p) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_read_blocks(SpiPort p, uint8_t *dst, uint32_t lba, uint32_t count) {
-  while (count--) {
+StatusCode sd_read_blocks(SpiPort p, uint8_t *dst, uint32_t lba, uint32_t number_of_blocks) {
+  while (number_of_blocks--) {
     uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
+
+    /* Read Single Block */
     if (prv_send_cmd(p, CMD17_READ_SINGLE, arg, 0xFF) != 0) {
       prv_cs_high(p);
+      LOG_DEBUG("sd_card: Read Single Block (CMD17) failed\n");
       return STATUS_CODE_INTERNAL_ERROR;
     }
 
     /* wait start token */
-    uint32_t t0 = HAL_GetTick();
+    uint32_t start = HAL_GetTick();
+    /* Keeps checking if data is available to read */
     while (prv_transfer_byte(p, 0xFF) == 0xFF) {
-      if (HAL_GetTick() - t0 > T_RW_MS) {
+      if (HAL_GetTick() - start > T_RW_MS) {
         prv_cs_high(p);
+        LOG_DEBUG("sd_card: Read Single Block (CMD17) timed out\n");
         return STATUS_CODE_TIMEOUT;
       }
     }
 
-    /* read sector */
+    /* Read block!! */
     prv_txrx(p, dst, dst, SD_BLOCK_SIZE);
     uint8_t junk[2];
     prv_txrx(p, junk, junk, 2);
 
+    /* Update Buffer and block pointer */
     dst += SD_BLOCK_SIZE;
     lba++;
     prv_cs_high(p);
@@ -197,10 +204,10 @@ StatusCode sd_read_blocks(SpiPort p, uint8_t *dst, uint32_t lba, uint32_t count)
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t count) {
+StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t number_of_blocks) {
  uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
 
-  if (count == 1) {
+  if (number_of_blocks == 1) {
     if (prv_send_cmd(p, CMD24_WRITE_SINGLE, arg, 0xFF) != 0) {
       prv_cs_high(p);
       return STATUS_CODE_INTERNAL_ERROR;
@@ -224,14 +231,14 @@ StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t
 
   /* multi-block */
   prv_send_cmd(p, CMD55_APP_CMD, 0, 0xFF);
-  prv_send_cmd(p, ACMD23_PRE_ERASE, count, 0xFF);
+  prv_send_cmd(p, ACMD23_PRE_ERASE, number_of_blocks, 0xFF);
 
   if (prv_send_cmd(p, CMD25_WRITE_MULTI, arg, 0xFF) != 0) {
     prv_cs_high(p);
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  while (count--) {
+  while (number_of_blocks--) {
     prv_transfer_byte(p, SD_TOKEN_MULTI_WRITE);
     prv_txrx(p, (uint8_t *)src, (uint8_t *)src, SD_BLOCK_SIZE);
     uint8_t crc[2] = { 0xFF, 0xFF };
@@ -259,6 +266,19 @@ StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_is_initialized(SpiPort p) {
-  return STATUS_CODE_UNIMPLEMENTED;
+StatusCode sd_is_initialized(SpiPort p)
+{
+    /* is the card still busy with a write? */
+    if (prv_wait_ready(p, 10) != 0) {          
+        return STATUS_CODE_RESOURCE_EXHAUSTED; /* let FatFs retry later */
+    }
+
+    /* Ask the card for its status (CMD13 → R2) */
+    uint8_t r1 = prv_send_cmd(p, CMD13_SEND_STATUS, 0, 0xFF); 
+    uint8_t r2 = prv_xfer_byte(p, 0xFF);                     
+
+    prv_cs_high(p);                                          
+    prv_xfer_byte(p, 0xFF);                                 
+
+    return (r1 == 0 && r2 == 0) ? STATUS_CODE_OK : STATUS_CODE_INTERNAL_ERROR;
 }
