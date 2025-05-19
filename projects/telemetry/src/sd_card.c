@@ -78,6 +78,8 @@ static uint32_t prv_wait_ready(SpiPort p, uint32_t timeout_ms) {
     if (prv_transfer_byte(p, 0xFF) == 0xFF) {
       return 0;
     }
+  
+  LOG_DEBUG("sd_card: wait ready timed out\n");
   return 1; /* timed-out */
 }
 
@@ -103,6 +105,8 @@ static uint8_t prv_send_cmd(SpiPort p, uint8_t cmd, uint32_t arg, uint8_t crc) {
     uint8_t r = prv_transfer_byte(p, 0xFF);
     if (!(r & 0x80)) return r;
   }
+
+  LOG_DEBUG("sd_card: no response to CMD%d\n", cmd);
   return 0xFF; /* no valid response */
 }
 
@@ -136,24 +140,27 @@ StatusCode sd_card_init(SpiPort p) {
   prv_txrx(p, r7, r7, 4); /* discard echo bytes */
 
   /* ACMD41 loop */
-  uint32_t start = HAL_GetTick();
+  uint32_t start = HAL_GetTick(); 
   do {
-    prv_send_cmd(p, CMD55_APP_CMD, 0, 0xFF);
-    if (prv_send_cmd(p, ACMD41_SD_OP_COND, 1UL << 30, 0xFF) == 0) break;
+    prv_send_cmd(p, CMD55_APP_CMD, 0, 0xFF); /* Initiliazes in prep for ACMD command */
+    if (prv_send_cmd(p, ACMD41_SD_OP_COND, 1UL << 30, 0xFF) == 0) 
+      break;
   } while (HAL_GetTick() - start < T_INIT_MS);
+
   if (HAL_GetTick() - start >= T_INIT_MS) {
     prv_cs_high(p);
+    LOG_DEBUG("sd_card: ACMD41 timed out\n");
     return STATUS_CODE_TIMEOUT;
   }
 
-  /* read OCR */
-  if (prv_send_cmd(p, CMD58_READ_OCR, 0, 0xFF) != 0) {
+  /* Dk what type of card it is -> So read OCR to check CCS */
+  if (prv_send_cmd(p, CMD58_READ_OCR, 0, 0xFF) != 0) { 
     prv_cs_high(p);
     return STATUS_CODE_INTERNAL_ERROR;
   }
   uint8_t ocr[4];
   prv_txrx(p, ocr, ocr, 4);
-  sdhc = (ocr[0] & 0x40);
+  sdhc = (ocr[0] & 0x40); /* Bit 30 has CCS flag */
 
   prv_cs_high(p);
 
@@ -162,11 +169,94 @@ StatusCode sd_card_init(SpiPort p) {
 }
 
 StatusCode sd_read_blocks(SpiPort p, uint8_t *dst, uint32_t lba, uint32_t count) {
-  return STATUS_CODE_UNIMPLEMENTED;
+  while (count--) {
+    uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
+    if (prv_send_cmd(p, CMD17_READ_SINGLE, arg, 0xFF) != 0) {
+      prv_cs_high(p);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+
+    /* wait start token */
+    uint32_t t0 = HAL_GetTick();
+    while (prv_transfer_byte(p, 0xFF) == 0xFF) {
+      if (HAL_GetTick() - t0 > T_RW_MS) {
+        prv_cs_high(p);
+        return STATUS_CODE_TIMEOUT;
+      }
+    }
+
+    /* read sector */
+    prv_txrx(p, dst, dst, SD_BLOCK_SIZE);
+    uint8_t junk[2];
+    prv_txrx(p, junk, junk, 2);
+
+    dst += SD_BLOCK_SIZE;
+    lba++;
+    prv_cs_high(p);
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t count) {
-  return STATUS_CODE_UNIMPLEMENTED;
+ uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
+
+  if (count == 1) {
+    if (prv_send_cmd(p, CMD24_WRITE_SINGLE, arg, 0xFF) != 0) {
+      prv_cs_high(p);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+    prv_transfer_byte(p, SD_TOKEN_START_BLOCK);
+    prv_txrx(p, (uint8_t *)src, (uint8_t *)src, SD_BLOCK_SIZE);
+    uint8_t crc[2] = { 0xFF, 0xFF };
+    prv_txrx(p, crc, crc, 2);
+
+    if ((prv_transfer_byte(p, 0xFF) & 0x1F) != DATA_ACCEPTED) {
+      prv_cs_high(p);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+    if (prv_wait_ready(p, T_RW_MS)) {
+      prv_cs_high(p);
+      return STATUS_CODE_TIMEOUT;
+    }
+    prv_cs_high(p);
+    return STATUS_CODE_OK;
+  }
+
+  /* multi-block */
+  prv_send_cmd(p, CMD55_APP_CMD, 0, 0xFF);
+  prv_send_cmd(p, ACMD23_PRE_ERASE, count, 0xFF);
+
+  if (prv_send_cmd(p, CMD25_WRITE_MULTI, arg, 0xFF) != 0) {
+    prv_cs_high(p);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  while (count--) {
+    prv_transfer_byte(p, SD_TOKEN_MULTI_WRITE);
+    prv_txrx(p, (uint8_t *)src, (uint8_t *)src, SD_BLOCK_SIZE);
+    uint8_t crc[2] = { 0xFF, 0xFF };
+    prv_txrx(p, crc, crc, 2);
+
+    if ((prv_transfer_byte(p, 0xFF) & 0x1F) != DATA_ACCEPTED) {
+      prv_cs_high(p);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
+    if (prv_wait_ready(p, T_RW_MS)) {
+      prv_cs_high(p);
+      return STATUS_CODE_TIMEOUT;
+    }
+
+    src += SD_BLOCK_SIZE;
+    lba++;
+  }
+
+  prv_transfer_byte(p, SD_TOKEN_STOP_TRAN);
+  if (prv_wait_ready(p, T_RW_MS)) {
+    prv_cs_high(p);
+    return STATUS_CODE_TIMEOUT;
+  }
+  prv_cs_high(p);
+  return STATUS_CODE_OK;
 }
 
 StatusCode sd_is_initialized(SpiPort p) {
