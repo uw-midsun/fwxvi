@@ -18,7 +18,6 @@
 #include "fota_flash.h"
 #include "fota_datagram.h"
 #include "fota_error.h"
-#include "fota_dfu_mcu.h"
 
 /**
  * @defgroup FOTA
@@ -68,9 +67,6 @@ typedef struct {
     /// @brief Size of application bin being flashed
     uint32_t binary_size;
 
-    /// @brief CRC check for validation of packet. validated after / before writing to flash
-    uint32_t packet_crc32;
-
     /// @brief Validation of sequencing of packets. Checked when sequencing message is recieved
     uint16_t expected_sequence_number;
 
@@ -83,13 +79,13 @@ typedef struct {
 
 /// @brief Initializes DFU
 /// @return 
-DFU_ERRORS dfu_init(void);
+FotaError dfu_init(void);
 
 /// @brief Finite State Machine for DFU
 /// @param new_state next state to be processed
 /// @return error code
-DFU_ERRORS dfu_run(DFUStates new_state);
+FotaError dfu_run(DFUStates new_state);
 
 /// @brief jumps to application layer mentioned in ld script
 /// @return error code
-DFU_ERRORS dfu_jump_app(void); 
+FotaError dfu_jump_app(void); 
