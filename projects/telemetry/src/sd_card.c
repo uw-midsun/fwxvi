@@ -1,14 +1,15 @@
 #include "sd_card.h"
 
 #include <string.h>
+#include <stdint.h>
 
 #include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "spi.h"
+#include "stm32l4xx_hal_spi.h"
 
-/*--------------------------------------------------------------------------*/
-/*  Constants & macros                                                      */
+/*  Constant + Macros
+--------------------------------------------------------------------------*/
 
 #define SD_BLOCK_SIZE 512U
 
@@ -42,8 +43,46 @@ enum {
   ACMD41_SD_OP_COND = 41
 };
 
-/*--------------------------------------------------------------------------*/
-/*  Local helpers                                                           */
+/*  Local Helpers
+--------------------------------------------------------------------------*/
+
+/* TEMPORARY FIX ONCE HARDWARE IS FINALIZED*/
+SPI_HandleTypeDef hspi1;
+
+/* If SPI2 and SPI3 are used add defintions similar to SPI1 */
+SPI_HandleTypeDef hspi2 __attribute__((alias("hspi1")));
+SPI_HandleTypeDef hspi3 __attribute__((alias("hspi1")));
+
+/* Placeholder of random defs, fix when actual hardware */
+void MX_SPI1_Init(void)
+{
+    __HAL_RCC_SPI1_CLK_ENABLE();
+    hspi1.Instance               = SPI1;
+    hspi1.Init.Mode              = SPI_MODE_MASTER;
+    hspi1.Init.Direction         = SPI_DIRECTION_2LINES;
+    hspi1.Init.DataSize          = SPI_DATASIZE_8BIT;
+    hspi1.Init.CLKPolarity       = SPI_POLARITY_HIGH;  
+    hspi1.Init.CLKPhase          = SPI_PHASE_2EDGE;    
+    hspi1.Init.NSS               = SPI_NSS_SOFT;
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    hspi1.Init.FirstBit          = SPI_FIRSTBIT_MSB;
+    HAL_SPI_Init(&hspi1);
+}
+
+
+void spi_exchange(SpiPort spi, const uint8_t *tx_buf, uint16_t tx_len, uint8_t *rx_buf, uint16_t rx_len) {
+  /* For SPI, tx_len and rx_len are usually the same; use the shorter one. */
+  uint16_t len = (tx_len) ? tx_len : rx_len;
+
+  static const uint8_t ff = 0xFF;
+  const uint8_t *tx = tx_buf ? tx_buf : &ff;
+
+  SPI_HandleTypeDef *h =
+      (spi == SPI_PORT_1) ? &hspi1 :
+      (spi == SPI_PORT_2) ? &hspi2 : &hspi3;
+
+  HAL_SPI_TransmitReceive(h, (uint8_t *)tx, rx_buf, n, HAL_MAX_DELAY);
+}
 
 /* May Change, based on spi.h implementation */
 static inline void prv_cs_low(SpiPort p) {
@@ -63,18 +102,18 @@ static inline void prv_cs_high(SpiPort p) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
-/* Wrapper around spi_exchange */
+/* Wrapper around HAL_SPI_TransmitReceive */
 static void prv_txrx(SpiPort spi, uint8_t *tx, /* may be NULL */
                      uint8_t *rx, uint16_t len) {
   /* Sending + receive Data */
   if (tx) {
-    spi_exchange(spi, tx, len, rx, len);
-  } 
+    prv_spi_exchange(spi, tx, len, rx, len);
+  }
   /* Reading Data */
   else {
     static uint8_t ff = 0xFF;
     for (uint16_t i = 0; i < len; i++) {
-      spi_exchange(spi, &ff, 1, &rx[i], 1); /* send 0xFF, read 1 */
+      prv_spi_exchange(spi, &ff, 1, &rx[i], 1); /* send 0xFF, read 1 */
     }
   }
 }
@@ -130,13 +169,10 @@ static uint8_t prv_send_cmd(SpiPort p, uint8_t cmd, uint32_t arg, uint8_t crc) {
   return 0xFF; /* no valid response */
 }
 
-/*--------------------------------------------------------------------------*/
-/*  Global state                                                             */
-
 static bool sdhc = false;
 
-/*--------------------------------------------------------------------------*/
-/*  Public API                                                               */
+/*  Public API
+--------------------------------------------------------------------------*/
 
 StatusCode sd_card_init(SpiPort p) {
   /* 80 (8 * 10) dummy clocks with CS high to 'wake' up card */
@@ -285,7 +321,7 @@ StatusCode sd_write_blocks(SpiPort p, const uint8_t *src, uint32_t lba, uint32_t
 }
 
 StatusCode sd_is_initialized(SpiPort p) {
-  /* is the card still busy with a write? */
+  /* Is the card still busy with a write? */
   if (prv_wait_ready(p, 10) != 0) {
     return STATUS_CODE_RESOURCE_EXHAUSTED; /* let FatFs retry later */
   }
