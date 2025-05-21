@@ -42,6 +42,52 @@ FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buf
 }
 
 FotaError packet_manager_process(PacketManager *manager) {
+  if (manager == NULL) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
+
+  while(!network_buffer_empty(&manager->network_buffer)) {
+    uint8_t byte;
+    FotaError err = network_buffer_read(&manager->network_buffer, &byte);
+    if (err != FOTA_ERROR_SUCCESS) {
+      return err;
+    }
+
+    switch (manager->rx_state) {
+      case PKT_STATE_WAITING_SOF:
+        // check if SOF is byte
+        if (byte == FOTA_PACKET_SOF) {
+          manager->rx_packet_buffer[0] = byte;
+          manager->bytes_received = 1;
+          manager->rx_state = PKT_STATE_READING_HEADER;
+        }
+        break;
+
+      case PKT_STATE_READING_HEADER:
+        manager->bytes_received++;
+        manager->rx_packet_buffer[manager->bytes_received] = byte;
+        manager->rx_state = PKT_STATE_READING_PAYLOAD;
+        break;
+
+      case PKT_STATE_READING_PAYLOAD:
+        manager->bytes_received++;
+        manager->rx_packet_buffer[manager->bytes_received] = byte;
+
+        if (manager->bytes_received == 258) {
+          manager->rx_state = PKT_STATE_READING_EOF;
+          
+        }
+        break;
+      
+      default:
+        // reset
+        manager->rx_state = PKT_STATE_WAITING_SOF;
+        manager->bytes_received = 0;
+        break;
+    }
+    
+
+  }
 
 
   return FOTA_ERROR_SUCCESS;

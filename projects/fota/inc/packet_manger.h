@@ -32,7 +32,7 @@
  */
 typedef enum {
   PKT_STATE_WAITING_SOF,     /**< Waiting for start of frame */
-  PKT_STATE_READING_HwrEADER,  /**< Reading packet header */
+  PKT_STATE_READING_HEADER,  /**< Reading packet header */
   PKT_STATE_READING_PAYLOAD, /**< Reading packet payload */
   PKT_STATE_READING_CRC,     /**< Reading CRC */
   PKT_STATE_READING_EOF      /**< Reading end of frame */
