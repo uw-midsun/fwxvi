@@ -16,6 +16,7 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
+#include "pedal_calib.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -30,7 +31,8 @@ static GpioAddress throttle = ADC_HALL_SENSOR;
 // TODO: Implement the calibrate file
 static PedalCalibBlob *s_calib_blob;
 
-// TODO: Put these in a PedalStorage Struct that also stores the calibration data.
+// TODO: Put these in a PedalStorage Struct that also stores the calibration
+// data.
 static float prev_output = 0;
 static float output = 0;
 
@@ -38,12 +40,16 @@ static void s_read_throttle_data(uint32_t *reading) {
   volatile uint16_t adc_reading = s_calib_blob->throttle_calib.lower_value;
   // adc_read_raw(&throttle, &adc_reading);
 
-  // Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
-  // to get percentage press. Brake is now just a GPIO. Negatives and > 100 values will be
-  // capped.
-  // In this case, the values are mapped to 0.2 to 1
+  // Convert ADC Reading to readable voltage by normalizing with calibration
+  // data and dividing to get percentage press. Brake is now just a GPIO.
+  // Negatives and > 100 values will be capped. In this case, the values are
+  // mapped to 0.2 to 1
   volatile float calculated_reading =
-      ((((float)adc_reading - (float)s_calib_blob->throttle_calib.lower_value) / ((float)s_calib_blob->throttle_calib.upper_value - (float)s_calib_blob->throttle_calib.lower_value)) * 0.8 + 0.2);
+      ((((float)adc_reading - (float)s_calib_blob->throttle_calib.lower_value) /
+        ((float)s_calib_blob->throttle_calib.upper_value -
+         (float)s_calib_blob->throttle_calib.lower_value)) *
+           0.8 +
+       0.2);
 
   // Readings are inverted but we have to account for mapping from 0.2 to 1
   calculated_reading = 1.2 - calculated_reading;
