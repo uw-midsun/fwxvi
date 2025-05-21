@@ -24,8 +24,12 @@ FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buf
   manager->bytes_received = 0U;
   memset(manager->current_packet, 0U, sizeof(FotaPacket));
   
-  for (uint8_t i = 0; i < sizeof(manager->packet_buffer); i++) {
-    manager->packet_buffer[i] = 0;
+  for (uint8_t i = 0; i < sizeof(manager->rx_packet_buffer); i++) {
+    manager->rx_packet_buffer[i] = 0;
+  }
+
+  for (uint8_t i = 0; i < sizeof(manager->tx_packet_buffer); i++) {
+    manager->tx_packet_buffer[i] = 0;
   }
 
   for (uint8_t i = 0; i < FOTA_MAX_ACTIVE_DATAGRAMS; i++) {
@@ -52,13 +56,25 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
   uint16_t packet_num = 0;
 
   FotaError err = fota_datagram_to_packets(datagram, packets, &packet_num, FOTA_MAX_PACKETS_PER_DATAGRAM);
+  if (err != FOTA_ERROR_SUCCESS) {
+    return err;
+  }
 
   for (uint16_t i = 0; i < packet_num; i++) { 
-    // convert to bytes
-  
+    // fota serialize
+    uint8_t serialized_packet[FOTA_PACKET_MINIMUM_SIZE + FOTA_PACKET_PAYLOAD_SIZE];
+    uint32_t bytes_written = 0;
 
-    // TODO SEND DATA
-
+    err = fota_packet_serialize(&packets[i], serialized_packet, sizeof(serialized_packet), &bytes_written);
+    if (err != FOTA_ERROR_SUCCESS) {
+      return err;
+    }
+    
+    // network send
+    err = send_func((int8_t *)serialized_packet, bytes_written);
+    if (err != FOTA_ERROR_SUCCESS) {
+      return err;
+    }
   }
 
   return FOTA_ERROR_SUCCESS;
