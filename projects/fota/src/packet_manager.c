@@ -66,17 +66,110 @@ FotaError packet_manager_process(PacketManager *manager) {
       case PKT_STATE_READING_HEADER:
         manager->bytes_received++;
         manager->rx_packet_buffer[manager->bytes_received] = byte;
-        manager->rx_state = PKT_STATE_READING_PAYLOAD;
+        
+
+        // HEADER: SOF(1) + type(1) + datagram_id(4) + seq(1) + payload_len(2) = 9 bytes
+        if (manager->bytes_received == 9) {
+          // check payload length
+          uint16_t payload_len = manager->rx_packet_buffer[7] | (manager->rx_packet_buffer[8] << 8);
+          if (payload_len > FOTA_PACKET_PAYLOAD_SIZE) {
+            manager->rx_state = PKT_STATE_WAITING_SOF;
+            manager->bytes_received = 0;
+            break;
+          }
+
+          manager->current_packet.payload_length = payload_len;
+          manager->rx_state = PKT_STATE_READING_PAYLOAD;
+        }
         break;
 
       case PKT_STATE_READING_PAYLOAD:
         manager->bytes_received++;
         manager->rx_packet_buffer[manager->bytes_received] = byte;
 
-        if (manager->bytes_received == 258) {
-          manager->rx_state = PKT_STATE_READING_EOF;
-          
+        if (manager->bytes_received == 9 + manager->current_packet.payload_length) {
+          manager->rx_state = PKT_STATE_READING_CRC;
         }
+        break;
+
+      case PKT_STATE_READING_CRC:
+        manager->bytes_received++;
+        manager->rx_packet_buffer[manager->bytes_received] = byte;
+
+        if (manager->bytes_received == 9 + manager->current_packet.payload_length + 4) {
+          manager->rx_state = PKT_STATE_READING_EOF;
+        }
+        break;
+
+      case PKT_STATE_READING_EOF:
+        if (byte != FOTA_PACKET_EOF) {
+          manager->rx_state = PKT_STATE_WAITING_SOF;
+          manager->bytes_received = 0;
+          break;
+        }
+
+        manager->bytes_received++;
+        manager->rx_packet_buffer[manager->bytes_received] = byte;
+
+        // fota deserialize
+        FotaError err = fota_packet_deserialize(&manager->current_packet,
+                                                manager->rx_packet_buffer,
+                                                manager->bytes_received);
+        if (err != FOTA_ERROR_SUCCESS) {
+          manager->rx_state = PKT_STATE_WAITING_SOF;
+          manager->bytes_received = 0;
+          break;
+        }
+
+        // verify crc
+        err = fota_verify_packet_encryption(&manager->current_packet);
+        if (err != FOTA_ERROR_SUCCESS) {
+          manager->rx_state = PKT_STATE_WAITING_SOF;
+          manager->bytes_received = 0;
+          break;
+        }
+
+        FotaDatagram* datagram = NULL;
+        err = packet_manager_get_datagram(manager, manager->current_packet.datagram_id, &datagram);
+        if (err == FOTA_ERROR_NO_DATAGRAM_FOUND) {
+          // what should the datagram type be, defaulted to FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK
+          err = packet_manager_create_datagram(manager, FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK, NULL, 0, &datagram);
+
+          if (err != FOTA_ERROR_SUCCESS) {
+            manager->rx_state = PKT_STATE_WAITING_SOF;
+            manager->bytes_received = 0;
+            break;
+          }
+        }
+        
+        // route packet
+        if (manager->current_packet.packet_type == FOTA_PACKET_TYPE_HEADER) {
+          err = fota_datagram_process_header_packet(datagram, &manager->current_packet);
+        } else if (manager->current_packet.packet_type == FOTA_PACKET_TYPE_DATA) {
+          err = fota_datagram_process_data_packet(datagram, &manager->current_packet);
+        }
+        if (err != FOTA_ERROR_SUCCESS) {
+          manager->rx_state = PKT_STATE_WAITING_SOF;
+          manager->bytes_received = 0;
+          break;
+        }
+
+        
+        // check if datagram is full, invoke callback
+        if (fota_datagram_is_complete(datagram)) {
+          err = fota_datagram_verify(datagram);
+          if (err == FOTA_ERROR_SUCCESS && manager->datagram_complete_callback != NULL) {
+            manager->datagram_complete_callback(datagram);
+          }
+
+          packet_manager_free_datagram(manager, manager->current_packet.datagram_id);
+        }
+
+
+        
+        // reset
+        manager->rx_state = PKT_STATE_WAITING_SOF;
+        manager->bytes_received = 0;
         break;
       
       default:
