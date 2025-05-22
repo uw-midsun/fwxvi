@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <string.h>
 
 /* Inter-component Headers */
 
@@ -22,7 +23,7 @@ FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buf
   manager->network_buffer = *network_buffer;
   manager->rx_state = PKT_STATE_WAITING_SOF;
   manager->bytes_received = 0U;
-  memset(manager->current_packet, 0U, sizeof(FotaPacket));
+  memset(&manager->current_packet, 0U, sizeof(FotaPacket));
 
   for (uint8_t i = 0; i < sizeof(manager->rx_packet_buffer); i++) {
     manager->rx_packet_buffer[i] = 0;
