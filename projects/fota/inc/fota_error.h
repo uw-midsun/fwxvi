@@ -44,6 +44,7 @@ typedef enum {
 
   //DFU errors
   FOTA_ERROR_BOOTLOADER_SUCCESS,
+  FOTA_ERROR_BOOTLOADER_INVALID_STATE,
 
 
 } FotaError;

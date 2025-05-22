@@ -74,8 +74,8 @@ typedef struct {
     /// @brief Increment when data message is recieved, 8 bytes at a time (message length)
     uint16_t buffer_index;
 
-    /// @brief States of the DFU state machine
-    DFUStates states;
+    /// @brief State of the DFU state machine
+    DFUStates curr_state;
 
     /// @brief Packet manager context structure for interfacing with processed packets.
     PacketManager *packet_manager;
