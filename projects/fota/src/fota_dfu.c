@@ -39,23 +39,69 @@ FotaError fota_dfu_jump_app() {
 }
 
 
-FotaError process_state(DFUStates state) {
+FotaError process_new_state(DFUStates new_state) {
     if (data.curr_state == DFU_UNINITALIZED);
 
-    if (state == data.curr_state)
+    if (new_state == data.curr_state)
         return FOTA_ERROR_BOOTLOADER_SUCCESS;
 
-    switch(state) {
-        case (DFU_UNINITALIZED):
-            return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+    switch(data.curr_state) {
 
+        case (DFU_UNINITALIZED):
+            if (new_state == DFU_IDLE) {
+                data.curr_state = DFU_IDLE;
+                return FOTA_ERROR_BOOTLOADER_SUCCESS;
+            } else {
+                data.curr_state = DFU_FAULT;
+                return FOTA_ERROR_INVALID_ARGS;
+            }
 
         case (DFU_IDLE):
-            return FOTA_ERROR_BOOTLOADER_SUCCESS;
-
+            if (new_state == DFU_START || new_state == DFU_JUMP_APP || 
+                new_state == DFU_FAULT) {
+                data.curr_state = new_state;
+                return FOTA_ERROR_BOOTLOADER_SUCCESS;
+            } else {
+                data.curr_state = DFU_FAULT;
+                return FOTA_ERROR_INVALID_ARGS;
+            }
+                
         case (DFU_START):
+            if (new_state == DFU_DATA_READY || new_state == DFU_JUMP_APP || 
+                new_state == DFU_FAULT) {
+                data.curr_state = new_state;
+                return FOTA_ERROR_BOOTLOADER_SUCCESS;
+            } else {
+                data.curr_state = DFU_FAULT;
+                return FOTA_ERROR_INVALID_ARGS;
+            }
+
+        case (DFU_DATA_READY):
+            // Should be able to go to all states
+            data.curr_state = new_state;
+
+        case (DFU_DATA_RECEIVE):
+            if (new_state == DFU_DATA_READY || new_state == DFU_START ||
+                 new_state == DFU_JUMP_APP || new_state == DFU_FAULT) {
+                data.curr_state = new_state;
+                return FOTA_ERROR_BOOTLOADER_SUCCESS;
+            } else {
+                data.curr_state = DFU_FAULT;
+                return FOTA_ERROR_INVALID_ARGS;
+            }
+
+        case (DFU_JUMP_APP):
+             if (new_state == DFU_FAULT) {
+                data.curr_state = new_state;
+                return FOTA_ERROR_BOOTLOADER_SUCCESS;
+            } else {
+                data.curr_state = DFU_FAULT;
+                return FOTA_ERROR_INVALID_ARGS;
+            }
+
+        default:
+            data.curr_state = DFU_FAULT;
+            return FOTA_ERROR_INVALID_ARGS;
             
     }
-
-
 }
