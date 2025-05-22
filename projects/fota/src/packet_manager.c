@@ -25,11 +25,11 @@ FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buf
   manager->bytes_received = 0U;
   memset(&manager->current_packet, 0U, sizeof(FotaPacket));
 
-  for (uint8_t i = 0; i < sizeof(manager->rx_packet_buffer); i++) {
+  for (uint64_t i = 0; i < sizeof(manager->rx_packet_buffer); i++) {
     manager->rx_packet_buffer[i] = 0;
   }
 
-  for (uint8_t i = 0; i < sizeof(manager->tx_packet_buffer); i++) {
+  for (uint64_t i = 0; i < sizeof(manager->tx_packet_buffer); i++) {
     manager->tx_packet_buffer[i] = 0;
   }
 
@@ -246,7 +246,7 @@ FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_
 
   for (uint8_t i = 0U; i < FOTA_MAX_ACTIVE_DATAGRAMS; i++) {
     if (manager->datagram_active[i] && manager->active_datagrams[i].header.datagram_id == datagram_id) {
-      datagram = &manager->active_datagrams[i];
+      *datagram = &manager->active_datagrams[i];
 
       return FOTA_ERROR_SUCCESS;
     }
