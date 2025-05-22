@@ -63,6 +63,17 @@ typedef enum {
 } FotaPacketType;
 
 /**
+ * @brief Structure representing the datagram header (In the payload)
+ */
+typedef struct {
+  FotaDatagramType type; /**< Type of datagram */
+  uint32_t datagram_id;  /**< Unique ID for this datagram */
+  uint32_t total_length; /**< Total length of datagram content */
+  uint16_t num_packets;  /**< Number of packets in this datagram */
+  uint32_t crc32;        /**< CRC of the entire datagram for verification */
+} FotaDatagramHeaderPacketPayload;
+
+/**
  * @brief   FOTA Packet structure
  */
 typedef struct {

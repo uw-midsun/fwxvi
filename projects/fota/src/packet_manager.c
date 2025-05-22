@@ -88,6 +88,7 @@ FotaError packet_manager_process(PacketManager *manager) {
         manager->rx_packet_buffer[manager->bytes_received] = byte;
 
         if (manager->bytes_received == 9 + manager->current_packet.payload_length) {
+          // TODO: Memzero remaining payload
           manager->rx_state = PKT_STATE_READING_CRC;
         }
         break;
@@ -133,7 +134,8 @@ FotaError packet_manager_process(PacketManager *manager) {
         err = packet_manager_get_datagram(manager, manager->current_packet.datagram_id, &datagram);
         if (err == FOTA_ERROR_NO_DATAGRAM_FOUND) {
           // what should the datagram type be, defaulted to FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK
-          err = packet_manager_create_datagram(manager, FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK, NULL, 0, &datagram);
+          // from header packet
+          // err = packet_manager_create_datagram(manager, , NULL, 0, &datagram);
 
           if (err != FOTA_ERROR_SUCCESS) {
             manager->rx_state = PKT_STATE_WAITING_SOF;

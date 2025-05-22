@@ -13,10 +13,24 @@
 
 /* Intra-component Headers */
 #include "fota_encryption.h"
+#include "packet_manger.h"
 #include "fota_error.h"
 
-FotaError fota_init() {
+static PacketManager packet_manager;
+
+static void datagram_complete_callback(FotaDatagram *datagram) {
+  // TODO handle callback
+}
+
+FotaError fota_init(NetworkBuffer *network_buffer) {
   fota_encryption_init();
 
+  
+  packet_manager_init(&packet_manager, network_buffer, datagram_complete_callback);
+
   return FOTA_ERROR_SUCCESS;
+}
+
+void fota_process(void) {
+  packet_manager_process(&packet_manager);
 }

@@ -16,6 +16,7 @@
 /* Intra-component Headers */
 #include "network.h"
 #include "network_buffer.h"
+#include "fota.h"
 
 int main() {
   static UartSettings uart2_settings = {
@@ -31,10 +32,14 @@ int main() {
   uint8_t rx_data[8];
   network_read(UART_PORT_2, rx_data, sizeof(rx_data));
 
+  fota_init(&network_buffer);
+
   while (true) {
     if (isTimeout(true)) {
       // tx timeout, rx timeout is built into function to return error if timeout
     }
+
+    fota_process();
   }
 
   return 0;

@@ -42,21 +42,10 @@ typedef enum {
 } FotaDatagramType;
 
 /**
- * @brief Structure representing the datagram header
- */
-typedef struct {
-  FotaDatagramType type; /**< Type of datagram */
-  uint32_t datagram_id;  /**< Unique ID for this datagram */
-  uint32_t total_length; /**< Total length of datagram content */
-  uint16_t num_packets;  /**< Number of packets in this datagram */
-  uint32_t crc32;        /**< CRC of the entire datagram for verification */
-} FotaDatagramHeader;
-
-/**
  * @brief   Structure representing datagram
  */
 typedef struct {
-  FotaDatagramHeader header;                           /**< Datagram header */
+  FotaDatagramHeaderPacketPayload header;              /**< Datagram header */
   uint8_t data[FOTA_MAX_DATAGRAM_SIZE];                /**< Datagram payload */
   bool packet_received[FOTA_MAX_PACKETS_PER_DATAGRAM]; /**< Bitmap for tracking which packets have been received */
   uint16_t packets_received;                           /**< Count of received packets */
