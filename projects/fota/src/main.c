@@ -14,9 +14,9 @@
 // #include "log.h"
 
 /* Intra-component Headers */
+#include "fota.h"
 #include "network.h"
 #include "network_buffer.h"
-#include "fota.h"
 
 int main() {
   static UartSettings uart2_settings = {

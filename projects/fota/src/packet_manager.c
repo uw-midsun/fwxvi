@@ -23,7 +23,7 @@ FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buf
   manager->rx_state = PKT_STATE_WAITING_SOF;
   manager->bytes_received = 0U;
   memset(manager->current_packet, 0U, sizeof(FotaPacket));
-  
+
   for (uint8_t i = 0; i < sizeof(manager->rx_packet_buffer); i++) {
     manager->rx_packet_buffer[i] = 0;
   }
@@ -46,7 +46,7 @@ FotaError packet_manager_process(PacketManager *manager) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  while(!network_buffer_empty(&manager->network_buffer)) {
+  while (!network_buffer_empty(&manager->network_buffer)) {
     uint8_t byte;
     FotaError err = network_buffer_read(&manager->network_buffer, &byte);
     if (err != FOTA_ERROR_SUCCESS) {
@@ -66,7 +66,6 @@ FotaError packet_manager_process(PacketManager *manager) {
       case PKT_STATE_READING_HEADER:
         manager->bytes_received++;
         manager->rx_packet_buffer[manager->bytes_received] = byte;
-        
 
         // HEADER: SOF(1) + type(1) + datagram_id(4) + seq(1) + payload_len(2) = 9 bytes
         if (manager->bytes_received == 9) {
@@ -113,9 +112,7 @@ FotaError packet_manager_process(PacketManager *manager) {
         manager->rx_packet_buffer[manager->bytes_received] = byte;
 
         // fota deserialize
-        FotaError err = fota_packet_deserialize(&manager->current_packet,
-                                                manager->rx_packet_buffer,
-                                                manager->bytes_received);
+        FotaError err = fota_packet_deserialize(&manager->current_packet, manager->rx_packet_buffer, manager->bytes_received);
         if (err != FOTA_ERROR_SUCCESS) {
           manager->rx_state = PKT_STATE_WAITING_SOF;
           manager->bytes_received = 0;
@@ -130,7 +127,7 @@ FotaError packet_manager_process(PacketManager *manager) {
           break;
         }
 
-        FotaDatagram* datagram = NULL;
+        FotaDatagram *datagram = NULL;
         err = packet_manager_get_datagram(manager, manager->current_packet.datagram_id, &datagram);
         if (err == FOTA_ERROR_NO_DATAGRAM_FOUND) {
           // what should the datagram type be, defaulted to FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK
@@ -143,7 +140,7 @@ FotaError packet_manager_process(PacketManager *manager) {
             break;
           }
         }
-        
+
         // route packet
         if (manager->current_packet.packet_type == FOTA_PACKET_TYPE_HEADER) {
           err = fota_datagram_process_header_packet(datagram, &manager->current_packet);
@@ -156,7 +153,6 @@ FotaError packet_manager_process(PacketManager *manager) {
           break;
         }
 
-        
         // check if datagram is full, invoke callback
         if (fota_datagram_is_complete(datagram)) {
           err = fota_datagram_verify(datagram);
@@ -167,23 +163,18 @@ FotaError packet_manager_process(PacketManager *manager) {
           packet_manager_free_datagram(manager, manager->current_packet.datagram_id);
         }
 
-
-        
         // reset
         manager->rx_state = PKT_STATE_WAITING_SOF;
         manager->bytes_received = 0;
         break;
-      
+
       default:
         // reset
         manager->rx_state = PKT_STATE_WAITING_SOF;
         manager->bytes_received = 0;
         break;
     }
-    
-
   }
-
 
   return FOTA_ERROR_SUCCESS;
 }
@@ -201,7 +192,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
     return err;
   }
 
-  for (uint16_t i = 0; i < packet_num; i++) { 
+  for (uint16_t i = 0; i < packet_num; i++) {
     // fota serialize
     uint8_t serialized_packet[FOTA_PACKET_MINIMUM_SIZE + FOTA_PACKET_PAYLOAD_SIZE];
     uint32_t bytes_written = 0;
@@ -210,7 +201,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
     if (err != FOTA_ERROR_SUCCESS) {
       return err;
     }
-    
+
     // network send
     err = send_func((int8_t *)serialized_packet, bytes_written);
     if (err != FOTA_ERROR_SUCCESS) {
@@ -240,10 +231,9 @@ FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramTyp
       manager->datagram_active[i] = true;
       datagram_id++;
 
-      return FOTA_ERROR_SUCCESS; // create a 1 datagram 
+      return FOTA_ERROR_SUCCESS;  // create a 1 datagram
     }
   }
-  
 
   return FOTA_ERROR_NO_MEMORY;
 }
@@ -254,12 +244,11 @@ FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_
   }
 
   for (uint8_t i = 0U; i < FOTA_MAX_ACTIVE_DATAGRAMS; i++) {
-    if (manager->datagram_active[i] 
-        && manager->active_datagrams[i].header.datagram_id == datagram_id) {
-          datagram = &manager->active_datagrams[i];
+    if (manager->datagram_active[i] && manager->active_datagrams[i].header.datagram_id == datagram_id) {
+      datagram = &manager->active_datagrams[i];
 
-          return FOTA_ERROR_SUCCESS;
-        }
+      return FOTA_ERROR_SUCCESS;
+    }
   }
 
   return FOTA_ERROR_NO_DATAGRAM_FOUND;
@@ -271,23 +260,21 @@ FotaError packet_manager_free_datagram(PacketManager *manager, uint32_t datagram
   }
 
   for (uint8_t i = 0U; i < FOTA_MAX_ACTIVE_DATAGRAMS; i++) {
-    if (manager->datagram_active[i]
-        && manager->active_datagrams[i].header.datagram_id == datagram_id) {
-          
-          manager->datagram_active[i] = false;
-          manager->active_datagrams[i].is_complete = false;
-          manager->active_datagrams[i].packets_received = 0U;
+    if (manager->datagram_active[i] && manager->active_datagrams[i].header.datagram_id == datagram_id) {
+      manager->datagram_active[i] = false;
+      manager->active_datagrams[i].is_complete = false;
+      manager->active_datagrams[i].packets_received = 0U;
 
-          for (uint32_t j = 0; j < FOTA_MAX_DATAGRAM_SIZE; j++) {
-            manager->active_datagrams[i].data[j] = 0U;
-          }
+      for (uint32_t j = 0; j < FOTA_MAX_DATAGRAM_SIZE; j++) {
+        manager->active_datagrams[i].data[j] = 0U;
+      }
 
-          for (uint32_t j = 0; j < FOTA_MAX_PACKETS_PER_DATAGRAM; j++) {
-            manager->active_datagrams[i].packet_received[j] = false;
-          }
+      for (uint32_t j = 0; j < FOTA_MAX_PACKETS_PER_DATAGRAM; j++) {
+        manager->active_datagrams[i].packet_received[j] = false;
+      }
 
-          return FOTA_ERROR_SUCCESS;
-        }
+      return FOTA_ERROR_SUCCESS;
+    }
   }
 
   return FOTA_ERROR_NO_DATAGRAM_FOUND;
