@@ -61,7 +61,8 @@ class FotaPacket():
 
         return packet
 
-
+    def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
+        return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
 
 
