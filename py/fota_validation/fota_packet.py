@@ -50,6 +50,21 @@ class FotaPacket():
         self.crc32_value = crc32.calculate(payload)
         self.eof = FotaPacket.EOF
 
+    def __repr__(self) -> str:
+        """
+        @brief 
+        """
+        return(
+            f"<FotaPacket "
+            f"SOF=0x{self.sof:02X}, "
+            f"Type=0x{self.packet_type:02X}, "
+            f"DatagramID=0x{self.datagram_id:08X}, "
+            f"Seq=0x{self.sequence_num:02X}, "
+            f"Len={self.payload_len}, "
+            f"CRC32=0x{self.crc32_value:08X}, "
+            f"EOF=0x{self.eof:02X}>"
+        )
+
     def pack(self) -> bytearray:
         """
         @brief Serialize packet values for transmission
