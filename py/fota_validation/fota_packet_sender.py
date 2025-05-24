@@ -28,9 +28,22 @@ class FotaPacketSender():
 
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
-    def send_fota_packet(fota_packet: FotaPacket):
+    def send_fota_packet(self, fota_packet: FotaPacket):
         """
         @brief Transmit FotaPacket to XBee
         """
+
+        try:
+            packet_bytes = fota_packet.pack()
+            self.serial_port.write(packet_bytes)
+            self.serial_port.flush()  # Ensure immediate transmission
+
+            print(f"Sent FOTA packet: {fota_packet}")
+
+        except serial.SerialException as e:
+            print(f"Serial error during transmission: {e}")
+        
+        except Exception as e:
+            print(f"Unexpected error during transmission: {e}")
 
         pass
