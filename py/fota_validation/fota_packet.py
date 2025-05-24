@@ -6,7 +6,38 @@
 #  @ingroup fota_validation
 
 import serial
+from crc32 import CRC32
+
+# Frame markers
+SOF = 0xAA
+EOF = 0xBB
+
+# Endianness for byte conversion
+BYTEORDER = 'little'  # TODO: Assumed from can_datagram, so confirm
+
+# Size limit for payload
+MAX_PAYLOAD_BYTES = 64  # TODO: Confirm
+
+crc32 = CRC32(STANDARD_CRC32_POLY)
 
 class FotaPacket():
-    pass
+    """
+    @brief Defines serialized format of FOTA packet 
+    """
+
+    def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
+        """Initialize FotaPacket class"""
+        self.sof = FotaPacket.SOF
+        self.packet_type = packet_type
+        self.datagram_id = datagram_id
+        self.sequence_num = sequence_num
+        self.payload = payload
+        self.payload_len = len(payload)
+        self.crc32 = crc32.calculate(payload)
+        self.eof = FotaPacket.EOF
+
+    
+
+
+
 
