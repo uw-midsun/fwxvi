@@ -36,7 +36,19 @@ class FotaPacket():
         self.crc32 = crc32.calculate(payload)
         self.eof = FotaPacket.EOF
 
-    
+    def serialize(self) -> bytearray:
+        packet = bytearray()
+
+        packet.append(self.sof)
+        packet.append(self.packet_type)
+        packet += self.datagram_id.to_bytes(4, byteorder='little')  # Assumed little endian from can_datagram
+        packet.append(self.sequence_num)
+        packet += self.payload_len.to_bytes(2, byteorder='little')
+        packet += self.payload
+        packet += self.crc32.to_bytes(4, byteorder='little')
+        packet.append(self.eof)
+
+        return packet
 
 
 
