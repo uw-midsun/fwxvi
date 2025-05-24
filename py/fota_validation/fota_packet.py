@@ -1,4 +1,4 @@
-## @file    fota_packet_sender.py
+## @file    fota_packet.py
 #  @date    2025-05-14
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Packet class for fota_packet_sender
@@ -6,7 +6,10 @@
 #  @ingroup fota_validation
 
 import serial
-from crc32 import CRC32
+from crc32 import CRC32  # TODO: Resolve import error
+
+# TODO: Stolen from can_datagram/bootloader_id, so check for correct code
+STANDARD_CRC32_POLY = 0x04C11DB7
 
 # Endianness for byte conversion
 BYTE_ORDER = 'little'  # TODO: Assumed from can_datagram, so confirm
@@ -22,20 +25,22 @@ class FotaPacket():
     MAX_PAYLOAD_BYTES = 64  # TODO: Placeholder, so confirm
 
     def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
-        """Initialize FotaPacket class"""
+        """
+        @brief Initialize FotaPacket class
+        """
 
         # Validate byte sizes
         if not (0 <= packet_type <= 0xFF):
             raise ValueError("packet_type must be a single byte")
         
-        if not (0 <= sequence_num <= 0xFF):
-            raise ValueError("sequence_num must be a single byte")
+        if not (0 <= sequence_num <= 0x07):
+            raise ValueError("sequence_num must be 3 bits")
         
         if not (0 <= datagram_id <= 0xFFFFFFFF):
             raise ValueError("datagram_id must fit in 4 bytes")
         
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
-            raise ValueError("payload too long")
+            raise ValueError("payload exceeds user-defined limit")
 
         self.sof = FotaPacket.SOF
         self.packet_type = packet_type
@@ -47,7 +52,9 @@ class FotaPacket():
         self.eof = FotaPacket.EOF
 
     def pack(self) -> bytearray:
-        """Serialize packet values"""
+        """
+        @brief Serialize packet values for transmission
+        """
         packet = bytearray()
 
         packet.append(self.sof)
@@ -61,7 +68,9 @@ class FotaPacket():
 
         return packet
 
+    # TODO: Move to fota_packet_sender.py
     def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
+        """Factory function for fota_packet_sender.py"""
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
 
