@@ -5,7 +5,6 @@
 #
 #  @ingroup fota_validation
 
-import serial
 from crc32 import CRC32  # TODO: Resolve import error
 
 # TODO: Stolen from can_datagram/bootloader_id, so check for correct code
@@ -18,7 +17,7 @@ crc32 = CRC32(STANDARD_CRC32_POLY)
 
 class FotaPacket():
     """
-    @brief Defines serialized format of FOTA packet 
+    @brief Defines serialized format of a FOTA packet 
     """
     SOF = 0xAA
     EOF = 0xBB
@@ -26,7 +25,7 @@ class FotaPacket():
 
     def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
         """
-        @brief Initialize FotaPacket class
+        @brief Initialize FotaPacket object
         """
 
         # Validate byte sizes
@@ -67,11 +66,6 @@ class FotaPacket():
         packet.append(self.eof)
 
         return packet
-
-    # TODO: Move to fota_packet_sender.py
-    def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
-        """Factory function for fota_packet_sender.py"""
-        return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
 
 

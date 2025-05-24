@@ -10,8 +10,19 @@ import serial
 from fota_packet import FotaPacket
 
 class FotaPacketSender():
-    def create_fota_packet(datagram_id, packet_type, sequence_num, payload):
-        pass
+    """
+    @brief Accessed by DatagramSender to transmit FotaPackets via XBees
+    """
+
+    def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
+        """
+        @brief Factory for FotaPacket objects
+        """
+
+        return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
     def send_fota_packet(fota_packet: FotaPacket):
+        """
+        @brief Transmit FotaPacket to XBee
+        """
         pass
