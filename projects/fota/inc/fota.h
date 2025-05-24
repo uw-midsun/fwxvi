@@ -23,7 +23,7 @@
  * @{
  */
 
-FotaError fota_init(NetworkBuffer *network_buffer);
+FotaError fota_init();
 
 void fota_process(void);
 

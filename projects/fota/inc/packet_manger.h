@@ -67,11 +67,11 @@ typedef struct {
 /**
  * @brief   Initialize the packet manager
  * @param   manager Pointer to packet manager structure
- * @param   network_buffer Pointer to network buffer to use
+ * @param   uart2_settings Pointer to the UART settings needed for the network buffer
  * @param   callback Callback function for completed datagrams (can be NULL)
  * @return  Error code
  */
-FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buffer, void (*callback)(FotaDatagram *datagram));
+FotaError packet_manager_init(PacketManager *manager, UartSettings *uart2_settings, void (*callback)(FotaDatagram *datagram));
 
 /**
  * @brief   Process received data from the network buffer

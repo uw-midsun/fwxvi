@@ -13,14 +13,25 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "network.h"
+#include "network_buffer.h"
 #include "packet_manger.h"
 
-FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buffer, void (*callback)(FotaDatagram *datagram)) {
-  if (manager == NULL || network_buffer == NULL) {
+FotaError packet_manager_init(PacketManager *manager, UartSettings *uart2_settings, void (*callback)(FotaDatagram *datagram)) {
+  if (manager == NULL || uart2_settings == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  manager->network_buffer = *network_buffer;
+  NetworkBuffer network_buffer;
+  network_init(UART_PORT_2, uart2_settings, &network_buffer);
+
+  uint8_t tx_buffer[] = "Hello, World!";
+  network_tx(UART_PORT_2, tx_buffer, sizeof(tx_buffer));
+
+  uint8_t rx_data[8];
+  network_read(UART_PORT_2, rx_data, sizeof(rx_data));
+
+  manager->network_buffer = network_buffer;
   manager->rx_state = PKT_STATE_WAITING_SOF;
   manager->bytes_received = 0U;
   memset(&manager->current_packet, 0U, sizeof(FotaPacket));
