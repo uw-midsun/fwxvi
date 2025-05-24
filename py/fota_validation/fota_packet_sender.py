@@ -14,6 +14,13 @@ class FotaPacketSender():
     @brief Accessed by DatagramSender to transmit FotaPackets via XBees
     """
 
+    def __init__(self, port: str, baudrate: int = 115200, timeout: float = 1):
+        """
+        @brief Initialize FotaPacketSender with a serial connection
+        """
+
+        self.serial_port = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
+
     def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
         """
         @brief Factory for FotaPacket objects
@@ -25,4 +32,5 @@ class FotaPacketSender():
         """
         @brief Transmit FotaPacket to XBee
         """
+
         pass
