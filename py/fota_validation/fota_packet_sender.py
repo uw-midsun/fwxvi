@@ -14,12 +14,12 @@ class FotaPacketSender():
     @brief Accessed by DatagramSender to transmit FotaPackets via XBees
     """
 
-    def __init__(self, port: str, baudrate: int = 115200, timeout: float = 1):
+    def __init__(self, port: str, baudrate: int = 115200, timeout: float = 1) -> None:
         """
         @brief Initialize FotaPacketSender with a serial connection
         """
 
-        self.serial_port = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
+        self.ser = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
 
     def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
         """
@@ -28,15 +28,15 @@ class FotaPacketSender():
 
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
-    def send_fota_packet(self, fota_packet: FotaPacket):
+    def send_fota_packet(self, fota_packet: FotaPacket) -> None:
         """
         @brief Transmit FotaPacket to XBee
         """
 
         try:
             packet_bytes = fota_packet.pack()
-            self.serial_port.write(packet_bytes)
-            self.serial_port.flush()  # Ensure immediate transmission
+            self.ser.write(packet_bytes)
+            self.ser.flush()  # Ensure immediate transmission
 
             print(f"Sent FOTA packet: {fota_packet}")
 
@@ -46,4 +46,11 @@ class FotaPacketSender():
         except Exception as e:
             print(f"Unexpected error during transmission: {e}")
 
-        pass
+    def close(self) -> None:
+        """
+        @brief Close serial connection
+        """
+
+        if self.ser.is_open:
+            self.ser.close()
+            print(f"\nConnection to port {self.ser.port} closed!\n")

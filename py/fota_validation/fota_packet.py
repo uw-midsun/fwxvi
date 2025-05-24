@@ -23,7 +23,7 @@ class FotaPacket():
     EOF = 0xBB
     MAX_PAYLOAD_BYTES = 64  # TODO: Placeholder, so confirm
 
-    def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
+    def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> None:
         """
         @brief Initialize FotaPacket object
         """
