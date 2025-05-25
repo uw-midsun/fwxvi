@@ -21,6 +21,14 @@ class FotaPacketSender():
 
         self.ser = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
 
+    def __del__(self):
+        """
+        @brief Close serial connection when object is deleted or program exits
+        """
+
+        self.close()
+
+    @staticmethod
     def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
         """
         @brief Factory for FotaPacket objects

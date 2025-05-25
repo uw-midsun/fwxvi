@@ -52,7 +52,7 @@ class FotaPacket():
 
     def __repr__(self) -> str:
         """
-        @brief 
+        @brief Readable representation of FotaPacket object
         """
         return(
             f"<FotaPacket "
@@ -81,7 +81,3 @@ class FotaPacket():
         packet.append(self.eof)
 
         return packet
-
-
-
-
