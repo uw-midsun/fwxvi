@@ -13,19 +13,16 @@ class FotaPacketSender():
     """
     @brief Accessed by DatagramSender to transmit FotaPackets via XBees
     """
-
     def __init__(self, port: str, baudrate: int = 115200, timeout: float = 1) -> None:
         """
         @brief Initialize FotaPacketSender with a serial connection
         """
-
         self.ser = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
 
     def __del__(self):
         """
         @brief Close serial connection when object is deleted or program exits
         """
-
         self.close()
 
     @staticmethod
@@ -33,14 +30,12 @@ class FotaPacketSender():
         """
         @brief Factory for FotaPacket objects
         """
-
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
     def send_fota_packet(self, fota_packet: FotaPacket) -> None:
         """
         @brief Transmit FotaPacket to XBee
         """
-
         try:
             packet_bytes = fota_packet.pack()
             self.ser.write(packet_bytes)
@@ -58,7 +53,6 @@ class FotaPacketSender():
         """
         @brief Close serial connection
         """
-
         if self.ser.is_open:
             self.ser.close()
             print(f"\nConnection to port {self.ser.port} closed!\n")

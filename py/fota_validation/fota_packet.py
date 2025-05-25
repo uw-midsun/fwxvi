@@ -27,8 +27,8 @@ class FotaPacket():
         """
         @brief Initialize FotaPacket object
         """
-
-        # Validate byte sizes
+        # TODO: Move to a private method
+        ## Validate byte sizes
         if not (0 <= packet_type <= 0xFF):
             raise ValueError("packet_type must be a single byte")
         
