@@ -47,6 +47,8 @@ typedef enum {
   FOTA_ERROR_BOOTLOADER_INVALID_STATE,
 
 
+  FOTA_ERROR_NO_MEMORY,
+  FOTA_ERROR_NO_DATAGRAM_FOUND
 } FotaError;
 
 /** @} */
