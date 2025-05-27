@@ -29,14 +29,14 @@ class FotaPacket():
         """
         self._check_args(packet_type, datagram_id, sequence_num, payload)
 
-        self.sof = FotaPacket.SOF
-        self.packet_type = packet_type
-        self.datagram_id = datagram_id
-        self.sequence_num = sequence_num
-        self.payload = payload
-        self.payload_len = len(payload)
-        self.crc32_value = crc32.calculate(payload)
-        self.eof = FotaPacket.EOF
+        self._sof = FotaPacket.SOF
+        self._packet_type = packet_type
+        self._datagram_id = datagram_id
+        self._sequence_num = sequence_num
+        self._payload = payload
+        self._payload_len = len(payload)
+        self._crc32_value = crc32.calculate(payload)
+        self._eof = FotaPacket.EOF
 
     def __repr__(self) -> str:
         """
@@ -44,15 +44,93 @@ class FotaPacket():
         """
         return(
             f"<FotaPacket "
-            f"SOF=0x{self.sof:02X}, "
-            f"Type=0x{self.packet_type:02X}, "
-            f"DatagramID=0x{self.datagram_id:08X}, "
-            f"Seq=0x{self.sequence_num:02X}, "
-            f"Len={self.payload_len}, "
-            f"CRC32=0x{self.crc32_value:08X}, "
-            f"EOF=0x{self.eof:02X}>"
+            f"SOF=0x{self.sof():02X}, "
+            f"Type=0x{self.packet_type():02X}, "
+            f"DatagramID=0x{self.datagram_id():08X}, "
+            f"Seq=0x{self.sequence_num():02X}, "
+            f"Len={self.payload_len()}, "
+            f"CRC32=0x{self.crc32_value():08X}, "
+            f"EOF=0x{self.eof():02X}>"
         )
     
+    def pack(self) -> bytearray:
+        """
+        @brief Serialize packet values for transmission
+        """
+        packet = bytearray()
+
+        packet.append(self.sof())
+        packet.append(self.packet_type())
+        packet += self.datagram_id().to_bytes(4, BYTE_ORDER)
+        packet.append(self.sequence_num())
+        packet += self.payload_len().to_bytes(2, BYTE_ORDER)
+        packet += self.payload()
+        packet += self.crc32_value().to_bytes(4, BYTE_ORDER)
+        packet.append(self.eof())
+
+        return packet
+    
+    # Getters
+    @property
+    def sof(self):
+        """
+        @brief Describe start-of-frame
+        """
+        return self._sof
+    
+    @property
+    def packet_type(self):
+        """
+        @brief Describe packet type
+        """
+        return self._packet_type
+    
+    @property
+    def datagram_id(self):
+        """
+        @brief Describe datagram ID
+        """
+        return self._datagram_id
+    
+    @property
+    def sequence_num(self):
+        """
+        @brief Describe sequence number
+        """
+        return self._sequence_num
+    
+    @property
+    def payload_len(self):
+        """
+        @brief Describe length of payload
+        """
+        return self._payload_len
+    
+    @property
+    def payload(self):
+        """
+        @brief Describe payload
+        """
+        return self._payload
+    
+    @property
+    def crc32_value(self):
+        """
+        @brief Describe CRC32 value
+        """
+        return self._payload
+    
+    @property
+    def eof(self):
+        """
+        @brief Describe end-of-frame
+        """
+        return self._eof
+    
+    # Setters
+    
+
+    @staticmethod
     def _check_args(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
         """
         @brief Validate byte sizes of object parameters
@@ -68,20 +146,3 @@ class FotaPacket():
         
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
             raise ValueError("payload exceeds user-defined limit")
-
-    def pack(self) -> bytearray:
-        """
-        @brief Serialize packet values for transmission
-        """
-        packet = bytearray()
-
-        packet.append(self.sof)
-        packet.append(self.packet_type)
-        packet += self.datagram_id.to_bytes(4, BYTE_ORDER)
-        packet.append(self.sequence_num)
-        packet += self.payload_len.to_bytes(2, BYTE_ORDER)
-        packet += self.payload
-        packet += self.crc32_value.to_bytes(4, BYTE_ORDER)
-        packet.append(self.eof)
-
-        return packet
