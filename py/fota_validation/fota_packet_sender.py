@@ -26,13 +26,13 @@ class FotaPacketSender():
         self.close()
 
     @staticmethod
-    def create_fota_packet(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
+    def create(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> FotaPacket:
         """
         @brief Factory for FotaPacket objects
         """
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
-    def send_fota_packet(self, fota_packet: FotaPacket) -> None:
+    def send(self, fota_packet: FotaPacket) -> None:
         """
         @brief Transmit FotaPacket to XBee
         """

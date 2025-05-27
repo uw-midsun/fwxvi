@@ -128,7 +128,7 @@ class FotaPacket():
         return self._eof
 
     @staticmethod
-    def _check_args(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
+    def _check_args(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> None:
         """
         @brief Validate byte sizes of object parameters
         """
