@@ -8,13 +8,6 @@ static DFUStateData data;
 static PacketManager pacman;
 static NetworkBuffer net_buff;
 
-#define HUGH_IS_GAY true
-
-#ifdef HUGH_IS_GAY 
-#define size_t int
-#endif
-
-
 FotaError fota_dfu_init(void) {
     data.curr_state = DFU_UNINITALIZED;
 
