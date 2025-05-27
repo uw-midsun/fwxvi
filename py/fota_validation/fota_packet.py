@@ -44,13 +44,13 @@ class FotaPacket():
         """
         return(
             f"<FotaPacket "
-            f"SOF=0x{self.sof():02X}, "
-            f"Type=0x{self.packet_type():02X}, "
-            f"DatagramID=0x{self.datagram_id():08X}, "
-            f"Seq=0x{self.sequence_num():02X}, "
-            f"Len={self.payload_len()}, "
-            f"CRC32=0x{self.crc32_value():08X}, "
-            f"EOF=0x{self.eof():02X}>"
+            f"SOF=0x{self.sof:02X}, "
+            f"Type=0x{self.packet_type:02X}, "
+            f"DatagramID=0x{self.datagram_id:08X}, "
+            f"Seq=0x{self.sequence_num:02X}, "
+            f"Len={self.payload_len}, "
+            f"CRC32=0x{self.crc32_value:08X}, "
+            f"EOF=0x{self.eof:02X}>"
         )
     
     def pack(self) -> bytearray:
@@ -59,14 +59,14 @@ class FotaPacket():
         """
         packet = bytearray()
 
-        packet.append(self.sof())
-        packet.append(self.packet_type())
-        packet += self.datagram_id().to_bytes(4, BYTE_ORDER)
-        packet.append(self.sequence_num())
-        packet += self.payload_len().to_bytes(2, BYTE_ORDER)
-        packet += self.payload()
-        packet += self.crc32_value().to_bytes(4, BYTE_ORDER)
-        packet.append(self.eof())
+        packet.append(self.sof)
+        packet.append(self.packet_type)
+        packet += self.datagram_id.to_bytes(4, BYTE_ORDER)
+        packet.append(self.sequence_num)
+        packet += self.payload_len.to_bytes(2, BYTE_ORDER)
+        packet += self.payload
+        packet += self.crc32_value.to_bytes(4, BYTE_ORDER)
+        packet.append(self.eof)
 
         return packet
     
