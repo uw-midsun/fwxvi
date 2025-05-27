@@ -128,7 +128,65 @@ class FotaPacket():
         return self._eof
     
     # Setters
+    @sof.setter
+    def sof(self, value):
+        """
+        @brief Set start-of-frame
+        """
+        self._sof = value
     
+    @packet_type.setter
+    def packet_type(self, value):
+        """
+        @brief Set packet type
+        """
+        assert (0 <= value <= 0xFF)
+        self._packet_type = value
+    
+    @datagram_id.setter
+    def datagram_id(self, value):
+        """
+        @brief Set datagram ID
+        """
+        assert(0 <= value <= 0xFFFFFFFF)
+        self._datagram_id = value
+    
+    @sequence_num.setter
+    def sequence_num(self, value):
+        """
+        @brief Set sequence number
+        """
+        assert(0 <= value <= 0x07)
+        self._sequence_num = value
+    
+    @payload_len.setter
+    def payload_len(self, value):
+        """
+        @brief Set length of payload
+        """
+        assert(len(payload) > FotaPacket.MAX_PAYLOAD_BYTES)
+        self._payload_len = value
+    
+    @payload.setter
+    def payload(self, value):
+        """
+        @brief Set payload
+        """
+        self._payload = value
+    
+    @crc32_value.setter
+    def crc32_value(self, value):
+        """
+        @brief Set CRC32 value
+        """
+        self._payload = value
+    
+    @eof.setter
+    def eof(self, value):
+        """
+        @brief Set end-of-frame
+        """
+        self._eof = value
 
     @staticmethod
     def _check_args(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
@@ -138,11 +196,11 @@ class FotaPacket():
         if not (0 <= packet_type <= 0xFF):
             raise ValueError("packet_type must be a single byte")
         
-        if not (0 <= sequence_num <= 0x07):
-            raise ValueError("sequence_num must be 3 bits")
-        
         if not (0 <= datagram_id <= 0xFFFFFFFF):
             raise ValueError("datagram_id must fit in 4 bytes")
+        
+        if not (0 <= sequence_num <= 0x07):
+            raise ValueError("sequence_num must be 3 bits")
         
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
             raise ValueError("payload exceeds user-defined limit")
