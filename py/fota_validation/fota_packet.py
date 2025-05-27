@@ -5,7 +5,7 @@
 #
 #  @ingroup fota_validation
 
-from crc32 import CRC32  # TODO: Resolve import error
+from crc32 import CRC32
 
 # TODO: Stolen from can_datagram/bootloader_id, so check for correct code
 STANDARD_CRC32_POLY = 0x04C11DB7
@@ -27,19 +27,7 @@ class FotaPacket():
         """
         @brief Initialize FotaPacket object
         """
-        # TODO: Move to a private method
-        ## Validate byte sizes
-        if not (0 <= packet_type <= 0xFF):
-            raise ValueError("packet_type must be a single byte")
-        
-        if not (0 <= sequence_num <= 0x07):
-            raise ValueError("sequence_num must be 3 bits")
-        
-        if not (0 <= datagram_id <= 0xFFFFFFFF):
-            raise ValueError("datagram_id must fit in 4 bytes")
-        
-        if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
-            raise ValueError("payload exceeds user-defined limit")
+        self._check_args(packet_type, datagram_id, sequence_num, payload)
 
         self.sof = FotaPacket.SOF
         self.packet_type = packet_type
@@ -64,6 +52,22 @@ class FotaPacket():
             f"CRC32=0x{self.crc32_value:08X}, "
             f"EOF=0x{self.eof:02X}>"
         )
+    
+    def _check_args(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes):
+        """
+        @brief Validate byte sizes of object parameters
+        """
+        if not (0 <= packet_type <= 0xFF):
+            raise ValueError("packet_type must be a single byte")
+        
+        if not (0 <= sequence_num <= 0x07):
+            raise ValueError("sequence_num must be 3 bits")
+        
+        if not (0 <= datagram_id <= 0xFFFFFFFF):
+            raise ValueError("datagram_id must fit in 4 bytes")
+        
+        if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
+            raise ValueError("payload exceeds user-defined limit")
 
     def pack(self) -> bytearray:
         """
