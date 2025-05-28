@@ -1,0 +1,5 @@
+<map id="LtcAfeSettings" name="LtcAfeSettings">
+<area shape="rect" id="node1" title="Afe Settings Data." alt="" coords="5,225,121,251"/>
+<area shape="rect" id="node2" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="16,137,111,163"/>
+<area shape="rect" id="node3" title=" " alt="" coords="34,5,93,31"/>
+</map>
