@@ -31,9 +31,18 @@ FotaError fota_dfu_init(void) {
   return FOTA_ERROR_BOOTLOADER_SUCCESS;
 }
 
-FotaError fota_dfu_jump_app() {}
+FotaError run_dfu_bootloader() {
+  /* general logic should go like this (assuming bootloader is inited):
+     1. get datagram
+     2. (prev bootloader) update state based on "arbitration id"
+     3. perform action based on current state (start, ready, receive, jump_app, fault)
+     4. check for error and exit
+   */
 
-FotaError process_new_state(DFUStates new_state) {
+  
+}
+
+static FotaError process_new_state(DFUStates new_state) {
 // Macro on success and failure
 #define SUCCEED()              \
   data.curr_state = new_state; \
