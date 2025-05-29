@@ -41,6 +41,8 @@ typedef enum {
   FOTA_ERROR_FLASH_VERIFICATION_FAILED,
 
   FOTA_ERROR_INVALID_PACKET,
+
+  FOTA_ERROR_JUMP_FAILED,
 } FotaError;
 
 /** @} */

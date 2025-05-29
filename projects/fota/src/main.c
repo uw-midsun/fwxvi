@@ -16,6 +16,8 @@
 /* Intra-component Headers */
 #include "network.h"
 #include "network_buffer.h"
+#include "fota_jump_app.h"
+#include "fota_timeout.h"
 
 int main() {
   static UartSettings uart2_settings = {
@@ -34,6 +36,9 @@ int main() {
   while (true) {
     if (isTimeout(true)) {
       // tx timeout, rx timeout is built into function to return error if timeout
+    }
+    if (fota_is_timed_out()) {
+      bootloader_jump_app();
     }
   }
 
