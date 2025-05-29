@@ -1,7 +1,6 @@
 #include <stdint.h>
 
 #define MAX_FILES_PER_GROUP 128
-#define TOTAL_BLOCKS 32
 #define BLOCKS_PER_GROUP 32
 #define BLOCK_SIZE 32
 
@@ -21,7 +20,7 @@ typedef struct{
 typedef struct{
     FileEntry entries [MAX_FILES_PER_GROUP];
     uint8_t blockBitmap[BLOCKS_PER_GROUP];
-    uint8_t dataBlocks[TOTAL_BLOCKS][BLOCK_SIZE];
+    uint8_t dataBlocks[BLOCKS_PER_GROUP][BLOCK_SIZE];
 }BlockGroup;
     
 typedef struct{
