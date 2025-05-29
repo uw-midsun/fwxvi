@@ -25,6 +25,9 @@ int main() {
     if (isTimeout(true)) {
       // tx timeout, rx timeout is built into function to return error if timeout
     }
+    if (fota_is_timed_out()) {
+      bootloader_jump_app();
+    }
 
     fota_process();
   }
