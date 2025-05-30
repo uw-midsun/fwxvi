@@ -1,6 +1,48 @@
 #include "midFS.h"
 
 
+
+void fs_init(SuperBlock *sb) {
+    // initialize the superblock
+    memset(sb, 0, sizeof(SuperBlock));
+
+    sb->magic = FS_MAGIC;
+    sb->maxFiles = MAX_FILES_PER_GROUP;
+    sb->blockSize = BLOCK_SIZE;
+    sb->blocksPerGroup = BLOCKS_PER_GROUP;
+    sb->totalSize = MAX_BLOCK_GROUPS * sizeof(BlockGroup);
+    sb->rootIndex = 0;
+
+    memset(&blockGroups[0], 0, sizeof(BlockGroup));
+    sb->nextGroup = &blockGroups[0];  
+//maybe dont need root index
+
+    FileEntry *root = &blockGroups[0].entries[0];
+    memset(root, 0, sizeof(FileEntry));
+    strncpy(root->fileName, "/", sizeof(root->fileName));
+    root->type = FILETYPE_FOLDER;
+    root->valid = 1;
+    root->startBlockIndex = 0xFFFF;
+    root->size = 0;
+}
+
+
+uint8_t* read_file(SuperBlock *sb, const char *filename) {
+    BlockGroup *bg = sb->nextGroup;
+    while (bg != NULL) {
+        for (int i = 0; i < MAX_FILES_PER_GROUP; ++i) {
+            FileEntry *entry = &bg->entries[i];
+            if (entry->valid && entry->type == FILETYPE_FILE &&
+                strncmp(entry->fileName, filename, sizeof(entry->fileName)) == 0) {
+                
+                return &bg->dataBlocks[entry->startBlockIndex][0];
+            }
+        }
+        bg = bg->nextGroup;
+    }
+    return NULL; // file not found
+}
+
 void fs_add_file(const char * name, uint8_t* content, uint32_t size, uint8_t isFolder){
     //add something to restrict length of name
     if(strlen(name) > MAX_FILENAME_LENGTH) return;
