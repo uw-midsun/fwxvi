@@ -22,6 +22,7 @@ typedef struct{
     FileEntry entries [MAX_FILES_PER_GROUP];
     uint8_t blockBitmap[BLOCKS_PER_GROUP];
     uint8_t dataBlocks[BLOCKS_PER_GROUP][BLOCK_SIZE];
+    BlockGroup *nextGroup; // pointer to the next block group
 }BlockGroup;
     
 typedef struct{
@@ -30,6 +31,6 @@ typedef struct{
     uint16_t blockSize;
     uint16_t blocksPerGroup;
     uint32_t totalSize;
-    uint16_t rootIndex;
-    uint16_t numBlocks;
+    uint32_t rootIndex;
+    BlockGroup *nextGroup; //pointer to the next (first) block group
 }SuperBlock;
