@@ -43,6 +43,13 @@ uint8_t* read_file(SuperBlock *sb, const char *filename) {
     return NULL; // file not found
 }
 
+void extract_file(uint8_t *addr, uint32_t size){
+    for (uint32_t i=0; i<size; i++){
+        putchar(addr[i]);
+        //just read out the contents
+    }
+}
+
 void fs_add_file(const char * name, uint8_t* content, uint32_t size, uint8_t isFolder){
     //add something to restrict length of name
     if(strlen(name) > MAX_FILENAME_LENGTH) return;
