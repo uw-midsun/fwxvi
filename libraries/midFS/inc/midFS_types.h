@@ -3,6 +3,7 @@
 #define MAX_FILES_PER_GROUP 128
 #define BLOCKS_PER_GROUP 32
 #define BLOCK_SIZE 32
+#define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
 
 typedef enum{
     FILETYPE_FILE = 0,
