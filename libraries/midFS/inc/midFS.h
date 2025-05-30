@@ -7,8 +7,7 @@ SuperBlock superBlock = {
     .blockSize = BLOCK_SIZE,
     .blocksPerGroup = BLOCKS_PER_GROUP,
     .totalSize = MAX_FILES_PER_GROUP * BLOCKS_PER_GROUP * BLOCK_SIZE,
-    .rootIndex = 0,
-    .numBlocks = 0
+    .rootIndex = 0
 };
 
 
