@@ -30,4 +30,5 @@ typedef struct{
     uint16_t blocksPerGroup;
     uint32_t totalSize;
     uint16_t rootIndex;
+    uint16_t numBlocks;
 }SuperBlock;
