@@ -1,9 +1,10 @@
 #include <stdint.h>
 
-#define MAX_FILES_PER_GROUP 128
 #define BLOCKS_PER_GROUP 32
-#define BLOCK_SIZE 32
+#define BLOCK_SIZE 512
 #define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
+#define FOLDER_CAPACITY 512
+#define MAX_FILENAME_LENGTH 32
 
 typedef enum{
     FILETYPE_FILE = 0,
@@ -11,7 +12,7 @@ typedef enum{
 }FileType;
 
 typedef struct{
-    char fileName[32];
+    char fileName[MAX_FILENAME_LENGTH];
     uint32_t size;
     uint16_t startBlockIndex;
     uint8_t valid; //1 -> in use, 0 -> not in use
@@ -19,18 +20,16 @@ typedef struct{
 }FileEntry;
 
 typedef struct{
-    FileEntry entries [MAX_FILES_PER_GROUP];
     uint8_t blockBitmap[BLOCKS_PER_GROUP];
     uint8_t dataBlocks[BLOCKS_PER_GROUP][BLOCK_SIZE];
-    BlockGroup *nextGroup; // pointer to the next block group
+    uint32_t nextBlockGroup; // address of the next block group
 }BlockGroup;
     
 typedef struct{
     uint32_t magic;
-    uint16_t maxFiles;
     uint16_t blockSize;
     uint16_t blocksPerGroup;
-    uint32_t totalSize;
-    uint32_t rootIndex;
-    BlockGroup *nextGroup; //pointer to the next (first) block group
+    uint8_t rootDirectory[FOLDER_CAPACITY];
+    uint16_t numBlocks;
+    uint32_t nextBlockGroup; //address of the next (first) block group
 }SuperBlock;
