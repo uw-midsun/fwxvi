@@ -1,46 +1,50 @@
 #include "midFS.h"
 
+#define SUPERBLOCK_OFFSET 0
+#define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
 
+uint8_t fs_memory[FS_TOTAL_SIZE];
 
-void fs_init(SuperBlock *sb) {
-    // initialize the superblock
-    memset(sb, 0, sizeof(SuperBlock));
+SuperBlock *superBlock;
+BlockGroup *blockGroups;
 
-    sb->magic = FS_MAGIC;
-    sb->maxFiles = MAX_FILES_PER_GROUP;
-    sb->blockSize = BLOCK_SIZE;
-    sb->blocksPerGroup = BLOCKS_PER_GROUP;
-    sb->totalSize = MAX_BLOCK_GROUPS * sizeof(BlockGroup);
-    sb->rootIndex = 0;
+void fs_init() {
+    //setup superBlock and the first block group in memory
+    superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
+    blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
 
+    //super block declaration
+    superBlock->magic = 0xC1D1921D;
+    superBlock->blockSize = BLOCK_SIZE;
+    superBlock->blocksPerGroup = BLOCKS_PER_GROUP;
+    superBlock->nextBlockGroup = &blockGroups[0];
+
+    blockGroups->nextBlockGroup = FS_NULL_BLOCK_GROUP;
+
+    //init the first block group
     memset(&blockGroups[0], 0, sizeof(BlockGroup));
-    sb->nextGroup = &blockGroups[0];  
-//maybe dont need root index
 
-    FileEntry *root = &blockGroups[0].entries[0];
-    memset(root, 0, sizeof(FileEntry));
-    strncpy(root->fileName, "/", sizeof(root->fileName));
-    root->type = FILETYPE_FOLDER;
-    root->valid = 1;
-    root->startBlockIndex = 0xFFFF;
-    root->size = 0;
+    blockGroups[0].blockBitmap[0] = 1; //block 0 in group 0 is used for the root folder
+
+    //root folder declaration
+    strncpy(superBlock->rootFolderMetadata.fileName, "/", MAX_FILENAME_LENGTH);
+    superBlock->rootFolderMetadata.type = FILETYPE_FOLDER;
+    superBlock->rootFolderMetadata.valid = 1;
+    superBlock->rootFolderMetadata.startBlockIndex = 0;
+    superBlock->rootFolderMetadata.size = 0;
 }
 
 
-uint8_t* read_file(SuperBlock *sb, const char *filename) {
-    BlockGroup *bg = sb->nextGroup;
-    while (bg != NULL) {
-        for (int i = 0; i < MAX_FILES_PER_GROUP; ++i) {
-            FileEntry *entry = &bg->entries[i];
-            if (entry->valid && entry->type == FILETYPE_FILE &&
-                strncmp(entry->fileName, filename, sizeof(entry->fileName)) == 0) {
-                
-                return &bg->dataBlocks[entry->startBlockIndex][0];
-            }
-        }
-        bg = bg->nextGroup;
-    }
-    return NULL; // file not found
+uint32_t read_file(const char *path) {
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
+
+    fs_split_path(path, folderPath, folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+
+    return parentBlockLocation;
 }
 
 void extract_file(uint8_t *addr, uint32_t size){
@@ -50,16 +54,52 @@ void extract_file(uint8_t *addr, uint32_t size){
     }
 }
 
-void fs_add_file(const char * name, uint8_t* content, uint32_t size, uint8_t isFolder){
+void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isFolder){
     //add something to restrict length of name
-    if(strlen(name) > MAX_FILENAME_LENGTH) return;
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
+
+    fs_split_path(path, *folderPath, *folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+
+    //locate the block group
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
+
+    //update the bitmap
+    parentGroup->blockBitmap[parentBlockLocation % BLOCKS_PER_GROUP] = 1;
+
+    //Array of files
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
+    
+    //our new file
+    FileEntry newFile = {
+        .size = size,
+        .valid = 1,
+        .type = isFolder ?  FILETYPE_FOLDER : FILETYPE_FILE
+    };
+
+    //copy in the name
+    strncpy(newFile.fileName, folderName, MAX_FILENAME_LENGTH);
+    newFile.fileName[MAX_FILENAME_LENGTH - 1] = '\0';
+    
+    //search for the first empty spot
+    for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(!File[i].valid){
+            File[i] = newFile;
+            break;
+        }
+    }
 
     //determine how many blocks we need
     uint32_t blocksNeeded = (FILE_ENTRY_SIZE + size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
     
     //first block
     BlockGroup current;
-    uint32_t currentBlockGroupIndex = superBlock.nextBlockGroup;
+    uint32_t currentBlockGroupIndex = superBlock->nextBlockGroup;
     
     uint32_t incomingBlockAddress = UINT32_MAX; //invalid marker
     uint32_t space = 0;
@@ -99,15 +139,10 @@ void fs_add_file(const char * name, uint8_t* content, uint32_t size, uint8_t isF
     }
 
     for (uint32_t i = 0; i < blocksNeeded; i++) current.blockBitmap[incomingBlockAddress + i] = 1; //update the block bitmap
+    
+    newFile.startBlockIndex = incomingBlockAddress,
 
-    FileEntry newFile = {
-        .size = size,
-        .startBlockIndex = incomingBlockAddress,
-        .valid = 1,
-        .type = isFolder ?  FILETYPE_FOLDER : FILETYPE_FILE
-    };
-
-    strncpy(newFile.fileName, name, MAX_FILENAME_LENGTH);
+    strncpy(newFile.fileName, path, MAX_FILENAME_LENGTH);
 
     memcpy(&current.dataBlocks[incomingBlockAddress], &newFile, FILE_ENTRY_SIZE); //copy in fileEntry
 
