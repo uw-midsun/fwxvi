@@ -2,9 +2,12 @@
 
 #define BLOCKS_PER_GROUP 32
 #define BLOCK_SIZE 512
+#define NUM_BLOCK_GROUPS 64
+#define FS_TOTAL_SIZE (BLOCKS_PER_GROUP*BLOCK_SIZE*NUM_BLOCK_GROUPS)
 #define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
 #define FOLDER_CAPACITY 512
 #define MAX_FILENAME_LENGTH 32
+#define MAX_PATH_LENGTH 128
 
 typedef enum{
     FILETYPE_FILE = 0,
@@ -29,7 +32,7 @@ typedef struct{
     uint32_t magic;
     uint16_t blockSize;
     uint16_t blocksPerGroup;
-    uint8_t rootDirectory[FOLDER_CAPACITY];
     uint16_t numBlocks;
     uint32_t nextBlockGroup; //address of the next (first) block group
+    FileEntry rootFolderMetadata;
 }SuperBlock;
