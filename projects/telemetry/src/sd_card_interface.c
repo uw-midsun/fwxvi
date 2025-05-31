@@ -1,3 +1,7 @@
+/*
+
+*/
+
 #include "sd_card_interface.h"
 #include "sd_card_spi.h"
 #include "ff_gen_drv.h"
@@ -38,19 +42,19 @@ StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings)
     s_spi_port = spi;
     s_settings = settings;
 
-    /* 1) Initialize SPI peripheral & CS line */
+    /* Initialize SPI peripheral & CS line */
     StatusCode sc = sd_spi_init(spi, settings);
     if (sc != STATUS_CODE_OK) {
         return sc;
     }
 
-    /* 2) Initialize the SD card itself */
+    /* Initialize the SD card itself */
     sc = sd_card_init(spi, settings);
     if (sc != STATUS_CODE_OK) {
         return sc;
     }
 
-    /* 3) Link driver to FatFs as drive "0:" */
+    /* Link driver to FatFs as drive "0:" */
     FATFS_LinkDriver(&sd_disk_driver, s_sd_path);
     return STATUS_CODE_OK;
 }
@@ -58,7 +62,7 @@ StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings)
 /**
  * @brief   FatFs disk_initialize callback.
  * @param   pdrv  Physical drive number (must be 0 for SD).
- * @retval  DSTATUS  0=OK, STA_NOINIT otherwise.
+ * @return  DSTATUS  0=OK, STA_NOINIT otherwise.
  */
 static DSTATUS sd_disk_initialize(BYTE pdrv)
 {
@@ -72,7 +76,7 @@ static DSTATUS sd_disk_initialize(BYTE pdrv)
 /**
  * @brief   FatFs disk_status callback.
  * @param   pdrv  Physical drive number (must be 0 for SD).
- * @retval  DSTATUS  0=OK, STA_NOINIT otherwise.
+ * @return  DSTATUS  0=OK, STA_NOINIT otherwise.
  */
 static DSTATUS sd_disk_status(BYTE pdrv)
 {
@@ -89,7 +93,7 @@ static DSTATUS sd_disk_status(BYTE pdrv)
  * @param   buff    Pointer to data buffer.
  * @param   sector  Logical sector to start reading.
  * @param   count   Number of sectors to read.
- * @retval  DRESULT  RES_OK on success, RES_PARERR for bad args,
+ * @return  DRESULT  RES_OK on success, RES_PARERR for bad args,
  *                   RES_ERROR on read failure.
  */
 static DRESULT sd_disk_read(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count)
@@ -107,7 +111,7 @@ static DRESULT sd_disk_read(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count)
  * @param   buff    Pointer to data to write.
  * @param   sector  Logical sector to start writing.
  * @param   count   Number of sectors to write.
- * @retval  DRESULT  RES_OK on success, RES_PARERR for bad args,
+ * @return  DRESULT  RES_OK on success, RES_PARERR for bad args,
  *                   RES_ERROR on write failure.
  */
 static DRESULT sd_disk_write(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count)
@@ -124,7 +128,7 @@ static DRESULT sd_disk_write(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT cou
  * @param   pdrv  Physical drive number (must be 0).
  * @param   cmd   Control command code.
  * @param   buff  Pointer to data buffer for control.
- * @retval  DRESULT  RES_OK on success, RES_PARERR for unsupported
+ * @return  DRESULT  RES_OK on success, RES_PARERR for unsupported
  *                   or bad args.
  */
 static DRESULT sd_disk_ioctl(BYTE pdrv, BYTE cmd, void *buff)
