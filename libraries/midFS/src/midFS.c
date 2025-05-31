@@ -95,7 +95,7 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
     }
 
     //determine how many blocks we need
-    uint32_t blocksNeeded = (FILE_ENTRY_SIZE + size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
+    uint32_t blocksNeeded = (size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
     
     //first block
     BlockGroup current;
@@ -164,6 +164,53 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
     return;
 }
 
-void fs_delete_file(const char* name){
-    
+void fs_delete_file(const char* path){
+    //add something to restrict length of name
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
+
+    fs_split_path(path, *folderPath, *folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+
+    //locate the block group
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
+
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
+
+    uint16_t fileStartBlockIndex;
+    uint32_t fileSize;
+
+    //search for the first empty spot
+    for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(File[i].fileName == folderName){ //if the file name is the same as our path name
+
+            //store the index and size
+            fileStartBlockIndex = File[i].startBlockIndex;
+            fileSize = File[i].size;
+
+            //clear the file
+            File[i].valid = 0;
+            memset(File[i].fileName, 0, MAX_FILENAME_LENGTH);
+            File[i].size = 0;
+            File[i].startBlockIndex = 0;
+        }
+    }
+
+    BlockGroup *fileContentGroup = &blockGroups[fileStartBlockIndex/BLOCKS_PER_GROUP];
+
+    //determine how many blocks this file takes up
+    uint32_t blocksNeeded = (fileSize + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
+
+    //clear the blocks
+    for(int i = 0; i < blocksNeeded; i++){
+        memset(fileContentGroup->dataBlocks[(fileStartBlockIndex%BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);        
+    }
+
+    //update the bitmap
+
+
 }
