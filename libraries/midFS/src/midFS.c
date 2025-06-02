@@ -35,7 +35,7 @@ void fs_init() {
 }
 
 
-uint32_t read_file(const char *path) {
+uint32_t fs_read_file(const char *path) {
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
@@ -47,7 +47,7 @@ uint32_t read_file(const char *path) {
     return parentBlockLocation;
 }
 
-void extract_file(uint8_t *addr, uint32_t size){
+void fs_extract_file(uint8_t *addr, uint32_t size){
     for (uint32_t i=0; i<size; i++){
         putchar(addr[i]);
         //just read out the contents
@@ -140,17 +140,13 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
 
     for (uint32_t i = 0; i < blocksNeeded; i++) current.blockBitmap[incomingBlockAddress + i] = 1; //update the block bitmap
     
-    newFile.startBlockIndex = incomingBlockAddress,
-
-    strncpy(newFile.fileName, path, MAX_FILENAME_LENGTH);
-
-    memcpy(&current.dataBlocks[incomingBlockAddress], &newFile, FILE_ENTRY_SIZE); //copy in fileEntry
+    newFile.startBlockIndex = incomingBlockAddress;
 
     if(blocksNeeded == 1){
-        memcpy(&current.dataBlocks[incomingBlockAddress][FILE_ENTRY_SIZE], content, size); //copy in content
+        memcpy(&current.dataBlocks[incomingBlockAddress][0], content, size); //copy in content
     }else{
-        memcpy(&current.dataBlocks[incomingBlockAddress][FILE_ENTRY_SIZE], content, BLOCK_SIZE - FILE_ENTRY_SIZE); //copy content into first block w/ metadata
-        size_t copied = BLOCK_SIZE - FILE_ENTRY_SIZE;
+        memcpy(&current.dataBlocks[incomingBlockAddress][0], content, BLOCK_SIZE); //copy content into first block w/ metadata
+        size_t copied = BLOCK_SIZE;
         for(uint32_t block = 1; (block < blocksNeeded) && (copied < size); block++){
             uint32_t remaining = size - copied;
             uint32_t copySize = (remaining > BLOCK_SIZE) ? BLOCK_SIZE : remaining;
@@ -186,13 +182,13 @@ void fs_delete_file(const char* path){
 
     //search for the first empty spot
     for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
-        if(File[i].fileName == folderName){ //if the file name is the same as our path name
+        if(strcmp(File[i].fileName, folderName, MAX_FILENAME_LENGTH)){ //if the file name is the same as our path name
 
             //store the index and size
             fileStartBlockIndex = File[i].startBlockIndex;
             fileSize = File[i].size;
 
-            //clear the file
+            //clear the file metadata
             File[i].valid = 0;
             memset(File[i].fileName, 0, MAX_FILENAME_LENGTH);
             File[i].size = 0;
@@ -206,11 +202,158 @@ void fs_delete_file(const char* path){
     uint32_t blocksNeeded = (fileSize + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
 
     //clear the blocks
+    //update the bitmap
     for(int i = 0; i < blocksNeeded; i++){
-        memset(fileContentGroup->dataBlocks[(fileStartBlockIndex%BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);        
+        memset(fileContentGroup->dataBlocks[(fileStartBlockIndex%BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);
+        fileContentGroup->blockBitmap[(fileStartBlockIndex%BLOCKS_PER_GROUP) + i] = 1;
     }
 
-    //update the bitmap
+}
 
+void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
 
+    fs_split_path(path, *folderPath, *folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+
+    //locate the block group
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
+
+    //array of files in block group
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
+
+    FileEntry oldFile;
+
+    //search for the first empty spot
+    for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(File[i].valid && strcmp(File[i].fileName, folderName, MAX_FILENAME_LENGTH)){
+            //if the name of this file matches the file we're trying to find
+            oldFile = File[i];
+            break;
+        }
+    }
+    uint32_t oldBlocksNeeded = (oldFile.size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
+    uint32_t newBlocksNeeded = (oldFile.size + contentSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
+
+    // parentGroup->blockBitmap
+
+    uint32_t canWriteInPlace = 1;
+
+    //i starts at the last block of the old file
+    //i ends at the index of (start of file + newBlocksNeeded)
+    for(int i = (parentBlockLocation % BLOCKS_PER_GROUP) + oldBlocksNeeded; i < (parentBlockLocation % BLOCKS_PER_GROUP) + newBlocksNeeded; i++){
+        if(parentGroup->blockBitmap[i] == 1){
+            canWriteInPlace = 0;
+        }
+    }
+
+    if(canWriteInPlace == 1){ //we have sufficient contiguous blocks after our old file to write in place
+        if(newBlocksNeeded == 1){
+            memcpy(parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP][oldFile.size], content, contentSize); //copy in new content after old content
+        }else{
+            memcpy(parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP][oldFile.size], content, BLOCK_SIZE - oldFile.size); //copy content into block with the end of oldFile content
+            size_t copied = BLOCK_SIZE - oldFile.size;
+            for(uint32_t block = 1; (block < newBlocksNeeded - oldBlocksNeeded) && (copied < contentSize); block++){
+                uint32_t remaining = contentSize - copied;
+                uint32_t copySize = (remaining > BLOCK_SIZE) ? BLOCK_SIZE : remaining;
+                memcpy(parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP + block][0], &content[copied], copySize);
+                copied += copySize;
+            }
+        }
+
+        //update size of file entry
+        oldFile.size = oldFile.size + contentSize;
+        fs_write_block_group(parentBlockLocation/BLOCKS_PER_GROUP, parentGroup); //update the current block
+
+    }else{ //if we cannot write in place we must find more space (search for contiguous space of length newBlocksNeeded)
+        BlockGroup current;
+        uint32_t currentBlockGroupIndex = superBlock->nextBlockGroup; //start searching from the first block
+        uint32_t incomingBlockAddress = UINT32_MAX;
+        uint32_t space = 0;
+
+        while(1){
+            fs_read_block_group(currentBlockGroupIndex, &current);
+
+            //locate contiguous blocks of size newBlocksNeeded, if found store it in incomingBlockAddress
+            for(uint32_t i = 0; i < BLOCKS_PER_GROUP; i++){
+                if(current.blockBitmap[i] == 0){
+                    space == 1;
+                    while((i + space < BLOCKS_PER_GROUP) && current.blockBitmap[i + space] == 0){
+                        space++;
+                        if(space == newBlocksNeeded){
+                            incomingBlockAddress = i;
+                            break;
+                        }
+                    }
+                    if(incomingBlockAddress != UINT32_MAX) break;
+                    i += space;
+                }
+            }
+
+            if(incomingBlockAddress != UINT32_MAX) break;
+
+            //if we reach this point that means we couldnt find sufficient contiguous space in the current block group
+            if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //if this is the final block group
+                //initialize a new block group
+                uint32_t newBlockGroup = fs_create_block_group();
+                current.nextBlockGroup = newBlockGroup;
+                fs_write_block_group(currentBlockGroupIndex, &current);
+                currentBlockGroupIndex = newBlockGroup;
+            }else{
+                //go to the next block group
+                currentBlockGroupIndex = current.nextBlockGroup;
+            }
+        }
+
+        //create a new array to store old content + new content
+        uint8_t fullContent[oldFile.size + contentSize];
+
+        size_t copied = 0;
+
+        //copy old content in
+        for(uint32_t i = 0; i < oldBlocksNeeded; i++){
+            uint32_t blockOffset = (oldFile.startBlockIndex % BLOCKS_PER_GROUP) + i;
+            size_t copySize = (oldFile.size - copied > BLOCK_SIZE) ?BLOCK_SIZE : oldFile.size - copied;
+            memcpy(&fullContent[copied], blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].dataBlocks[blockOffset][0], copySize);
+            copied += copySize;
+        }
+
+        //copy new content in
+        memcpy(&fullContent[copied], content, contentSize);
+
+        //update bitmap
+        for(uint32_t i = 0; i < newBlocksNeeded; i++){
+            current.blockBitmap[incomingBlockAddress + i] = 1;
+        }
+
+        copied = 0;
+
+        //copy data in
+        for(uint32_t i = 0; i < newBlocksNeeded; i++){
+            size_t chunk = (oldFile.size + contentSize - copied > BLOCK_SIZE) ? BLOCK_SIZE : (oldFile.size + contentSize - copied);
+            memcpy(&current.dataBlocks[incomingBlockAddress + i], &fullContent[copied], chunk);
+            copied += chunk;
+        }
+
+        //clear the old blocks and set old bitmap values to 0
+        for(uint32_t i = 0; i < oldBlocksNeeded; i++){
+            memset(blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].dataBlocks[oldFile.startBlockIndex % BLOCKS_PER_GROUP + i][0], 0, BLOCK_SIZE);
+            blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].blockBitmap[oldFile.startBlockIndex % BLOCKS_PER_GROUP + i] = 0;
+        }
+
+        //update file metadata
+        oldFile.size = oldFile.size + contentSize;
+        oldFile.startBlockIndex = incomingBlockAddress;
+
+        //update block groups
+        fs_write_block_group(parentBlockLocation / BLOCKS_PER_GROUP, parentGroup);
+        fs_write_block_group(currentBlockGroupIndex, &current);
+        fs_write_block_group(oldFile.startBlockIndex / BLOCKS_PER_GROUP, &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP]);
+
+    }
 }
