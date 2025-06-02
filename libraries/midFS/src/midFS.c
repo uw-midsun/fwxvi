@@ -128,8 +128,8 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
         if(incomingBlockAddress != UINT32_MAX) break; //we found an address, break
 
         if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //next block does not exist
-            uint32_t newBlockGroup = fs_create_block_group();
-            current.nextBlockGroup = newBlockGroup;
+            uint32_t newBlockGroupIndex = fs_create_block_group();
+            current.nextBlockGroup = newBlockGroupIndex;
             fs_write_block_group(currentBlockGroupIndex, &current); //write new data to actual block group
             currentBlockGroupIndex = current.nextBlockGroup;
         }else{//next block exists, go to it
@@ -300,10 +300,10 @@ void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
             //if we reach this point that means we couldnt find sufficient contiguous space in the current block group
             if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //if this is the final block group
                 //initialize a new block group
-                uint32_t newBlockGroup = fs_create_block_group();
-                current.nextBlockGroup = newBlockGroup;
+                uint32_t newBlockGroupIndex = fs_create_block_group();
+                current.nextBlockGroup = newBlockGroupIndex;
                 fs_write_block_group(currentBlockGroupIndex, &current);
-                currentBlockGroupIndex = newBlockGroup;
+                currentBlockGroupIndex = newBlockGroupIndex;
             }else{
                 //go to the next block group
                 currentBlockGroupIndex = current.nextBlockGroup;
@@ -357,3 +357,28 @@ void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
 
     }
 }
+
+uint32_t fs_create_block_group(){
+    for(uint32_t i = 0; i < FS_TOTAL_BLOCK_GROUPS; i++){
+        if(
+            blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP &&
+            memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0 //block group is emptys
+        ){
+            memset(&blockGroups[i], 0, sizeof(BlockGroup)); //clear it just to be safe
+            return i;
+        }
+    }
+
+    return FS_INVALID_BLOCK; //no more space
+}
+
+void fs_read_block_group(uint32_t blockIndex, BlockGroup *dest){
+    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return; //block index is too high
+    memcpy(dest, &blockGroups[blockIndex], sizeof(BlockGroup));
+}
+
+void fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
+    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return; //block index is too high
+    memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
+}
+
