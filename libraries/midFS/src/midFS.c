@@ -382,3 +382,37 @@ void fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
     memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
 }
 
+void fs_split_file(FileEntry *file){
+    
+}
+
+ //parentBlockLocation % BLOCKS_PER_GROUP
+uint32_t fs_resolve_path(const char* path){
+    if (strcmp(path, "/")==0) return 0;
+    char copy[MAX_PATH_LENGTH];
+    strncpy(copy, path, MAX_PATH_LENGTH);
+    copy[MAX_PATH_LENGTH-1]='\0';
+
+    char *currentFile=strtok(copy, "/");
+    uint32_t currentBlock=0;    
+
+
+    //start at root folder, get first file, and search all fileentries
+    while(currentFile!=NULL){
+        BlockGroup *group=&blockGroups[currentBlock/BLOCKS_PER_GROUP];
+        FileEntry *files=(FileEntry *)&group->dataBlcoks[currentBlock%BLOCKS_PER_GROUP];
+        int found=0;
+        for (int i=0; i<BLOCK_SIZE/sizeof(FileEntry); i++){
+            if (files[i].valid && strncmp(files[i].fileName, token, MAX_FILENAME_LENGTH)==0){
+                currentBlock=files[i].startBlockIndex;
+                found=1;
+                break;
+            }
+        }
+        if (!found) return FS_INVALID_BLOCK;
+        currentFile=strtok(NULL, "/");
+    }
+    return currentBlock
+
+}
+
