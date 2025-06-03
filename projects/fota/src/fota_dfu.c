@@ -1,179 +1,131 @@
 #include "fota_dfu.h"
-
+#include "fota_error.h"
 #include "fota_datagram.h"
+#include "fota_flash.h"
 #include "fota_memory_map.h"
 #include "network.h"
 #include "network_buffer.h"
+
 #include "packet_manger.h"
+#include <core_cm4.h>
 
 static DFUStateData data;
-static PacketManager pacman;
-static UartSettings pacman_settings = {
-  .tx = { .port = GPIO_PORT_A, .pin = GPIO_PIN_0 },  // placeholder settings
-  .rx = { .port = GPIO_PORT_B, .pin = GPIO_PIN_2 },  // placeholder settings
-  .baudrate = 1024                                   // paceholder baud rate
-};
+static FotaDatagram dgrm;
 
-FotaError fota_dfu_init(PacketManager *packet_manager) {
-  if (packet_manager == NULL) {
-    return FOTA_ERROR_BOOTLOADER_PACKET_MANAGER_UNINITIALIZED;
+static bool is_dfu_init = false;
+
+FotaError fota_dfu_init(PacketManager *pacman) {
+  if (pacman == NULL) {
+    return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
   }
 
-  data.curr_state = DFU_UNINITALIZED;
+  data.curr_state = DFU_JUMP;
   data.application_start = APPLICATION_START_ADDRESS;
-  data.binary_size = FLASH_SIZE_LINKERSCRIPT;
-  data.buffer_index = 0;
+  data.binary_size = APPLICATION_SIZE;
   data.current_address = FLASH_START_ADDRESS_LINKERSCRIPT;
   data.packet_manager = &pacman;
-  data.curr_state = DFU_IDLE;
   data.expected_datagram_id = 0;
-  data.bytes_written = 0;
+  is_dfu_init = true;
 
   return FOTA_ERROR_BOOTLOADER_SUCCESS;
 }
 
-FotaError run_dfu_bootloader() {
-  /* general logic should go like this (assuming bootloader is inited):
-     1. get datagram
-     2. (prev bootloader) update state based on "arbitration id"
-     3. perform action based on current state (start, ready, receive, jump_app, fault)
-     4. check for error and exit
-   */
-
+FotaError run_dfu_bootloader(FotaDatagram *dgrm) {
   FotaError err = FOTA_ERROR_BOOTLOADER_SUCCESS;
 
+  //use the packet manager to get a datagram
+  if (!is_dfu_init)
+    err = FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
+  
   // Get a datagram from the packet manager
-  FotaDatagram *datagram = packet_manager_get_datagram(&pacman, data.expected_datagram_id, datagram);
-  if (datagram == NULL) {
-    return FOTA_ERROR_SUCCESS;
+  if (dgrm == NULL) {
+    
+
+    return FOTA_ERROR_NO_DATAGRAM_FOUND;
+  } else if (!dgrm->is_complete) {
+    return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
   }
 
   // update state based on datagram type
-  switch (datagram->header.type) {
-    case FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA:
-      // Process metadata
-
-      break;
+  switch (dgrm->header.type) {
     case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK:
+      switch(data.curr_state) {
+        case DFU_START:
+          data.curr_state = DFU_RX;
+          err = fota_dfu_write_chunk(dgrm);
+          data.curr_state = DFU_START;
+          break;
 
-      break;
+        case DFU_RX:
+          // Dont allow writing if we are already in the process of writing
+          err = FOTA_ERROR_BOOTLOADER_WRITE_IN_PROGRESS;
+          break;
+        
+        case DFU_JUMP:
+          // Handle jump to application logic here
+          // Invalid state since we are still receiving chunks while waiting to jump
+          err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+          break;
 
-    case FOTA_DATAGRAM_TYPE_UPDATE_REQUEST:
-      break;
-
-    case FOTA_DATAGRAM_TYPE_VERIFICATION:
-      break;
+        default:
+          // Invalid state for receiving firmware chunk
+          err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+          break;
+      }
+    break;
     default:
+      err = FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
       break;
   }
+
+  if (data.bytes_written >= data.binary_size) {
+      // If we have reached the end of the binary size, we can jump to the application
+      if(!fota_verify_flash_memory())
+        return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
+      
+      if (fota_move_app(data.application_start, FLASH_START_ADDRESS_LINKERSCRIPT) != FOTA_ERROR_SUCCESS) {
+        return FOTA_ERROR_BOOTLOADER_FAILURE;
+      }
+
+      data.curr_state = DFU_JUMP; 
+      fota_dfu_jump_app();
+    }
+}
+
+static FotaError fota_move_app(uintptr_t application_start, uintptr_t current_address) {
+  // Write firmware binary to the application start address
+  FotaError err = fota_flash_write(application_start, (uint8_t *)current_address, data.binary_size);
   if (err != FOTA_ERROR_SUCCESS) {
-      process_new_state(DFU_FAULT);
-      return err;
+    return err;
   }
 }
 
+static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
+  // Write the chunk to flash memory
 
-  static onStateChange() {
-    if (data.curr_state == DFU_UNINITALIZED) {
-      return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
-    }
-
-    switch (data.curr_state) {
-      case DFU_IDLE:
-        // Handle idle state
-        break;
-
-      case DFU_START:
-        // Handle start state
-        break;
-
-      case DFU_DATA_READY:
-        // Handle data ready state
-        break;
-
-      case DFU_DATA_RECEIVE:
-        // Handle data receive state
-        break;
-
-      case DFU_JUMP_APP:
-        // Handle jump to application state
-        break;
-
-      case DFU_FAULT:
-        // Handle fault state
-        return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
-
-      default:
-        return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
-    }
+  if(dgrm->header.datagram_id != data.expected_datagram_id) {
+    return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
   }
+  
+  FotaError err = fota_flash_write(data.current_address, dgrm->data, dgrm->header.total_length);
+  data.current_address += dgrm->header.total_length;
+  data.bytes_written += dgrm->header.total_length;
+  data.expected_datagram_id++;
 
-  static FotaError process_new_state(DFUStates new_state) {
-// Macro on success and failure
-#define SUCCEED()              \
-  data.curr_state = new_state; \
-  return onStateChange(new_state);
+  return err;
+}
 
-#define FAIL() return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+void fota_dfu_jump_app(void) {
 
-    if (data.curr_state == DFU_UNINITALIZED) {
-      return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
-    }
+  //set vector table to the application start address
+  SCB->VTOR = data.application_start;
 
-    if (new_state == data.curr_state) return FOTA_ERROR_BOOTLOADER_SUCCESS;
+  // define the application entry point
+  void (*app_entry)(void) = (void (*)(void))(*((uintptr_t *)(data.application_start + 4)));
 
-    switch (data.curr_state) {
-      case (DFU_UNINITALIZED):
-        switch (new_state) {
-          case DFU_DATA_READY:
-          case DFU_IDLE:
-            SUCCEED();
-          default:
-            FAIL();
-        }
+  // Set the main stack pointer to the application start address
+  __set_MSP(*((uintptr_t *)data.application_start));
 
-      case (DFU_IDLE):
-        switch (new_state) {
-          case DFU_START:
-          case DFU_JUMP_APP:
-          case DFU_FAULT:
-            SUCCEED();
-          default:
-            FAIL()
-        }
-
-      case (DFU_START):
-        switch (new_state) {
-          case DFU_DATA_READY:
-          case DFU_JUMP_APP:
-          case DFU_FAULT:
-            SUCCEED();
-          default:
-            FAIL();
-        }
-
-      case (DFU_DATA_READY):
-        SUCCEED();
-
-      case (DFU_DATA_RECEIVE):
-        switch (new_state) {
-          case DFU_DATA_READY:
-          case DFU_JUMP_APP:
-          case DFU_START:
-          case DFU_FAULT:
-            SUCCEED();
-          default:
-            FAIL();
-        }
-      case (DFU_JUMP_APP):
-        switch (new_state) {
-          case DFU_FAULT:
-            SUCCEED();
-          default:
-            FAIL();
-        }
-      default:
-        data.curr_state = DFU_FAULT;
-        return FOTA_ERROR_INVALID_ARGS;
-    }
-  }
+  // Jump to the application entry point
+  app_entry();
+}
