@@ -382,8 +382,18 @@ void fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
     memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
 }
 
-void fs_split_file(FileEntry *file){
-    
+void fs_split_path(char *path, char *folderPath, char *fileName){
+    const char *lastSlash = strrchr(path, "/");
+
+    if(!lastSlash || lastSlash == path){
+        strcpy(folderPath, "/");
+        strcpy(fileName, (lastSlash) ? lastSlash + 1 : path);
+    }else{
+        size_t folderLen = lastSlash - path;
+        strncpy(folderPath, path, folderLen);
+        folderPath[folderLen] = '\0';
+        strcpy(fileName, lastSlash + 1);
+    }
 }
 
  //parentBlockLocation % BLOCKS_PER_GROUP
@@ -393,17 +403,17 @@ uint32_t fs_resolve_path(const char* path){
     strncpy(copy, path, MAX_PATH_LENGTH);
     copy[MAX_PATH_LENGTH-1]='\0';
 
-    char *currentFile=strtok(copy, "/");
+    char *currentFile = strtok(copy, "/");
     uint32_t currentBlock=0;    
 
 
     //start at root folder, get first file, and search all fileentries
-    while(currentFile!=NULL){
-        BlockGroup *group=&blockGroups[currentBlock/BLOCKS_PER_GROUP];
-        FileEntry *files=(FileEntry *)&group->dataBlcoks[currentBlock%BLOCKS_PER_GROUP];
+    while(currentFile != NULL){
+        BlockGroup *group = &blockGroups[currentBlock/BLOCKS_PER_GROUP];
+        FileEntry *files = (FileEntry *) &group->dataBlocks[currentBlock % BLOCKS_PER_GROUP];
         int found=0;
         for (int i=0; i<BLOCK_SIZE/sizeof(FileEntry); i++){
-            if (files[i].valid && strncmp(files[i].fileName, token, MAX_FILENAME_LENGTH)==0){
+            if (files[i].valid && strncmp(files[i].fileName, currentFile, MAX_FILENAME_LENGTH)==0){
                 currentBlock=files[i].startBlockIndex;
                 found=1;
                 break;
@@ -412,7 +422,7 @@ uint32_t fs_resolve_path(const char* path){
         if (!found) return FS_INVALID_BLOCK;
         currentFile=strtok(NULL, "/");
     }
-    return currentBlock
+    return currentBlock;
 
 }
 
