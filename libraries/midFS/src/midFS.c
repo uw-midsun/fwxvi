@@ -8,7 +8,7 @@ uint8_t fs_memory[FS_TOTAL_SIZE];
 SuperBlock *superBlock;
 BlockGroup *blockGroups;
 
-void fs_init() {
+StatusCode fs_init() {
     //setup superBlock and the first block group in memory
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
     blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
@@ -32,39 +32,52 @@ void fs_init() {
     superBlock->rootFolderMetadata.valid = 1;
     superBlock->rootFolderMetadata.startBlockIndex = 0;
     superBlock->rootFolderMetadata.size = 0;
+    
+    return STATUS_CODE_OK;
 }
 
 
-uint32_t fs_read_file(const char *path) {
+StatusCode fs_read_file(const char *path, uint32_t *parentBlockLocation) {
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
     fs_split_path(path, folderPath, folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
-    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+    parentBlockLocation; 
 
-    return parentBlockLocation;
+    StatusCode status = fs_resolve_path(path, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
+
+    return STATUS_CODE_OK;
 }
 
-void fs_extract_file(uint8_t *addr, uint32_t size){
+StatusCode fs_extract_file(uint8_t *addr, uint32_t size){
     for (uint32_t i=0; i<size; i++){
         putchar(addr[i]);
         //just read out the contents
     }
+
+    return STATUS_CODE_OK;
 }
 
-void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isFolder){
-    //add something to restrict length of name
+StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isFolder){
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
     fs_split_path(path, *folderPath, *folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
-    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+    uint32_t parentBlockLocation;
+    
+    StatusCode status = fs_resolve_path(path, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
 
-    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+    if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
 
     //locate the block group
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
@@ -128,7 +141,11 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
         if(incomingBlockAddress != UINT32_MAX) break; //we found an address, break
 
         if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //next block does not exist
-            uint32_t newBlockGroupIndex = fs_create_block_group();
+            uint32_t newBlockGroupIndex;
+            StatusCode status = fs_create_block_group(&newBlockGroupIndex);
+            if(status != STATUS_CODE_OK){
+                return status;
+            }
             current.nextBlockGroup = newBlockGroupIndex;
             fs_write_block_group(currentBlockGroupIndex, &current); //write new data to actual block group
             currentBlockGroupIndex = current.nextBlockGroup;
@@ -157,10 +174,10 @@ void fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isF
 
     fs_write_block_group(currentBlockGroupIndex, &current); //update the current block
 
-    return;
+    return STATUS_CODE_OK;
 }
 
-void fs_delete_file(const char* path){
+StatusCode fs_delete_file(const char* path){
     //add something to restrict length of name
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
@@ -168,9 +185,14 @@ void fs_delete_file(const char* path){
     fs_split_path(path, *folderPath, *folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
-    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+    uint32_t parentBlockLocation; 
 
-    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+    StatusCode status = fs_resolve_path(path, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
 
     //locate the block group
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
@@ -210,16 +232,21 @@ void fs_delete_file(const char* path){
 
 }
 
-void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
+StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
     fs_split_path(path, *folderPath, *folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
-    uint32_t parentBlockLocation = fs_resolve_path(folderPath); 
+    uint32_t parentBlockLocation;
 
-    if(parentBlockLocation == FS_INVALID_BLOCK) return;
+    StatusCode status = fs_resolve_path(path, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
 
     //locate the block group
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
@@ -300,7 +327,11 @@ void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
             //if we reach this point that means we couldnt find sufficient contiguous space in the current block group
             if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //if this is the final block group
                 //initialize a new block group
-                uint32_t newBlockGroupIndex = fs_create_block_group();
+                uint32_t newBlockGroupIndex;
+                StatusCode status = fs_create_block_group(&newBlockGroupIndex);
+                if(status != STATUS_CODE_OK){
+                    return status;
+                }
                 current.nextBlockGroup = newBlockGroupIndex;
                 fs_write_block_group(currentBlockGroupIndex, &current);
                 currentBlockGroupIndex = newBlockGroupIndex;
@@ -356,33 +387,38 @@ void fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
         fs_write_block_group(oldFile.startBlockIndex / BLOCKS_PER_GROUP, &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP]);
 
     }
+
+    return STATUS_CODE_OK;
 }
 
-uint32_t fs_create_block_group(){
+uint32_t fs_create_block_group(uint32_t *index){
     for(uint32_t i = 0; i < FS_TOTAL_BLOCK_GROUPS; i++){
         if(
             blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP &&
             memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0 //block group is emptys
         ){
             memset(&blockGroups[i], 0, sizeof(BlockGroup)); //clear it just to be safe
-            return i;
+            index = i;
+            return STATUS_CODE_OK;
         }
     }
 
-    return FS_INVALID_BLOCK; //no more space
+
+    index = FS_INVALID_BLOCK;
+    return STATUS_CODE_INCOMPLETE; //no more space
 }
 
-void fs_read_block_group(uint32_t blockIndex, BlockGroup *dest){
-    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return; //block index is too high
+StatusCode fs_read_block_group(uint32_t blockIndex, BlockGroup *dest){
+    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
     memcpy(dest, &blockGroups[blockIndex], sizeof(BlockGroup));
 }
 
-void fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
-    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return; //block index is too high
+StatusCode fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
+    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
     memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
 }
 
-void fs_split_path(char *path, char *folderPath, char *fileName){
+StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
     const char *lastSlash = strrchr(path, "/");
 
     if(!lastSlash || lastSlash == path){
@@ -394,10 +430,12 @@ void fs_split_path(char *path, char *folderPath, char *fileName){
         folderPath[folderLen] = '\0';
         strcpy(fileName, lastSlash + 1);
     }
+
+    return STATUS_CODE_OK;
 }
 
  //parentBlockLocation % BLOCKS_PER_GROUP
-uint32_t fs_resolve_path(const char* path){
+StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
     if (strcmp(path, "/")==0) return 0;
     char copy[MAX_PATH_LENGTH];
     strncpy(copy, path, MAX_PATH_LENGTH);
@@ -419,10 +457,45 @@ uint32_t fs_resolve_path(const char* path){
                 break;
             }
         }
-        if (!found) return FS_INVALID_BLOCK;
+        if (!found){
+            path = FS_INVALID_BLOCK;
+            return STATUS_CODE_INVALID_ARGS;
+        }
         currentFile=strtok(NULL, "/");
     }
-    return currentBlock;
-
+    path = currentBlock;
+    return STATUS_CODE_OK;
 }
 
+StatusCode fs_list(const char * path){
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
+
+    fs_split_path(path, *folderPath, *folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation; 
+    StatusCode status = fs_resolve_path(folderPath, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
+
+    //the block group our directory is located in
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
+
+    //Store the files in our folder block in an array of files
+    //might need to add a try catch or something for this line in case the path doesnt lead to a folder
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
+
+    //loop through files
+    for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(File[i].valid){
+            printf("%s\n", File[i].fileName);
+        }
+    }
+
+    return STATUS_CODE_OK;
+
+}
