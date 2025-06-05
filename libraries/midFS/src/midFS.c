@@ -1,4 +1,5 @@
 #include "midFS.h"
+#include <cstddef>
 
 #define SUPERBLOCK_OFFSET 0
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
