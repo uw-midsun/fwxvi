@@ -87,10 +87,23 @@ void test_fs_resolve_invalid_path(void){
 
 
 void test_example(void) {
-    fs_add_file("test.txt", "This is a test file.");
+    printf("test example begin\n");
+    fs_add_file("test.txt", "This is a test file.", 21, 0);
 
     uint32_t parentBlockLocation;
 
     fs_read_file("/test.txt");
 
+}
+
+int main(void) {
+    UNITY_BEGIN();
+
+    setup_test();
+
+    RUN_TEST(test_example);
+
+    teardown_test();
+
+    return UNITY_END();
 }

@@ -1,9 +1,0 @@
-{
-    "libs": [
-        "FreeRTOS",
-        "midFS",
-        "ms-common",
-        "master"
-    ],
-    "can": false
-}
