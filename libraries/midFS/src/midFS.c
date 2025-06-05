@@ -181,7 +181,7 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
         memcpy(&current.dataBlocks[incomingBlockAddress][0], content, size); //copy in content
     }else{
         memcpy(&current.dataBlocks[incomingBlockAddress][0], content, BLOCK_SIZE); //copy content into first block w/ metadata
-        size_t copied = BLOCK_SIZE;
+        uint32_t copied = BLOCK_SIZE;
         for(uint32_t block = 1; (block < blocksNeeded) && (copied < size); block++){
             uint32_t remaining = size - copied;
             uint32_t copySize = (remaining > BLOCK_SIZE) ? BLOCK_SIZE : remaining;
@@ -251,7 +251,7 @@ StatusCode fs_delete_file(const char* path){
 
 }
 
-StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentSize){
+StatusCode fs_write_file(const char * path, uint8_t *content, uint32_t contentSize){
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
@@ -301,7 +301,7 @@ StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentS
             memcpy(parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP][oldFile.size], content, contentSize); //copy in new content after old content
         }else{
             memcpy(parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP][oldFile.size], content, BLOCK_SIZE - oldFile.size); //copy content into block with the end of oldFile content
-            size_t copied = BLOCK_SIZE - oldFile.size;
+            uint32_t copied = BLOCK_SIZE - oldFile.size;
             for(uint32_t block = 1; (block < newBlocksNeeded - oldBlocksNeeded) && (copied < contentSize); block++){
                 uint32_t remaining = contentSize - copied;
                 uint32_t copySize = (remaining > BLOCK_SIZE) ? BLOCK_SIZE : remaining;
@@ -361,12 +361,12 @@ StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentS
         //create a new array to store old content + new content
         uint8_t fullContent[oldFile.size + contentSize];
 
-        size_t copied = 0;
+        uint32_t copied = 0;
 
         //copy old content in
         for(uint32_t i = 0; i < oldBlocksNeeded; i++){
             uint32_t blockOffset = (oldFile.startBlockIndex % BLOCKS_PER_GROUP) + i;
-            size_t copySize = (oldFile.size - copied > BLOCK_SIZE) ?BLOCK_SIZE : oldFile.size - copied;
+            uint32_t copySize = (oldFile.size - copied > BLOCK_SIZE) ?BLOCK_SIZE : oldFile.size - copied;
             memcpy(&fullContent[copied], blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].dataBlocks[blockOffset][0], copySize);
             copied += copySize;
         }
@@ -383,7 +383,7 @@ StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentS
 
         //copy data in
         for(uint32_t i = 0; i < newBlocksNeeded; i++){
-            size_t chunk = (oldFile.size + contentSize - copied > BLOCK_SIZE) ? BLOCK_SIZE : (oldFile.size + contentSize - copied);
+            uint32_t chunk = (oldFile.size + contentSize - copied > BLOCK_SIZE) ? BLOCK_SIZE : (oldFile.size + contentSize - copied);
             memcpy(&current.dataBlocks[incomingBlockAddress + i], &fullContent[copied], chunk);
             copied += chunk;
         }
@@ -442,7 +442,7 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
         strcpy(folderPath, "/");
         strcpy(fileName, (lastSlash) ? lastSlash + 1 : path);
     }else{
-        size_t folderLen = lastSlash - path;
+        uint32_t folderLen = lastSlash - path;
         strncpy(folderPath, path, folderLen);
         folderPath[folderLen] = '\0';
         strcpy(fileName, lastSlash + 1);
@@ -451,11 +451,13 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
     return STATUS_CODE_OK;
 }
 
- //parentBlockLocation % BLOCKS_PER_GROUP
 StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
-    if (strcmp(path, "/")==0) return 0;
+    if (strcmp(folderPath, "/")==0){
+        path = 0;
+        return STATUS_CODE_OK;  
+    }  //return the root directory
     char copy[MAX_PATH_LENGTH];
-    strncpy(copy, path, MAX_PATH_LENGTH);
+    strncpy(copy, folderPath, MAX_PATH_LENGTH);
     copy[MAX_PATH_LENGTH-1]='\0';
 
     char *currentFile = strtok(copy, "/");
@@ -475,12 +477,12 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
             }
         }
         if (!found){
-            path = FS_INVALID_BLOCK;
+            *path = FS_INVALID_BLOCK;
             return STATUS_CODE_INVALID_ARGS;
         }
         currentFile=strtok(NULL, "/");
     }
-    path = currentBlock;
+    *path = currentBlock;
     return STATUS_CODE_OK;
 }
 
