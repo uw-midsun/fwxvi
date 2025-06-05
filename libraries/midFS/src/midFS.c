@@ -37,27 +37,45 @@ StatusCode fs_init() {
 }
 
 
-StatusCode fs_read_file(const char *path, uint32_t *parentBlockLocation) {
+StatusCode fs_read_file(const char *path) {
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
     fs_split_path(path, folderPath, folderName);
 
-    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
-    parentBlockLocation; 
+    uint32_t parentBlockLocation;
 
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
     StatusCode status = fs_resolve_path(path, &parentBlockLocation);
     if(status != STATUS_CODE_OK){
         return status;
     }
 
-    return STATUS_CODE_OK;
-}
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation / BLOCKS_PER_GROUP];
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
 
-StatusCode fs_extract_file(uint8_t *addr, uint32_t size){
-    for (uint32_t i=0; i<size; i++){
-        putchar(addr[i]);
-        //just read out the contents
+    FileEntry currentFile;
+
+    
+    for(int i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(File[i].valid && strcmp(File[i].fileName, folderName, MAX_FILENAME_LENGTH)){
+            currentFile = File[i];
+            break;
+        }
+    }
+    
+    currentFile.startBlockIndex;
+    
+    BlockGroup *fileGroup = &blockGroups[currentFile.startBlockIndex / BLOCKS_PER_GROUP];
+    uint32_t blocksNeeded = (currentFile.size + BLOCK_SIZE - 1)/ BLOCK_SIZE;
+    
+    uint32_t writeSize = currentFile.size;
+
+    for(uint32_t i = 0; i < blocksNeeded; i++){
+        uint32_t chunk = (writeSize > BLOCK_SIZE) ? BLOCK_SIZE : writeSize;
+        for(uint32_t j = 0; j < chunk; j++){
+            putChar(fileGroup->dataBlocks[currentFile.startBlockIndex % BLOCKS_PER_GROUP + i][j]);
+        }
     }
 
     return STATUS_CODE_OK;
@@ -215,6 +233,7 @@ StatusCode fs_delete_file(const char* path){
             memset(File[i].fileName, 0, MAX_FILENAME_LENGTH);
             File[i].size = 0;
             File[i].startBlockIndex = 0;
+            break;
         }
     }
 
@@ -266,8 +285,6 @@ StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentS
     }
     uint32_t oldBlocksNeeded = (oldFile.size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
     uint32_t newBlocksNeeded = (oldFile.size + contentSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
-
-    // parentGroup->blockBitmap
 
     uint32_t canWriteInPlace = 1;
 
@@ -497,5 +514,4 @@ StatusCode fs_list(const char * path){
     }
 
     return STATUS_CODE_OK;
-
 }
