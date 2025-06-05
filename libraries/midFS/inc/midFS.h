@@ -1,3 +1,6 @@
+#ifndef FILE_SYSTEM_H
+#define FILE_SYSTEM_H
+
 #include <stdint.h>
 #include "midFS_types.h"
 #include "status.h"
@@ -77,3 +80,5 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName);
  * 
  */
 StatusCode fs_resolve_path(const char *folderPath, uint32_t* path);
+
+#endif // FILE_SYSTEM_H

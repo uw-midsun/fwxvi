@@ -14,19 +14,16 @@
 /* Inter-component Headers */
 #include "test_helpers.h"
 #include "unity.h"
-#include "file_system.h"
+#include "midFS.h"
 /* External library Headers */
 
 /* Intra-component Headers */
 
 void setup_test(void) {
-
-    // Initialize the Unity test framework
-    UNITY_BEGIN();
-
+    
     // Initialize the file system if needed
     file_system_init();
-
+    
     // Additional setup can be done here
     printf("Test setup complete.\n");
     
@@ -35,10 +32,23 @@ void setup_test(void) {
 void teardown_test(void) {}
 
 void test_example(void) {
-    fs_add_file("test.txt", "This is a test file.");
+    printf("test example begin\n");
+    fs_add_file("test.txt", "This is a test file.", 21, 0);
 
     uint32_t parentBlockLocation;
 
     fs_read_file("/test.txt");
 
+}
+
+int main(void) {
+    UNITY_BEGIN();
+
+    setup_test();
+
+    RUN_TEST(test_example);
+
+    teardown_test();
+
+    return UNITY_END();
 }
