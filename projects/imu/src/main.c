@@ -10,6 +10,8 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -45,6 +47,7 @@ void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
   bmi323_update(&bmi323_storage);
+  LOG_DEBUG("BMI323 ACCEL - x: %d%%, y: %d%%, z: %d%%\r\n", (int)(bmi323_storage.accel.x * 100), (int)(bmi323_storage.accel.y * 100), (int)(bmi323_storage.accel.z * 100));
 }
 
 void run_1hz_cycle() {}
