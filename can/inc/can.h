@@ -126,4 +126,10 @@ StatusCode clear_rx_struct();
  */
 StatusCode clear_tx_struct();
 
+/**
+ * @brief   Callback function called when receiving all CAN data
+ * @return  Callback function
+ */
+CanRxAllCallback can_get_rx_all_cb();
+
 /** @} */

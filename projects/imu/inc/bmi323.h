@@ -65,7 +65,7 @@ typedef enum {
   IMU_ACCEL_RANGE_4G,  /**< +- 4Gs */
   IMU_ACCEL_RANGE_8G,  /**< +- 8Gs */
   IMU_ACCEL_RANGE_16G, /**< +- 16Gs */
-  NUM_IMU_ACCEL_RANGE  /**< Number of IMU Accelerometer ranges */
+  NUM_IMU_ACCEL_RANGES /**< Number of IMU Accelerometer ranges */
 } IMUAccelRange;
 
 /** @brief  IMU Gyro range in units of degrees */
@@ -173,9 +173,9 @@ typedef struct {
 } GyroGainOffsetValues;
 
 typedef struct {
-  int16_t x;
-  int16_t y;
-  int16_t z;
+  float x;
+  float y;
+  float z;
 } Axes;
 
 typedef struct {

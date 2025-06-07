@@ -151,8 +151,6 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   configASSERT(s_can_tx_ready_sem_handle);
   s_tx_full = false;
 
-  LOG_DEBUG("CAN HW initialized on %s\n", CAN_HW_DEV_INTERFACE);
-
   return STATUS_CODE_OK;
 }
 
