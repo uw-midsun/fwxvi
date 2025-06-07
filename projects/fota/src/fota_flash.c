@@ -35,7 +35,7 @@ static FotaError s_validate_address(uint32_t address, size_t size) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -60,7 +60,7 @@ FotaError boot_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_flash_erase(uint8_t start_page, uint8_t num_pages) {
+FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages) {
   if (start_page >= NUM_FLASH_PAGES || num_pages == 0U || start_page + num_pages > NUM_FLASH_PAGES) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -82,7 +82,7 @@ FotaError boot_flash_erase(uint8_t start_page, uint8_t num_pages) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -95,8 +95,24 @@ FotaError boot_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) 
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_verify_flash_memory() {
-  volatile uint32_t *flash_pointer = (volatile uint32_t *)APPLICATION_START_ADDRESS;
+FotaError fota_verify_flash_memory() {
+  volatile uint32_t *flash_pointer = (volatile uint32_t *) FLASH_START_ADDRESS_LINKERSCRIPT;
+  uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
+
+  for (uint32_t i = 0; i < size_in_words; i++) {
+    if (flash_pointer[i] != 0xFFFFFFFFU) {
+      return FOTA_ERROR_SUCCESS;
+    }
+  }
+
+  return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
+}
+
+
+//Not sure if this is needed since the flash memory is already verified in fota_verify_flash_memory
+// but keeping it for now as it might be useful in the future (e.g. for verifying a specific application section)
+FotaError fota_verify_flash_memory_application() {
+  volatile uint32_t *flash_pointer = (volatile uint32_t *) APPLICATION_SIZE;
   uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
 
   for (uint32_t i = 0; i < size_in_words; i++) {
