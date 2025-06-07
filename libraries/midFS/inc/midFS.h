@@ -4,9 +4,12 @@
 #include <stdint.h>
 #include "midFS_types.h"
 #include "status.h"
+#include <string.h>
+#include <stdio.h>
 
 #define FS_NULL_BLOCK_GROUP 0xFFFFFFFF
 #define FS_INVALID_BLOCK 0xFFFFFFF
+#define FS_NULL_FILE 0xFFFFFFFF
 
 /**
  * Initializes the file system, must be called

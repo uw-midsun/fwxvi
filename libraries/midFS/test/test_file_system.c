@@ -19,14 +19,22 @@
 
 /* Intra-component Headers */
 
+StatusCode status;
+
 void setup_test(void) {
 
     // Initialize the Unity test framework
     UNITY_BEGIN();
 
     // Initialize the file system if needed
+<<<<<<< HEAD:libraries/midFS/tests/test_file_system.c
     file_system_init();
 
+=======
+    status = fs_init();
+    printf("%d", status);
+    
+>>>>>>> f87b5a8 (bugfixes):libraries/midFS/test/test_file_system.c
     // Additional setup can be done here
     printf("Test setup complete.\n");
     
@@ -85,22 +93,14 @@ void test_add_empty_file(void){
 }
 void test_example(void) {
     printf("test example begin\n");
-    fs_add_file("test.txt", "This is a test file.", 21, 0);
+
+    status = fs_add_file("test.txt", (uint8_t *)"This is a test file.", 21, 0);
+
+    printf("%d", status);
 
     uint32_t parentBlockLocation;
 
-    fs_read_file("/test.txt");
+    status = fs_read_file("/test.txt");
+    printf("%d", status);
 
-}
-
-int main(void) {
-    UNITY_BEGIN();
-
-    setup_test();
-
-    RUN_TEST(test_example);
-
-    teardown_test();
-
-    return UNITY_END();
 }
