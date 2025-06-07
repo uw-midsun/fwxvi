@@ -33,6 +33,7 @@ static const CanSettings s_can_settings = {
   .tx = { GPIO_PORT_A, 12 },
   .rx = { GPIO_PORT_A, 11 },
   .loopback = false,
+  .can_rx_all_cb = NULL,
 };
 
 TASK(can_message_listener, TASK_STACK_256) {
