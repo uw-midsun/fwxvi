@@ -1,4 +1,5 @@
 #include "midFS.h"
+#include <cstddef>
 
 #define SUPERBLOCK_OFFSET 0
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
@@ -408,20 +409,20 @@ StatusCode fs_write_file(const char * path, uint8_t *content, uint32_t contentSi
     return STATUS_CODE_OK;
 }
 
-uint32_t fs_create_block_group(uint32_t *index){
+StatusCode fs_create_block_group(uint32_t *index){
     for(uint32_t i = 0; i < FS_TOTAL_BLOCK_GROUPS; i++){
         if(
             blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP &&
             memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0 //block group is emptys
         ){
             memset(&blockGroups[i], 0, sizeof(BlockGroup)); //clear it just to be safe
-            index = i;
+            *index = i;
             return STATUS_CODE_OK;
         }
     }
 
 
-    index = FS_INVALID_BLOCK;
+    *index = FS_INVALID_BLOCK;
     return STATUS_CODE_INCOMPLETE; //no more space
 }
 
@@ -452,8 +453,8 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
 }
 
 StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
-    if (strcmp(folderPath, "/")==0){
-        path = 0;
+    if (strcmp(folderPath, "/") == 0){
+        *path = 0;
         return STATUS_CODE_OK;  
     }  //return the root directory
     char copy[MAX_PATH_LENGTH];
@@ -486,7 +487,7 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
     return STATUS_CODE_OK;
 }
 
-StatusCode fs_list(const char * path){
+StatusCode fs_list(const char *path){
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
