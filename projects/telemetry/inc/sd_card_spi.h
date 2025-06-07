@@ -1,15 +1,29 @@
-/* Standard library Headers */
-#include <stddef.h>
-#include <stdint.h> 
-#include "stm32l433xx.h"
-#include "stm32l4xx_hal_conf.h"
-#include "stm32l4xx_hal_rcc.h"
-#include "stm32l4xx_hal_spi.h" /* !DELETE: Use this gang */
-#include "stm32l4xx_hal_gpio.h"
-#include <status.h>
+#pragma once
 
-// The block size on the SD card
-#define SD_BLOCK_SIZE (512)
+/************************************************************************************************
+ * @file    sd_card_spi.h
+ *
+ * @brief   Sd Card Spi
+ *
+ * @date    2025-06-07
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <status.h>
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "gpio.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup telemetry
+ * @brief    telemetry Firmware
+ * @{
+ */
 
 /** @brief  SPI Port selection */
 typedef enum {
@@ -37,6 +51,9 @@ typedef struct {
   GpioAddress cs;
 } SdSpiSettings;
 
+/*  Constant + Macros */
+#define SD_BLOCK_SIZE 512U
+
 // For SDHC and SDXC cards, the address provided to these functions should be the block address
 
 // Initialize the SD card on a given SPI port
@@ -51,3 +68,5 @@ StatusCode sd_write_blocks(SdSpiPort spi, uint8_t *src, uint32_t writeAddr, uint
 
 // Determines whether the SD card is ready in on a given SPI port
 StatusCode sd_is_initialized(SdSpiPort spi);
+
+/** @} */

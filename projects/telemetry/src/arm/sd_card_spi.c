@@ -1,16 +1,31 @@
-#include "sd_card_spi.h"
+/************************************************************************************************
+ * @file    sd_card_spi.c
+ *
+ * @brief   Sd Card Spi
+ *
+ * @date    2025-06-07
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/* Standard Header*/
+/* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
 
+/* Inter-component Headers */
 #include "delay.h"
 #include "gpio.h"
 #include "log.h"
+#include "stm32l433xx.h"
+#include "stm32l4xx_hal.h"
+#include "stm32l4xx_hal_conf.h"
+#include "stm32l4xx_hal_gpio.h"
+#include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_spi.h"
 
-/*  Constant + Macros */
-#define SD_BLOCK_SIZE 512U
+/* Intra-component Headers */
+#include "sd_card_spi.h"
+
+/* Standard Header*/
 
 #define SD_TOKEN_START_BLOCK 0xFE
 #define SD_TOKEN_MULTI_WRITE 0xFC
@@ -60,13 +75,13 @@ static SPI_HandleTypeDef *pick_hspi(SdSpiPort p) {
 
 /* CS driven by settings->cs */
 static inline void prv_cs_low(SdSpiPort p) {
-  HAL_GPIO_WritePin(g_settings[p]->cs.port, g_settings[p]->cs.pin, GPIO_PIN_RESET);
+  gpio_set_state(&g_settings[p]->cs, GPIO_STATE_LOW);
 }
 static inline void prv_cs_high(SdSpiPort p) {
-  HAL_GPIO_WritePin(g_settings[p]->cs.port, g_settings[p]->cs.pin, GPIO_PIN_SET);
+  gpio_set_state(&g_settings[p]->cs, GPIO_STATE_HIGH);
 }
 
-void spi_exchange(SdSpiPort spi, const uint8_t *tx_buf, uint16_t tx_len, uint8_t *rx_buf, uint16_t rx_len) {
+void spi_exchange(SdSpiPort spi, uint8_t *tx_buf, uint16_t tx_len, uint8_t *rx_buf, uint16_t rx_len) {
   uint16_t len = tx_len ? tx_len : rx_len;
   static const uint8_t ff = 0xFF;
   const uint8_t *tx = tx_buf ? tx_buf : &ff;
@@ -122,10 +137,10 @@ StatusCode sd_card_init(SdSpiPort p, SdSpiSettings *settings) {
   g_settings[p] = settings;
 
   /* init GPIO pins from settings */
-  gpio_init_pin(&settings->mosi, GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_AF5_SPI1);
-  gpio_init_pin(&settings->miso, GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_AF5_SPI1);
-  gpio_init_pin(&settings->sclk, GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_AF5_SPI1);
-  gpio_init_pin(&settings->cs, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, 0);
+  gpio_init_pin_af(&settings->mosi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+  gpio_init_pin_af(&settings->miso, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+  gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+  gpio_init_pin(&settings->cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
   /* SPI instance + params */
   SPI_HandleTypeDef *h = pick_hspi(p);
@@ -216,7 +231,7 @@ StatusCode sd_read_blocks(SdSpiPort p, uint8_t *dst, uint32_t lba, uint32_t numb
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_write_blocks(SdSpiPort p, const uint8_t *src, uint32_t lba, uint32_t number_of_blocks) {
+StatusCode sd_write_blocks(SdSpiPort p, uint8_t *src, uint32_t lba, uint32_t number_of_blocks) {
   uint32_t arg = sdhc ? lba : lba * SD_BLOCK_SIZE;
 
   if (number_of_blocks == 1) {
@@ -289,7 +304,7 @@ StatusCode sd_is_initialized(SdSpiPort p) {
   uint8_t r2 = prv_transfer_byte(p, 0xFF);
 
   prv_cs_high(p);
-  prv_xfer_byte(p, 0xFF);
+  prv_transfer_byte(p, 0xFF);
 
   return (r1 == 0 && r2 == 0) ? STATUS_CODE_OK : STATUS_CODE_INTERNAL_ERROR;
 }
