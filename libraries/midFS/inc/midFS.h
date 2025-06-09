@@ -84,4 +84,6 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName);
  */
 StatusCode fs_resolve_path(const char *folderPath, uint32_t* path);
 
+StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAddress);
+
 #endif // FILE_SYSTEM_H

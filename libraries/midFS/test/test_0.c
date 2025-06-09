@@ -39,11 +39,9 @@ void teardown_test(void) {}
 
 void test_example(void) {
     status = fs_add_file("test.txt", (uint8_t *)"This is a test file.", 21, 0);
-    printf("%d", status);
     
     uint32_t parentBlockLocation;
     
     status = fs_read_file("/test.txt");
-    printf("%d", status);
 
 }

@@ -43,9 +43,10 @@ StatusCode fs_read_file(const char *path) {
 
     fs_split_path(path, folderPath, folderName);
 
-    printf("Path: %s\n", path);
-    printf("Path name: %s\n", folderPath);
-    printf("Folder name: %s\n", folderName);
+    printf("fs_read_file command:\n");
+    printf("\tPath: %s\n", path);
+    printf("\tPath name: %s\n", folderPath);
+    printf("\tFolder name: %s\n", folderName);
 
     uint32_t parentBlockLocation;
 
@@ -55,25 +56,24 @@ StatusCode fs_read_file(const char *path) {
         return status;
     }
 
-    printf("%d\n", parentBlockLocation);
+    printf("Located parent block at index: %d\n", parentBlockLocation);
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation / BLOCKS_PER_GROUP];
     FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
 
     FileEntry currentFile;
     currentFile.valid = 0;
 
-    printf("finding file\n");
+    printf("Finding file...\n");
     
     for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
-        printf("%d, %s\n", i, File[i].fileName);
         if(File[i].valid){
         }
         if(File[i].valid && (strcmp(File[i].fileName, folderName) == 0)){
-            printf("found file\n");
+            printf("Found file:\n");
             currentFile = File[i];
-            printf("File i size: %d\n", File[i].size);
-            printf("File i name: %s\n", File[i].fileName);
-            printf("File i start block index: %d\n", File[i].startBlockIndex);            
+            printf("\tFile size: %d\n", File[i].size);
+            printf("\tFile name: %s\n", File[i].fileName);
+            printf("\tFile start block index: %d\n", File[i].startBlockIndex);            
             // currentFile.startBlockIndex = 1;
             break;
         }
@@ -82,11 +82,6 @@ StatusCode fs_read_file(const char *path) {
     if(currentFile.valid == 0){
         return STATUS_CODE_INVALID_ARGS;
     }
-
-
-    printf("File size: %d\n", currentFile.size);
-    printf("File name: %s\n", currentFile.fileName);
-    printf("Current file start block index: %d\n", currentFile.startBlockIndex);
         
     BlockGroup fileGroup = blockGroups[currentFile.startBlockIndex / BLOCKS_PER_GROUP];
     uint32_t blocksNeeded = (currentFile.size + BLOCK_SIZE - 1)/ BLOCK_SIZE;
@@ -95,19 +90,19 @@ StatusCode fs_read_file(const char *path) {
 
     for(uint32_t i = 0; i < blocksNeeded; i++){
         uint32_t chunk = (writeSize > BLOCK_SIZE) ? BLOCK_SIZE : writeSize;
-        printf("Chunk size: %d\n", chunk);
-        printf("File content:\n");
+        printf("File content: \"");
         for(uint32_t j = 0; j < chunk; j++){
             printf("%c", fileGroup.dataBlocks[currentFile.startBlockIndex % BLOCKS_PER_GROUP + i][j]);
         }
-        printf("\n");
+        printf("\"\n");
         
         for(uint32_t i = 0; i < chunk; i++){
             // printf("%c", fileGroup.dataBlocks[currentFile.startBlockIndex][i]);
         }
-        printf("\n");
 
     }
+
+    printf("End of fs_read_file_command\n");
 
     return STATUS_CODE_OK;
 }
@@ -116,10 +111,12 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
+    printf("fs_add_file command\n");
+
     fs_split_path(path, folderPath, folderName);
-    printf("Path: %s\n", path);
-    printf("Path name: %s\n", folderPath);
-    printf("Folder name: %s\n", folderName);
+    printf("\tPath: %s\n", path);
+    printf("\tPath name: %s\n", folderPath);
+    printf("\tFolder name: %s\n", folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
     uint32_t parentBlockLocation;
@@ -129,7 +126,7 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
         return status;
     }
 
-    printf("Parent block location: %d\n", parentBlockLocation);
+    printf("Located parent block at index: %d\n", parentBlockLocation);
 
     if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
 
@@ -161,10 +158,6 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
         if(!File[i].valid){
             fileLocation = i;
             File[i] = newFile;
-            printf("%s\n", File[i].fileName);
-            printf("%d\n", File[i].startBlockIndex);
-            printf("%d\n", File[i].valid);
-            printf("Copied name\n");
             break;
         }
     }
@@ -176,98 +169,45 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     //determine how many blocks we need
     uint32_t blocksNeeded = (size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
     
-    printf("Blocks needed: %d\n", blocksNeeded);
-    
-    //first block
-    BlockGroup current;
-    uint32_t currentBlockGroupIndex = superBlock->nextBlockGroup;
-    
     uint32_t incomingBlockAddress = UINT32_MAX; //invalid marker
-    uint32_t space = 0;
-    // File[fileLocation].startBlockIndex = 1;
     
-    while(1){
-        // printf("Checking for empty space w/ current block group index of %d\n", currentBlockGroupIndex);
-        fs_read_block_group(currentBlockGroupIndex, &current);
-        for(uint32_t i = 0; i < BLOCKS_PER_GROUP; i++){
-            printf("%d\n", current.blockBitmap[i]);
-            if(current.blockBitmap[i] == 0){
-                while(i + space < BLOCKS_PER_GROUP && current.blockBitmap[i + space] == 0){
-                    space++;
-                    if(space == blocksNeeded){
-                        printf("yo\n");
-                        // File[fileLocation].startBlockIndex = i;
-                        incomingBlockAddress = i;
-                        break;
-                    }
-                }
-                i += space;
-            }
-            space = 0;
-            if(incomingBlockAddress != UINT32_MAX){
-                break;
-            }
-        }
-        //if there is no space and we havent found free space, go to the next block
-
-        printf("Incoming block address: %d\n", incomingBlockAddress);
-        printf("File location of start block index: %d\n", File[fileLocation].startBlockIndex);
-        if(incomingBlockAddress != UINT32_MAX) break; //we found an address, break
-
-
-        if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //next block does not exist
-            uint32_t newBlockGroupIndex;
-            StatusCode status = fs_create_block_group(&newBlockGroupIndex);
-            if(status != STATUS_CODE_OK){
-                return status;
-            }
-            current.nextBlockGroup = newBlockGroupIndex;
-            fs_write_block_group(currentBlockGroupIndex, &current); //write new data to actual block group
-            currentBlockGroupIndex = current.nextBlockGroup;
-        }else{//next block exists, go to it
-            currentBlockGroupIndex = current.nextBlockGroup;
-        }
-
-    }
-
-    for (uint32_t i = 0; i < blocksNeeded; i++) current.blockBitmap[incomingBlockAddress + i] = 1; //update the block bitmap
+    fs_locate_memory(blocksNeeded, &incomingBlockAddress);
     
-    newFile.startBlockIndex = incomingBlockAddress;
+    printf("Blocks needed: %d\n", blocksNeeded);
+    printf("Located sufficient memory at address: %d\n", incomingBlockAddress);
+
+    //get the block group that our incoming block address is in 
+    BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
+
+    for (uint32_t i = 0; i < blocksNeeded; i++) current->blockBitmap[incomingBlockAddress + i] = 1; //update the block bitmap
+    
     File[fileLocation].startBlockIndex = incomingBlockAddress;
-    printf("File[filelocation] start block address: %d\n", File[fileLocation].startBlockIndex);
 
     fs_write_block_group(parentBlockLocation, parentGroup);
     
     if(blocksNeeded == 1){
-        memcpy(&current.dataBlocks[incomingBlockAddress][0], content, size); //copy in content
+        memcpy(&current->dataBlocks[incomingBlockAddress % BLOCKS_PER_GROUP][0], content, size); //copy in content
+        printf("Copying in content: \"");
         for(uint32_t i = 0; i < size; i++){
-            printf("%c", current.dataBlocks[incomingBlockAddress][i]);
+            printf("%c", current->dataBlocks[incomingBlockAddress % BLOCKS_PER_GROUP][i]);
         }
-        printf("\n");
+        printf("\"\n");
     }else{
-        memcpy(&current.dataBlocks[incomingBlockAddress][0], content, BLOCK_SIZE); //copy content into first block
+        memcpy(&current->dataBlocks[incomingBlockAddress % BLOCKS_PER_GROUP][0], content, BLOCK_SIZE); //copy content into first block
         uint32_t copied = BLOCK_SIZE;
         for(uint32_t block = 1; (block < blocksNeeded) && (copied < size); block++){
             uint32_t remaining = size - copied;
             uint32_t copySize = (remaining > BLOCK_SIZE) ? BLOCK_SIZE : remaining;
-            memcpy(&current.dataBlocks[incomingBlockAddress + block][0], &content[copied], copySize);
+            memcpy(&current->dataBlocks[(incomingBlockAddress % BLOCKS_PER_GROUP) + block][0], &content[copied], copySize);
             copied += copySize;
         }
     }
     
-    fs_write_block_group(currentBlockGroupIndex, &current); //update the current block
-    
-    printf("New file name: %s\n", newFile.fileName);
-    printf("New file size: %d\n", newFile.size);
-    printf("New file start block index: %d\n", newFile.startBlockIndex);
-    
-    BlockGroup fileGroup = blockGroups[newFile.startBlockIndex / BLOCKS_PER_GROUP];
-    for(uint32_t i = 0; i < newFile.size; i++){
-        printf("%c", fileGroup.dataBlocks[newFile.startBlockIndex % BLOCKS_PER_GROUP][i]);
-    }
+    fs_write_block_group(incomingBlockAddress / BLOCKS_PER_GROUP, current); //update the current block
 
-    printf("\n");
-    printf("End of add file function\n");
+    BlockGroup fileGroup = blockGroups[newFile.startBlockIndex / BLOCKS_PER_GROUP];
+
+    printf("End of fs_add_file function\n");
 
     return STATUS_CODE_OK;
 }
@@ -542,10 +482,8 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
 }
 
 StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
-    printf("comparing: %s\n", folderPath);
 
     if (strcmp(folderPath, "/") == 0){
-        printf("folder is root folder\n");
         *path = 0;
         return STATUS_CODE_OK;  
     }  //return the root directory
@@ -609,4 +547,61 @@ StatusCode fs_list(const char *path){
     }
 
     return STATUS_CODE_OK;
+}
+
+StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAddress){
+
+    //first block
+    BlockGroup current;
+    uint32_t currentBlockGroupIndex = superBlock->nextBlockGroup;
+    
+    uint32_t space = 0;
+    uint8_t memoryFound = 0;
+    *incomingBlockAddress = 0;
+    
+    while(1){
+        fs_read_block_group(currentBlockGroupIndex, &current);
+        for(uint32_t i = 0; i < BLOCKS_PER_GROUP; i++){
+            if(current.blockBitmap[i] == 0){
+                while(i + space < BLOCKS_PER_GROUP && current.blockBitmap[i + space] == 0){
+                    space++;
+                    if(space == blocksNeeded){
+                        *incomingBlockAddress += i;
+                        memoryFound = 1;
+                        break;
+                    }
+                }
+                i += space;
+            }
+            space = 0;
+            if(memoryFound){
+                break;
+            }
+        }
+        //if there is no space and we havent found free space, go to the next block
+
+        if(memoryFound) break; //we found an address, break
+
+        //if we still have not found an address, we need to go to the next block group
+
+        //increment incomingBlockAddress by BLOCKS_PER_GROUP to keep with our global indexing
+        *incomingBlockAddress += BLOCKS_PER_GROUP;
+
+        if(current.nextBlockGroup == FS_NULL_BLOCK_GROUP){ //next block does not exist
+            uint32_t newBlockGroupIndex;
+            StatusCode status = fs_create_block_group(&newBlockGroupIndex);
+            if(status != STATUS_CODE_OK){
+                return status;
+            }
+            current.nextBlockGroup = newBlockGroupIndex;
+            fs_write_block_group(currentBlockGroupIndex, &current); //write new data to actual block group
+            currentBlockGroupIndex = current.nextBlockGroup;
+        }else{//next block exists, go to it
+            currentBlockGroupIndex = current.nextBlockGroup;
+        }
+
+    }
+
+    return STATUS_CODE_OK;
+    
 }
