@@ -87,12 +87,14 @@ void test_example(void) {
     printf("test example begin\n");
 
     status = fs_add_file("test.txt", (uint8_t *)"This is a test file.", 21, 0);
+    status = fs_add_file("test2.txt", (uint8_t *)"This is another test file.", 27, 0);
 
     printf("%d", status);
 
     uint32_t parentBlockLocation;
 
     status = fs_read_file("/test.txt");
+    status = fs_read_file("/test2.txt");
     printf("%d", status);
 
 }
