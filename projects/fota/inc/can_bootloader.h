@@ -46,6 +46,17 @@ typedef struct {
 
 } Fota_CanMessage;
 
+typedef enum {
+  CAN_STATE_READY,
+  CAN_STATE_WAIT_FOR_START,
+  CAN_STATE_RECIEVE_CHUNK,
+  CAN_STATE_VALIDATE_CHUNK,
+  CAN_STATE_WRITE_CHUNK,
+  CAN_STATE_UPDATE,
+  CAN_STATE_JUMP,
+  CAN_STATE_ACK,
+  CAN_STATE_ERROR
+} Can_StateMachine;
 
 FotaError can_bootloader_init(void);
 
@@ -56,5 +67,3 @@ FotaError can_bootloader_receive(uint32_t id, uint8_t *data, uint8_t *len);
 FotaError can_bootloader_poll(void);
 
 FotaError can_bootloader_chunkify(void);
-
-// state machine (switch) function + struct

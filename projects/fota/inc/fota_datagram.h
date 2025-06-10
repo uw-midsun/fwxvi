@@ -45,12 +45,14 @@ typedef enum FotaDatagramType {
 /**
  * @brief Structure representing the datagram header (In the payload)
  */
+// TODO ADD NODE ID
 typedef struct {
   FotaDatagramType type; /**< Type of datagram */
   uint32_t datagram_id;  /**< Unique ID for this datagram */
   uint32_t total_length; /**< Total length of datagram content */
   uint16_t num_packets;  /**< Number of packets in this datagram */
   uint32_t crc32;        /**< CRC of the entire datagram for verification */
+  uint32_t node_id;      /**< Unique ID for each board (node) */
 } FotaDatagramHeaderPacketPayload;
 
 /**
