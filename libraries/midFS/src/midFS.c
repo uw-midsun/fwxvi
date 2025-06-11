@@ -162,6 +162,17 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     if(fileLocation == UINT32_MAX){
         return STATUS_CODE_OUT_OF_RANGE;
     }
+
+    if(isFolder){
+        uint32_t incomingFolderBlockAddress = UINT32_MAX;
+        fs_locate_memory(1, &incomingFolderBlockAddress);
+        File[fileLocation].startBlockIndex = incomingFolderBlockAddress;
+            //get the block group that our incoming block address is in 
+        BlockGroup *current = &blockGroups[incomingFolderBlockAddress / BLOCKS_PER_GROUP];
+        current->blockBitmap[incomingFolderBlockAddress] = 1; //update the block bitmap
+        printf("Added folder at with block address: %d\n", incomingFolderBlockAddress);
+        return STATUS_CODE_OK;
+    }
     
     //determine how many blocks we need
     uint32_t blocksNeeded = (size + BLOCK_SIZE - 1) / BLOCK_SIZE; //ceiling division
@@ -459,28 +470,34 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
 }
 
 StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
+    // printf("fs_resolve_path function:\n");
+    // printf("searching for path: %s\n", folderPath);
 
     if (strcmp(folderPath, "/") == 0){
         *path = 0;
+        // printf("resolved path: %d\n", *path);
         return STATUS_CODE_OK;  
     }  //return the root directory
+
     char copy[MAX_PATH_LENGTH];
     strncpy(copy, folderPath, MAX_PATH_LENGTH);
-    copy[MAX_PATH_LENGTH-1]='\0';
+    copy[MAX_PATH_LENGTH-1] = '\0';
 
     char *currentFile = strtok(copy, "/");
-    uint32_t currentBlock=0;    
+    uint32_t currentBlock = 0;    
 
 
     //start at root folder, get first file, and search all fileentries
     while(currentFile != NULL){
+        // printf("searching for: %s\n", currentFile);
         BlockGroup *group = &blockGroups[currentBlock/BLOCKS_PER_GROUP];
-        FileEntry *files = (FileEntry *) &group->dataBlocks[currentBlock % BLOCKS_PER_GROUP];
-        int found=0;
+        FileEntry *File = (FileEntry *) &group->dataBlocks[currentBlock % BLOCKS_PER_GROUP];
+        int found = 0;
         for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
-            if (files[i].valid && strncmp(files[i].fileName, currentFile, MAX_FILENAME_LENGTH)==0){
-                currentBlock=files[i].startBlockIndex;
-                found=1;
+            // printf("index: %d, name: %s\n", i, File[i].fileName);
+            if (File[i].valid && strcmp(File[i].fileName, currentFile) == 0){
+                currentBlock = File[i].startBlockIndex;
+                found = 1;
                 break;
             }
         }
@@ -488,29 +505,27 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
             *path = FS_INVALID_BLOCK;
             return STATUS_CODE_INVALID_ARGS;
         }
-        currentFile=strtok(NULL, "/");
+        currentFile = strtok(NULL, "/");
     }
     *path = currentBlock;
+
+    // printf("resolved path\n: %d", *path);
     return STATUS_CODE_OK;
 }
 
 StatusCode fs_list(const char *path){
-    printf("Start of fs_list command\n");
-    char folderPath[MAX_PATH_LENGTH];
-    char folderName[MAX_FILENAME_LENGTH];
-
-    fs_split_path(path, folderPath, folderName);
+    // printf("Start of fs_list command\n");
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
     uint32_t parentBlockLocation; 
-    StatusCode status = fs_resolve_path(folderPath, &parentBlockLocation);
+    StatusCode status = fs_resolve_path(path, &parentBlockLocation);
     if(status != STATUS_CODE_OK){
         return status;
     }
 
     if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
 
-    printf("Located parent block at index: %d\n", parentBlockLocation);
+    // printf("Located parent block at index: %d\n", parentBlockLocation);
 
     //the block group our directory is located in
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
@@ -520,11 +535,13 @@ StatusCode fs_list(const char *path){
     FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
 
     //loop through files
-    printf("Files in %s: \n", folderPath);
+    printf("Files in %s: \n", path);
     for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        printf("|--");
         if(File[i].valid){
-            printf("\t%s\n", File[i].fileName);
+            printf("\t%s", File[i].fileName);
         }
+        printf("\n");
     }
 
     return STATUS_CODE_OK;
