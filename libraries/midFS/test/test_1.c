@@ -60,9 +60,15 @@ void test_example(void) {
     
     fs_add_file("root/nestedRoot", NULL, 0, 1);
     fs_add_file("root/nestedRoot/nestedRootTest.txt", (uint8_t *)"This is a double nested test file.", 35, 0);
-
+    
     fs_read_file("/root/nestedRoot/nestedRootTest.txt");
     fs_list("root/nestedRoot");
     fs_list("root");
-
+    
+    uint8_t doesFileExist;
+    
+    fs_does_file_exist("root2/root2Test.txt", &doesFileExist);
+    printf("Does file exist: %d\n", doesFileExist);
+    fs_add_file("root2/root2Test.txt", (uint8_t *)"This is another nested a test file.", 36, 0);
+    
 }

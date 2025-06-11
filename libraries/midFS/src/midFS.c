@@ -111,6 +111,14 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     printf("fs_add_file command\n");
 
     fs_split_path(path, folderPath, folderName);
+
+    uint8_t doesFileExist;
+    fs_does_file_exist(path, &doesFileExist); //check if a file of this name already exists in this directory
+    if(doesFileExist){
+        printf("A file of name %s already exists in directory %s. Skipping fs_add_file command\n", folderName, folderPath);
+        return STATUS_CODE_INVALID_ARGS;
+    }
+
     printf("\tPath: %s\n", path);
     printf("\tPath name: %s\n", folderPath);
     printf("\tFolder name: %s\n", folderName);

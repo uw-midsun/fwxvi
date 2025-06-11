@@ -84,6 +84,16 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName);
  */
 StatusCode fs_resolve_path(const char *folderPath, uint32_t* path);
 
+/**
+ * A function that finds contiguous memory of size blocksNeeded and writes it to incomingBlockAddress
+ * 
+ */
 StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAddress);
+
+/**
+ * A function that determines if a file with specified path already exists and writes the result to doesFileExist
+ * 
+ */
+StatusCode fs_does_file_exist(const char *path, uint8_t *doesFileExist);
 
 #endif // FILE_SYSTEM_H
