@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   test_1.c
  *
- * @brief  Test file for file_system
+ * @brief  Test file for file_system - testing nested folders
  *
  * @date   2025-06-05
  * @author Midnight Sun Team #24 - MSXVI

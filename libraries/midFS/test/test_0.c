@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   test_0.c
  *
- * @brief  Test file for file_system
+ * @brief  Test file for file_system - testing adding/reading/writing files of various sizes in the root directory
  *
  * @date   2025-06-05
  * @author Midnight Sun Team #24 - MSXVI
