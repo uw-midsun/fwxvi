@@ -603,3 +603,36 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
     return STATUS_CODE_OK;
     
 }
+
+StatusCode fs_does_file_exist(const char *path, uint8_t *doesFileExist){
+    char folderPath[MAX_PATH_LENGTH];
+    char folderName[MAX_FILENAME_LENGTH];
+
+    fs_split_path(path, folderPath, folderName);
+
+    //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
+    uint32_t parentBlockLocation;
+
+    StatusCode status = fs_resolve_path(folderPath, &parentBlockLocation);
+    if(status != STATUS_CODE_OK){
+        return status;
+    }
+
+    if(parentBlockLocation == FS_INVALID_BLOCK) return STATUS_CODE_INVALID_ARGS;
+
+    //locate the block group
+    BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];
+
+    //array of files in block group
+    FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
+
+    for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(File[i].valid == 1 && strcmp(File[i].fileName, folderName) == 0){
+            *doesFileExist = 1;
+            return STATUS_CODE_OK;
+        }
+    }
+
+    *doesFileExist = 0;
+    return STATUS_CODE_OK;
+}
