@@ -69,6 +69,6 @@ void test_example(void) {
     
     fs_does_file_exist("root2/root2Test.txt", &doesFileExist);
     printf("Does file exist: %d\n", doesFileExist);
-    fs_add_file("root2/root2Test.txt", (uint8_t *)"This is another nested a test file.", 36, 0);
+    // fs_add_file("root2/root2Test.txt", (uint8_t *)"This is another nested a test file.", 36, 0);
     
 }
