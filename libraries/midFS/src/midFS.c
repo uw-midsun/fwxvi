@@ -160,6 +160,39 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
 
     //search for the first empty spot and copy in file data
     for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        printf("i: %d\n", i);
+        if(i == (BLOCK_SIZE / sizeof(FileEntry)) - 1){
+            printf("-----------------reached end of file\n");
+            if(!File[i].valid){
+                printf("empty last index, expanding file\n");
+                uint32_t nestedFileIndex;
+                fs_locate_memory(1, &nestedFileIndex);
+                File[i].valid = 1;
+                File[i].type = FILETYPE_FOLDER;
+                File[i].startBlockIndex = nestedFileIndex;
+                printf("More memory found at: %d\n", File[i].startBlockIndex);
+                char *lastSlash;
+                if(strchr(folderPath, '/') == NULL){
+                    lastSlash = folderPath;
+                }else{
+                    lastSlash = strrchr(folderPath, '/');
+                    lastSlash++;
+                }
+                if (lastSlash != NULL && *(lastSlash) != '\0') {
+                    strncpy(File[i].fileName, lastSlash, MAX_FILENAME_LENGTH);
+                    File[i].fileName[MAX_FILENAME_LENGTH - 1] = '\0';  // null-terminate
+                }     
+            }
+            BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+            nestedFileGroup->blockBitmap[File[i].startBlockIndex % BLOCKS_PER_GROUP] = 1;
+            File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+            fs_write_block_group(File[i].startBlockIndex / BLOCKS_PER_GROUP, nestedFileGroup);
+            // for(uint32_t j = 0; j < BLOCK_SIZE / sizeof(FileEntry); j++){
+            //     File[j].valid = 0;
+            // }
+            i = 0;
+        }
+
         if(!File[i].valid){
             fileLocation = i;
             File[i] = newFile;
@@ -195,7 +228,7 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     //get the block group that our incoming block address is in 
     BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
 
-    for (uint32_t i = 0; i < blocksNeeded; i++) current->blockBitmap[incomingBlockAddress + i] = 1; //update the block bitmap
+    for (uint32_t i = 0; i < blocksNeeded; i++) current->blockBitmap[(incomingBlockAddress % BLOCKS_PER_GROUP) + i] = 1; //update the block bitmap
     
     File[fileLocation].startBlockIndex = incomingBlockAddress;
 
@@ -545,6 +578,15 @@ StatusCode fs_list(const char *path){
     //loop through files
     printf("Files in %s: \n", path);
     for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
+        if(i == (BLOCK_SIZE / sizeof(FileEntry)) - 1){
+            if(File[i].valid){
+                BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+                File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+                i = 0;
+            }else{
+                break;
+            }
+        }
         printf("|--");
         if(File[i].valid){
             printf("\t%s", File[i].fileName);
