@@ -24,7 +24,21 @@
 #define WRITE_MASK 0x7FU
 #define READ_BIT 0x80U
 
+/************************************************************************************************
+ * Static Variable Declaration
+ ************************************************************************************************/
 static Bmi323Storage *imu_storage;
+
+static const float s_accel_lsb_lookup[NUM_IMU_ACCEL_RANGES] = {
+  [IMU_ACCEL_RANGE_2G] = 16384.0f,
+  [IMU_ACCEL_RANGE_4G] = 8192.0f,
+  [IMU_ACCEL_RANGE_8G] = 4096.0f,
+  [IMU_ACCEL_RANGE_16G] = 2048.0f,
+};
+
+static const float s_gyro_lsb_lookup[NUM_IMU_GYRO_RANGES] = {
+  [IMU_GYRO_RANGE_125_DEG] = 262.4f, [IMU_GYRO_RANGE_250_DEG] = 131.2f, [IMU_GYRO_RANGE_500_DEG] = 65.6f, [IMU_GYRO_RANGE_1000_DEG] = 32.8f, [IMU_GYRO_RANGE_2000_DEG] = 16.4f,
+};
 
 /************************************************************************************************
  * Private Function Declaration
@@ -42,10 +56,6 @@ static StatusCode get_accel_data(Axes *accel);
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
 // static StatusCode get_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
-
-// static StatusCode enable_feature_engine();
-
-// static StatusCode gyro_crt_calibration();
 
 static void s_calculate_accel_offset();
 static void s_calculate_gyro_offset();
@@ -102,9 +112,13 @@ static StatusCode get_gyroscope_data(Axes *gyro) {
   StatusCode status = s_get_multi_register(BMI323_REG_GYRO_REG_ADDR, data, 3);
 
   if (status == STATUS_CODE_OK) {
-    gyro->x = (int16_t)(data[0]);
-    gyro->y = (int16_t)(data[1]);
-    gyro->z = (int16_t)(data[2]);
+    int16_t raw_x = (int16_t)(data[0]);
+    int16_t raw_y = (int16_t)(data[1]);
+    int16_t raw_z = (int16_t)(data[2]);
+
+    gyro->x = (float)raw_x / s_gyro_lsb_lookup[imu_storage->settings->gyro_range];
+    gyro->y = (float)raw_y / s_gyro_lsb_lookup[imu_storage->settings->gyro_range];
+    gyro->z = (float)raw_z / s_gyro_lsb_lookup[imu_storage->settings->gyro_range];
 
     return STATUS_CODE_OK;
   }
@@ -117,9 +131,13 @@ static StatusCode get_accel_data(Axes *accel) {
   StatusCode status = s_get_multi_register(BMI323_REG_ACCEL_REG_ADDR, data, 3);
 
   if (status == STATUS_CODE_OK) {
-    accel->x = (int16_t)(data[0]);
-    accel->y = (int16_t)(data[1]);
-    accel->z = (int16_t)(data[2]);
+    int16_t raw_x = (int16_t)(data[0]);
+    int16_t raw_y = (int16_t)(data[1]);
+    int16_t raw_z = (int16_t)(data[2]);
+
+    accel->x = (float)raw_x / s_accel_lsb_lookup[imu_storage->settings->accel_range];
+    accel->y = (float)raw_y / s_accel_lsb_lookup[imu_storage->settings->accel_range];
+    accel->z = (float)raw_z / s_accel_lsb_lookup[imu_storage->settings->accel_range];
   }
 
   return status;

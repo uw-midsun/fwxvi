@@ -26,6 +26,7 @@ const CanSettings s_can_settings = {
   .tx = IMU_CAN_TX,
   .rx = IMU_CAN_RX,
   .loopback = 0,
+  .can_rx_all_cb = NULL,
 };
 
 StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
@@ -37,7 +38,7 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
 
   status_ok_or_return(spi_init(settings->spi_port, &settings->spi_settings));
 
-  //   status_ok_or_return(can_init(&s_can_storage, &s_can_settings));
+  status_ok_or_return(can_init(&s_can_storage, &s_can_settings));
 
   status_ok_or_return(bmi323_init(storage));
 
