@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['fota_5fdatagram_5ftype_5ffirmware_5fchunk_0',['FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK',['../group__FOTA.html#gga14628e995b64806321099becc21a0192ab6ca62eb5c233adae46483a02547993a',1,'fota_datagram.h']]],
+  ['fota_5fdatagram_5ftype_5ffirmware_5fmetadata_1',['FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA',['../group__FOTA.html#gga14628e995b64806321099becc21a0192a9da16ffa7c23e3f0f0c5e8272fb52fbb',1,'fota_datagram.h']]],
+  ['fota_5fdatagram_5ftype_5fupdate_5frequest_2',['FOTA_DATAGRAM_TYPE_UPDATE_REQUEST',['../group__FOTA.html#gga14628e995b64806321099becc21a0192a0b532600c187c6b5f7048be415cf1899',1,'fota_datagram.h']]],
+  ['fota_5fdatagram_5ftype_5fupdate_5fresponse_3',['FOTA_DATAGRAM_TYPE_UPDATE_RESPONSE',['../group__FOTA.html#gga14628e995b64806321099becc21a0192a519dfa21349931743918c4dea1e5ae8e',1,'fota_datagram.h']]],
+  ['fota_5fdatagram_5ftype_5fverification_4',['FOTA_DATAGRAM_TYPE_VERIFICATION',['../group__FOTA.html#gga14628e995b64806321099becc21a0192a6d570756dad0b173effa29bd452be317',1,'fota_datagram.h']]],
+  ['fota_5ferror_5fcrc32_5fdata_5fnot_5faligned_5',['FOTA_ERROR_CRC32_DATA_NOT_ALIGNED',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174af6c85e867ceaab2f1445bca37137a6bd',1,'fota_error.h']]],
+  ['fota_5ferror_5fcrc32_5fmismatch_6',['FOTA_ERROR_CRC32_MISMATCH',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174a927c7a31c43a8bc252321d12b07b4f9a',1,'fota_error.h']]],
+  ['fota_5ferror_5finternal_5ferror_7',['FOTA_ERROR_INTERNAL_ERROR',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174a519b5bd892ed30388ade840f59c34185',1,'fota_error.h']]],
+  ['fota_5ferror_5finvalid_5fargs_8',['FOTA_ERROR_INVALID_ARGS',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174a4a1d1292c1d7ab749c0b053dccf56314',1,'fota_error.h']]],
+  ['fota_5ferror_5fresource_5fexhausted_9',['FOTA_ERROR_RESOURCE_EXHAUSTED',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174a2f7848bf3cfcbc105ab3e1065e9a34bf',1,'fota_error.h']]],
+  ['fota_5ferror_5fsuccess_10',['FOTA_ERROR_SUCCESS',['../group__FOTA.html#ggad17eadc05304037980f46ebf51db0174aeec913557d670b66ba3d586b9783c258',1,'fota_error.h']]],
+  ['fota_5fjump_5fapplication_11',['FOTA_JUMP_APPLICATION',['../group__FOTA.html#gga2f5ea669618659a55e7669ef3e993b37a66782200b5130693abbb4a451abaa4f0',1,'fota_jump_handler.h']]],
+  ['fota_5fjump_5fbootloader_12',['FOTA_JUMP_BOOTLOADER',['../group__FOTA.html#gga2f5ea669618659a55e7669ef3e993b37ad25aba12e7a80cca28bda569875e8296',1,'fota_jump_handler.h']]],
+  ['fota_5fjump_5fmidsun_5fbios_13',['FOTA_JUMP_MIDSUN_BIOS',['../group__FOTA.html#gga2f5ea669618659a55e7669ef3e993b37a2a7375609183109db97d0a3e812ef3d3',1,'fota_jump_handler.h']]],
+  ['fota_5fpacket_5ftype_5fack_14',['FOTA_PACKET_TYPE_ACK',['../group__FOTA.html#gga1829bc1cfd0dd5e15585d4c2249a6946a95a0e64ce459648da0301a37ce6990fe',1,'fota_packet.h']]],
+  ['fota_5fpacket_5ftype_5fdata_15',['FOTA_PACKET_TYPE_DATA',['../group__FOTA.html#gga1829bc1cfd0dd5e15585d4c2249a6946a9d33b39f240da5a1e388ac38ba4b465b',1,'fota_packet.h']]],
+  ['fota_5fpacket_5ftype_5ferror_16',['FOTA_PACKET_TYPE_ERROR',['../group__FOTA.html#gga1829bc1cfd0dd5e15585d4c2249a6946a78d0ef6a4c469e687b8d9fa70a8c39df',1,'fota_packet.h']]],
+  ['fota_5fpacket_5ftype_5fheader_17',['FOTA_PACKET_TYPE_HEADER',['../group__FOTA.html#gga1829bc1cfd0dd5e15585d4c2249a6946a9629ba41a744672e4e14822cadfecc43',1,'fota_packet.h']]],
+  ['fota_5fpacket_5ftype_5fnack_18',['FOTA_PACKET_TYPE_NACK',['../group__FOTA.html#gga1829bc1cfd0dd5e15585d4c2249a6946aa23d146d487c303530d9609b5ba9c54e',1,'fota_packet.h']]]
+];
