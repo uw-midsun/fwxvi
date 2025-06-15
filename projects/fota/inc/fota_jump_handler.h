@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file    fota_timeout.h
+ * @file    fota_jump_handler.h
  *
- * @brief   FOTA Timeout
+ * @brief   FOTA Jump handler
  *
  * @date    2025-06-14
  * @author  Midnight Sun Team #24 - MSXVI
@@ -13,6 +13,8 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "fota_error.h"
+#include "fota_timeout.h"
 
 /* Intra-component Headers */
 
@@ -22,14 +24,12 @@
  * @{
  */
 
-/* @brief   FOTA timeout in milliseconds */
-#define FOTA_TIMEOUT_MS 15000U
+typedef enum {
+  FOTA_JUMP_APPLICATION, /**< Jump to application memory */
+  FOTA_JUMP_BOOTLOADER,  /**< Jump to bootloader memory */
+  FOTA_JUMP_MIDSUN_BIOS  /**< Jump to Midnight Sun BIOS */
+} FotaJumpRequest;
 
-/**
- * @brief   Checks if FOTA has timed out, meaning no requests have been received
- * @return  TRUE if a timeout event has occurred
- *          FALSE if no timeout has occurred
- */
-bool fota_is_timed_out(void);
+FotaError fota_jump(FotaJumpRequest jump_request);
 
 /** @} */

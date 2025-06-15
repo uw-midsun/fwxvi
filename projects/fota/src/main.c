@@ -15,18 +15,15 @@
 
 /* Intra-component Headers */
 #include "fota.h"
-#include "network.h"
-#include "network_buffer.h"
+#include "fota_jump_handler.h"
+#include "fota_timeout.h"
 
 int main() {
   fota_init();
 
   while (true) {
-    if (isTimeout(true)) {
-      // tx timeout, rx timeout is built into function to return error if timeout
-    }
     if (fota_is_timed_out()) {
-      bootloader_jump_app();
+      fota_jump(FOTA_JUMP_APPLICATION);
     }
 
     fota_process();
