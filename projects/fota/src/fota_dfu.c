@@ -1,3 +1,12 @@
+/************************************************************************************************
+ * @file    fota_dfu.c
+ *
+ * @brief   Fota DFU Source File
+ *
+ * @date    2025-06-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include "fota_dfu.h"
 #include "fota_error.h"
 #include "fota_datagram.h"
@@ -5,12 +14,11 @@
 #include "fota_memory_map.h"
 #include "network.h"
 #include "network_buffer.h"
+#include "fota_jump_handler.h"
 
 #include "packet_manger.h"
-#include <core_cm4.h>
 
 static DFUStateData data;
-static FotaDatagram dgrm;
 
 static bool is_dfu_init = false;
 
@@ -19,8 +27,9 @@ FotaError fota_dfu_init(PacketManager *pacman) {
     return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
   }
 
-  data.curr_state = DFU_JUMP;
-  data.application_start = APPLICATION_START_ADDRESS;
+  data.curr_state = DFU_UNINIT;
+  data.bytes_written = 0;
+  data.application_start = 0;
   data.binary_size = APPLICATION_SIZE;
   data.current_address = FLASH_START_ADDRESS_LINKERSCRIPT;
   data.packet_manager = &pacman;
@@ -30,7 +39,7 @@ FotaError fota_dfu_init(PacketManager *pacman) {
   return FOTA_ERROR_BOOTLOADER_SUCCESS;
 }
 
-FotaError run_dfu_bootloader(FotaDatagram *dgrm) {
+FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
   FotaError err = FOTA_ERROR_BOOTLOADER_SUCCESS;
 
   //use the packet manager to get a datagram
@@ -48,6 +57,19 @@ FotaError run_dfu_bootloader(FotaDatagram *dgrm) {
 
   // update state based on datagram type
   switch (dgrm->header.type) {
+    case FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA:
+      switch(data.curr_state) {
+        case DFU_UNINIT:
+          // Initialize the DFU state with metadata
+          data.binary_size = dgrm->header.total_length;
+          data.curr_state = DFU_START;
+          break;
+          
+        default:
+          // Invalid state for receiving metadata
+          err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+          break;
+      }
     case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK:
       switch(data.curr_state) {
         case DFU_START:
@@ -116,16 +138,5 @@ static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
 }
 
 void fota_dfu_jump_app(void) {
-
-  //set vector table to the application start address
-  SCB->VTOR = data.application_start;
-
-  // define the application entry point
-  void (*app_entry)(void) = (void (*)(void))(*((uintptr_t *)(data.application_start + 4)));
-
-  // Set the main stack pointer to the application start address
-  __set_MSP(*((uintptr_t *)data.application_start));
-
-  // Jump to the application entry point
-  app_entry();
+  fota_jump(FOTA_JUMP_APPLICATION);
 }
