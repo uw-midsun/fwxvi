@@ -34,15 +34,18 @@ static SemaphoreHandle_t s_can_tx_handle;
 static StaticSemaphore_t s_can_rx_mutex;
 static SemaphoreHandle_t s_can_rx_handle;
 
+/* CAN RX all callback */
+static CanRxAllCallback s_can_rx_all_cb = NULL;
+
 StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
   if (settings->device_id >= NUM_SYSTEM_CAN_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_can_storage = storage;
+  s_can_storage->device_id = settings->device_id;
 
   memset(s_can_storage, 0, sizeof(*s_can_storage));
-  s_can_storage->device_id = settings->device_id;
 
   memset(&g_tx_struct, 0, sizeof(g_tx_struct));
   memset(&g_rx_struct, 0, sizeof(g_rx_struct));
@@ -57,6 +60,10 @@ StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
 
   if (s_can_rx_handle == NULL || s_can_tx_handle == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  if (settings->can_rx_all_cb != NULL) {
+    s_can_rx_all_cb = settings->can_rx_all_cb;
   }
 
   return STATUS_CODE_OK;
@@ -173,4 +180,8 @@ StatusCode clear_rx_struct() {
 StatusCode clear_tx_struct() {
   memset(&g_rx_struct, 0, sizeof(g_rx_struct));
   return STATUS_CODE_OK;
+}
+
+CanRxAllCallback can_get_rx_all_cb() {
+  return s_can_rx_all_cb;
 }
