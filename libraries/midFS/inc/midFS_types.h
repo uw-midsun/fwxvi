@@ -23,11 +23,14 @@ typedef struct{
     FileType type; //if type == folder, startBlockIndex is the index of an array of files
 }FileEntry;
 
+//size: 40 bytes
+
 typedef struct{
     uint8_t blockBitmap[BLOCKS_PER_GROUP];
     uint8_t dataBlocks[BLOCKS_PER_GROUP][BLOCK_SIZE];
     uint32_t nextBlockGroup; // address of the next block group
 }BlockGroup;
+
     
 typedef struct{
     uint32_t magic;
@@ -37,3 +40,5 @@ typedef struct{
     uint32_t nextBlockGroup; //address of the next (first) block group
     FileEntry rootFolderMetadata;
 }SuperBlock;
+
+//size: 54 bytes
