@@ -53,20 +53,54 @@ typedef struct {
 
 /*  Constant + Macros */
 #define SD_BLOCK_SIZE 512U
+#define SD_SPI_INIT_LOW_FREQ_HZ 400000U
+#define SD_SPI_INIT_HIGH_FREQ_HZ 25000000U
 
-// For SDHC and SDXC cards, the address provided to these functions should be the block address
+/*For SDHC and SDXC cards, the address provided to these functions should be the block address*/ 
 
-// Initialize the SD card on a given SPI port
-StatusCode sd_card_init(SdSpiPort spi, SdSpiSettings *settings);
+/**
+ * @brief   Initialize the SD card over SPI
+ * @param   p SPI port to use
+ * @param   settings Pointer to SPI settings
+ * @return  STATUS_CODE_OK if initialization succeeded  
+ *          STATUS_CODE_INTERNAL_ERROR on failure
+ */
+StatusCode sd_card_spi_init(SdSpiPort p, SdSpiSettings *settings);
 
-// Read block from the SD card. |dest| is where the read blocks will be written into. Make sure that
-// this buffer is large enough for the content
-StatusCode sd_read_blocks(SdSpiPort spi, uint8_t *dest, uint32_t readAddr, uint32_t numberOfBlocks);
+/**
+ * @brief   Read one or more 512-byte blocks from the SD card
+ * @param   p SPI port to use
+ * @param   dst Destination buffer to store the data
+ * @param   lba Starting block address (logical block address)
+ * @param   number_of_blocks Number of blocks to read
+ * @return  STATUS_CODE_OK if read succeeded  
+ *          STATUS_CODE_INTERNAL_ERROR on command failure  
+ *          STATUS_CODE_TIMEOUT if read timed out
+ */
+StatusCode sd_read_blocks(SdSpiPort p, uint8_t *dst, uint32_t lba, uint32_t number_of_blocks);
 
-// Write blocks to the SD card from |src| to a location on the SD card specified by |writeAddr|
-StatusCode sd_write_blocks(SdSpiPort spi, uint8_t *src, uint32_t writeAddr, uint32_t numberOfBlocks);
+/*Write blocks to the SD card from |src| to a location on the SD card specified by |writeAddr|*/ 
 
-// Determines whether the SD card is ready in on a given SPI port
-StatusCode sd_is_initialized(SdSpiPort spi);
+/**
+ * @brief Write blocks to SD card from src to lba
+ * @param p SPI port to use
+ * @param src pointer to source data buffer in RAM
+ * @param lba Starting block address (logical block address)
+ * @param number_of_blocks Number of blocks to write 
+ * @return STATUS_CODE_OK if write succeeded
+ *         STATUS_CODE_INTERNAL_ERROR on command failure
+ *         STATUS_CODE_TIMEOUT if write timed out
+ */
+StatusCode sd_write_blocks(SdSpiPort p, uint8_t *src, uint32_t lba, uint32_t number_of_blocks);
+
+/*Determines whether the SD card is ready in on a given SPI port*/ 
+/**
+ * @brief If SD card is initialized and ready for use on given SPI port
+ * @param p SPI port to use
+ * @return STATUS_CODE_OK if it is initialized
+ *         STATUS_CODE_INTERNAL_ERROR if error with CMD13
+ *         STATUS_CODE_RESOURCE_EXHAUSTED if the card is busy after 10 ms
+ */
+StatusCode sd_is_initialized(SdSpiPort p);
 
 /** @} */

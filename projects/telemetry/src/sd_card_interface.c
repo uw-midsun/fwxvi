@@ -46,7 +46,7 @@ StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings) {
   s_settings = settings;
 
   /* Initialize SPI peripheral & CS line */
-  StatusCode status = sd_card_init(spi, settings);
+  StatusCode status = sd_card_spi_init(spi, settings);
   if (status != STATUS_CODE_OK) {
     return status;
   }
@@ -65,7 +65,7 @@ static DSTATUS sd_disk_initialize(BYTE pdrv) {
   if (pdrv != 0) {
     return STA_NOINIT;
   }
-  return (sd_card_init(s_spi_port, s_settings) == STATUS_CODE_OK) ? RES_OK : STA_NOINIT;
+  return (sd_card_spi_init(s_spi_port, s_settings) == STATUS_CODE_OK) ? RES_OK : STA_NOINIT;
 }
 
 /**
