@@ -5,8 +5,8 @@
 
 uint8_t fs_memory[FS_TOTAL_SIZE];
 
-SuperBlock *superBlock;
-BlockGroup *blockGroups;
+ SuperBlock *superBlock=NULL;
+ BlockGroup *blockGroups=NULL;
 
 StatusCode fs_init() {
     //setup superBlock and the first block group in memory
