@@ -225,4 +225,14 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
  */
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle);
 
+#ifdef MS_PLATFORM_X86
+StatusCode ltc_afe_set_cell_voltages(uint8_t cell_index, float voltage);
+StatusCode ltc_afe_set_aux_voltages(uint8_t cell_index, float voltage);
+
+StatusCode ltc_afe_set_afe_cell_voltages(uint8_t cell_index, float voltage);
+StatusCode ltc_afe_set_afe_aux_voltages(uint8_t cell_index, float voltage);
+
+StatusCode ltc_afe_set_pack_cell_voltages(uint8_t cell_index, float voltage);
+StatusCode ltc_afe_set_pack_aux_voltages(uint8_t cell_index, float voltage);
+#endif
 /** @} */
