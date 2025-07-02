@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   gui.h
+ * @file   framebuffer.h
  *
- * @brief  Header file for the GUI library
+ * @brief  Header file for the framebuffer
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI

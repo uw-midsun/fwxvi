@@ -1,9 +1,7 @@
-#pragma once
-
 /************************************************************************************************
- * @file   gui.h
+ * @file   clut.c
  *
- * @brief  Header file for the GUI library
+ * @brief  Source file for the CLUT
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,11 +12,3 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-
-/**
- * @defgroup gui
- * @brief    gui Firmware
- * @{
- */
-
-/** @} */
