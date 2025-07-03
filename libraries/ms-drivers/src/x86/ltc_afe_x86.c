@@ -187,6 +187,14 @@ StatusCode ltc_afe_set_cell_voltage(LtcAfeStorage *afe, uint8_t cell_index, floa
         return STATUS_CODE_INVALID_ARGS; 
     }
     
+    size_t device_index = cell_index / LTC_AFE_MAX_THERMISTORS_PER_DEVICE;
+    size_t cell_pin      = cell_index % LTC_AFE_MAX_THERMISTORS_PER_DEVICE;
+
+    if (!((afe->settings->cell_bitset[device_index] >> cell_pin) & 0x1)) {
+        LOG_DEBUG("Aux channel %u on device %u is disabled; skipping set.", cell_pin, device_index);
+        return STATUS_CODE_OK;
+    }
+
     afe->cell_voltages[cell_index] = voltage; 
     return STATUS_CODE_OK; 
 }
@@ -195,6 +203,13 @@ StatusCode ltc_afe_set_aux_voltage(LtcAfeStorage *afe, uint8_t aux_index, float 
     if (aux_index >= thermistors){
         LOG_DEBUG("Invalid aux index number");
         return STATUS_CODE_INVALID_ARGS; 
+    }
+    size_t device_index = aux_index / LTC_AFE_MAX_THERMISTORS_PER_DEVICE;
+    size_t aux_pin      = aux_index % LTC_AFE_MAX_THERMISTORS_PER_DEVICE;
+
+    if (!((afe->settings->aux_bitset[device_index] >> aux_pin) & 0x1)) {
+        LOG_DEBUG("Aux channel %u on device %u is disabled; skipping set.", aux_pin, device_index);
+        return STATUS_CODE_OK;
     }
 
     afe->aux_voltages[aux_index] = voltage; 

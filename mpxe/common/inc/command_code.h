@@ -57,6 +57,16 @@ enum class CommandCode {
   ADC_GET_CONVERTED,     /**< Get the converted reading of an ADC Channel */
   ADC_GET_ALL_CONVERTED, /**< Get the converted reading of all ADC Channels */
 
+  /* LTC AFE commands */
+  LTC_AFE_SET_CELL,
+  LTC_AFE_SET_AUX,
+  LTC_AFE_SET_DEV_CELL,
+  LTC_AFE_SET_DEV_AUX, 
+  LTC_AFE_SET_PACK_CELL,
+  LTC_AFE_SET_PACK_AUX,
+  LTC_AFE_GET_CELL,
+  LTC_AFE_GET_AUX,
+
   NUM_COMMAND_CODES /**< Number of command codes */
 };
 

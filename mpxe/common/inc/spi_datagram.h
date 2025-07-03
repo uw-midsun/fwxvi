@@ -114,7 +114,7 @@ class SPI {
    * @return  Pointer to the buffer array
    */
   const uint8_t *getBuffer() const;
-
+  
  private:
   Payload m_spiDatagram; /**< Private datagram payload */
 };
