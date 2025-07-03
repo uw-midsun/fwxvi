@@ -1,4 +1,11 @@
-
+/************************************************************************************************
+ * @file   ltc_afe.c
+ *
+ * @brief  Source file for the LTC8611 AFE driver
+ *
+ * @date   2025-07-03
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
 /* Standard library Headers */
 #include <cstdint>

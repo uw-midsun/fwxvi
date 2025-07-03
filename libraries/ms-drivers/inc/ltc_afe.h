@@ -226,13 +226,56 @@ StatusCode ltc_afe_toggle_cell_discharge(LtcAfeStorage *afe, uint16_t cell, bool
 StatusCode ltc_afe_set_discharge_pwm_cycle(LtcAfeStorage *afe, uint8_t duty_cycle);
 
 #ifdef MS_PLATFORM_X86
+/**
+ * @brief   Set the voltage for a single cell by global index.
+ * @param   cell_index  0-based index of the cell across all AFE devices.
+ * @param   voltage     Voltage in volts to assign to that cell.
+ * @return  STATUS_CODE_OK           if the voltage was applied or the cell is disabled.
+ *          STATUS_CODE_INVALID_ARGS if the cell_index is out of range.
+ */
 StatusCode ltc_afe_set_cell_voltages(uint8_t cell_index, float voltage);
+
+/**
+ * @brief   Set the voltage for a single auxiliary (thermistor) input by global index.
+ * @param   cell_index  0-based index of the thermistor across all AFE devices.
+ * @param   voltage     Voltage in volts to assign to that auxiliary input.
+ * @return  STATUS_CODE_OK if the voltage was applied or the channel is disabled.
+ *          STATUS_CODE_INVALID_ARGS if the cell_index is out of range.
+ */
 StatusCode ltc_afe_set_aux_voltages(uint8_t cell_index, float voltage);
 
+/**
+ * @brief   Apply the same voltage to every enabled cell on a specific AFE device.
+ * @param   cell_index  Index of the AFE device (0-based).
+ * @param   voltage     Voltage in volts to assign to each enabled cell on that device.
+ * @return  STATUS_CODE_OK on success.
+ *          STATUS_CODE_INVALID_ARGS if the device index is invalid.
+ */
 StatusCode ltc_afe_set_afe_cell_voltages(uint8_t cell_index, float voltage);
+
+/**
+ * @brief   Apply the same voltage to every enabled auxiliary input on a specific AFE device.
+ * @param   cell_index  Index of the AFE device (0-based).
+ * @param   voltage     Voltage in volts to assign to each enabled thermistor on that device.
+ * @return  STATUS_CODE_OK on success.
+ *          STATUS_CODE_INVALID_ARGS if the device index is invalid.
+ */
 StatusCode ltc_afe_set_afe_aux_voltages(uint8_t cell_index, float voltage);
 
+/**
+ * @brief   Apply a uniform voltage to every enabled cell across all AFE devices (the full pack).
+ * @param   cell_index  Ignored—this overload sets all cells; kept for signature consistency.
+ * @param   voltage     Voltage in volts to assign to each enabled cell in the pack.
+ * @return  STATUS_CODE_OK always.
+ */
 StatusCode ltc_afe_set_pack_cell_voltages(uint8_t cell_index, float voltage);
+
+/**
+ * @brief   Apply a uniform voltage to every enabled auxiliary input across all AFE devices.
+ * @param   cell_index  Ignored—this overload sets all aux channels; kept for signature consistency.
+ * @param   voltage     Voltage in volts to assign to each enabled thermistor in the pack.
+ * @return  STATUS_CODE_OK always.
+ */
 StatusCode ltc_afe_set_pack_aux_voltages(uint8_t cell_index, float voltage);
 #endif
 /** @} */
