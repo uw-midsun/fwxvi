@@ -22,5 +22,5 @@ void setup_test(void) {}
 void teardown_test(void) {}
 
 void test_example(void) {
-    TEST_ASSERT_TRUE(true);
+  TEST_ASSERT_TRUE(true);
 }

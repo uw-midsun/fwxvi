@@ -10,11 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
 #include "master_tasks.h"
+#include "mcu.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 #include "gui.h"
