@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for gui
+ * @brief  Main file for GUI
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI

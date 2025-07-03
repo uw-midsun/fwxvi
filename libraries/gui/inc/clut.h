@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   framebuffer.h
+ * @file   clut.h
  *
- * @brief  Header file for the framebuffer
+ * @brief  Header file for the CLUT
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI

@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   test_gui.c
  *
- * @brief  Test file for gui
+ * @brief  Test file for the GUI library
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI
