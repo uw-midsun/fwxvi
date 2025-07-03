@@ -18,6 +18,11 @@
 #include "status.h"
 #include "tasks.h"
 
+#ifdef MS_PLATFORM_X86
+StatusCode i2c_set_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len);
+#endif
+
+
 /* Intra-component Headers */
 
 I2CSettings i2c_test_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
@@ -25,7 +30,10 @@ I2CSettings i2c_test_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = 
 TASK(i2c_api, TASK_STACK_1024) {
   i2c_init(I2C_PORT_2, &i2c_test_settings);
   I2CAddress address = 0x0;
-  uint8_t data[5] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
+  uint8_t data[5] = { 0x15, 0x16, 0x17, 0x18, 0x19 };
+  uint8_t read_data[5];
+  uint8_t read_data2[5];
+
   size_t length = 5;
 
   while (true) {
@@ -37,15 +45,18 @@ TASK(i2c_api, TASK_STACK_1024) {
     i2c_write_reg(I2C_PORT_2, address, 0x12, data, length);
     delay_ms(500);
 
+    i2c_set_data(I2C_PORT_2, data, length);
     LOG_DEBUG("READ\n");
-    i2c_read(I2C_PORT_2, address, data, length);
+    i2c_read(I2C_PORT_2, address, read_data, length);
     delay_ms(500);
 
+    i2c_set_data(I2C_PORT_2, data, length);
     LOG_DEBUG("READ REG\n");
-    i2c_read_reg(I2C_PORT_2, address, 0x12, data, length);
+    i2c_read_reg(I2C_PORT_2, address, 0x12, read_data2, length);
     delay_ms(500);
   }
 }
+
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
