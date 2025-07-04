@@ -1,8 +1,5 @@
 {
-    "libs": [
-    ],
-    "x86_libs": [
-        "ms-mpxe"
-    ],
-    "can": false
+    "arm_libs": [
+      "core"
+    ]
 }

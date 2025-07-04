@@ -16,8 +16,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup gui
- * @brief    gui Firmware
+ * @defgroup GUI
+ * @brief    GUI Firmware
  * @{
  */
 
