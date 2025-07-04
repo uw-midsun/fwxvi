@@ -7,16 +7,20 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "fota_datagram.h"
 #include "fota_dfu.h"
 #include "fota_error.h"
-#include "fota_datagram.h"
 #include "fota_flash.h"
+#include "fota_jump_handler.h"
 #include "fota_memory_map.h"
 #include "network.h"
 #include "network_buffer.h"
-#include "fota_jump_handler.h"
-
 #include "packet_manger.h"
+
+/* Intra-component Headers */
 
 static DFUStateData data;
 
@@ -42,14 +46,11 @@ FotaError fota_dfu_init(PacketManager *pacman) {
 FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
   FotaError err = FOTA_ERROR_BOOTLOADER_SUCCESS;
 
-  //use the packet manager to get a datagram
-  if (!is_dfu_init)
-    err = FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
-  
+  // use the packet manager to get a datagram
+  if (!is_dfu_init) err = FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
+
   // Get a datagram from the packet manager
   if (dgrm == NULL) {
-    
-
     return FOTA_ERROR_NO_DATAGRAM_FOUND;
   } else if (!dgrm->is_complete) {
     return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
@@ -58,20 +59,20 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
   // update state based on datagram type
   switch (dgrm->header.type) {
     case FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA:
-      switch(data.curr_state) {
+      switch (data.curr_state) {
         case DFU_UNINIT:
           // Initialize the DFU state with metadata
           data.binary_size = dgrm->header.total_length;
           data.curr_state = DFU_START;
           break;
-          
+
         default:
           // Invalid state for receiving metadata
           err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
           break;
       }
     case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK:
-      switch(data.curr_state) {
+      switch (data.curr_state) {
         case DFU_START:
           data.curr_state = DFU_RX;
           err = fota_dfu_write_chunk(dgrm);
@@ -82,7 +83,7 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
           // Dont allow writing if we are already in the process of writing
           err = FOTA_ERROR_BOOTLOADER_WRITE_IN_PROGRESS;
           break;
-        
+
         case DFU_JUMP:
           // Handle jump to application logic here
           // Invalid state since we are still receiving chunks while waiting to jump
@@ -94,24 +95,23 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
           err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
           break;
       }
-    break;
+      break;
     default:
       err = FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
       break;
   }
 
   if (data.bytes_written >= data.binary_size) {
-      // If we have reached the end of the binary size, we can jump to the application
-      if(!fota_verify_flash_memory())
-        return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
-      
-      if (fota_move_app(data.application_start, FLASH_START_ADDRESS_LINKERSCRIPT) != FOTA_ERROR_SUCCESS) {
-        return FOTA_ERROR_BOOTLOADER_FAILURE;
-      }
+    // If we have reached the end of the binary size, we can jump to the application
+    if (!fota_verify_flash_memory()) return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
 
-      data.curr_state = DFU_JUMP; 
-      fota_dfu_jump_app();
+    if (fota_move_app(data.application_start, FLASH_START_ADDRESS_LINKERSCRIPT) != FOTA_ERROR_SUCCESS) {
+      return FOTA_ERROR_BOOTLOADER_FAILURE;
     }
+
+    data.curr_state = DFU_JUMP;
+    fota_dfu_jump_app();
+  }
 }
 
 static FotaError fota_move_app(uintptr_t application_start, uintptr_t current_address) {
@@ -125,10 +125,10 @@ static FotaError fota_move_app(uintptr_t application_start, uintptr_t current_ad
 static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
   // Write the chunk to flash memory
 
-  if(dgrm->header.datagram_id != data.expected_datagram_id) {
+  if (dgrm->header.datagram_id != data.expected_datagram_id) {
     return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
   }
-  
+
   FotaError err = fota_flash_write(data.current_address, dgrm->data, dgrm->header.total_length);
   data.current_address += dgrm->header.total_length;
   data.bytes_written += dgrm->header.total_length;
