@@ -10,8 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "fota_datagram.h"
+
+/* Intra-component Headers */
 #include "fota_dfu.h"
+
+#include "fota_datagram.h"
 #include "fota_error.h"
 #include "fota_flash.h"
 #include "fota_jump_handler.h"
@@ -19,8 +22,6 @@
 #include "network.h"
 #include "network_buffer.h"
 #include "packet_manger.h"
-
-/* Intra-component Headers */
 
 static DFUStateData data;
 
