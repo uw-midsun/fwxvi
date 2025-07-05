@@ -1,4 +1,4 @@
-## @file    test_fota_rx.py
+# @file    test_fota_rx.py
 #  @date    2025-04-19
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Test module for FOTA RX

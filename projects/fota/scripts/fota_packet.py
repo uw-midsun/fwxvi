@@ -1,4 +1,4 @@
-## @file    fota_packet.py
+# @file    fota_packet.py
 #  @date    2025-05-14
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Packet class for fota_packet_sender
@@ -15,9 +15,10 @@ BYTE_ORDER = 'little'  # TODO: Assumed from can_datagram, so confirm
 
 crc32 = CRC32(STANDARD_CRC32_POLY)
 
+
 class FotaPacket():
     """
-    @brief Defines serialized format of a FOTA packet 
+    @brief Defines serialized format of a FOTA packet
     """
     SOF = 0xAA
     EOF = 0xBB
@@ -52,7 +53,7 @@ class FotaPacket():
             f"CRC32=0x{self.crc32_value:08X}, "
             f"EOF=0x{self.eof:02X}>"
         )
-    
+
     def pack(self) -> bytearray:
         """
         @brief Serialize packet values for transmission
@@ -69,7 +70,7 @@ class FotaPacket():
         packet.append(self.eof)
 
         return packet
-    
+
     # Getters
     @property
     def sof(self):
@@ -77,49 +78,49 @@ class FotaPacket():
         @brief Describe start-of-frame
         """
         return self._sof
-    
+
     @property
     def packet_type(self):
         """
         @brief Describe packet type
         """
         return self._packet_type
-    
+
     @property
     def datagram_id(self):
         """
         @brief Describe datagram ID
         """
         return self._datagram_id
-    
+
     @property
     def sequence_num(self):
         """
         @brief Describe sequence number
         """
         return self._sequence_num
-    
+
     @property
     def payload_len(self):
         """
         @brief Describe length of payload
         """
         return self._payload_len
-    
+
     @property
     def payload(self):
         """
         @brief Describe payload
         """
         return self._payload
-    
+
     @property
     def crc32_value(self):
         """
         @brief Describe CRC32 value
         """
         return self._crc32_value
-    
+
     @property
     def eof(self):
         """
@@ -134,12 +135,12 @@ class FotaPacket():
         """
         if not 0 <= packet_type <= 0xFF:
             raise ValueError("packet_type must be a single byte")
-        
+
         if not 0 <= datagram_id <= 0xFFFFFFFF:
             raise ValueError("datagram_id must fit in 4 bytes")
-        
+
         if not 0 <= sequence_num <= 0x07:
             raise ValueError("sequence_num must be 3 bits")
-        
+
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
             raise ValueError("payload exceeds user-defined limit")
