@@ -10,12 +10,14 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 /* Inter-component Headers */
 #include "gpio.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
 /**
@@ -56,12 +58,7 @@ typedef enum {
 /**
  * @brief   SD SPI port options
  */
-typedef enum {
-  SD_SPI_PORT_1 = 0,
-  SD_SPI_PORT_2,
-  SD_SPI_PORT_3,
-  NUM_SD_SPI_PORTS
-} SdSpiPort;
+typedef enum { SD_SPI_PORT_1 = 0, SD_SPI_PORT_2, SD_SPI_PORT_3, NUM_SD_SPI_PORTS } SdSpiPort;
 
 /**
  * @brief   Configuration settings for initializing an SD SPI port

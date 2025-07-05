@@ -35,7 +35,7 @@ StatusCode sd_spi_cs_set_state(SdSpiPort spi, GpioState state) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_cs_get_state(SdSpiPort spi, GpioState *input_state) {
+GpioState sd_spi_cs_get_state(SdSpiPort spi) {
   return STATUS_CODE_OK;
 }
 

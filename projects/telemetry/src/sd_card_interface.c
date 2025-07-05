@@ -93,8 +93,8 @@ typedef struct {
 /************************************************************************************************
  * Driver function declarations
  ************************************************************************************************/
-static DRESULT sd_card_init(BYTE pdrv);
-static DRESULT sd_card_status(BYTE pdrv);
+static DSTATUS sd_card_init(BYTE pdrv);
+static DSTATUS sd_card_status(BYTE pdrv);
 static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count);
 static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count);
 static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff);
@@ -244,7 +244,7 @@ static StatusCode s_sd_get_data_response() {
  * SD Card driver functions
  ************************************************************************************************/
 
-static DRESULT sd_card_init(BYTE pdrv) {
+static DSTATUS sd_card_init(BYTE pdrv) {
   if (sd_spi_init(s_spi_port, s_spi_settings) != STATUS_CODE_OK) {
     return RES_ERROR;
   }
@@ -330,7 +330,7 @@ static DRESULT sd_card_init(BYTE pdrv) {
   return RES_OK;
 }
 
-static DRESULT sd_card_status(BYTE pdrv) {
+static DSTATUS sd_card_status(BYTE pdrv) {
   return s_is_initialized ? RES_OK : RES_NOTRDY;
 }
 
@@ -341,7 +341,7 @@ static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
     SdResponse r1 = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, sector * 512U, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 != SD_R1_NO_ERROR) {
-      LOG_DEBUG("Failed to read SD sector %ld\n", (uint32_t)sector);
+      LOG_DEBUG("Failed to read SD sector %u\n", (uint32_t)sector);
       result = RES_ERROR;
       break;
     }
