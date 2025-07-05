@@ -7,14 +7,13 @@
 
 from crc32 import CRC32
 
-# TODO: Stolen from can_datagram/bootloader_id, so check for correct code
+# Note: Stolen from can_datagram/bootloader_id, so check for correct code
 STANDARD_CRC32_POLY = 0x04C11DB7
 
 # Endianness for byte conversion
-BYTE_ORDER = 'little'  # TODO: Assumed from can_datagram, so confirm
+BYTE_ORDER = 'little'  # Note: Assumed from can_datagram, so confirm
 
-crc32 = CRC32(STANDARD_CRC32_POLY)
-
+CRC32_INST = CRC32(STANDARD_CRC32_POLY)
 
 class FotaPacket():
     """
@@ -22,7 +21,7 @@ class FotaPacket():
     """
     SOF = 0xAA
     EOF = 0xBB
-    MAX_PAYLOAD_BYTES = 64  # TODO: Placeholder, so confirm
+    MAX_PAYLOAD_BYTES = 64  # Note: Placeholder, so confirm
 
     def __init__(self, packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> None:
         """
@@ -30,14 +29,12 @@ class FotaPacket():
         """
         self._check_args(packet_type, datagram_id, sequence_num, payload)
 
-        self._sof = FotaPacket.SOF
         self._packet_type = packet_type
         self._datagram_id = datagram_id
         self._sequence_num = sequence_num
         self._payload = payload
         self._payload_len = len(payload)
-        self._crc32_value = crc32.calculate(payload)
-        self._eof = FotaPacket.EOF
+        self._crc32_value = CRC32_INST.calculate(payload)
 
     def __repr__(self) -> str:
         """
@@ -45,13 +42,13 @@ class FotaPacket():
         """
         return(
             f"<FotaPacket "
-            f"SOF=0x{self.sof:02X}, "
+            f"SOF=0x{FotaPacket.SOF:02X}, "
             f"Type=0x{self.packet_type:02X}, "
             f"DatagramID=0x{self.datagram_id:08X}, "
             f"Seq=0x{self.sequence_num:02X}, "
             f"Len={self.payload_len}, "
             f"CRC32=0x{self.crc32_value:08X}, "
-            f"EOF=0x{self.eof:02X}>"
+            f"EOF=0x{FotaPacket.EOF:02X}>"
         )
 
     def pack(self) -> bytearray:
@@ -60,25 +57,18 @@ class FotaPacket():
         """
         packet = bytearray()
 
-        packet.append(self.sof)
+        packet.append(FotaPacket.SOF)
         packet.append(self.packet_type)
         packet += self.datagram_id.to_bytes(4, BYTE_ORDER)
         packet.append(self.sequence_num)
         packet += self.payload_len.to_bytes(2, BYTE_ORDER)
         packet += self.payload
         packet += self.crc32_value.to_bytes(4, BYTE_ORDER)
-        packet.append(self.eof)
+        packet.append(FotaPacket.EOF)
 
         return packet
 
     # Getters
-    @property
-    def sof(self):
-        """
-        @brief Describe start-of-frame
-        """
-        return self._sof
-
     @property
     def packet_type(self):
         """
@@ -120,13 +110,6 @@ class FotaPacket():
         @brief Describe CRC32 value
         """
         return self._crc32_value
-
-    @property
-    def eof(self):
-        """
-        @brief Describe end-of-frame
-        """
-        return self._eof
 
     @staticmethod
     def _check_args(packet_type: int, datagram_id: int, sequence_num: int, payload: bytes) -> None:
