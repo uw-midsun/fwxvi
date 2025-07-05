@@ -15,12 +15,6 @@
 #include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "stm32l433xx.h"
-#include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_conf.h"
-#include "stm32l4xx_hal_gpio.h"
-#include "stm32l4xx_hal_rcc.h"
-#include "stm32l4xx_hal_spi.h"
 
 /* Intra-component Headers */
 #include "sd_card_spi.h"
