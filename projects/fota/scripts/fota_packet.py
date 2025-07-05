@@ -143,4 +143,3 @@ class FotaPacket():
         
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:
             raise ValueError("payload exceeds user-defined limit")
-        

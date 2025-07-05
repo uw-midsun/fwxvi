@@ -56,4 +56,3 @@ class FotaPacketSender():
         if self.ser.is_open:
             self.ser.close()
             print(f"\nConnection to port {self.ser.port} closed!\n")
-            
