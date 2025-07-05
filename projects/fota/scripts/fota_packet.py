@@ -132,13 +132,13 @@ class FotaPacket():
         """
         @brief Validate byte sizes of object parameters
         """
-        if not (0 <= packet_type <= 0xFF):
+        if not 0 <= packet_type <= 0xFF:
             raise ValueError("packet_type must be a single byte")
         
-        if not (0 <= datagram_id <= 0xFFFFFFFF):
+        if not 0 <= datagram_id <= 0xFFFFFFFF:
             raise ValueError("datagram_id must fit in 4 bytes")
         
-        if not (0 <= sequence_num <= 0x07):
+        if not 0 <= sequence_num <= 0x07:
             raise ValueError("sequence_num must be 3 bits")
         
         if len(payload) > FotaPacket.MAX_PAYLOAD_BYTES:

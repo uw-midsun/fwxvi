@@ -17,7 +17,7 @@ class FotaPacketSender():
         """
         @brief Initialize FotaPacketSender with a serial connection
         """
-        self.ser = serial.Serial(port = port, baudrate = baudrate, timeout = timeout)
+        self.ser = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
 
     def __del__(self):
         """
@@ -43,11 +43,11 @@ class FotaPacketSender():
 
             print(f"Sent FOTA packet: {fota_packet}")
 
-        except serial.SerialException as e:
-            print(f"Serial error during transmission: {e}")
-        
-        except Exception as e:
-            print(f"Unexpected error during transmission: {e}")
+        except serial.SerialException as error:
+            print(f"Serial error during transmission: {error}")
+
+        except Exception as error:
+            print(f"Unexpected error during transmission: {error}")
 
     def close(self) -> None:
         """
