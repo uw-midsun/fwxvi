@@ -68,47 +68,28 @@ class FotaPacket():
 
         return packet
 
-    # Getters
     @property
     def packet_type(self):
-        """
-        @brief Describe packet type
-        """
         return self._packet_type
 
     @property
     def datagram_id(self):
-        """
-        @brief Describe datagram ID
-        """
         return self._datagram_id
 
     @property
     def sequence_num(self):
-        """
-        @brief Describe sequence number
-        """
         return self._sequence_num
 
     @property
     def payload_len(self):
-        """
-        @brief Describe length of payload
-        """
         return self._payload_len
 
     @property
     def payload(self):
-        """
-        @brief Describe payload
-        """
         return self._payload
 
     @property
     def crc32_value(self):
-        """
-        @brief Describe CRC32 value
-        """
         return self._crc32_value
 
     @staticmethod
