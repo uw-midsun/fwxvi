@@ -56,13 +56,11 @@ typedef struct {
 #define SD_SPI_INIT_LOW_FREQ_HZ 400000U
 #define SD_SPI_INIT_HIGH_FREQ_HZ 25000000U
 
-/*For SDHC and SDXC cards, the address provided to these functions should be the block address*/ 
-
 /**
  * @brief   Initialize the SD card over SPI
  * @param   p SPI port to use
  * @param   settings Pointer to SPI settings
- * @return  STATUS_CODE_OK if initialization succeeded  
+ * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INTERNAL_ERROR on failure
  */
 StatusCode sd_card_spi_init(SdSpiPort p, SdSpiSettings *settings);
@@ -73,27 +71,24 @@ StatusCode sd_card_spi_init(SdSpiPort p, SdSpiSettings *settings);
  * @param   dst Destination buffer to store the data
  * @param   lba Starting block address (logical block address)
  * @param   number_of_blocks Number of blocks to read
- * @return  STATUS_CODE_OK if read succeeded  
- *          STATUS_CODE_INTERNAL_ERROR on command failure  
+ * @return  STATUS_CODE_OK if read succeeded
+ *          STATUS_CODE_INTERNAL_ERROR on command failure
  *          STATUS_CODE_TIMEOUT if read timed out
  */
 StatusCode sd_read_blocks(SdSpiPort p, uint8_t *dst, uint32_t lba, uint32_t number_of_blocks);
-
-/*Write blocks to the SD card from |src| to a location on the SD card specified by |writeAddr|*/ 
 
 /**
  * @brief Write blocks to SD card from src to lba
  * @param p SPI port to use
  * @param src pointer to source data buffer in RAM
  * @param lba Starting block address (logical block address)
- * @param number_of_blocks Number of blocks to write 
+ * @param number_of_blocks Number of blocks to write
  * @return STATUS_CODE_OK if write succeeded
  *         STATUS_CODE_INTERNAL_ERROR on command failure
  *         STATUS_CODE_TIMEOUT if write timed out
  */
 StatusCode sd_write_blocks(SdSpiPort p, uint8_t *src, uint32_t lba, uint32_t number_of_blocks);
 
-/*Determines whether the SD card is ready in on a given SPI port*/ 
 /**
  * @brief If SD card is initialized and ready for use on given SPI port
  * @param p SPI port to use
