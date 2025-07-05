@@ -20,6 +20,7 @@
 #include "fota_encryption.h"
 #include "fota_error.h"
 #include "fota_packet.h"
+#include "network.h"
 #include "network_buffer.h"
 
 /**
