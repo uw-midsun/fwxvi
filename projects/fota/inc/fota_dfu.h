@@ -68,7 +68,7 @@ typedef struct {
 
 /// @brief Initializes DFU
 /// @return
-FotaError fota_dfu_init(void);
+FotaError fota_dfu_init(PacketManager *packet_manager);
 
 /// @brief Run Finite State Machine for DFU
 /// @return error code

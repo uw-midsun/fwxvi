@@ -27,9 +27,34 @@ static DFUStateData data;
 
 static bool is_dfu_init = false;
 
-FotaError fota_dfu_init(PacketManager *pacman) {
-  if (pacman == NULL) {
-    return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
+static FotaError fota_move_app(uintptr_t application_start, uintptr_t current_address) {
+  // Write firmware binary to the application start address
+  FotaError err = fota_flash_write(application_start, (uint8_t *)current_address, data.binary_size);
+  if (err != FOTA_ERROR_SUCCESS) {
+    return err;
+  }
+
+  return FOTA_ERROR_SUCCESS;
+}
+
+static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
+  // Write the chunk to flash memory
+
+  if (dgrm->header.datagram_id != data.expected_datagram_id) {
+    return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
+  }
+
+  FotaError err = fota_flash_write(data.current_address, dgrm->data, dgrm->header.total_length);
+  data.current_address += dgrm->header.total_length;
+  data.bytes_written += dgrm->header.total_length;
+  data.expected_datagram_id++;
+
+  return err;
+}
+
+FotaError fota_dfu_init(PacketManager *packet_manager) {
+  if (packet_manager == NULL) {
+    return FOTA_ERROR_INVALID_ARGS;
   }
 
   data.curr_state = DFU_UNINIT;
@@ -37,7 +62,7 @@ FotaError fota_dfu_init(PacketManager *pacman) {
   data.application_start = 0;
   data.binary_size = APPLICATION_SIZE;
   data.current_address = FLASH_START_ADDRESS_LINKERSCRIPT;
-  data.packet_manager = &pacman;
+  data.packet_manager = packet_manager;
   data.expected_datagram_id = 0;
   is_dfu_init = true;
 
@@ -48,7 +73,9 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
   FotaError err = FOTA_ERROR_BOOTLOADER_SUCCESS;
 
   // use the packet manager to get a datagram
-  if (!is_dfu_init) err = FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
+  if (!is_dfu_init) {
+    err = FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
+  }
 
   // Get a datagram from the packet manager
   if (dgrm == NULL) {
@@ -72,6 +99,8 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
           err = FOTA_ERROR_BOOTLOADER_INVALID_STATE;
           break;
       }
+      break;
+
     case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK:
       switch (data.curr_state) {
         case DFU_START:
@@ -97,6 +126,7 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
           break;
       }
       break;
+
     default:
       err = FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
       break;
@@ -113,27 +143,6 @@ FotaError fota_dfu_run_bootloader(FotaDatagram *dgrm) {
     data.curr_state = DFU_JUMP;
     fota_dfu_jump_app();
   }
-}
-
-static FotaError fota_move_app(uintptr_t application_start, uintptr_t current_address) {
-  // Write firmware binary to the application start address
-  FotaError err = fota_flash_write(application_start, (uint8_t *)current_address, data.binary_size);
-  if (err != FOTA_ERROR_SUCCESS) {
-    return err;
-  }
-}
-
-static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
-  // Write the chunk to flash memory
-
-  if (dgrm->header.datagram_id != data.expected_datagram_id) {
-    return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
-  }
-
-  FotaError err = fota_flash_write(data.current_address, dgrm->data, dgrm->header.total_length);
-  data.current_address += dgrm->header.total_length;
-  data.bytes_written += dgrm->header.total_length;
-  data.expected_datagram_id++;
 
   return err;
 }
