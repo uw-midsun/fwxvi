@@ -27,10 +27,19 @@
 extern uint32_t _flash_start;
 extern uint32_t _flash_size;
 extern uint32_t _flash_page_size;
+
+extern uint32_t _accumulator_memory;
+extern uint32_t _accumulator_memory_size;
+
 extern uint32_t _application_start;
 extern uint32_t _application_size;
+
 extern uint32_t _bootloader_start;
 extern uint32_t _bootloader_size;
+
+extern uint32_t _bios_start;
+extern uint32_t _bios_size;
+
 extern uint32_t _sram_start;
 extern uint32_t _sram_size;
 

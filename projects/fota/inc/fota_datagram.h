@@ -33,16 +33,17 @@
 /**
  * @brief Datagram types corresponding to different FOTA operations
  */
-typedef enum {
+typedef enum FotaDatagramType {
   FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA, /**< Firmware metadata information */
   FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK,    /**< Chunk of firmware data */
   FOTA_DATAGRAM_TYPE_UPDATE_REQUEST,    /**< Request to perform update */
   FOTA_DATAGRAM_TYPE_UPDATE_RESPONSE,   /**< Response to update request */
+  FOTa_DATAGRAM_TYPE_JUMP_TO_APP,       /**< Request to jump to application */
   FOTA_DATAGRAM_TYPE_VERIFICATION       /**< Verification information */
 } FotaDatagramType;
 
 /**
- * @brief Structure representing the datagram header
+ * @brief Structure representing the datagram header (In the payload)
  */
 typedef struct {
   FotaDatagramType type; /**< Type of datagram */
@@ -50,13 +51,13 @@ typedef struct {
   uint32_t total_length; /**< Total length of datagram content */
   uint16_t num_packets;  /**< Number of packets in this datagram */
   uint32_t crc32;        /**< CRC of the entire datagram for verification */
-} FotaDatagramHeader;
+} FotaDatagramHeaderPacketPayload;
 
 /**
  * @brief   Structure representing datagram
  */
 typedef struct {
-  FotaDatagramHeader header;                           /**< Datagram header */
+  FotaDatagramHeaderPacketPayload header;              /**< Datagram header */
   uint8_t data[FOTA_MAX_DATAGRAM_SIZE];                /**< Datagram payload */
   bool packet_received[FOTA_MAX_PACKETS_PER_DATAGRAM]; /**< Bitmap for tracking which packets have been received */
   uint16_t packets_received;                           /**< Count of received packets */
