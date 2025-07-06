@@ -9,6 +9,7 @@ import serial
 
 from fota_packet import FotaPacket
 
+
 class FotaPacketSender():
     """
     @brief Accessed by DatagramSender to transmit FotaPackets via XBees

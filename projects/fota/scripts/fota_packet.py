@@ -15,6 +15,7 @@ BYTE_ORDER = 'little'  # Note: Assumed from can_datagram, so confirm
 
 CRC32_INST = CRC32(STANDARD_CRC32_POLY)
 
+
 class FotaPacket():
     """
     @brief Defines serialized format of a FOTA packet
