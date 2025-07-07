@@ -1,5 +1,14 @@
 #pragma once
 
+/************************************************************************************************
+ * @file   command_code.h
+ *
+ * @brief  Header file defining the afe_datagram
+ *
+ * @date   2025-01-04
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 /* Standard library Headers */
 #include <cstdint>
 #include <string>
@@ -9,14 +18,14 @@
 
 namespace Datagram {
 
-class LTC_AFE {
+class ADBMS_AFE {
   public: 
-    static constexpr uint8_t LTC_AFE_MAX_DEVICES                 = 3;   /**< Max number of AFE devices supported */
-    static constexpr uint8_t LTC_AFE_MAX_CELLS_PER_DEVICE        = 12;  /**< Max cell channels per AFE device */
-    static constexpr uint8_t LTC_AFE_MAX_THERMISTORS_PER_DEVICE  = 8;   /**< Max thermistors per AFE device */
+    static constexpr uint8_t ADBMS_AFE_MAX_DEVICES                 = 3;   /**< Max number of AFE devices supported */
+    static constexpr uint8_t ADBMS_AFE_MAX_CELLS_PER_DEVICE        = 12;  /**< Max cell channels per AFE device */
+    static constexpr uint8_t ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE  = 8;   /**< Max thermistors per AFE device */
 
-    static constexpr uint8_t LTC_AFE_MAX_CELLS       = LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_CELLS_PER_DEVICE;        /**< Total cell channels supported */
-    static constexpr uint8_t LTC_AFE_MAX_THERMISTORS = LTC_AFE_MAX_DEVICES * LTC_AFE_MAX_THERMISTORS_PER_DEVICE;  /**< Total thermistor channels supported */
+    static constexpr uint8_t ADBMS_AFE_MAX_CELLS       = ADBMS_AFE_MAX_DEVICES * ADBMS_AFE_MAX_CELLS_PER_DEVICE;        /**< Total cell channels supported */
+    static constexpr uint8_t ADBMS_AFE_MAX_THERMISTORS = ADBMS_AFE_MAX_DEVICES * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;  /**< Total thermistor channels supported */
 
     
     /**
@@ -28,23 +37,23 @@ class LTC_AFE {
         std::size_t num_thermistors;                    /**< Total number of thermistors on all devices */
         std::size_t num_devices;                        /**< Total number of devices */
 
-        uint16_t cell_bitset[LTC_AFE_MAX_DEVICES];      /**< Bitset showing cells are enabled for each device */
-        uint16_t aux_bitset[LTC_AFE_MAX_DEVICES];       /**< Bitset showing aux inputs enabled for each device */
+        uint16_t cell_bitset[ADBMS_AFE_MAX_DEVICES];      /**< Bitset showing cells are enabled for each device */
+        uint16_t aux_bitset[ADBMS_AFE_MAX_DEVICES];       /**< Bitset showing aux inputs enabled for each device */
 
-        uint16_t cell_voltages[LTC_AFE_MAX_CELLS];      /**< Cell voltages for all devices */
-        uint16_t aux_voltages[LTC_AFE_MAX_THERMISTORS]; /**< Aux voltages for all devices */
+        uint16_t cell_voltages[ADBMS_AFE_MAX_CELLS];      /**< Cell voltages for all devices */
+        uint16_t aux_voltages[ADBMS_AFE_MAX_THERMISTORS]; /**< Aux voltages for all devices */
     };
 
     /**
-     * @brief Constructs a LTC_AFE object with provided payload data
+     * @brief Constructs a ADBMS_AFE object with provided payload data
      * 
      */
-    explicit LTC_AFE(Payload &data);
+    explicit ADBMS_AFE(Payload &data);
 
     /**
-     * @brief Default constructor for LTC_AFE object
+     * @brief Default constructor for ADBMS_AFE object
      */
-    LTC_AFE() = default; 
+    ADBMS_AFE() = default; 
 
     /**
      * @brief             Serializes afe data with command code for transmission
@@ -93,28 +102,28 @@ class LTC_AFE {
     
     /**
      * @brief Set a single cell voltage reading
-     * @param index Global cell index (0, ..., LTC_AFE_MAX_CELLS-1)
+     * @param index Global cell index (0, ..., ADBMS_AFE_MAX_CELLS-1)
      * @param voltage Voltage in mV
      */
     void setCellVoltage(uint16_t index, uint16_t voltage);
 
     /**
      * @brief Set a single aux voltage reading
-     * @param index Global aux index (0, ..., LTC_AFE_MAX_THERMISTORS-1)
+     * @param index Global aux index (0, ..., ADBMS_AFE_MAX_THERMISTORS-1)
      * @param voltage Voltage in mV
      */
     void setAuxVoltage(uint16_t index, uint16_t voltage);
 
     /**
      * @brief Set the Device Cells Voltage
-     * @param device_index Index of device (0, ..., LTC_AFE_MAX_DEVICES)
+     * @param device_index Index of device (0, ..., ADBMS_AFE_MAX_DEVICES)
      * @param voltage voltage in mV
      */
     void setDeviceCellsVoltage(uint16_t device_index, uint16_t voltage);
 
     /**
      * @brief Set the Device Aux Voltage
-     * @param device_index Index of device (0, ..., LTC_AFE_MAX_DEVICES)
+     * @param device_index Index of device (0, ..., ADBMS_AFE_MAX_DEVICES)
      * @param voltage voltage in mV
      */
     void setDeviceAuxsVoltage(uint16_t device_index, uint16_t voltage);
@@ -151,28 +160,28 @@ class LTC_AFE {
 
     /**
      * @brief Get the enabled‐cells bitset for a specific device
-     * @param deviceIndex Index of the device (0 .. LTC_AFE_MAX_DEVICES-1)
+     * @param deviceIndex Index of the device (0 .. ADBMS_AFE_MAX_DEVICES-1)
      * @return Bitmask of enabled cells for that device
      */
     uint16_t getCellBitsetForDevice(std::size_t deviceIndex) const;
 
     /**
      * @brief Get the enabled‐aux (thermistor) bitset for a specific device
-     * @param deviceIndex Index of the device (0 .. LTC_AFE_MAX_DEVICES-1)
+     * @param deviceIndex Index of the device (0 .. ADBMS_AFE_MAX_DEVICES-1)
      * @return Bitmask of enabled aux inputs for that device
      */
     uint16_t getAuxBitsetForDevice(std::size_t deviceIndex) const;
 
     /**
      * @brief Get a single cell voltage reading
-     * @param index Global cell index (0 .. LTC_AFE_MAX_CELLS-1)
+     * @param index Global cell index (0 .. ADBMS_AFE_MAX_CELLS-1)
      * @return Voltage in millivolts
      */
     uint16_t getCellVoltage(std::size_t index) const;
 
     /**
      * @brief Get a single aux (thermistor) voltage reading
-     * @param index Global aux index (0 .. LTC_AFE_MAX_THERMISTORS-1)
+     * @param index Global aux index (0 .. ADBMS_AFE_MAX_THERMISTORS-1)
      * @return Voltage in millivolts
      */
     uint16_t getAuxVoltage(std::size_t index) const;
