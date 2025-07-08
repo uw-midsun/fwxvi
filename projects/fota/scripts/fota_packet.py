@@ -3,7 +3,7 @@
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Packet class for fota_packet_sender
 #
-#  @ingroup fota_validation
+#  @ingroup FOTA_Python
 
 from crc32 import CRC32
 
@@ -71,26 +71,44 @@ class FotaPacket():
 
     @property
     def packet_type(self):
+        """
+        @brief Packet type
+        """
         return self._packet_type
 
     @property
     def datagram_id(self):
+        """
+        @brief Datagram ID number
+        """
         return self._datagram_id
 
     @property
     def sequence_num(self):
+        """
+        @brief Packet sequence number
+        """
         return self._sequence_num
 
     @property
     def payload_len(self):
+        """
+        @brief Packet payload length
+        """
         return self._payload_len
 
     @property
     def payload(self):
+        """
+        @brief Packet payload
+        """
         return self._payload
 
     @property
     def crc32_value(self):
+        """
+        @brief Packet CRC32 value
+        """
         return self._crc32_value
 
     @staticmethod

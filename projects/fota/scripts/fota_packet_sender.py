@@ -3,7 +3,7 @@
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Packet sender class for fota_datagram_sender
 #
-#  @ingroup fota_validation
+#  @ingroup FOTA_Python
 
 import serial
 

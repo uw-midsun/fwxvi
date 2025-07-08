@@ -5,7 +5,7 @@
 #
 #  @details Designed and implemented for the XBee interface over a serial connection
 #
-#  @ingroup fota_validation
+#  @ingroup FOTA_Python
 
 import serial
 

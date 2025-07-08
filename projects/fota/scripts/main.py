@@ -1,23 +1,20 @@
-# @defgroup fota_validation
-#  This is a python package for fota_validation
+# @defgroup FOTA_Python
+#  This is a python package for FOTA
 #
-# @file    fota_validation.py
+# @file    main.py
 #  @date    2025-03-12
 #  @author  Midnight Sun Team #24 - MSXVI
-#  @brief   Core module for fota_validation
+#  @brief   Core module for fota_python
 #
 #  @details
 #
-#  @ingroup fota_validation
-
-from fota_validation import *
-
+#  @ingroup FOTA_Python
 
 def main():
     """
-    @brief Main function for fota_validation
+    @brief Main function for fota
     """
-    print("Welcome to fota_validation")
+    print("Welcome to fota_python")
 
 
 if __name__ == "__main__":
