@@ -41,7 +41,7 @@ class FotaPacket():
         """
         @brief Readable representation of FotaPacket object
         """
-        return(
+        return (
             f"<FotaPacket "
             f"SOF=0x{FotaPacket.SOF:02X}, "
             f"Type=0x{self.packet_type:02X}, "
