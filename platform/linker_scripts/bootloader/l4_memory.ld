@@ -4,15 +4,14 @@ Linker subscript for STM32L433CCU6 definitions with 256K Flash and 64K RAM
 
 ENTRY(Reset_Handler)
 
-_bootloader_size = 64K;
-
-_flash_start = 0x08000000;
-_flash_size = 64K;
+_flash_start = ORIGIN(FLASH);
+_flash_size = LENGTH(FLASH);
 _flash_page_size = 2K;
 
 _bootloader_start = _flash_start;
-_application_start = _bootloader_start + _bootloader_size;
+_bootloader_size = 64K;
 
+_application_start = _bootloader_start + _bootloader_size;
 _application_size = _flash_size - (_application_start - _flash_start);
 
 _vector_table_size = 0x14C; /* used for relocating the vector table to RAM for the application */
