@@ -1,8 +1,8 @@
 #include <stdint.h>
 
-#define BLOCKS_PER_GROUP 64
-#define BLOCK_SIZE 512
-#define NUM_BLOCK_GROUPS 64
+#define BLOCKS_PER_GROUP 16
+#define BLOCK_SIZE 64
+#define NUM_BLOCK_GROUPS 16
 #define FS_TOTAL_SIZE (BLOCKS_PER_GROUP*BLOCK_SIZE*NUM_BLOCK_GROUPS) + sizeof(SuperBlock)
 #define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
 #define FOLDER_CAPACITY 512
