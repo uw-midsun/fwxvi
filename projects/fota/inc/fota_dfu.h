@@ -17,7 +17,7 @@
 #include "fota_datagram.h"
 #include "fota_error.h"
 #include "fota_flash.h"
-#include "packet_manger.h"
+#include "packet_manager.h"
 
 /**
  * @defgroup FOTA
@@ -72,7 +72,7 @@ FotaError fota_dfu_init(PacketManager *packet_manager);
 
 /// @brief Run Finite State Machine for DFU
 /// @return error code
-FotaError fota_dfu_run(void);
+FotaError fota_dfu_process(FotaDatagram *datagram);
 
 /// @brief jumps to application layer mentioned in ld script
 void fota_dfu_jump_app(void);

@@ -16,6 +16,7 @@ commonflags = [
     '-Wextra',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
+    '-Wno-unused-value',
     '-Wpointer-arith',
     '-ffunction-sections',
     '-fdata-sections',

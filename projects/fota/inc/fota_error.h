@@ -29,6 +29,7 @@ typedef enum FotaError {
   FOTA_ERROR_RESOURCE_EXHAUSTED, /**< Resource exhausted error code*/
   FOTA_ERROR_INVALID_ARGS,       /**< Invalid arguments error code */
   FOTA_ERROR_INTERNAL_ERROR,     /**< Internal issue error code */
+  FOTA_ERROR_TIMEOUT,            /**< Timeout error */
 
   FOTA_ERROR_CRC32_MISMATCH,         /**< CRC mismatch error code */
   FOTA_ERROR_CRC32_DATA_NOT_ALIGNED, /**< Data not 4-byte aligned in CRC32 calculation */
@@ -55,5 +56,14 @@ typedef enum FotaError {
 
   FOTA_ERROR_JUMP_FAILED,
 } FotaError;
+
+/**
+ * @brief Use to forward failures or continue on success
+ */
+#define fota_error_ok_or_return(code)   \
+  ({                                    \
+    __typeof__(code) fota_err = (code); \
+    if (fota_err) return fota_err;      \
+  })
 
 /** @} */

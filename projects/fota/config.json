@@ -1,9 +1,12 @@
 {
-    "libs": [
-        "FreeRTOS",
-        "ms-common",
-        "master"
+    "x86_libs": [
+        "ms-common"
     ],
-    "can": false,
-    "arm_only": true
+
+    "arm_libs": [
+        "core",
+        "CMSIS",
+        "HAL"
+    ],
+    "can": false
 }

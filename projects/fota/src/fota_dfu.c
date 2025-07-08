@@ -21,7 +21,6 @@
 #include "fota_memory_map.h"
 #include "network.h"
 #include "network_buffer.h"
-#include "packet_manger.h"
 
 static DFUStateData data;
 

@@ -29,19 +29,18 @@
  * @{
  */
 
+/** @brief Maximum number of datagrams that can be processed simultaneously */
+#define FOTA_MAX_ACTIVE_DATAGRAMS 2U
+
+typedef void (*FotaDatagramCompleteCb)(FotaDatagram *datagram);
+
 /**
  * @brief   State machine states for packet receiving
  */
 typedef enum {
-  PKT_STATE_WAITING_SOF,     /**< Waiting for start of frame */
-  PKT_STATE_READING_HEADER,  /**< Reading packet header */
-  PKT_STATE_READING_PAYLOAD, /**< Reading packet payload */
-  PKT_STATE_READING_CRC,     /**< Reading CRC */
-  PKT_STATE_READING_EOF      /**< Reading end of frame */
+  PKT_STATE_WAITING_SOF,   /**< Waiting for start of frame */
+  PKT_STATE_READING_PACKET /**< Reading packet content */
 } PacketReceiverState;
-
-/* Maximum number of datagrams that can be processed simultaneously */
-#define FOTA_MAX_ACTIVE_DATAGRAMS 2U
 
 /**
  * @brief Packet manager context structure
@@ -62,17 +61,18 @@ typedef struct {
   bool datagram_active[FOTA_MAX_ACTIVE_DATAGRAMS];
 
   /* Callback for completed datagrams */
-  void (*datagram_complete_callback)(FotaDatagram *datagram);
+  FotaDatagramCompleteCb datagram_complete_callback;
 } PacketManager;
 
 /**
  * @brief   Initialize the packet manager
  * @param   manager Pointer to packet manager structure
- * @param   uart2_settings Pointer to the UART settings needed for the network buffer
+ * @param   uart UART port number
+ * @param   uart_settings Pointer to the UART settings needed for the network buffer
  * @param   callback Callback function for completed datagrams (can be NULL)
  * @return  Error code
  */
-FotaError packet_manager_init(PacketManager *manager, UartSettings *uart2_settings, void (*callback)(FotaDatagram *datagram));
+FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSettings *uart_settings, FotaDatagramCompleteCb callback);
 
 /**
  * @brief   Process received data from the network buffer
@@ -102,7 +102,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
  * @param   datagram Pointer to store the created datagram
  * @return  Error code
  */
-FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramType type, uint8_t *data, uint32_t length, FotaDatagram *datagram);
+FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramType type, uint8_t *data, uint32_t length, FotaDatagram **datagram);
 
 /**
  * @brief   Get a pointer to a completed datagram

@@ -18,13 +18,13 @@
 #include "fota_packet.h"
 
 FotaError fota_packet_init(FotaPacket *packet, FotaPacketType type, uint8_t sequence, uint16_t length) {
-  if (packet == NULL || length > FOTA_PACKET_PAYLOAD_SIZE || length % 4U != 0U) {
+  if (packet == NULL || length > FOTA_PACKET_PAYLOAD_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
   packet->sof = FOTA_PACKET_SOF;
   packet->packet_type = type;
-  packet->datagram_id = 0U; /* To be set by the caller */
+  packet->datagram_id = 0U;
   packet->sequence_num = sequence;
   packet->payload_length = length;
   memset(packet->payload, 0U, FOTA_PACKET_PAYLOAD_SIZE);
@@ -39,9 +39,17 @@ FotaError fota_packet_set_crc(FotaPacket *packet) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint32_t payload_word_size = packet->payload_length / 4U;
-  packet->crc32 = fota_calculate_crc32(packet->payload, payload_word_size);
+  uint8_t *crc32_data_start = (uint8_t *)packet->payload;
+  uint32_t crc32_data_size = packet->payload_length;
 
+  /* Handle padding */
+  if (crc32_data_size % 4U != 0U) {
+    crc32_data_size += crc32_data_size % 4U;
+  }
+
+  crc32_data_size /= 4U; /* Convert bytes to words */
+
+  packet->crc32 = fota_calculate_crc32(crc32_data_start, crc32_data_size);
   return FOTA_ERROR_SUCCESS;
 }
 
@@ -50,71 +58,78 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint32_t total_size = sizeof(packet->sof) + sizeof(packet->packet_type) + sizeof(packet->datagram_id) + sizeof(packet->sequence_num) + sizeof(packet->payload_length) + packet->payload_length +
-                        sizeof(packet->crc32) + sizeof(packet->eof);
-
-  if (buf_size < total_size) {
+  if (buf_size < FOTA_PACKET_PAYLOAD_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint8_t *buffer_pointer = buffer;
+  uint8_t *ptr = buffer;
+  *bytes_written = 0U;
 
-  *(buffer_pointer++) = packet->sof;
-  *(buffer_pointer++) = packet->packet_type;
+  *(ptr++) = packet->sof;
+  (*bytes_written)++;
 
-  *((uint32_t *)buffer_pointer) = packet->datagram_id;
-  buffer_pointer += sizeof(packet->datagram_id);
+  *(ptr++) = packet->packet_type;
+  (*bytes_written)++;
 
-  *(buffer_pointer++) = packet->sequence_num;
+  *((uint32_t *)ptr) = packet->datagram_id;
+  ptr += sizeof(packet->datagram_id);
+  *bytes_written += sizeof(packet->datagram_id);
 
-  *((uint16_t *)buffer_pointer) = packet->payload_length;
-  buffer_pointer += sizeof(packet->payload_length);
+  *(ptr++) = packet->sequence_num;
+  (*bytes_written)++;
 
-  for (uint16_t i = 0U; i < packet->payload_length; ++i) {
-    *(buffer_pointer++) = packet->payload[i];
-  }
+  *((uint16_t *)ptr) = packet->payload_length;
+  ptr += sizeof(packet->payload_length);
+  *bytes_written += sizeof(packet->payload_length);
 
-  *((uint32_t *)buffer_pointer) = packet->crc32;
-  buffer_pointer += sizeof(packet->crc32);
+  memcpy(ptr, packet->payload, FOTA_PACKET_PAYLOAD_SIZE);
+  ptr += FOTA_PACKET_PAYLOAD_SIZE;
+  *bytes_written += FOTA_PACKET_PAYLOAD_SIZE;
 
-  *(buffer_pointer++) = packet->eof;
-  *bytes_written = total_size;
+  *((uint32_t *)ptr) = packet->crc32;
+  ptr += sizeof(packet->crc32);
+  *bytes_written += sizeof(packet->crc32);
+
+  *(ptr++) = packet->eof;
+  (*bytes_written)++;
 
   return FOTA_ERROR_SUCCESS;
 }
 
 FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size) {
-  if (packet == NULL || buffer == NULL || buf_size < FOTA_PACKET_MINIMUM_SIZE) {
+  if (packet == NULL || buffer == NULL || buf_size < FOTA_PACKET_PAYLOAD_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint8_t *buffer_pointer = buffer;
+  uint8_t *ptr = buffer;
 
-  packet->sof = *(buffer_pointer++);
-  packet->packet_type = *(buffer_pointer++);
-
-  packet->datagram_id = *((uint32_t *)buffer_pointer);
-  buffer_pointer += sizeof(packet->datagram_id);
-
-  packet->sequence_num = *(buffer_pointer++);
-
-  packet->payload_length = *((uint16_t *)buffer_pointer);
-  buffer_pointer += sizeof(packet->payload_length);
-
-  if (packet->payload_length > FOTA_PACKET_PAYLOAD_SIZE || packet->payload_length % 4U != 0U) {
+  packet->sof = *(ptr++);
+  if (packet->sof != FOTA_PACKET_SOF) {
     return FOTA_ERROR_INVALID_PACKET;
   }
 
-  for (uint16_t i = 0U; i < packet->payload_length; ++i) {
-    packet->payload[i] = *(buffer_pointer++);
+  packet->packet_type = *(ptr++);
+
+  packet->datagram_id = *((uint32_t *)ptr);
+  ptr += sizeof(packet->datagram_id);
+
+  packet->sequence_num = *(ptr++);
+
+  packet->payload_length = *((uint16_t *)ptr);
+  ptr += sizeof(packet->payload_length);
+
+  if (packet->payload_length > FOTA_PACKET_PAYLOAD_SIZE) {
+    return FOTA_ERROR_INVALID_PACKET;
   }
 
-  packet->crc32 = *((uint32_t *)buffer_pointer);
-  buffer_pointer += sizeof(packet->crc32);
+  memcpy(packet->payload, ptr, FOTA_PACKET_PAYLOAD_SIZE);
+  ptr += FOTA_PACKET_PAYLOAD_SIZE;
 
-  packet->eof = *(buffer_pointer++);
+  packet->crc32 = *((uint32_t *)ptr);
+  ptr += sizeof(packet->crc32);
 
-  if (packet->sof != 0xAA || packet->eof != 0xBB) {
+  packet->eof = *(ptr++);
+  if (packet->eof != FOTA_PACKET_EOF) {
     return FOTA_ERROR_INVALID_PACKET;
   }
 
