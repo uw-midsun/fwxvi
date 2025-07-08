@@ -5,8 +5,8 @@
 
 uint8_t fs_memory[FS_TOTAL_SIZE];
 
- SuperBlock *superBlock=NULL;
- BlockGroup *blockGroups=NULL;
+SuperBlock *superBlock=NULL;
+BlockGroup *blockGroups=NULL;
 
 StatusCode fs_init() {
     //setup superBlock and the first block group in memory
@@ -539,12 +539,12 @@ StatusCode fs_split_path(char *path, char *folderPath, char *fileName){
 }
 
 StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
-    // printf("fs_resolve_path function:\n\r");
-    // printf("searching for path: %s\n\r", folderPath);
+    printf("fs_resolve_path function:\n\r");
+    printf("searching for path: %s\n\r", folderPath);
 
     if (strcmp(folderPath, "/") == 0){
         *path = 0;
-        // printf("resolved path: %d\n\r", *path);
+        printf("resolved path: %ld\n\r", *path);
         return STATUS_CODE_OK;  
     }  //return the root directory
 
@@ -558,12 +558,12 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
 
     //start at root folder, get first file, and search all fileentries
     while(currentFile != NULL){
-        // printf("searching for: %s\n\r", currentFile);
+        printf("searching for: %s\n\r", currentFile);
         BlockGroup *group = &blockGroups[currentBlock/BLOCKS_PER_GROUP];
         FileEntry *File = (FileEntry *) &group->dataBlocks[currentBlock % BLOCKS_PER_GROUP];
         int found = 0;
         for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
-            // printf("index: %d, name: %s\n\r", i, File[i].fileName);
+            printf("index: %ld, name: %s\n\r", i, File[i].fileName);
             if (File[i].valid && strcmp(File[i].fileName, currentFile) == 0){
                 currentBlock = File[i].startBlockIndex;
                 found = 1;
@@ -572,13 +572,14 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
         }
         if (!found){
             *path = FS_INVALID_BLOCK;
+            printf("could not resolve path. exiting... \n\r");
             return STATUS_CODE_INVALID_ARGS;
         }
         currentFile = strtok(NULL, "/");
     }
     *path = currentBlock;
 
-    // printf("resolved path\n\r: %d", *path);
+    printf("resolved path\n\r: %ld", *path);
     return STATUS_CODE_OK;
 }
 
