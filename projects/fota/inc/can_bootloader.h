@@ -24,6 +24,7 @@
  * @{
  */
 
+ #define FOTA_CHUNK_SIZE 2048
  
  /**
  * @brief   CAN message structure
@@ -46,6 +47,11 @@ typedef struct {
 
 } Fota_CanMessage;
 
+
+
+/**
+ * @brief   Bootloader CAN State Machine
+ */
 typedef enum {
   CAN_STATE_READY,
   CAN_STATE_WAIT_FOR_START,
@@ -54,9 +60,21 @@ typedef enum {
   CAN_STATE_WRITE_CHUNK,
   CAN_STATE_UPDATE,
   CAN_STATE_JUMP,
+  CAN_STATE_APP,
   CAN_STATE_ACK,
   CAN_STATE_ERROR
 } Can_StateMachine;
+
+/**
+ * @brief   FOTA CAN Command Identifiers
+ */
+typedef enum {
+  FOTA_CMD_START  = 0x01,
+  FOTA_CMD_CHUNK  = 0x02,
+  FOTA_CMD_END    = 0x03,
+  FOTA_CMD_ACK    = 0x04,
+  FOTA_CMD_ERROR  = 0x06
+} FotaCommand;
 
 FotaError can_bootloader_init(void);
 
