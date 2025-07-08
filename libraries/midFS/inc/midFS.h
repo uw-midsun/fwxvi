@@ -11,6 +11,11 @@
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
 
+extern SuperBlock *superBlock;
+extern BlockGroup *blockGroups;
+extern uint8_t fs_memory[FS_TOTAL_SIZE];
+
+
 /**
  * Initializes the file system, must be called
  * 

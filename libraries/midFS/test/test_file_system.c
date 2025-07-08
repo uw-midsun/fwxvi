@@ -35,66 +35,34 @@ void setup_test(void) {
 void teardown_test(void) {}
 
 
-// TEST_IN_TASK
-// void test_superblock_and_first_block_setup(void){
-//     TEST_ASSERT_NOT_NULL(superblock);
-//     TEST_ASSERT_EQUAL_HEX32(0xC1D1921D, superblock->magic);
-//     TEST_ASSERT_EQUAL(BLOCK_SIZE< superBlock->blockSize);
-//     TEST_ASSERT_EQUAL(BLOCKS_PER_GROUP, superBlock->blocksPerGroup);
-//     //test offset is correct
-//     TEST_ASSERT_EQUAL_UINT8(*(fs_memory + sizeof(SuperBlock)), ((uint8_t *)blockGroups)[0]);
 
-//     FileEntry *root=&superBlock->rootFOlderMetadata;
-//     TEST_ASSERT_EQUAL_STRING("/", root->fileName);
-//     TEST_ASSERT_EQUAL(FILETYPE_FOLDER< root->fileName);
-//     TEST_ASSERT_EQUAL(1, root->valid);
-//     TEST_ASSERT_EQUAL_UINT16(0, root->startBlockIndex);
-//     TEST_ASSERT_EQUAL_UINT32(0, root->size);
+void test_superblock_and_first_block_setup(void){
+    TEST_ASSERT_NOT_NULL(superBlock);
+    TEST_ASSERT_EQUAL_HEX32(0xC1D1921D, superBlock->magic);
+    TEST_ASSERT_EQUAL(BLOCK_SIZE, superBlock->blockSize);
+    TEST_ASSERT_EQUAL(BLOCKS_PER_GROUP, superBlock->blocksPerGroup);
+    
+    // Test offset is correct
+    TEST_ASSERT_EQUAL_UINT8(*(fs_memory + sizeof(SuperBlock)), ((uint8_t *)blockGroups)[0]);
 
-//     BlockGroup* group0=&blockGroups[0];
-//     TEST_ASSERT_EQUAL_UINT8(FS_NULL_BLOCK_GROUP, group0->nextBlockGroup);
-//     //block 0 should be marked, others aren't
-//     TEST_ASSERT_EQUAL_UINT8(1, group0->blockBitmap[0]);    
-//     for (int i=1; i<BLOCKS_PER_GROUP; i++){
-//         TEST_ASSERT_EQUAL_UINT*(0, group0->blockBitmap[i]);
-//     }
-//     //all data blocks should be zeroed
-//     for (int i=0; i<BLOCKS_PER_GROUP; i++){
-//         for (int j=0; j<BLOCK_SIZE; j++){
-//             TEST_ASSERT_EQUAL_UINT8(0, group0->dataBlocks[i][j]);
-//         }
-//     }
-// }
+    FileEntry *root = &superBlock->rootFolderMetadata;
+    TEST_ASSERT_EQUAL_STRING("/", root->fileName);
+    TEST_ASSERT_EQUAL(FILETYPE_FOLDER, root->type);
+    TEST_ASSERT_EQUAL(1, root->valid);
+    TEST_ASSERT_EQUAL_UINT16(0, root->startBlockIndex);
+    TEST_ASSERT_EQUAL_UINT32(0, root->size);
 
-// TEST_IN_TASK
-// void test_max_filename_length(void){
-//     char long_name[MAX_FILENAME_LENGTH];
-// }
-
-// TEST_IN_TASK
-// void test_multi_block_write(void){
-
-// }
-
-
-// TEST_IN_TASK
-// void test_add_empty_file(void){
-
-// }
-
-TEST_IN_TASK
-void test_example(void) {
-    printf("test example begin\n");
-
-    status = fs_add_file("test.txt", (uint8_t *)"This is a test file.", 21, 0);
-    status = fs_add_file("test2.txt", (uint8_t *)"This is another test file.", 27, 0);
-
-    printf("%d", status);
-
-    uint32_t parentBlockLocation;
-
-    status = fs_read_file("/test.txt");
-    status = fs_read_file("/test2.txt");
-    printf("%d", status);
-
+    BlockGroup* group0 = &blockGroups[0];
+    TEST_ASSERT_EQUAL_UINT8(0, group0->nextBlockGroup);
+    
+    TEST_ASSERT_EQUAL_UINT8(1, group0->blockBitmap[0]);    
+    for (int i = 1; i < BLOCKS_PER_GROUP; i++){
+        TEST_ASSERT_EQUAL_UINT8(0, group0->blockBitmap[i]);
+    }
+    // All data blocks should be zeroed
+    for (int i = 0; i < BLOCKS_PER_GROUP; i++){
+        for (int j = 0; j < BLOCK_SIZE; j++){
+            TEST_ASSERT_EQUAL_UINT8(0, group0->dataBlocks[i][j]);
+        }
+    }
 }
