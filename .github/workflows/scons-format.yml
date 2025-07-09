@@ -1,0 +1,46 @@
+name: SCons Format + Lint
+
+on:
+  push:
+    branches:
+      - scons
+
+jobs:
+  format-and-lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_PAT }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt || true  # Optional
+
+    - name: Run SCons format and lint
+      run: |
+        scons format
+        scons lint
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git diff --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+    - name: Commit and push changes
+      if: steps.git-check.outputs.changed == 'true'
+      run: |
+        git add .
+        git commit -m "SCons Format and Lint via Github Actions"
+        git push origin HEAD
