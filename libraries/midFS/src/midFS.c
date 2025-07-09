@@ -3,13 +3,17 @@
 #define SUPERBLOCK_OFFSET 0
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
 
-uint8_t fs_memory[FS_TOTAL_SIZE];
+// uint8_t fs_memory[FS_TOTAL_SIZE];
+uint8_t *fs_memory;
 
 SuperBlock *superBlock=NULL;
 BlockGroup *blockGroups=NULL;
 
 StatusCode fs_init() {
     //setup superBlock and the first block group in memory
+
+    fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
     blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
 
@@ -36,6 +40,9 @@ StatusCode fs_init() {
     return STATUS_CODE_OK;
 }
 
+StatusCode fs_commit(){
+    fs_hal_write(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+}
 
 StatusCode fs_read_file(const char *path) {
     char folderPath[MAX_PATH_LENGTH];

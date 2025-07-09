@@ -6,10 +6,12 @@
 #include "status.h"
 #include <string.h>
 #include <stdio.h>
+#include "midFS_hal.h"
 
 #define FS_NULL_BLOCK_GROUP 0xFFFFFFFF
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
+#define FS_HAL_ADDRESS 0
 
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
@@ -21,6 +23,12 @@ extern uint8_t fs_memory[FS_TOTAL_SIZE];
  * 
  */
 StatusCode fs_init();
+
+/**
+ * Writes local copy of fs_memory back to actual one using HAL_write
+ * 
+ */
+StatusCode fs_commit();
 
 /**
  * Helper function that creates a block group at the next available index
