@@ -106,7 +106,7 @@ void test_fota_datagram_verify_delegation(void) {
 
 TEST_IN_TASK
 void test_fota_datagram_crc_mismatch_detection(void) {
-  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_VERIFICATION, 0xA1B2, s_original_data, 128);
+  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0xA1B2, s_original_data, 128);
   uint16_t num_packets = 0;
   fota_datagram_to_packets(&s_datagram, s_packets, &num_packets, FOTA_MAX_PACKETS_PER_DATAGRAM);
 
@@ -123,7 +123,7 @@ void test_fota_datagram_crc_mismatch_detection(void) {
 
 TEST_IN_TASK
 void test_fota_datagram_reconstruction_out_of_order(void) {
-  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_UPDATE_REQUEST, 0x2222, s_original_data, 256);
+  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0x2222, s_original_data, 256);
   uint16_t num_packets = 0;
   fota_datagram_to_packets(&s_datagram, s_packets, &num_packets, FOTA_MAX_PACKETS_PER_DATAGRAM);
 
@@ -139,7 +139,7 @@ void test_fota_datagram_reconstruction_out_of_order(void) {
 
 TEST_IN_TASK
 void test_fota_datagram_skipped_packet_index(void) {
-  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_UPDATE_RESPONSE, 0x4321, s_original_data, 256);
+  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0x4321, s_original_data, 256);
   uint16_t num_packets = 0;
   fota_datagram_to_packets(&s_datagram, s_packets, &num_packets, FOTA_MAX_PACKETS_PER_DATAGRAM);
 
@@ -214,7 +214,7 @@ void test_fota_multiple_complete_datagrams_back_to_back(void) {
 
 TEST_IN_TASK
 void test_fota_incomplete_data_then_recover(void) {
-  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_VERIFICATION, 0x5555, s_original_data, 300);
+  fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0x5555, s_original_data, 300);
   uint16_t num_packets = 0;
   fota_datagram_to_packets(&s_datagram, s_packets, &num_packets, FOTA_MAX_PACKETS_PER_DATAGRAM);
 
@@ -233,7 +233,7 @@ void test_fota_incomplete_data_then_recover(void) {
 TEST_IN_TASK
 void test_fota_null_inputs_are_rejected(void) {
   FotaError err;
-  err = fota_datagram_init(NULL, FOTA_DATAGRAM_TYPE_VERIFICATION, 0, s_original_data, 64);
+  err = fota_datagram_init(NULL, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0, s_original_data, 64);
   TEST_ASSERT_EQUAL(FOTA_ERROR_INVALID_ARGS, err);
 
   err = fota_datagram_to_packets(NULL, s_packets, &(uint16_t){ 0 }, FOTA_MAX_PACKETS_PER_DATAGRAM);
@@ -278,7 +278,7 @@ void test_fota_single_data_packet_missing_many(void) {
 TEST_IN_TASK
 void test_fota_header_packet_contains_target_node_id(void) {
   s_datagram.header.target_node_id = 0x2A;
-  FotaError err = fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_UPDATE_REQUEST, 0x9876, s_original_data, 128);
+  FotaError err = fota_datagram_init(&s_datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0x9876, s_original_data, 128);
   TEST_ASSERT_EQUAL(FOTA_ERROR_SUCCESS, err);
 
   uint16_t num_packets = 0;

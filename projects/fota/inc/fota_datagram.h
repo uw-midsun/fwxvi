@@ -39,10 +39,8 @@
 typedef enum FotaDatagramType {
   FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA, /**< Firmware metadata information */
   FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK,    /**< Chunk of firmware data */
-  FOTA_DATAGRAM_TYPE_UPDATE_REQUEST,    /**< Request to perform update */
-  FOTA_DATAGRAM_TYPE_UPDATE_RESPONSE,   /**< Response to update request */
   FOTA_DATAGRAM_TYPE_JUMP_TO_APP,       /**< Request to jump to application */
-  FOTA_DATAGRAM_TYPE_VERIFICATION,      /**< Verification information */
+  FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT,   /**< Acknowledgement information */
   FOTA_DATAGRAM_TYPE_ERROR
 } FotaDatagramType;
 

@@ -86,7 +86,7 @@ void test_packet_manager_reassembles_valid_datagram(void) {
 TEST_IN_TASK
 void test_packet_manager_rejects_invalid_crc(void) {
   FotaDatagram datagram;
-  TEST_ASSERT_EQUAL(FOTA_ERROR_SUCCESS, fota_datagram_init(&datagram, FOTA_DATAGRAM_TYPE_UPDATE_REQUEST, 0x1234, s_test_data, 64));
+  TEST_ASSERT_EQUAL(FOTA_ERROR_SUCCESS, fota_datagram_init(&datagram, FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT, 0x1234, s_test_data, 64));
 
   uint16_t num_packets = 0;
   TEST_ASSERT_EQUAL(FOTA_ERROR_SUCCESS, fota_datagram_to_packets(&datagram, s_packets, &num_packets, FOTA_MAX_PACKETS_PER_DATAGRAM));
