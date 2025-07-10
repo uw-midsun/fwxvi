@@ -125,6 +125,4 @@ FotaError packet_manager_free_datagram(PacketManager *manager, uint32_t datagram
 // test another
 // test another lol
 
-
-
 /** @} */
