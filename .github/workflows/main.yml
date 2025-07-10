@@ -1,10 +1,10 @@
 name: CI
 
 on:
-  # Run on all pull requests and all pushes to main
-  push:
-    branches: [main]
-  pull_request:
+  workflow_run:
+    workflows: ["SCons Format + Lint"]
+    types:
+      - completed
 
   # Allow running this workflow manually
   workflow_dispatch:
@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    if: "!contains(github.event.head_commit.message, '[auto-format]')"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
