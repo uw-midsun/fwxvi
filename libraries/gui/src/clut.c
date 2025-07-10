@@ -8,7 +8,22 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdlib.h>
 
 /* Inter-component Headers */
+#include "ltdc.h"
 
 /* Intra-component Headers */
+
+
+void init_ltdc(void) {
+    return;
+}
+
+void set_framebuffer(uint8_t *buffer) {
+    return;
+}
+
+void load_clut(void) {
+    return;
+}
