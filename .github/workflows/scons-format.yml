@@ -45,7 +45,7 @@ jobs:
       if: steps.git-check.outputs.changed == 'true'
       run: |
         git add .
-        git commit -m "SCons Format and Lint via Github Actions"
+        git commit -m "[auto-format] SCons Format and Lint via Github Actions"
         git config pull.rebase true
         git pull origin ${{ github.head_ref }}
         git push origin HEAD:refs/heads/${{ github.head_ref }}

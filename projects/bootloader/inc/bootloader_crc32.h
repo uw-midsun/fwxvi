@@ -49,4 +49,7 @@ uint32_t boot_crc32_calculate(const uint32_t *buffer, size_t buffer_len);
  */
 void boot_align_to_32bit_words(uint8_t *buffer, size_t *buffer_len);
 
+
+
+/// test the last time
 /** @} */
