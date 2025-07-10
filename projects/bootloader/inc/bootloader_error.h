@@ -51,4 +51,5 @@ typedef enum {
   BOOTLOADER_PING_TIMEOUT               /**< Bootloader ping timed out */
 } BootloaderError;
 
+// test again 
 /** @} */
