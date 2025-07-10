@@ -46,4 +46,4 @@ jobs:
       run: |
         git add .
         git commit -m "SCons Format and Lint via Github Actions"
-        git push origin HEAD
+        git push origin HEAD:refs/heads/${{ github.head_ref }}
