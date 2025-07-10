@@ -89,4 +89,6 @@ BootloaderError boot_flash_read(uintptr_t address, uint8_t *buffer, size_t buffe
  */
 BootloaderError boot_verify_flash_memory(void);
 
+// last test plez
+
 /** @} */
