@@ -11,11 +11,14 @@
 #define FS_NULL_BLOCK_GROUP 0xFFFFFFFF
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
-#define FS_HAL_ADDRESS 0
+#define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
 
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
-extern uint8_t fs_memory[FS_TOTAL_SIZE];
+// extern uint8_t fs_memory[FS_TOTAL_SIZE];
+
+//max size: 206KB
+//512B per block, we can have 412 blocks
 
 
 /**

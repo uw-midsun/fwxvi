@@ -43,8 +43,6 @@ void test_example(void) {
     status = fs_add_file("/testlarge.txt", (uint8_t *)"This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. END", 652, 0);
     status = fs_add_file("/test3.txt", (uint8_t *)"This test file goes after a large test file to see if anything gets messed up", 78, 0);
     
-    uint32_t parentBlockLocation;
-    
     status = fs_read_file("/test.txt");
     status = fs_read_file("/test2.txt");
     status = fs_read_file("/testlarge.txt");

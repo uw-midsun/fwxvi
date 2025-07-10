@@ -4,7 +4,7 @@
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
 
 // uint8_t fs_memory[FS_TOTAL_SIZE];
-uint8_t *fs_memory;
+uint8_t fs_memory[FS_TOTAL_SIZE];
 
 SuperBlock *superBlock=NULL;
 BlockGroup *blockGroups=NULL;
@@ -42,6 +42,7 @@ StatusCode fs_init() {
 
 StatusCode fs_commit(){
     fs_hal_write(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+    return STATUS_CODE_OK;
 }
 
 StatusCode fs_read_file(const char *path) {
@@ -83,6 +84,8 @@ StatusCode fs_read_file(const char *path) {
             }
         }
 
+        printf("File at %ld name: %s\n\r", i, File[i].fileName);
+
         if(File[i].valid && (strcmp(File[i].fileName, folderName) == 0)){
             currentFile = File[i];
             printf("Found file:\n\r");
@@ -108,7 +111,11 @@ StatusCode fs_read_file(const char *path) {
     printf("File content: \"");
     for(uint32_t i = 0; i < blocksNeeded; i++){
         uint32_t chunk = (writeSize > BLOCK_SIZE) ? BLOCK_SIZE : writeSize;
+        // printf("%ld. chunk size: %ld\n\r", i, chunk);
         for(uint32_t j = 0; j < chunk; j++){
+            if((j+1) % 100 == 0){
+                printf("\n\r");
+            }
             printf("%c", fileGroup.dataBlocks[currentFile.startBlockIndex % BLOCKS_PER_GROUP + i][j]);
         }
     }
@@ -124,9 +131,13 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
     char folderName[MAX_FILENAME_LENGTH];
 
     printf("fs_add_file command\n\r");
-
+    
     fs_split_path(path, folderPath, folderName);
-
+    
+    printf("\tPath: %s\n\r", path);
+    printf("\tPath name: %s\n\r", folderPath);
+    printf("\tFolder name: %s\n\r", folderName);
+    
     uint8_t doesFileExist;
     fs_does_file_exist(path, &doesFileExist); //check if a file of this name already exists in this directory
     if(doesFileExist){
@@ -134,14 +145,14 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
         return STATUS_CODE_INVALID_ARGS;
     }
 
-    printf("\tPath: %s\n\r", path);
-    printf("\tPath name: %s\n\r", folderPath);
-    printf("\tFolder name: %s\n\r", folderName);
 
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
     uint32_t parentBlockLocation;
     
     StatusCode status = fs_resolve_path(folderPath, &parentBlockLocation);
+
+    printf("finished first resolve path function\n\r");
+
     if(status != STATUS_CODE_OK){
         return status;
     }
@@ -175,9 +186,9 @@ StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8
 
     //search for the first empty spot and copy in file data
     for(uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++){
-        // printf("i: %d\n\r", i);
+        printf("i: %ld\n\r", i);
         if(i == (BLOCK_SIZE / sizeof(FileEntry)) - 1){
-            // printf("-----------------reached end of file\n\r");
+            printf("-----------------reached end of file\n\r");
             if(!File[i].valid){
                 // printf("empty last index, expanding file\n\r");
                 uint32_t nestedFileIndex;
@@ -551,7 +562,7 @@ StatusCode fs_resolve_path(const char* folderPath, uint32_t* path){
 
     if (strcmp(folderPath, "/") == 0){
         *path = 0;
-        printf("resolved path: %ld\n\r", *path);
+        printf("resolved root path: %ld\n\r", *path);
         return STATUS_CODE_OK;  
     }  //return the root directory
 
