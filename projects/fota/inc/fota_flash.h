@@ -34,9 +34,6 @@
 /** @brief  4KB max per ping */
 #define FOTA_PING_BYTES ((uint32_t)0x1000U)
 
-/** @brief  ARM32 Word size is 4 bytes */
-#define FOTA_FLASH_WORD_SIZE 4U
-
 /**
  * @brief   Convert memory address to page number
  * @param   addr Address to be converted to page number

@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file    fota_flash.c
  *
- * @brief   Fota Flash Source File
+ * @brief   FOTA Flash Source File
  *
  * @date    2025-04-30
  * @author  Midnight Sun Team #24 - MSXVI
@@ -19,6 +19,8 @@
 #include "fota_error.h"
 #include "fota_flash.h"
 #include "fota_memory_map.h"
+
+#define FOTA_FLASH_WORD_SIZE 4U
 
 static FotaError s_validate_address(uint32_t address, size_t size) {
   /* Check memory alignment */

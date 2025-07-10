@@ -1,4 +1,6 @@
 import os
+import shutil
+
 Import ('FLASH_TYPE')
 Import ('BUILD_CONFIG')
 
@@ -8,6 +10,10 @@ compiler = 'arm-none-eabi-gcc'
 ranlib = 'arm-none-eabi-gcc-ranlib'
 objcopy = 'arm-none-eabi-objcopy'
 ar = 'arm-none-eabi-gcc-ar'
+ccache_path = 'ccache'
+
+if shutil.which(ccache_path):
+    compiler = ccache_path + ' ' + compiler
 
 arch_cflags = [
     '-mlittle-endian',

@@ -24,6 +24,37 @@
  * @{
  */
 
+#ifdef MS_PLATFORM_X86
+
+/** @brief  Flash start address as defined in the linkerscripts */
+#define FLASH_START_ADDRESS_LINKERSCRIPT ((uint32_t)0x08000000U)
+
+/** @brief  Flash size as defined in the linkerscripts (e.g., 1MB) */
+#define FLASH_SIZE_LINKERSCRIPT ((size_t)(1024 * 1024U))
+
+/** @brief  Flash page size as defined in the linkerscripts (e.g., 2KB per page) */
+#define FLASH_PAGE_SIZE_LINKERSCRIPT ((size_t)(2 * 1024U))
+
+/** @brief  Application start address as defined in the linkerscripts */
+#define APPLICATION_START_ADDRESS ((uint32_t)(FLASH_START_ADDRESS_LINKERSCRIPT + 0x10000U))
+
+/** @brief  Application size (e.g., 512KB) */
+#define APPLICATION_SIZE ((size_t)(512 * 1024U))
+
+/** @brief  Bootloader start address as defined in the linkerscripts */
+#define BOOTLOADER_START_ADDRESS (FLASH_START_ADDRESS_LINKERSCRIPT)
+
+/** @brief  Bootloader size (e.g., 64KB) */
+#define BOOTLOADER_SIZE ((size_t)(64 * 1024U))
+
+/** @brief  SRAM start address as defined in the linkerscripts */
+#define SRAM_START_ADDRESS ((uint32_t)0x20000000U)
+
+/** @brief  SRAM size as defined in the linkerscripts (e.g., 128KB) */
+#define SRAM_SIZE ((size_t)(128 * 1024U))
+
+#else
+
 extern uint32_t _flash_start;
 extern uint32_t _flash_size;
 extern uint32_t _flash_page_size;
@@ -69,5 +100,7 @@ extern uint32_t _sram_size;
 
 /** @brief  SRAM size as defined in the linkerscripts */
 #define SRAM_SIZE ((size_t) & _sram_size)
+
+#endif
 
 /** @} */

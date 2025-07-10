@@ -1,32 +1,21 @@
 /************************************************************************************************
- * @file   main.c
+ * @file   fota_startup.c
  *
- * @brief  Main file for fota
+ * @brief  Source code for FOTA startup
  *
- * @date   2025-03-12
+ * @date   2024-10-27
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 /* Inter-component Headers */
+#include "fota_startup.h"
 
 /* Intra-component Headers */
-#include "fota.h"
-#include "fota_jump_handler.h"
-#include "fota_timeout.h"
 
-int main() {
-  fota_init();
-
-  while (true) {
-    if (fota_is_timed_out()) {
-      fota_jump(FOTA_JUMP_APPLICATION);
-    }
-
-    fota_process();
-  }
-
-  return 0;
+FotaError fota_startup(void) {
+  return FOTA_ERROR_SUCCESS;
 }

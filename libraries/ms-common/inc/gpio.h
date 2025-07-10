@@ -164,8 +164,8 @@ StatusCode gpio_toggle_state(const GpioAddress *address);
 /**
  * @brief   Gets the GPIO state
  * @param   address Pointer to the GPIO address
- * @return  STATUS_CODE_OK if pin reading succeeded
- *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ * @return  GPIO_STATE_HIGH if pin is high
+ *          GPIO_STATE_LOW if pin is low
  */
 GpioState gpio_get_state(const GpioAddress *address);
 

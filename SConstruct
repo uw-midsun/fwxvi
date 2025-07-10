@@ -1,6 +1,7 @@
+from SCons.Script import *
 from scons.common import flash_run
 import subprocess
-
+import os
 
 def set_target(option, opt, value, parser):
     if opt == '--project':
@@ -96,6 +97,11 @@ BUILD_CONFIG = GetOption('build_config')
 FLASH_TYPE = GetOption('flash')
 TESTFILE = GetOption('testfile')
 
+NUM_JOBS = os.cpu_count() or 4
+
+if not GetOption('num_jobs'):
+    AddOption('--jobs', dest='num_jobs', type='int', default=NUM_JOBS)
+
 ###########################################################
 # Environment setup
 ###########################################################
@@ -132,11 +138,15 @@ elif SANITIZER == 'tsan':
     env['CXXFLAGS'] += ["-fsanitize=thread"]
     env['LINKFLAGS'] += ["-fsanitize=thread"]
 
+env['CXXCOMSTR'] = "Compiling  $TARGET"
 env['CCCOMSTR'] = "Compiling  $TARGET"
 env['ARCOMSTR'] = "Archiving  $TARGET"
 env['ASCOMSTR'] = "Assembling $TARGET"
 env['LINKCOMSTR'] = "Linking    $TARGET"
 env['RANLIBCOMSTR'] = "Indexing   $TARGET"
+
+SetOption('implicit_cache', True)
+SetOption('max_drift', 1)
 
 env.Append(CPPDEFINES=[GetOption('define')])
 

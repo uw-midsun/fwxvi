@@ -12,26 +12,40 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "fota_dfu.h"
 #include "fota_encryption.h"
 #include "fota_error.h"
+#include "fota_startup.h"
 #include "network.h"
 #include "network_buffer.h"
-#include "packet_manger.h"
+#include "packet_manager.h"
+
+#define FOTA_RF_BOARD_NODE_ID 0U
 
 static PacketManager packet_manager;
+static UartSettings network_uart_settings = { .tx = { .port = GPIO_PORT_A, .pin = 2U }, .rx = { .port = GPIO_PORT_A, .pin = 3U }, .baudrate = 115200U, .flow_control = UART_FLOW_CONTROL_NONE };
 
-static void datagram_complete_callback(FotaDatagram *datagram) {
-  // TODO handle callback
+static void fota_datagram_complete_cb(FotaDatagram *datagram) {
+  switch (datagram->header.target_node_id) {
+    case FOTA_RF_BOARD_NODE_ID: {
+      /* Trigger DFU */
+      if (fota_dfu_process(datagram) != FOTA_ERROR_SUCCESS) {
+        /* Generate NACK response */
+      }
+    } break;
+
+    default: {
+      /* Trigger CAN Bootloader */
+    }
+  }
 }
 
 FotaError fota_init() {
-  static UartSettings uart2_settings = {
-    .tx = { .port = GPIO_PORT_A, .pin = GPIO_PIN_2 }, .rx = { .port = GPIO_PORT_A, .pin = GPIO_PIN_3 }, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE
-  };
+  fota_startup();
 
   fota_encryption_init();
 
-  packet_manager_init(&packet_manager, &uart2_settings, datagram_complete_callback);
+  packet_manager_init(&packet_manager, UART_PORT_2, &network_uart_settings, fota_datagram_complete_cb);
 
   return FOTA_ERROR_SUCCESS;
 }
