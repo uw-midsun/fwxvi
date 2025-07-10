@@ -5,6 +5,18 @@
 #include "log.h"
 
 
+double A[STATE_SIZE][STATE_SIZE] = {
+    {1, 0, 0, DT, 0, 0,  0,  0,  0},
+    {0, 1, 0, 0, DT, 0,  0,  0,  0},
+    {0, 0, 1, 0, 0, DT,  0,  0,  0},
+    {0, 0, 0, 1, 0, 0,   0,  0,  0},
+    {0, 0, 0, 0, 1, 0,   0,  0,  0},
+    {0, 0, 0, 0, 0, 1,   0,  0,  0},
+    {0, 0, 0, 0, 0, 0,   1, DT, 0},
+    {0, 0, 0, 0, 0, 0,   0, 1, DT},
+    {0, 0, 0, 0, 0, 0,   0, 0, 1}
+};//iniitialzie with time derivatives
+
 
 
 void matrix_mult(double A[][STATE_SIZE], double B[][STATE_SIZE], double result[][STATE_SIZE]) {
