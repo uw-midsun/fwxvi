@@ -2,8 +2,13 @@ name: SCons Format + Lint
 
 on:
   push:
+    branches: [main]
+    
+  pull_request:
     branches:
       - scons
+
+  workflow_dispatch:
 
 jobs:
   format-and-lint:
