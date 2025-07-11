@@ -58,26 +58,20 @@ enum class CommandCode {
   ADC_GET_ALL_CONVERTED, /**< Get the converted reading of all ADC Channels */
 
   /* ADBMS AFE commands */
-  AFE_SET_NUM_CELLS,     /**< Set number of afe cells */ 
-  AFE_SET_NUM_THERS,     /**< Set number of afe thermistors */
-  AFE_SET_NUM_DEV,       /**< Set number of afe devices */
-  AFE_SET_CELL_BITSET,   /**< Set cell bitset */ 
-  AFE_SET_AUX_BITSET,    /**< Set aux bitset */
   AFE_SET_CELL,          /**< Set single cell voltage */
   AFE_SET_AUX,           /**< Set single Aux voltage */
   AFE_SET_DEV_CELL,      /**< Set cell voltages for all cells in device */
   AFE_SET_DEV_AUX,       /**< Set aux voltages for all aux in device */
   AFE_SET_PACK_CELL,     /**< Set cell voltages for all cells */
   AFE_SET_PACK_AUX,      /**< Set aux voltages for all aux */
-  AFE_GET_NUM_CELLS,     /**< Get number of cells */
-  AFE_GET_NUM_THERS,     /**< Get number of thermistors */
-  AFE_GET_NUM_DEV,       /**< Get number of devices */
-  AFE_GET_CELL_BITSET,   /**< Get cell bitset of specific device */
-  AFE_GET_AUX_BITSET,    /**< Get aux bitset of specific device */
   AFE_GET_CELL,          /**< Get a single cell voltage reading */
   AFE_GET_AUX,           /**< Get a single aux voltage reading */
+  AFE_GET_DEV_CELL,      /**< Get cell voltages for all cells in device */
+  AFE_GET_DEV_AUX,       /**< Get aux voltages for all aux in device */
+  AFE_GET_PACK_CELL,     /**< Get cell voltages for all cells */
+  AFE_GET_PACK_AUX,      /**< Get aux voltages for all aux */
 
-  NUM_COMMAND_CODES /**< Number of command codes */
+  NUM_COMMAND_CODES      /**< Number of command codes */
 };
 
 /**

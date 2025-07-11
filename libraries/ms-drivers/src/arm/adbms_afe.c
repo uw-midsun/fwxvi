@@ -209,11 +209,11 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
     cfgrA->overvoltage = 0;
 
     cfgrB->discharge_bitset = 0; 
-    cfgrB->discharge_timer_monitor = 0; /* Double check */
+    cfgrB->discharge_timer_monitor = 0; 
 
-    cfgrB->force_fail = 0; /* Double check */
+    cfgrB->force_fail = 0; 
     cfgrB->mute = 0;
-    cfgrB->path_select = 0; /* Double check */
+    cfgrB->path_select = 0; 
 
     cfgrB->reserved1 = 0; 
     cfgrB->reserved2 = 0; 

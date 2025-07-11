@@ -21,6 +21,10 @@
 #include "adbms_afe_crc15.h"
 #include "adbms_afe_regs.h"
 
+AdbmsAfeStorage  s_afe     = {0};
+AdbmsAfeSettings s_settings = {0};
+static bool      s_inited   = false;
+
 /**
  * Calculate the cell result and discharge cell index mappings for the enabled cells across all AFEs.
  *
@@ -221,7 +225,7 @@ StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, fl
     return STATUS_CODE_OK; 
 }
 
-StatusCode adbms_afe_set_afe_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
     size_t afe_count = afe->settings->num_devices; 
     
     if (afe_index >= afe_count){
@@ -238,7 +242,7 @@ StatusCode adbms_afe_set_afe_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_ind
     return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
+StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
     size_t afe_count = afe->settings->num_devices; 
     
     if (afe_index >= afe_count){
@@ -258,14 +262,22 @@ StatusCode adbms_afe_set_afe_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_inde
 StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage){
     uint8_t device_count = afe->settings->num_devices; 
     for(uint8_t device = 0; device < device_count; ++device){
-        adbms_afe_set_afe_cell_voltages(afe, device, voltage); 
+        adbms_afe_set_afe_dev_cell_voltages(afe, device, voltage); 
     }
     return STATUS_CODE_OK; 
 }
 StatusCode adbms_afe_set_pack_aux_voltages(AdbmsAfeStorage *afe, float voltage){
     uint8_t device_count = afe->settings->num_devices; 
     for(uint8_t device = 0; device < device_count; ++device){
-        adbms_afe_set_afe_aux_voltages(afe, device, voltage); 
+        adbms_afe_set_afe_dev_aux_voltages(afe, device, voltage); 
     }
     return STATUS_CODE_OK; 
+}
+
+uint16_t adbms_afe_get_cell_voltage(uint16_t index) {
+  return s_afe.cell_voltages[index];
+}
+
+uint16_t adbms_afe_get_aux_voltage(uint16_t index) {
+  return s_afe.aux_voltages[index];
 }

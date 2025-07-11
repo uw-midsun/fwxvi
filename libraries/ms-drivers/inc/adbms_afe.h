@@ -225,57 +225,77 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
  */
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
 
+// TODO: REmember to put these back inside the guard
+extern AdbmsAfeStorage s_afe;
+extern AdbmsAfeSettings s_settings;
 #ifdef MS_PLATFORM_X86
-/**
- * @brief   Set the voltage for a single cell by global index.
- * @param   cell_index  0-based index of the cell across all AFE devices.
- * @param   voltage     Voltage in volts to assign to that cell.
- * @return  STATUS_CODE_OK           if the voltage was applied or the cell is disabled.
- *          STATUS_CODE_INVALID_ARGS if the cell_index is out of range.
- */
-StatusCode adbms_afe_set_cell_voltages(uint8_t cell_index, float voltage);
+
 
 /**
- * @brief   Set the voltage for a single auxiliary (thermistor) input by global index.
- * @param   cell_index  0-based index of the thermistor across all AFE devices.
- * @param   voltage     Voltage in volts to assign to that auxiliary input.
- * @return  STATUS_CODE_OK if the voltage was applied or the channel is disabled.
- *          STATUS_CODE_INVALID_ARGS if the cell_index is out of range.
+ * @brief Sets the voltage for a specific cell in the AFE.
+ * @param afe Pointer to the AFE storage structure.
+ * @param cell_index Index of the cell (global index across all devices).
+ * @param voltage The voltage value to set.
+ * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
  */
-StatusCode adbms_afe_set_aux_voltages(uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage);
 
 /**
- * @brief   Apply the same voltage to every enabled cell on a specific AFE device.
- * @param   cell_index  Index of the AFE device (0-based).
- * @param   voltage     Voltage in volts to assign to each enabled cell on that device.
- * @return  STATUS_CODE_OK on success.
- *          STATUS_CODE_INVALID_ARGS if the device index is invalid.
+ * @brief Sets the voltage for a specific auxiliary input (thermistor channel).
+ * @param afe Pointer to the AFE storage structure.
+ * @param aux_index Index of the auxiliary channel (global index across all devices).
+ * @param voltage The voltage value to set.
+ * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
  */
-StatusCode adbms_afe_set_afe_cell_voltages(uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, float voltage);
 
 /**
- * @brief   Apply the same voltage to every enabled auxiliary input on a specific AFE device.
- * @param   cell_index  Index of the AFE device (0-based).
- * @param   voltage     Voltage in volts to assign to each enabled thermistor on that device.
- * @return  STATUS_CODE_OK on success.
- *          STATUS_CODE_INVALID_ARGS if the device index is invalid.
+ * @brief Sets the voltage for all cells on a specific AFE device.
+ * @param afe Pointer to the AFE storage structure.
+ * @param afe_index Index of the AFE device.
+ * @param voltage The voltage value to set for each cell.
+ * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_afe_aux_voltages(uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage);
 
 /**
- * @brief   Apply a uniform voltage to every enabled cell across all AFE devices (the full pack).
- * @param   cell_index  Ignored—this overload sets all cells; kept for signature consistency.
- * @param   voltage     Voltage in volts to assign to each enabled cell in the pack.
- * @return  STATUS_CODE_OK always.
+ * @brief Sets the voltage for all auxiliary inputs on a specific AFE device.
+ * @param afe Pointer to the AFE storage structure.
+ * @param afe_index Index of the AFE device.
+ * @param voltage The voltage value to set for each auxiliary channel.
+ * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_pack_cell_voltages(uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage);
 
 /**
- * @brief   Apply a uniform voltage to every enabled auxiliary input across all AFE devices.
- * @param   cell_index  Ignored—this overload sets all aux channels; kept for signature consistency.
- * @param   voltage     Voltage in volts to assign to each enabled thermistor in the pack.
- * @return  STATUS_CODE_OK always.
+ * @brief Sets the voltage for all cells across all AFE devices in the pack.
+ * @param afe Pointer to the AFE storage structure.
+ * @param voltage The voltage value to set for all cells.
+ * @return STATUS_CODE_OK always.
  */
-StatusCode adbms_afe_set_pack_aux_voltages(uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage);
+
+/**
+ * @brief Sets the voltage for all auxiliary channels across all AFE devices in the pack.
+ * @param afe Pointer to the AFE storage structure.
+ * @param voltage The voltage value to set for all auxiliary inputs.
+ * @return STATUS_CODE_OK always.
+ */
+StatusCode adbms_afe_set_pack_aux_voltages(AdbmsAfeStorage *afe, float voltage);
+
+/**
+ * @brief Gets the simulated voltage for a specific cell.
+ * @param index Global index of the cell.
+ * @return The voltage value of the specified cell.
+ */
+uint16_t adbms_afe_get_cell_voltage(uint16_t index);
+
+/**
+ * @brief Gets the simulated voltage for a specific auxiliary input.
+ * @param index Global index of the auxiliary input.
+ * @return The voltage value of the specified auxiliary input.
+ */
+uint16_t adbms_afe_get_aux_voltage(uint16_t index);
+
 #endif
 /** @} */
