@@ -19,7 +19,7 @@
 #include "app_callback.h"
 
 GpioManager clientGpioManager;
-
+AfeManager clientAfeManager; 
 void applicationMessageCallback(Client *client, std::string &message) {
   auto [commandCode, payload] = decodeCommand(message);
 
@@ -58,6 +58,54 @@ void applicationMessageCallback(Client *client, std::string &message) {
     }
     case CommandCode::GPIO_GET_ALL_ALT_FUNCTIONS: {
       client->sendMessage(clientGpioManager.processGpioAllAltFunctions());
+      break;
+    }
+    case CommandCode::AFE_SET_CELL: {
+      clientAfeManager.setAfeCell(payload); 
+      break; 
+    }
+    case CommandCode::AFE_SET_AUX: {
+      clientAfeManager.setAfeAux(payload); 
+      break; 
+    }
+    case CommandCode::AFE_SET_DEV_CELL: {
+      clientAfeManager.setAfeDevCell(payload); 
+      break; 
+    }
+    case CommandCode::AFE_SET_DEV_AUX: {
+      clientAfeManager.setAfeDevAux(payload); 
+      break;
+    }
+    case CommandCode::AFE_SET_PACK_CELL: {
+      clientAfeManager.setAfePackCell(payload); 
+      break;
+    }
+    case CommandCode::AFE_SET_PACK_AUX: {
+      clientAfeManager.setAfePackAux(payload); 
+      break; 
+    }
+    case CommandCode::AFE_GET_CELL: {
+      client->sendMessage(clientAfeManager.processAfeCell(payload)); 
+      break;
+    }
+    case CommandCode::AFE_GET_AUX: {
+      client->sendMessage(clientAfeManager.processAfeAux(payload));
+      break;
+    }
+    case CommandCode::AFE_GET_DEV_CELL: {
+      client->sendMessage(clientAfeManager.processAfeDevCell(payload)); 
+      break;
+    }
+    case CommandCode::AFE_GET_DEV_AUX: {
+      client->sendMessage(clientAfeManager.processAfeDevAux(payload)); 
+      break; 
+    }
+    case CommandCode::AFE_GET_PACK_CELL: {
+      client->sendMessage(clientAfeManager.processAfePackCell());
+      break;
+    }
+    case CommandCode::AFE_GET_PACK_AUX: {
+      client->sendMessage(clientAfeManager.processAfePackAux());
       break;
     }
     default: {

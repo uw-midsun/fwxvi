@@ -29,7 +29,7 @@ void AfeManager::updateCellVoltage(std::string &projectName, std::string &payloa
   uint16_t index = m_afeDatagram.getIndex();
   uint8_t voltage = m_afeDatagram.getCellVoltage(index);
   
-  m_afeInfo["Cell" + std::to_string(index)] = std::to_string(voltage) + "mv";
+  m_afeInfo["cell" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
   saveAfeInfo(projectName);
 }
@@ -41,7 +41,7 @@ void AfeManager::updateAfeAuxVoltage(std::string &projectName, std::string &payl
   uint16_t index = m_afeDatagram.getIndex();
   uint8_t voltage = m_afeDatagram.getAuxVoltage(index);
   
-  m_afeInfo["Aux" + std::to_string(idx)] = std::to_string(voltage) + "mv";
+  m_afeInfo["aux" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
   saveAfeInfo(projectName);
 }
@@ -58,7 +58,7 @@ void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &
   
   for (uint16_t cell = start; cell < end; ++cell){
     uint8_t voltage = m_afeDatagram.getCellVoltage(cell); 
-    m_afeInfo["Cell" + std::to_string(cell)] = std::to_string(voltage) + "mv"; 
+    m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv"; 
   }
   
   saveAfeInfo(projectName); 
@@ -76,7 +76,7 @@ void AfeManager::updateAfeAuxDevVoltage(std::string &projectName, std::string &p
 
   for (uint16_t aux = start; aux < end; ++aux){
     uint8_t voltage = m_afeDatagram.getAuxVoltage(aux); 
-    m_afeInfo["Aux" + std::to_string(aux)] = std::to_string(voltage) + "mv"; 
+    m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv"; 
   }
 
   saveAfeInfo(projectName); 
@@ -93,7 +93,7 @@ void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string 
 
     for (uint16_t cell = start; cell < end; ++cell){
       uint16_t voltage = m_afeDatagram.getCellVoltage(cell);
-      m_afeInfo["Cell" + std::to_string(cell)] = std::to_string(voltage) + "mv";
+      m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv";
     }
   }
   saveAfeInfo(projectName); 
@@ -109,8 +109,8 @@ void AfeManager::updateAfeAuxPackVoltage(std::string &projectName, std::string &
     const uint16_t end   = start + 9;
 
     for (uint16_t aux = start; aux < end; ++aux){
-      uint16_t voltage = m_afeDatagram.getCellVoltage(aux);
-      m_afeInfo["Aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
+      uint16_t voltage = m_afeDatagram.getAuxVoltage(aux);
+      m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
     }
   }
 
@@ -123,11 +123,11 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string ch
       /* Setters */
       case CommandCode::AFE_SET_CELL:
       case CommandCode::AFE_SET_AUX: {
-        if (channel.rfind("Cell", 0) == 0){
+        if (channel.rfind("cell", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4));
           m_afeDatagram.setIndex(idx); 
         }
-        else if (channel.rfind("Aux", 0) == 0){
+        else if (channel.rfind("aux", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4)); 
           m_afeDatagram.setIndex(idx);
         }
@@ -139,11 +139,11 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string ch
       }
       case CommandCode::AFE_SET_DEV_CELL:
       case CommandCode::AFE_SET_DEV_AUX: {
-        if (channel.rfind("Cell", 0) == 0){
+        if (channel.rfind("cell", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4));
           m_afeDatagram.setDeviceIndex(idx); 
         }
-        else if (channel.rfind("Aux", 0) == 0){
+        else if (channel.rfind("aux", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4)); 
           m_afeDatagram.setDeviceIndex(idx);
         }
@@ -163,11 +163,11 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string ch
       /* Getters */
       case CommandCode::AFE_GET_CELL:
       case CommandCode::AFE_GET_AUX: {
-        if (channel.rfind("Cell", 0) == 0){
+        if (channel.rfind("cell", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4));
           m_afeDatagram.setIndex(idx); 
         }
-        else if (channel.rfind("Aux", 0) == 0){
+        else if (channel.rfind("aux", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4)); 
           m_afeDatagram.setIndex(idx);
         }
@@ -178,11 +178,11 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string ch
       }
       case CommandCode::AFE_GET_DEV_CELL:
       case CommandCode::AFE_GET_DEV_AUX: {
-        if (channel.rfind("Cell", 0) == 0){
+        if (channel.rfind("cell", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4));
           m_afeDatagram.setDeviceIndex(idx); 
         }
-        else if (channel.rfind("Aux", 0) == 0){
+        else if (channel.rfind("aux", 0) == 0){
           std::size_t idx = std::stoul(channel.substr(4)); 
           m_afeDatagram.setDeviceIndex(idx);
         }
@@ -202,8 +202,8 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string ch
         break; 
       }
     }
+      return m_afeDatagram.serialize(commandCode);
   }
-  return m_afeDatagram.serialize(commandCode);
   catch(const std::exception& e){
     std::cerr << "Afe Manager errror: " << e.what() << std::endl;
   }

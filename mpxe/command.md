@@ -15,3 +15,9 @@
    - Example: GPIO SET_PIN_STATE A12 HIGH
 8. GPIO SET_ALL_STATES [STATE]
    - Example: GPIO SET_ALL_STATES HIGH
+
+### Afe commands
+1. AFE SET_CELL [CELL] [VOLTAGE]
+   - Example: AFE SET_CELL cell21 14
+2. AFE SET_AUX [Aux] [Voltage]
+   - Example: AFE SET_AUX aux11 400
