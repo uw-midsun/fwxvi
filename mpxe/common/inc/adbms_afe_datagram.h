@@ -91,6 +91,10 @@ class ADBMS_AFE {
      */
     void setNumDevices(std::size_t devices);
 
+    void setIndex(uint16_t new_index); 
+    void setDeviceIndex(std::size_t new_index); 
+    void setVoltage(uint8_t voltage); 
+
     /**
      * @brief Set the cell bitset (Shows enabled cells for each device)
      * @param deviceIndex The device's bitmask you want to replace
@@ -151,19 +155,19 @@ class ADBMS_AFE {
      */
     uint16_t getAuxBitsetForDevice(std::size_t deviceIndex) const;
 
-    // /**
-    //  * @brief Get a single cell voltage reading
-    //  * @param index Global cell index (0 .. AFE_MAX_CELLS-1)
-    //  * @return Voltage in millivolts
-    //  */
-    // uint16_t getCellVoltage(std::size_t index) const;
+    /**
+     * @brief Get a single cell voltage reading
+     * @param index Global cell index (0 .. AFE_MAX_CELLS-1)
+     * @return Voltage in millivolts
+     */
+    uint16_t getCellVoltage(std::size_t index) const;
 
-    // /**
-    //  * @brief Get a single aux (thermistor) voltage reading
-    //  * @param index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
-    //  * @return Voltage in millivolts
-    //  */
-    // uint16_t getAuxVoltage(std::size_t index) const;
+    /**
+     * @brief Get a single aux (thermistor) voltage reading
+     * @param index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
+     * @return Voltage in millivolts
+     */
+    uint16_t getAuxVoltage(std::size_t index) const;
 
     /**
      * @brief Get the Index 

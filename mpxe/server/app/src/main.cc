@@ -24,9 +24,11 @@
 #include "can_listener.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
+#include "adbms_afe_manager.h"
 
 JSONManager serverJSONManager;
 GpioManager serverGpioManager;
+AfeManager serverAfeManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;
 

@@ -110,8 +110,18 @@ void ADBMS_AFE::setAuxVoltage(uint16_t index, uint16_t voltage){
     m_afeDatagram.aux_voltages[index] = voltage;
 }
 
+void ADBMS_AFE::setIndex(uint16_t new_index){
+    m_afeDatagram.index = new_index; 
+}
+void ADBMS_AFE::setDeviceIndex(std::size_t new_index){
+    m_afeDatagram.dev_index = new_index; 
+} 
+void ADBMS_AFE::setVoltage(uint8_t voltage){
+    m_afeDatagram.voltage = voltage; 
+}
 
-
+/*GETTERS
+--------------------------------------------*/
 std::size_t ADBMS_AFE::getNumCells() const{
     return m_afeDatagram.num_cells;      
 }
@@ -132,13 +142,13 @@ uint16_t ADBMS_AFE::getAuxBitsetForDevice(std::size_t deviceIndex) const{
     return m_afeDatagram.aux_bitset[deviceIndex];    
 }
 
-// uint16_t ADBMS_AFE::getCellVoltage(std::size_t index) const{
-//     return m_afeDatagram.cell_voltages[index]; 
-// }
+uint16_t ADBMS_AFE::getCellVoltage(std::size_t index) const{
+    return m_afeDatagram.cell_voltages[index]; 
+}
 
-// uint16_t ADBMS_AFE::getAuxVoltage(std::size_t index) const{
-//     return m_afeDatagram.aux_voltages[index];
-// }
+uint16_t ADBMS_AFE::getAuxVoltage(std::size_t index) const{
+    return m_afeDatagram.aux_voltages[index];
+}
 
 uint16_t ADBMS_AFE::getIndex() const{
     return m_afeDatagram.index;
