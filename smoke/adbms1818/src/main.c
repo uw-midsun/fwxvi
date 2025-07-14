@@ -21,9 +21,12 @@
 #include "adbms_afe.h"
 
 TASK(adbms1818, TASK_STACK_1024) {
-  AdbmsAfeStorage afe_storage;
+  #ifdef MS_PLATFORM_X86
+  #else
+    AdbmsAfeStorage s_afe;
+    AdbmsAfeSettings s_settings;
 
-  /* Based on spi smoke test (Not sure) */
+      /* Based on spi smoke test (Not sure) */
   const SpiSettings spi_config = {
     .baudrate = SPI_BAUDRATE_2_5MHZ,
     .mode = SPI_MODE_3,
@@ -33,7 +36,7 @@ TASK(adbms1818, TASK_STACK_1024) {
     .cs = { .port = GPIO_PORT_B, .pin = 12 },
   };
 
-  AdbmsAfeSettings afe_settings = {
+  AdbmsAfeSettings s_settings = {
     .adc_mode = ADBMS_AFE_ADC_MODE_27KHZ,
 
     .cell_bitset[0] = 0x0FFFU,
@@ -46,8 +49,10 @@ TASK(adbms1818, TASK_STACK_1024) {
     .spi_settings = spi_config,
     .spi_port = SPI_PORT_2 /* Not sure */
   };
+  #endif
+  
 
-  StatusCode status = adbms_afe_init(&afe_storage, &afe_settings);
+  StatusCode status = adbms_afe_init(&s_afe, &s_settings);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("adbms_afe_init() failed: %d\n", status);
     while (true) {
@@ -57,28 +62,28 @@ TASK(adbms1818, TASK_STACK_1024) {
   LOG_DEBUG("ADBMS1818 init OK – beginning conversions…\n");
 
   while (true) {
-    status = adbms_afe_trigger_cell_conv(&afe_storage);
+    status = adbms_afe_trigger_cell_conv(&s_afe);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("ADCV (Trigger Cell Voltage Conversion) failed: %d\n", status);
       delay_ms(5);
       continue;
     }
 
-    status = adbms_afe_read_cells(&afe_storage);
+    status = adbms_afe_read_cells(&s_afe);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("RDCV (Read cell conversion) failed: %d\n", status);
       delay_ms(5);
       continue;
     }
 
-    status = adbms_afe_trigger_aux_conv(&afe_storage, 4);
+    status = adbms_afe_trigger_aux_conv(&s_afe, 4);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("ADAX (Trigger aux Voltage Conversion) failed: %d\n", status);
       delay_ms(5);
       continue;
     }
 
-    status = adbms_afe_read_aux(&afe_storage, 4);
+    status = adbms_afe_read_aux(&s_afe, 4);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("RDAUX (Read aux conversion) failed: %d\n", status);
       delay_ms(5);
@@ -86,9 +91,11 @@ TASK(adbms1818, TASK_STACK_1024) {
     }
 
     for (size_t i = 0; i < ADBMS_AFE_MAX_CELLS; i++) {
-      LOG_DEBUG("Cell %02u : %4u \n", (unsigned)i, (unsigned)(afe_storage.cell_voltages));
-      delay_ms(5);
-    }
+        LOG_DEBUG("Cell %02u : %4u mV\n",
+                  (unsigned)i,
+                  (unsigned)s_afe.cell_voltages[i]);
+        delay_ms(30);
+      }
   }
 }
 

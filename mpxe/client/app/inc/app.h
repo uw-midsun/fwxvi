@@ -35,5 +35,6 @@
 #define DEFAULT_HARDWARE_MODEL "STM32L433CCU6"
 
 extern GpioManager clientGpioManager; /**< Global GPIO Manager */
+extern AfeManager clientAfeManager; 
 
 /** @} */

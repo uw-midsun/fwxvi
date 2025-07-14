@@ -68,8 +68,12 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config){
     return STATUS_CODE_INVALID_ARGS;
   }
 
+memset(afe, 0, sizeof(*afe));
+
   /* Initialize memory of AFE structure: reset values and copy configuration settings */
-  memset(afe, 0, sizeof(*afe));
+  afe->settings = malloc(sizeof(*afe->settings));
+  if (!afe->settings) {
+    LOG_DEBUG("Settings Not allocated properly"); return STATUS_CODE_INTERNAL_ERROR;}
   memcpy(afe->settings, config, sizeof(AdbmsAfeSettings));
 
   /* Calculate offset for cell result array due to some cells being disabled */
@@ -130,21 +134,21 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
 
-  /* Loop through devices */
-  for (uint16_t device = 0; device < settings->num_devices; ++device) {
-    /* If pin not available - move on */
-    if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
-      LOG_DEBUG(
-          "Device: %u\n"
-          "Device Cell: %u\n"
-          "Not available.\n",
-          device, device_cell);
-      continue;
-    }
+  // /* Loop through devices */
+  // for (uint16_t device = 0; device < settings->num_devices; ++device) {
+  //   /* If pin not available - move on */
+  //   if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
+  //     LOG_DEBUG(
+  //         "Device: %u\n"
+  //         "Device Cell: %u\n"
+  //         "Not available.\n",
+  //         device, device_cell);
+  //     continue;
+  //   }
 
-    uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-    LOG_DEBUG("Aux voltage: %d\n", afe->aux_voltages[index]);
-  }
+  //   uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
+  //   LOG_DEBUG("Aux voltage: %d\n", afe->aux_voltages[index]);
+  // }
 
   return STATUS_CODE_OK;
 }
@@ -200,7 +204,7 @@ StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, 
     size_t cell_pin      = cell_index % ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
 
     if (!((afe->settings->cell_bitset[device_index] >> cell_pin) & 0x1)) {
-        LOG_DEBUG("Aux channel %u on device %u is disabled; skipping set.", cell_pin, device_index);
+        LOG_DEBUG("Aux channel %zu on device %zu is disabled; skipping set.", cell_pin, device_index);
         return STATUS_CODE_OK;
     }
 
@@ -217,7 +221,7 @@ StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, fl
     size_t aux_pin      = aux_index % ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
 
     if (!((afe->settings->aux_bitset[device_index] >> aux_pin) & 0x1)) {
-        LOG_DEBUG("Aux channel %u on device %u is disabled; skipping set.", aux_pin, device_index);
+        LOG_DEBUG("Aux channel %zu on device %zu is disabled; skipping set.", aux_pin, device_index);
         return STATUS_CODE_OK;
     }
 

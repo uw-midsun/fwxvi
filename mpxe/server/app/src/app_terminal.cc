@@ -80,6 +80,24 @@ void Terminal::handleAfeCommands(const std::string &action, std::vector<std::str
   else if (action == "set_pack_aux" && tokens.size() >= 3){
     message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_AUX, "-1", tokens[2]); 
   }
+  else if (action == "get_cell" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_CELL, tokens[2], ""); 
+  }
+  else if (action == "get_aux" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_AUX, tokens[2], "");
+  }
+  else if (action == "get_dev_cell" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_CELL, tokens[2], "");
+  }
+  else if (action == "get_dev_aux" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_AUX, tokens[2], "");
+  }
+  else if (action == "get_pack_cell") {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_CELL, "-1", "");
+  }
+  else if (action == "get_pack_aux") {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_AUX, "-1", "");
+  }
   else {
     std::cerr << "Unsupported action: " << action << std::endl;
   }
@@ -104,6 +122,8 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
   try {
     if (interface == "gpio") {
       handleGpioCommands(action, tokens);
+    } else if (interface == "afe") {
+      handleAfeCommands(action, tokens);
     } else if (interface == "i2c") {
     } else if (interface == "spi") {
     } else {

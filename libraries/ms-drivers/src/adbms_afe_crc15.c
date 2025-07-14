@@ -10,7 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "ltc_afe_crc15.h"
+#include "adbms_afe_crc15.h"
 
 /* Intra-component Headers */
 

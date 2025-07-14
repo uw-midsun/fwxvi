@@ -134,7 +134,7 @@ def build_library(library_name, dependencies=None):
         if dep not in library_targets and LIB_DIR.Dir(dep).exists():
             dep_target = build_library(dep)
             dep_targets.append(dep_target)
-    
+
     # Build this library
     target = env.Library(
         target=LIB_BIN_DIR.File(f'lib{entry.name}.a'),

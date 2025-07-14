@@ -218,7 +218,7 @@ typedef struct {
 
 /** @brief Configuration Register Group (CFGBxR) packet for EACH device */
 typedef struct {
-  AdbmsAfeConfigRegisterBData cfgA;
+  AdbmsAfeConfigRegisterAData cfgA;
   uint16_t pecA;
 
   AdbmsAfeConfigRegisterBData cfgB;

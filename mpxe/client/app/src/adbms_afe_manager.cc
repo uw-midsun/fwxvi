@@ -25,6 +25,7 @@ AfeManager::AfeManager(){
 /* SET 
 -------------------------------------------------*/
 void AfeManager::setAfeCell(std::string &payload){
+  std::cout << "SETTING AFE CELL" << std::endl;
   m_afeDatagram.deserialize(payload); 
 
   uint16_t cell_index = m_afeDatagram.getIndex();
