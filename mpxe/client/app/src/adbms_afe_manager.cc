@@ -6,7 +6,7 @@
 
 /* Inter-component Headers */
 extern "C" { 
- #include "adbms_afe.h"
+#include "adbms_afe.h"
 }
 
 #include "command_code.h"
@@ -59,7 +59,7 @@ void AfeManager::setAfeDevCell(std::string &payload){
   s_afe.settings->num_cells = m_afeDatagram.getNumCells();
   s_afe.settings->cell_bitset[device_index] = m_afeDatagram.getCellBitsetForDevice(device_index); 
 
-  adbms_afe_set_afe_dev_cell_voltage(&s_afe, device_index, voltage);
+  adbms_afe_set_afe_dev_cell_voltages(&s_afe, device_index, voltage);
 }
 
 void AfeManager::setAfeDevAux(std::string &payload){

@@ -1,12 +1,14 @@
 /* Standard library Headers */
 #include <cstdint>
+#include <stdexcept>
 
 /* Inter-component Headers */
 #include "command_code.h"
 
 /* Intra-component Headers */
 #include "app.h"
-#include "server/app/inc/adbms_afe_manager.h"
+#include "adbms_afe_manager.h"
+#include <iostream>
 
 
 #define AFE_KEY "afe"
@@ -22,7 +24,7 @@ void AfeManager::saveAfeInfo(std::string &projectName){
   m_afeInfo.clear(); 
 }
 
-void AfeManager::updateCellVoltage(std::string &projectName, std::string &payload){
+void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &payload){
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
@@ -113,83 +115,64 @@ void AfeManager::updateAfeAuxPackVoltage(std::string &projectName, std::string &
       m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
     }
   }
-
   saveAfeInfo(projectName); 
 }
 
-std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string channel, std::string data){
+std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string index, std::string data){
   try {
     switch(commandCode){
       /* Setters */
-      case CommandCode::AFE_SET_CELL:
+      case CommandCode::AFE_SET_CELL: {
+        std::size_t idx = std::stoi(index);
+        m_afeDatagram.setIndex(idx); 
+        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoi(data)));
+        break;
+      }
       case CommandCode::AFE_SET_AUX: {
-        if (channel.rfind("cell", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4));
-          m_afeDatagram.setIndex(idx); 
-        }
-        else if (channel.rfind("aux", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4)); 
-          m_afeDatagram.setIndex(idx);
-        }
-        else{
-          throw std::runtime_error("Invalid channel specifier. Good examples: 'Cell0' 'Cell1' 'Aux1' 'Aux0'");
-        }
-        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoul(data)));
+        std::size_t idx = std::stoi(index); 
+        m_afeDatagram.setIndex(idx);
+        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoi(data)));
         break;
       }
-      case CommandCode::AFE_SET_DEV_CELL:
+
+      case CommandCode::AFE_SET_DEV_CELL: {
+        std::size_t idx = std::stoi(index);
+        m_afeDatagram.setDeviceIndex(idx); 
+        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoi(data)));
+        break;
+      }
       case CommandCode::AFE_SET_DEV_AUX: {
-        if (channel.rfind("cell", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4));
-          m_afeDatagram.setDeviceIndex(idx); 
-        }
-        else if (channel.rfind("aux", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4)); 
-          m_afeDatagram.setDeviceIndex(idx);
-        }
-        else{
-          throw std::runtime_error("Invalid channel specifier. Good examples: 'Cell0' 'Cell1' 'Aux1' 'Aux0'. "
-                                    "Note for this command, the number represents the device index.");
-        }
-        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoul(data)));
+        std::size_t idx = std::stoi(index); 
+        m_afeDatagram.setDeviceIndex(idx);
+        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoi(data)));
         break;
       }
-      case CommandCode::AFE_SET_PACK_AUX:
+
+      case CommandCode::AFE_SET_PACK_AUX: 
       case CommandCode::AFE_SET_PACK_CELL: {
-        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoul(data)));
+        m_afeDatagram.setVoltage(static_cast<uint8_t>(std::stoi(data)));
         break;
       }
 
       /* Getters */
-      case CommandCode::AFE_GET_CELL:
-      case CommandCode::AFE_GET_AUX: {
-        if (channel.rfind("cell", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4));
-          m_afeDatagram.setIndex(idx); 
-        }
-        else if (channel.rfind("aux", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4)); 
-          m_afeDatagram.setIndex(idx);
-        }
-        else{
-          throw std::runtime_error("Invalid channel specifier. Good examples: 'Cell0' 'Cell1' 'Aux1' 'Aux0'");
-        }
+      case CommandCode::AFE_GET_CELL: {
+        std::size_t idx = std::stoi(index);
+        m_afeDatagram.setIndex(idx);
         break;
       }
-      case CommandCode::AFE_GET_DEV_CELL:
+      case CommandCode::AFE_GET_AUX: {
+        std::size_t idx = std::stoi(index); 
+        m_afeDatagram.setIndex(idx);
+        break;
+      }
+      case CommandCode::AFE_GET_DEV_CELL: {
+        std::size_t idx = std::stoi(index);
+        m_afeDatagram.setDeviceIndex(idx); 
+        break;
+      }
       case CommandCode::AFE_GET_DEV_AUX: {
-        if (channel.rfind("cell", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4));
-          m_afeDatagram.setDeviceIndex(idx); 
-        }
-        else if (channel.rfind("aux", 0) == 0){
-          std::size_t idx = std::stoul(channel.substr(4)); 
-          m_afeDatagram.setDeviceIndex(idx);
-        }
-        else{
-          throw std::runtime_error("Invalid channel specifier. Good examples: 'Cell0' 'Cell1' 'Aux1' 'Aux0'. "
-                                    "Note for this command, the number represents the device index.");
-        }
+        std::size_t idx = std::stoi(index); 
+        m_afeDatagram.setDeviceIndex(idx);
         break;
       }
       case CommandCode::AFE_GET_PACK_CELL:

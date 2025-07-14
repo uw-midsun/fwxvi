@@ -63,12 +63,35 @@ std::string Terminal::toLower(const std::string &input) {
 void Terminal::handleAfeCommands(const std::string &action, std::vector<std::string> &tokens) { 
   std::string message; 
   if (action == "set_cell" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[1]);
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[3]);
   }
-  if (action == "set_aux" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[1]);
+  else if (action == "set_aux" && tokens.size() >= 4){
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_AUX, tokens[2], tokens[3]);
   }
+  else if (action == "set_dev_cell" && tokens.size() >= 4){
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_CELL, tokens[2], tokens[3]);
+  }
+  else if (action == "set_dev_aux" && tokens.size() >= 4){
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_AUX, tokens[2], tokens[3]);
+  }
+  else if (action == "set_pack_cell" && tokens.size() >= 3){
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_CELL, "-1", tokens[2]);
+  }
+  else if (action == "set_pack_aux" && tokens.size() >= 3){
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_AUX, "-1", tokens[2]); 
+  }
+  else {
+    std::cerr << "Unsupported action: " << action << std::endl;
+  }
+
+  if (!message.empty()) {
+    m_Server->sendMessage(m_targetClient, message);
+  } else {
+    std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
+  }
+  m_targetClient = nullptr; 
 }
+
 void Terminal::parseCommand(std::vector<std::string> &tokens) {
   if (tokens.size() < 2) {
     std::cout << "Invalid command. Format: <interface> <action> <args...>\n";

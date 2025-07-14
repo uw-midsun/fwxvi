@@ -27,6 +27,7 @@ SMOKE_DIR = ROOT.Dir('smoke')
 LIB_BIN_DIR = BIN_DIR.Dir('libraries')
 LIB_OBJ_DIR = OBJ_DIR.Dir('libraries')
 LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
+LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-drivers").Dir("inc")
 
 AUTOGEN_DIR = ROOT.Dir("autogen")
 
@@ -156,7 +157,8 @@ def build_library(library_name, dependencies=None):
 def build_ms_mpxe_library():
     if 'ms-common' not in library_targets:
         build_library('ms-common')
-
+    if 'ms-drivers' not in library_targets:
+        build_library('ms-drivers')
     ms_mpxe_dir = ROOT.Dir("libraries").Dir("ms-mpxe")
     ms_mpxe_dir_src = ms_mpxe_dir.Dir("src")
     ms_mpxe_dir_inc = ms_mpxe_dir.Dir("inc")
@@ -244,7 +246,8 @@ def create_mpxe_common_lib():
 def create_mpxe_client_lib():
     if 'ms-common' not in library_targets:
         build_library('ms-common')
-    
+    if 'ms-drivers' not in library_targets:
+        build_library('ms-drivers')
     if 'mpxe_common' not in library_targets:
         create_mpxe_common_lib()
 
@@ -264,12 +267,13 @@ def create_mpxe_client_lib():
     client_incs += inc(mpxe_client_app_dir)
     client_incs += inc(mpxe_common_dir)
     client_incs += inc(LIB_DIR.Dir("ms-common"))
+    client_incs += inc(LIB_DIR.Dir("ms-drivers"))
 
     # Create the client library
     client_lib = cxx_env.Library(
         target=LIB_BIN_DIR.File('libmpxe_client.a'),
         source=client_srcs,
-        LIBS=env['LIBS'] + ['mpxe_common', 'ms-common'],
+        LIBS=env['LIBS'] + ['mpxe_common', 'ms-common', 'ms-drivers'],
         LIBPATH=[LIB_BIN_DIR],
         CPPPATH=env['CPPPATH'] + client_incs,
         CXXFLAGS=env['CXXFLAGS'],
@@ -303,6 +307,7 @@ def create_mpxe_server():
     server_incs += inc(mpxe_server_app_dir)
     server_incs += inc(mpxe_common_dir)
     server_incs += inc(LIB_DIR.Dir("ms-common"))
+    server_incs += inc(LIB_DIR.Dir("ms-drivers"))
 
     # Create the client library
     server_exe = cxx_env.Program(
@@ -330,12 +335,13 @@ def create_mpxe_server():
 
 # 1. Build ms-common first
 ms_common_lib = build_library('ms-common')
+ms_drivers_lib = build_library('ms-drivers')
 
 # 2. Build all other non-MPXE libraries
 for entry in LIB_DIR.glob('*'):
-    if entry.name not in ['ms-common', 'ms-mpxe']:
+    if entry.name not in ['ms-common', 'ms-mpxe', 'ms-drivers']:
         build_library(entry.name)
-
+    
 # 3. Build MPXE common and client libraries
 mpxe_common_lib = create_mpxe_common_lib()
 mpxe_client_lib = create_mpxe_client_lib()

@@ -65,5 +65,5 @@
      * @param   channel Optional (Eg: "Cell0", "Cell1", "Aux0", "Aux1")
      * @return  Fully serialized data payload to be transmitted to the client
      */
-    std::string createAfeCommand(CommandCode commandCode, std::string channel, std::string data);
-}
+    std::string createAfeCommand(CommandCode commandCode, std::string index, std::string data);
+};

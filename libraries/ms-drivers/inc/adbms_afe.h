@@ -29,7 +29,6 @@
 #include "spi.h"
 
 /* Intra-component Headers */
-#include "fsm.h"
 #include "adbms_afe_regs.h"
 #include "status.h"
 
@@ -226,10 +225,10 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
 
 // TODO: REmember to put these back inside the guard
+
+#ifdef MS_PLATFORM_X86
 extern AdbmsAfeStorage s_afe;
 extern AdbmsAfeSettings s_settings;
-#ifdef MS_PLATFORM_X86
-
 
 /**
  * @brief Sets the voltage for a specific cell in the AFE.
