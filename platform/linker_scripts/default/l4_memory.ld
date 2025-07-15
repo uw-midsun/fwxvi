@@ -15,6 +15,12 @@ _flash_start = ORIGIN(FLASH);
 _flash_size = LENGTH(FLASH);
 _flash_page_size = 2K;
 
+_bootloader_size = 0;
+_bootloader_start = _flash_start;
+
+_application_start = _flash_start;
+_application_size = _flash_size;
+
 MEMORY
 {
   FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 256K

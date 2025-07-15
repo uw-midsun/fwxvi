@@ -17,8 +17,10 @@
 
 /* Intra-component Headers */
 #include "fota_datagram.h"
+#include "fota_encryption.h"
 #include "fota_error.h"
 #include "fota_packet.h"
+#include "network.h"
 #include "network_buffer.h"
 
 /**
@@ -51,7 +53,8 @@ typedef struct {
   /* Packet reception */
   PacketReceiverState rx_state;
   uint16_t bytes_received;
-  uint8_t packet_buffer[sizeof(FotaPacket)];
+  uint8_t rx_packet_buffer[sizeof(FotaPacket)];
+  uint8_t tx_packet_buffer[sizeof(FotaPacket)];
   FotaPacket current_packet;
 
   /* Datagram handling */
@@ -65,11 +68,11 @@ typedef struct {
 /**
  * @brief   Initialize the packet manager
  * @param   manager Pointer to packet manager structure
- * @param   network_buffer Pointer to network buffer to use
+ * @param   uart2_settings Pointer to the UART settings needed for the network buffer
  * @param   callback Callback function for completed datagrams (can be NULL)
  * @return  Error code
  */
-FotaError packet_manager_init(PacketManager *manager, NetworkBuffer *network_buffer, void (*callback)(FotaDatagram *datagram));
+FotaError packet_manager_init(PacketManager *manager, UartSettings *uart2_settings, void (*callback)(FotaDatagram *datagram));
 
 /**
  * @brief   Process received data from the network buffer

@@ -1,11 +1,11 @@
-## @file    test_fota_tx.py
+# @file    test_fota_tx.py
 #  @date    2025-04-19
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Test module for FOTA TX
 #
 #  @details Designed and implemented for the XBee interface over a serial connection
 #
-#  @ingroup fota_validation
+#  @ingroup FOTA_Python
 
 import serial
 

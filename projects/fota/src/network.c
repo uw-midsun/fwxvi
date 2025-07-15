@@ -26,21 +26,19 @@
 NetworkBuffer *s_network_buffer; /**< Local pointer to the network buffer */
 uint8_t rx_data;                 /**< Local data reference for receiving */
 
-uint32_t txStartTime;
-bool isSent;
+static uint32_t s_tx_start_time;
+static bool s_is_sent;
 
-uint32_t readStartTime;
-bool isRead;
-
-uint32_t timeoutValMs = FOTA_UART_TIMEOUT_MS;
+static uint32_t s_rx_start_time;
+static bool isRead;
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();  // For PB6/PB7 with USART1
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 }
 static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();  // For PA2/PA3 with USART2
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 }
 bool i = true;
 /** @brief  UART Port data */
@@ -77,7 +75,7 @@ void USART2_IRQHandler(void) {
 
 /* Callback functions for HAL UART TX */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-  isSent = true;
+  s_is_sent = true;
 }
 
 /* Callback functions for HAL UART RX */
@@ -92,11 +90,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 bool isTimeout(bool is_tx) {
   if (is_tx) {
-    if (!isSent && HAL_GetTick() - txStartTime > timeoutValMs) {
+    if (!s_is_sent && HAL_GetTick() - s_tx_start_time > FOTA_UART_TIMEOUT_MS) {
       return true;
     }
   } else {
-    if (!isRead && HAL_GetTick() - readStartTime > timeoutValMs) {
+    if (!isRead && HAL_GetTick() - s_rx_start_time > FOTA_UART_TIMEOUT_MS) {
       return true;
     }
   }
@@ -113,7 +111,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
   }
 
   isRead = false;
-  readStartTime = HAL_GetTick();
+  s_rx_start_time = HAL_GetTick();
 
   for (size_t i = 0; i < len; i++) {
     if (isTimeout(false)) {
@@ -143,8 +141,8 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
     return FOTA_ERROR_INTERNAL_ERROR;
   }
 
-  isSent = false;
-  txStartTime = HAL_GetTick();
+  s_is_sent = false;
+  s_tx_start_time = HAL_GetTick();
 
   return FOTA_ERROR_SUCCESS;
 }
