@@ -62,7 +62,9 @@ jobs:
 
       - name: Pull latest changes (after auto-format)
         run: |
-          git pull --ff-only origin ${{ github.head_ref || github.ref_name }}
+          git fetch origin ${{ github.head_ref || github.ref_name }}
+          git reset --hard FETCH_HEAD
+
 
 
       - name: Get and run setup script
