@@ -145,3 +145,5 @@ FotaError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, siz
  *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
  */
 FotaError boot_can_receive(Fota_CanMessage *const msg);
+
+/** @} */
