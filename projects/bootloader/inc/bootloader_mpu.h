@@ -30,4 +30,11 @@
  */
 void protect_bootloader_memory(uint32_t bootloader_start_address, uint32_t bootloader_size);
 
+
+
+// scons
+
+
+
+
 /** @} */

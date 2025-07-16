@@ -62,8 +62,8 @@ jobs:
 
       - name: Pull latest changes (after auto-format)
         run: |
-          git config pull.rebase true
-          git pull origin ${{ github.head_ref || github.ref_name }}
+          git pull --ff-only origin ${{ github.head_ref || github.ref_name }}
+
 
       - name: Get and run setup script
         run: |
