@@ -38,7 +38,6 @@ typedef struct {
   uint32_t id;      /**< CAN ID */
   uint8_t extended; /**< Extended ID Flag */
   size_t dlc;       /**< Data length Code */
-
   union {
     uint64_t data;        /**< Raw data in the form of 8 bytes */
     uint32_t data_u32[2]; /**< Data split in 4 bytes partitions */
