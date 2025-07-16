@@ -51,14 +51,8 @@ void boot_align_to_32bit_words(uint8_t *buffer, size_t *buffer_len);
 
 /// test the last time
 
-
 /// 
 
-
 // another test
-
-
-
-
 
 /** @} */
