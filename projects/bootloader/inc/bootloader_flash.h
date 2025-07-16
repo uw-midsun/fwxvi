@@ -93,9 +93,4 @@ BootloaderError boot_verify_flash_memory(void);
 
 // work test
 
-
-
-
-
-
 /** @} */
