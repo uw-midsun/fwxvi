@@ -44,7 +44,6 @@ typedef struct {
     uint16_t data_u16[4]; /**< Data split in 2 bytes partitions */
     uint8_t data_u8[8];   /**< Data split in 1 byte partitions */
   };
-
 } Fota_CanMessage;
 
 typedef struct {
