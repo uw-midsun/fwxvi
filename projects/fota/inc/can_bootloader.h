@@ -25,9 +25,9 @@
  * @{
  */
 
- #define FOTA_CHUNK_SIZE 2048
- 
- /**
+#define FOTA_CHUNK_SIZE 2048
+
+/**
  * @brief   CAN message structure
  * @details CAN ID is subjected to arbitration where lower ID's are given higher priority
  *          Extended ID flag indicates a 29-bit ID or an 11-bit ID
@@ -79,7 +79,6 @@ typedef struct CanSettings {
   bool silent;             /**< Device can listen but not transmit messages */
 } Boot_CanSettings;
 
-
 /**
  * @brief   Bootloader CAN State Machine
  */
@@ -99,13 +98,7 @@ typedef enum {
 /**
  * @brief   FOTA CAN Command Identifiers
  */
-typedef enum {
-  FOTA_CMD_START  = 0x01,
-  FOTA_CMD_CHUNK  = 0x02,
-  FOTA_CMD_END    = 0x03,
-  FOTA_CMD_ACK    = 0x04,
-  FOTA_CMD_ERROR  = 0x06
-} FotaCommand;
+typedef enum { FOTA_CMD_START = 0x01, FOTA_CMD_CHUNK = 0x02, FOTA_CMD_END = 0x03, FOTA_CMD_ACK = 0x04, FOTA_CMD_ERROR = 0x06 } FotaCommand;
 
 FotaError can_bootloader_init(void);
 
@@ -116,7 +109,6 @@ FotaError can_bootloader_receive(uint32_t id, uint8_t *data, uint8_t *len);
 FotaError can_bootloader_poll(void);
 
 FotaError can_bootloader_chunkify(void);
-
 
 /**
  * @brief   Initialize the CAN interface for the bootloader
