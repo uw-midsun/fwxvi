@@ -11,6 +11,7 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -47,6 +48,38 @@ typedef struct {
 
 } Fota_CanMessage;
 
+typedef struct {
+  uint16_t prescaler;
+  uint32_t bs1;
+  uint32_t bs2;
+} BootCanTiming;
+
+typedef enum {
+  BOOT_CAN_BITRATE_125KBPS,  /**< 125 KBits per second */
+  BOOT_CAN_BITRATE_250KBPS,  /**< 250 KBits per second */
+  BOOT_CAN_BITRATE_500KBPS,  /**< 500 KBits per second */
+  BOOT_CAN_BITRATE_1000KBPS, /**< 1000 KBits per second */
+  NUM_BOOT_CAN_BITRATES      /**< Number of supported bit rates */
+} Boot_CanBitrate;
+
+typedef enum { CAN_CONTINUOUS = 0, CAN_ONE_SHOT_MODE, NUM_CAN_MODES } Boot_CanMode;
+
+#define CAN_HW_BASE CAN1
+
+/**
+ * @brief   CAN Settings
+ * @details TX Pin will transmit data. RX pin will receive data.
+ *          The bitrate is the number of bits sent per second.
+ *          The device ID is the CAN ID of the STM32 node.
+ *          Loopback will internally connect the transmit and receive CAN lines for testing.
+ *          Silent mode is used for only listening to the bus.
+ */
+typedef struct CanSettings {
+  uint16_t device_id;      /**< Device CAN ID */
+  Boot_CanBitrate bitrate; /**< Bits per second */
+  bool loopback;           /**< Enables self-listening for message debugging */
+  bool silent;             /**< Device can listen but not transmit messages */
+} Boot_CanSettings;
 
 
 /**
@@ -85,3 +118,30 @@ FotaError can_bootloader_receive(uint32_t id, uint8_t *data, uint8_t *len);
 FotaError can_bootloader_poll(void);
 
 FotaError can_bootloader_chunkify(void);
+
+
+/**
+ * @brief   Initialize the CAN interface for the bootloader
+ * @return  FOTA_ERROR_SUCCESS if the interface is initialized succesfully
+ *          FOTA_ERROR_CAN_INIT if initialization fails
+ */
+FotaError boot_can_init(const Boot_CanSettings *settings);
+
+/**
+ * @brief   Transmit a CAN message in the bootloader
+ * @param   id CAN Message arbitration Id
+ * @param   extended Boolean flag to select 11-bit vs 29-bit CAN transmission
+ * @param   data Pointer to the data buffer to transmit
+ * @param   len Length of the data buffer
+ * @return  BOOTLOADER_ERROR_NONE if the message is transmitted succesfully
+ *          BOOLOADER_CAN_TRANSMISSION_ERROR if transmitting the message fails
+ */
+FotaError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
+
+/**
+ * @brief   Receive a CAN message in the bootloader
+ * @param   msg Pointer to the message that will be updated with incoming data
+ * @return  BOOTLOADER_ERROR_NONE if the message is received succesfully
+ *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
+ */
+FotaError boot_can_receive(Fota_CanMessage *const msg);
