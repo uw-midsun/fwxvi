@@ -127,7 +127,6 @@ BootloaderError bootloader_run(Boot_CanMessage *msg);
  */
 BootloaderError bootloader_jump_app(void);
 
-
 // another test
 // test once more
 
