@@ -1,25 +1,11 @@
 #include "light_signal_manager.h"
 
 static LightsSignalState current_state = LIGHTS_SIGNAL_STATE_OFF;
-static LightsSignalRequest current_request = LIGHTS_SIGNAL_REQUEST_NONE;
-
-typedef enum {
-    LIGHTS_SIGNAL_STATE_OFF = 0,
-    LIGHTS_SIGNAL_STATE_LEFT,
-    LIGHTS_SIGNAL_STATE_RIGHT,
-    LIGHTS_SIGNAL_STATE_HAZARD
-} LightsSignalState;
-
-typedef enum {
-    LIGHTS_SIGNAL_REQUEST_NONE = 0,
-    LIGHTS_SIGNAL_REQUEST_LEFT,
-    LIGHTS_SIGNAL_REQUEST_RIGHT,
-    LIGHTS_SIGNAL_REQUEST_HAZARD
-} LightsSignalRequest;
+static LightsSignalRequest current_request = LIGHTS_SIGNAL_REQUEST_OFF;
 
 void lights_signal_manager_init(void) {
     current_state = LIGHTS_SIGNAL_STATE_OFF;
-    current_request = LIGHTS_SIGNAL_REQUEST_NONE;    
+    current_request = LIGHTS_SIGNAL_REQUEST_OFF;    
 }
 
 void lights_signal_manager_request(LightsSignalRequest req) {
@@ -34,7 +20,7 @@ static bool is_valid_request(LightsSignalRequest req) {
         return false;
     }
     switch (req) {
-        case LIGHTS_SIGNAL_REQUEST_NONE:
+        case LIGHTS_SIGNAL_REQUEST_OFF:
             return true;
         case LIGHTS_SIGNAL_REQUEST_LEFT:
             return current_state != LIGHTS_SIGNAL_STATE_HAZARD;
@@ -49,37 +35,21 @@ static bool is_valid_request(LightsSignalRequest req) {
 
 void lights_signal_manager_update(void) {
     switch (current_request) {
-        case LIGHTS_SIGNAL_REQUEST_NONE:
+        case LIGHTS_SIGNAL_REQUEST_OFF:
+            current_state = LIGHTS_SIGNAL_STATE_OFF;
             break;
         case LIGHTS_SIGNAL_REQUEST_LEFT:
-            if (current_state == LIGHTS_SIGNAL_STATE_LEFT) {
-                current_state = LIGHTS_SIGNAL_STATE_OFF;
-            }
-            else if (current_state == LIGHTS_SIGNAL_REQUEST_HAZARD) {
-                
-            }
-            else {
+            if (current_state != LIGHTS_SIGNAL_STATE_HAZARD) {
                 current_state = LIGHTS_SIGNAL_STATE_LEFT;
             }
             break;
         case LIGHTS_SIGNAL_REQUEST_RIGHT:
-            if (current_state == LIGHTS_SIGNAL_STATE_RIGHT) {
-                current_state = LIGHTS_SIGNAL_STATE_OFF;
-            }
-            else if (current_state == LIGHTS_SIGNAL_REQUEST_HAZARD) {
-                
-            }
-            else {
+            if (current_state != LIGHTS_SIGNAL_STATE_HAZARD) {
                 current_state = LIGHTS_SIGNAL_STATE_RIGHT;
             }
             break;
         case LIGHTS_SIGNAL_REQUEST_HAZARD:
-            if (current_state == LIGHTS_SIGNAL_STATE_HAZARD) {
-                current_state = LIGHTS_SIGNAL_STATE_OFF;
-            }
-            else {
-                current_state = LIGHTS_SIGNAL_STATE_HAZARD;
-            }
+            current_state = LIGHTS_SIGNAL_STATE_HAZARD;
             break;
     }
 }
