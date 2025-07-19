@@ -40,6 +40,14 @@ FotaError fota_encryption_init();
 uint32_t fota_calculate_crc32(uint8_t *data, uint32_t length_words);
 
 /**
+ * @brief   Verify a region of flash memory
+ * @param   flash_base_addr Base address to begin verification from
+ * @param   flash_size Size of flash memory to verify in bytes
+ * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
+ */
+uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size);
+
+/**
  * @brief   Verify a FOTA packets encryption
  * @param   packet Pointer to the encrypted packet
  * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid

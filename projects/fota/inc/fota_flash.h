@@ -67,7 +67,7 @@ FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
  * @return  FOTA_ERROR_SUCCESS if data is erased successfully
  *          FOTA_ERROR_FLASH_ERASE if page is out of bounds OR erasing failed
  */
-FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages);
+FotaError fota_flash_erase(uint32_t start_page, uint8_t num_pages);
 
 /**
  * @brief   Read from flash memory

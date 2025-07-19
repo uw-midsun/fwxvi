@@ -54,12 +54,8 @@ FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
   uint32_t offset = to_flash_offset(address);
 
   for (size_t i = 0; i < buffer_len; ++i) {
-    if ((simulated_flash[offset + i] & buffer[i]) != buffer[i]) {
-      return FOTA_ERROR_FLASH_WRITE_FAILED;
-    }
-    simulated_flash[offset + i] &= buffer[i];
+    simulated_flash[offset + i] = buffer[i];
   }
-
   return FOTA_ERROR_SUCCESS;
 }
 
@@ -76,7 +72,7 @@ FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) 
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages) {
+FotaError fota_flash_erase(uint32_t start_page, uint8_t num_pages) {
   if (num_pages == 0U || (start_page + num_pages) > (SIMULATED_FLASH_SIZE / SIMULATED_FLASH_PAGE_SIZE)) {
     return FOTA_ERROR_INVALID_ARGS;
   }

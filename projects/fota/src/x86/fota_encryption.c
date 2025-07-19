@@ -14,6 +14,7 @@
 
 /* Intra-component Headers */
 #include "fota_encryption.h"
+#include "fota_flash.h"
 
 #define FOTA_ENCRYPTION_WORD_SIZE 4U
 
@@ -43,6 +44,10 @@ uint32_t fota_calculate_crc32(uint8_t *data_start, uint32_t word_size) {
   }
 
   return crc32_compute(data_start, word_size * FOTA_ENCRYPTION_WORD_SIZE);
+}
+
+uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size) {
+  /* FOTA Flash layer will handle invalid addresses */
 }
 
 FotaError fota_verify_packet_encryption(FotaPacket *packet) {

@@ -13,9 +13,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "fota_dfu.h"
 #include "fota_datagram.h"
 #include "fota_datagram_payloads.h"
-#include "fota_dfu.h"
 #include "fota_encryption.h"
 #include "fota_error.h"
 #include "fota_flash.h"
@@ -35,7 +35,7 @@ static FotaError fota_dfu_copy_staging_to_app(void) {
   }
 
   uint8_t page_buf[FOTA_PAGE_BYTES];
-  uintptr_t staging_addr = fota_dfu_context.flash_base_addr;
+  uintptr_t staging_addr = fota_dfu_context.staging_base_addr;
   uintptr_t app_addr = fota_dfu_context.app_start_addr;
   uint32_t remaining_binary_size = fota_dfu_context.binary_size;
 
@@ -112,7 +112,7 @@ FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, u
   }
 
   fota_dfu_context.packet_manager = packet_manager;
-  fota_dfu_context.flash_base_addr = staging_base;
+  fota_dfu_context.staging_base_addr = staging_base;
   fota_dfu_context.app_start_addr = app_start_addr;
   fota_dfu_context.current_write_addr = staging_base;
   fota_dfu_context.bytes_written = 0U;
@@ -149,10 +149,10 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
       memcpy(fota_dfu_context.firmware_id, metadata->firmware_id, FOTA_FIRMWARE_ID_LENGTH);
       fota_dfu_context.bytes_written = 0U;
       fota_dfu_context.expected_datagram_id = 0U;
-      fota_dfu_context.current_write_addr = fota_dfu_context.flash_base_addr;
+      fota_dfu_context.current_write_addr = fota_dfu_context.staging_base_addr;
 
       uint32_t pages = (fota_dfu_context.binary_size + FOTA_PAGE_BYTES - 1U) / FOTA_PAGE_BYTES;
-      FotaError error = fota_flash_erase(FOTA_ADDR_TO_PAGE(fota_dfu_context.flash_base_addr), pages);
+      FotaError error = fota_flash_erase(FOTA_ADDR_TO_PAGE(fota_dfu_context.staging_base_addr), pages);
 
       if (error != FOTA_ERROR_SUCCESS) {
         return error;
@@ -168,26 +168,11 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
       }
 
       FotaError error = fota_dfu_write_chunk(datagram);
-
       if (error != FOTA_ERROR_SUCCESS) {
         return error;
       }
 
       if (fota_dfu_context.bytes_written >= fota_dfu_context.binary_size) {
-        /* verify CRC of staged image */
-        uint32_t binary_word_size = fota_dfu_context.binary_size;
-
-        if (fota_dfu_context.binary_size % FOTA_DFU_WORD_SIZE != 0U) {
-          binary_word_size = FOTA_DFU_WORD_SIZE - (fota_dfu_context.binary_size % FOTA_DFU_WORD_SIZE);
-        }
-
-        binary_word_size /= FOTA_DFU_WORD_SIZE;
-
-        uint32_t calc_crc = fota_calculate_crc32((uint8_t *)fota_dfu_context.flash_base_addr, binary_word_size);
-        if (calc_crc != fota_dfu_context.expected_crc32) {
-          return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
-        }
-
         fota_dfu_context.state = FOTA_DFU_COMPLETE;
       }
     } break;
@@ -210,6 +195,13 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
 
   /* If we just transitioned to COMPLETE attempt final move & jump */
   if (fota_dfu_context.state == FOTA_DFU_COMPLETE) {
+    /* Verify CRC32 of newly loaded application */
+    uint32_t calculated_application_crc32 = fota_calculate_crc32_on_flash_memory(fota_dfu_context.staging_base_addr, fota_dfu_context.binary_size);
+
+    if (calculated_application_crc32 != fota_dfu_context.expected_crc32) {
+      return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
+    }
+
     FotaError error = fota_dfu_copy_staging_to_app();
 
     if (error != FOTA_ERROR_SUCCESS) {
@@ -219,8 +211,6 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
     error = fota_dfu_save_application_data();
 
     fota_dfu_context.state = FOTA_DFU_JUMP;
-    fota_jump(FOTA_JUMP_APPLICATION);
-    return FOTA_ERROR_BOOTLOADER_FAILURE;
   }
 
   if (fota_dfu_context.state == FOTA_DFU_JUMP) {
@@ -230,8 +220,10 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
       return error;
     }
 
+#ifndef MS_PLATFORM_X86
     fota_jump(FOTA_JUMP_APPLICATION);
     return FOTA_ERROR_BOOTLOADER_FAILURE;
+#endif
   }
 
   return FOTA_ERROR_SUCCESS;

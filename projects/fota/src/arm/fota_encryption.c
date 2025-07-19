@@ -49,6 +49,10 @@ uint32_t fota_calculate_crc32(uint8_t *data_start, uint32_t word_size) {
   return HAL_CRC_Calculate(&s_crc_handle, (uint32_t *)data_start, word_size);
 }
 
+uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size) {
+  /* FOTA Flash layer will handle invalid addresses */
+}
+
 FotaError fota_verify_packet_encryption(FotaPacket *packet) {
   if (packet == NULL) {
     return FOTA_ERROR_INVALID_ARGS;

@@ -2,6 +2,7 @@ import json
 import subprocess
 import serial  # pip install pyserial
 import glob
+import os
 from sys import platform
 
 def parse_config(entry):
@@ -72,21 +73,17 @@ def flash_run(entry, hardware, flash_type):
         'shutdown'
     )
 
-    openocd_cmd_list = [
-        OPENOCD,
-        f'-s {OPENOCD_SCRIPT_DIR}',
-        f'-f interface/{PROBE}.cfg',
-        f'-f target/stm32l4x.cfg',
-        '-c "stm32l4x.cpu configure -rtos FreeRTOS"',
-        '-c', tcl_commands_string
+    openocd_cmd = [
+        "sudo", OPENOCD,
+        "-s", OPENOCD_SCRIPT_DIR,
+        "-f", f"interface/{PROBE}.cfg",
+        "-f", "target/stm32l4x.cfg",
+        "-c", f"stm32l4x.cpu configure -rtos FreeRTOS; {tcl_commands_string}"
     ]
 
-    cmd_str = 'sudo ' + ' '.join(openocd_cmd_list)
-
-    print(f"Executing flash command: {cmd_str}")
+    print(f"Executing flash command: {' '.join(openocd_cmd)}")
     try:
-        # Run the command, checking for non-zero exit codes
-        subprocess.run(cmd_str, shell=True, check=True)
+        subprocess.run(openocd_cmd, check=True)
         print("Flash complete")
     except subprocess.CalledProcessError as e:
         print(f"Flash failed with error code {e.returncode}")

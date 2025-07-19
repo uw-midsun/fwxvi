@@ -62,7 +62,7 @@ FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages) {
+FotaError fota_flash_erase(uint32_t start_page, uint8_t num_pages) {
   if (start_page >= NUM_FLASH_PAGES || num_pages == 0U || start_page + num_pages > NUM_FLASH_PAGES) {
     return FOTA_ERROR_INVALID_ARGS;
   }

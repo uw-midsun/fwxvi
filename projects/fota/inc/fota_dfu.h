@@ -42,7 +42,7 @@ typedef enum {
  */
 typedef struct {
   bool is_initialized;                       /**< Initialization flag */
-  uintptr_t flash_base_addr;                 /**< Flash bank where new firmware is written */
+  uintptr_t staging_base_addr;               /**< Flash bank where new firmware is written */
   uintptr_t app_start_addr;                  /**< Main application entry address (for jump) */
   uintptr_t current_write_addr;              /**< Current write address */
   uint32_t bytes_written;                    /**< Total bytes written so far */
