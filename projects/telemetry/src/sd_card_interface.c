@@ -341,7 +341,6 @@ static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
     SdResponse r1 = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, sector * 512U, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 != SD_R1_NO_ERROR) {
-      LOG_DEBUG("Failed to read SD sector %u\n", (uint32_t)sector);
       result = RES_ERROR;
       break;
     }
