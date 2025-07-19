@@ -1,24 +1,71 @@
-name: CI
+name: SCons Format + Lint + CI
 
 on:
-  # Run on all pull requests and all pushes to main
   push:
     branches: [main]
   pull_request:
-
-  # Allow running this workflow manually
   workflow_dispatch:
 
 env:
-  # Set defines for builds/tests
   DEFINES: "LOG_LEVEL=LOG_LEVEL_WARN"
 
 jobs:
-  build:
+  format-and-lint:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true 
+
+      - name: Run SCons format and lint
+        run: |
+          scons format
+          scons lint
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git add .
+          git commit -m "[auto-format] SCons Format and Lint via Github Actions"
+          git config pull.rebase true
+          git pull origin ${{ github.head_ref || github.ref_name }}
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+
+  build:
+    needs: format-and-lint 
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Pull latest changes (after auto-format)
+        run: |
+          git fetch origin ${{ github.head_ref || github.ref_name }}
+          git reset --hard FETCH_HEAD
+
+
 
       - name: Get and run setup script
         run: |
@@ -26,6 +73,7 @@ jobs:
           chmod +x ./requirements.sh
           sudo ./requirements.sh
           pip install -r requirements.txt --upgrade
+
       - name: Install libncurses5
         run: |
           sudo apt install libncurses-dev
@@ -61,6 +109,7 @@ jobs:
           pylint --version
           python3 --version
           scons --version
+
       - name: Format and lint
         run: |
           scons format
@@ -74,10 +123,12 @@ jobs:
             echo -e "\n lint failed";
             exit 1;
           fi
+
       - name: Build stm32l4x
         id: build-stm32
         run: |
           scons --platform=arm --define="${DEFINES}"
+
       - name: Build x86
         id: build-x86
         run: |
