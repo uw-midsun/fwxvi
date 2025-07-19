@@ -56,7 +56,7 @@
  * @param   address Base memory address to write to
  * @param   buffer Pointer to the data buffer
  * @param   buffer_len Length of the data buffer
- * @return  BOOTLOADER_ERROR_NONE if data is written succesfully
+ * @return  BOOTLOADER_ERROR_NONE if data is written successfully
  *          BOOTLOADER_FLASH_WRITE_OUT_OF_BOUNDS if address is out of bounds
  *          BOOTLOADER_FLASH_WRITE_NOT_ALIGNED if data is not aligned
  */
@@ -66,7 +66,7 @@ BootloaderError boot_flash_write(uintptr_t address, uint8_t *buffer, size_t buff
  * @brief   Erase some number of flash pages
  * @param   start_page Initial page number to erase
  * @param   num_pages Number of pages to erase
- * @return  BOOTLOADER_ERROR_NONE if data is erased succesfully
+ * @return  BOOTLOADER_ERROR_NONE if data is erased successfully
  *          BOOTLOADER_FLASH_ERR if page is out of bounds OR erasing failed
  */
 BootloaderError boot_flash_erase(uint8_t start_page, uint8_t num_pages);
@@ -76,7 +76,7 @@ BootloaderError boot_flash_erase(uint8_t start_page, uint8_t num_pages);
  * @param   address Base memory address to read from
  * @param   buffer Pointer to the data buffer
  * @param   buffer_len Length of the data buffer
- * @return  BOOTLOADER_ERROR_NONE if data is read succesfully
+ * @return  BOOTLOADER_ERROR_NONE if data is read successfully
  *          BOOTLOADER_FLASH_READ_FAILED if data read failed
  */
 BootloaderError boot_flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len);

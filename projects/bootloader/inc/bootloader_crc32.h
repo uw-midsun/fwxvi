@@ -29,7 +29,7 @@
 
 /**
  * @brief   Initialize the CRC hardware component
- * @return  BOOTLOADER_ERROR_NONE if initialized succesfully
+ * @return  BOOTLOADER_ERROR_NONE if initialized successfully
  */
 BootloaderError boot_crc32_init(void);
 

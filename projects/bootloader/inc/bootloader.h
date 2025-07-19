@@ -109,7 +109,7 @@ typedef struct {
 
 /**
  * @brief   Initialize the bootloader
- * @return  BOOTLOADER_ERROR_NONE if the bootloader is initialized succesfully
+ * @return  BOOTLOADER_ERROR_NONE if the bootloader is initialized successfully
  */
 BootloaderError bootloader_init(void);
 

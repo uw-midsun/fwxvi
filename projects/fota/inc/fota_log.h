@@ -22,10 +22,10 @@
  */
 
 /** @brief  Debug log */
-#define LOG_FOTA_DEBUG(msg) printf("[FOTA DEBUG]: %s\n");
+#define LOG_FOTA_DEBUG(fmt, ...) printf("[FOTA DEBUG] %s:%u: " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 /** @brief Warning log */
-#define LOG_FOTA_WARNING(msg) printf("[FOTA WARNING]: %s\n");
+#define LOG_FOTA_WARNING(fmt, ...) printf("[FOTA WARNING] %s:%u: " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 /** @brief Error log */
-#define LOG_FOTA_ERROR(msg) printf("[FOTA ERROR]: %s\n");
+#define LOG_FOTA_ERROR(fmt, ...) printf("[FOTA ERROR] %s:%u: " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 
 /** @} */

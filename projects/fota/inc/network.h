@@ -11,10 +11,10 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
-#include "stm32l4xx_hal_gpio.h"
 
 /* Intra-component Headers */
 #include "fota_error.h"
@@ -30,9 +30,9 @@
 typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
 
 /** @brief Maximum size permitted for a UART transaction */
-#define UART_MAX_BUFFER_LEN 256U
-/** @brief Maximum time permitted for a UART transaction */
-#define UART_TIMEOUT_MS 1U
+#define FOTA_UART_MAX_BUFFER_LEN 256U
+/** @brief Maximum time permitted for a FOTA UART transaction */
+#define FOTA_UART_TIMEOUT_MS 10U
 
 /**
  * @brief   UART Flow control selection
@@ -112,9 +112,6 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len);
  */
 FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
 
-/** @brief Maximum time permitted for a FOTA UART transaction */
-#define FOTA_UART_TIMEOUT_MS 10U
-
 /**
  * @brief   Checks if tx or rx command has timed out
  * @details Subtracts the difference of current clock time and clock time when command started
@@ -122,6 +119,27 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
  * @return  true if time elapsed is greater than FOTA_UART_TIMEOUT_MS
  *          false if time elapsed is less than FOTA_UART_TIMEOUT_MS
  */
-bool isTimeout(bool is_tx);
+bool is_network_timeout(bool is_tx);
+
+#ifdef MS_PLATFORM_X86
+
+/**
+ * @brief   Sets the RX data in the network buffer to be read
+ * @param   data Pointer to the simulated data buffer
+ * @param   len Length of data to send
+ * @return  FOTA_ERROR_SUCCESS if data is simulated succeeded
+ *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
+ */
+FotaError network_sim_set_rx_data(uint8_t *data, size_t len);
+
+/**
+ * @brief   Gets the TX data that was just transmitted
+ * @param   data Pointer to the simulated buffer storing TX data
+ * @return  FOTA_ERROR_SUCCESS if simulated data is read succeeded
+ *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
+ */
+FotaError network_sim_get_tx_data(uint8_t *data);
+
+#endif
 
 /** @} */

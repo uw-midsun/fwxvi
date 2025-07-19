@@ -15,7 +15,6 @@
 
 /* Intra-component Headers */
 #include "fota_error.h"
-#include "network_buffer.h"
 
 /**
  * @defgroup FOTA

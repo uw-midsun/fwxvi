@@ -11,7 +11,7 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_rcc.h"
