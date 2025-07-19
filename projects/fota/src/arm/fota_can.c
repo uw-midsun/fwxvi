@@ -13,8 +13,10 @@
 /* Inter-component Headers */
 #include "gpio.h"
 #include "stm32l4xx.h"
-#include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_conf.h"
+
+/* Hardware Headers */
+#include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_gpio.h"
 #include "stm32l4xx_hal_rcc.h"
 

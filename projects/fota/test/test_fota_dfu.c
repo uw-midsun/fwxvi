@@ -7,34 +7,38 @@
  * @author Midnight Sun Team #24
  ************************************************************************************************/
 
-/* Standard headers */
-#include <string.h>
+/* Standard library Headers */
 #include <stdbool.h>
+#include <string.h>
 
-/* Test Framework */
-#include "unity.h"
-
-/* FOTA Components */
-#include "fota_dfu.h"
+/* Inter-component Headers */
 #include "fota_datagram.h"
+#include "fota_dfu.h"
+#include "fota_error.h"
 #include "fota_flash.h"
 #include "fota_memory_map.h"
-#include "fota_error.h"
+#include "test_helpers.h"
+#include "unity.h"
+
+/* Intra-component Headers */
+
+/* Standard headers */
+
+/* Test Framework */
+
+/* FOTA Components */
 
 /* Helpers */
-#include "test_helpers.h"
 
-void setup_test(void) {
-}
+void setup_test(void) {}
 
 void teardown_test(void) {}
-
 
 void test_fota_end_to_end() {
   const uintptr_t staging = APP_STAGING_START_ADDRESS;
   const uintptr_t app_start = APP_ACTIVE_START_ADDRESS;
 
-  PacketManager dummy_pm = {0};
+  PacketManager dummy_pm = { 0 };
   FotaError err = fota_dfu_init(&dummy_pm, staging, app_start);
   TEST_ASSERT_EQUAL(FOTA_ERROR_SUCCESS, err);
 
@@ -48,7 +52,7 @@ void test_fota_end_to_end() {
   uint32_t expected_crc = fota_calculate_crc32(firmware_data, sizeof(firmware_data) / 4);
 
   // 3. Send metadata datagram
-  FotaDatagram metadata = {0};
+  FotaDatagram metadata = { 0 };
   metadata.header.type = FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA;
   metadata.header.total_length = sizeof(FotaDatagramPayload_FirmwareMetadata);
   metadata.is_complete = true;
@@ -73,7 +77,7 @@ void test_fota_end_to_end() {
   while (offset < sizeof(firmware_data)) {
     size_t chunk_len = (sizeof(firmware_data) - offset > 64) ? 64 : (sizeof(firmware_data) - offset);
 
-    FotaDatagram chunk = {0};
+    FotaDatagram chunk = { 0 };
     chunk.header.type = FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK;
     chunk.header.total_length = chunk_len;
     chunk.header.datagram_id = datagram_id++;

@@ -48,6 +48,7 @@ uint32_t fota_calculate_crc32(uint8_t *data_start, uint32_t word_size) {
 
 uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size) {
   /* FOTA Flash layer will handle invalid addresses */
+  return 0;
 }
 
 FotaError fota_verify_packet_encryption(FotaPacket *packet) {

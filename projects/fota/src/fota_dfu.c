@@ -13,9 +13,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "fota_dfu.h"
 #include "fota_datagram.h"
 #include "fota_datagram_payloads.h"
+#include "fota_dfu.h"
 #include "fota_encryption.h"
 #include "fota_error.h"
 #include "fota_flash.h"
