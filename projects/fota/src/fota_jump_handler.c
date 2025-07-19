@@ -27,13 +27,14 @@ FotaError fota_jump(FotaJumpRequest jump_request) {
 
   switch (jump_request) {
     case FOTA_JUMP_APPLICATION:
-      app_base = (uint32_t *)APPLICATION_START_ADDRESS;
+      app_base = (uint32_t *)APP_ACTIVE_START_ADDRESS;
       break;
     case FOTA_JUMP_BOOTLOADER:
       app_base = (uint32_t *)BOOTLOADER_START_ADDRESS;
       break;
-    case FOTA_JUMP_MIDSUN_BIOS:
+    case FOTA_JUMP_MIDSUN_BOOTSTRAP:
       // TODO: assign appropriate address if applicable
+      app_base = (uint32_t *)BOOTSTRAP_START_ADDRESS;
       return FOTA_ERROR_JUMP_FAILED;
     default:
       return FOTA_ERROR_JUMP_FAILED;

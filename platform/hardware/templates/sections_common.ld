@@ -1,4 +1,7 @@
-/* Sections Definitions */
+/*
+Common linker subscript for section definitions for all application.
+See https://uwmidsun.atlassian.net/l/c/mHxmqjvn for more information.
+*/
 
 SECTIONS
 {   
@@ -16,7 +19,7 @@ SECTIONS
     . = ALIGN(4);
         KEEP(*(.isr_vector))            /* Startup code */
     . = ALIGN(4);
-    } >FLASH
+    } >_flash_target_region_
 
     /* the program code is stored in the .text section, which goes to Flash */
     .text :
@@ -38,7 +41,7 @@ SECTIONS
         _etext = .;
         /* This is used by the startup in order to initialize the .data section */
         _sidata = _etext;
-    } >FLASH
+    } >_flash_target_region_
 
     /* This is the initialized data section
     The program executes knowing that the data is in the RAM

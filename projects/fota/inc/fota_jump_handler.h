@@ -25,9 +25,9 @@
  */
 
 typedef enum {
-  FOTA_JUMP_APPLICATION, /**< Jump to application memory */
-  FOTA_JUMP_BOOTLOADER,  /**< Jump to bootloader memory */
-  FOTA_JUMP_MIDSUN_BIOS  /**< Jump to Midnight Sun BIOS */
+  FOTA_JUMP_APPLICATION,     /**< Jump to application memory */
+  FOTA_JUMP_BOOTLOADER,      /**< Jump to bootloader memory */
+  FOTA_JUMP_MIDSUN_BOOTSTRAP /**< Jump to Midnight Sun bootstrap */
 } FotaJumpRequest;
 
 FotaError fota_jump(FotaJumpRequest jump_request);

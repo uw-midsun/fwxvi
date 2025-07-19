@@ -12,7 +12,7 @@
 
 /* Inter-component Headers */
 #include "misc.h"
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_flash.h"
 
 /* Intra-component Headers */
@@ -97,26 +97,19 @@ FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) 
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_verify_flash_memory() {
-  volatile uint32_t *flash_pointer = (volatile uint32_t *)FLASH_START_ADDRESS_LINKERSCRIPT;
-  uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
-
-  for (uint32_t i = 0; i < size_in_words; i++) {
-    if (flash_pointer[i] != 0xFFFFFFFFU) {
-      return FOTA_ERROR_SUCCESS;
-    }
+FotaError fota_verify_flash_memory(uintptr_t start_addr, size_t size_bytes) {
+  if (start_addr % FOTA_FLASH_WORD_SIZE != 0U || size_bytes % FOTA_FLASH_WORD_SIZE != 0U) {
+    return FOTA_ERROR_INVALID_ARGS;
   }
 
-  return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
-}
+  if (start_addr < FLASH_START_ADDRESS_LINKERSCRIPT || (start_addr + size_bytes) > (FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE_LINKERSCRIPT)) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
 
-// Not sure if this is needed since the flash memory is already verified in fota_verify_flash_memory
-//  but keeping it for now as it might be useful in the future (e.g. for verifying a specific application section)
-FotaError fota_verify_flash_memory_application() {
-  volatile uint32_t *flash_pointer = (volatile uint32_t *)APPLICATION_SIZE;
-  uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
+  volatile uint32_t *flash_pointer = (volatile uint32_t *)start_addr;
+  uint32_t size_in_words = size_bytes / FOTA_FLASH_WORD_SIZE;
 
-  for (uint32_t i = 0; i < size_in_words; i++) {
+  for (uint32_t i = 0U; i < size_in_words; i++) {
     if (flash_pointer[i] != 0xFFFFFFFFU) {
       return FOTA_ERROR_SUCCESS;
     }

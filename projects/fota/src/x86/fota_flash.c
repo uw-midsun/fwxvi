@@ -89,23 +89,22 @@ FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_verify_flash_memory() {
-  for (size_t i = 0; i < APPLICATION_SIZE; i += sizeof(uint32_t)) {
-    uint32_t word;
-    memcpy(&word, &simulated_flash[i], sizeof(uint32_t));
-    if (word != 0xFFFFFFFFU) {
-      return FOTA_ERROR_SUCCESS;
-    }
+FotaError fota_verify_flash_memory(uintptr_t start_addr, size_t size_bytes) {
+  if (start_addr % FOTA_FLASH_WORD_SIZE != 0U || size_bytes % FOTA_FLASH_WORD_SIZE != 0U) {
+    return FOTA_ERROR_INVALID_ARGS;
   }
-  return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
-}
 
-FotaError fota_verify_flash_memory_application() {
-  uint32_t app_offset = APPLICATION_START_ADDRESS - SIMULATED_FLASH_BASE_ADDRESS;
+  if (start_addr < FLASH_START_ADDRESS_LINKERSCRIPT || (start_addr + size_bytes) > (FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE_LINKERSCRIPT)) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
 
-  for (size_t i = 0; i < APPLICATION_SIZE; i += sizeof(uint32_t)) {
+  size_t offset = start_addr - FLASH_START_ADDRESS_LINKERSCRIPT;
+  uint32_t size_in_words = size_bytes / FOTA_FLASH_WORD_SIZE;
+
+  for (uint32_t i = 0U; i < size_in_words; i++) {
     uint32_t word;
-    memcpy(&word, &simulated_flash[app_offset + i], sizeof(uint32_t));
+    memcpy(&word, &simulated_flash[offset + i * FOTA_FLASH_WORD_SIZE], FOTA_FLASH_WORD_SIZE);
+
     if (word != 0xFFFFFFFFU) {
       return FOTA_ERROR_SUCCESS;
     }

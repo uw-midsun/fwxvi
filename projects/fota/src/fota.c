@@ -15,6 +15,7 @@
 #include "fota_dfu.h"
 #include "fota_encryption.h"
 #include "fota_error.h"
+#include "fota_memory_map.h"
 #include "fota_startup.h"
 #include "network.h"
 #include "network_buffer.h"
@@ -43,9 +44,11 @@ static void fota_datagram_complete_cb(FotaDatagram *datagram) {
 FotaError fota_init() {
   fota_startup();
 
+  packet_manager_init(&packet_manager, UART_PORT_2, &network_uart_settings, fota_datagram_complete_cb);
+
   fota_encryption_init();
 
-  packet_manager_init(&packet_manager, UART_PORT_2, &network_uart_settings, fota_datagram_complete_cb);
+  fota_dfu_init(&packet_manager, APP_STAGING_START_ADDRESS, APP_ACTIVE_START_ADDRESS);
 
   return FOTA_ERROR_SUCCESS;
 }

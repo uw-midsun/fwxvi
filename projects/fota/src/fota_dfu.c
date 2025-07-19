@@ -8,12 +8,15 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <string.h>
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "fota_dfu.h"
 #include "fota_datagram.h"
+#include "fota_datagram_payloads.h"
+#include "fota_dfu.h"
+#include "fota_encryption.h"
 #include "fota_error.h"
 #include "fota_flash.h"
 #include "fota_jump_handler.h"
@@ -21,44 +24,75 @@
 #include "network.h"
 #include "network_buffer.h"
 
-static FotaDFUContext fota_dfu_context = {
-  .state = FOTA_DFU_UNINITIALIZED,
-  .is_initialized = false
-};
+#define FOTA_DFU_WORD_SIZE 4U
+#define MIDNIGHT_SUN_MAGIC_NUMBER 0xDEADBEEF
 
-// static FotaError fota_move_app(void) {
-//   if (!fota_dfu_context.is_initialized || fota_dfu_context.binary_size == 0) {
-//     return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
-//   }
+static FotaDFUContext fota_dfu_context = { .state = FOTA_DFU_UNINITIALIZED, .is_initialized = false };
 
-//   if (fota_dfu_context.app_start_addr < FLASH_START_ADDRESS_LINKERSCRIPT || fota_dfu_context.app_start_addr >= FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE_LINKERSCRIPT) {
-//     return FOTA_ERROR_INVALID_ARGS;
-//   }
-
-//   if (fota_dfu_context.flash_base_addr < FLASH_START_ADDRESS_LINKERSCRIPT || fota_dfu_context.flash_base_addr >= FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE_LINKERSCRIPT) {
-//     return FOTA_ERROR_INVALID_ARGS;
-//   }
-
-//   if (fota_dfu_context.binary_size >= APPLICATION_SIZE) {
-//     return FOTA_ERROR_INVALID_ARGS;
-//   }
-
-//   return fota_flash_write(fota_dfu_context.app_start_addr, (uint8_t *)fota_dfu_context.flash_base_addr, fota_dfu_context.binary_size);
-// }
-
-static FotaError fota_dfu_write_chunk(FotaDatagram *dgrm) {
-  if (dgrm->header.datagram_id != fota_dfu_context.expected_datagram_id) {
-    return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
+static FotaError fota_dfu_copy_staging_to_app(void) {
+  if (!fota_dfu_context.is_initialized || fota_dfu_context.state != FOTA_DFU_COMPLETE) {
+    return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
   }
 
-  FotaError err = fota_flash_write(fota_dfu_context.current_write_addr, dgrm->data, dgrm->header.total_length);
+  uint8_t page_buf[FOTA_PAGE_BYTES];
+  uintptr_t staging_addr = fota_dfu_context.flash_base_addr;
+  uintptr_t app_addr = fota_dfu_context.app_start_addr;
+  uint32_t remaining_binary_size = fota_dfu_context.binary_size;
 
-  if (err != FOTA_ERROR_SUCCESS) {
-    return err;
+  while (remaining_binary_size) {
+    uint32_t chunk = (remaining_binary_size > FOTA_PAGE_BYTES) ? FOTA_PAGE_BYTES : remaining_binary_size;
+
+    FotaError error = fota_flash_read(staging_addr, page_buf, chunk);
+
+    if (error != FOTA_ERROR_SUCCESS) {
+      return error;
+    }
+
+    error = fota_flash_write(app_addr, page_buf, chunk);
+
+    if (error != FOTA_ERROR_SUCCESS) {
+      return error;
+    }
+
+    staging_addr += chunk;
+    app_addr += chunk;
+    remaining_binary_size -= chunk;
   }
 
-  fota_dfu_context.current_write_addr += dgrm->header.total_length;
-  fota_dfu_context.bytes_written += dgrm->header.total_length;
+  return FOTA_ERROR_SUCCESS;
+}
+
+static FotaError fota_dfu_save_application_data() {
+  if (!fota_dfu_context.is_initialized || fota_dfu_context.state != FOTA_DFU_COMPLETE) {
+    return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+  }
+
+  return FOTA_ERROR_SUCCESS;
+}
+
+static FotaError fota_dfu_write_chunk(FotaDatagram *datagram) {
+  if (datagram->header.type != FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK) {
+    return FOTA_ERROR_INVALID_ARGS;
+  }
+
+  FotaDatagramPayload_FirmwareChunk *chunk = (FotaDatagramPayload_FirmwareChunk *)datagram->data;
+
+  if (datagram->header.datagram_id != fota_dfu_context.expected_datagram_id) {
+    return FOTA_ERROR_BOOTLOADER_SEQUENCE_OUT_OF_ORDER;
+  }
+
+  if ((fota_dfu_context.bytes_written + datagram->header.total_length) > fota_dfu_context.binary_size) {
+    return FOTA_ERROR_BOOTLOADER_BINARY_OVERSIZED;
+  }
+
+  FotaError error = fota_flash_write(fota_dfu_context.current_write_addr, chunk->data, datagram->header.total_length);
+
+  if (error != FOTA_ERROR_SUCCESS) {
+    return error;
+  }
+
+  fota_dfu_context.current_write_addr += datagram->header.total_length;
+  fota_dfu_context.bytes_written += datagram->header.total_length;
   fota_dfu_context.expected_datagram_id++;
 
   return FOTA_ERROR_SUCCESS;
@@ -99,42 +133,106 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  FotaError err = FOTA_ERROR_SUCCESS;
-
   switch (datagram->header.type) {
-    case FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA:
+    /* FIRMWARE METADATA */
+    case FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA: {
       if (fota_dfu_context.state != FOTA_DFU_IDLE) {
         return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
       }
 
-      fota_dfu_context.binary_size = datagram->header.total_length;
-      fota_dfu_context.current_write_addr = fota_dfu_context.flash_base_addr;
-      fota_dfu_context.bytes_written = 0;
-      fota_dfu_context.expected_datagram_id = 0;
-      fota_dfu_context.state = FOTA_DFU_RECEIVING;
-      break;
+      FotaDatagramPayload_FirmwareMetadata *metadata = (FotaDatagramPayload_FirmwareMetadata *)datagram->data;
 
-    case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK:
+      fota_dfu_context.binary_size = metadata->binary_size;
+      fota_dfu_context.expected_crc32 = metadata->expected_binary_crc32;
+      fota_dfu_context.version_major = metadata->version_major;
+      fota_dfu_context.version_minor = metadata->version_minor;
+      memcpy(fota_dfu_context.firmware_id, metadata->firmware_id, FOTA_FIRMWARE_ID_LENGTH);
+      fota_dfu_context.bytes_written = 0U;
+      fota_dfu_context.expected_datagram_id = 0U;
+      fota_dfu_context.current_write_addr = fota_dfu_context.flash_base_addr;
+
+      uint32_t pages = (fota_dfu_context.binary_size + FOTA_PAGE_BYTES - 1U) / FOTA_PAGE_BYTES;
+      FotaError error = fota_flash_erase(FOTA_ADDR_TO_PAGE(fota_dfu_context.flash_base_addr), pages);
+
+      if (error != FOTA_ERROR_SUCCESS) {
+        return error;
+      }
+
+      fota_dfu_context.state = FOTA_DFU_RECEIVING;
+    } break;
+
+    /* FIRMWARE CHUNK  */
+    case FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK: {
       if (fota_dfu_context.state != FOTA_DFU_RECEIVING) {
         return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
       }
 
-      err = fota_dfu_write_chunk(datagram);
-      if (err != FOTA_ERROR_SUCCESS) return err;
+      FotaError error = fota_dfu_write_chunk(datagram);
+
+      if (error != FOTA_ERROR_SUCCESS) {
+        return error;
+      }
 
       if (fota_dfu_context.bytes_written >= fota_dfu_context.binary_size) {
+        /* verify CRC of staged image */
+        uint32_t binary_word_size = fota_dfu_context.binary_size;
+
+        if (fota_dfu_context.binary_size % FOTA_DFU_WORD_SIZE != 0U) {
+          binary_word_size = FOTA_DFU_WORD_SIZE - (fota_dfu_context.binary_size % FOTA_DFU_WORD_SIZE);
+        }
+
+        binary_word_size /= FOTA_DFU_WORD_SIZE;
+
+        uint32_t calc_crc = fota_calculate_crc32((uint8_t *)fota_dfu_context.flash_base_addr, binary_word_size);
+        if (calc_crc != fota_dfu_context.expected_crc32) {
+          return FOTA_ERROR_FLASH_VERIFICATION_FAILED;
+        }
+
         fota_dfu_context.state = FOTA_DFU_COMPLETE;
       }
-      break;
+    } break;
+
+    /* JUMP APPLICATIONS */
+    case FOTA_DATAGRAM_TYPE_JUMP_TO_APP: {
+      FotaDatagramPayload_JumpToApp *jump = (FotaDatagramPayload_JumpToApp *)datagram->data;
+      if (jump->validation_flag != 1U || jump->magic_number != MIDNIGHT_SUN_MAGIC_NUMBER) {
+        return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
+      }
+      if (fota_dfu_context.state != FOTA_DFU_COMPLETE) {
+        return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
+      }
+      fota_dfu_context.state = FOTA_DFU_JUMP;
+    } break;
 
     default:
-      err = FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
-      break;
+      return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
   }
 
-  return err;
-}
+  /* If we just transitioned to COMPLETE attempt final move & jump */
+  if (fota_dfu_context.state == FOTA_DFU_COMPLETE) {
+    FotaError error = fota_dfu_copy_staging_to_app();
 
-FotaError fota_dfu_finalize() {
+    if (error != FOTA_ERROR_SUCCESS) {
+      return error;
+    }
+
+    error = fota_dfu_save_application_data();
+
+    fota_dfu_context.state = FOTA_DFU_JUMP;
+    fota_jump(FOTA_JUMP_APPLICATION);
+    return FOTA_ERROR_BOOTLOADER_FAILURE;
+  }
+
+  if (fota_dfu_context.state == FOTA_DFU_JUMP) {
+    FotaError error = fota_verify_flash_memory(fota_dfu_context.app_start_addr, fota_dfu_context.binary_size);
+
+    if (error != FOTA_ERROR_SUCCESS) {
+      return error;
+    }
+
+    fota_jump(FOTA_JUMP_APPLICATION);
+    return FOTA_ERROR_BOOTLOADER_FAILURE;
+  }
+
   return FOTA_ERROR_SUCCESS;
 }

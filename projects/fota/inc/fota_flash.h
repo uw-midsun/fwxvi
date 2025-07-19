@@ -39,21 +39,21 @@
  * @param   addr Address to be converted to page number
  * @return  Page number
  */
-#define FOTA_ADDR_TO_PAGE(addr) (((uintptr_t)(addr) - (uintptr_t)APPLICATION_START_ADDRESS) / FOTA_PAGE_BYTES)
+#define FOTA_ADDR_TO_PAGE(addr) (((uintptr_t)(addr) - (uintptr_t)APP_ACTIVE_START_ADDRESS) / FOTA_PAGE_BYTES)
 
 /**
  * @brief   Convert page number to memory address
  * @param   page Page number
  * @return  32-bit address
  */
-#define FOTA_PAGE_TO_ADDR(page) ((uintptr_t)(page) * (uintptr_t)FOTA_PAGE_BYTES + (uintptr_t)APPLICATION_START_ADDRESS)
+#define FOTA_PAGE_TO_ADDR(page) ((uintptr_t)(page) * (uintptr_t)FOTA_PAGE_BYTES + (uintptr_t)APP_ACTIVE_START_ADDRESS)
 
 /**
  * @brief   Write to flash memory
  * @param   address Base memory address to write to
  * @param   buffer Pointer to the data buffer
  * @param   buffer_len Length of the data buffer
- * @return  FOTA_ERROR_SUCCESS if data is written succesfully
+ * @return  FOTA_ERROR_SUCCESS if data is written successfully
  *          FOTA_ERROR_FLASH_WRITE_FAILED if HAL flash fails
  *          FOTA_ERROR_FLASH_WRITE_OUT_OF_BOUNDS if address is out of bounds
  *          FOTA_ERROR_FLASH_WRITE_NOT_ALIGNED if data is not aligned
@@ -64,7 +64,7 @@ FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
  * @brief   Erase some number of flash pages
  * @param   start_page Initial page number to erase
  * @param   num_pages Number of pages to erase
- * @return  FOTA_ERROR_SUCCESS if data is erased succesfully
+ * @return  FOTA_ERROR_SUCCESS if data is erased successfully
  *          FOTA_ERROR_FLASH_ERASE if page is out of bounds OR erasing failed
  */
 FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages);
@@ -74,7 +74,7 @@ FotaError fota_flash_erase(uint8_t start_page, uint8_t num_pages);
  * @param   address Base memory address to read from
  * @param   buffer Pointer to the data buffer
  * @param   buffer_len Length of the data buffer
- * @return  FOTA_ERROR_SUCCESS if data is read succesfully
+ * @return  FOTA_ERROR_SUCCESS if data is read successfully
  *          FOTA_ERROR_FLASH_READ_FAILED if data read failed
  */
 FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len);
@@ -82,9 +82,11 @@ FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len);
 /**
  * @brief   Verify that the flash memory is not erased
  * @details This checks the entire application flash memory to ensure it is not entirely erased
+ * @param   start_addr Start address to begin verifying flash memory
+ * @param   size_bytes Size of flash memory to verify in bytes
  * @return  FOTA_ERROR_SUCCESS if the memomry is valid
  *          FOTA_ERROR_FLASH_ERR if the memory is corrupt
  */
-FotaError fota_verify_flash_memory(void);
+FotaError fota_verify_flash_memory(uintptr_t start_addr, size_t size_bytes);
 
 /** @} */

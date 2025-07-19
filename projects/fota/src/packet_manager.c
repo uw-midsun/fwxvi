@@ -25,9 +25,9 @@ FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSetting
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  FotaError err = network_init(uart, uart_settings, &manager->network_buffer);
-  if (err != FOTA_ERROR_SUCCESS) {
-    return err;
+  FotaError error = network_init(uart, uart_settings, &manager->network_buffer);
+  if (error != FOTA_ERROR_SUCCESS) {
+    return error;
   }
 
   manager->rx_state = PKT_STATE_WAITING_SOF;

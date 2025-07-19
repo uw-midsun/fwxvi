@@ -1,15 +1,22 @@
 /************************************************************************************************
- * @file   tasks.c
+ * @file   main.c
  *
- * @brief  Source code for the RTOS tasks wrapper
+ * @brief  Main file for bootstrap
  *
- * @date   2024-10-30
+ * @date   2025-07-12
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "fsm.h"
+#include "bootstrap.h"
+
+int main() {
+  while (true) {
+  }
+  return 0;
+}

@@ -9,7 +9,6 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-
 /* Standard library Headers */
 #include <stdint.h>
 
@@ -17,33 +16,44 @@
 
 /* Intra-component Headers */
 #include "fota_datagram.h"
+#include "fota_datagram_payloads.h"
 #include "fota_error.h"
 #include "packet_manager.h"
+
+/**
+ * @defgroup FOTA
+ * @brief    Firmware Over the Air (FOTA) Update system
+ * @{
+ */
 
 /**
  * @brief   DFU internal states
  */
 typedef enum {
-  FOTA_DFU_UNINITIALIZED,   /**< DFU Uninitialized */
-  FOTA_DFU_IDLE,            /**< DFU Idle */
-  FOTA_DFU_RECEIVING,       /**< DFU Recieving data */
-  FOTA_DFU_COMPLETE,        /**< DFU Complete */
-  FOTA_DFU_JUMP             /**< DFU Jump memory */
+  FOTA_DFU_UNINITIALIZED, /**< DFU Uninitialized */
+  FOTA_DFU_IDLE,          /**< DFU Idle */
+  FOTA_DFU_RECEIVING,     /**< DFU Recieving data */
+  FOTA_DFU_COMPLETE,      /**< DFU Complete */
+  FOTA_DFU_JUMP           /**< DFU Jump memory */
 } FotaDFUState;
 
 /**
  * @brief   DFU Context for writing firmware to flash
  */
 typedef struct {
-  bool is_initialized;            /**< Initialization flag */
-  uintptr_t flash_base_addr;      /**< Flash bank where new firmware is written */
-  uintptr_t app_start_addr;       /**< Main application entry address (for jump) */
-  uintptr_t current_write_addr;   /**< Current write address */
-  uint32_t  bytes_written;        /**< Total bytes written so far */
-  uint32_t  binary_size;          /**< Expected size of firmware binary */
-  uint16_t  expected_datagram_id; /**< Monotonic ID for validating sequencing */
-  FotaDFUState  state;            /**< Current DFU FSM state */
-  PacketManager *packet_manager;  /**< Pointer to packet manager */
+  bool is_initialized;                       /**< Initialization flag */
+  uintptr_t flash_base_addr;                 /**< Flash bank where new firmware is written */
+  uintptr_t app_start_addr;                  /**< Main application entry address (for jump) */
+  uintptr_t current_write_addr;              /**< Current write address */
+  uint32_t bytes_written;                    /**< Total bytes written so far */
+  uint32_t binary_size;                      /**< Expected size of firmware binary */
+  uint32_t expected_crc32;                   /**< Expected CRC32 of the firmware application */
+  uint16_t expected_datagram_id;             /**< Monotonic ID for validating sequencing */
+  uint8_t version_major;                     /**< Version number (major) */
+  uint8_t version_minor;                     /**< Version number (minor) */
+  char firmware_id[FOTA_FIRMWARE_ID_LENGTH]; /**< Firmware name/ID */
+  FotaDFUState state;                        /**< Current DFU FSM state */
+  PacketManager *packet_manager;             /**< Pointer to packet manager */
 } FotaDFUContext;
 
 /**
@@ -62,9 +72,4 @@ FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, u
  */
 FotaError fota_dfu_process(FotaDatagram *datagram);
 
-/**
- * @brief   Finalizes the DFU and copies binary from staging area to application region
- * @return  FOTA_ERROR_SUCCESS or copy error
- */
-FotaError fota_dfu_finalize();
-
+/** @} */

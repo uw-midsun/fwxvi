@@ -7,6 +7,7 @@ from sys import platform
 def parse_config(entry):
     # Default config to empty for fields that don't exist
     ret = {
+        'hardware': "STM32L433CCU6",
         'libs': [],
         'x86_libs': [],
         'arm_libs': [],
@@ -27,7 +28,7 @@ def parse_config(entry):
     return ret
 
 
-def flash_run(entry, flash_type):
+def flash_run(entry, hardware, flash_type):
     '''flash and run file, return a pyserial object which monitors the device serial output'''
     try:
         output = subprocess.check_output(["ls", "/dev/serial/by-id/"])
@@ -41,34 +42,62 @@ def flash_run(entry, flash_type):
     OPENOCD_SCRIPT_DIR = '/usr/share/openocd/scripts/'
     PROBE = 'cmsis-dap'
     PLATFORM_DIR = 'platform'
-    OPENOCD_CFG = [
+
+    device_params_mode = 'default' if flash_type != 'legacy' else 'legacy'
+
+    # Path to Tcl procedures (e.g., stm32_flash_procs.tcl)
+    FLASHING_PROCS_TCL = os.path.join(PLATFORM_DIR, 'hardware', 'templates', 'stm32_flash_procs.tcl')
+
+    # Path to hardware-specific parameters (e.g., platform/hardware/STM32L433CCU6/legacy/device_params.cfg)
+    HARDWARE_PARAMS_TCL = os.path.join(PLATFORM_DIR, 'hardware', hardware, device_params_mode, 'device_params.cfg')
+
+    # Mapping of flash_type to the Tcl procedure name
+    flash_proc_map = {
+        'legacy': 'stm_flash_app_active',
+        'bootstrap': 'stm_flash_bootstrap',
+        'bootloader': 'stm_flash_bootloader',
+        'application': 'stm_flash_app_active',
+        'app_staging': 'stm_flash_app_staging',
+        'fs_storage': 'stm_flash_fs_storage',
+    }
+
+    tcl_flash_proc = flash_proc_map.get(flash_type)
+    if not tcl_flash_proc:
+        raise ValueError(f"Invalid or unsupported flash_type: '{flash_type}' for flashing.")
+
+    tcl_commands_string = (
+        f'source "{HARDWARE_PARAMS_TCL}"; '  # This sets the memory sizes/locations for the openOCD scripts
+        f'source "{FLASHING_PROCS_TCL}"; '   # This defines the flashing procedures
+        f'{tcl_flash_proc} "{entry}"; '
+        'shutdown'
+    )
+
+    openocd_cmd_list = [
         OPENOCD,
-        '-s {}'.format(OPENOCD_SCRIPT_DIR),
-        '-f interface/{}.cfg'.format(PROBE),
-        '-f target/stm32l4x.cfg',
-        '-f {}/stm32l4-openocd.cfg'.format(PLATFORM_DIR),
+        f'-s {OPENOCD_SCRIPT_DIR}',
+        f'-f interface/{PROBE}.cfg',
+        f'-f target/stm32l4x.cfg',
         '-c "stm32l4x.cpu configure -rtos FreeRTOS"',
+        '-c', tcl_commands_string
     ]
-    if flash_type == 'default':
-        OPENOCD_CFG += [
-            '-c "stm_flash {}"'.format(entry),
-        ]
-    elif flash_type == 'application':
-        OPENOCD_CFG+= [
-            '-c "stm_flash_bootloader_application {}"'.format(entry),
-        ]
-    elif flash_type == 'bootloader':
-        OPENOCD_CFG += [
-            '-c "stm_flash {}"'.format(entry)
-        ]
-    else:
-        raise ValueError('Invalid flash_type')
-    
-    OPENOCD_CFG.append('-c shutdown')
 
-    cmd = 'sudo {}'.format(' '.join(OPENOCD_CFG))
+    cmd_str = 'sudo ' + ' '.join(openocd_cmd_list)
 
-    subprocess.run(cmd, shell=True).check_returncode()
+    print(f"Executing flash command: {cmd_str}")
+    try:
+        # Run the command, checking for non-zero exit codes
+        subprocess.run(cmd_str, shell=True, check=True)
+        print("Flash complete")
+    except subprocess.CalledProcessError as e:
+        print(f"Flash failed with error code {e.returncode}")
+        print(f"Command: {e.cmd}")
+        print(f"Stderr: {e.stderr.decode() if e.stderr else 'N/A'}")
+        raise
+    except FileNotFoundError:
+        print("Error: 'openocd' command not found. Ensure OpenOCD is installed and in your PATH.")
+        raise
+    except Exception as e:
+        print(f"An unexpected error occurred during flashing: {e}")
+        raise
 
-    print("Flash complete")
-    exit(0)
+    return serialData
