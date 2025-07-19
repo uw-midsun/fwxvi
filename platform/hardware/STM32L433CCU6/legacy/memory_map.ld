@@ -1,11 +1,11 @@
 /*
 Linker script for STM32L433CCU6 (256K Flash, 64K RAM)
-Bootstrap:    32K  at 0x08000000
+Bootstrap:      0  at 0x08000000
 Bootloader:     0  at 0x08000000
 App Active:     0  at 0x08000000
-App Staging:  80K  at 0x08000000
+App Staging:  256K at 0x08000000
 FS Storage:     0  at 0x08000000
-RAM:          64K  at 0x20000000
+RAM:           64K at 0x20000000
 */
 
 ENTRY(Reset_Handler)
