@@ -28,7 +28,7 @@
  extern "C" {
 #endif
 
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

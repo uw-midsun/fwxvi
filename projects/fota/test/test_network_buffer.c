@@ -173,7 +173,7 @@ void test_network_buffer_error_handling(void) {
 
   /* Test reading from an empty buffer */
   result = network_buffer_read(&s_test_buffer, &read_data);
-  TEST_ASSERT_EQUAL(FOTA_RESOURCE_EXHAUSTED, result);
+  TEST_ASSERT_EQUAL(FOTA_ERROR_RESOURCE_EXHAUSTED, result);
 
   /* Fill the buffer */
   for (uint16_t i = 0U; i < NETWORK_BUFFER_SIZE; i++) {
@@ -182,7 +182,7 @@ void test_network_buffer_error_handling(void) {
 
   /* Test writing to a full buffer */
   result = network_buffer_write(&s_test_buffer, &data);
-  TEST_ASSERT_EQUAL(FOTA_RESOURCE_EXHAUSTED, result);
+  TEST_ASSERT_EQUAL(FOTA_ERROR_RESOURCE_EXHAUSTED, result);
 }
 
 TEST_IN_TASK
