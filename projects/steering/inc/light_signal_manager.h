@@ -26,20 +26,20 @@
  * @brief Light signal states representing the current output
  */
 typedef enum {
-    LIGHTS_SIGNAL_STATE_OFF = 0,    /**< All lights off */
-    LIGHTS_SIGNAL_STATE_LEFT,       /**< Left signal active */
-    LIGHTS_SIGNAL_STATE_RIGHT,      /**< Right signal active */
-    LIGHTS_SIGNAL_STATE_HAZARD      /**< Hazard signal active */
+  LIGHTS_SIGNAL_STATE_OFF = 0, /**< All lights off */
+  LIGHTS_SIGNAL_STATE_LEFT,    /**< Left signal active */
+  LIGHTS_SIGNAL_STATE_RIGHT,   /**< Right signal active */
+  LIGHTS_SIGNAL_STATE_HAZARD   /**< Hazard signal active */
 } LightsSignalState;
 
 /**
  * @brief Requests made to control the light signals
  */
 typedef enum {
-    LIGHTS_SIGNAL_REQUEST_OFF = 0,    /**< Request to turn off signals */
-    LIGHTS_SIGNAL_REQUEST_LEFT,       /**< Request to turn on left signal */
-    LIGHTS_SIGNAL_REQUEST_RIGHT,      /**< Request to turn on right signal */
-    LIGHTS_SIGNAL_REQUEST_HAZARD      /**< Request to turn on hazard signal */
+  LIGHTS_SIGNAL_REQUEST_OFF = 0, /**< Request to turn off signals */
+  LIGHTS_SIGNAL_REQUEST_LEFT,    /**< Request to turn on left signal */
+  LIGHTS_SIGNAL_REQUEST_RIGHT,   /**< Request to turn on right signal */
+  LIGHTS_SIGNAL_REQUEST_HAZARD   /**< Request to turn on hazard signal */
 } LightsSignalRequest;
 
 /**
