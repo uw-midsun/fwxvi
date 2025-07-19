@@ -14,8 +14,6 @@
 
 /* Intra-component Headers */
 
-static bool is_valid_request(LightsSignalRequest req);
-
 static LightsSignalState current_state = LIGHTS_SIGNAL_STATE_OFF;
 static LightsSignalRequest current_request = LIGHTS_SIGNAL_REQUEST_OFF;
 
@@ -25,27 +23,7 @@ void lights_signal_manager_init(void) {
 }
 
 void lights_signal_manager_request(LightsSignalRequest req) {
-  if (is_valid_request(req)) {
-    current_request = req;
-  }
-}
-
-static bool is_valid_request(LightsSignalRequest req) {
-  if (current_state == LIGHTS_SIGNAL_STATE_HAZARD && (req == LIGHTS_SIGNAL_REQUEST_LEFT || req == LIGHTS_SIGNAL_REQUEST_RIGHT)) {
-    return false;
-  }
-  switch (req) {
-    case LIGHTS_SIGNAL_REQUEST_OFF:
-      return true;
-    case LIGHTS_SIGNAL_REQUEST_LEFT:
-      return current_state != LIGHTS_SIGNAL_STATE_HAZARD;
-    case LIGHTS_SIGNAL_REQUEST_RIGHT:
-      return current_state != LIGHTS_SIGNAL_STATE_HAZARD;
-    case LIGHTS_SIGNAL_REQUEST_HAZARD:
-      return true;
-    default:
-      return false;
-  }
+  current_request = req;
 }
 
 void lights_signal_manager_update(void) {
