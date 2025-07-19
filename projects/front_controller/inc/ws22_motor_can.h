@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   rear_controller.h
+ * @file   motor_can.h
  *
- * @brief  Header file for motor_can.c
+ * @brief  Header file for Motor CAN interface
  *
  * @date   2025-06-29
  * @author Midnight Sun Team #24 - MSXVI
@@ -13,15 +13,15 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "can.h"
 #include "can_hw.h"
 #include "can_msg.h"
-#include "can.h"
 
 /* Intra-component Headers */
 
 /**
- * @defgroup Rear Controller
- * @brief    Rear Controller Board Firmware
+ * @defgroup Front_Controller
+ * @brief    Front Controller Board Firmware
  * @{
  */
 
@@ -38,49 +38,46 @@
 #define RAIL_15V (MOTOR_CAN_CONTROLLER_BASE + 0x08)
 #define HEAT_SINK_MOTOR_TEMP (MOTOR_CAN_CONTROLLER_BASE + 0x0B)
 
-
 typedef struct TxData {
-    float current;  // Range: 0.0 to 1.0
-    uint32_t velocity;   // Range: 0 to ~12000 rpm
+  float current;      // Range: 0.0 to 1.0
+  uint32_t velocity;  // Range: 0 to ~12000 rpm
 } TxData;
 
-typedef struct RxData{
+typedef struct RxData {
+  // Status Info - base address + 0x01
+  uint16_t error_flags;
+  uint16_t limit_flags;
 
-    // Status Info - base address + 0x01
-    uint16_t error_flags;
-    uint16_t limit_flags;
+  // Bus Measurement - base address + 0x02
+  float bus_current;
+  float bus_voltage;
 
-    //Bus Measurement - base address + 0x02
-    float bus_current;
-    float bus_voltage;
+  // Velocity Measurement - base address + 0x03
+  float vehicle_velocity;
+  float motor_velocity;
 
-    // Velocity Measurement - base address + 0x03
-    float vehicle_velocity;
-    float motor_velocity;
+  // Phase Current - base address + 0x04
+  float phase_c_current;
+  float phase_b_current;
 
-    // Phase Current - base address + 0x04
-    float phase_c_current;
-    float phase_b_current;
+  // Motor Voltage - base address + 0x05
+  float voltage_d;
+  float voltage_q;
 
-    // Motor Voltage - base address + 0x05
-    float voltage_d;
-    float voltage_q;
+  // Motor Current - base address + 0x06
+  float current_d;
+  float current_q;
 
-    //Motor Current - base address + 0x06
-    float current_d;
-    float current_q;
+  // Motor BackEMF  - base address + 0x07
+  float back_EMF_d;  // always zero
+  float back_EMF_q;
 
-    // Motor BackEMF  - base address + 0x07
-    float back_EMF_d; //always zero
-    float back_EMF_q;
+  // 15V Voltage Rail Measurement - base address + 0x08
+  float rail_15V_supply;
 
-    // 15V Voltage Rail Measurement - base address + 0x08
-    float rail_15V_supply;
-
-    // Heat-sink and Motor Temp - base address + 0x0B
-    float heat_sink_temp;
-    float motor_temp;
-
+  // Heat-sink and Motor Temp - base address + 0x0B
+  float heat_sink_temp;
+  float motor_temp;
 } RxData;
 
 StatusCode motor_can_transmit(uint32_t id, bool extended, const uint8_t *msg, uint8_t dlc);
@@ -107,6 +104,5 @@ void rx_set_back_EMF_q(float voltage);
 void rx_set_rail_15v_supply(float voltage);
 void rx_set_heat_sink_temp(float degrees);
 void rx_set_motor_temp(float degrees);
-
 
 /** @} */
