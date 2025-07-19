@@ -27,7 +27,7 @@
 
 /**
  * @brief   Initialize the encryption unit
- * @return  FOTA_SUCCESS if initialized succesfully
+ * @return  FOTA_SUCCESS if initialized successfully
  *          FOTA_ERROR_INTERNAL_ERROR if initialization fails
  */
 FotaError fota_encryption_init();
@@ -40,16 +40,24 @@ FotaError fota_encryption_init();
 uint32_t fota_calculate_crc32(uint8_t *data, uint32_t length_words);
 
 /**
+ * @brief   Verify a region of flash memory
+ * @param   flash_base_addr Base address to begin verification from
+ * @param   flash_size Size of flash memory to verify in bytes
+ * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
+ */
+uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size);
+
+/**
  * @brief   Verify a FOTA packets encryption
  * @param   packet Pointer to the encrypted packet
- * @return  FOTA_SUCCESS if encryption is decoded succesfully and the datagram is valid
+ * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
  */
 FotaError fota_verify_packet_encryption(FotaPacket *packet);
 
 /**
  * @brief   Verify a FOTA datagrams encryption
  * @param   datagram Pointer to the encrypted datagram
- * @return  FOTA_SUCCESS if encryption is decoded succesfully and the datagram is valid
+ * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
  */
 FotaError fota_verify_datagram_encryption(FotaDatagram *datagram);
 

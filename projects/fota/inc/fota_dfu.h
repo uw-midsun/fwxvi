@@ -3,21 +3,22 @@
 /************************************************************************************************
  * @file  fota_dfu.h
  *
- * @brief  State machine for Device Firmware Update (DFU)
+ * @brief  FOTA Device Firmware Update
  *
- * @date   2025-05-14
+ * @date   2025-07-08
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdint.h>
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
 #include "fota_datagram.h"
+#include "fota_datagram_payloads.h"
 #include "fota_error.h"
-#include "fota_flash.h"
-#include "packet_manger.h"
+#include "packet_manager.h"
 
 /**
  * @defgroup FOTA
@@ -26,54 +27,49 @@
  */
 
 /**
- * @brief  implementation of dfu state machine
+ * @brief   DFU internal states
  */
+typedef enum {
+  FOTA_DFU_UNINITIALIZED, /**< DFU Uninitialized */
+  FOTA_DFU_IDLE,          /**< DFU Idle */
+  FOTA_DFU_RECEIVING,     /**< DFU Recieving data */
+  FOTA_DFU_COMPLETE,      /**< DFU Complete */
+  FOTA_DFU_JUMP           /**< DFU Jump memory */
+} FotaDFUState;
 
-typedef enum DfuStates {
-  /// @brief DFU starts uninitalized
-  DFU_UNINIT,
-
-  /// @brief DFU ready
-  DFU_START,
-
-  /// @brief DFU writing
-  DFU_RX,
-
-  /// @brief DFU Jump App
-  DFU_JUMP,
-} DFUStates;
-
+/**
+ * @brief   DFU Context for writing firmware to flash
+ */
 typedef struct {
-  /// @brief Start of application in memory.
-  volatile uintptr_t application_start;
+  bool is_initialized;                       /**< Initialization flag */
+  uintptr_t staging_base_addr;               /**< Flash bank where new firmware is written */
+  uintptr_t app_start_addr;                  /**< Main application entry address (for jump) */
+  uintptr_t current_write_addr;              /**< Current write address */
+  uint32_t bytes_written;                    /**< Total bytes written so far */
+  uint32_t binary_size;                      /**< Expected size of firmware binary */
+  uint32_t expected_crc32;                   /**< Expected CRC32 of the firmware application */
+  uint16_t expected_datagram_id;             /**< Monotonic ID for validating sequencing */
+  uint8_t version_major;                     /**< Version number (major) */
+  uint8_t version_minor;                     /**< Version number (minor) */
+  char firmware_id[FOTA_FIRMWARE_ID_LENGTH]; /**< Firmware name/ID */
+  FotaDFUState state;                        /**< Current DFU FSM state */
+  PacketManager *packet_manager;             /**< Pointer to packet manager */
+} FotaDFUContext;
 
-  /// @brief Current address that will be flashed
-  volatile uintptr_t current_address;
+/**
+ * @brief   Initialize DFU context
+ * @param   packet_manager Pointer to packet manager instance
+ * @param   staging_base Flash base address where firmware will be staged
+ * @param   app_start_addr Address to jump to after flashing
+ * @return  FOTA_ERROR_SUCCESS or FOTA_ERROR_INVALID_ARGS
+ */
+FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, uintptr_t app_start_addr);
 
-  /// @brief number of bytes flashed
-  uint32_t bytes_written;
+/**
+ * @brief   Process an incoming datagram and write to flash
+ * @param   datagram Pointer to fully received, verified datagram
+ * @return  FOTA_ERROR_SUCCESS or flash/write errors
+ */
+FotaError fota_dfu_process(FotaDatagram *datagram);
 
-  /// @brief Size of application bin being flashed
-  uint32_t binary_size;
-
-  /// @brief Validation of sequencing of packets. Checked when sequencing message is recieved. Incremented by 1 for each DFU datagram processed.
-  uint16_t expected_datagram_id;
-
-  /// @brief State of the DFU state machine
-  DFUStates curr_state;
-
-  /// @brief Packet manager context structure for interfacing with processed packets.
-  PacketManager *packet_manager;
-} DFUStateData;
-
-/// @brief Initializes DFU
-/// @return
-FotaError fota_dfu_init(PacketManager *packet_manager);
-
-/// @brief Run Finite State Machine for DFU
-/// @return error code
-FotaError fota_dfu_run(void);
-
-/// @brief jumps to application layer mentioned in ld script
-void fota_dfu_jump_app(void);
 /** @} */

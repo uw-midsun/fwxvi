@@ -29,7 +29,6 @@
 #include "spi.h"
 
 /* Intra-component Headers */
-#include "fsm.h"
 #include "ltc_afe_regs.h"
 #include "status.h"
 
