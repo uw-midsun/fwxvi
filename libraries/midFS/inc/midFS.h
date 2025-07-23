@@ -71,7 +71,7 @@ StatusCode fs_delete_file(const char* path);
 /**
  * Prints out the contents of the file given the path
  */
-StatusCode fs_read_file(const char *path);
+StatusCode fs_read_file(const char *path, uint8_t *content);
 
 /**
  * Writes content to a file with given path, can write in place or moves file to new location in memory if needed
@@ -79,7 +79,7 @@ StatusCode fs_read_file(const char *path);
  * @return  STATUS_CODE_INVALID_ARGS if path is invalid
  *          STATUS_CODE_INCOMPLETE if there is no more space
  */
-StatusCode fs_write_file(const char * path, uint8_t * content, uint32_t contentSize);
+StatusCode fs_write_file(const char * path, uint8_t *content, uint32_t contentSize);
 
 /**
  * Lists all files in a given path, the path must lead to a directory
