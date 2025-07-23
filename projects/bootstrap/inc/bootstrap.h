@@ -6,6 +6,9 @@
 #define BOOTLOADER_SIZE     0x00007000
 #define APPLICATION_ADDR    0x08008000
 #define CRC_FILE_PATH       "bootloader.crc"
+#define CRC32_POLY          0xEDB88320UL //Reversed 0x04C11DB7
+
+extern uint32_t crc32_table[256];
 
 typedef void (*EntryPoint) (void);
 
@@ -14,6 +17,13 @@ typedef void (*EntryPoint) (void);
  * 
  */
 void jump_to(uint32_t addr);
+
+
+/**
+ * Initializes the crc32 table
+ * 
+ */
+void crc32_init(void);
 
 /**
  * Manually computes CRC
@@ -26,35 +36,11 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest);
  * Reads CRC value from file system
  * 
  */
-void read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
+StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
 
 
 /**
  * Main application executed at runtime
  * 
  */
-void boostrap_main(void);
-#pragma once
-
-/************************************************************************************************
- * @file   bootstrap.h
- *
- * @brief  Header file for bootstrap
- *
- * @date   2025-07-12
- * @author Midnight Sun Team #24 - MSXVI
- ************************************************************************************************/
-
-/* Standard library Headers */
-
-/* Inter-component Headers */
-
-/* Intra-component Headers */
-
-/**
- * @defgroup bootstrap
- * @brief    bootstrap Firmware
- * @{
- */
-
-/** @} */
+void bootstrap_main(void);

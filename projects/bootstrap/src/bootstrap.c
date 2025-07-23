@@ -40,24 +40,16 @@ StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest){
 }
 
 void bootstrap_main(void){
-    printf("Initializing file system\n\r");
-    fs_init();
-    fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
-
-    printf("Computing CRC\n\r");
     uint32_t computed_crc = 0;
     crc32_init();
     compute_crc32((uint8_t*)BOOTLOADER_ADDR, BOOTLOADER_SIZE, &computed_crc);
-    
-    printf("reading stored CRC\n\r");
+
     uint32_t stored_crc = 0;
-    read_crc32(CRC_FILE_PATH, CRC_SIZE, &stored_crc);
+    read_crc32(CRC_FILE_PATH, sizeof(stored_crc), &stored_crc);
 
     if(computed_crc == stored_crc){
-        printf("CRC match. Jumping to bootloader\n\r");
         jump_to(BOOTLOADER_ADDR);
     }else{
-        printf("CRC does not match. Jumping to application\n\r");
         jump_to(APPLICATION_ADDR);
     }
 
