@@ -82,8 +82,6 @@ int main() {
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("adbms_afe_init() failed: %d\n", status);
   }
-  LOG_DEBUG("NUmber of cells is: %u\n", s_afe.settings->num_cells);
-  LOG_DEBUG("ADDRESS OF s_afe is: %p\n", (void*)&s_settings); 
   //LOG_DEBUG("ADBMS1818 init OK – beginning conversions…\n");
   //s_afe.cell_voltages[12] = 3; 
   while (true) {

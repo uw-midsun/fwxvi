@@ -26,7 +26,6 @@
 
 void applicationMessageCallback(Server *server, ClientConnection *client, std::string &message) {
   std::string clientName = client->getClientName();
-
   auto [commandCode, payload] = decodeCommand(message);
   switch (commandCode) {
     case CommandCode::METADATA: {

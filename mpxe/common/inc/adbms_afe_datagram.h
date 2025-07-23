@@ -21,8 +21,8 @@ namespace Datagram {
 class ADBMS_AFE {
   public: 
     static constexpr uint8_t AFE_MAX_DEVICES                 = 3;   /**< Max number of AFE devices supported */
-    static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE        = 12;  /**< Max cell channels per AFE device */
-    static constexpr uint8_t AFE_MAX_THERMISTORS_PER_DEVICE  = 8;   /**< Max thermistors per AFE device */
+    static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE        = 18;  /**< Max cell channels per AFE device */
+    static constexpr uint8_t AFE_MAX_THERMISTORS_PER_DEVICE  = 9;   /**< Max thermistors per AFE device */
 
     static constexpr uint8_t AFE_MAX_CELLS       = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;        /**< Total cell channels supported */
     static constexpr uint8_t AFE_MAX_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_THERMISTORS_PER_DEVICE;  /**< Total thermistor channels supported */
@@ -31,9 +31,11 @@ class ADBMS_AFE {
      * @brief Ltc Afe Datagram payload storage
      */
     struct Payload{
-        uint8_t index;          /**< Cell/Aux index */
-        std::size_t dev_index;  /**< device Index */
-        uint16_t voltage;       /**< Voltage of whatever we are setting */
+        uint8_t index;                               /**< Cell/Aux index */
+        std::size_t dev_index;                       /**< device Index */
+
+        uint16_t cell_voltages[AFE_MAX_CELLS];       /**< Data storage for cell voltages */
+        uint16_t aux_voltages[AFE_MAX_THERMISTORS];  /**< Data for aux voltages */ 
     };
 
     /**
@@ -72,10 +74,45 @@ class ADBMS_AFE {
     void setDeviceIndex(std::size_t new_index); 
 
     /**
-     * @brief Voltage to be set
-     * @param voltage the new voltage to be set
+     * @brief Set a single cell voltage reading
+     * @param index Global cell index (0, ..., AFE_MAX_CELLS-1)
+     * @param voltage Voltage in mV
      */
-    void setVoltage(uint16_t voltage); 
+    void setCellVoltage(uint8_t index, uint16_t voltage);
+
+    /**
+     * @brief Set a single aux voltage reading
+     * @param index Global aux index (0, ..., AFE_MAX_THERMISTORS-1)
+     * @param voltage Voltage in mV
+     */
+    void setAuxVoltage(uint8_t index, uint16_t voltage);
+
+
+    /**
+     * @brief Set cell voltages for a device
+     * @param dev_index Device index
+     * @param voltage Voltage in mV
+     */
+    void setDeviceCellVoltage(std::size_t dev_index, uint16_t voltage);
+
+    /**
+     * @brief Set aux voltages for a device
+     * @param dev_index device index
+     * @param voltage Voltage in mV
+     */
+    void setDeviceAuxVoltage(std::size_t dev_index, uint16_t voltage);
+
+    /**
+     * @brief Set a pack cell voltage reading
+     * @param voltage Voltage in mV
+     */
+    void setPackCellVoltage(uint16_t voltage);
+
+    /**
+     * @brief Set a pack aux voltage reading
+     * @param voltage Voltage in mV
+     */
+    void setPackAuxVoltage(uint16_t voltage);
 
     /**
      * @brief   Get the Index 
@@ -90,10 +127,18 @@ class ADBMS_AFE {
     std::size_t getDevIndex() const;
 
     /**
-     * @brief   Get the Voltage in millivolts
-     * @return  Voltage in millivolts
+     * @brief Get a single cell voltage reading
+     * @param index Global cell index (0 .. AFE_MAX_CELLS-1)
+     * @return Voltage in millivolts
      */
-    uint16_t getVoltage() const;
+    uint16_t getCellVoltage(std::size_t index) const;
+
+    /**
+     * @brief Get a single aux (thermistor) voltage reading
+     * @param index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
+     * @return Voltage in millivolts
+     */
+    uint16_t getAuxVoltage(std::size_t index) const;
       
     private:
       Payload m_afeDatagram; 

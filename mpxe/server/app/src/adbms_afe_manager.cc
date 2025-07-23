@@ -21,6 +21,8 @@
 
 
 #define AFE_KEY "afe"
+#define MAX_CELLS_PER_DEVICE 18
+#define MAX_AUX_PER_DEVICE 9
 
 void AfeManager::loadAfeInfo(std::string &projectName){
   m_afeInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, std::string>>(projectName, AFE_KEY);
@@ -37,9 +39,9 @@ void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &pay
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
   uint16_t index = m_afeDatagram.getIndex();
-  
+  uint16_t voltage = m_afeDatagram.getCellVoltage(index); 
+
   m_afeInfo["cell" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
   saveAfeInfo(projectName);
@@ -49,8 +51,8 @@ void AfeManager::updateAfeAuxVoltage(std::string &projectName, std::string &payl
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
   uint16_t index = m_afeDatagram.getIndex();
+  uint16_t voltage = m_afeDatagram.getAuxVoltage(index); 
   
   m_afeInfo["aux" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
@@ -61,14 +63,14 @@ void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
 
   std::size_t dev_index = m_afeDatagram.getDevIndex(); 
 
-  const uint16_t start = dev_index * 18;
-  const uint16_t end   = start + 18;
+  const uint16_t start = dev_index * MAX_CELLS_PER_DEVICE;
+  const uint16_t end   = start + MAX_CELLS_PER_DEVICE;
   
   for (uint16_t cell = start; cell < end; ++cell){
+    uint16_t voltage = m_afeDatagram.getCellVoltage(cell); 
     m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv"; 
   }
   
@@ -79,14 +81,14 @@ void AfeManager::updateAfeAuxDevVoltage(std::string &projectName, std::string &p
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload);
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
 
   std::size_t dev_index = m_afeDatagram.getDevIndex(); 
 
-  const uint16_t start = dev_index * 9; 
-  const uint16_t end = start + 9; 
+  const uint16_t start = dev_index * MAX_AUX_PER_DEVICE; 
+  const uint16_t end = start + MAX_AUX_PER_DEVICE; 
 
   for (uint16_t aux = start; aux < end; ++aux){
+    uint16_t voltage = m_afeDatagram.getAuxVoltage(aux); 
     m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv"; 
   }
 
@@ -97,13 +99,13 @@ void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string 
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
 
   for (std::size_t dev_index = 0; dev_index < 3; ++dev_index){
-    const uint16_t start = dev_index * 18;
-    const uint16_t end = start + 18;
+    const uint16_t start = dev_index * MAX_CELLS_PER_DEVICE;
+    const uint16_t end = start + MAX_CELLS_PER_DEVICE;
 
     for (uint16_t cell = start; cell < end; ++cell){
+      uint16_t voltage = m_afeDatagram.getCellVoltage(cell); 
       m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv";
     }
   }
@@ -114,13 +116,13 @@ void AfeManager::updateAfeAuxPackVoltage(std::string &projectName, std::string &
   loadAfeInfo(projectName); 
 
   m_afeDatagram.deserialize(payload); 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
 
   for (std::size_t dev_index = 0; dev_index < 3; ++dev_index){
-    const uint16_t start = dev_index * 9;
-    const uint16_t end = start + 9;
+    const uint16_t start = dev_index * MAX_AUX_PER_DEVICE;
+    const uint16_t end = start + MAX_AUX_PER_DEVICE;
 
     for (uint16_t aux = start; aux < end; ++aux){
+      uint16_t voltage = m_afeDatagram.getAuxVoltage(aux); 
       m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
     }
   }
@@ -136,30 +138,43 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         uint16_t voltage = static_cast<uint16_t>(std::stoi(data)); 
 
         m_afeDatagram.setIndex(idx);
-        m_afeDatagram.setVoltage(voltage);
+        m_afeDatagram.setCellVoltage(idx, voltage);
         break;
       }
       case CommandCode::AFE_SET_AUX: {
         uint8_t idx = static_cast<uint8_t>(std::stoi(index));
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data)); 
+        
         m_afeDatagram.setIndex(idx);
-        m_afeDatagram.setVoltage(static_cast<uint16_t>(std::stoi(data)));
+        m_afeDatagram.setAuxVoltage(idx, voltage);
         break;
       }
 
       case CommandCode::AFE_SET_DEV_CELL: {
-        m_afeDatagram.setDeviceIndex(std::stoul(index)); 
-        m_afeDatagram.setVoltage(static_cast<uint16_t>(std::stoi(data)));
+        std::size_t device_index = static_cast<std::size_t>(std::stoul(index)); 
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
+        
+        m_afeDatagram.setDeviceIndex(device_index);
+        m_afeDatagram.setDeviceCellVoltage(device_index, voltage); 
         break;
       }
       case CommandCode::AFE_SET_DEV_AUX: {
-        m_afeDatagram.setDeviceIndex(std::stoul(index));
-        m_afeDatagram.setVoltage(static_cast<uint16_t>(std::stoi(data)));
+        std::size_t device_index = static_cast<std::size_t>(std::stoul(index)); 
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
+        
+        m_afeDatagram.setDeviceIndex(device_index);
+        m_afeDatagram.setDeviceAuxVoltage(device_index, voltage); 
         break;
       }
 
-      case CommandCode::AFE_SET_PACK_AUX: 
+      case CommandCode::AFE_SET_PACK_AUX:  {
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
+        m_afeDatagram.setPackAuxVoltage(voltage);
+        break;
+      }
       case CommandCode::AFE_SET_PACK_CELL: {
-        m_afeDatagram.setVoltage(static_cast<uint16_t>(std::stoi(data)));
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
+        m_afeDatagram.setPackCellVoltage(voltage); 
         break;
       }
 
@@ -180,7 +195,7 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         break;
       }
       case CommandCode::AFE_GET_DEV_AUX: {
-        uint8_t idx = std::stoul(index);
+        std::size_t idx = std::stoul(index);
         m_afeDatagram.setDeviceIndex(idx);
         break;
       }

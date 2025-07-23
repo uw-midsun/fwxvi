@@ -29,12 +29,10 @@ extern "C" {
 /* SET 
 -------------------------------------------------*/
 void AfeManager::setAfeCell(std::string &payload){
-
   m_afeDatagram.deserialize(payload); 
 
-  uint8_t cell_index = m_afeDatagram.getIndex();
-  uint16_t device_index = cell_index / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
-  uint16_t voltage = m_afeDatagram.getVoltage();   
+  uint8_t cell_index = m_afeDatagram.getIndex();  
+  uint16_t voltage = m_afeDatagram.getCellVoltage(cell_index);   
 
   adbms_afe_set_cell_voltage(&s_afe, cell_index, voltage); 
 }
@@ -42,9 +40,8 @@ void AfeManager::setAfeCell(std::string &payload){
 void AfeManager::setAfeAux(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
-  uint16_t aux_index = m_afeDatagram.getIndex();
-  std::size_t device_index =  aux_index / ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE; 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
+  uint8_t aux_index = m_afeDatagram.getIndex();
+  uint16_t voltage = m_afeDatagram.getAuxVoltage(aux_index); 
 
   adbms_afe_set_aux_voltage(&s_afe, aux_index, voltage);
 }
@@ -53,7 +50,7 @@ void AfeManager::setAfeDevCell(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   std::size_t device_index =  m_afeDatagram.getDevIndex(); 
-  uint16_t voltage = m_afeDatagram.getVoltage();
+  uint16_t voltage = m_afeDatagram.getCellVoltage(static_cast<uint8_t>(device_index));
 
   adbms_afe_set_afe_dev_cell_voltages(&s_afe, device_index, voltage);
 }
@@ -62,7 +59,7 @@ void AfeManager::setAfeDevAux(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   std::size_t device_index = m_afeDatagram.getDevIndex(); 
-  uint16_t voltage = m_afeDatagram.getVoltage();
+  uint16_t voltage = m_afeDatagram.getAuxVoltage(static_cast<uint8_t>(device_index));
 
   adbms_afe_set_afe_dev_aux_voltages(&s_afe, device_index, voltage);
 }
@@ -70,7 +67,7 @@ void AfeManager::setAfeDevAux(std::string &payload){
 void AfeManager::setAfePackCell(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
+  uint16_t voltage = m_afeDatagram.getCellVoltage(0); 
 
   adbms_afe_set_pack_cell_voltages(&s_afe, voltage);
 }
@@ -78,7 +75,7 @@ void AfeManager::setAfePackCell(std::string &payload){
 void AfeManager::setAfePackAux(std::string &payload){
   m_afeDatagram.deserialize(payload); 
   
-  uint16_t voltage = m_afeDatagram.getVoltage(); 
+  uint16_t voltage = m_afeDatagram.getAuxVoltage(0); 
 
   adbms_afe_set_pack_aux_voltages(&s_afe, voltage);
 }

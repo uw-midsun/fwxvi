@@ -28,8 +28,8 @@
  /**
  * @class   AfeManager
  * @brief   Class that manages receiving and transmitting Afe commands and JSON logging
- * @details This class is responsible for handling and transmitting serialized messages for reading pin modes,
- *          alternate functions and states. It shall support reading all pins or individual pins
+ * @details This class is responsible for handling and transmitting serialized messages for reading voltages,
+ *          and setting voltages. It shall support setting/reading all cells/aux or individual cells/aux
  *          The class shall perform procedures as soon as commands are queued by the client
  */
 
