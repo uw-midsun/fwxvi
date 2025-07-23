@@ -61,6 +61,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::AFE_SET_CELL: {
+      std::cout << "SETTING AFE CELL llllllllllll" << std::endl; 
       clientAfeManager.setAfeCell(payload); 
       break; 
     }

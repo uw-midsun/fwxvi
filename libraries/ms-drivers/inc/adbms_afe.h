@@ -227,9 +227,14 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
 // TODO: REmember to put these back inside the guard
 
 #ifdef MS_PLATFORM_X86
+#ifdef __cplusplus // Only for C++ compilers
+extern "C" {
+#endif
 extern AdbmsAfeStorage s_afe;
 extern AdbmsAfeSettings s_settings;
-
+#ifdef __cplusplus // Close the extern "C" block
+}
+#endif
 /**
  * @brief Sets the voltage for a specific cell in the AFE.
  * @param afe Pointer to the AFE storage structure.
@@ -287,14 +292,14 @@ StatusCode adbms_afe_set_pack_aux_voltages(AdbmsAfeStorage *afe, float voltage);
  * @param index Global index of the cell.
  * @return The voltage value of the specified cell.
  */
-uint16_t adbms_afe_get_cell_voltage(uint16_t index);
+uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t index);
 
 /**
  * @brief Gets the simulated voltage for a specific auxiliary input.
  * @param index Global index of the auxiliary input.
  * @return The voltage value of the specified auxiliary input.
  */
-uint16_t adbms_afe_get_aux_voltage(uint16_t index);
+uint16_t adbms_afe_get_aux_voltage(AdbmsAfeStorage *afe, uint16_t index);
 
 #endif
 /** @} */

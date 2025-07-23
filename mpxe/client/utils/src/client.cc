@@ -80,7 +80,7 @@ void *processMessagesProcedureWrapper(void *param) {
   Client *client = static_cast<Client *>(param);
 
   try {
-    client->processMessagesProcedure();
+    client->processMessagesProcedure(); 
   } catch (std::exception &e) {
     std::cerr << "Process Messages Thread Error " << e.what() << std::endl;
   }

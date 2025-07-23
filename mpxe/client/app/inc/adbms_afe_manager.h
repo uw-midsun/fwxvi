@@ -34,7 +34,7 @@ class AfeManager {
    * @brief   Construct a AfeManager object
    * @details Custom constructor
    */
-  AfeManager(); 
+  AfeManager() = default; 
 
   void setAfeCell(std::string &payload); 
   void setAfeAux(std::string &payload);

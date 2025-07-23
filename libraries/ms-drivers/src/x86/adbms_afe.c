@@ -21,9 +21,8 @@
 #include "adbms_afe_crc15.h"
 #include "adbms_afe_regs.h"
 
-AdbmsAfeStorage  s_afe     = {0};
-AdbmsAfeSettings s_settings = {0};
-static bool      s_inited   = false;
+AdbmsAfeStorage  s_afe;
+AdbmsAfeSettings s_settings;
 
 /**
  * Calculate the cell result and discharge cell index mappings for the enabled cells across all AFEs.
@@ -91,12 +90,12 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
 
 
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe){
-    LOG_DEBUG("ADC conversion for enabled cell voltages completed");
+    //LOG_DEBUG("ADC conversion for enabled cell voltages completed");
     return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t device_cell){
-    LOG_DEBUG("ADC conversion for enabled auxillary voltages completed");
+    //LOG_DEBUG("ADC conversion for enabled auxillary voltages completed");
     return STATUS_CODE_OK;
 }
 
@@ -194,17 +193,19 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
 }
 
 StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage){
+    
     size_t cell_count = afe->settings->num_cells; 
     if (cell_index >= cell_count){
-        LOG_DEBUG("Invalid cell index number");
+        LOG_DEBUG("Invalid cell index number\n");
+        
         return STATUS_CODE_INVALID_ARGS; 
     }
     
     size_t device_index = cell_index / ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-    size_t cell_pin      = cell_index % ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
+    size_t cell_pin     = cell_index % ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
 
     if (!((afe->settings->cell_bitset[device_index] >> cell_pin) & 0x1)) {
-        LOG_DEBUG("Aux channel %zu on device %zu is disabled; skipping set.", cell_pin, device_index);
+        LOG_DEBUG("Channel %zu on device %zu is disabled; skipping set.\n", cell_pin, device_index);
         return STATUS_CODE_OK;
     }
 
@@ -278,10 +279,10 @@ StatusCode adbms_afe_set_pack_aux_voltages(AdbmsAfeStorage *afe, float voltage){
     return STATUS_CODE_OK; 
 }
 
-uint16_t adbms_afe_get_cell_voltage(uint16_t index) {
-  return s_afe.cell_voltages[index];
+uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t index) {
+  return afe->cell_voltages[index];
 }
 
-uint16_t adbms_afe_get_aux_voltage(uint16_t index) {
-  return s_afe.aux_voltages[index];
+uint16_t adbms_afe_get_aux_voltage(AdbmsAfeStorage *afe, uint16_t index) {
+  return afe->aux_voltages[index];
 }
