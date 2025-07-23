@@ -45,7 +45,7 @@ StatusCode fs_commit(){
     return STATUS_CODE_OK;
 }
 
-StatusCode fs_read_file(const char *path) {
+StatusCode fs_read_file(const char *path, uint8_t *content) {
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
 
@@ -109,8 +109,12 @@ StatusCode fs_read_file(const char *path) {
     printf("Blocks needed: %ld\n\r", blocksNeeded);
 
     printf("File content: \"");
+    uint32_t copied = 0;
     for(uint32_t i = 0; i < blocksNeeded; i++){
         uint32_t chunk = (writeSize > BLOCK_SIZE) ? BLOCK_SIZE : writeSize;
+        memcpy(&content[copied], fileGroup.dataBlocks[currentFile.startBlockIndex % BLOCKS_PER_GROUP + i], chunk);
+        copied += chunk;
+        writeSize -= chunk;
         // printf("%ld. chunk size: %ld\n\r", i, chunk);
         for(uint32_t j = 0; j < chunk; j++){
             if((j+1) % 100 == 0){
