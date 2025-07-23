@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <string.h>
 
-#define BOOTLOADER_ADDR     0x08001000
-#define BOOTLOADER_SIZE     0x00007000
-#define APPLICATION_ADDR    0x08008000
+#define BOOTLOADER_ADDR     0x08008000
+#define BOOTLOADER_SIZE     0x00007000 //64 KB
+#define APPLICATION_ADDR    0x08018000
 #define CRC_FILE_PATH       "bootloader.crc"
 #define CRC32_POLY          0xEDB88320UL //Reversed 0x04C11DB7
 
