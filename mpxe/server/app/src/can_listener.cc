@@ -41,7 +41,7 @@ void CanListener::listenCanBusProcedure() {
   }
 
   struct ifreq ifr;
-  strcpy(ifr.ifr_name, CAN_INTERFACE_NAME.c_str());
+  snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", CAN_INTERFACE_NAME.c_str());
   if (ioctl(m_rawCanSocket, SIOCGIFINDEX, &ifr) < 0) {
     throw std::runtime_error("Error binding raw CAN socket to interface");
   }

@@ -35,12 +35,12 @@ uint8_t calculate_fan_dc(uint16_t temperature) {
 }
 
 void update_fans(void) {
-  if (bms_storage->ltc_afe_storage.max_temp >= BMS_FAN_TEMP_UPPER_THRESHOLD) {
+  if (bms_storage->max_temperature >= BMS_FAN_TEMP_UPPER_THRESHOLD) {
     pwm_set_dc(PWM_TIMER_2, 100U, PWM_CHANNEL_1, false);
-  } else if (bms_storage->ltc_afe_storage.max_temp <= BMS_FAN_TEMP_LOWER_THRESHOLD) {
+  } else if (bms_storage->max_temperature <= BMS_FAN_TEMP_LOWER_THRESHOLD) {
     pwm_set_dc(PWM_TIMER_2, 0, PWM_CHANNEL_1, false);
   } else {
-    pwm_set_dc(PWM_TIMER_2, calculate_fan_dc(bms_storage->ltc_afe_storage.max_temp), 1U, false);
+    pwm_set_dc(PWM_TIMER_2, calculate_fan_dc(bms_storage->max_temperature), 1U, false);
   }
 }
 

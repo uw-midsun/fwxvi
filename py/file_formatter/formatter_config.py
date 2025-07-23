@@ -16,5 +16,6 @@ IGNORE_DIRS = [
     "libraries/CMSIS",
     "libraries/core",
     "mpxe",
-    "build"
+    "build",
+    "protobuf-c"
 ]

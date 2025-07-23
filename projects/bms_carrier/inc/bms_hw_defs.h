@@ -58,6 +58,9 @@
 /** @brief  AFE SPI port */
 #define LTC_AFE_SPI_PORT SPI_PORT_2
 
+/** @brief AFE SPI Baudrate */
+#define LTC_AFE_SPI_BAUDRATE SPI_BAUDRATE_1_25MHZ
+
 /** @brief  AFE SPI Serial data out */
 #define LTC_AFE_SPI_SDO_GPIO \
   { .port = GPIO_PORT_B, .pin = 15 }

@@ -35,7 +35,13 @@ void run_1hz_cycle() {
   run_can_tx_slow();
 }
 
+#ifdef MS_PLATFORM_X86
+#include "mpxe.h"
+int main(int argc, char *argv[]) {
+  mpxe_init(argc, argv);
+#else
 int main() {
+#endif
   mcu_init();
   tasks_init();
   log_init();

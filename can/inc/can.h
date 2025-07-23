@@ -34,8 +34,8 @@
  * @brief   Storage class for the device ID and RX data
  */
 typedef struct CanStorage {
-  volatile CanQueue rx_queue;   /**< Global RX queue to store CAN messages */
-  uint16_t device_id;           /**< Device ID of the running device */
+  CanQueue rx_queue;  /**< Global RX queue to store CAN messages */
+  uint16_t device_id; /**< Device ID of the running device */
 } CanStorage;
 
 /**
@@ -64,7 +64,7 @@ StatusCode can_add_filter_in(CanMessageId msg_id);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_UNINITIALIZED if the CAN bus is not initialized
  */
-StatusCode can_transmit(const CanMessage *msg);
+StatusCode can_transmit(CanMessage *msg);
 
 /**
  * @brief   Receives CAN data from the bus
@@ -73,7 +73,7 @@ StatusCode can_transmit(const CanMessage *msg);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_UNINITIALIZED if the CAN bus is not initialized
  */
-StatusCode can_receive(const CanMessage *msg);
+StatusCode can_receive(CanMessage *msg);
 
 /**
  * @brief   Transmit all CAN data
@@ -125,5 +125,11 @@ StatusCode clear_rx_struct();
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
 StatusCode clear_tx_struct();
+
+/**
+ * @brief   Callback function called when receiving all CAN data
+ * @return  Callback function
+ */
+CanRxAllCallback can_get_rx_all_cb();
 
 /** @} */

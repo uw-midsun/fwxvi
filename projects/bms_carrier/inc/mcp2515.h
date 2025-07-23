@@ -41,10 +41,10 @@ StatusCode mcp2515_init(Mcp2515Storage *storage, const Mcp2515Settings *settings
 StatusCode mcp2515_set_filter(CanMessageId *filters, bool loopback);
 
 // Attempts to transmit the CAN message as soon as possible.
-StatusCode mcp2515_transmit(const CanMessage *msg);
+StatusCode mcp2515_transmit(CanMessage *msg);
 
 // Attempts to receive the CAN message as soon as possible.
-StatusCode mcp2515_receive(const CanMessage *msg);
+StatusCode mcp2515_receive(CanMessage *msg);
 
 // Run the can rx cycle
 StatusCode run_mcp2515_rx_cycle();

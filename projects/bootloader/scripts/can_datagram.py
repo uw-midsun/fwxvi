@@ -212,7 +212,7 @@ class DatagramSender:
             raise Exception(f"Failed to receive ACK for start message after {max_retries} attempts")
     
 
-        update_log(f"Start message received succesfully!")
+        update_log(f"Start message received successfully!")
 
     def send_data(self, message, sender_id=0):
         '''Send a Datagram over CAN'''

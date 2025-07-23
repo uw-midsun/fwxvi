@@ -51,7 +51,7 @@ class ClientConnection {
    *          variables and prepares the client to accept and communicate
    * @param   server The server that this client will be connected to
    */
-  ClientConnection(Server *server);
+  explicit ClientConnection(Server *server);
 
   /**
    * @brief   Destructs a ClientConnection object
