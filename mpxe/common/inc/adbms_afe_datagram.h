@@ -29,29 +29,15 @@ class ADBMS_AFE {
     
     /**
      * @brief Ltc Afe Datagram payload storage
-     * 
      */
     struct Payload{
-        // std::size_t num_cells;                            /**< Total number of cells on all devices */
-        // std::size_t num_thermistors;                      /**< Total number of thermistors on all devices */
-        // std::size_t num_devices;                          /**< Total number of devices */
-
-        uint8_t index;                                      /**< Cell/Aux index */
-        std::size_t dev_index;                              /**< device Index */
-        uint16_t voltage;                                   /**< Voltage of whatever we are setting */
-        
-        /* Could use vector for below to be more space efficient  */
-        // uint16_t cell_bitset[AFE_MAX_DEVICES];            /**< Bitset showing cells are enabled for each device */
-        // uint16_t aux_bitset[AFE_MAX_DEVICES];             /**< Bitset showing aux inputs enabled for each device */
-
-        // uint16_t cell_voltages[AFE_MAX_CELLS];            /**< Cell voltages for all devices */
-        // uint16_t aux_voltages[AFE_MAX_THERMISTORS];       /**< Aux voltages for all devices */
-
+        uint8_t index;          /**< Cell/Aux index */
+        std::size_t dev_index;  /**< device Index */
+        uint16_t voltage;       /**< Voltage of whatever we are setting */
     };
 
     /**
      * @brief Constructs a ADBMS_AFE object with provided payload data
-     * 
      */
     explicit ADBMS_AFE(Payload &data);
 
@@ -61,9 +47,9 @@ class ADBMS_AFE {
     ADBMS_AFE() = default; 
 
     /**
-     * @brief             Serializes afe data with command code for transmission
-     * @param commandCode Command code to include in serialized data
-     * @return            Serialized string containing afe data
+     * @brief   Serializes afe data with command code for transmission
+     * @param   commandCode Command code to include in serialized data
+     * @return  Serialized string containing afe data
      */
     std::string serialize(const CommandCode &commandCode) const; 
 
@@ -73,117 +59,39 @@ class ADBMS_AFE {
      */
     void deserialize(std::string &afeDatagramPayload);   
 
-    // /**
-    //  * @brief Set the number of cells
-    //  * @param cells Number of cells
-    //  */
-    // void setNumCells(std::size_t cells); 
-
-    // /**
-    //  * @brief Set the number of thermistors
-    //  * @param thermistors Number of thermistors
-    //  */
-    // void setNumThermistors(std::size_t thermistors); 
-
-    // /**
-    //  * @brief Set the number of afe devices
-    //  * @param devices Number of devices
-    //  */
-    // void setNumDevices(std::size_t devices);
-
+    /**
+     * @brief Sets index of cell to set
+     * @param new_index The new index to set
+     */
     void setIndex(uint8_t new_index); 
-    void setDeviceIndex(std::size_t new_index); 
-    void setVoltage(uint16_t voltage); 
-
-    // /**
-    //  * @brief Set the cell bitset (Shows enabled cells for each device)
-    //  * @param deviceIndex The device's bitmask you want to replace
-    //  * @param bitmask Bitmask outlining which cells are on
-    //  */
-    // void setCellBitsetForDevice(std::size_t deviceIndex, uint16_t bitmask);
-
-    // /**
-    //  * @brief Set the aux bitset (Shows enabled thermistors for each device)
-    //  * @param deviceIndex The device's bitmask you want to replace
-    //  * @param bitmask Bitmask outlining which cells are on
-    //  */
-    // void setAuxBitsetForDevice (std::size_t deviceIndex, uint16_t bitmask);
-    
-    // /**
-    //  * @brief Set a single cell voltage reading
-    //  * @param index Global cell index (0, ..., AFE_MAX_CELLS-1)
-    //  * @param voltage Voltage in mV
-    //  */
-    // void setCellVoltage(uint8_t index, uint16_t voltage);
-
-    // /**
-    //  * @brief Set a single aux voltage reading
-    //  * @param index Global aux index (0, ..., AFE_MAX_THERMISTORS-1)
-    //  * @param voltage Voltage in mV
-    //  */
-    // void setAuxVoltage(uint8_t index, uint16_t voltage);
-
-    // /**
-    //  * @brief Get the total number of cells on all devices
-    //  * @return Total number of cells
-    //  */
-    // std::size_t getNumCells() const;
-
-    // /**
-    //  * @brief Get the total number of thermistors on all devices
-    //  * @return Total number of thermistors
-    //  */
-    // std::size_t getNumThermistors() const;
-
-    // /**
-    //  * @brief Get the total number of AFE devices
-    //  * @return Total number of devices
-    //  */
-    // std::size_t getNumDevices() const;
-
-    // /**
-    //  * @brief Get the enabled‐cells bitset for a specific device
-    //  * @param deviceIndex Index of the device (0 .. AFE_MAX_DEVICES-1)
-    //  * @return Bitmask of enabled cells for that device
-    //  */
-    // uint16_t getCellBitsetForDevice(std::size_t deviceIndex) const;
-
-    // /**
-    //  * @brief Get the enabled‐aux (thermistor) bitset for a specific device
-    //  * @param deviceIndex Index of the device (0 .. AFE_MAX_DEVICES-1)
-    //  * @return Bitmask of enabled aux inputs for that device
-    //  */
-    // uint16_t getAuxBitsetForDevice(std::size_t deviceIndex) const;
-
-    // /**
-    //  * @brief Get a single cell voltage reading
-    //  * @param index Global cell index (0 .. AFE_MAX_CELLS-1)
-    //  * @return Voltage in millivolts
-    //  */
-    // uint16_t getCellVoltage(std::size_t index) const;
-
-    // /**
-    //  * @brief Get a single aux (thermistor) voltage reading
-    //  * @param index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
-    //  * @return Voltage in millivolts
-    //  */
-    // uint16_t getAuxVoltage(std::size_t index) const;
 
     /**
-     * @brief Get the Index 
-     * @return Index 
+     * @brief Sets device index to set
+     * @param new_index The new index to set
+     */
+    void setDeviceIndex(std::size_t new_index); 
+
+    /**
+     * @brief Voltage to be set
+     * @param voltage the new voltage to be set
+     */
+    void setVoltage(uint16_t voltage); 
+
+    /**
+     * @brief   Get the Index 
+     * @return  Index 
      */
     uint8_t getIndex() const; 
 
     /**
-     * @brief Get the Device Index 
-     * @return Device index
+     * @brief   Get the Device Index 
+     * @return  Device index
      */
     std::size_t getDevIndex() const;
 
     /**
-     * @brief Get the Voltage in millivolts
-     * @return Voltage in millivolts
+     * @brief   Get the Voltage in millivolts
+     * @return  Voltage in millivolts
      */
     uint16_t getVoltage() const;
       
@@ -191,4 +99,6 @@ class ADBMS_AFE {
       Payload m_afeDatagram; 
 };
 
-}
+} // namespace Datagram
+
+/** @} */

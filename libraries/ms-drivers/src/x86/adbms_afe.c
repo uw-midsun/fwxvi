@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   adbms_afe_x86.c
  *
- * @brief  Source file for the ADBMS8611 AFE driver
+ * @brief  Source file for the ADBMS8611 AFE x86 driver
  *
  * @date   2025-06-30
  * @author Midnight Sun Team #24 - MSXVI
@@ -90,12 +90,10 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
 
 
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe){
-    //LOG_DEBUG("ADC conversion for enabled cell voltages completed");
     return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t device_cell){
-    //LOG_DEBUG("ADC conversion for enabled auxillary voltages completed");
     return STATUS_CODE_OK;
 }
 
@@ -133,21 +131,21 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
 
-  // /* Loop through devices */
-  // for (uint16_t device = 0; device < settings->num_devices; ++device) {
-  //   /* If pin not available - move on */
-  //   if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
-  //     LOG_DEBUG(
-  //         "Device: %u\n"
-  //         "Device Cell: %u\n"
-  //         "Not available.\n",
-  //         device, device_cell);
-  //     continue;
-  //   }
+  /* Loop through devices */
+  for (uint16_t device = 0; device < settings->num_devices; ++device) {
+    /* If pin not available - move on */
+    if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
+      LOG_DEBUG(
+          "Device: %u\n"
+          "Device Cell: %u\n"
+          "Not available.\n",
+          device, device_cell);
+      continue;
+    }
 
-  //   uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-  //   LOG_DEBUG("Aux voltage: %d\n", afe->aux_voltages[index]);
-  // }
+    uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
+    LOG_DEBUG("Aux voltage: %d\n", afe->aux_voltages[index]);
+  }
 
   return STATUS_CODE_OK;
 }
@@ -196,7 +194,7 @@ StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, 
     
     size_t cell_count = afe->settings->num_cells; 
     if (cell_index >= cell_count){
-        LOG_DEBUG("Invalid cell index number\n");
+        LOG_DEBUG("Invalid cell index number (%u), cell count is %zu", cell_index, cell_count);
         
         return STATUS_CODE_INVALID_ARGS; 
     }
@@ -238,10 +236,11 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe
         return STATUS_CODE_INVALID_ARGS; 
     }
 
-    uint8_t cell_count = afe->settings->num_cells; 
-    for (uint8_t cell_index = 0; cell_index < cell_count; ++cell_index){
-        uint8_t base = afe_index * cell_count; 
-        adbms_afe_set_cell_voltage(afe, base + cell_index, voltage); 
+    const uint8_t start = afe_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE; 
+    const uint8_t end = start + ADBMS_AFE_MAX_CELLS_PER_DEVICE; 
+
+    for (uint8_t cell_index = start; cell_index < end; ++cell_index){ 
+        adbms_afe_set_cell_voltage(afe, cell_index, voltage); 
     }
 
     return STATUS_CODE_OK;
@@ -255,10 +254,11 @@ StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_
         return STATUS_CODE_INVALID_ARGS; 
     }
 
-    uint8_t aux_count = afe->settings->num_thermistors;
-    for (uint8_t aux_index = 0; aux_index < aux_count; ++aux_index){
-        uint8_t base = afe_index * aux_count; 
-        adbms_afe_set_aux_voltage(afe, base + aux_index, voltage); 
+    const uint16_t start = afe_index * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE; 
+    const uint16_t end = start + ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE; 
+
+    for (uint8_t aux_index = start; aux_index < end; ++aux_index){
+        adbms_afe_set_aux_voltage(afe, aux_index, voltage); 
     }
 
     return STATUS_CODE_OK;

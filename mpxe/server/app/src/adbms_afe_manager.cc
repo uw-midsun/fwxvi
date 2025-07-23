@@ -1,3 +1,12 @@
+/************************************************************************************************
+ * @file   adbms_afe_manager.cc
+ *
+ * @brief  Source file defining the AfeManager Class for the server
+ *
+ * @date   2025-07-22
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 /* Standard library Headers */
 #include <cstdint>
 #include <stdexcept>
@@ -30,7 +39,6 @@ void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &pay
   m_afeDatagram.deserialize(payload); 
   uint16_t voltage = m_afeDatagram.getVoltage(); 
   uint16_t index = m_afeDatagram.getIndex();
-  //uint16_t voltage = m_afeDatagram.getCellVoltage(index);
   
   m_afeInfo["cell" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
@@ -43,7 +51,6 @@ void AfeManager::updateAfeAuxVoltage(std::string &projectName, std::string &payl
   m_afeDatagram.deserialize(payload); 
   uint16_t voltage = m_afeDatagram.getVoltage(); 
   uint16_t index = m_afeDatagram.getIndex();
-  //uint16_t voltage = m_afeDatagram.getAuxVoltage(index);
   
   m_afeInfo["aux" + std::to_string(index)] = std::to_string(voltage) + "mv";
   
@@ -62,7 +69,6 @@ void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &
   const uint16_t end   = start + 18;
   
   for (uint16_t cell = start; cell < end; ++cell){
-    //uint16_t voltage = m_afeDatagram.getCellVoltage(cell); 
     m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv"; 
   }
   
@@ -81,7 +87,6 @@ void AfeManager::updateAfeAuxDevVoltage(std::string &projectName, std::string &p
   const uint16_t end = start + 9; 
 
   for (uint16_t aux = start; aux < end; ++aux){
-    //uint16_t voltage = m_afeDatagram.getAuxVoltage(aux); 
     m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv"; 
   }
 
@@ -96,10 +101,9 @@ void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string 
 
   for (std::size_t dev_index = 0; dev_index < 3; ++dev_index){
     const uint16_t start = dev_index * 18;
-    const uint16_t end   = start + 18;
+    const uint16_t end = start + 18;
 
     for (uint16_t cell = start; cell < end; ++cell){
-      //uint16_t voltage = m_afeDatagram.getCellVoltage(cell);
       m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv";
     }
   }
@@ -114,10 +118,9 @@ void AfeManager::updateAfeAuxPackVoltage(std::string &projectName, std::string &
 
   for (std::size_t dev_index = 0; dev_index < 3; ++dev_index){
     const uint16_t start = dev_index * 9;
-    const uint16_t end   = start + 9;
+    const uint16_t end = start + 9;
 
     for (uint16_t aux = start; aux < end; ++aux){
-      //uint16_t voltage = m_afeDatagram.getAuxVoltage(aux);
       m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
     }
   }
@@ -134,8 +137,6 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
 
         m_afeDatagram.setIndex(idx);
         m_afeDatagram.setVoltage(voltage);
-        std::cout << "Data is: " << data << std::endl; 
-        std::cout << "Voltage is: " << +m_afeDatagram.getVoltage() << std::endl;
         break;
       }
       case CommandCode::AFE_SET_AUX: {
