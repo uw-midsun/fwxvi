@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
@@ -18,17 +18,24 @@
 /* Intra-component Headers */
 #include "status.h"
 
-#define QUEUE_DELAY_BLOCKING portMAX_DELAY
+/**
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
+ * @{
+ */
+
+/** @brief  Maximum delay time to block current thread */
+#define QUEUE_DELAY_BLOCKING 0xFFFFFFFFU
 
 /**
  * @brief   Queue storage and access struct
  */
 typedef struct {
-  uint32_t num_items;   /* Number of items the queue can hold */
-  uint32_t item_size;   /* Size of each item */
-  uint8_t *storage_buf; /* Must be declared statically, and have size num_items*item_size */
-  StaticQueue_t queue;  /* Internal Queue storage */
-  QueueHandle_t handle; /* Handle used for all queue operations */
+  uint32_t num_items;   /**< Number of items the queue can hold */
+  uint32_t item_size;   /**< Size of each item */
+  uint8_t *storage_buf; /**< Must be declared statically, and have size num_items*item_size */
+  StaticQueue_t queue;  /**< Internal Queue storage */
+  QueueHandle_t handle; /**< Handle used for all queue operations */
 } Queue;
 
 /**
@@ -54,8 +61,7 @@ StatusCode queue_send(Queue *queue, const void *item, uint32_t delay_ms);
  * @brief   Place an item into the queue from an ISR
  * @param   queue Pointer to queue handle
  * @param   item Pointer to the item sent to the queue
- * @param   higher_prio_woken Boolean indicating if a context switch should occur after exiting the
- * ISR
+ * @param   higher_prio_woken Boolean to indicate a context switch after exiting the ISR
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the queue is full
@@ -77,8 +83,7 @@ StatusCode queue_receive(Queue *queue, void *buf, uint32_t delay_ms);
  * @brief   Retrieve an item from the queue, delaying for delay_ms before timing out
  * @param   queue Pointer to queue handle
  * @param   item Pointer to the buffer to fill from the queue
- * @param   higher_prio_woken Boolean indicating if a context switch should occur after exiting the
- * ISR
+ * @param   higher_prio_woken Boolean to indicate a context switch after exiting the ISR
  * @return  STATUS_CODE_OK if initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the queue is empty
@@ -118,3 +123,5 @@ uint32_t queue_get_num_items(Queue *queue);
  * @return  Remaining number of spaces available
  */
 uint32_t queue_get_spaces_available(Queue *queue);
+
+/** @} */

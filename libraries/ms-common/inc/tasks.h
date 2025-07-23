@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -22,6 +22,12 @@
 #include "status.h"
 
 /**
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
+ * @{
+ */
+
+/**
  * @brief   Define a task function. This should go in a source file (.c).
  * @details The generated function has the following signature:
  *          void _s_your_task_function(void *context)
@@ -30,18 +36,14 @@
  * declarations.
  * @param   task_stack_size is the depth of your task's stack - use your judgement to choose.
  */
-#define TASK(task_name, task_stack_size)                           \
-  /* forward declaration so we can reference it in the Task */     \
-  static void _s_task_impl_##task_name(void *);                    \
-  static StackType_t _s_stack_##task_name[task_stack_size];        \
-  /* use a compound literal so users can use it as a pointer */    \
-  Task *task_name = &((Task){                                      \
-      .task_func = _s_task_impl_##task_name,                       \
-      .name = #task_name,                                          \
-      .stack = _s_stack_##task_name,                               \
-      .stack_size = task_stack_size,                               \
-      .handle = NULL, /* will be initialized by tasks_init_task */ \
-  });                                                              \
+#define TASK(task_name, task_stack_size)                                                                                                                                                    \
+  /* forward declaration so we can reference it in the Task */                                                                                                                              \
+  static void _s_task_impl_##task_name(void *);                                                                                                                                             \
+  static StackType_t _s_stack_##task_name[task_stack_size];                                                                                                                                 \
+  /* use a compound literal so users can use it as a pointer */                                                                                                                             \
+  Task *task_name = &((Task){                                                                                                                                                               \
+      .task_func = _s_task_impl_##task_name, .name = #task_name, .stack = _s_stack_##task_name, .stack_size = task_stack_size, .handle = NULL, /* will be initialized by tasks_init_task */ \
+  });                                                                                                                                                                                       \
   static void _s_task_impl_##task_name(void *context)
 
 /**
@@ -94,7 +96,7 @@ typedef struct Task {
  * @param   priority The task priority: higher number is higher priority, and the maximum
  * @param   context Pointer to arguments that are passed to the task
  *          is configNUM_TASK_PRIORITIES - 1.
- * @return  STATUS_CODE_OK if succesfully initialize task.
+ * @return  STATUS_CODE_OK if successfully initialize task.
  */
 StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context);
 
@@ -107,7 +109,7 @@ void tasks_start(void);
 /**
  * @brief   Initialize the task module
  * @details Must be called before tasks are initialized or the scheduler is started.
- * @return  STATUS_CODE_OK if succesfully initialize the module.
+ * @return  STATUS_CODE_OK if successfully initialize the module.
  */
 StatusCode tasks_init(void);
 
@@ -122,6 +124,8 @@ StatusCode wait_tasks(uint16_t num_tasks);
 
 /**
  * @brief   A wrapper to give to the semaphore, to be called by tasks when they complete
- * @return  STATUS_CODE_OK if succesfully release sempahore
+ * @return  STATUS_CODE_OK if successfully release sempahore
  */
 StatusCode send_task_end(void);
+
+/** @} */

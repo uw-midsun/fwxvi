@@ -7,3 +7,5 @@ cantools
 Jinja2
 PyYAML
 pyserial
+scons
+sv-ttk

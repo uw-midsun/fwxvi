@@ -1,0 +1,83 @@
+/************************************************************************************************
+ * @file   {{ project_name }}_tx_all.c
+ *
+ * @brief  Source file for transmitting all CAN messages
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "can.h"
+#include "system_can.h"
+
+/* Intra-component Headers */
+#include "can_codegen.h"
+{% set messages = messages | selectattr("sender", "eq", project_name) | list -%}
+
+static CanMessage s_msg = { 0U };
+
+static void prv_tx_can_message(CanMessageId id, uint8_t num_bytes, uint64_t data) {
+    s_msg.id.raw = id,
+    s_msg.dlc = num_bytes;
+    s_msg.data = data;
+    s_msg.extended = (s_msg.id.msg_id >= CAN_MSG_MAX_STD_IDS);
+    can_transmit(&s_msg);
+}
+
+void can_tx_all() {
+{%- for message in messages %}
+    prv_tx_can_message(
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
+        {{- (message.signals | sum(attribute='length') / 8) | int }},
+    {%- for signal in message.signals %}
+        (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor -%}
+    );
+{%- endfor %}
+}
+
+void can_tx_fast_cycle() {
+{%- for message in messages %}
+{%- if message.cycle == "fast" %}
+    prv_tx_can_message(
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
+        {{- (message.signals | sum(attribute='length') / 8) | int }},
+    {%- for signal in message.signals %}
+        (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor -%}
+    );
+{%- endif %}
+{%- endfor %}
+}
+
+void can_tx_medium_cycle() {
+{%- for message in messages %}
+{%- if message.cycle == "medium" %}
+    prv_tx_can_message(
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
+        {{- (message.signals | sum(attribute='length') / 8) | int }},
+    {%- for signal in message.signals %}
+        (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor -%}
+    );
+{%- endif %}
+{%- endfor %}
+}
+
+void can_tx_slow_cycle() {
+{%- for message in messages %}
+{%- if message.cycle == "slow" %}
+    prv_tx_can_message(
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
+        {{- (message.signals | sum(attribute='length') / 8) | int }},
+    {%- for signal in message.signals %}
+        (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor -%}
+    );
+{%- endif %}
+{%- endfor %}
+}

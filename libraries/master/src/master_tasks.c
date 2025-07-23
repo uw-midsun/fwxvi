@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 
@@ -46,6 +46,7 @@ void check_late_cycle(Task *task, BaseType_t delay) {
 }
 
 TASK(master_task_1000hz, MASTER_TASK_1000HZ_SIZE) {
+  pre_loop_init();
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
     run_1000hz_cycle();
@@ -74,11 +75,10 @@ TASK(master_task_1hz, MASTER_TASK_1HZ_SIZE) {
 
 StatusCode init_master_tasks() {
   s_cycles_over = 0;
-  tasks_init_task(master_task_1000hz, MASTER_TASKS_PRIORITY, NULL);
-  tasks_init_task(master_task_10hz, MASTER_TASKS_PRIORITY - 1U, NULL);
-  tasks_init_task(master_task_1hz, MASTER_TASKS_PRIORITY - 2U, NULL);
+  status_ok_or_return(tasks_init_task(master_task_1000hz, MASTER_TASKS_PRIORITY, NULL));
+  status_ok_or_return(tasks_init_task(master_task_10hz, MASTER_TASKS_PRIORITY - 1U, NULL));
+  status_ok_or_return(tasks_init_task(master_task_1hz, MASTER_TASKS_PRIORITY - 2U, NULL));
 
-  pre_loop_init();
   return STATUS_CODE_OK;
 }
 

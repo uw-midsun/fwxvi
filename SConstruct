@@ -1,6 +1,8 @@
+from SCons.Script import *
 from scons.common import flash_run
 import subprocess
-
+import os
+import json
 
 def set_target(option, opt, value, parser):
     if opt == '--project':
@@ -12,7 +14,6 @@ def set_target(option, opt, value, parser):
     if opt == '--python' or opt == '--py':
         target = f'py/{value}'
     setattr(parser.values, option.dest, target)
-
 
 ###########################################################
 # Build arguments
@@ -72,34 +73,72 @@ AddOption(
     help="(x86) Specifies the sanitizer. One of 'asan' for Address sanitizer or 'tsan' for Thread sanitizer. Defaults to none."
 )
 
-AddOption(
-    '--flash',
-    dest='flash',
-    type='choice',
-    choices=('bootloader', 'application', "default"),
-    default='default',
-    help="Specifies which application to flash. The bootloader, application or the entire flash bank"
-)
+NUM_JOBS = os.cpu_count() or 4
 
-PLATFORM = GetOption('platform')
-TARGET = GetOption('name')
-FLASH_TYPE = GetOption('flash')
+if not GetOption('num_jobs'):
+    AddOption('--jobs', dest='num_jobs', type='int', default=NUM_JOBS)
+
+PLATFORM        = GetOption('platform')
+TARGET          = GetOption('name')
+TESTFILE        = GetOption('testfile')
+
+###########################################################
+# Load build preset
+###########################################################
+
+HARDWARE_TYPE   = "STM32L433CCU6"
+FLASH_TYPE      = "legacy"
+BUILD_CONFIG    = "debug"
+
+build_presets_file = File('build_presets.json')
+
+if build_presets_file.exists():
+    with open(build_presets_file.abspath, 'r') as f:
+        build_preset = json.load(f)
+        selected_build_preset = build_preset.get("selected_preset")
+
+    if selected_build_preset:
+        # Retrieve the settings for the selected preset
+        preset_settings = build_preset["presets"].get(selected_build_preset)
+
+        if preset_settings:
+            print(f"Loaded selected preset: '{selected_build_preset}'")
+            print(f"    Hardware: {preset_settings['hardware']}")
+            print(f"    Flash: {preset_settings['flash']}")
+            print(f"    Build Config: {preset_settings['build_config']}")
+
+            HARDWARE_TYPE = preset_settings['hardware']
+            FLASH_TYPE = preset_settings['flash']
+            BUILD_CONFIG = preset_settings['build_config']
+        else:
+            print(f"Error: Selected preset '{selected_build_preset}' not found in presets.")
+    else:
+        print("No 'selected_build_preset' field found in the configuration.")
+else:
+    print("build_presets.json does not exist. Please check update your branch or restore it!")
 
 ###########################################################
 # Environment setup
 ###########################################################
 
+COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
+
+# Force x86 if the command is for MPXE
+if COMMAND == "mpxe":
+    PLATFORM = "x86"
+
 # Retrieve the construction environment from the appropriate platform script
-env = SConscript(f'platform/{PLATFORM}.py', exports='FLASH_TYPE')
+env = SConscript(f'platform/{PLATFORM}.py', exports=['HARDWARE_TYPE', 'FLASH_TYPE', 'BUILD_CONFIG'])
 
 VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
+    "HARDWARE_TYPE": HARDWARE_TYPE,
     "FLASH_TYPE": FLASH_TYPE,
+    "BUILD_CONFIG": BUILD_CONFIG,
+    "TESTFILE": TESTFILE,
     "env": env,
 }
-
-COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
 
 # Parse asan / tsan and Adding Sanitizer Argument to Environment Flags
 # Note platform needs to be explicitly set to x86
@@ -115,11 +154,15 @@ elif SANITIZER == 'tsan':
     env['CXXFLAGS'] += ["-fsanitize=thread"]
     env['LINKFLAGS'] += ["-fsanitize=thread"]
 
+env['CXXCOMSTR'] = "Compiling  $TARGET"
 env['CCCOMSTR'] = "Compiling  $TARGET"
 env['ARCOMSTR'] = "Archiving  $TARGET"
 env['ASCOMSTR'] = "Assembling $TARGET"
 env['LINKCOMSTR'] = "Linking    $TARGET"
 env['RANLIBCOMSTR'] = "Indexing   $TARGET"
+
+SetOption('implicit_cache', True)
+SetOption('max_drift', 1)
 
 env.Append(CPPDEFINES=[GetOption('define')])
 
@@ -138,7 +181,7 @@ VariantDir(OBJ_DIR, '.', duplicate=0)
 ###########################################################
 if COMMAND == "test":
     # Add flags when compiling a test
-    TEST_CFLAGS = ['-DMS_TEST=1']
+    TEST_CFLAGS = ['-DMS_TEST']
     env['CCFLAGS'] += TEST_CFLAGS
     SConscript('scons/test.scons', exports='VARS')
     SConscript('scons/build.scons', exports='VARS')
@@ -148,6 +191,14 @@ if COMMAND == "test":
 ###########################################################
 elif COMMAND == "new":
     SConscript('scons/new_target.scons', exports='VARS')
+
+###########################################################
+# HIL command
+###########################################################
+elif COMMAND == "hil":
+    if not TEST_FILE:
+        pass
+    SConscript('scons/pytest.scons', exports='VARS')
 
 ###########################################################
 # Clean
@@ -160,6 +211,31 @@ elif COMMAND == "clean":
 ###########################################################
 elif COMMAND == "lint" or COMMAND == "format":
     SConscript('scons/lint_format.scons', exports='VARS')
+
+###########################################################
+# Doxygen Generation
+###########################################################
+elif COMMAND == "doxygen":
+    AlwaysBuild(Command('#/doxygen', [], 'doxygen doxygen/Doxyfile'))
+
+###########################################################
+# Cantools Autogeneration Script
+###########################################################
+elif COMMAND == "cantools":
+    AlwaysBuild(Command('#/cantools', [], 'python3 -m autogen cantools -o can/tools'))
+
+###########################################################
+# Run MPXE Server
+###########################################################
+elif COMMAND == "mpxe":
+    SConscript('scons/build.scons', exports='VARS')
+    mpxe_elf = BIN_DIR.Dir("projects").File("mpxe_server")
+
+    def mpxe_run(target, source, env):
+        print('Running MPXE Server', mpxe_elf)
+        subprocess.run(mpxe_elf.path)
+
+    AlwaysBuild(Command('#/mpxe', mpxe_elf, mpxe_run))
 
 ###########################################################
 # Build
@@ -176,7 +252,7 @@ if PLATFORM == 'x86' and TARGET:
 
     def sim_run(target, source, env):
         print('Simulating', project_elf)
-        subprocess.run([project_elf.path])
+        subprocess.run([project_elf.path, TARGET.split("/")[-1]])
 
     AlwaysBuild(Command('#/sim', project_elf, sim_run))
 
@@ -199,9 +275,7 @@ if PLATFORM == 'arm' and TARGET:
 
     # flash the MCU using openocd
     def flash_run_target(target, source, env):
-        serialData = flash_run(project_bin, FLASH_TYPE)
-        #while True:
-        #    line: str = serialData.readline().decode("utf-8")
-        #    print(line, end='')
+        serialData = flash_run(project_bin, HARDWARE_TYPE, FLASH_TYPE)
+        exit(0)
 
     AlwaysBuild(Command('#/flash', project_bin, flash_run_target))

@@ -1,5 +1,5 @@
 /************************************************************************************************
- * @file   test_master_tasks.h
+ * @file   test_master_tasks.c
  *
  * @brief  Test file for Master Tasks API. Supports 1Hz, 10Hz and 1000Hz scheduling
  *
@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 
 /* Inter-component Headers */
@@ -20,8 +20,10 @@
 
 /* Intra-component Headers */
 
-void setup_test(void) {
-  log_init();
-}
+void setup_test(void) {}
 
 void teardown_test(void) {}
+
+void test_example(void) {
+  TEST_ASSERT_TRUE(true);
+}

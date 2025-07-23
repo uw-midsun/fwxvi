@@ -16,7 +16,8 @@ PROJ_DIRS = ROOT.glob('projects/*')
 LIB_DIRS = ROOT.glob('libraries/*')
 SMOKE_DIRS = ROOT.glob('smoke/*')
 PY_DIRS = ROOT.glob('py/*')
-
+MPXE_DIRS = ROOT.glob('mpxe/*')
+SIMULATION_DIRS = ROOT.glob('simulation/*')
 
 ###########################################################
 # Linting and Formatting
@@ -26,10 +27,10 @@ def run_lint(target, source, env):
     PY_LINT_CMD = 'pylint --rcfile={}/.pylintrc'.format(ROOT.abspath)
 
     errors = 0
-    # Lint C source files
-    if len(c_files) > 0:
+    # Lint C and C++ source files
+    if len(c_files) > 0 or len(cpp_files > 0):
         print(f'\nLinting *.[ch] files ...')
-        errors += subprocess.run(f'{C_LINT_CMD} {c_files_str}',
+        errors += subprocess.run(f'{C_LINT_CMD} {c_files_str} {cpp_files_str}',
                                  shell=True).returncode
 
     # Lint Python files
@@ -45,26 +46,34 @@ def run_lint(target, source, env):
 
 def run_format(target, source, env):
     # Formatter configs
-    AUTOPEP8_CONFIG = '-a --max-line-length 100 -r'
+    AUTOPEP8_CONFIG = '-a --max-line-length 200 -r --ignore E266'
     CLANG_FORMAT_CONFIG = '-i -style=file'
 
     C_FORMAT_CMD = 'clang-format {}'.format(CLANG_FORMAT_CONFIG)
+
+    # Specific commands to protect Python Doxygen comments
     PY_FORMAT_CMD = 'autopep8 {} -i'.format(AUTOPEP8_CONFIG)
 
+    # Custom formatter library
+    CUSTOM_FORMATTER_CMD = 'python3 py/file_formatter/main.py'
+
     # Format C source files
-    if len(c_files) > 0:
+    if len(c_files) > 0 or len(cpp_files) > 0:
         print(f'\nFormatting *.[ch] files ...')
-        subprocess.run(f'{C_FORMAT_CMD} {c_files_str}', shell=True)
+        subprocess.run(f'{C_FORMAT_CMD} {c_files_str} {cpp_files_str}', shell=True)
 
     # Format Python source files
     if len(py_files) > 0:
         print('\nFormatting *.py files ...')
         subprocess.run(f'{PY_FORMAT_CMD} {py_files_str}', shell=True)
+    
+    subprocess.run(f'{CUSTOM_FORMATTER_CMD}', shell=True)
 
     print('Done Formatting.')
 
 
 # Retrieve files to lint - returns a tuple (c_lint_files, py_lint_files)
+cpp_files = []
 c_files = []
 py_files = []
 # Get directories to lint based on PROJECT/LIBRARY args.
@@ -73,16 +82,19 @@ py_files = []
 if TARGET:
     target_dirs = [ROOT.Dir(TARGET)]
 else:
-    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS
+    # TODO: add this to the end of this  '+ SIMULATION_DIRS'
+    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS + MPXE_DIRS
 
 for dir in target_dirs:
     config = parse_config(dir)
     if config.get('no_lint'):  # Avoid linting/formatting external libraries
         continue
 
+    cpp_files += glob.glob(f'{dir.abspath}/**/*.[ch]pp', recursive=True) + glob.glob(f'{dir.abspath}/**/*.cc', recursive=True)
     c_files += glob.glob(f'{dir.abspath}/**/*.[ch]', recursive=True)
     py_files += glob.glob(f'{dir.abspath}/**/*.py', recursive=True)
 
+cpp_files_str = ' '.join(cpp_files)
 c_files_str = ' '.join(c_files)
 py_files_str = ' '.join(py_files)
 

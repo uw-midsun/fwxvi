@@ -1,0 +1,44 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  fast_one_shot_msg:
+    id: 55
+    critical: false
+    cycle: "fast"
+    target:
+      can_communication:
+        watchdog: 5
+    signals:
+      sig1:
+        length: 16
+      sig2:
+        length: 16
+  medium_one_shot_msg:
+    id: 54
+    critical: false
+    cycle: "medium"
+    target:
+      can_communication:
+        watchdog: 5
+    signals:
+      sig1:
+        length: 16
+      sig2:
+        length: 16
+  slow_one_shot_msg:
+    id: 53
+    critical: false
+    cycle: "slow"
+    target:
+      can_communication:
+        watchdog: 5
+    signals:
+      sig1:
+        length: 16
+      sig2:
+        length: 16

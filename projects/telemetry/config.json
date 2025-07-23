@@ -1,0 +1,12 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "master",
+        "FATFs"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "can": true
+}

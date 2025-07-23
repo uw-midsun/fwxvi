@@ -28,7 +28,7 @@
  extern "C" {
 #endif
 
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -44,7 +44,7 @@
 #define HAL_CAN_MODULE_ENABLED
 /*#define HAL_COMP_MODULE_ENABLED   */
 #define HAL_I2C_MODULE_ENABLED
-/*#define HAL_CRC_MODULE_ENABLED   */
+#define HAL_CRC_MODULE_ENABLED
 /*#define HAL_CRYP_MODULE_ENABLED   */
 /*#define HAL_DAC_MODULE_ENABLED   */
 /*#define HAL_DCMI_MODULE_ENABLED   */
@@ -77,7 +77,7 @@
 /*#define HAL_SD_MODULE_ENABLED   */
 /*#define HAL_SMBUS_MODULE_ENABLED   */
 /*#define HAL_SMARTCARD_MODULE_ENABLED   */
-/*#define HAL_SPI_MODULE_ENABLED   */
+#define HAL_SPI_MODULE_ENABLED
 /*#define HAL_SRAM_MODULE_ENABLED   */
 /*#define HAL_SWPMI_MODULE_ENABLED   */
 #define HAL_TIM_MODULE_ENABLED
@@ -185,7 +185,7 @@
 
 #define  VDD_VALUE					          3300U /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            15U    /*!< tick interrupt priority */
-#define  USE_RTOS                     0U
+#define  USE_RTOS                     1U
 #define  PREFETCH_ENABLE              0U
 #define  INSTRUCTION_CACHE_ENABLE     1U
 #define  DATA_CACHE_ENABLE            1U
@@ -207,7 +207,7 @@
   *        for possible callback identifiers defined in HAL_PPP_CallbackIDTypeDef
   *        for each PPP peripheral).
   */
-#define USE_HAL_ADC_REGISTER_CALLBACKS        0U
+#define USE_HAL_ADC_REGISTER_CALLBACKS        1U
 #define USE_HAL_CAN_REGISTER_CALLBACKS        1U
 #define USE_HAL_COMP_REGISTER_CALLBACKS       0U
 #define USE_HAL_CRYP_REGISTER_CALLBACKS       0U
@@ -219,7 +219,7 @@
 #define USE_HAL_GFXMMU_REGISTER_CALLBACKS     0U
 #define USE_HAL_HASH_REGISTER_CALLBACKS       0U
 #define USE_HAL_HCD_REGISTER_CALLBACKS        0U
-#define USE_HAL_I2C_REGISTER_CALLBACKS        0U
+#define USE_HAL_I2C_REGISTER_CALLBACKS        1U
 #define USE_HAL_IRDA_REGISTER_CALLBACKS       0U
 #define USE_HAL_LPTIM_REGISTER_CALLBACKS      0U
 #define USE_HAL_LTDC_REGISTER_CALLBACKS       0U
@@ -234,7 +234,7 @@
 #define USE_HAL_SD_REGISTER_CALLBACKS         0U
 #define USE_HAL_SMARTCARD_REGISTER_CALLBACKS  0U
 #define USE_HAL_SMBUS_REGISTER_CALLBACKS      0U
-#define USE_HAL_SPI_REGISTER_CALLBACKS        0U
+#define USE_HAL_SPI_REGISTER_CALLBACKS        1U
 #define USE_HAL_SWPMI_REGISTER_CALLBACKS      0U
 #define USE_HAL_TIM_REGISTER_CALLBACKS        0U
 #define USE_HAL_TSC_REGISTER_CALLBACKS        0U

@@ -7,14 +7,15 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "semphr.h"
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
+#include "stm32l4xx_hal_rcc_ex.h"
 #include "stm32l4xx_hal_uart.h"
 
 /* Intra-component Headers */
@@ -23,7 +24,6 @@
 #include "queues.h"
 #include "status.h"
 #include "uart.h"
-#include "uart_mcu.h"
 
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
@@ -32,29 +32,24 @@ static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
 }
 
+/** @brief  UART Port data */
+typedef struct {
+  USART_TypeDef *base;   /**< UART HW Base address */
+  void (*rcc_cmd)(void); /**< Function pointer to enable UART clock using RCC */
+  uint8_t irq;           /**< UART interrupt number */
+  bool initialized;      /**< Initialized flag */
+} UartPortData;
+
+static UartPortData s_port[NUM_UART_PORTS] = {
+  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
+  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
+};
+
 static const uint16_t s_uart_flow_control_map[] = {
   [UART_FLOW_CONTROL_NONE] = UART_HWCONTROL_NONE,
   [UART_FLOW_CONTROL_RTS] = UART_HWCONTROL_RTS,
   [UART_FLOW_CONTROL_CTS] = UART_HWCONTROL_CTS,
   [UART_FLOW_CONTROL_RTS_CTS] = UART_HWCONTROL_RTS_CTS,
-};
-
-typedef struct {
-  USART_TypeDef *base;
-  void (*rcc_cmd)(void);
-  uint8_t irq;
-  bool initialized;
-} UartPortData;
-
-static UartPortData s_port[] = {
-  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1,
-                    .irq = USART1_IRQn,
-                    .base = USART1,
-                    .initialized = false },
-  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2,
-                    .irq = USART2_IRQn,
-                    .base = USART2,
-                    .initialized = false },
 };
 
 static UART_HandleTypeDef s_uart_handles[NUM_UART_PORTS];
@@ -106,22 +101,12 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
 /* Private helper to handle transfer complete */
 static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
-  UartPort uart = NUM_UART_PORTS;
 
-  for (UartPort i = 0; i < NUM_UART_PORTS; i++) {
-    if (&s_uart_handles[i] == huart) {
-      uart = i;
-      break;
-    }
+  if (huart->Instance == USART1) {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_1], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
   }
-
-  if (uart >= NUM_UART_PORTS) {
-    return;
-  }
-
-  __HAL_UART_CLEAR_IT(huart, is_rx ? UART_IT_RXNE : UART_IT_TXE);
-
-  xSemaphoreGiveFromISR(s_uart_cmplt_handle[uart], &higher_priority_task);
   portYIELD_FROM_ISR(higher_priority_task);
 }
 
@@ -187,6 +172,20 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   s_uart_handles[uart].Init.Mode = UART_MODE_TX_RX;
   s_uart_handles[uart].Init.HwFlowCtl = uart_flow_control;
   s_uart_handles[uart].Init.OverSampling = UART_OVERSAMPLING_16;
+
+  RCC_PeriphCLKInitTypeDef periph_clk_init = { 0U };
+
+  if (uart == UART_PORT_1) {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    periph_clk_init.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  } else {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+    periph_clk_init.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  }
+
+  if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
   s_port[uart].rcc_cmd();
 

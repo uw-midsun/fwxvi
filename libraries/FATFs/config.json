@@ -1,0 +1,7 @@
+{
+  "arm_libs": [
+    "HAL"
+  ],
+  "no_lint": true
+}
+  

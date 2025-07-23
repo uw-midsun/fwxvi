@@ -9,7 +9,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -18,17 +18,13 @@
 /* Intra-component Headers */
 #include "status.h"
 
-typedef enum {
-  MPU_REGION_0,
-  MPU_REGION_1,
-  MPU_REGION_2,
-  MPU_REGION_3,
-  MPU_REGION_4,
-  MPU_REGION_5,
-  MPU_REGION_6,
-  MPU_REGION_7,
-  NUM_MPU_REGIONS
-} MPURegionNumber;
+/**
+ * @defgroup Memory_Protection_Unit
+ * @brief    MPU library
+ * @{
+ */
+
+typedef enum { MPU_REGION_0, MPU_REGION_1, MPU_REGION_2, MPU_REGION_3, MPU_REGION_4, MPU_REGION_5, MPU_REGION_6, MPU_REGION_7, NUM_MPU_REGIONS } MPURegionNumber;
 
 typedef enum {
   MPU_ACCESS_NONE,
@@ -83,3 +79,5 @@ StatusCode mpu_disable_region(MPURegionNumber region_number);
  * @return  STATUS_CODE_OK if MPU initialization succeeded
  */
 StatusCode mpu_init(void);
+
+/** @} */

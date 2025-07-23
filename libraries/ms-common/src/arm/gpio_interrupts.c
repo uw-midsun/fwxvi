@@ -7,28 +7,18 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
+#include "log.h"
 
 /* Intra-component Headers */
 #include "gpio_interrupts.h"
 
-#include "log.h"
+static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0U };
 
-typedef struct GpioInterrupt {
-  InterruptSettings settings;
-  GpioAddress address;
-  Event event;
-  Task *task;
-} GpioInterrupt;
-
-static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0 };
-
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings,
-                                   const Event event, const Task *task) {
-  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT ||
-      event >= INVALID_EVENT) {
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || event >= INVALID_EVENT) {
     return STATUS_CODE_INVALID_ARGS;
   } else if (s_gpio_it_interrupts[address->pin].task != NULL) {
     LOG_DEBUG("GPIO INTERRUPT INIT FAILED. Pin already being used");
@@ -44,6 +34,41 @@ StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSe
   s_gpio_it_interrupts[address->pin].task = task;
 
   return STATUS_CODE_OK;
+}
+
+InterruptEdge gpio_it_get_edge(const GpioAddress *address) {
+  if (s_gpio_it_interrupts[address->pin].task != NULL) {
+    return s_gpio_it_interrupts[address->pin].settings.edge;
+  }
+  return NUM_INTERRUPT_EDGES;
+}
+
+InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
+  if (s_gpio_it_interrupts[address->pin].task != NULL) {
+    return s_gpio_it_interrupts[address->pin].settings.priority;
+  }
+  return NUM_INTERRUPT_PRIORITIES;
+}
+
+InterruptType gpio_it_get_class(const GpioAddress *address) {
+  if (s_gpio_it_interrupts[address->pin].task != NULL) {
+    return s_gpio_it_interrupts[address->pin].settings.type;
+  }
+  return NUM_INTERRUPT_TYPES;
+}
+
+Task *gpio_it_get_target_task(const GpioAddress *address) {
+  if (s_gpio_it_interrupts[address->pin].task != NULL) {
+    return s_gpio_it_interrupts[address->pin].task;
+  }
+  return NULL;
+}
+
+StatusCode gpio_it_mask_interrupt(const GpioAddress *address, bool masked) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  return interrupt_exti_set_mask(address->pin, masked);
 }
 
 StatusCode gpio_trigger_interrupt(const GpioAddress *address) {

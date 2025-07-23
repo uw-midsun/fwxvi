@@ -9,11 +9,17 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+
+/**
+ * @defgroup Status_Code
+ * @brief    Global error library
+ * @{
+ */
 
 /**
  * @brief StatusCodes for various errors.
@@ -42,3 +48,5 @@ typedef enum {
     __typeof__(code) status_expr = (code); \
     if (status_expr) return status_expr;   \
   })
+
+/** @} */

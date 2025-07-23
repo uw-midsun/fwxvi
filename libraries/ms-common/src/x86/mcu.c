@@ -7,12 +7,12 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
+/* Standard library Headers */
 
 /* Inter-component Headers */
-
-/* Intra-component Headers*/
 #include "mcu.h"
+
+/* Intra-component Headers */
 
 StatusCode mcu_init(void) {
   return STATUS_CODE_INCOMPLETE;
