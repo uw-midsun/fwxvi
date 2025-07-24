@@ -26,16 +26,26 @@ class ADBMS_AFE {
 
     static constexpr uint8_t AFE_MAX_CELLS       = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;        /**< Total cell channels supported */
     static constexpr uint8_t AFE_MAX_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_THERMISTORS_PER_DEVICE;  /**< Total thermistor channels supported */
-    
+
+    /**
+     * @brief  Cell Discharge State
+     */
+    enum class DischargeState {
+      DISCHARGE_OFF = 0,  /**< Cell discharge is off */
+      DISCHARGE_ON,       /**< Cell discharge is on */
+    };
+
     /**
      * @brief Ltc Afe Datagram payload storage
      */
     struct Payload{
-        uint8_t index;                               /**< Cell/Aux index */
-        std::size_t dev_index;                       /**< device Index */
+      uint8_t index;                               /**< Cell/Aux index */
+      std::size_t dev_index;                       /**< device Index */
 
-        uint16_t cell_voltages[AFE_MAX_CELLS];       /**< Data storage for cell voltages */
-        uint16_t aux_voltages[AFE_MAX_THERMISTORS];  /**< Data for aux voltages */ 
+      uint16_t cell_voltages[AFE_MAX_CELLS];       /**< Data storage for cell voltages */
+      uint16_t aux_voltages[AFE_MAX_THERMISTORS];  /**< Data for aux voltages */ 
+      
+      bool cell_discharges[AFE_MAX_CELLS];         /**< Cell discharges enabled/disabled */
     };
 
     /**
@@ -113,6 +123,12 @@ class ADBMS_AFE {
      * @param voltage Voltage in mV
      */
     void setPackAuxVoltage(uint16_t voltage);
+    
+    /**
+     * @brief Set discharges of cell
+     * @param is_discharge Is discharge enabled for cell
+     */
+    void setCellDischarge(bool is_discharge, uint8_t cell_index); 
 
     /**
      * @brief   Get the Index 
@@ -139,7 +155,13 @@ class ADBMS_AFE {
      * @return Voltage in millivolts
      */
     uint16_t getAuxVoltage(std::size_t index) const;
-      
+    
+    /**
+     * @brief Get the cell discharge status of a cell
+     * @param cell_index Cell index
+     */
+    bool getCellDischarge(uint8_t cell_index) const;
+    
     private:
       Payload m_afeDatagram; 
 };

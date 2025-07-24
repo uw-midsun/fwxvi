@@ -260,7 +260,7 @@ StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, fl
  * @param voltage The voltage value to set for each cell.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage);
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage);
 
 /**
  * @brief Sets the voltage for all auxiliary inputs on a specific AFE device.
@@ -269,7 +269,7 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe
  * @param voltage The voltage value to set for each auxiliary channel.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage);
+StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage);
 
 /**
  * @brief Sets the voltage for all cells across all AFE devices in the pack.
@@ -301,5 +301,12 @@ uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t index);
  */
 uint16_t adbms_afe_get_aux_voltage(AdbmsAfeStorage *afe, uint16_t index);
 
+/**
+ * @brief   Get the discharge enable state of a single cell.
+ * @param   afe Pointer to AFE storage/configuration.
+ * @param   cell Global cell index (0…ADBMS_AFE_MAX_CELLS‑1).
+ * @return  Bool returning if cell discharge is enabled or disabled
+ */
+bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell);
 #endif
 /** @} */

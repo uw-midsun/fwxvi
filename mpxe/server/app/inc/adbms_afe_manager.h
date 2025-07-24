@@ -34,7 +34,8 @@
   */
  class AfeManager{
   private:
-   std::unordered_map<std::string, std::string> m_afeInfo;
+   using AfeObjectInfo = std::unordered_map<std::string, std::string>; 
+   std::unordered_map<std::string, AfeObjectInfo> m_afeInfo;
    Datagram::ADBMS_AFE m_afeDatagram;
 
    /**
@@ -109,6 +110,15 @@
      */
     void updateAfeAuxPackVoltage(std::string &projectName, std::string &payload);
 
+    /**
+     * @brief   Update the discharge state of a specific AFE cell using the provided payload
+     * @details Loads the target AFE project, extracts the discharge state of the given cell index
+     *          from the deserialized payload, and updates the corresponding entry in the project info.
+     *          Saves the updated discharge state to persistent storage.
+     * @param   projectName Name of the project to be updated
+     * @param   payload Serialized datagram payload containing the target cell index and discharge state
+     */
+    void updateAfeCellDischarge(std::string &projectName, std::string &payload); 
 
     /**
      * @brief   Create a Afe Command object given a CommandCode, and if required specific data

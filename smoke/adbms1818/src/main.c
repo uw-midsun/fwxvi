@@ -21,9 +21,6 @@
 #include "adbms_afe.h"
 
 #ifdef MS_PLATFORM_X86
-#endif
-
-#ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
@@ -32,6 +29,7 @@ int main() {
 #endif
   mcu_init();
   log_init();
+
 
   #ifdef MS_PLATFORM_X86
   s_settings.adc_mode = ADBMS_AFE_ADC_MODE_27KHZ; 
@@ -51,7 +49,7 @@ int main() {
   #else
   // AdbmsAfeStorage s_afe;
   // AdbmsAfeSettings s_settings;
-  
+
   // /* Based on spi smoke test (Not sure) */
   // const SpiSettings spi_config = {
   //   .baudrate = SPI_BAUDRATE_2_5MHZ,
@@ -82,6 +80,13 @@ int main() {
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("adbms_afe_init() failed: %d\n", status);
   }
+
+  #ifdef MS_PLATFORM_x86
+   for (size_t i = 0; i < ADBMS_AFE_MAX_DEVICES; ++i){
+    s_afe.device_configs->devices[i].cfgA.discharge_bitset = (1u << 12) - 1;
+    s_afe.device_configs->devices[i].cfgB.discharge_bitset = (1u << 7)  - 1;
+  }
+  #endif
   //LOG_DEBUG("ADBMS1818 init OK – beginning conversions…\n");
   //s_afe.cell_voltages[12] = 3; 
   while (true) {

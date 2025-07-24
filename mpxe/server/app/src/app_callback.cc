@@ -89,6 +89,10 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       serverAfeManager.updateAfeAuxPackVoltage(clientName, payload); 
       break; 
     }
+    case CommandCode::AFE_GET_DISCHARGE: {
+      serverAfeManager.updateAfeCellDischarge(clientName, payload); 
+      break;
+    }
     default: {
       break;
     }

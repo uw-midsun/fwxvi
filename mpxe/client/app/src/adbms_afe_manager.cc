@@ -24,7 +24,7 @@ extern "C" {
 #include "adbms_afe_manager.h"
 
 /* Constructor */
-
+#include <iomanip>
 
 /* SET 
 -------------------------------------------------*/
@@ -32,6 +32,12 @@ void AfeManager::setAfeCell(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   uint8_t cell_index = m_afeDatagram.getIndex();  
+
+  if (cell_index >= ADBMS_AFE_MAX_CELLS){
+    std::cout << "Invalid Index" << std::endl; 
+    return;
+  }
+
   uint16_t voltage = m_afeDatagram.getCellVoltage(cell_index);   
 
   adbms_afe_set_cell_voltage(&s_afe, cell_index, voltage); 
@@ -41,6 +47,12 @@ void AfeManager::setAfeAux(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   uint8_t aux_index = m_afeDatagram.getIndex();
+
+  if (aux_index >= ADBMS_AFE_MAX_THERMISTORS){
+    std::cout << "Invalid Index" << std::endl; 
+    return;
+  }
+
   uint16_t voltage = m_afeDatagram.getAuxVoltage(aux_index); 
 
   adbms_afe_set_aux_voltage(&s_afe, aux_index, voltage);
@@ -50,8 +62,13 @@ void AfeManager::setAfeDevCell(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   std::size_t device_index =  m_afeDatagram.getDevIndex(); 
-  uint16_t voltage = m_afeDatagram.getCellVoltage(static_cast<uint8_t>(device_index));
 
+  if (device_index >= ADBMS_AFE_MAX_DEVICES){
+    std::cout << "Invalid Index" << std::endl; 
+    return;
+  }
+  uint16_t voltage = m_afeDatagram.getCellVoltage(static_cast<uint8_t>(device_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
+  
   adbms_afe_set_afe_dev_cell_voltages(&s_afe, device_index, voltage);
 }
 
@@ -59,7 +76,13 @@ void AfeManager::setAfeDevAux(std::string &payload){
   m_afeDatagram.deserialize(payload); 
 
   std::size_t device_index = m_afeDatagram.getDevIndex(); 
-  uint16_t voltage = m_afeDatagram.getAuxVoltage(static_cast<uint8_t>(device_index));
+
+  if (device_index >= ADBMS_AFE_MAX_DEVICES){
+    std::cout << "Invalid Index" << std::endl; 
+    return;
+  }
+
+  uint16_t voltage = m_afeDatagram.getAuxVoltage(static_cast<uint8_t>(device_index * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE));
 
   adbms_afe_set_afe_dev_aux_voltages(&s_afe, device_index, voltage);
 }
@@ -80,6 +103,15 @@ void AfeManager::setAfePackAux(std::string &payload){
   adbms_afe_set_pack_aux_voltages(&s_afe, voltage);
 }
 
+void AfeManager::setCellDischarge(std::string &payload){
+  m_afeDatagram.deserialize(payload); 
+
+  uint8_t cell_index = m_afeDatagram.getIndex();  
+  bool is_discharge = m_afeDatagram.getCellDischarge(cell_index); 
+
+  adbms_afe_toggle_cell_discharge(&s_afe, cell_index, is_discharge);
+}
+
 /* PROCESS
 -------------------------------------------------------- */
 std::string AfeManager::processAfeCell(std::string &payload){
@@ -89,7 +121,7 @@ std::string AfeManager::processAfeCell(std::string &payload){
   
   uint16_t voltage = adbms_afe_get_cell_voltage(&s_afe, cell_index);
 
-  std::cout << "The cell Voltage has been processed to: " << voltage << std::endl;
+  m_afeDatagram.setCellVoltage(cell_index, voltage);
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_CELL);
 
@@ -100,6 +132,8 @@ std::string AfeManager::processAfeAux(std::string &payload){
   uint16_t aux_index = m_afeDatagram.getIndex(); 
   
   uint16_t voltage = adbms_afe_get_aux_voltage(&s_afe, aux_index);
+
+  m_afeDatagram.setAuxVoltage(aux_index, voltage);
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_AUX); 
 }
@@ -113,6 +147,7 @@ std::string AfeManager::processAfeDevCell(std::string &payload){
 
   for (uint16_t cell = start; cell < end; ++cell){
     uint16_t voltage = adbms_afe_get_cell_voltage(&s_afe, cell);
+    m_afeDatagram.setCellVoltage(cell, voltage);  
   }
   
   return m_afeDatagram.serialize(CommandCode::AFE_GET_DEV_CELL);
@@ -126,6 +161,7 @@ std::string AfeManager::processAfeDevAux(std::string &payload){
 
   for (uint16_t aux = start; aux < end; ++aux){
     uint16_t voltage = adbms_afe_get_aux_voltage(&s_afe, aux);
+    m_afeDatagram.setAuxVoltage(aux, voltage);
   }
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_DEV_AUX); 
@@ -138,6 +174,7 @@ std::string AfeManager::processAfePackCell(){
 
     for (uint16_t cell = start; cell < end; ++cell){
       uint16_t voltage = adbms_afe_get_cell_voltage(&s_afe, cell);
+      m_afeDatagram.setCellVoltage(cell, voltage);
     }
   }
 
@@ -150,8 +187,18 @@ std::string AfeManager::processAfePackAux(){
 
     for (uint16_t aux = start; aux < end; ++aux){
       uint16_t voltage = adbms_afe_get_aux_voltage(&s_afe, aux);
+      m_afeDatagram.setAuxVoltage(aux, voltage);
     }
   }
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_PACK_AUX); 
 } 
+
+std::string AfeManager::processCellDischarge(std::string &payload){
+  uint16_t cell_index = m_afeDatagram.getIndex(); 
+  bool is_discharge = adbms_afe_get_cell_discharge(&s_afe, cell_index);
+
+  m_afeDatagram.setCellDischarge(is_discharge, cell_index);
+
+  return m_afeDatagram.serialize(CommandCode::AFE_GET_DISCHARGE); 
+}

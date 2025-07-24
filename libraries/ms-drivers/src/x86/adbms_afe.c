@@ -67,12 +67,21 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config){
     return STATUS_CODE_INVALID_ARGS;
   }
 
-memset(afe, 0, sizeof(*afe));
+  memset(afe, 0, sizeof(*afe));
 
   /* Initialize memory of AFE structure: reset values and copy configuration settings */
   afe->settings = malloc(sizeof(*afe->settings));
   if (!afe->settings) {
-    LOG_DEBUG("Settings Not allocated properly"); return STATUS_CODE_INTERNAL_ERROR;}
+    LOG_DEBUG("Settings Not allocated properly"); 
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  afe->device_configs = calloc(1, sizeof(*afe->device_configs));
+  if (!afe->device_configs) {
+    LOG_DEBUG("Device Configs not allocated properly"); 
+    return STATUS_CODE_INTERNAL_ERROR; 
+  }
+
   memcpy(afe->settings, config, sizeof(AdbmsAfeSettings));
 
   /* Calculate offset for cell result array due to some cells being disabled */
@@ -150,40 +159,62 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge){
-    if (cell > ADBMS_AFE_MAX_CELLS) {
-        LOG_DEBUG("Cell number is out of bounds");
+StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe,
+                                           uint16_t       cell,
+                                           bool           discharge)
+{   
+    // 1) sanity‐check pointers
+    if (!afe || !afe->settings || !afe->device_configs) {
+        LOG_DEBUG("ADBMS AFE not initialized");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }
+
+    // 2) total cells = devices × cells_per_device
+    const uint16_t num_devices    = afe->settings->num_devices;
+    const uint16_t cells_per_dev  = ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+    const uint32_t total_cells    = (uint32_t)num_devices * cells_per_dev;
+
+    // 3) bounds check
+    if (cell >= total_cells) {
+        LOG_DEBUG("Cell %u out of bounds (0..%u)", cell, total_cells - 1);
         return STATUS_CODE_INVALID_ARGS;
     }
 
-    uint16_t cell_in_lookup = afe->discharge_cell_lookup[cell];
-    uint16_t device_index = cell_in_lookup / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
-    uint16_t device = afe->settings->num_devices - device_index - 1; /* devices are reverse indexed cz of daisy chain config */
-    uint16_t cell_indx_in_dev = cell_in_lookup - device_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE; 
+    // 4) map logical→physical cell (fallback to identity if lookup is NULL)
+    uint16_t phys_cell = afe->discharge_cell_lookup[cell];  
 
+    // 5) figure out which device (daisy‐chain reverse order)
+    uint16_t dev_idx = phys_cell / cells_per_dev;
+    uint16_t device  = num_devices - dev_idx - 1;
 
-    uint16_t device_cell_bit = cell_in_lookup % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+    // 6) bit position within that device
+    uint16_t bit_in_dev = phys_cell % cells_per_dev;
 
-    if (cell_indx_in_dev < 12){
-        AdbmsAfeConfigRegisterAData *config_reg_data = &afe->device_configs->devices[device].cfgA;
-    if (discharge) {
-        config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
-    } 
+    if (bit_in_dev < 12) {
+        // first 12 cells live in register A
+        AdbmsAfeConfigRegisterAData *cfgA =
+            &afe->device_configs->devices[device].cfgA;
+
+        if (discharge)
+            cfgA->discharge_bitset |=  (1u << bit_in_dev);
+        else
+            cfgA->discharge_bitset &= ~(1u << bit_in_dev);
+    }
     else {
-        config_reg_data->discharge_bitset &= ~(1 << (device_cell_bit));
+        // the rest go in register B (subtract 12 to get bit-index)
+        AdbmsAfeConfigRegisterBData *cfgB =
+            &afe->device_configs->devices[device].cfgB;
+        uint16_t b_bit = bit_in_dev - 12;
+
+        if (discharge)
+            cfgB->discharge_bitset |=  (1u << b_bit);
+        else
+            cfgB->discharge_bitset &= ~(1u << b_bit);
     }
-    }
-    else{
-        AdbmsAfeConfigRegisterBData *config_reg_data = &afe->device_configs->devices[device].cfgB;
-        if (discharge) {
-          config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
-        } 
-        else {
-          config_reg_data->discharge_bitset &= ~(1 << (device_cell_bit));
-        }
-    }
+
     return STATUS_CODE_OK;
 }
+
 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle){
     LOG_DEBUG("Discharge PWM duty cycle set to %u", duty_cycle);
@@ -228,7 +259,7 @@ StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, fl
     return STATUS_CODE_OK; 
 }
 
-StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage){
     size_t afe_count = afe->settings->num_devices; 
     
     if (afe_index >= afe_count){
@@ -246,7 +277,7 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, uint8_t afe
     return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, uint8_t afe_index, float voltage){
+StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage){
     size_t afe_count = afe->settings->num_devices; 
     
     if (afe_index >= afe_count){
@@ -285,4 +316,24 @@ uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t index) {
 
 uint16_t adbms_afe_get_aux_voltage(AdbmsAfeStorage *afe, uint16_t index) {
   return afe->aux_voltages[index];
+}
+
+bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {
+    bool discharge; 
+    uint16_t cell_in_lookup = afe->discharge_cell_lookup[cell];
+    uint16_t device_index = cell_in_lookup / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+
+    uint16_t device = afe->settings->num_devices - device_index - 1;
+    uint16_t bit_position = cell_in_lookup % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+
+    if (bit_position < 12) {
+        uint16_t bitset = afe->device_configs->devices[device].cfgA.discharge_bitset;
+        discharge = (bitset >> bit_position) & 0x1;
+    } 
+    else {
+        uint16_t bitset = afe->device_configs->devices[device].cfgB.discharge_bitset;
+        discharge = (bitset >> bit_position) & 0x1;
+    }
+    
+    return discharge;
 }

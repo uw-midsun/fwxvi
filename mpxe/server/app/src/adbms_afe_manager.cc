@@ -25,7 +25,7 @@
 #define MAX_AUX_PER_DEVICE 9
 
 void AfeManager::loadAfeInfo(std::string &projectName){
-  m_afeInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, std::string>>(projectName, AFE_KEY);
+  m_afeInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, AfeManager::AfeObjectInfo>>(projectName, AFE_KEY);
 }
 
 void AfeManager::saveAfeInfo(std::string &projectName){
@@ -42,7 +42,8 @@ void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &pay
   uint16_t index = m_afeDatagram.getIndex();
   uint16_t voltage = m_afeDatagram.getCellVoltage(index); 
 
-  m_afeInfo["cell" + std::to_string(index)] = std::to_string(voltage) + "mv";
+  std::string name = (index < 10) ? "0" + std::to_string(index) : std::to_string(index);  
+  m_afeInfo["main_pack"]["cell" + name] = std::to_string(voltage) + "mv";
   
   saveAfeInfo(projectName);
 }
@@ -54,7 +55,8 @@ void AfeManager::updateAfeAuxVoltage(std::string &projectName, std::string &payl
   uint16_t index = m_afeDatagram.getIndex();
   uint16_t voltage = m_afeDatagram.getAuxVoltage(index); 
   
-  m_afeInfo["aux" + std::to_string(index)] = std::to_string(voltage) + "mv";
+  std::string name = (index < 10) ? "0" + std::to_string(index) : std::to_string(index);  
+  m_afeInfo["thermistor_temperature"]["aux" + name] = std::to_string(voltage) + "mv";
   
   saveAfeInfo(projectName);
 }
@@ -71,7 +73,9 @@ void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &
   
   for (uint16_t cell = start; cell < end; ++cell){
     uint16_t voltage = m_afeDatagram.getCellVoltage(cell); 
-    m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv"; 
+
+    std::string name = (cell < 10) ? "0" + std::to_string(cell) : std::to_string(cell);  
+    m_afeInfo["main_pack"]["cell" + name] = std::to_string(voltage) + "mv"; 
   }
   
   saveAfeInfo(projectName); 
@@ -89,7 +93,9 @@ void AfeManager::updateAfeAuxDevVoltage(std::string &projectName, std::string &p
 
   for (uint16_t aux = start; aux < end; ++aux){
     uint16_t voltage = m_afeDatagram.getAuxVoltage(aux); 
-    m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv"; 
+
+    std::string name = (aux < 10) ? "0" + std::to_string(aux) : std::to_string(aux);  
+    m_afeInfo["thermistor_temperature"]["aux" + name] = std::to_string(voltage) + "mv"; 
   }
 
   saveAfeInfo(projectName); 
@@ -106,7 +112,9 @@ void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string 
 
     for (uint16_t cell = start; cell < end; ++cell){
       uint16_t voltage = m_afeDatagram.getCellVoltage(cell); 
-      m_afeInfo["cell" + std::to_string(cell)] = std::to_string(voltage) + "mv";
+
+      std::string name = (cell < 10) ? "0" + std::to_string(cell) : std::to_string(cell);  
+      m_afeInfo["main_pack"]["cell" + name] = std::to_string(voltage) + "mv";
     }
   }
   saveAfeInfo(projectName); 
@@ -123,9 +131,25 @@ void AfeManager::updateAfeAuxPackVoltage(std::string &projectName, std::string &
 
     for (uint16_t aux = start; aux < end; ++aux){
       uint16_t voltage = m_afeDatagram.getAuxVoltage(aux); 
-      m_afeInfo["aux" + std::to_string(aux)] = std::to_string(voltage) + "mv";
+
+      std::string name = (aux < 10) ? "0" + std::to_string(aux) : std::to_string(aux);  
+      m_afeInfo["thermistor_temperature"]["aux" + name] = std::to_string(voltage) + "mv";
     }
   }
+  saveAfeInfo(projectName); 
+}
+
+void AfeManager::updateAfeCellDischarge(std::string &projectName, std::string &payload){
+  loadAfeInfo(projectName); 
+
+  m_afeDatagram.deserialize(payload); 
+
+  uint8_t cell = m_afeDatagram.getIndex(); 
+  bool is_discharge = m_afeDatagram.getCellDischarge(cell); 
+
+  std::string name = (cell < 10) ? "0" + std::to_string(cell) : std::to_string(cell);
+  m_afeInfo["cell_discharge"]["cell" + name] = (is_discharge) ? "on" : "off"; 
+
   saveAfeInfo(projectName); 
 }
 
@@ -153,7 +177,7 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
       case CommandCode::AFE_SET_DEV_CELL: {
         std::size_t device_index = static_cast<std::size_t>(std::stoul(index)); 
         uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
-        
+
         m_afeDatagram.setDeviceIndex(device_index);
         m_afeDatagram.setDeviceCellVoltage(device_index, voltage); 
         break;
@@ -177,6 +201,24 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         m_afeDatagram.setPackCellVoltage(voltage); 
         break;
       }
+      case CommandCode::AFE_SET_DISCHARGE: {
+        bool is_discharge;
+        
+        if (data == "ON" || data == "on") {
+          is_discharge = static_cast<bool>(Datagram::ADBMS_AFE::DischargeState::DISCHARGE_ON);
+        } else if (data == "OFF" || data == "off") {
+          is_discharge = static_cast<bool>(Datagram::ADBMS_AFE::DischargeState::DISCHARGE_OFF);
+        } else {
+          throw std::runtime_error("Invalid Discharge state: " + data);
+          break;
+        }
+        
+        uint8_t idx = static_cast<uint8_t>(std::stoi(index));
+        m_afeDatagram.setIndex(idx);
+        m_afeDatagram.setCellDischarge(is_discharge, idx);
+
+        break;
+      }
 
       /* Getters */
       case CommandCode::AFE_GET_CELL: {
@@ -190,17 +232,22 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         break;
       }
       case CommandCode::AFE_GET_DEV_CELL: {
-        std::size_t idx = std::stoul(index);
+        std::size_t idx = static_cast<std::size_t>(std::stoul(index));
         m_afeDatagram.setDeviceIndex(idx); 
         break;
       }
       case CommandCode::AFE_GET_DEV_AUX: {
-        std::size_t idx = std::stoul(index);
+        std::size_t idx = static_cast<std::size_t>(std::stoul(index));
         m_afeDatagram.setDeviceIndex(idx);
         break;
       }
       case CommandCode::AFE_GET_PACK_CELL:
       case CommandCode::AFE_GET_PACK_AUX: {
+        break;
+      }
+      case CommandCode::AFE_GET_DISCHARGE: {
+        uint8_t idx = static_cast<uint8_t>(std::stoi(index));
+        m_afeDatagram.setIndex(idx);
         break;
       }
 

@@ -44,7 +44,7 @@ class Server {
   using connectCallback = std::function<void(Server *srv, ClientConnection *src)>;
 
   static const constexpr unsigned int MAX_SERVER_EPOLL_EVENTS = 64U; /**< Maximum permitted EPOLL events for tracking clients */
-  static const constexpr size_t MAX_CLIENT_READ_SIZE = 256U;         /**< Maximum permitted read size for all clients */
+  static const constexpr size_t MAX_CLIENT_READ_SIZE = 1024U;         /**< Maximum permitted read size for all clients */
 
   pthread_t m_listenNewClientsId; /**< Thread Id for listening to new clients */
   pthread_t m_epollClientsId;     /**< Thread Id for reading incoming client data */

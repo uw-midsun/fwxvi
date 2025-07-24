@@ -21,7 +21,7 @@
 GpioManager clientGpioManager;
 AfeManager clientAfeManager; 
 void applicationMessageCallback(Client *client, std::string &message) {
-  std::cout << "Caled once" << std::endl; 
+  std::string data = message; 
   auto [commandCode, payload] = decodeCommand(message);
 
   switch (commandCode) {
@@ -85,6 +85,10 @@ void applicationMessageCallback(Client *client, std::string &message) {
       clientAfeManager.setAfePackAux(payload); 
       break; 
     }
+    case CommandCode::AFE_SET_DISCHARGE: {
+      clientAfeManager.setCellDischarge(payload); 
+      break; 
+    }
     case CommandCode::AFE_GET_CELL: {
       client->sendMessage(clientAfeManager.processAfeCell(payload)); 
       break;
@@ -107,6 +111,10 @@ void applicationMessageCallback(Client *client, std::string &message) {
     }
     case CommandCode::AFE_GET_PACK_AUX: {
       client->sendMessage(clientAfeManager.processAfePackAux());
+      break;
+    }
+    case CommandCode::AFE_GET_DISCHARGE: {
+      client->sendMessage(clientAfeManager.processCellDischarge(payload));
       break;
     }
     default: {

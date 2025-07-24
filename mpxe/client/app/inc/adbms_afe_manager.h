@@ -93,6 +93,14 @@ class AfeManager {
   void setAfePackAux(std::string &payload);
 
   /**
+   * @brief   Sets AFE discharge cells for individual cells
+   * @details This function shall be called upon receiving a single-cell payload
+   *          This function is not responsible for handling update errors
+   * @param   payload Message data payload to be parsed
+   */
+  void setCellDischarge(std::string &payload);
+
+  /**
    * @brief   Process a get AFE cell voltage command given the data payload
    * @details This function shall be called upon receiving a cell-specific payload
    *          This function is not responsible for handling update errors
@@ -143,6 +151,16 @@ class AfeManager {
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
   std::string processAfePackAux();
+
+  /**
+   * @brief   Process a set or toggle cell discharge command from the server.
+   * @details This function interprets a payload containing discharge instructions for a specific cell
+   *          and updates the discharge bitset accordingly in the AFE configuration structure
+   *          This function is not responsible for handling update errors
+   * @param   payload Message data payload containing the target cell index and discharge state
+   * @return  Serialized response payload to be sent back to the server (may be empty on success)
+   */
+  std::string processCellDischarge(std::string &payload);
 
 };
 

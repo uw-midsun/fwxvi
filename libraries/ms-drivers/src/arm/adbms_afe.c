@@ -356,39 +356,33 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 }
 
 StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge) {
-  if (cell > ADBMS_AFE_MAX_CELLS) {
+  if (cell >= ADBMS_AFE_MAX_CELLS) {
     LOG_DEBUG("Cell number is out of bounds");
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  uint16_t cell_in_lookup = afe->discharge_cell_lookup[cell];
-  uint16_t device_index = cell_in_lookup / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
-  uint16_t device = afe->settings->num_devices - device_index - 1; /* devices are reverse indexed cz of daisy chain config */
-  uint16_t cell_indx_in_dev = cell_in_lookup - device_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE; 
+  uint16_t device_index = cell / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+  uint16_t cell_indx_in_dev = cell % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
-  uint16_t device_cell_bit = cell_in_lookup % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
-
-  if (cell_indx_in_dev < 12){
-    AdbmsAfeConfigRegisterAData *config_reg_data = &afe->device_configs->devices[device].cfgA;
+  if (cell_indx_in_dev < 12) {
+    AdbmsAfeConfigRegisterAData *config_reg_data = &afe->device_configs->devices[device_index].cfgA;
     if (discharge) {
-      config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
-    } 
-    else {
-      config_reg_data->discharge_bitset &= ~(1 << (device_cell_bit));
+      config_reg_data->discharge_bitset |= (1 << cell_indx_in_dev);
+    } else {
+      config_reg_data->discharge_bitset &= ~(1 << cell_indx_in_dev);
     }
-  }
-  else{
-    AdbmsAfeConfigRegisterBData *config_reg_data = &afe->device_configs->devices[device].cfgB;
+  } else {
+    AdbmsAfeConfigRegisterBData *config_reg_data = &afe->device_configs->devices[device_index].cfgB;
     if (discharge) {
-      config_reg_data->discharge_bitset |= (1 << (device_cell_bit));
-    } 
-    else {
-      config_reg_data->discharge_bitset &= ~(1 << (device_cell_bit));
+      config_reg_data->discharge_bitset |= (1 << cell_indx_in_dev);
+    } else {
+      config_reg_data->discharge_bitset &= ~(1 << cell_indx_in_dev);
     }
   }
 
   return STATUS_CODE_OK;
 }
+
 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle) {
   AdbmsAfeSettings *settings = afe->settings;
