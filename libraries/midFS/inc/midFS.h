@@ -12,6 +12,7 @@
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
 #define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
+// #define FS_HAL_ADDRESS 0x0803C000
 
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
