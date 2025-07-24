@@ -3,8 +3,7 @@
 #define SUPERBLOCK_OFFSET 0
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
 
-// uint8_t fs_memory[FS_TOTAL_SIZE];
-uint8_t fs_memory[FS_TOTAL_SIZE];
+uint8_t fs_memory[FS_TOTAL_SIZE] = {0};
 
 SuperBlock *superBlock=NULL;
 BlockGroup *blockGroups=NULL;
@@ -12,6 +11,7 @@ BlockGroup *blockGroups=NULL;
 StatusCode fs_init() {
     //setup superBlock and the first block group in memory
 
+    memset(fs_memory, 0, sizeof(fs_memory));
     fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
 
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
@@ -37,6 +37,7 @@ StatusCode fs_init() {
     superBlock->rootFolderMetadata.startBlockIndex = 0;
     superBlock->rootFolderMetadata.size = 0;
     
+    fs_commit();
     return STATUS_CODE_OK;
 }
 
@@ -516,7 +517,7 @@ StatusCode fs_write_file(const char * path, uint8_t *content, uint32_t contentSi
 }
 
 StatusCode fs_create_block_group(uint32_t *index){
-    for(uint32_t i = 0; i < FS_TOTAL_BLOCK_GROUPS; i++){
+    for(uint32_t i = 0; i < NUM_BLOCK_GROUPS; i++){
         if(
             blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP &&
             memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0 //block group is emptys
@@ -533,13 +534,13 @@ StatusCode fs_create_block_group(uint32_t *index){
 }
 
 StatusCode fs_read_block_group(uint32_t blockIndex, BlockGroup *dest){
-    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    if(blockIndex >= NUM_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
     memcpy(dest, &blockGroups[blockIndex], sizeof(BlockGroup));
     return STATUS_CODE_OK;
 }
 
 StatusCode fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
-    if(blockIndex >= FS_TOTAL_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    if(blockIndex >= NUM_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
     memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
     return STATUS_CODE_OK;
 }

@@ -40,6 +40,7 @@ StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest){
 }
 
 void bootstrap_main(void){
+    fs_init();
     uint32_t computed_crc = 0;
     crc32_init();
     compute_crc32((uint8_t*)BOOTLOADER_ADDR, BOOTLOADER_SIZE, &computed_crc);

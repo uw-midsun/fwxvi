@@ -5,11 +5,9 @@
 #define NUM_BLOCK_GROUPS 4
 // #define FS_TOTAL_SIZE (BLOCKS_PER_GROUP*BLOCK_SIZE*NUM_BLOCK_GROUPS) + sizeof(SuperBlock)
 #define FS_TOTAL_SIZE (sizeof(BlockGroup) * NUM_BLOCK_GROUPS) + sizeof(SuperBlock)
-#define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
-#define FOLDER_CAPACITY 512
+#define FILE_ENTRY_SIZE sizeof(FileEntry)
 #define MAX_FILENAME_LENGTH 32
 #define MAX_PATH_LENGTH 128
-#define FS_TOTAL_BLOCK_GROUPS ((FS_TOTAL_SIZE - sizeof(SuperBlock)) / sizeof(BlockGroup))
 
 typedef enum{
     FILETYPE_FILE = 0,

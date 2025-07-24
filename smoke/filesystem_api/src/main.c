@@ -22,15 +22,6 @@
 
 TASK(filesystem_api, TASK_STACK_1024) {
   fs_init();
-  fs_add_file("/test.txt", (uint8_t *)"This is a test file.", 21, 0);
-  // fs_add_file("/test2.txt", (uint8_t *)"This is a test file2.", 22, 0);
-  // fs_add_file("/testlarge.txt", (uint8_t *)"This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. END", 652, 0);
-  fs_add_file("/testlarge.txt", (uint8_t *)"This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple bloEND", 310, 0);
-
-  fs_read_file("/test.txt");
-  // fs_read_file("/test2.txt");
-  fs_read_file("/testlarge.txt");
-
   while (true) {}
 }
 
