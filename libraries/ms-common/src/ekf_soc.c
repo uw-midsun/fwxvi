@@ -1,6 +1,14 @@
 #include "state_of_charge.h"
 #include <math.h>
 #define H_epsilon 0.1f
+/************************************************************************************************
+ * @file   ekf_soc.c
+ *
+ * @brief  Source code for the ekf_soc library
+ *
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
 BmsStorage *bms
 

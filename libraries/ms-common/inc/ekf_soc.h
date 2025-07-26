@@ -2,6 +2,25 @@
 #include <math.h>
 #include <stdint.h>
 #include "status.h"
+/************************************************************************************************
+ * @file   semaphore.c
+ *
+ * @brief  Source code for the semaphore library
+ *
+ * @date   2024-10-30
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+
+ 
+/* Standard library Headers */
+#include <stdio.h>
+#include <math.h>
+#include <
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "semaphore.h"
 
 
 BmsStorage *bms;
