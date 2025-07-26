@@ -8,10 +8,12 @@ uint8_t fs_memory[FS_TOTAL_SIZE] = {0};
 SuperBlock *superBlock=NULL;
 BlockGroup *blockGroups=NULL;
 
+
 StatusCode fs_init() {
+    printf("File system init\n\r");
     //setup superBlock and the first block group in memory
 
-    memset(fs_memory, 0, sizeof(fs_memory));
+    // memset(fs_memory, 0, sizeof(fs_memory));
     fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
 
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
@@ -19,6 +21,8 @@ StatusCode fs_init() {
 
     //super block declaration
     superBlock->magic = 0xC1D1921D;
+    printf("Magic number from init: %#lx\n\r", superBlock->magic);
+
     superBlock->blockSize = BLOCK_SIZE;
     superBlock->blocksPerGroup = BLOCKS_PER_GROUP;
     superBlock->nextBlockGroup = 0;
@@ -36,13 +40,38 @@ StatusCode fs_init() {
     superBlock->rootFolderMetadata.valid = 1;
     superBlock->rootFolderMetadata.startBlockIndex = 0;
     superBlock->rootFolderMetadata.size = 0;
-    
-    fs_commit();
+    printf("End of file system init\n\r");
+    return STATUS_CODE_OK;
+}
+
+StatusCode fs_pull(){
+    fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+
+    superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
+    blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
+
+    if(superBlock->magic != 0xC1D1921D){
+        printf("FS magic number does not match\n\r");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }else{
+        printf("FS magic number matches\n\r");
+    }
+    printf("Magic number from pull: %#lx\n\r", superBlock->magic);
+    printf("Data from pull: %c\n\r", blockGroups->dataBlocks[0][0]);
+
     return STATUS_CODE_OK;
 }
 
 StatusCode fs_commit(){
+    printf("Magic number from commit pre-wipe: %#lx\n\r", superBlock->magic);
+    printf("Data: %c\n\r", blockGroups->dataBlocks[0][0]);
     fs_hal_write(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+    
+    
+    memset(fs_memory, 0, sizeof(fs_memory));
+    printf("Data POST WIPE: %c\n\r", blockGroups->dataBlocks[0][0]);
+    printf("Magic number from commit post-wipe: %#lx\n\r", superBlock->magic);
+    
     return STATUS_CODE_OK;
 }
 
