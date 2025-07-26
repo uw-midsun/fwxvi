@@ -5,7 +5,8 @@
 #define BOOTLOADER_ADDR     0x08008000
 #define BOOTLOADER_SIZE     0x00007000 //64 KB
 #define APPLICATION_ADDR    0x08018000
-#define CRC_FILE_PATH       "bootloader.crc"
+#define CRC_FILE_PATH       "crc.txt"
+#define CRC_SIZE            8
 #define CRC32_POLY          0xEDB88320UL //Reversed 0x04C11DB7
 
 extern uint32_t crc32_table[256];
