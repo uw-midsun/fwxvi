@@ -22,6 +22,20 @@
 
 TASK(filesystem_api, TASK_STACK_1024) {
   fs_init();
+  LOG_DEBUG("File system init\n");
+  fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
+  fs_list("/");
+  fs_commit();
+
+  fs_pull();
+  fs_list("/");
+
+  uint8_t crc_poly[8] = {0};
+
+  fs_read_file("/crc.txt", crc_poly);
+
+  LOG_DEBUG("%s\n", crc_poly);
+
   while (true) {}
 }
 

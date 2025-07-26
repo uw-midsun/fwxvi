@@ -11,8 +11,8 @@
 #define FS_NULL_BLOCK_GROUP 0xFFFFFFFF
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
-#define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
-// #define FS_HAL_ADDRESS 0x0803C000
+// #define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
+#define FS_HAL_ADDRESS 0x0803C000
 
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
@@ -24,9 +24,16 @@ extern BlockGroup *blockGroups;
 
 /**
  * Initializes the file system, must be called
+ * Wipes the memory
  * 
  */
 StatusCode fs_init();
+
+/**
+ * Copies FS memory from HAL
+ * 
+ */
+StatusCode fs_pull();
 
 /**
  * Writes local copy of fs_memory back to actual one using HAL_write
