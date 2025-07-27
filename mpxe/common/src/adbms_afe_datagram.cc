@@ -115,7 +115,7 @@ void ADBMS_AFE::setPackAuxVoltage(uint16_t voltage) {
 }
 
 void ADBMS_AFE::setCellDischarge(bool is_discharge, uint8_t cell_index){
-    if (cell_index < AFE_MAX_THERMISTORS){
+    if (cell_index >= AFE_MAX_THERMISTORS){
         std::cout << "Invalid Index" << std::endl; 
         return;
     }
