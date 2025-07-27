@@ -50,19 +50,21 @@ StatusCode matrix_mult(double A[][STATE_SIZE], double B[][STATE_SIZE], double re
             }
         }
     }
-    return STATUS_CODE_OK
+    return STATUS_CODE_OK;
 }
 
 /**
 *@brief Takes in matrix and outputs its tranpose
 */
 StatusCode matrix_transpose(double matrix[][STATE_SIZE], double transpose[][STATE_SIZE]){
-    if (!matrix||!transponse) return STATUS_CODE_INVALID_ARGS
+    if (!matrix||!transpose) return STATUS_CODE_INVALID_ARGS;
+    
     for (int i=0; i<STATE_SIZE; i++){
         for (int j=0; j<STATE_SIZE; j++){
             transpose[i][j]=matrix[j][i];
         }
     }
+
     return STATUS_CODE_OK
 }
 
@@ -98,11 +100,11 @@ StatusCode matrix_transpose(double matrix[][STATE_SIZE], double transpose[][STAT
             temp[i][j]/=pivot;
         }
 
-        for (k=0; k<MEASUREMENT_SIZE; j++){
+        for (k=0; k<MEASUREMENT_SIZE; k++){
             if (k==i) continue;
             double factor=temp[k][i];
             for (j=0; j<2*MEASUREMENT_SIZE; j++){
-                temp[k][j]-=factor*temp;
+                temp[k][j]-=factor*temp[i][j];
             }
         }
     }
@@ -172,7 +174,7 @@ StatusCode update_state(void) {
     // y~ = z - H * x
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
         y[i]=U[i];
-        for (int j=0; i<STATE_SIZE; j++){
+        for (int j=0; j<STATE_SIZE; j++){
             y[i] -= H[i][j] * x[j];
         }
     }
