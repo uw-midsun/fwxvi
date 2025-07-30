@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+<<<<<<< HEAD
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -19,6 +20,16 @@
 
 /* Intra-component Headers */
 #include "current_acs37800_defs.h"
+=======
+
+/* Inter-component Headers */
+#include <stdint.h>
+#include "i2c.h"
+#include "gpio.h"
+#include "current_acs37800_defs.h"
+
+/* Intra-component Headers */
+>>>>>>> afbcbb9 (Add header files for the current sensor)
 
 /**
  * @defgroup ACS37800 Current Sensing
