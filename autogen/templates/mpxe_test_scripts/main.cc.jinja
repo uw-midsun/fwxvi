@@ -1,0 +1,49 @@
+/************************************************************************************************
+ * @file   {{project_name}}_simulation.c
+ *
+ * @brief  MPXE test scripts for {{ project_name }}
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <chrono>
+#include <string>
+
+/* Inter-component Headers */
+#include "client_connection.h"
+#include "json_manager.h"
+#include "ntp_server.h"
+#include "server.h"
+
+/* Intra-component Headers */
+#include "app.h"
+#include "app_callback.h"
+#include "app_terminal.h"
+#include "can_listener.h"
+#include "can_scheduler.h"
+#include "gpio_manager.h"
+#include "afe_manager.h"
+
+JSONManager serverJSONManager;
+GpioManager serverGpioManager;
+CanListener serverCanListener;
+CanScheduler serverCanScheduler;
+
+int main(int argc, char **argv) {
+  std::cout << "Running Server" << std::endl;
+  Server Server;
+
+  Server.listenClients(8080, applicationMessageCallback, applicationConnectCallback);
+
+#if USE_NETWORK_TIME_PROTOCOL == 1U
+  NTPServer ntp_server;
+  ntp_server.startListening("127.0.0.1", "time.google.com");
+#endif
+
+ 
+}

@@ -28,7 +28,8 @@ def main():
         from .test_autogen import get_data
     elif args.template_name in ["new_project", "new_py"]:
         from .new_project_autogen import get_data
-
+    elif args.template_name in ["mpxe_test_scripts"]:
+        from .mpxe_test_autogen import get_data
     data = get_data(args)
 
     template_dir = Path("autogen/templates", args.template_name)

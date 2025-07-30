@@ -1,0 +1,24 @@
+can_defaults:
+  set_pack_voltage: 3700
+  set_pack_aux : 1500
+  set_discharge : ON
+
+tasks:
+  - name: battery_monitor
+    period_ms: 5000
+    commands:
+      - GPIO GET_ALL_STATES
+      - AFE GET_PACK_VOLTAGE 
+      - LOG "Battery voltage updated"
+      
+  - name: thermistor_monitor
+    period_ms: 10000
+    commands: 
+      - GPIO GET_ALL_STATES
+      - AFE GET_PACK_AUX 
+      - LOG "Thermistor voltage updated"
+  
+  - name: discharge_monitor 
+    period_ms: 2000
+    commands:
+      - AFE GET_DISCHARGE ALL
