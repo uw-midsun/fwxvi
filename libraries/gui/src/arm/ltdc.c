@@ -1,30 +1,28 @@
-#pragma once
-
 /************************************************************************************************
- * @file   ltdc.h
+ * @file   ltdc.c
  *
- * @brief  Header file for the platform-agnostic LTDC API
+ * @brief  Source file for the LTDC driver on arm (STM32)
  *
  * @date   2025-06-25
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdint.h>
 
 /* Inter-component Headers */
+#include "ltdc.h"
 
 /* Intra-component Headers */
+#define LTDC
+#include <stm32l4xx_hal_ltdc.h>
 
-/**
- * @defgroup GUI
- * @brief    GUI Firmware
- * @{
- */
+typedef struct {
+    uint16_t width;
+    uint16_t height;
+    uint8_t *framebuffer;
+    uint32_t *clut;
 
-void ltdc_init_ltdc(void);
-void ltdc_set_framebuffer(uint8_t *buffer);
-void ltdc_load_clut(void);
-void ltdc_draw(void);
-
-/** @} */
+    LTDC_ColorTypeDef color;
+    LTDC_InitTypeDef init;
+    LTDC_LayerCfgTypeDef layer_cfg;   
+} LtdcConfig;
