@@ -15,19 +15,35 @@
 /* Intra-component Headers */
 #include <SDL2/SDL.h>
 
-#define SCREEN_WIDTH    480
-#define SCREEN_HEIGHT   272
+typedef struct {
+    uint16_t width;
+    uint16_t height;
+    uint8_t *framebuffer;
+    uint32_t *clut;
+} LtdcConfig;
+
+static LtdcConfig ltdc_config = {
+    .width = 480,
+    .height = 272, 
+    .framebuffer = NULL,
+    .clut = NULL
+};
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
-static uint8_t *framebuffer = NULL;
-static uint32_t *clut = NULL;
-
-void ltdc_init_ltdc(void) {
-    return 0;
+void ltdc_init(void) {
+    
 }
  
-void ltdc_set_framebuffer(uint8_t *buffer);
-void ltdc_load_clut(void);
-void ltdc_draw(void);
+void ltdc_set_framebuffer(uint8_t *buffer) {
+    ltdc_config.framebuffer = buffer;
+}
+
+void ltdc_load_clut(uint32_t *table) {
+    ltdc_config.clut = table;
+}
+
+void ltdc_draw(void) {
+
+}

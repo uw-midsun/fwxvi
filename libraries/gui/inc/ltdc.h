@@ -22,9 +22,9 @@
  * @{
  */
 
-void ltdc_init_ltdc(void);
+void ltdc_init(void);
 void ltdc_set_framebuffer(uint8_t *buffer);
-void ltdc_load_clut(void);
+void ltdc_load_clut(uint32_t *table);
 void ltdc_draw(void);
 
 /** @} */
