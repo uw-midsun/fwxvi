@@ -56,14 +56,22 @@ StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_am
  * @param out_voltage_mV - voltage in milivolts
  * @return STATUS_CODE_OK on success
  */
+<<<<<<< HEAD
 StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV);
+=======
+StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_volts);
+>>>>>>> c0db805 (add all the register memory maps, finish header files)
 
 /** @brief Gets the instantaneous power in milliwatts
   * @param storage - pointer to already initialized ACS37800 struct
   * @param out_power - power in milliwatts
   * @return STATUS_CODE_OK on success
  */
+<<<<<<< HEAD
 StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power_mW);
+=======
+StatusCode acs37800_get_power(ACS37800_Storage *storage, float *out_power_watts);
+>>>>>>> c0db805 (add all the register memory maps, finish header files)
 
 /** @brief Gets the 16 bit value from the ACS37800 volatile register
  * @param storage - pointer to already initialized ACS37800 struct
