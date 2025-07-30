@@ -22,10 +22,20 @@
  */
 
 
-// reg map is on pg.38
+// register map is on pg.38
 // https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx
 typedef enum {
- 
+    ACS37800_REG_VRMS_IRMS          = 0x20, // Voltage and Current RMS
+    ACS37800_REG_VCODES_ICODES      = 0x2A, // Voltage and Current Instantaneous 
+    ACS37800_REG_PINSTANT           = 0x2C, // Power Instantaneous
+    ACS37800_REG_PACTIVE_PIMAGE     = 0x21, // Active & Reactive Power Output
+    ACS37800_REG_PAPPARENT_PFACTOR  = 0x22, // Apparent power & Power factor output
+    ACS37800_REG_NUMPTSOUT          = 0x25, // number of points for RMS calculation
+    ACS37800_REG_VI_RMSAVGONESEC    = 0x26, // Voltage & Current average RMS (seconds)
+    ACS37800_REG_VI_RMSAVGONEMIN    = 0x27, // Voltage & Current average RMS (minutes)
+    ACS37800_PACTAVGONESEC          = 0x28, // Power average RMS (seconds)
+    ACS37800_REG_PACTAVGONEMIN      = 0x29, // Power average RMS (minutes)
+    ACS37800_REG_STATUS             = 0x2D  // ZEROCROSSOUT, OVERVOLTAGE, UNDERVOLTAGE, FAULTOUT, FAULTLATCHED
 } ACS37800_Registers;
 
 /** @} */
