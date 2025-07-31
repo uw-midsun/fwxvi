@@ -14,11 +14,16 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "fota_error.h"
 
 /**
  * @defgroup FOTA
  * @brief    Firmware Over the Air (FOTA) Update system
  * @{
  */
+
+FotaError fota_init();
+
+void fota_process(void);
 
 /** @} */

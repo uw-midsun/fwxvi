@@ -1,4 +1,26 @@
 #pragma once
+
+/************************************************************************************************
+ * @file    max17261_fuel_gauge_defs.h
+ *
+ * @brief   Max17261 Fuel Gauge Defs
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup max17261_fuel_gauge_defs
+ * @brief    max17261_fuel_gauge_defs Firmware
+ * @{
+ */
+
 // reg map is on P.27:
 // https://www.analog.com/media/en/technical-documentation/user-guides/max1726x-modelgauge-m5-ez-user-guide.pdf
 typedef enum {
@@ -102,3 +124,5 @@ typedef enum {
   MAX17261_AT_AV_SOC,
   MAX17261_AT_AV_CAP,
 } Max17261Registers;
+
+/** @} */

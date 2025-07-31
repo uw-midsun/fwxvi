@@ -16,7 +16,6 @@
 /* Intra-component Headers */
 #include "can_hw.h"
 
-
 StatusCode can_hw_init(const CanQueue* rx_queue, const CanSettings *settings) {
     return STATUS_CODE_UNIMPLEMENTED;
 }

@@ -38,7 +38,7 @@
 class JSONManager {
  private:
   static constexpr const char *DEFAULT_JSON_PATH = "./mpxe/Simulation_JSON/"; /**< Default JSON folder path */
-  std::filesystem::path m_projectBasePath;                               /**<  Temporary variable to store project file path */
+  std::filesystem::path m_projectBasePath;                                    /**<  Temporary variable to store project file path */
 
   /**
    * @brief   Creates a default project JSON
@@ -161,7 +161,6 @@ class JSONManager {
       if (projectJSON.contains(key)) {
         return projectJSON[key].get<T>();
       }
-
     } catch (const std::exception &e) {
       std::cerr << "Error getting project value: " << e.what() << std::endl;
     }

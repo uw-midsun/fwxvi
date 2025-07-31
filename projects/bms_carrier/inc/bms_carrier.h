@@ -48,9 +48,9 @@ typedef struct {
  * @brief   Battery management system storage
  */
 typedef struct {
-  int32_t pack_current;  /**< Pack current reading */
-  uint32_t pack_voltage; /**< Pack voltage reading */
-  uint16_t temperature;  /**< Pack temperature reading */
+  int32_t pack_current;     /**< Pack current reading */
+  uint32_t pack_voltage;    /**< Pack voltage reading */
+  uint16_t max_temperature; /**< Pack max temperature reading */
 
   BmsConfig bms_config;                 /**< BMS configuration settings */
   LtcAfeStorage ltc_afe_storage;        /**< LTC6811 AFE Storage */

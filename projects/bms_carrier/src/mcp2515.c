@@ -1,11 +1,23 @@
-#include "mcp2515.h"
+/************************************************************************************************
+ * @file    mcp2515.c
+ *
+ * @brief   Mcp2515
+ *
+ * @date    2025-04-29
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <stddef.h>
 #include <string.h>
 
+/* Inter-component Headers */
 #include "delay.h"
 #include "gpio_interrupts.h"
 #include "log.h"
+#include "mcp2515.h"
+
+/* Intra-component Headers */
 
 // Storage
 static Mcp2515Storage *s_storage;
@@ -23,7 +35,7 @@ TASK(MCP2515_RX, TASK_STACK_256) {
   }
 }
 
-StatusCode mcp2515_receive(const CanMessage *msg) {
+StatusCode mcp2515_receive(CanMessage *msg) {
   StatusCode ret = can_queue_pop(&s_storage->rx_queue, msg);
 
   if (ret == STATUS_CODE_OK) {
@@ -67,7 +79,7 @@ StatusCode run_mcp2515_tx_cycle() {
   return STATUS_CODE_OK;
 }
 
-StatusCode mcp2515_transmit(const CanMessage *msg) {
+StatusCode mcp2515_transmit(CanMessage *msg) {
   if (s_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }

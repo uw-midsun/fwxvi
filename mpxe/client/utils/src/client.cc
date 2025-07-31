@@ -39,20 +39,40 @@ void Client::receiverProcedure() {
   while (m_isConnected) {
     std::string message(MAX_BUFFER_SIZE, '\0');
 
-    size_t bytesRead = read(m_clientSocket, &message[0], sizeof(message));
-    if (bytesRead <= 0) {
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    FD_SET(m_clientSocket, &readSet);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 100000;
+
+    int selectResult = select(m_clientSocket + 1, &readSet, NULL, NULL, &timeout);
+
+    if (selectResult == -1) {
+      if (errno == EINTR) {
+        continue;
+      }
+
       disconnectServer();
-      throw std::runtime_error("Connection lost");
+      throw std::runtime_error("Select error: " + std::string(strerror(errno)));
+    } else if (selectResult > 0 && FD_ISSET(m_clientSocket, &readSet)) {
+      size_t bytesRead = read(m_clientSocket, &message[0], sizeof(message));
+
+      if (bytesRead <= 0) {
+        disconnectServer();
+        throw std::runtime_error("Connection lost");
+      }
+
+      message[bytesRead] = '\0';
+
+      pthread_mutex_lock(&m_mutex);
+      m_messageQueue.push(message);
+      pthread_mutex_unlock(&m_mutex);
+
+      /* Signal that there is new data */
+      sem_post(&m_messageSemaphore);
     }
-
-    message[bytesRead] = '\0';
-
-    pthread_mutex_lock(&m_mutex);
-    m_messageQueue.push(message);
-    pthread_mutex_unlock(&m_mutex);
-
-    /* Signal that there is new data */
-    sem_post(&m_messageSemaphore);
   }
 }
 
@@ -96,7 +116,6 @@ void Client::connectServer() {
 
     if (connect(m_clientSocket, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
       close(m_clientSocket);
-      std::cout << "Port number " << m_port << "Address: " << m_host << std::endl;
       throw std::runtime_error("Error connecting socket");
     }
 
@@ -115,7 +134,6 @@ void Client::connectServer() {
       close(m_clientSocket);
       throw std::runtime_error("Failed to create process messages thread");
     }
-
   } catch (std::exception &e) {
     std::cerr << "Error connecting to the server: " << e.what() << std::endl;
   }
@@ -134,6 +152,14 @@ void Client::sendMessage(const std::string &message) {
 
 bool Client::isConnected() const {
   return m_isConnected;
+}
+
+void Client::setClientName(const std::string &name) {
+  this->m_clientName = name;
+}
+
+std::string Client::getClientName() const {
+  return this->m_clientName;
 }
 
 Client::Client(const std::string &host, int port, messageCallback messageCallback, connectCallback connectCallback) {

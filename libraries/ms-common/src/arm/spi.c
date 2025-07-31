@@ -12,7 +12,7 @@
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "semphr.h"
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_spi.h"

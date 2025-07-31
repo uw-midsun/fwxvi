@@ -50,7 +50,7 @@ FotaError network_buffer_write(NetworkBuffer *network_buffer, uint8_t *data) {
   }
 
   if (network_buffer_full(network_buffer)) {
-    return FOTA_RESOURCE_EXHAUSTED;
+    return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }
 
   network_buffer->data[network_buffer->write_index] = *data;
@@ -67,7 +67,7 @@ FotaError network_buffer_read(NetworkBuffer *network_buffer, uint8_t *data) {
   }
 
   if (network_buffer_empty(network_buffer)) {
-    return FOTA_RESOURCE_EXHAUSTED;
+    return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }
 
   *data = network_buffer->data[network_buffer->read_index];

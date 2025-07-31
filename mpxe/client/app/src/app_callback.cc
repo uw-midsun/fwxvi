@@ -20,9 +20,6 @@
 
 GpioManager clientGpioManager;
 
-std::string projectName = DEFAULT_PROJECT_NAME;
-std::string hardwareModel = DEFAULT_HARDWARE_MODEL;
-
 void applicationMessageCallback(Client *client, std::string &message) {
   auto [commandCode, payload] = decodeCommand(message);
 
@@ -71,6 +68,13 @@ void applicationMessageCallback(Client *client, std::string &message) {
 
 void applicationConnectCallback(Client *client) {
   std::cout << "Connected :-)" << std::endl;
+
+  std::string projectName = DEFAULT_PROJECT_NAME;
+  std::string hardwareModel = DEFAULT_HARDWARE_MODEL;
+
+  if (!client->getClientName().empty()) {
+    projectName = client->getClientName();
+  }
 
   Datagram::Metadata::Payload initialData = { .projectName = projectName, .projectStatus = "RUNNING", .hardwareModel = hardwareModel };
   Datagram::Metadata projectMetadata(initialData);

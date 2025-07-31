@@ -31,7 +31,7 @@
 #define DEFAULT_PROJECT_NAME "Default Project"
 
 /** @brief  Default hardware model to be used for the Metadata */
-#define DEFAULT_HARDWARE_MODEL "MS16.0.0"
+#define DEFAULT_HARDWARE_MODEL "STM32L433CCU6"
 
 extern GpioManager clientGpioManager; /**< Global GPIO Manager */
 

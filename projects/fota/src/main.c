@@ -8,21 +8,24 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 
 /* Inter-component Headers */
-#include "gpio.h"
-#include "log.h"
-#include "master_tasks.h"
-#include "mcu.h"
-#include "tasks.h"
 
 /* Intra-component Headers */
 #include "fota.h"
+#include "fota_jump_handler.h"
+#include "fota_timeout.h"
 
 int main() {
-  mcu_init();
+  fota_init();
 
   while (true) {
+    if (fota_is_timed_out()) {
+      fota_jump(FOTA_JUMP_APPLICATION);
+    }
+
+    fota_process();
   }
 
   return 0;

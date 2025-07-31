@@ -354,7 +354,6 @@ std::string GpioManager::createGpioCommand(CommandCode commandCode, std::string 
     }
 
     return m_gpioDatagram.serialize(commandCode);
-
   } catch (std::exception &e) {
     std::cerr << "Gpio Manager error: " << e.what() << std::endl;
   }
