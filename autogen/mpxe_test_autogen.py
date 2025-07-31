@@ -191,17 +191,13 @@ def check_yaml_file(data):
             
 def get_data(args):
     """
-    @brief Extracts and processes *all* MPXE test YAMLs from mpxe/test_scripts/
+    @brief Extracts and processes MPXE test YAMLs 
     @param args Arguments object (only uses args.output for project_name)
-    @return dict with:
-        configs: [
-          {
-            name:  "test1",
-            can_defaults: { … },
-            tasks: [ … ]
-          }, …
-        ],
-        project_name, current_date
+    @return Dictionary where:
+        - can_defaults: Default can commands that will run at the beginning of main source file
+        - tasks: The tasks to execute (Contains name, period, commands, and command_types used)
+        - project_name: Name of project
+        - current_date: Current date
     """
     base = Path("mpxe/test_scripts")
     yamls = sorted(base.glob("*.yaml"))
@@ -232,7 +228,6 @@ def get_data(args):
     project_name = Path(args.output).parent.stem
     current_date = datetime.now().strftime("%Y-%m-%d")
     return {
-        "name":         path.stem,
         "can_defaults": can_defaults,
         "tasks":        tasks,
         "project_name": project_name,
