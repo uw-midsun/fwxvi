@@ -1,14 +1,17 @@
 /************************************************************************************************
  * @file   main.cc
  *
- * @brief  Main source file
+ * @brief  Main source file for app
  *
- * @date   2025-01-04
- * @author Aryan Kashem
+ * @date   2025-07-31
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 #include <iostream>
+#include <thread>
+#include <vector>
+#include <chrono>
 #include <string>
 
 /* Inter-component Headers */
@@ -26,9 +29,9 @@
 #include "gpio_manager.h"
 
 JSONManager serverJSONManager;
-GpioManager serverGpioManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;
+GpioManager serverGpioManager;
 
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
@@ -38,11 +41,61 @@ int main(int argc, char **argv) {
   Server.listenClients(8080, applicationMessageCallback, applicationConnectCallback);
 
 #if USE_NETWORK_TIME_PROTOCOL == 1U
-  ntp_server.startListening("127.0.0.1", "time.google.com");
   NTPServer ntp_server;
+  ntp_server.startListening("127.0.0.1", "time.google.com");
 #endif
 
-  applicationTerminal.run();
+  serverCanListener.listenCanBus();
+  serverCanScheduler.startCanScheduler();
 
+  /* ------ can_defaults ------ */
+  serverCanScheduler.update_battery_vt_voltage(15000);
+  serverCanScheduler.update_battery_vt_current(45000);
+  serverCanScheduler.update_battery_vt_batt_perc(79);
+
+  
+  /* ------ tasks ------ */ 
+  std::vector<std::thread> task_threads;
+  task_threads.emplace_back([&Server]() {
+    while(true){
+      std::string message;
+      std::string pin;
+      std::string data;
+       
+      pin =  "";
+      data = "HIGH";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, data, pin);
+      Server.broadcastMessage(message);
+       
+      pin =  "";
+      data = "A12";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, data, pin);
+      Server.broadcastMessage(message);
+      
+      std::cout << "Battery voltage updated" << std::endl;   
+      std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    }
+  });
+  task_threads.emplace_back([&Server]() {
+    while(true){
+      std::string message;
+      std::string pin;
+      std::string data;
+       
+      pin =  "";
+      data = " ";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, data, pin);
+      Server.broadcastMessage(message);
+      
+      std::cout << "Thermistor voltage updated" << std::endl;   
+      std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    }
+  });
+  
+  for (std::thread &t : task_threads){
+      t.detach();
+  }
+  
+  applicationTerminal.run();
   return 0;
 }

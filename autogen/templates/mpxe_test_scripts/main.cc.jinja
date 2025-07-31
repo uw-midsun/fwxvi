@@ -1,7 +1,7 @@
 /************************************************************************************************
- * @file   {{project_name}}_simulation.c
+ * @file   main.cc
  *
- * @brief  MPXE test scripts for {{ project_name }}
+ * @brief  Main source file for {{ project_name }}
  *
  * @date   {{ current_date }}
  * @author Midnight Sun Team #24 - MSXVI
@@ -26,17 +26,29 @@
 #include "app_terminal.h"
 #include "can_listener.h"
 #include "can_scheduler.h"
-#include "gpio_manager.h"
-#include "afe_manager.h"
+{%- set ns = namespace(all_types=[]) %}
+{%- for task in tasks %}
+  {%- for ct in task.command_types_used %}
+    {%- if ct not in ns.all_types %}
+      {%- set ns.all_types = ns.all_types + [ct] %}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+{%- for ct in ns.all_types %}
+#include "{{ ct | lower }}_manager.h"
+{%- endfor %}
 
 JSONManager serverJSONManager;
-GpioManager serverGpioManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;
+{%- for ct in ns.all_types %}
+{{ ct }}Manager server{{ ct }}Manager;
+{%- endfor %}
 
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
   Server Server;
+  Terminal applicationTerminal(&Server);
 
   Server.listenClients(8080, applicationMessageCallback, applicationConnectCallback);
 
@@ -45,5 +57,48 @@ int main(int argc, char **argv) {
   ntp_server.startListening("127.0.0.1", "time.google.com");
 #endif
 
- 
+  serverCanListener.listenCanBus();
+  serverCanScheduler.startCanScheduler();
+
+  /* ------ can_defaults ------ */
+  {%- for can_command in can_defaults %}
+  serverCanScheduler.update_{{can_command}}({{can_defaults[can_command]}});
+  {%- endfor%}
+
+  
+  /* ------ tasks ------ */ 
+  std::vector<std::thread> task_threads; 
+
+  {%- for task in tasks%}
+  task_threads.emplace_back([&Server]() {
+    while(true){
+      std::string message;
+      std::string pin;
+      std::string data;
+      {{""}}
+      {%- for command in task.commands %}
+      {%- set parts = command.split() %}
+      {%- set command_type = parts[0] | capitalize %}
+      {%- set action = parts[1] | upper %}
+      {%- if parts[0] != "LOG" %} 
+      pin =  {% if parts|length > 3 %}"{{ parts[3] }}"{% else %}""{% endif %};
+      data = {% if parts|length > 2 %}"{{ parts[2] }}"{% else %}" "{% endif %};
+      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, data, pin);
+      Server.broadcastMessage(message);
+      {{""}}
+      {%- else %}
+      std::cout << {{command[4: ]}} << std::endl;
+      {%- endif%}
+      {%- endfor %}   
+      std::this_thread::sleep_for(std::chrono::milliseconds({{ task.period_ms }}));
+    }
+  });
+  {%- endfor%}
+  
+  for (std::thread &t : task_threads){
+      t.detach();
+  }
+  
+  applicationTerminal.run();
+  return 0;
 }
