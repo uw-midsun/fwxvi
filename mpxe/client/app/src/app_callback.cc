@@ -20,6 +20,7 @@
 
 GpioManager clientGpioManager;
 AfeManager clientAfeManager;
+
 void applicationMessageCallback(Client *client, std::string &message) {
   std::string data = message;
   auto [commandCode, payload] = decodeCommand(message);

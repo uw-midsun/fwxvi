@@ -29,8 +29,9 @@ void Client::processMessagesProcedure() {
       if (m_messageCallback) {
         m_messageCallback(this, message);
       }
-      pthread_mutex_unlock(&m_mutex);
     }
+
+    pthread_mutex_unlock(&m_mutex);
   }
 }
 
