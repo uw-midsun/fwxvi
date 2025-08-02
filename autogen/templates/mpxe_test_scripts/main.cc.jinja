@@ -73,22 +73,29 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string pin;
-      std::string data;
+      std::string token_1;
+      std::string token_2;
       {{""}}
       {%- for command in task.commands %}
       {%- set parts = command.split() %}
       {%- set command_type = parts[0] | capitalize %}
       {%- set action = parts[1] | upper %}
+
       {%- if parts[0] != "LOG" %} 
-      pin =  {% if parts|length > 3 %}"{{ parts[3] }}"{% else %}""{% endif %};
-      data = {% if parts|length > 2 %}"{{ parts[2] }}"{% else %}" "{% endif %};
-      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, data, pin);
+      token_1 =  {% if parts|length > 2 %}"{{ parts[2] }}"{% else %}" "{% endif %};
+      token_2 = {% if parts|length > 3 %}"{{ parts[3] }}"{% else %}""{% endif %};
+      {%- if "set" in parts[1] | lower %}
+      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, token_2, token_1);
+      {%- else %}
+      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, token_1, token_2);
+      {%-endif%}
+      
       Server.broadcastMessage(message);
       {{""}}
       {%- else %}
       std::cout << {{command[4: ]}} << std::endl;
       {%- endif%}
+      
       {%- endfor %}   
       std::this_thread::sleep_for(std::chrono::milliseconds({{ task.period_ms }}));
     }

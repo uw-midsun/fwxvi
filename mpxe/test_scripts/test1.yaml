@@ -15,5 +15,6 @@ tasks:
     period_ms: 10000
     commands: 
       - GPIO GET_ALL_STATES
+      - GPIO SET_PIN_STATE A12 HIGH
       - LOG "Thermistor voltage updated"
   

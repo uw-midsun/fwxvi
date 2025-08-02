@@ -3,7 +3,7 @@
  *
  * @brief  Main source file for app
  *
- * @date   2025-07-31
+ * @date   2025-08-01
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -59,17 +59,19 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string pin;
-      std::string data;
+      std::string token_1;
+      std::string token_2;
        
-      pin =  "";
-      data = "HIGH";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, data, pin);
+      token_1 =  "HIGH";
+      token_2 = "";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, token_2, token_1);
+      
       Server.broadcastMessage(message);
        
-      pin =  "";
-      data = "A12";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, data, pin);
+      token_1 =  "A12";
+      token_2 = "";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, token_1, token_2);
+      
       Server.broadcastMessage(message);
       
       std::cout << "Battery voltage updated" << std::endl;   
@@ -79,12 +81,19 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string pin;
-      std::string data;
+      std::string token_1;
+      std::string token_2;
        
-      pin =  "";
-      data = " ";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, data, pin);
+      token_1 =  " ";
+      token_2 = "";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, token_1, token_2);
+      
+      Server.broadcastMessage(message);
+       
+      token_1 =  "A12";
+      token_2 = "HIGH";
+      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_PIN_STATE, token_2, token_1);
+      
       Server.broadcastMessage(message);
       
       std::cout << "Thermistor voltage updated" << std::endl;   
