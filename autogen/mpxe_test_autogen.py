@@ -227,9 +227,54 @@ def get_data(args):
 
     project_name = Path(args.output).parent.stem
     current_date = datetime.now().strftime("%Y-%m-%d")
+    app_term_path = Path("mpxe/server/app/src/app_terminal.cc")
+    text = app_term_path.read_text()
+
+    # Will get handle_Commands from app_terminal.cc 
+    handler_impls = {}
+    for cmd_type in VALID_COMMANDS.keys():
+        # ex: cmd_type is GPIO then fn_name is handleGpioCommands
+        fn_name = f"handle{cmd_type.capitalize()}Commands"
+        # match the entire out-of-line definition
+        regex = (
+            rf'(void\sTerminal::{fn_name}\s*\([^)]*\)\s*\{{'
+            r'(?:[^{}]*\{[^{}]*\})*'     
+            r'[^{}]*\})'
+        )
+        m = re.search(regex, text, re.DOTALL)
+        if not m:
+            continue
+        impl = m.group(1)
+
+        # strip the sendMessage/invalid-command/m_targetClient block
+        impl = re.sub(
+            r'\s*if\s*\(!message\.empty\(\)\)\s*\{[^}]*?\}\s*else\s*\{[^}]*?\}\s*m_targetClient\s*=\s*nullptr\s*;\s*',
+            '',
+            impl,
+            flags=re.DOTALL
+        )
+
+        # change signature: void Terminal::handleGpioCommands(...) to std::string handleGpioCommands(...)
+        impl = re.sub(
+            rf'void\sTerminal::{fn_name}',
+            f'std::string {fn_name}',
+            impl
+        )
+
+        # ensure a `return message;` before the final brace
+        if 'return message;' not in impl:
+            impl = impl.rstrip('}') + '}\n  return message;\n}'
+
+        handler_impls[fn_name] = impl
+    
+    project_name = Path(args.output).parent.stem
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    
+    print(handler_impls)
     return {
-        "can_defaults": can_defaults,
-        "tasks":        tasks,
-        "project_name": project_name,
-        "current_date": current_date
+        "can_defaults":   can_defaults,
+        "tasks":          tasks,
+        "project_name":   project_name,
+        "current_date":   current_date,
+        "handler_impls":  handler_impls, 
     }

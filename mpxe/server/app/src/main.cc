@@ -3,7 +3,7 @@
  *
  * @brief  Main source file for app
  *
- * @date   2025-08-01
+ * @date   2025-08-02
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -33,6 +33,9 @@ CanListener serverCanListener;
 CanScheduler serverCanScheduler;
 GpioManager serverGpioManager;
 
+/* Handler function defintions (imported from app_terminal.cc) */
+std::string handleGpioCommands(const std::string &action, std::vector<std::string> &tokens);
+
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
   Server Server;
@@ -59,18 +62,18 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string token_1;
-      std::string token_2;
-       
-      token_1 =  "HIGH";
-      token_2 = "";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, token_2, token_1);
+      std::vector<std::string> tokens; 
+      std::string command; 
+        
+      tokens = {"GPIO", "SET_ALL_STATES", "HIGH" };
+      command = "set_all_states";
+      message = handleGpioCommands(command, tokens);
       
       Server.broadcastMessage(message);
-       
-      token_1 =  "A12";
-      token_2 = "";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, token_1, token_2);
+        
+      tokens = {"GPIO", "GET_PIN_MODE", "A12" };
+      command = "get_pin_mode";
+      message = handleGpioCommands(command, tokens);
       
       Server.broadcastMessage(message);
       
@@ -81,18 +84,18 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string token_1;
-      std::string token_2;
-       
-      token_1 =  " ";
-      token_2 = "";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, token_1, token_2);
+      std::vector<std::string> tokens; 
+      std::string command; 
+        
+      tokens = {"GPIO", "GET_ALL_STATES" };
+      command = "get_all_states";
+      message = handleGpioCommands(command, tokens);
       
       Server.broadcastMessage(message);
-       
-      token_1 =  "A12";
-      token_2 = "HIGH";
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_PIN_STATE, token_2, token_1);
+        
+      tokens = {"GPIO", "SET_PIN_STATE", "A12", "HIGH" };
+      command = "set_pin_state";
+      message = handleGpioCommands(command, tokens);
       
       Server.broadcastMessage(message);
       
@@ -107,4 +110,28 @@ int main(int argc, char **argv) {
   
   applicationTerminal.run();
   return 0;
+}
+
+std::string handleGpioCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+  if (action == "get_pin_state" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_STATE, tokens[2], "");
+  } else if (action == "get_all_states" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, tokens[0], "");
+  } else if (action == "get_pin_mode" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, tokens[2], "");
+  } else if (action == "get_all_modes" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_MODES, tokens[0], "");
+  } else if (action == "get_pin_alt_function" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_ALT_FUNCTION, tokens[2], "");
+  } else if (action == "get_all_alt_functions" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_ALT_FUNCTIONS, tokens[0], "");
+  } else if (action == "set_pin_state" && tokens.size() >= 4) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_PIN_STATE, tokens[2], tokens[3]);
+  } else if (action == "set_all_states" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, tokens[0], tokens[2]);
+  } else {
+    std::cerr << "Unsupported action: " << action << std::endl;
+  }
+  return message;
 }

@@ -44,6 +44,11 @@ CanScheduler serverCanScheduler;
 {%- for ct in ns.all_types %}
 {{ ct }}Manager server{{ ct }}Manager;
 {%- endfor %}
+{{""}}
+/* Handler function defintions (imported from app_terminal.cc) */
+{%- for fn_name in handler_impls.keys() %}
+std::string {{ fn_name }}(const std::string &action, std::vector<std::string> &tokens);
+{%- endfor %}
 
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
@@ -73,22 +78,17 @@ int main(int argc, char **argv) {
   task_threads.emplace_back([&Server]() {
     while(true){
       std::string message;
-      std::string token_1;
-      std::string token_2;
+      std::vector<std::string> tokens; 
+      std::string command; 
       {{""}}
       {%- for command in task.commands %}
       {%- set parts = command.split() %}
       {%- set command_type = parts[0] | capitalize %}
-      {%- set action = parts[1] | upper %}
 
-      {%- if parts[0] != "LOG" %} 
-      token_1 =  {% if parts|length > 2 %}"{{ parts[2] }}"{% else %}" "{% endif %};
-      token_2 = {% if parts|length > 3 %}"{{ parts[3] }}"{% else %}""{% endif %};
-      {%- if "set" in parts[1] | lower %}
-      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, token_2, token_1);
-      {%- else %}
-      message = server{{command_type}}Manager.create{{command_type}}Command(CommandCode::{{command_type | upper}}_{{action}}, token_1, token_2);
-      {%-endif%}
+      {%- if parts[0] != "LOG" %}  
+      tokens = { {%- for token in parts %}"{{ token }}"{% if not loop.last %}, {% endif %}{%- endfor %} };
+      command = "{{parts[1] | lower}}";
+      message = handle{{command_type}}Commands(command, tokens);
       
       Server.broadcastMessage(message);
       {{""}}
@@ -109,3 +109,8 @@ int main(int argc, char **argv) {
   applicationTerminal.run();
   return 0;
 }
+{{""}}
+{%- for fn_name, impl in handler_impls.items() %}
+{{ impl }}
+{{""}}
+{%- endfor %}
