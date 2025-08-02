@@ -16,10 +16,10 @@
 #include "json_manager.h"
 
 /* Intra-component Headers */
+#include "adbms_afe_manager.h"
 #include "can_listener.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
-#include "adbms_afe_manager.h"
 /**
  * @defgroup ServerAppMain
  * @brief    Server Application Main Interface

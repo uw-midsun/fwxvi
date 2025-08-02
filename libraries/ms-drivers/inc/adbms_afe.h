@@ -227,12 +227,12 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
 // TODO: REmember to put these back inside the guard
 
 #ifdef MS_PLATFORM_X86
-#ifdef __cplusplus // Only for C++ compilers
+#ifdef __cplusplus  // Only for C++ compilers
 extern "C" {
 #endif
 extern AdbmsAfeStorage s_afe;
 extern AdbmsAfeSettings s_settings;
-#ifdef __cplusplus // Close the extern "C" block
+#ifdef __cplusplus  // Close the extern "C" block
 }
 #endif
 /**

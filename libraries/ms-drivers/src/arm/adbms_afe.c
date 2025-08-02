@@ -31,10 +31,10 @@ static StatusCode s_build_cmd(uint16_t command, uint8_t *cmd, size_t len);
  * @note  Table 38 (p 59)
  **/
 static const uint16_t s_read_reg_cmd[NUM_ADBMS_AFE_REGISTERS] = {
-  [ADBMS_AFE_REGISTER_CONFIG_A] = ADBMS1818_RDCFGA_RESERVED,      [ADBMS_AFE_REGISTER_CELL_VOLTAGE_A] = ADBMS1818_RDCVA_RESERVED, [ADBMS_AFE_REGISTER_CELL_VOLTAGE_B] = ADBMS1818_RDCVB_RESERVED,
-  [ADBMS_AFE_REGISTER_CONFIG_B] = ADBMS1818_RDCFGB_RESERVED,      [ADBMS_AFE_REGISTER_CELL_VOLTAGE_C] = ADBMS1818_RDCVC_RESERVED, [ADBMS_AFE_REGISTER_CELL_VOLTAGE_D] = ADBMS1818_RDCVD_RESERVED, 
-  [ADBMS_AFE_REGISTER_AUX_A] = ADBMS1818_RDAUXA_RESERVED,         [ADBMS_AFE_REGISTER_AUX_B] = ADBMS1818_RDAUXB_RESERVED,         [ADBMS_AFE_REGISTER_STATUS_A] = ADBMS1818_RDSTATA_RESERVED,     
-  [ADBMS_AFE_REGISTER_STATUS_B] = ADBMS1818_RDSTATB_RESERVED,     [ADBMS_AFE_REGISTER_READ_COMM] = ADBMS1818_RDCOMM_RESERVED,     [ADBMS_AFE_REGISTER_START_COMM] = ADBMS1818_STCOMM_RESERVED
+  [ADBMS_AFE_REGISTER_CONFIG_A] = ADBMS1818_RDCFGA_RESERVED,  [ADBMS_AFE_REGISTER_CELL_VOLTAGE_A] = ADBMS1818_RDCVA_RESERVED, [ADBMS_AFE_REGISTER_CELL_VOLTAGE_B] = ADBMS1818_RDCVB_RESERVED,
+  [ADBMS_AFE_REGISTER_CONFIG_B] = ADBMS1818_RDCFGB_RESERVED,  [ADBMS_AFE_REGISTER_CELL_VOLTAGE_C] = ADBMS1818_RDCVC_RESERVED, [ADBMS_AFE_REGISTER_CELL_VOLTAGE_D] = ADBMS1818_RDCVD_RESERVED,
+  [ADBMS_AFE_REGISTER_AUX_A] = ADBMS1818_RDAUXA_RESERVED,     [ADBMS_AFE_REGISTER_AUX_B] = ADBMS1818_RDAUXB_RESERVED,         [ADBMS_AFE_REGISTER_STATUS_A] = ADBMS1818_RDSTATA_RESERVED,
+  [ADBMS_AFE_REGISTER_STATUS_B] = ADBMS1818_RDSTATB_RESERVED, [ADBMS_AFE_REGISTER_READ_COMM] = ADBMS1818_RDCOMM_RESERVED,     [ADBMS_AFE_REGISTER_START_COMM] = ADBMS1818_STCOMM_RESERVED
 };
 
 /* p. 56-57 - Daisy chain wakeup method 2 - pair of long -1, +1 for each device */
@@ -104,13 +104,13 @@ static StatusCode s_write_config(AdbmsAfeStorage *afe, uint8_t *gpio_enable_pins
     uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet->devices[curr_device].cfgA, 6);
     config_packet->devices[curr_device].pecA = cfgr_pec >> 8 | cfgr_pec << 8; /* Swap endianness */
 
-    uint16_t cfgr_pec = crc15_calculate((uint8_t *)&config_packet->devices[curr_device].cfgB, 6);
+    cfgr_pec = crc15_calculate((uint8_t *)&config_packet->devices[curr_device].cfgB, 6);
     config_packet->devices[curr_device].pecB = cfgr_pec >> 8 | cfgr_pec << 8; /* Swap endianness */
   }
 
   size_t len = SIZEOF_ADBMS_AFE_WRITE_CONFIG_PACKET(settings->num_devices);
   s_wakeup_idle(afe);
-  return spi_exchange(settings->spi_port, (uint8_t *)&config_packet, len, NULL, 0);
+  return spi_exchange(settings->spi_port, (uint8_t *)config_packet, len, NULL, 0);
 }
 
 /**
@@ -126,7 +126,7 @@ static void s_calc_offsets(AdbmsAfeStorage *afe) {
 
   for (size_t device = 0; device < settings->num_devices; device++) {
     size_t device_offset = device * ADBMS_AFE_MAX_CELLS_PER_DEVICE; /* Device-level offset */
-    uint16_t bitmask = settings->cell_bitset[device];             /* Extract bitmask once, revealing enabled cells */
+    uint16_t bitmask = settings->cell_bitset[device];               /* Extract bitmask once, revealing enabled cells */
 
     for (size_t device_cell = 0; device_cell < ADBMS_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
       size_t raw_cell_index = device_offset + device_cell; /* Absolute index of cell in current device across all devices */
@@ -188,15 +188,15 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
 
 StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
   /* Double check, assuming only gpio2 stays on here */
-  uint8_t gpio_bits[2]; 
+  uint8_t gpio_bits[2];
   gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF | ADBMS1818_GPIO5_PD_OFF;
-  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF; 
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
 
   AdbmsAfeSettings *settings = afe->settings;
 
   for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
     AdbmsAfeConfigRegisterAData *cfgrA = &afe->device_configs->devices[curr_device].cfgA;
-    AdbmsAfeConfigRegisterBData *cfgrB = &afe->device_configs->devices[curr_device].cfgB; 
+    AdbmsAfeConfigRegisterBData *cfgrB = &afe->device_configs->devices[curr_device].cfgB;
 
     cfgrA->discharge_bitset = 0;
     cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_30_S;
@@ -208,20 +208,19 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
     cfgrA->undervoltage = 0;
     cfgrA->overvoltage = 0;
 
-    cfgrB->discharge_bitset = 0; 
-    cfgrB->discharge_timer_monitor = 0; 
+    cfgrB->discharge_bitset = 0;
+    cfgrB->discharge_timer_monitor = 0;
 
-    cfgrB->force_fail = 0; 
+    cfgrB->force_fail = 0;
     cfgrB->mute = 0;
-    cfgrB->path_select = 0; 
+    cfgrB->path_select = 0;
 
-    cfgrB->reserved1 = 0; 
-    cfgrB->reserved2 = 0; 
-    cfgrB->reserved3 = 0; 
-    cfgrB->reserved4 = 0; 
+    cfgrB->reserved1 = 0;
+    cfgrB->reserved2 = 0;
+    cfgrB->reserved3 = 0;
+    cfgrB->reserved4 = 0;
     /* If everything is zero could do:
        AdbmsAfeConfigRegisterBData cfgr B = {0} */
-
   }
 
   return s_write_config(afe, gpio_bits);
@@ -248,8 +247,11 @@ StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) 
   AdbmsAfeSettings *settings = afe->settings;
 
   /* Left=shift by 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
-  uint8_t gpio_bits = (thermistor << 3) | ADBMS1818_GPIO4_PD_OFF; // TODO: Double Check (if similar implementation)
-  s_write_config(afe, gpio_bits); 
+  uint8_t gpio_bits[2];
+  gpio_bits[0] = (thermistor << 3) | ADBMS1818_GPIO4_PD_OFF;
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
+
+  s_write_config(afe, gpio_bits);
 
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
@@ -316,7 +318,7 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
 
-  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len); // TODO: Double Check (if similar implementation)
+  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);  // TODO: Double Check (if similar implementation)
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Read register failed");
@@ -383,7 +385,6 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   return STATUS_CODE_OK;
 }
 
-
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle) {
   AdbmsAfeSettings *settings = afe->settings;
 
@@ -394,7 +395,7 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
   uint8_t cmd_with_pwm[ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PWMR_REGS * ADBMS_AFE_MAX_DEVICES)] = { 0 };
 
   /* Same thing here but for the PWM/S control register group B */
-  uint8_t cmd_with_psr[ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PSR_REGS * ADBMS_AFE_MAX_DEVICES)] = {0};
+  uint8_t cmd_with_psr[ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PSR_REGS * ADBMS_AFE_MAX_DEVICES)] = { 0 };
 
   /* Prepare command to be sent, disregarding the PWM configuration data */
   s_build_cmd(ADBMS1818_WRPWM_RESERVED, cmd_with_pwm, 4);
@@ -415,22 +416,22 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
     }
 
     /* Same thing here, but there are 3 registers to itterate through per device since the PSR group has 3 PWM register groups */
-    for (int pwm_reg = 0; pwm_reg < ADBMS1818_NUM_PWM_REGS_IN_PSR; pwm_reg++){
-      cmd_with_psr[ADBMS1818_CMD_SIZE + (device * ADBMS1818_NUM_PSR_REGS) + pwm_reg] = packed_duty_cycle; 
+    for (int pwm_reg = 0; pwm_reg < ADBMS1818_NUM_PWM_REGS_IN_PSR; pwm_reg++) {
+      cmd_with_psr[ADBMS1818_CMD_SIZE + (device * ADBMS1818_NUM_PSR_REGS) + pwm_reg] = packed_duty_cycle;
     }
     /* SCTL regs are zeroed out when cmd_with_psr is initialized */
   }
 
   size_t cmd_with_pwm_len = ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PWMR_REGS * settings->num_devices);
-  size_t cmd_with_psr_len = ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PSR_REGS * settings-> num_devices); 
+  size_t cmd_with_psr_len = ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PSR_REGS * settings->num_devices);
 
   /* Wake up the devices if they are idle before sending the command */
   s_wakeup_idle(afe);
 
   /* Send PWM configuration command to all AFEs */
   StatusCode ret = spi_exchange(settings->spi_port, cmd_with_pwm, cmd_with_pwm_len, NULL, 0);
-  if (ret != STATUS_CODE_OK){
-    return ret; 
+  if (ret != STATUS_CODE_OK) {
+    return ret;
   }
   return (spi_exchange(settings->spi_port, cmd_with_psr, cmd_with_psr_len, NULL, 0));
 }

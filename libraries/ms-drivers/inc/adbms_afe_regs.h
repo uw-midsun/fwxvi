@@ -46,9 +46,9 @@
 #define ADBMS1818_NUM_PWMR_REGS 6
 
 /** @brief  Macros for PWM/S control register group B */
-#define ADBMS1818_NUM_PSR_REGS 6          /**< Number of registers in PWM/S Control register group B */
-#define ADBMS1818_NUM_PWM_REGS_IN_PSR 3   /**< Number of PWM registers in the PWM/S control register group B */
-#define ADBMS1818_NUM_SCTL_REGS_IN_PSR 3  /**< Number of SCTL registers in the PWM/S control register group B */
+#define ADBMS1818_NUM_PSR_REGS 6         /**< Number of registers in PWM/S Control register group B */
+#define ADBMS1818_NUM_PWM_REGS_IN_PSR 3  /**< Number of PWM registers in the PWM/S control register group B */
+#define ADBMS1818_NUM_SCTL_REGS_IN_PSR 3 /**< Number of SCTL registers in the PWM/S control register group B */
 
 /** @brief  Number of registers in PWM/S Register Group. See Table 71 on page 68. */
 #define ADBMS1818_NUM_PWMS_REGS 6
@@ -60,23 +60,23 @@
  * @details These registers are mapped to the `s_read_reg[]` array in `adbms_afe.c`
  */
 typedef enum {
-  ADBMS_AFE_REGISTER_CONFIG_A = 0,    /**< Configuration register A */
-  ADBMS_AFE_REGISTER_CONFIG_B,        /**< Configuration register B */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_A,  /**< Cell voltage register A */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_B,  /**< Cell voltage register B */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_C,  /**< Cell voltage register C */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_D,  /**< Cell voltage register D */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_E,  /**< Cell voltage register E */
-  ADBMS_AFE_REGISTER_CELL_VOLTAGE_F,  /**< Cell voltage register F */
-  ADBMS_AFE_REGISTER_AUX_A,           /**< Auxiliary register A */
-  ADBMS_AFE_REGISTER_AUX_B,           /**< Auxiliary register B */
-  ADBMS_AFE_REGISTER_AUX_C,           /**< Auxiliary register C */
-  ADBMS_AFE_REGISTER_AUX_D,           /**< Auxiliary register D */
-  ADBMS_AFE_REGISTER_STATUS_A,        /**< Status register A */
-  ADBMS_AFE_REGISTER_STATUS_B,        /**< Status register B */
-  ADBMS_AFE_REGISTER_READ_COMM,       /**< Read communication register */
-  ADBMS_AFE_REGISTER_START_COMM,      /**< Start communication register */
-  NUM_ADBMS_AFE_REGISTERS             /**< Total number of ADBMS AFE registers */
+  ADBMS_AFE_REGISTER_CONFIG_A = 0,   /**< Configuration register A */
+  ADBMS_AFE_REGISTER_CONFIG_B,       /**< Configuration register B */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_A, /**< Cell voltage register A */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_B, /**< Cell voltage register B */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_C, /**< Cell voltage register C */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_D, /**< Cell voltage register D */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_E, /**< Cell voltage register E */
+  ADBMS_AFE_REGISTER_CELL_VOLTAGE_F, /**< Cell voltage register F */
+  ADBMS_AFE_REGISTER_AUX_A,          /**< Auxiliary register A */
+  ADBMS_AFE_REGISTER_AUX_B,          /**< Auxiliary register B */
+  ADBMS_AFE_REGISTER_AUX_C,          /**< Auxiliary register C */
+  ADBMS_AFE_REGISTER_AUX_D,          /**< Auxiliary register D */
+  ADBMS_AFE_REGISTER_STATUS_A,       /**< Status register A */
+  ADBMS_AFE_REGISTER_STATUS_B,       /**< Status register B */
+  ADBMS_AFE_REGISTER_READ_COMM,      /**< Read communication register */
+  ADBMS_AFE_REGISTER_START_COMM,     /**< Start communication register */
+  NUM_ADBMS_AFE_REGISTERS            /**< Total number of ADBMS AFE registers */
 } AdbmsAfeRegister;
 
 /** @brief Voltage registers for easy mapping to `AdbmsAfeRegister` */
@@ -85,8 +85,8 @@ typedef enum {
   ADBMS_AFE_VOLTAGE_REGISTER_B = ADBMS_AFE_REGISTER_CELL_VOLTAGE_B,
   ADBMS_AFE_VOLTAGE_REGISTER_C = ADBMS_AFE_REGISTER_CELL_VOLTAGE_C,
   ADBMS_AFE_VOLTAGE_REGISTER_D = ADBMS_AFE_REGISTER_CELL_VOLTAGE_D,
-  ADBMS_AFE_VOLTAGE_REGISTER_E = ADBMS_AFE_REGISTER_CELL_VOLTAGE_E, 
-  ADBMS_AFE_VOLTAGE_REGISTER_F = ADBMS_AFE_REGISTER_CELL_VOLTAGE_F, 
+  ADBMS_AFE_VOLTAGE_REGISTER_E = ADBMS_AFE_REGISTER_CELL_VOLTAGE_E,
+  ADBMS_AFE_VOLTAGE_REGISTER_F = ADBMS_AFE_REGISTER_CELL_VOLTAGE_F,
   NUM_ADBMS_AFE_VOLTAGE_REGISTERS
 } AdbmsAfeVoltageRegister;
 
@@ -147,28 +147,28 @@ static_assert(sizeof(AdbmsAfeConfigRegisterAData) == 6, "AdbmsAfeConfigRegisterA
  *          - GPIO Pin Pull-Down Config (`gpio`):                         Configures GPIO pull-downs
  *          - Discharge Cell Bitset (`discharge_bitset`):                 Enables/disables discharge for specific cells
  *          - Discharge Timeout (`discharge_timeout`):                    Sets discharge timeout duration
- *          - Digital redundancy path selection (`path_select`):          Selects which ADC has redundancy applied 
+ *          - Digital redundancy path selection (`path_select`):          Selects which ADC has redundancy applied
  *          - Enable discharge timer monitor (`discharge_timer_monitor`): Enable/disable discharge timer monitor function
  *          - Force Digital redundancy failure (`force_fail`):            Force digital redundancy comparison for ADC conv to fail (if 1) else normal
  *          - Mute status (`mute`):                                       1: Mute is activated discharging is disabled, 0: mute is deactivated
  *          - Reserved bits (`reservedx`):                                Placeholder (doesn't really do anything)
  * @note    See Table 55 on Page 65 for the exact layout.
  */
-typedef struct{
+typedef struct {
   uint8_t gpio : 4; /**< GPIO PD Config */
 
-  uint8_t discharge_bitset : 7;          /**< Discharge Cell Bitset */
-  uint8_t discharge_timer_monitor : 1;   /**< Discharge cell timer monitor duration */
+  uint8_t discharge_bitset : 7;        /**< Discharge Cell Bitset */
+  uint8_t discharge_timer_monitor : 1; /**< Discharge cell timer monitor duration */
 
-  uint8_t path_select : 2;  /**< Digital redundancy path selection */
-  uint8_t force_fail : 1;   /**< Force fail digital redundancy comparison */
-      
-  uint8_t mute : 1;         /**< Mute status */
+  uint8_t path_select : 2; /**< Digital redundancy path selection */
+  uint8_t force_fail : 1;  /**< Force fail digital redundancy comparison */
 
-  uint8_t reserved1; 
-  uint8_t reserved2; 
-  uint8_t reserved3; 
-  uint8_t reserved4; 
+  uint8_t mute : 1; /**< Mute status */
+
+  uint8_t reserved1;
+  uint8_t reserved2;
+  uint8_t reserved3;
+  uint8_t reserved4;
 
 } _PACKED AdbmsAfeConfigRegisterBData;
 static_assert(sizeof(AdbmsAfeConfigRegisterBData) == 6, "AdbmsAfeConfigRegisterBData must be 6 bytes");
@@ -215,7 +215,6 @@ typedef struct {
   uint16_t pec;
 } _PACKED AdbmsAfeWriteDeviceConfigAPacket;
 
-
 /** @brief Configuration Register Group (CFGBxR) packet for EACH device */
 typedef struct {
   AdbmsAfeConfigRegisterAData cfgA;
@@ -257,34 +256,34 @@ static_assert(sizeof(AdbmsAfeAuxData) == 8, "AdbmsAfeAuxData must be 8 bytes");
  * @brief Command codes for ADBMS1818 AFE
  * @details  See Table 52 (p.61)
  */
-#define ADBMS1818_WRCFGA_RESERVED (1 << 0)                                                          /**< Write Config Reg Group A */
-#define ADBMS1818_WRCFGB_RESERVED (1 << 5) | (1 << 2)                                               /**< Write Config Reg Group B */
-#define ADBMS1818_RDCFGA_RESERVED (1 << 1)                                                          /**< Read Config Reg Group A */
-#define ADBMS1818_RDCFGB_RESERVED (1 << 5) | (1 << 2) | (1 << 1)                                    /**< Read Config Reg Group B */ 
+#define ADBMS1818_WRCFGA_RESERVED (1 << 0)                       /**< Write Config Reg Group A */
+#define ADBMS1818_WRCFGB_RESERVED (1 << 5) | (1 << 2)            /**< Write Config Reg Group B */
+#define ADBMS1818_RDCFGA_RESERVED (1 << 1)                       /**< Read Config Reg Group A */
+#define ADBMS1818_RDCFGB_RESERVED (1 << 5) | (1 << 2) | (1 << 1) /**< Read Config Reg Group B */
 
-#define ADBMS1818_RDCVA_RESERVED (1 << 2)                                                           /**< Read Cell Voltage Reg Group A */
-#define ADBMS1818_RDCVB_RESERVED (1 << 2) | (1 << 1)                                                /**< Read Cell Voltage Reg Group B */
-#define ADBMS1818_RDCVC_RESERVED (1 << 3)                                                           /**< Read Cell Voltage Reg Group C */
-#define ADBMS1818_RDCVD_RESERVED (1 << 3) | (1 << 1)                                                /**< Read Cell Voltage Reg Group D */
-#define ADBMS1818_RDCVE_RESERVED (1 << 3) | (1 << 0)                                                /**< Read Cell Voltage Reg Group E */
-#define ADBMS1818_RDCVF_RESERVED (1 << 3) | (1 << 1) | (1 << 0)                                     /**< Read Cell Voltage Reg Group F */
+#define ADBMS1818_RDCVA_RESERVED (1 << 2)                       /**< Read Cell Voltage Reg Group A */
+#define ADBMS1818_RDCVB_RESERVED (1 << 2) | (1 << 1)            /**< Read Cell Voltage Reg Group B */
+#define ADBMS1818_RDCVC_RESERVED (1 << 3)                       /**< Read Cell Voltage Reg Group C */
+#define ADBMS1818_RDCVD_RESERVED (1 << 3) | (1 << 1)            /**< Read Cell Voltage Reg Group D */
+#define ADBMS1818_RDCVE_RESERVED (1 << 3) | (1 << 0)            /**< Read Cell Voltage Reg Group E */
+#define ADBMS1818_RDCVF_RESERVED (1 << 3) | (1 << 1) | (1 << 0) /**< Read Cell Voltage Reg Group F */
 
-#define ADBMS1818_RDAUXA_RESERVED ((1 << 3) | (1 << 2))                                             /**< Read Auxillary Reg Group A */
-#define ADBMS1818_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)                                  /**< Read Auxillary Reg Group B */
-#define ADBMS1818_RDAUXC_RESERVED ((1 << 3) | (1 << 2)) | (1 << 0)                                  /**< Read Auxillary Reg Group C */
-#define ADBMS1818_RDAUXD_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)  | (1 << 0)                      /**< Read Auxillary Reg Group D */
+#define ADBMS1818_RDAUXA_RESERVED ((1 << 3) | (1 << 2))                       /**< Read Auxillary Reg Group A */
+#define ADBMS1818_RDAUXB_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1)            /**< Read Auxillary Reg Group B */
+#define ADBMS1818_RDAUXC_RESERVED ((1 << 3) | (1 << 2)) | (1 << 0)            /**< Read Auxillary Reg Group C */
+#define ADBMS1818_RDAUXD_RESERVED ((1 << 3) | (1 << 2)) | (1 << 1) | (1 << 0) /**< Read Auxillary Reg Group D */
 
-#define ADBMS1818_RDSTATA_RESERVED (1 << 4)                                                         /**< Read Status Register Group A */
-#define ADBMS1818_RDSTATB_RESERVED (1 << 4) | (1 << 1)                                              /**< Read Status Register Group B */
+#define ADBMS1818_RDSTATA_RESERVED (1 << 4)            /**< Read Status Register Group A */
+#define ADBMS1818_RDSTATB_RESERVED (1 << 4) | (1 << 1) /**< Read Status Register Group B */
 
-#define ADBMS1818_WRSCTRL_RESERVED (1 << 4) | (1 << 2)                                              /**< Write S Control Register Group */
-#define ADBMS1818_WRPWM_RESERVED (1 << 5)                                                           /**< Write PWM Register Group */
-#define ADBMS1818_WRPSB_RESERVED (1 << 4) | (1 << 3) | (1 << 2)                                     /**< Write PWM/S Control Register Group B */
-#define ADBMS1818_RDSCTRL_RESERVED (1 << 4) | (1 << 2) | (1 << 1)                                   /**< Read S Control Register Group */
-#define ADBMS1818_RDPWM_RESERVED (1 << 5) | (1 << 2)                                                /**< Read PWM Register Group */
-#define ADBMS1818_RDPSB_RESERVED (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1)                          /**< Read PWM Register Group */
-#define ADBMS1818_STSCTRL_RESERVED (1 << 4) | (1 << 3) | (1 << 0)                                   /**< Start S Control Pulsing and Poll Status */
-#define ADBMS1818_CLRSCTRL_RESERVED (1 << 4) | (1 << 3)                                             /**< Clear S COntrol Register Group */
+#define ADBMS1818_WRSCTRL_RESERVED (1 << 4) | (1 << 2)                     /**< Write S Control Register Group */
+#define ADBMS1818_WRPWM_RESERVED (1 << 5)                                  /**< Write PWM Register Group */
+#define ADBMS1818_WRPSB_RESERVED (1 << 4) | (1 << 3) | (1 << 2)            /**< Write PWM/S Control Register Group B */
+#define ADBMS1818_RDSCTRL_RESERVED (1 << 4) | (1 << 2) | (1 << 1)          /**< Read S Control Register Group */
+#define ADBMS1818_RDPWM_RESERVED (1 << 5) | (1 << 2)                       /**< Read PWM Register Group */
+#define ADBMS1818_RDPSB_RESERVED (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1) /**< Read PWM Register Group */
+#define ADBMS1818_STSCTRL_RESERVED (1 << 4) | (1 << 3) | (1 << 0)          /**< Start S Control Pulsing and Poll Status */
+#define ADBMS1818_CLRSCTRL_RESERVED (1 << 4) | (1 << 3)                    /**< Clear S COntrol Register Group */
 
 #define ADBMS1818_ADCV_RESERVED ((1 << 9) | (1 << 6) | (1 << 5))                                    /**< Start Cell Voltage ADC Conversion and Poll Status */
 #define ADBMS1818_ADOW_RESERVED ((1 << 3) | (1 << 5) | (1 << 9))                                    /**< Start Open Wire ADC Conversion and Poll Status */
@@ -299,41 +298,40 @@ static_assert(sizeof(AdbmsAfeAuxData) == 8, "AdbmsAfeAuxData must be 8 bytes");
 #define ADBMS1818_RDCOMM_RESERVED (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)             /**< Read COMM Register Group */
 #define ADBMS1818_STCOMM_RESERVED (1 << 0) | (1 << 1) | (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10)
 
-
 /**
  * @brief GPIO pull-down configuration for the Config Register Group.
  * @note  See Table 40 (p.62) and `AdbmsAfeConfigRegisterXData` struct for details.
  */
-#define ADBMS1818_GPIO1_PD_ON   (0 << 3)
-#define ADBMS1818_GPIO1_PD_OFF  (1 << 3)
-#define ADBMS1818_GPIO2_PD_ON   (0 << 4)
-#define ADBMS1818_GPIO2_PD_OFF  (1 << 4)
-#define ADBMS1818_GPIO3_PD_ON   (0 << 5)
-#define ADBMS1818_GPIO3_PD_OFF  (1 << 5)
-#define ADBMS1818_GPIO4_PD_ON   (0 << 6)
-#define ADBMS1818_GPIO4_PD_OFF  (1 << 6)
-#define ADBMS1818_GPIO5_PD_ON   (0 << 7)
-#define ADBMS1818_GPIO5_PD_OFF  (1 << 7)
-#define ADBMS1818_GPIO6_PD_ON   (0 << 0)
-#define ADBMS1818_GPIO6_PD_OFF  (1 << 0)
-#define ADBMS1818_GPIO7_PD_ON   (0 << 1)
-#define ADBMS1818_GPIO7_PD_OFF  (1 << 1)
-#define ADBMS1818_GPIO8_PD_ON   (0 << 2)
-#define ADBMS1818_GPIO8_PD_OFF  (1 << 2)
-#define ADBMS1818_GPIO9_PD_ON   (0 << 3)
-#define ADBMS1818_GPIO9_PD_OFF  (1 << 3)
+#define ADBMS1818_GPIO1_PD_ON (0 << 3)
+#define ADBMS1818_GPIO1_PD_OFF (1 << 3)
+#define ADBMS1818_GPIO2_PD_ON (0 << 4)
+#define ADBMS1818_GPIO2_PD_OFF (1 << 4)
+#define ADBMS1818_GPIO3_PD_ON (0 << 5)
+#define ADBMS1818_GPIO3_PD_OFF (1 << 5)
+#define ADBMS1818_GPIO4_PD_ON (0 << 6)
+#define ADBMS1818_GPIO4_PD_OFF (1 << 6)
+#define ADBMS1818_GPIO5_PD_ON (0 << 7)
+#define ADBMS1818_GPIO5_PD_OFF (1 << 7)
+#define ADBMS1818_GPIO6_PD_ON (0 << 0)
+#define ADBMS1818_GPIO6_PD_OFF (1 << 0)
+#define ADBMS1818_GPIO7_PD_ON (0 << 1)
+#define ADBMS1818_GPIO7_PD_OFF (1 << 1)
+#define ADBMS1818_GPIO8_PD_ON (0 << 2)
+#define ADBMS1818_GPIO8_PD_OFF (1 << 2)
+#define ADBMS1818_GPIO9_PD_ON (0 << 3)
+#define ADBMS1818_GPIO9_PD_OFF (1 << 3)
 
 /**
  * @brief   ADCV command macros for cell conversion.
  * @details Determines which cells to convert during ADCV commands.
  */
-#define ADBMS1818_CNVT_CELL_ALL 0x00      /**< Convert all cells. */
-#define ADBMS1818_CNVT_CELL_1_7_13 0x01   /**< Convert cells 1, 7, and 13.  */
-#define ADBMS1818_CNVT_CELL_2_8_14 0x02   /**< Convert cells 2, 8, and 14.  */
-#define ADBMS1818_CNVT_CELL_3_9_15 0x03   /**< Convert cells 3, 9, and 15.  */
-#define ADBMS1818_CNVT_CELL_4_10_16 0x04  /**< Convert cells 4, 10, and 16. */
-#define ADBMS1818_CNVT_CELL_5_11_17 0x05  /**< Convert cells 5, 11, and 17. */
-#define ADBMS1818_CNVT_CELL_6_12_18 0x06  /**< Convert cells 6, 12, and 18. */
+#define ADBMS1818_CNVT_CELL_ALL 0x00     /**< Convert all cells. */
+#define ADBMS1818_CNVT_CELL_1_7_13 0x01  /**< Convert cells 1, 7, and 13.  */
+#define ADBMS1818_CNVT_CELL_2_8_14 0x02  /**< Convert cells 2, 8, and 14.  */
+#define ADBMS1818_CNVT_CELL_3_9_15 0x03  /**< Convert cells 3, 9, and 15.  */
+#define ADBMS1818_CNVT_CELL_4_10_16 0x04 /**< Convert cells 4, 10, and 16. */
+#define ADBMS1818_CNVT_CELL_5_11_17 0x05 /**< Convert cells 5, 11, and 17. */
+#define ADBMS1818_CNVT_CELL_6_12_18 0x06 /**< Convert cells 6, 12, and 18. */
 
 /**
  * @brief   ADCV discharge permission macros.

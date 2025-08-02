@@ -12,11 +12,11 @@
 #include <string>
 
 /* Inter-component Headers */
+#include "adbms_afe_datagram.h"
 #include "command_code.h"
 #include "gpio_datagram.h"
 #include "i2c_datagram.h"
 #include "json_manager.h"
-#include "adbms_afe_datagram.h"
 #include "metadata.h"
 #include "spi_datagram.h"
 
@@ -69,28 +69,28 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       serverAfeManager.updateAfeCellVoltage(clientName, payload);
       break;
     }
-    case CommandCode::AFE_GET_AUX: { 
+    case CommandCode::AFE_GET_AUX: {
       serverAfeManager.updateAfeAuxVoltage(clientName, payload);
-      break; 
+      break;
     }
     case CommandCode::AFE_GET_DEV_CELL: {
       serverAfeManager.updateAfeCellDevVoltage(clientName, payload);
-      break;  
+      break;
     }
     case CommandCode::AFE_GET_DEV_AUX: {
-      serverAfeManager.updateAfeAuxDevVoltage(clientName, payload); 
+      serverAfeManager.updateAfeAuxDevVoltage(clientName, payload);
       break;
     }
     case CommandCode::AFE_GET_PACK_CELL: {
-      serverAfeManager.updateAfeCellPackVoltage(clientName, payload); 
+      serverAfeManager.updateAfeCellPackVoltage(clientName, payload);
       break;
     }
-    case CommandCode::AFE_GET_PACK_AUX: { 
-      serverAfeManager.updateAfeAuxPackVoltage(clientName, payload); 
-      break; 
+    case CommandCode::AFE_GET_PACK_AUX: {
+      serverAfeManager.updateAfeAuxPackVoltage(clientName, payload);
+      break;
     }
     case CommandCode::AFE_GET_DISCHARGE: {
-      serverAfeManager.updateAfeCellDischarge(clientName, payload); 
+      serverAfeManager.updateAfeCellDischarge(clientName, payload);
       break;
     }
     default: {

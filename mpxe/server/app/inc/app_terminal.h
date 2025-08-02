@@ -47,14 +47,14 @@ class Terminal {
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
   void handleGpioCommands(const std::string &action, std::vector<std::string> &tokens);
-  
+
   /**
    * @brief   Handle AFE commands provoidede an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
   void handleAfeCommands(const std::string &action, std::vector<std::string> &tokens);
-  
+
   /**
    * @brief   Parse the tokens and branch to the appropiate handler function
    * @details This shall branch to handleGpioCommands, handleI2CCommands, handleSPICommands and handleInterruptCommands

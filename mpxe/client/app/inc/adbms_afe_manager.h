@@ -12,6 +12,7 @@
 /* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
+
 #include <unordered_map>
 
 /* Inter-component Headers */
@@ -25,7 +26,7 @@
  * @{
  */
 
- /**
+/**
  * @class   AfeManager
  * @brief   Class that manages receiving and transmitting Afe commands and JSON logging
  * @details This class is responsible for handling and transmitting serialized messages for reading voltages,
@@ -42,14 +43,14 @@ class AfeManager {
    * @brief   Construct a AfeManager object
    * @details Custom constructor
    */
-  AfeManager() = default; 
+  AfeManager() = default;
 
   /**
    * @brief   Sets a specific AFE cell voltage given the data payload
    * @details This function shall be called upon receiving a cell-specific payload
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
-  */
+   */
   void setAfeCell(std::string &payload);
 
   /**
@@ -161,7 +162,6 @@ class AfeManager {
    * @return  Serialized response payload to be sent back to the server (may be empty on success)
    */
   std::string processCellDischarge(std::string &payload);
-
 };
 
 /** @} */

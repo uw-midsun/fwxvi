@@ -30,81 +30,25 @@ std::string Terminal::toLower(const std::string &input) {
   return lowered;
 }
 
-  void Terminal::handleGpioCommands(const std::string &action, std::vector<std::string> &tokens) {
-    std::string message;
-    if (action == "get_pin_state" && tokens.size() >= 3) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_STATE, tokens[2], "");
-    } else if (action == "get_all_states" && tokens.size() >= 2) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, tokens[0], "");
-    } else if (action == "get_pin_mode" && tokens.size() >= 3) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, tokens[2], "");
-    } else if (action == "get_all_modes" && tokens.size() >= 2) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_MODES, tokens[0], "");
-    } else if (action == "get_pin_alt_function" && tokens.size() >= 3) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_ALT_FUNCTION, tokens[2], "");
-    } else if (action == "get_all_alt_functions" && tokens.size() >= 2) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_ALT_FUNCTIONS, tokens[0], "");
-    } else if (action == "set_pin_state" && tokens.size() >= 4) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_PIN_STATE, tokens[2], tokens[3]);
-    } else if (action == "set_all_states" && tokens.size() >= 3) {
-      message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, tokens[0], tokens[2]);
-    } else {
-      std::cerr << "Unsupported action: " << action << std::endl;
-    }
-
-    if (!message.empty()) {
-      m_Server->sendMessage(m_targetClient, message);
-    } else {
-      std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
-    }
-    m_targetClient = nullptr;
-  }
-
-void Terminal::handleAfeCommands(const std::string &action, std::vector<std::string> &tokens) { 
-  std::string message; 
-  if (action == "set_cell" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[3]);
-  }
-  else if (action == "set_aux" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_AUX, tokens[2], tokens[3]);
-  }
-  else if (action == "set_dev_cell" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_CELL, tokens[2], tokens[3]);
-  }
-  else if (action == "set_dev_aux" && tokens.size() >= 4){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_AUX, tokens[2], tokens[3]);
-  }
-  else if (action == "set_pack_cell" && tokens.size() >= 3){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_CELL, "-1", tokens[2]);
-  }
-  else if (action == "set_pack_aux" && tokens.size() >= 3){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_AUX, "-1", tokens[2]); 
-  }
-  else if (action == "set_discharge" && tokens.size() >= 4) { 
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DISCHARGE, tokens[2], tokens[3]); 
-  }
-  else if (action == "get_cell" && tokens.size() >= 3) {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_CELL, tokens[2], ""); 
-  }
-  else if (action == "get_aux" && tokens.size() >= 3) {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_AUX, tokens[2], "");
-  }
-  else if (action == "get_dev_cell" && tokens.size() >= 3) {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_CELL, tokens[2], "");
-  }
-  else if (action == "get_dev_aux" && tokens.size() >= 3) {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_AUX, tokens[2], "");
-  }
-  else if (action == "get_pack_cell") {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_CELL, "-1", "");
-  }
-  else if (action == "get_pack_aux") {
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_AUX, "-1", "");
-  }
-  else if (action == "get_discharge" && tokens.size() >= 3) { 
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DISCHARGE, tokens[2], ""); 
-  }
-  else {
+void Terminal::handleGpioCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+  if (action == "get_pin_state" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_STATE, tokens[2], "");
+  } else if (action == "get_all_states" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_STATES, tokens[0], "");
+  } else if (action == "get_pin_mode" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_MODE, tokens[2], "");
+  } else if (action == "get_all_modes" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_MODES, tokens[0], "");
+  } else if (action == "get_pin_alt_function" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_ALT_FUNCTION, tokens[2], "");
+  } else if (action == "get_all_alt_functions" && tokens.size() >= 2) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_ALL_ALT_FUNCTIONS, tokens[0], "");
+  } else if (action == "set_pin_state" && tokens.size() >= 4) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_PIN_STATE, tokens[2], tokens[3]);
+  } else if (action == "set_all_states" && tokens.size() >= 3) {
+    message = serverGpioManager.createGpioCommand(CommandCode::GPIO_SET_ALL_STATES, tokens[0], tokens[2]);
+  } else {
     std::cerr << "Unsupported action: " << action << std::endl;
   }
 
@@ -113,7 +57,49 @@ void Terminal::handleAfeCommands(const std::string &action, std::vector<std::str
   } else {
     std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
   }
-  m_targetClient = nullptr; 
+  m_targetClient = nullptr;
+}
+
+void Terminal::handleAfeCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+  if (action == "set_cell" && tokens.size() >= 4) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[3]);
+  } else if (action == "set_aux" && tokens.size() >= 4) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_AUX, tokens[2], tokens[3]);
+  } else if (action == "set_dev_cell" && tokens.size() >= 4) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_CELL, tokens[2], tokens[3]);
+  } else if (action == "set_dev_aux" && tokens.size() >= 4) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DEV_AUX, tokens[2], tokens[3]);
+  } else if (action == "set_pack_cell" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_CELL, "-1", tokens[2]);
+  } else if (action == "set_pack_aux" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_PACK_AUX, "-1", tokens[2]);
+  } else if (action == "set_discharge" && tokens.size() >= 4) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_DISCHARGE, tokens[2], tokens[3]);
+  } else if (action == "get_cell" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_CELL, tokens[2], "");
+  } else if (action == "get_aux" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_AUX, tokens[2], "");
+  } else if (action == "get_dev_cell" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_CELL, tokens[2], "");
+  } else if (action == "get_dev_aux" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DEV_AUX, tokens[2], "");
+  } else if (action == "get_pack_cell") {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_CELL, "-1", "");
+  } else if (action == "get_pack_aux") {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_AUX, "-1", "");
+  } else if (action == "get_discharge" && tokens.size() >= 3) {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DISCHARGE, tokens[2], "");
+  } else {
+    std::cerr << "Unsupported action: " << action << std::endl;
+  }
+
+  if (!message.empty()) {
+    m_Server->sendMessage(m_targetClient, message);
+  } else {
+    std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
+  }
+  m_targetClient = nullptr;
 }
 
 void Terminal::parseCommand(std::vector<std::string> &tokens) {
