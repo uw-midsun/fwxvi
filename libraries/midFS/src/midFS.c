@@ -11,11 +11,11 @@ BlockGroup *blockGroups=NULL;
 
 StatusCode fs_init() {
     printf("File system init\n\r");
-    //setup superBlock and the first block group in memory
 
-    // memset(fs_memory, 0, sizeof(fs_memory));
+    //pull memory from HAL
     fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
 
+    //setup superBlock and the first block group in memory
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
     blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
 
@@ -45,11 +45,15 @@ StatusCode fs_init() {
 }
 
 StatusCode fs_pull(){
+
+    //pull memory from HAL
     fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
 
+    //setup superblock and block groups
     superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
     blockGroups = (BlockGroup *)&fs_memory[BLOCKGROUP_OFFSET];
 
+    //check if magic number matches
     if(superBlock->magic != 0xC1D1921D){
         printf("FS magic number does not match\n\r");
         return STATUS_CODE_INTERNAL_ERROR;
@@ -67,10 +71,10 @@ StatusCode fs_commit(){
     printf("Data: %c\n\r", blockGroups->dataBlocks[0][0]);
     fs_hal_write(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
     
-    
-    memset(fs_memory, 0, sizeof(fs_memory));
-    printf("Data POST WIPE: %c\n\r", blockGroups->dataBlocks[0][0]);
-    printf("Magic number from commit post-wipe: %#lx\n\r", superBlock->magic);
+    // Wipe everything for testing
+    // memset(fs_memory, 0, sizeof(fs_memory));
+    // printf("Data POST WIPE: %c\n\r", blockGroups->dataBlocks[0][0]);
+    // printf("Magic number from commit post-wipe: %#lx\n\r", superBlock->magic);
     
     return STATUS_CODE_OK;
 }
