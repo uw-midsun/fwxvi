@@ -1,5 +1,5 @@
 {
-    "selected_preset": "STM32L433CCU6_legacy_release",
+    "selected_preset": "STM32L433CCU6_bootstrap_debug",
 
     "presets": {
         "STM32L433CCU6_bootloader_debug": {
