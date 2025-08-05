@@ -20,9 +20,34 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
-
 #include "gpio.h"
 
 /* Intra-component Headers */
-
 #include "button.h"
+
+#define BUTTON_MANAGER_MAX_BUTTONS 10 /**< Maximum number of buttons supported */
+
+/**
+ * @brief Button Manager structure
+ */
+typedef struct {
+  Button buttons[BUTTON_MANAGER_MAX_BUTTONS]; /**< Array of buttons */
+  uint8_t num_buttons; /**< Number of buttons in the array */
+} ButtonManager;
+
+/**
+ * @brief Initialize the button manager
+ *
+ * @param manager Pointer to the ButtonManager instance
+ */
+
+void button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons);
+
+/**
+ * @brief Update the button manager
+ *
+ * @param manager Pointer to the ButtonManager instance
+ */
+void button_manager_update(ButtonManager *manager);
+
+/** @} */
