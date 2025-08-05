@@ -18,68 +18,63 @@
 
 /* Intra-component Headers */
 
-
 /**
  * @defgroup BUTTON
  * @brief Driver for an individual GPIO-connected button with debounce and edge-triggered callbacks.
  * @{
  */
 
- /** 
-  * @brief Button states representing current input
+/**
+ * @brief Button states representing current input
  */
 
-typedef enum {
-    BUTTON_IDLE,
-    BUTTON_PRESSED
-} ButtonState;
+typedef enum { BUTTON_IDLE, BUTTON_PRESSED } ButtonState;
 
- /** 
-  * @brief Button Callbacks 
+/**
+ * @brief Button Callbacks
  */
 
 typedef struct {
-    void (*rising_edge_cb)(Button *button);
-    void (*falling_edge_cb)(Button *button);
+  void (*rising_edge_cb)(Button *button);
+  void (*falling_edge_cb)(Button *button);
 } ButtonCallbacks;
 
- /** 
-  * @brief Button Config 
+/**
+ * @brief Button Config
  */
 
 typedef struct {
-    GpioAddress gpio;
-    bool active_low;
-    uint8_t debounce_ms;
-    ButtonCallbacks callbacks;
+  GpioAddress gpio;
+  bool active_low;
+  uint8_t debounce_ms;
+  ButtonCallbacks callbacks;
 } ButtonConfig;
 
- /** 
-  * @brief Button Class 
+/**
+ * @brief Button Class
  */
 
 typedef struct {
-    ButtonConfig *config;
-    uint8_t last_raw;
-    uint8_t counter;
-    ButtonState state;
+  ButtonConfig *config;
+  uint8_t last_raw;
+  uint8_t counter;
+  ButtonState state;
 } Button;
 
- /** 
-  * @brief Initialise a button 
-  * 
-  * @param button The button
-  * @param config Current button configuration
+/**
+ * @brief Initialise a button
+ *
+ * @param button The button
+ * @param config Current button configuration
  */
-
 
 void button_init(Button *button, ButtonConfig *config);
 
- /** 
-  * @brief Update the Button state to the requested state
-  * 
-  * @param button The button
-  * @param state Current button state
+/**
+ * @brief Update the Button state to the requested state
+ *
+ * @param button The button
+ * @param state Current button state
  */
 
-void button_update(Button* button, GpioState state);
+void button_update(Button *button, GpioState state);

@@ -13,13 +13,17 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
-
 #include "gpio.h"
 
 /* Intra-component Headers */
-
 #include "button.h"
 
+/**
+ * @brief Initialize a button with configuration
+ *
+ * @param button The button to initialize
+ * @param config The button configuration
+ */
 void button_init(Button *button, ButtonConfig *config){
     button->config = config;
     GpioState raw = gpio_get_state(&config->gpio);
@@ -30,7 +34,42 @@ void button_init(Button *button, ButtonConfig *config){
     button->counter = 0;
 }
 
+/**
+ * @brief Update the button state with debouncing and edge detection
+ *
+ * @param button The button to update
+ * @param state Current GPIO state from the button's input pin
+ */
 void button_update(Button* button, GpioState state) {
+    bool is_pressed = (state == GPIO_STATE_LOW && button->config->active_low) ||
+                      (state == GPIO_STATE_HIGH && !button->config->active_low);
     
+    uint8_t current_raw = is_pressed ? 1 : 0;
+    
+    if (current_raw != button->last_raw) {
+        button->counter = 0;
+        button->last_raw = current_raw;
+    } else {
+        if (button->counter < button->config->debounce_ms) {
+            button->counter++;
+        }
+        if (button->counter == button->config->debounce_ms) {
+            ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
+    
+            if (new_state != button->state) {
+                if (new_state == BUTTON_PRESSED) {
+                    if (button->config->callbacks.rising_edge_cb != NULL) {
+                        button->config->callbacks.rising_edge_cb(button);
+                    }
+                } else {
+                    if (button->config->callbacks.falling_edge_cb != NULL) {
+                        button->config->callbacks.falling_edge_cb(button);
+                    }
+                }
+                
+                button->state = new_state;
+            }
+        }
+    }
 }
 

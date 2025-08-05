@@ -10,7 +10,7 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
- /**
+/**
  * @defgroup BUTTON_MANAGER
  * @brief High-level manager for polling and updating multiple button instances on the steering board.
  * @{
