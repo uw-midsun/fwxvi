@@ -10,14 +10,15 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdint.h>
 
 /* Inter-component Headers */
-#include <stdint.h>
 #include "i2c.h"
 #include "gpio.h"
-#include "current_acs37800_defs.h"
+#include "status.h"
 
 /* Intra-component Headers */
+#include "current_acs37800_defs.h"
 
 /**
  * @defgroup ACS37800 Current Sensing
@@ -47,17 +48,17 @@ StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddres
 
  /* @brief Gets the instantaneous current in amps
  * @param storage - pointer to already initialized ACS37800 struct
- * @param out_current - current in amps
+ * @param out_current_amps - current in amps
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_amps);
 
 /* @brief Gets the instantaneous voltage in volts
  * @param storage - pointer to already initialized ACS37800 struct
- * @param out_voltage - voltage in volts
+ * @param out_voltage_mV - voltage in milivolts
  * @return STATUS_CODE_OK on success
  */
-StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_volts);
+StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV);
 
 /* @brief Gets the instantaneous power in watts
  * @param storage - pointer to already initialized ACS37800 struct
@@ -69,7 +70,7 @@ StatusCode acs37800_get_power(ACS37800_Storage *storage, float *out_power_watts)
 /* @brief Gets the 16 bit value from the ACS37800 volatile register
  * @param storage - pointer to already initialized ACS37800 struct
  * @param reg - register address
- * @param out - 16 bit value at that register
+ * @param out - 32 bit value at that register
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_register(ACS37800_Storage *storage, ACS37800_Registers reg, uint32_t *out_raw);
