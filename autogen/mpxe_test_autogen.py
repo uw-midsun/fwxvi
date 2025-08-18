@@ -86,6 +86,7 @@ VALID_CAN_DEFAULT_KEYS = {
     "cc_steering_input_lights",
     "cc_regen_percentage_percent",
 }
+VALID_CAN_ACTIONS = {"set"}
 
 VALID_COMMANDS = {
     "GPIO": {
@@ -114,7 +115,8 @@ VALID_COMMANDS = {
         "get_pack_aux",
         "get_discharge",
     },
-    "LOG": None,  
+    "CAN": VALID_CAN_ACTIONS,
+    "LOG": set(),  
 }
 
 def check_yaml_file(data): 
@@ -172,7 +174,8 @@ def check_yaml_file(data):
             if len(tokens) < 2:
                 raise Exception(f"Malformed command {cmd} in task {name}")
 
-            cmd_type, action = tokens[0], tokens[1]
+            cmd_type = tokens[0].upper()
+            action   = tokens[1].lower()
 
             if cmd_type not in VALID_COMMANDS:
                 raise Exception(f"Unknown command type: {cmd_type} in {cmd}")
@@ -184,6 +187,19 @@ def check_yaml_file(data):
                     raise Exception(f"LOG in task {name} needs a message")
                 continue
             
+            if cmd_type == "CAN":
+                # Expect: CAN SET <signal> <value>
+                if action not in VALID_CAN_ACTIONS:  # action is already lowercased
+                    raise Exception(
+                        f"Invalid CAN verb {tokens[1]} (expected one of {sorted(VALID_CAN_ACTIONS)})"
+                    )
+                if len(tokens) < 4:
+                    raise Exception(f"Malformed CAN command (need 4 tokens): {cmd}")
+                signal = tokens[2].lower()
+                value  = tokens[3]
+                if signal not in VALID_CAN_DEFAULT_KEYS:
+                    raise Exception(f"Unknown CAN signal '{signal}' in {cmd}")
+                continue
             # Checks if valid action (ex: set_all_states) is provided
             allowed = VALID_COMMANDS[cmd_type]
             if action.lower() not in allowed:
@@ -214,16 +230,24 @@ def get_data(args):
         for key, val in default_setup.items():
             can_defaults[key] = val
             
-        tasks = [{
-            "name": t["name"],
-            "period_ms": t["period_ms"],
-            "commands": [c.strip() for c in t["commands"]],
-            "command_types_used": list(dict.fromkeys(
-                (c.strip().split()[0].capitalize()
-                for c in t["commands"]
-                if c.strip() and c.strip().split()[0].upper() != "LOG")
-            ))
-        } for t in data["tasks"]]
+        tasks = []
+        for t in data["tasks"]:
+            cmds = [c.strip() for c in t["commands"] if c and c.strip()]
+            used_types = []
+            for c in cmds:
+                ct = c.split()[0].upper()            # e.g., "GPIO", "AFE", "CAN", "LOG"
+                if ct in ("LOG", "CAN"):             # strip LOG and CAN
+                    continue
+                ct_cap = ct.capitalize()             # "GPIO" -> "Gpio"
+                if ct_cap not in used_types:
+                    used_types.append(ct_cap)
+            tasks.append({
+                "name": t["name"],
+                "period_ms": t["period_ms"],
+                "commands": cmds,
+                "command_types_used": used_types,
+            })
+
 
     project_name = Path(args.output).parent.stem
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -270,7 +294,6 @@ def get_data(args):
     project_name = Path(args.output).parent.stem
     current_date = datetime.now().strftime("%Y-%m-%d")
     
-    print(handler_impls)
     return {
         "can_defaults":   can_defaults,
         "tasks":          tasks,

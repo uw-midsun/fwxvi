@@ -17,4 +17,11 @@ tasks:
       - GPIO GET_ALL_STATES
       - GPIO SET_PIN_STATE A12 HIGH
       - LOG "Thermistor voltage updated"
+  - name: afe_temp_update
+    period_ms: 10000
+    commands:
+      - CAN SET afe1_status_temp 29
+      - CAN SET afe2_status_temp 28
+      - CAN SET afe3_status_temp 30
+      - LOG "AFE temps simulated"
   

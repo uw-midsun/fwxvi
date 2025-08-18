@@ -3,7 +3,7 @@
  *
  * @brief  Main source file for app
  *
- * @date   2025-08-02
+ * @date   2025-08-18
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -100,6 +100,22 @@ int main(int argc, char **argv) {
       Server.broadcastMessage(message);
       
       std::cout << "Thermistor voltage updated" << std::endl;   
+      std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    }
+  });
+  task_threads.emplace_back([&Server]() {
+    while(true){
+      std::string message;
+      std::vector<std::string> tokens; 
+      std::string command; 
+      
+      /* CAN: SET afe1_status_temp 29 */
+      serverCanScheduler.update_afe1_status_temp(29);
+      /* CAN: SET afe2_status_temp 28 */
+      serverCanScheduler.update_afe2_status_temp(28);
+      /* CAN: SET afe3_status_temp 30 */
+      serverCanScheduler.update_afe3_status_temp(30);
+      std::cout << "AFE temps simulated" << std::endl;   
       std::this_thread::sleep_for(std::chrono::milliseconds(10000));
     }
   });

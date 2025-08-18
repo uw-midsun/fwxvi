@@ -85,7 +85,14 @@ int main(int argc, char **argv) {
       {%- set parts = command.split() %}
       {%- set command_type = parts[0] | capitalize %}
 
-      {%- if parts[0] != "LOG" %}  
+      {%- if parts[0] == "CAN" %}
+      {%- if parts|length >= 4 and parts[1] == "SET" %}
+      /* CAN: SET {{ parts[2] }} {{ parts[3] }} */
+      serverCanScheduler.update_{{ parts[2] | lower }}({{ parts[3] }});
+      {%- else %}
+      std::cerr << "Invalid CAN command: {{ command | replace('"','\\"') }}" << std::endl;
+      {%- endif %}
+      {%- elif parts[0] != "LOG" %}  
       tokens = { {%- for token in parts %}"{{ token }}"{% if not loop.last %}, {% endif %}{%- endfor %} };
       command = "{{parts[1] | lower}}";
       message = handle{{command_type}}Commands(command, tokens);
