@@ -186,10 +186,10 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe);
 /**
  * @brief   Reads and stores auxillary input from GPIO4 of each afe
  * @details RDAUXB command is sent through SPI, and converted values are read from cell register group B
- *          Data in the register will be the form: {GPIO4, AUXB2, AUXB3, PEC}
- *          Only GPIO4 value is stored, as well as the PEC.
+ *          Only GPIO4 and GPIO5 value is stored, as well as the PEC.
  *          PEC of data is compared to PEC read to check for validity
  *          Values are stored in the `afe->aux_voltages` array, if device_cell for device is enabled
+ * @note    See Table 63 (p.66) for more details
  * @param   afe Pointer to AdbmsAfeStorage struct, stores runtime data and settings of AFE
  * @param   device_cell The GPIO port we want to read from
  * @return  STATUS_CODE_OK if auxillary input was read correctly
@@ -224,15 +224,13 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
  */
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
 
-// TODO: REmember to put these back inside the guard
-
 #ifdef MS_PLATFORM_X86
-#ifdef __cplusplus  // Only for C++ compilers
+#ifdef __cplusplus 
 extern "C" {
 #endif
 extern AdbmsAfeStorage s_afe;
 extern AdbmsAfeSettings s_settings;
-#ifdef __cplusplus  // Close the extern "C" block
+#ifdef __cplusplus
 }
 #endif
 /**

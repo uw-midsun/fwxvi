@@ -93,6 +93,9 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       serverAfeManager.updateAfeCellDischarge(clientName, payload);
       break;
     }
+    case CommandCode::AFE_GET_PACK_DISCHARGE: {
+      serverAfeManager.updateAfeCellPackDischarge(clientName, payload);
+    }
     default: {
       break;
     }

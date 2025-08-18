@@ -121,6 +121,16 @@ class AfeManager {
   void updateAfeCellDischarge(std::string &projectName, std::string &payload);
 
   /**
+   * @brief   Update the discharge state of the whole AFE pack using the provided payload
+   * @details Loads the target AFE project, extracts the discharge state of the cell pack
+   *          from the deserialized payload, and updates the corresponding entry in the project info
+   *          Saves the updated discharge state to persistent storage
+   * @param   projectName Name of the project to be updated
+   * @param   payload Serialized datagram payload containting the discharge state
+   */
+  void updateAfeCellPackDischarge(std::string &projectName, std::string &payload);
+
+  /**
    * @brief   Create a Afe Command object given a CommandCode, and if required specific data
    * @details This function shall support all ADBMS AFE CommandCodes
    * @param   commandCode Command code

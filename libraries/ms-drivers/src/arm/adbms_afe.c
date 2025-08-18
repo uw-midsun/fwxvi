@@ -187,10 +187,9 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
 }
 
 StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
-  /* Double check, assuming only gpio2 stays on here */
   uint8_t gpio_bits[2];
-  gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF | ADBMS1818_GPIO5_PD_OFF;
-  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
+  gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO2_PD_OFF | ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF | ADBMS1818_GPIO5_PD_OFF;
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_ON | ADBMS1818_GPIO8_PD_ON | ADBMS1818_GPIO9_PD_OFF;
 
   AdbmsAfeSettings *settings = afe->settings;
 
@@ -219,8 +218,6 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
     cfgrB->reserved2 = 0;
     cfgrB->reserved3 = 0;
     cfgrB->reserved4 = 0;
-    /* If everything is zero could do:
-       AdbmsAfeConfigRegisterBData cfgr B = {0} */
   }
 
   return s_write_config(afe, gpio_bits);
@@ -243,10 +240,11 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
 }
 
 /* Start GPIOs ADC conversion and poll status for XXXXX */
+//TODO GPIO 4 and GPIO 5 are being read? But ADAX does not allow for that??
 StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) {
   AdbmsAfeSettings *settings = afe->settings;
 
-  /* Left=shift by 3 since CFGR0 bitfield uses the last 5 bits (See Table 40 on p. 62) */
+  /* Left=shift by 3 since CFGR0 bitfield uses the last 5 bits */
   uint8_t gpio_bits[2];
   gpio_bits[0] = (thermistor << 3) | ADBMS1818_GPIO4_PD_OFF;
   gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
@@ -256,7 +254,7 @@ StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) 
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
   /* ADAX Command Code (see Table 38 on pg. 60) */
-  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO4 | (md_cmd_bits << 7);
+  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7); 
 
   uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
   s_build_cmd(adax, cmd, ADBMS1818_CMD_SIZE);
@@ -318,7 +316,7 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
 
-  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);  // TODO: Double Check (if similar implementation)
+  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len); 
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Read register failed");
@@ -348,10 +346,14 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
       return STATUS_CODE_INTERNAL_ERROR;
     }
 
-    uint16_t voltage = devices_reg_data[device].reg.voltages[0];
+    uint16_t v_read_1 = devices_reg_data[device].reg.voltages[0];
+    uint16_t v_read_2 = devices_reg_data[device].reg.voltages[1];
 
-    uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-    afe->aux_voltages[index] = voltage;
+    uint16_t index_1 = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
+    uint16_t index_2 = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + 1 + device_cell; 
+
+    afe->aux_voltages[afe->aux_result_lookup[index_1]] = v_read_1;
+    afe->aux_voltages[afe->aux_result_lookup[index_2]] = v_read_2;
   }
 
   return STATUS_CODE_OK;

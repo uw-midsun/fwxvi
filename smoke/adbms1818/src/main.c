@@ -75,41 +75,41 @@ TASK(adbms1818, TASK_STACK_1024) {
 #endif
 
   while (true) {
-    LOG_DEBUG("Numbers of cells is: %u\n", s_afe.settings->num_cells);
-    status = adbms_afe_trigger_cell_conv(&s_afe);
-    if (status != STATUS_CODE_OK) {
-      // LOG_DEBUG("ADCV (Trigger Cell Voltage Conversion) failed: %d\n", status);
-      delay_ms(5);
-      LOG_DEBUG("Coninue");
-    }
+  //   LOG_DEBUG("Numbers of cells is: %u\n", s_afe.settings->num_cells);
+  //   status = adbms_afe_trigger_cell_conv(&s_afe);
+  //   if (status != STATUS_CODE_OK) {
+  //     // LOG_DEBUG("ADCV (Trigger Cell Voltage Conversion) failed: %d\n", status);
+  //     delay_ms(5);
+  //     LOG_DEBUG("Coninue");
+  //   }
 
-    status = adbms_afe_read_cells(&s_afe);
-    if (status != STATUS_CODE_OK) {
-      // LOG_DEBUG("RDCV (Read cell conversion) failed: %d\n", status);
-      delay_ms(5);
-      LOG_DEBUG("Coninue");
-    }
+  //   status = adbms_afe_read_cells(&s_afe);
+  //   if (status != STATUS_CODE_OK) {
+  //     // LOG_DEBUG("RDCV (Read cell conversion) failed: %d\n", status);
+  //     delay_ms(5);
+  //     LOG_DEBUG("Coninue");
+  //   }
 
-    status = adbms_afe_trigger_aux_conv(&s_afe, 4);
-    if (status != STATUS_CODE_OK) {
-      // LOG_DEBUG("ADAX (Trigger aux Voltage Conversion) failed: %d\n", status);
-      delay_ms(5);
-      LOG_DEBUG("Coninue");
-    }
+  //   status = adbms_afe_trigger_aux_conv(&s_afe, 4);
+  //   if (status != STATUS_CODE_OK) {
+  //     // LOG_DEBUG("ADAX (Trigger aux Voltage Conversion) failed: %d\n", status);
+  //     delay_ms(5);
+  //     LOG_DEBUG("Coninue");
+  //   }
 
-    status = adbms_afe_read_aux(&s_afe, 4);
-    if (status != STATUS_CODE_OK) {
-      // LOG_DEBUG("RDAUX (Read aux conversion) failed: %d\n", status);
-      delay_ms(5);
-      LOG_DEBUG("Coninue");
-    }
+  //   status = adbms_afe_read_aux(&s_afe, 4);
+  //   if (status != STATUS_CODE_OK) {
+  //     // LOG_DEBUG("RDAUX (Read aux conversion) failed: %d\n", status);
+  //     delay_ms(5);
+  //     LOG_DEBUG("Coninue");
+  //   }
 
-    for (size_t i = 0; i < ADBMS_AFE_MAX_CELLS; i++) {
-      //  LOG_DEBUG("Cell %02u : %4u mV\n",
-      //           (unsigned)i,
-      //           (unsigned)s_afe.cell_voltages[i]);
-      delay_ms(30);
-    }
+  //   for (size_t i = 0; i < ADBMS_AFE_MAX_CELLS; i++) {
+  //     //  LOG_DEBUG("Cell %02u : %4u mV\n",
+  //     //           (unsigned)i,
+  //     //           (unsigned)s_afe.cell_voltages[i]);
+  //     delay_ms(30);
+  //   }
   }
 }
 

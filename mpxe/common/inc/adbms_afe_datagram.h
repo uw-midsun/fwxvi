@@ -28,6 +28,24 @@ class ADBMS_AFE {
   static constexpr uint8_t AFE_MAX_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_THERMISTORS_PER_DEVICE; /**< Total thermistor channels supported */
 
   /**
+   * @brief Index defintions for cache array
+   */
+  enum class CacheIndex {
+    CELL_DEV_0 = 0, /**< Store cell voltage value for device 0 */
+    CELL_DEV_1,     /**< Store cell voltage value for device 1 */
+    CELL_DEV_2,     /**< Store cell voltage value for device 2 */
+    CELL_PACK,      /**< Store cell voltage value for pack */
+    AUX_DEV_0,      /**< Store aux voltage value for device 0 */
+    AUX_DEV_1,      /**< Store aux voltage value for device 1 */
+    AUX_DEV_2,      /**< Store aux voltage value for device 2 */
+    AUX_PACK,       /**< Store aux voltage value for pack */
+    DISCHARGE_PACK, /**< Store cell discharge value for pack */
+    MAX_CACHE,      /**< Max cache index */
+  };
+
+  static constexpr size_t CACHE_SIZE = static_cast<size_t>(CacheIndex::MAX_CACHE); /**< Max cache index */
+
+  /**
    * @brief  Cell Discharge State
    */
   enum class DischargeState {
@@ -44,8 +62,9 @@ class ADBMS_AFE {
 
     uint16_t cell_voltages[AFE_MAX_CELLS];      /**< Data storage for cell voltages */
     uint16_t aux_voltages[AFE_MAX_THERMISTORS]; /**< Data for aux voltages */
+    bool cell_discharges[AFE_MAX_CELLS];        /**< Cell discharges enabled/disabled */
 
-    bool cell_discharges[AFE_MAX_CELLS]; /**< Cell discharges enabled/disabled */
+    uint16_t cache[CACHE_SIZE]; /**< Stores temporary dev/pack values */
   };
 
   /**
@@ -128,6 +147,19 @@ class ADBMS_AFE {
    * @param is_discharge Is discharge enabled for cell
    */
   void setCellDischarge(bool is_discharge, uint8_t cell_index);
+  
+  /**
+   * @brief Set the Cell Pack Discharge 
+   * @param is_discharge Is discharge enabled for cell
+   */
+  void setCellPackDischarge(bool is_discharge); 
+  
+  /**
+   * @brief Set the Cache value for index
+   * @param cache_index the specific value to change
+   * @param value the new value to add
+   */
+  void setCache(CacheIndex cache_index, uint16_t value);
 
   /**
    * @brief   Get the Index
@@ -160,6 +192,12 @@ class ADBMS_AFE {
    * @param cell_index Cell index
    */
   bool getCellDischarge(uint8_t cell_index) const;
+
+  /**
+   * @brief Get the Cache value
+   * @param cache_index the index of the cache value you want to get
+   */
+  uint16_t getCache(CacheIndex cache_index) const;
 
  private:
   Payload m_afeDatagram;
