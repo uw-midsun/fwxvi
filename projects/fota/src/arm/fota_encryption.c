@@ -78,8 +78,7 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
     remaining_words -= this_words;
   }
 
-  //return FOTA_SUCCESS if the datagram is valid
-  return 0;
+  return crc;
 }
 
 FotaError fota_verify_packet_encryption(FotaPacket *packet) {
