@@ -23,7 +23,7 @@
 #define EPSILON 1e-9
 
  /** @brief State transition matrix (Intialize diagonals with time derivatives of kinematic equations)*/ 
-double A[STATE_SIZE][STATE_SIZE] = {
+ double A[STATE_SIZE][STATE_SIZE] = {
     {1, 0, 0, DT, 0, 0,  0,  0,  0},
     {0, 1, 0, 0, DT, 0,  0,  0,  0},
     {0, 0, 1, 0, 0, DT,  0,  0,  0},
@@ -37,15 +37,15 @@ double A[STATE_SIZE][STATE_SIZE] = {
 
 
 /**
-*@brief Takes in 2 matrices and performs matrix multiplication
+*@brief Takes in 2 matrices and performs matrix multiplication, of any size
 */
-StatusCode matrix_mult(double A[][STATE_SIZE], double B[][STATE_SIZE], double result[][STATE_SIZE]) {
+StatusCode matrix_mult(int rows_A, int cols_A, int rows_B,int cols_B, double A[rows_A][cols_A], double B[rows_B][cols_B], double result[rows_A][cols_B]) {
     if (!A||!B||!result) return STATUS_CODE_INVALID_ARGS;
     
-    for (int i = 0; i < STATE_SIZE; i++) {
-        for (int j = 0; j < STATE_SIZE; j++) {
-            result[i][j] = 0;
-            for (int k = 0; k < STATE_SIZE; k++) {
+    for (int i = 0; i < rows_A; i++) {
+        for (int j = 0; j < cols_B; j++) {
+            result[i][j] = 0.0;
+            for (int k = 0; k < cols_A; k++) {
                 result[i][j] += A[i][k] * B[k][j];
             }
         }
@@ -56,25 +56,25 @@ StatusCode matrix_mult(double A[][STATE_SIZE], double B[][STATE_SIZE], double re
 /**
 *@brief Takes in matrix and outputs its tranpose
 */
-StatusCode matrix_transpose(double matrix[][STATE_SIZE], double transpose[][STATE_SIZE]){
+StatusCode matrix_transpose(int rows, int cols, double matrix[rows][cols], double transpose[cols][rows]){
     if (!matrix||!transpose) return STATUS_CODE_INVALID_ARGS;
     
-    for (int i=0; i<STATE_SIZE; i++){
-        for (int j=0; j<STATE_SIZE; j++){
+    for (int i=0; i<rows; i++){
+        for (int j=0; j<cols; j++){
             transpose[i][j]=matrix[j][i];
         }
     }
 
-    return STATUS_CODE_OK
+    return STATUS_CODE_OK;
 }
 
 
 /**
 *@brief Takes in matrix and outputs its inverse
  */
- StatusCode inverse_matrix(double input[MEASUREMENT_SIZE][MEASUREMENT_SIZE], 
-                          double output[MEASUREMENT_SIZE][MEASUREMENT_SIZE]) {
-                        int i, j, k;
+ StatusCode inverse_matrix(double input[MEASUREMENT_SIZE][MEASUREMENT_SIZE], double output[MEASUREMENT_SIZE][MEASUREMENT_SIZE]) {
+
+int i, j, k;
                         
 //Initalize output to identity matrix
     for (i=0; i<MEASUREMENT_SIZE; i++){
@@ -84,6 +84,7 @@ StatusCode matrix_transpose(double matrix[][STATE_SIZE], double transpose[][STAT
     }
     //Create augmeneted matrix
     double temp[MEASUREMENT_SIZE][2*MEASUREMENT_SIZE];
+
     for (int i=0; i<MEASUREMENT_SIZE; i++){
         for (j=0; j<MEASUREMENT_SIZE; j++){
             temp[i][j]=input[i][j];
@@ -129,19 +130,23 @@ StatusCode predict_state(void){
     for (int i=6; i<STATE_SIZE; i++){
         x[i]+=U[i-3]*DT;
     }
-    return STATUS_CODE_OK
+    return STATUS_CODE_OK;
 }
 
 
-//compute P K|K-1
+
+/**
+*@brief Update covraiance from current transition matrix
+*/
 StatusCode predict_covariance(void) {
     double A_T[STATE_SIZE][STATE_SIZE]={};
     double temp[STATE_SIZE][STATE_SIZE]={};
     double P_curr[STATE_SIZE][STATE_SIZE] = {0};
 
-    matrix_transpose(A, A_T);
-    matrix_mult(A, P, P_curr);
-    matrix_mult(P_curr, A_T, P);
+    matrix_transpose(STATE_SIZE, STATE_SIZE, A, A_T);
+    matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, P, P_curr);
+    matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, P_curr, A_T, P);
+
 
     // Add process noise Q
     for (int i = 0; i < STATE_SIZE; i++) {
@@ -180,10 +185,9 @@ StatusCode update_state(void) {
     }
 
     // compute S|k = H * P K|K-1 * H^T + R
-    matrix_transpose(H, H_T);
-    matrix_mult(H, P, P_H_T);
-    matrix_mult(P_H_T, H_T, S);
-
+    matrix_mult(6, STATE_SIZE, STATE_SIZE, STATE_SIZE, H, P, P_H_T);
+    matrix_mult(6, STATE_SIZE, STATE_SIZE, 6, P_H_T, H_T, S);
+    matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
 
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
         for (int j = 0; j < MEASUREMENT_SIZE; j++) {
@@ -193,7 +197,7 @@ StatusCode update_state(void) {
 
 
     inverse_matrix(S, S_inv);
-    matrix_mult(P_H_T, S_inv, K);
+matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
 
 
     // Update state estimate: x = x + K * y
@@ -209,7 +213,7 @@ StatusCode update_state(void) {
     double KH[STATE_SIZE][STATE_SIZE] = {0};
 
 
-    matrix_mult(K, H, KH);
+    matrix_mult(STATE_SIZE, 6, 6, STATE_SIZE, K, H, KH);
 
 
     // create P K|K
@@ -222,8 +226,7 @@ StatusCode update_state(void) {
 
 
     double P_temp[STATE_SIZE][STATE_SIZE] = {0};
-    matrix_mult(I_KH, P, P_temp);
-
+matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, I_KH, P, P_temp);
     //Copy results back to P
     for (int i = 0; i < STATE_SIZE; i++) {
         for (int j = 0; j < STATE_SIZE; j++) {
