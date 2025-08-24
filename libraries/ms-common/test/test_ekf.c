@@ -20,17 +20,17 @@
 #include "unity.h"
 #define EPSILON 1e-12
 
-
-int compare_matrices(double A[][STATE_SIZE], double B[][STATE_SIZE]){
-    for (int i = 0; i < STATE_SIZE; i++) {
-        for (int j = 0; j < STATE_SIZE; j++) {
+int compare_matrices(int rows, int cols, double A[rows][cols], double B[rows][cols]) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             if (fabs(A[i][j] - B[i][j]) > EPSILON) {
-                return 0;  
+                return 0;
             }
         }
     }
     return 1;
-};
+}
+
 
 
 /* Setup & Teardown */
@@ -52,7 +52,7 @@ void test_matrix_mult(void){
     double expected[STATE_SIZE][STATE_SIZE] = {{19, 22}, {43, 50}};
     double result[STATE_SIZE][STATE_SIZE] = {0};
     matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, B, result);
-    TEST_ASSERT_TRUE(compare_matrices(result, expected));
+    TEST_ASSERT_TRUE(compare_matrices(3, 3, result, expected));
 };
 
 
@@ -60,11 +60,11 @@ TEST_IN_TASK
 
 
 void test_matrix_transpose(void){
-    double A[STATE_SIZE][STATE_SIZE] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    double expected[STATE_SIZE][STATE_SIZE];
-    double result[STATE_SIZE][STATE_SIZE];
-    transpose_matrix(3, 3, A, expected);
-    TEST_ASSERT_TRUE(compare_matrices(result, expected));
+    double A[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    double expected[3][3]={{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};
+    double result[3][3];
+    transpose_matrix(3, 3, A, result);
+    TEST_ASSERT_TRUE(compare_matrices(3, 3, result, expected));
 }
 
 
@@ -75,14 +75,23 @@ void test_matrix_transpose(void){
 /* FSM Initialization Test */
 
 void test_matrix_inverse(void){
-    double A[STATE_SIZE][STATE_SIZE]={{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    double expected[STATE_SIZE][STATE_SIZE]={{1,4,7}, {2,5,8},{3,6,9}};
-    double result[STATE_SIZE][STATE_SIZE];
-    inverse_matrix(STATE_SIZE, A, result);
-    TEST_ASSERT_TRUE(compare_matrices(result, expected));
+    double A[2][2] = {
+        {-1, 3.0/2.0},
+        {1,-1},
+    };
 
+    // Precomputed inverse of A (rounded)
+    double expected[2][2] = {
+        {2, 3},
+        {2, 2}
+    };
 
+    double result[2][2];
+
+    inverse_matrix(2, A, result);
+    TEST_ASSERT_TRUE(compare_matrices(2, 2, result, expected));
 }
+
 
 TEST_IN_TASK
 /**
@@ -156,31 +165,28 @@ void test_predict_covariance(void) {
 /* Valid FSM State Transition */
 TEST_IN_TASK
 void test_update_state(void){
-    double z[MEASUREMENT_SIZE]={1,2,3,4,5,6};
-    double H[MEASUREMENT_SIZE][STATE_SIZE] = {
-        {1, 0, 0, 0, 0, 0, 0, 0, 0},  // Position x
-        {0, 1, 0, 0, 0, 0, 0, 0, 0},  // Position y
-        {0, 0, 1, 0, 0, 0, 0, 0, 0},  // Position z
-        {0, 0, 0, 1, 0, 0, 0, 0, 0},  // Velocity x
-        {0, 0, 0, 0, 1, 0, 0, 0, 0},  // Velocity y
-        {0, 0, 0, 0, 0, 1, 0, 0, 0}   // Velocity z
-    };
+    double z[MEASUREMENT_SIZE] = {1, 2, 3, 4, 5, 6};
     double expected_x[STATE_SIZE] = {1, 2, 3, 0.1, 0.2, 0.3, 0, 0, 0};
 
+    // Set U to simulate measurements
+    memcpy(U, z, sizeof(z));
 
-    // Initialize state x and covariance P
-    memset(x, 0, sizeof(x));  // Start with zero state
+    // Zero state and identity covariance
+    memset(x, 0, sizeof(x));
+    memset(P, 0, sizeof(P));
     for (int i = 0; i < STATE_SIZE; i++) {
-        P[i][i] = 1.0;  // Identity matrix for covariance
+        P[i][i] = 1.0;
     }
 
+    // Perform state update
+    update_state();
 
-    update_state(z, H);
+    // Check only first 6 entries
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
         TEST_ASSERT_FLOAT_WITHIN(EPSILON, expected_x[i], x[i]);
     }
-
 }
+
 /**
  * @brief Check Kinematics calculations
  */
@@ -201,5 +207,5 @@ void test_mult_zero(void){
      double result[STATE_SIZE][STATE_SIZE]={0};
      double expected[STATE_SIZE][STATE_SIZE]={0};
      matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, B, result);
-     TEST_ASSERT_TRUE(compare_matrices(result, expected));
+     TEST_ASSERT_TRUE(compare_matrices(STATE_SIZE, STATE_SIZE, result, expected));
 }

@@ -193,11 +193,12 @@ StatusCode update_state(void) {
             y[i] -= H[i][j] * x[j];
         }
     }
+    transpose_matrix(MEASUREMENT_SIZE, STATE_SIZE, H, H_T);
+
 
     // compute S|k = H * P K|K-1 * H^T + R
     matrix_mult(6, STATE_SIZE, STATE_SIZE, STATE_SIZE, H, P, P_H_T);
     matrix_mult(6, STATE_SIZE, STATE_SIZE, 6, P_H_T, H_T, S);
-    matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
 
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
         for (int j = 0; j < MEASUREMENT_SIZE; j++) {
@@ -206,8 +207,9 @@ StatusCode update_state(void) {
     }
 
 
-    inverse_matrix(STATE_SIZE, S, S_inv);
-matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
+    inverse_matrix(MEASUREMENT_SIZE, S, S_inv);
+    matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
+
 
 
     // Update state estimate: x = x + K * y
