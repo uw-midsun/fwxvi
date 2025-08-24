@@ -21,7 +21,7 @@
 #define EPSILON 1e-12
 
 
-static int is_equal(double matrix1[][STATE_SIZE]){
+int compare_matrices(double A[][STATE_SIZE], double B[][STATE_SIZE]){
     for (int i = 0; i < STATE_SIZE; i++) {
         for (int j = 0; j < STATE_SIZE; j++) {
             if (fabs(A[i][j] - B[i][j]) > EPSILON) {
@@ -51,7 +51,7 @@ void test_matrix_mult(void){
     double B[STATE_SIZE][STATE_SIZE] = {{5, 6}, {7, 8}};
     double expected[STATE_SIZE][STATE_SIZE] = {{19, 22}, {43, 50}};
     double result[STATE_SIZE][STATE_SIZE] = {0};
-    multiply_matrices(A, B, result);
+    matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, B, result);
     TEST_ASSERT_TRUE(compare_matrices(result, expected));
 };
 
@@ -62,13 +62,46 @@ TEST_IN_TASK
 void test_matrix_transpose(void){
     double A[STATE_SIZE][STATE_SIZE] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
     double expected[STATE_SIZE][STATE_SIZE];
-    double result{STATE_SIZE}[STATE_SIZE];
-    transponse_matrix(A, expected);
+    double result[STATE_SIZE][STATE_SIZE];
+    transpose_matrix(3, 3, A, expected);
     TEST_ASSERT_TRUE(compare_matrices(result, expected));
 }
 
 
+
+/**
+ * @brief Test inverting matrices
+ */
 /* FSM Initialization Test */
+
+void test_matrix_inverse(void){
+    double A[STATE_SIZE][STATE_SIZE]={{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    double expected[STATE_SIZE][STATE_SIZE]={{1,4,7}, {2,5,8},{3,6,9}};
+    double result[STATE_SIZE][STATE_SIZE];
+    inverse_matrix(STATE_SIZE, A, result);
+    TEST_ASSERT_TRUE(compare_matrices(result, expected));
+
+
+}
+
+TEST_IN_TASK
+/**
+ * @brief Test A matrix has correct structure
+ */
+
+void test_A_is_expected(void){
+    double dt=1;
+    //check for diagonals to have A[i][i]=1 and A[i][i+3]=dt;
+for (int i=0;i<3;i++) {
+    TEST_ASSERT_DOUBLE_WITHIN(TOL, 1.0, A[i][i]);
+    TEST_ASSERT_DOUBLE_WITHIN(TOL, dt,  A[i][i+3]);
+  }
+  
+  //Check kinematics in correct entries
+  for(int i=3; i<6; i++){
+    TEST_ASSERT_DOUBLE_WITHIN(TOL, 1.0, A[i][i]);
+  }
+  }
 
 
 TEST_IN_TASK
@@ -93,22 +126,7 @@ void test_predict_state(void) {
 
 
 
-TEST_IN_TASK
-void test_predict_state(void) {
-    // Initialize state vector
-    x[0] = 0; x[1] = 0; x[2] = 0;
-    x[3] = 1; x[4] = 1; x[5] = 1;
-    U[0] = 1; U[1] = 2; U[2] = 3;
 
-
-    predict_state();
-
-
-    // Expected results after one step
-    TEST_ASSERT_FLOAT_WITHIN(EPSILON, 1 + 0.5 * 1 * DT * DT, x[0]);
-    TEST_ASSERT_FLOAT_WITHIN(EPSILON, 1 + 0.5 * 2 * DT * DT, x[1]);
-    TEST_ASSERT_FLOAT_WITHIN(EPSILON, 1 + 0.5 * 3 * DT * DT, x[2]);
-}
 
 
 /* Check covariance prediction works */
@@ -162,4 +180,26 @@ void test_update_state(void){
         TEST_ASSERT_FLOAT_WITHIN(EPSILON, expected_x[i], x[i]);
     }
 
+}
+/**
+ * @brief Check Kinematics calculations
+ */
+
+
+/**
+ * @brief Test covariance prediction
+ */
+
+
+/**
+ * @brief test multiplying matrixes by 0
+ */
+
+void test_mult_zero(void){
+     double A[STATE_SIZE][STATE_SIZE]={0};
+     double B[STATE_SIZE][STATE_SIZE]={0};
+     double result[STATE_SIZE][STATE_SIZE]={0};
+     double expected[STATE_SIZE][STATE_SIZE]={0};
+     matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, B, result);
+     TEST_ASSERT_TRUE(compare_matrices(result, expected));
 }

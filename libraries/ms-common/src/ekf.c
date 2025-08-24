@@ -35,6 +35,20 @@
     {0, 0, 0, 0, 0, 0,   0, 0, 1}
 };
 
+double x[STATE_SIZE] = {0};
+double P[STATE_SIZE][STATE_SIZE] = {0};
+double Q[STATE_SIZE][STATE_SIZE] = {0};
+double R[MEASUREMENT_SIZE][MEASUREMENT_SIZE] = {
+    {1, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 0, 1},
+};
+double U[MEASUREMENT_SIZE] = {0};
+
+
 
 /**
 *@brief Takes in 2 matrices and performs matrix multiplication, of any size
@@ -56,7 +70,7 @@ StatusCode matrix_mult(int rows_A, int cols_A, int rows_B,int cols_B, double A[r
 /**
 *@brief Takes in matrix and outputs its tranpose
 */
-StatusCode matrix_transpose(int rows, int cols, double matrix[rows][cols], double transpose[cols][rows]){
+StatusCode transpose_matrix(int rows, int cols, double matrix[rows][cols], double transpose[cols][rows]){
     if (!matrix||!transpose) return STATUS_CODE_INVALID_ARGS;
     
     for (int i=0; i<rows; i++){
@@ -72,52 +86,48 @@ StatusCode matrix_transpose(int rows, int cols, double matrix[rows][cols], doubl
 /**
 *@brief Takes in matrix and outputs its inverse
  */
- StatusCode inverse_matrix(double input[MEASUREMENT_SIZE][MEASUREMENT_SIZE], double output[MEASUREMENT_SIZE][MEASUREMENT_SIZE]) {
+StatusCode inverse_matrix(int size, double input[size][size], double output[size][size]) {
+    if (!input || !output || size <= 0) return STATUS_CODE_INVALID_ARGS;
 
-int i, j, k;
-                        
-//Initalize output to identity matrix
-    for (i=0; i<MEASUREMENT_SIZE; i++){
-        for (j=0; j<MEASUREMENT_SIZE; j++){
-            output[i][j]=(i==j) ? 1.0:0.0;
-            }
-    }
-    //Create augmeneted matrix
-    double temp[MEASUREMENT_SIZE][2*MEASUREMENT_SIZE];
+    double temp[size][2 * size];
 
-    for (int i=0; i<MEASUREMENT_SIZE; i++){
-        for (j=0; j<MEASUREMENT_SIZE; j++){
-            temp[i][j]=input[i][j];
-            temp[i][j+MEASUREMENT_SIZE]=output[i][j];
+    // Initialize output to identity matrix
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            output[i][j] = (i == j) ? 1.0 : 0.0;
+            temp[i][j] = input[i][j];
+            temp[i][j + size] = output[i][j];
         }
     }
-    //Gauss Jordan
-    for (i=0; i<MEASUREMENT_SIZE; i++){
-        double pivot=temp[i][i];
-        //Matrix isnt invertible
-        if (fabs(pivot)<EPSILON) return STATUS_CODE_INVALID_ARGS;
 
-        for (j=0; j<2*MEASUREMENT_SIZE; j++){
-            temp[i][j]/=pivot;
+    // Gauss-Jordan elimination
+    for (int i = 0; i < size; i++) {
+        double pivot = temp[i][i];
+        if (fabs(pivot) < EPSILON) return STATUS_CODE_INVALID_ARGS;
+
+        for (int j = 0; j < 2 * size; j++) {
+            temp[i][j] /= pivot;
         }
 
-        for (k=0; k<MEASUREMENT_SIZE; k++){
-            if (k==i) continue;
-            double factor=temp[k][i];
-            for (j=0; j<2*MEASUREMENT_SIZE; j++){
-                temp[k][j]-=factor*temp[i][j];
+        for (int k = 0; k < size; k++) {
+            if (k == i) continue;
+            double factor = temp[k][i];
+            for (int j = 0; j < 2 * size; j++) {
+                temp[k][j] -= factor * temp[i][j];
             }
         }
     }
-    for (i=0; i<MEASUREMENT_SIZE; i++){
-        for (j=0; j<MEASUREMENT_SIZE; j++){
-            output[i][j]=temp[i][j+MEASUREMENT_SIZE];
+
+    // Extract inverse from augmented matrix
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            output[i][j] = temp[i][j + size];
         }
     }
-    
+
     return STATUS_CODE_OK;
-
 }
+
 
 //use kinematics eqns to predict state
 StatusCode predict_state(void){
@@ -143,7 +153,7 @@ StatusCode predict_covariance(void) {
     double temp[STATE_SIZE][STATE_SIZE]={};
     double P_curr[STATE_SIZE][STATE_SIZE] = {0};
 
-    matrix_transpose(STATE_SIZE, STATE_SIZE, A, A_T);
+    transpose_matrix(STATE_SIZE, STATE_SIZE, A, A_T);
     matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, P, P_curr);
     matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, P_curr, A_T, P);
 
@@ -196,7 +206,7 @@ StatusCode update_state(void) {
     }
 
 
-    inverse_matrix(S, S_inv);
+    inverse_matrix(STATE_SIZE, S, S_inv);
 matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
 
 
