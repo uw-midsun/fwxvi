@@ -75,7 +75,7 @@ StatusCode transpose_matrix(int rows, int cols, double matrix[rows][cols], doubl
     
     for (int i=0; i<rows; i++){
         for (int j=0; j<cols; j++){
-            transpose[i][j]=matrix[j][i];
+            transpose[j][i]=matrix[i][j];
         }
     }
 
@@ -171,81 +171,87 @@ StatusCode predict_covariance(void) {
 *@brief Update state using measurement and kalman gain
 */
 StatusCode update_state(void) {
-    double H[MEASUREMENT_SIZE][STATE_SIZE] = {0}; // map state vector to measurements
-    double K[STATE_SIZE][MEASUREMENT_SIZE] = {0}; //kalman gain
-    double S[MEASUREMENT_SIZE][MEASUREMENT_SIZE] = {0};//uncertainty in residual
+   double H[MEASUREMENT_SIZE][STATE_SIZE] = {0}; 
+    double K[STATE_SIZE][MEASUREMENT_SIZE] = {0}; 
+    double S[MEASUREMENT_SIZE][MEASUREMENT_SIZE] = {0};
     double S_inv[MEASUREMENT_SIZE][MEASUREMENT_SIZE] = {0};
     double H_T[STATE_SIZE][MEASUREMENT_SIZE] = {0};
-    double P_H_T[STATE_SIZE][MEASUREMENT_SIZE] = {0};
     double y[MEASUREMENT_SIZE] = {0};
 
-
-    // initialize H matrix (maps state to measurement)
+    // Initialize H matrix (measurement model: z = H*x + noise)
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
-        H[i][i + 3] = 1.0;
+        H[i][i + 3] = 1.0;  // Direct observation of velocities/angular rates
     }
 
-
-    // y~ = z - H * x
+    //innovation: y = z - H*x
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
-        y[i]=U[i];
-        for (int j=0; j<STATE_SIZE; j++){
+        y[i] = U[i]; // measurement
+        for (int j = 0; j < STATE_SIZE; j++) {
             y[i] -= H[i][j] * x[j];
         }
     }
+
+    // Transpose H: H_T is STATE_SIZE x MEASUREMENT_SIZE
     transpose_matrix(MEASUREMENT_SIZE, STATE_SIZE, H, H_T);
 
+    //  1: H*P -> temp1 (MEASUREMENT_SIZE x STATE_SIZE)
+    double temp1[MEASUREMENT_SIZE][STATE_SIZE] = {0};
+    matrix_mult(MEASUREMENT_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, H, P, temp1);
+    
+    //  2: (H*P)*H^T -> S (MEASUREMENT_SIZE x MEASUREMENT_SIZE)  
+    matrix_mult(MEASUREMENT_SIZE, STATE_SIZE, STATE_SIZE, MEASUREMENT_SIZE, temp1, H_T, S);
 
-    // compute S|k = H * P K|K-1 * H^T + R
-    matrix_mult(6, STATE_SIZE, STATE_SIZE, STATE_SIZE, H, P, P_H_T);
-    matrix_mult(6, STATE_SIZE, STATE_SIZE, 6, P_H_T, H_T, S);
-
+  
     for (int i = 0; i < MEASUREMENT_SIZE; i++) {
         for (int j = 0; j < MEASUREMENT_SIZE; j++) {
             S[i][j] += R[i][j];
         }
     }
 
+    if (inverse_matrix(MEASUREMENT_SIZE, S, S_inv) != STATUS_CODE_OK) {
+        return STATUS_CODE_INVALID_ARGS;
+    }
 
-    inverse_matrix(MEASUREMENT_SIZE, S, S_inv);
-    matrix_mult(STATE_SIZE, 6, 6, 6, P_H_T, S_inv, K);
+    // Compute Kalman gain: K = P*H^T*S^(-1)
+    // Step 1: P*H^T -> temp2 (STATE_SIZE x MEASUREMENT_SIZE)
+    double temp2[STATE_SIZE][MEASUREMENT_SIZE] = {0};
+    matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, MEASUREMENT_SIZE, P, H_T, temp2);
+    
+    // Step 2: (P*H^T)*S^(-1) -> K (STATE_SIZE x MEASUREMENT_SIZE)
+    matrix_mult(STATE_SIZE, MEASUREMENT_SIZE, MEASUREMENT_SIZE, MEASUREMENT_SIZE, temp2, S_inv, K);
 
-
-
-    // Update state estimate: x = x + K * y
+    // Update state estimate: x = x + K*y
     for (int i = 0; i < STATE_SIZE; i++) {
         for (int j = 0; j < MEASUREMENT_SIZE; j++) {
             x[i] += K[i][j] * y[j];
         }
     }
 
-
-    // Update covariance: P = (I - K*H) * P
+    // Update covariance: P = (I - K*H)*P
     double I_KH[STATE_SIZE][STATE_SIZE] = {0};
     double KH[STATE_SIZE][STATE_SIZE] = {0};
 
+    matrix_mult(STATE_SIZE, MEASUREMENT_SIZE, MEASUREMENT_SIZE, STATE_SIZE, K, H, KH);
 
-    matrix_mult(STATE_SIZE, 6, 6, STATE_SIZE, K, H, KH);
-
-
-    // create P K|K
+    // Create (I - K*H)
     for (int i = 0; i < STATE_SIZE; i++) {
         for (int j = 0; j < STATE_SIZE; j++) {
-            I_KH[i][j] = (i == j ? 1 : 0) - KH[i][j];
-            //create an identity matrix and then sutract the KH matrix
+            I_KH[i][j] = (i == j ? 1.0 : 0.0) - KH[i][j];
         }
     }
 
-
     double P_temp[STATE_SIZE][STATE_SIZE] = {0};
-matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, I_KH, P, P_temp);
-    //Copy results back to P
+    matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, I_KH, P, P_temp);
+    
+    // Copy results back to P
     for (int i = 0; i < STATE_SIZE; i++) {
         for (int j = 0; j < STATE_SIZE; j++) {
             P[i][j] = P_temp[i][j];
         }
     }
+
     return STATUS_CODE_OK;
+
 
 }
 
