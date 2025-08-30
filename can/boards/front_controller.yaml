@@ -1,0 +1,18 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  pedal_data:
+    id: 21
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 5
+    signals:
+      percentage:
+        length: 32
