@@ -101,7 +101,7 @@ void AfeManager::setAfePackAux(std::string &payload) {
   m_afeDatagram.deserialize(payload);
 
   uint16_t voltage = m_afeDatagram.getCache(Datagram::ADBMS_AFE::CacheIndex::AUX_PACK);
-  
+
   adbms_afe_set_pack_aux_voltages(&s_afe, voltage);
 }
 
@@ -114,13 +114,13 @@ void AfeManager::setCellDischarge(std::string &payload) {
   adbms_afe_toggle_cell_discharge(&s_afe, cell_index, is_discharge);
 }
 
-void AfeManager::setCellPackDischarge(std::string &payload){
-  m_afeDatagram.deserialize(payload); 
-  
+void AfeManager::setCellPackDischarge(std::string &payload) {
+  m_afeDatagram.deserialize(payload);
+
   bool is_discharge = static_cast<bool>(m_afeDatagram.getCache(Datagram::ADBMS_AFE::CacheIndex::DISCHARGE_PACK));
 
-  for (uint8_t cell_index = 0; cell_index < ADBMS_AFE_MAX_CELLS; ++cell_index){
-    adbms_afe_toggle_cell_discharge(&s_afe, cell_index, is_discharge); 
+  for (uint8_t cell_index = 0; cell_index < ADBMS_AFE_MAX_CELLS; ++cell_index) {
+    adbms_afe_toggle_cell_discharge(&s_afe, cell_index, is_discharge);
   }
 }
 
@@ -206,16 +206,16 @@ std::string AfeManager::processAfePackAux() {
 }
 
 std::string AfeManager::processCellDischarge(std::string &payload) {
-  m_afeDatagram.deserialize(payload); 
+  m_afeDatagram.deserialize(payload);
   uint16_t cell_index = m_afeDatagram.getIndex();
   bool is_discharge = adbms_afe_get_cell_discharge(&s_afe, cell_index);
-  std::cout << "Process is_discharge is " << is_discharge << std::endl; 
+  std::cout << "Process is_discharge is " << is_discharge << std::endl;
   m_afeDatagram.setCellDischarge(is_discharge, cell_index);
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_DISCHARGE);
 }
 
-std::string AfeManager::processCellPackDischarge(){
+std::string AfeManager::processCellPackDischarge() {
   for (std::size_t dev_index = 0; dev_index < ADBMS_AFE_MAX_DEVICES; ++dev_index) {
     const uint16_t start = dev_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE;
     const uint16_t end = start + ADBMS_AFE_MAX_CELLS_PER_DEVICE;
@@ -225,6 +225,6 @@ std::string AfeManager::processCellPackDischarge(){
       m_afeDatagram.setCellDischarge(is_discharge, cell);
     }
   }
-  
-  return m_afeDatagram.serialize(CommandCode::AFE_GET_PACK_DISCHARGE); 
+
+  return m_afeDatagram.serialize(CommandCode::AFE_GET_PACK_DISCHARGE);
 }

@@ -169,7 +169,6 @@ typedef struct {
   uint8_t reserved2;
   uint8_t reserved3;
   uint8_t reserved4;
-
 } _PACKED AdbmsAfeConfigRegisterBData;
 static_assert(sizeof(AdbmsAfeConfigRegisterBData) == 6, "AdbmsAfeConfigRegisterBData must be 6 bytes");
 
@@ -341,14 +340,14 @@ static_assert(sizeof(AdbmsAfeAuxData) == 8, "AdbmsAfeAuxData must be 8 bytes");
 #define ADBMS1818_ADCV_DISCHARGE_PERMITTED (1 << 4)
 
 /** @brief ADAX command macros */
-#define ADBMS1818_ADAX_GPIO_ALL 0x00                  /**< Convert GPIO1–GPIO5, 2nd reference, and GPIO6–GPIO9. */
-#define ADBMS1818_ADAX_GPIO1_6 0x01                   /**< Convert GPIO1 and GPIO6. */
-#define ADBMS1818_ADAX_GPIO2_7 0x02                   /**< Convert GPIO2 and GPIO7. */
-#define ADBMS1818_ADAX_GPIO3_8 0x03                   /**< Convert GPIO3 and GPIO8. */
-#define ADBMS1818_ADAX_GPIO4_9 0x04                   /**< Convert GPIO4 and GPIO9. */
-#define ADBMS1818_ADAX_GPIO5 0x05                     /**< Convert GPIO5 only. */
-#define ADBMS1818_ADAX_REF2 0x06                      /**< Convert 2nd reference only (VREF2). */
-#define ADBMS1818_ADAX_MODE_FAST (0 << 8) | (1 << 7)  /**< Select fast ADC mode */
+#define ADBMS1818_ADAX_GPIO_ALL 0x00                 /**< Convert GPIO1–GPIO5, 2nd reference, and GPIO6–GPIO9. */
+#define ADBMS1818_ADAX_GPIO1_6 0x01                  /**< Convert GPIO1 and GPIO6. */
+#define ADBMS1818_ADAX_GPIO2_7 0x02                  /**< Convert GPIO2 and GPIO7. */
+#define ADBMS1818_ADAX_GPIO3_8 0x03                  /**< Convert GPIO3 and GPIO8. */
+#define ADBMS1818_ADAX_GPIO4_9 0x04                  /**< Convert GPIO4 and GPIO9. */
+#define ADBMS1818_ADAX_GPIO5 0x05                    /**< Convert GPIO5 only. */
+#define ADBMS1818_ADAX_REF2 0x06                     /**< Convert 2nd reference only (VREF2). */
+#define ADBMS1818_ADAX_MODE_FAST (0 << 8) | (1 << 7) /**< Select fast ADC mode */
 
 /** @brief Write Codes for ICOMn (n = 1, 2, 3) */
 #define ADBMS1818_ICOM_CSBM_LOW (1 << 3)                                     /**< CSBM low signal */

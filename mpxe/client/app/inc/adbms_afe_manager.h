@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************************************
- * @file   adbms_afe_manager.cc
+ * @file   adbms_afe_manager.h
  *
  * @brief  Header file defining the AfeManager class for the client
  *
@@ -178,7 +178,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @return  Serialized response payload to be sent pack to the server (may be empty on success)
    */
-  std::string processCellPackDischarge(); 
+  std::string processCellPackDischarge();
 };
 
 /** @} */

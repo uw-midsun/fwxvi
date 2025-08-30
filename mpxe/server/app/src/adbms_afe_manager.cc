@@ -153,10 +153,10 @@ void AfeManager::updateAfeCellDischarge(std::string &projectName, std::string &p
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeCellPackDischarge(std::string &projectName, std::string &payload){
-  loadAfeInfo(projectName); 
+void AfeManager::updateAfeCellPackDischarge(std::string &projectName, std::string &payload) {
+  loadAfeInfo(projectName);
 
-  m_afeDatagram.deserialize(payload); 
+  m_afeDatagram.deserialize(payload);
 
   for (std::size_t dev_index = 0; dev_index < 3; ++dev_index) {
     const uint16_t start = dev_index * MAX_CELLS_PER_DEVICE;
@@ -231,15 +231,15 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
           throw std::runtime_error("Invalid Discharge state: " + data);
           break;
         }
-        
+
         uint8_t idx = static_cast<uint8_t>(std::stoi(index));
         m_afeDatagram.setIndex(idx);
         m_afeDatagram.setCellDischarge(is_discharge, idx);
-        
+
         break;
       }
       case CommandCode::AFE_SET_PACK_DISCHARGE: {
-        bool is_discharge; 
+        bool is_discharge;
 
         if (data == "ON" || data == "on") {
           is_discharge = static_cast<bool>(Datagram::ADBMS_AFE::DischargeState::DISCHARGE_ON);
@@ -251,7 +251,7 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         }
 
         m_afeDatagram.setCellPackDischarge(is_discharge);
-        
+
         break;
       }
 

@@ -240,7 +240,7 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
 }
 
 /* Start GPIOs ADC conversion and poll status for XXXXX */
-//TODO GPIO 4 and GPIO 5 are being read? But ADAX does not allow for that??
+// TODO GPIO 4 and GPIO 5 are being read? But ADAX does not allow for that??
 StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) {
   AdbmsAfeSettings *settings = afe->settings;
 
@@ -254,7 +254,7 @@ StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) 
   /* See Table 39 (p. 61) for the MD[1:0] command bit description and values */
   uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
   /* ADAX Command Code (see Table 38 on pg. 60) */
-  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7); 
+  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7);
 
   uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
   s_build_cmd(adax, cmd, ADBMS1818_CMD_SIZE);
@@ -316,7 +316,7 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
 
   size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
 
-  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len); 
+  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Read register failed");
@@ -350,7 +350,7 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
     uint16_t v_read_2 = devices_reg_data[device].reg.voltages[1];
 
     uint16_t index_1 = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-    uint16_t index_2 = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + 1 + device_cell; 
+    uint16_t index_2 = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + 1 + device_cell;
 
     afe->aux_voltages[afe->aux_result_lookup[index_1]] = v_read_1;
     afe->aux_voltages[afe->aux_result_lookup[index_2]] = v_read_2;

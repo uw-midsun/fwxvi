@@ -76,7 +76,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     LOG_DEBUG("Settings Not allocated properly");
     return STATUS_CODE_INTERNAL_ERROR;
   }
- 
+
   afe->device_configs = calloc(0, sizeof(*afe->device_configs));
   if (!afe->device_configs) {
     LOG_DEBUG("Device Configs not allocated properly");
@@ -192,7 +192,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
     else
       cfgB->discharge_bitset &= ~(1u << b_bit);
   }
-  
+
   return STATUS_CODE_OK;
 }
 
@@ -309,7 +309,7 @@ bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {
     uint16_t bitset = afe->device_configs->devices[device].cfgA.discharge_bitset;
     discharge = (bitset >> bit_position) & 0x1;
   } else {
-    uint16_t b_bit  = bit_position - 12;  
+    uint16_t b_bit = bit_position - 12;
     uint16_t bitset = afe->device_configs->devices[device].cfgB.discharge_bitset;
     discharge = (bitset >> b_bit) & 0x1;
   }

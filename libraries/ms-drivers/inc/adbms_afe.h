@@ -225,7 +225,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
 
 #ifdef MS_PLATFORM_X86
-#ifdef __cplusplus 
+#ifdef __cplusplus
 extern "C" {
 #endif
 extern AdbmsAfeStorage s_afe;

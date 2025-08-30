@@ -147,13 +147,13 @@ class ADBMS_AFE {
    * @param is_discharge Is discharge enabled for cell
    */
   void setCellDischarge(bool is_discharge, uint8_t cell_index);
-  
+
   /**
-   * @brief Set the Cell Pack Discharge 
+   * @brief Set the Cell Pack Discharge
    * @param is_discharge Is discharge enabled for cell
    */
-  void setCellPackDischarge(bool is_discharge); 
-  
+  void setCellPackDischarge(bool is_discharge);
+
   /**
    * @brief Set the Cache value for index
    * @param cache_index the specific value to change
