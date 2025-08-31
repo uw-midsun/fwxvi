@@ -49,6 +49,6 @@ StatusCode cell_sense_init(BmsStorage *storage);
 // Mark cell for discharging (takes effect after config is re-written)
 // |cell| should be [0, settings.num_cells)
 
-StatusCode cell_discharge(LtcAfeStorage *afe);
+StatusCode cell_discharge(AdbmsAfeStorage *afe);
 
 /** @} */
