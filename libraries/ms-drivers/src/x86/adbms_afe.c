@@ -22,8 +22,7 @@
 #include "adbms_afe_crc15.h"
 #include "adbms_afe_regs.h"
 
-AdbmsAfeStorage s_afe;
-AdbmsAfeSettings s_settings;
+static AdbmsAfeStorage *p_afe = NULL;
 
 /**
  * Calculate the cell result and discharge cell index mappings for the enabled cells across all AFEs.
@@ -54,6 +53,10 @@ static void s_calc_offsets(AdbmsAfeStorage *afe) {
   }
 }
 
+AdbmsAfeStorage *adbms_afe_get_storage(void) {
+  return p_afe;
+}
+
 StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) {
   if (config->num_devices > ADBMS_AFE_MAX_DEVICES) {
     LOG_DEBUG("AFE: Configured device count exceeds user-defined limit. Update ADBMS_AFE_MAX_DEVICES if necessary.");
@@ -68,6 +71,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  p_afe = afe;
   memset(afe, 0, sizeof(*afe));
 
   /* Initialize memory of AFE structure: reset values and copy configuration settings */

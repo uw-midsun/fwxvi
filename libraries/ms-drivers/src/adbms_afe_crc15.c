@@ -1,5 +1,5 @@
 /************************************************************************************************
- * @file   ltc_afe_crc15.c
+ * @file   adbms_afe_crc15.c
  *
  * @brief  Source file to implement CRC15 for the LTC8611 AFE
  *

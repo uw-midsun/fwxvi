@@ -225,14 +225,13 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
 
 #ifdef MS_PLATFORM_X86
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern AdbmsAfeStorage s_afe;
-extern AdbmsAfeSettings s_settings;
-#ifdef __cplusplus
-}
-#endif
+
+/**
+ * @brief Get the initialized AFE data storage
+ * @return Pointer to the AFE data storage
+ */
+AdbmsAfeStorage *adbms_afe_get_storage(void);
+
 /**
  * @brief Sets the voltage for a specific cell in the AFE.
  * @param afe Pointer to the AFE storage structure.
