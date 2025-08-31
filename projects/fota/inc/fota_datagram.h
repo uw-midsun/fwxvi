@@ -25,31 +25,51 @@
  */
 
 /** @brief Maximum supported datagram size (2KB) */
-#define FOTA_MAX_DATAGRAM_SIZE (8U * 256U)
+#define FOTA_MAX_DATAGRAM_SIZE (16U * FOTA_PACKET_PAYLOAD_SIZE)
 
 /** @brief Maximum number of packets that can make up a datagram (8 data + 1 Header) */
 #define FOTA_MAX_PACKETS_PER_DATAGRAM ((FOTA_MAX_DATAGRAM_SIZE / FOTA_PACKET_PAYLOAD_SIZE) + 1U)
 
+/** @brief FOTA Datagram header payload size of 10-bytes */
+#define FOTA_DATAGRAM_HEADER_PAYLOAD_SIZE 10U
+
 /**
  * @brief Datagram types corresponding to different FOTA operations
  */
-typedef enum {
+typedef enum FotaDatagramType {
   FOTA_DATAGRAM_TYPE_FIRMWARE_METADATA, /**< Firmware metadata information */
   FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK,    /**< Chunk of firmware data */
-  FOTA_DATAGRAM_TYPE_UPDATE_REQUEST,    /**< Request to perform update */
-  FOTA_DATAGRAM_TYPE_UPDATE_RESPONSE,   /**< Response to update request */
-  FOTA_DATAGRAM_TYPE_VERIFICATION       /**< Verification information */
+  FOTA_DATAGRAM_TYPE_JUMP_TO_APP,       /**< Request to jump to application */
+  FOTA_DATAGRAM_TYPE_ACKNOWLEDGEMENT,   /**< Acknowledgement information */
+  FOTA_DATAGRAM_TYPE_ERROR
 } FotaDatagramType;
+
+/**
+ * Datagram Header Payload Format (10 bytes total):
+ *
+ *  +-------------------+----------------+---------------------------------------------------------------+
+ *  | Field             | Size (bytes)   | Description                                                  |
+ *  +-------------------+----------------+---------------------------------------------------------------+
+ *  | total_length      | 4              | Total length of datagram                                     |
+ *  | num_packets       | 2              | Number of data packets                                       |
+ *  | node ID           | 2              | Target node ID (0 = RF Board, 1,2... = CAN Bootloader board) |
+ *  | datagram_crc32    | 4              | CRC32 of datagram data                                       |
+ *  +-------------------+----------------+---------------------------------------------------------------+
+ *
+ * All fields are encoded in little-endian format.
+ */
 
 /**
  * @brief Structure representing the datagram header (In the payload)
  */
 typedef struct {
-  FotaDatagramType type; /**< Type of datagram */
-  uint32_t datagram_id;  /**< Unique ID for this datagram */
-  uint32_t total_length; /**< Total length of datagram content */
-  uint16_t num_packets;  /**< Number of packets in this datagram */
-  uint32_t crc32;        /**< CRC of the entire datagram for verification */
+  uint8_t target_node_id;  /**< Target node ID */
+  FotaDatagramType type;   /**< Type of datagram */
+  uint16_t num_packets;    /**< Number of packets in this datagram excluding the header packet */
+  uint32_t datagram_id;    /**< Unique ID for this datagram */
+  uint32_t total_length;   /**< Total length of datagram content */
+  uint32_t datagram_crc32; /**< CRC of the entire datagram for verification */
+  uint32_t packet_crc32;   /**< CRC of the header packet */
 } FotaDatagramHeaderPacketPayload;
 
 /**
@@ -78,7 +98,7 @@ FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint
  * @brief    Fragment a datagram into packets for transmission
  * @param    datagram    Datagram to fragment
  * @param    packets     Array to store generated packets
- * @param    num_packets Pointer to store number of packets generated
+ * @param    num_packets Pointer to store number of packets generated (Including the header packet)
  * @param    max_packets Maximum number of packets that can be stored in the array
  * @return   FotaError  Error code
  */
