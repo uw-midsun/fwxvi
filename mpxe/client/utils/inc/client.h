@@ -44,7 +44,7 @@ class Client {
   /** @brief  The connection callback function definition */
   using connectCallback = std::function<void(Client *client)>;
 
-  static constexpr size_t MAX_BUFFER_SIZE = 256; /**< Maximum permitted read size for all clients */
+  static constexpr size_t MAX_BUFFER_SIZE = 512; /**< Maximum permitted read size for all clients */
 
   pthread_t m_receiverThreadId;       /**< Thread Id for reading incoming server data */
   pthread_t m_processMessageThreadId; /**< Thread Id for processing cached server data */

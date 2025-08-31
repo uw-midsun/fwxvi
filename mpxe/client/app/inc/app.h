@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "adbms_afe_manager.h"
 #include "gpio_manager.h"
 
 /**
@@ -34,5 +35,6 @@
 #define DEFAULT_HARDWARE_MODEL "STM32L433CCU6"
 
 extern GpioManager clientGpioManager; /**< Global GPIO Manager */
+extern AfeManager clientAfeManager;
 
 /** @} */
