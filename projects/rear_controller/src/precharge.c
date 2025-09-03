@@ -1,33 +1,44 @@
+/************************************************************************************************
+ * @file    precharge.c
+ *
+ * @brief   Precharge
+ *
+ * @date    2025-09-02
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "precharge.h"
-#include "rear_fw_defs.h"
-#include "interrupts.h"
-#include "status.h"
-#include "gpio.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "delay.h"
+#include "gpio.h"
+#include "interrupts.h"
+#include "precharge.h"
+#include "rear_hw_defs.h"
 
+/* Intra-component Headers */
+#include "status.h"
 
+static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_GPIO;
 
-GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_GPIO;
-
-InterruptSettings precharge_settings = {
-    INTERRUPT_TYPE_INTERRUPT,
-    INTERRUPT_PRIORITY_NORMAL,
-    INTERRUPT_EDGE_FALLING,
+static InterruptSettings precharge_settings = {
+  INTERRUPT_TYPE_INTERRUPT,
+  INTERRUPT_PRIORITY_NORMAL,
+  INTERRUPT_EDGE_FALLING,
 };
 
-StatusCode precharge_init( Event event, const Task *task){
-    gpio_init_pin(&precharge_address, GPIO_INPUT_PULL_UP, GPIO_STATE_LOW);
+StatusCode precharge_init(Event event, const Task *task) {
+  gpio_init_pin(&precharge_address, GPIO_INPUT_PULL_UP, GPIO_STATE_LOW);
 
-    GpioState state;
-    delay_ms(10);
-    state = gpio_get_state(&precharge_address);
+  /* 10ms Debounce */
+  delay_ms(10U);
+  GpioState state = gpio_get_state(&precharge_address);
 
-    if (state == GPIO_STATE_HIGH){
-        gpio_register_interrupt(&precharge_address, &precharge_settings, PRECHARGE_EVENT, task);
-    }
-    else {} // TO DO
+  if (state == GPIO_STATE_HIGH) {
+    gpio_register_interrupt(&precharge_address, &precharge_settings, event, task);
+  } else {
+    /* TODO: Handle precharge complete */
+  }
 
-    return STATUS_CODE_OK;
+  return STATUS_CODE_OK;
 }
-

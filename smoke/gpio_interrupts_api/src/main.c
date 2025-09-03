@@ -10,17 +10,18 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
+#include "mcu.h"
 #include "status.h"
-#include "delay.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
 TASK(gpio_interrupts_api, TASK_STACK_1024) {
-  while (true) {}
+  while (true) {
+  }
 }
 
 #ifdef MS_PLATFORM_X86
