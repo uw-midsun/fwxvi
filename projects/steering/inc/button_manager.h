@@ -10,12 +10,6 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/**
- * @defgroup BUTTON_MANAGER
- * @brief High-level manager for polling and updating multiple button instances on the steering board.
- * @{
- */
-
 /* Standard library Headers */
 #include <stdbool.h>
 
@@ -24,6 +18,12 @@
 
 /* Intra-component Headers */
 #include "button.h"
+
+/**
+ * @defgroup BUTTON_MANAGER
+ * @brief High-level manager for polling and updating multiple button instances on the steering board.
+ * @{
+ */
 
 #define BUTTON_MANAGER_MAX_BUTTONS 10 /**< Maximum number of buttons supported */
 
@@ -36,18 +36,22 @@ typedef struct {
 } ButtonManager;
 
 /**
- * @brief Initialize the button manager
- *
- * @param manager Pointer to the ButtonManager instance
+ * @brief   Initialize the button manager
+ * @param   manager Pointer to the ButtonManager instance
+ * @param   configs
+ * @param   num_buttons
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
 
-void button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons);
+StatusCode button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons);
 
 /**
- * @brief Update the button manager
- *
- * @param manager Pointer to the ButtonManager instance
+ * @brief   Update the button manager
+ * @param   manager Pointer to the ButtonManager instance
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-void button_manager_update(ButtonManager *manager);
+StatusCode button_manager_update(ButtonManager *manager);
 
 /** @} */

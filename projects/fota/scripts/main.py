@@ -10,7 +10,6 @@
 #
 #  @ingroup FOTA_Python
 
-
 def main():
     """
     @brief Main function for fota

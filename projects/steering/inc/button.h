@@ -14,6 +14,7 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
+#include "status.h"
 
 /* Intra-component Headers */
 
@@ -31,9 +32,6 @@ typedef enum {
   BUTTON_PRESSED /**< Button is pressed */
 } ButtonState;
 
-/**
- * @brief Forward declaration for Button struct
- */
 typedef struct Button Button;
 
 /**
@@ -65,19 +63,20 @@ typedef struct Button {
 } Button;
 
 /**
- * @brief Initialize a button instance
- *
- * @param button Pointer to the Button instance to initialize
- * @param config Pointer to the ButtonConfig structure
+ * @brief   Initialize a button instance
+ * @param   button Pointer to the Button instance to initialize
+ * @param   config Pointer to the ButtonConfig structure
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-void button_init(Button *button, ButtonConfig *config);
+StatusCode button_init(Button *button, ButtonConfig *config);
 
 /**
- * @brief Update the Button state based on the given GPIO state
- *
- * @param button Pointer to the Button instance
- * @param state  Current raw GPIO state
+ * @brief   Update the Button state based on the given GPIO state
+ * @param   button Pointer to the Button instance
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-void button_update(Button *button, GpioState state);
+StatusCode button_update(Button *button);
 
 /** @} */

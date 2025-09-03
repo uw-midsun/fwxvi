@@ -18,25 +18,28 @@
 /* Intra-component Headers */
 #include "button_manager.h"
 
-/**
- * @brief Initialize the button manager
- *
- * @param manager Pointer to the ButtonManager instance
- */
-void button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons) {
-  manager->num_buttons = num_buttons;
-  for (uint8_t i = 0; i < num_buttons; i++) {
-    button_init(&manager->buttons[i], &configs[i]);
+StatusCode button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons) {
+  if (manager == NULL || configs == NULL || num_buttons > BUTTON_MANAGER_MAX_BUTTONS) {
+    return STATUS_CODE_INVALID_ARGS;
   }
+
+  manager->num_buttons = num_buttons;
+
+  for (uint8_t i = 0U; i < num_buttons; i++) {
+    status_ok_or_return(button_init(&manager->buttons[i], &configs[i]));
+  }
+
+  return STATUS_CODE_OK;
 }
 
-/**
- * @brief Update the button manager
- *
- * @param manager Pointer to the ButtonManager instance
- */
-void button_manager_update(ButtonManager *manager) {
-  for (uint8_t i = 0; i < manager->num_buttons; i++) {
-    button_update(&manager->buttons[i], gpio_get_state(&manager->buttons[i].config->gpio));
+StatusCode button_manager_update(ButtonManager *manager) {
+  if (manager == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
+
+  for (uint8_t i = 0; i < manager->num_buttons; i++) {
+    status_ok_or_return(button_update(&manager->buttons[i]));
+  }
+
+  return STATUS_CODE_OK;
 }

@@ -12,42 +12,52 @@
 #include <stddef.h>
 
 /* Inter-component Headers */
+#include "delay.h"
 #include "gpio.h"
 
 /* Intra-component Headers */
 #include "button.h"
 
-/**
- * @brief Initialize a button with configuration
- *
- * @param button The button to initialize
- * @param config The button configuration
- */
-void button_init(Button *button, ButtonConfig *config) {
+StatusCode button_init(Button *button, ButtonConfig *config) {
+  if (button == NULL || config == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   button->config = config;
-  GpioState raw = gpio_get_state(&config->gpio);
-  bool is_pressed = (raw == GPIO_STATE_LOW && button->config->active_low) || (raw == GPIO_STATE_HIGH && !button->config->active_low);
-  button->last_raw = is_pressed ? 0 : 1;
+
+  gpio_init_pin(&config->gpio, GPIO_INPUT_FLOATING, GPIO_STATE_LOW);
+  delay_ms(config->debounce_ms);
+
+  GpioState startup_state = gpio_get_state(&config->gpio);
+
+  bool is_pressed = (startup_state == GPIO_STATE_LOW && button->config->active_low) || (startup_state == GPIO_STATE_HIGH && !button->config->active_low);
+
+  button->last_raw = is_pressed ? 0U : 1U;
   button->state = is_pressed ? BUTTON_PRESSED : BUTTON_IDLE;
-  button->counter = 0;
+  button->counter = 0U;
+
+  return STATUS_CODE_OK;
 }
 
-/**
- * @brief Update the button state with debouncing and edge detection
- *
- * @param button The button to update
- * @param state Current GPIO state from the button's input pin
- */
-void button_update(Button *button, GpioState state) {
+StatusCode button_update(Button *button) {
+  if (button == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  GpioState state = gpio_get_state(&button->config->gpio);
+
   bool is_pressed = (state == GPIO_STATE_LOW && button->config->active_low) || (state == GPIO_STATE_HIGH && !button->config->active_low);
-  uint8_t current_raw = is_pressed ? 1 : 0;
+  uint8_t current_raw = is_pressed ? 1U : 0U;
 
   if (current_raw != button->last_raw) {
-    button->counter = 1;
+    button->counter = 0U;
     button->last_raw = current_raw;
+  } else if (button->counter < button->config->debounce_ms) {
+    button->counter++;
 
     if (button->counter == button->config->debounce_ms) {
       ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
+
       if (new_state != button->state) {
         if (new_state == BUTTON_PRESSED) {
           if (button->config->callbacks.rising_edge_cb) {
@@ -58,30 +68,11 @@ void button_update(Button *button, GpioState state) {
             button->config->callbacks.falling_edge_cb(button);
           }
         }
+
         button->state = new_state;
       }
     }
-    return;
   }
 
-  if (button->counter < button->config->debounce_ms) {
-    button->counter++;
-    if (button->counter != button->config->debounce_ms) {
-      return;
-    }
-  }
-
-  ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
-  if (new_state != button->state) {
-    if (new_state == BUTTON_PRESSED) {
-      if (button->config->callbacks.rising_edge_cb) {
-        button->config->callbacks.rising_edge_cb(button);
-      }
-    } else {
-      if (button->config->callbacks.falling_edge_cb) {
-        button->config->callbacks.falling_edge_cb(button);
-      }
-    }
-    button->state = new_state;
-  }
+  return STATUS_CODE_OK;
 }
