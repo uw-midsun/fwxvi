@@ -13,8 +13,8 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "adbms_afe.h"
 #include "i2c.h"
-#include "ltc_afe.h"
 #include "max17261_fuel_gauge.h"
 #include "status.h"
 
@@ -53,7 +53,7 @@ typedef struct {
   uint16_t max_temperature; /**< Pack max temperature reading */
 
   BmsConfig bms_config;                 /**< BMS configuration settings */
-  LtcAfeStorage ltc_afe_storage;        /**< LTC6811 AFE Storage */
+  AdbmsAfeStorage adbms_afe_storage;    /**< ADBMS1818 AFE Storage */
   Max17261Settings fuel_guage_settings; /**< MAX17261 Fuel gauge settings */
   Max17261Storage fuel_guage_storage;   /**< MAX17261 Fuel gauge storage */
 

@@ -1,5 +1,5 @@
 /************************************************************************************************
- * @file   ltc_afe_crc15.c
+ * @file   adbms_afe_crc15.c
  *
  * @brief  Source file to implement CRC15 for the LTC8611 AFE
  *
@@ -10,7 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "ltc_afe_crc15.h"
+#include "adbms_afe_crc15.h"
 
 /* Intra-component Headers */
 

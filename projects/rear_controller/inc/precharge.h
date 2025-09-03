@@ -1,17 +1,20 @@
 #pragma once
 
 /************************************************************************************************
- * @file   rear_fw_defs.h
+ * @file    precharge.h
  *
- * @brief  Rear controller board hardware definitions
+ * @brief   Motor precharge handler header
  *
- * @date   2025-05-28
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2025-09-02
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "gpio_interrupts.h"
+#include "notify.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -20,5 +23,7 @@
  * @brief    Rear Controller Board Firmware
  * @{
  */
+
+StatusCode precharge_init(Event event, const Task *task);
 
 /** @} */

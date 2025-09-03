@@ -4,5 +4,8 @@
         "ms-common",
         "ms-drivers"
     ],
-    "mpxe": true
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "can": false
 }

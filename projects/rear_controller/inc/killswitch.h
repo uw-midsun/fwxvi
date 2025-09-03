@@ -1,17 +1,20 @@
 #pragma once
 
 /************************************************************************************************
- * @file   rear_controller.h
+ * @file    killswitch.h
  *
- * @brief  Header file for rear_controller
+ * @brief   Vehicle killswitch handler header file
  *
- * @date   2025-05-28
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2025-09-02
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "gpio_interrupts.h"
+#include "notify.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -21,7 +24,6 @@
  * @{
  */
 
-#define REAR_CONTROLLER_PRECHARGE_EVENT 0U
-#define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
+StatusCode killswitch_init(Event event, const Task *task);
 
 /** @} */
