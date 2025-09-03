@@ -1,7 +1,7 @@
 /************************************************************************************************
- * @file    motor_can.c
+ * @file    ws22_motor_can.c
  *
- * @brief   motor can source file
+ * @brief   Source file for Wavesculptor 22 CAN
  *
  * @date    2025-06-29
  * @author  Midnight Sun Team #24 - MSXVI
