@@ -1,36 +1,28 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for rear_controller
+ * @brief  Smoke test for gpio_interrupts_api
  *
- * @date   2025-05-28
+ * @date   2025-07-19
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "master_tasks.h"
 #include "mcu.h"
+#include "status.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "killswitch.h"
-#include "precharge.h"
-#include "rear_controller.h"
 
-void pre_loop_init() {
-  killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
-  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
+TASK(gpio_interrupts_api, TASK_STACK_1024) {
+  while (true) {
+  }
 }
-
-void run_1000hz_cycle() {}
-
-void run_10hz_cycle() {}
-
-void run_1hz_cycle() {}
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
@@ -43,7 +35,7 @@ int main() {
   tasks_init();
   log_init();
 
-  init_master_tasks();
+  tasks_init_task(gpio_interrupts_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

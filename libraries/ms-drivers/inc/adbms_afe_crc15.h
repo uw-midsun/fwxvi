@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   ltc_afe_crc15.h
+ * @file   adbms_afe_crc15.h
  *
- * @brief  Header file to implement CRC15 for the LTC8611 AFE
+ * @brief  Header file to implement CRC15 for the ADBMS1818 AFE
  *
  * @date   2025-04-13
  * @author Midnight Sun Team #24 - MSXVI
@@ -18,8 +18,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup LTC6811
- * @brief    LTC6811 library
+ * @defgroup ADBMS1818
+ * @brief    ADBMS1818 library
  * @{
  */
 
