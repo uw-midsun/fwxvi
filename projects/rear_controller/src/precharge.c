@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file    precharge.c
  *
- * @brief   Precharge
+ * @brief   Motor precharge handler source file
  *
  * @date    2025-09-02
  * @author  Midnight Sun Team #24 - MSXVI

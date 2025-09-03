@@ -3,7 +3,7 @@
 /************************************************************************************************
  * @file    precharge.h
  *
- * @brief   Motor precharge handler Header
+ * @brief   Motor precharge handler header
  *
  * @date    2025-09-02
  * @author  Midnight Sun Team #24 - MSXVI
