@@ -10,10 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "precharge.h"
+
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
-#include "precharge.h"
 #include "rear_hw_defs.h"
 
 /* Intra-component Headers */

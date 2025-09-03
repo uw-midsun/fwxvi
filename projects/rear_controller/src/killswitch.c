@@ -10,10 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "killswitch.h"
+
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
-#include "killswitch.h"
 #include "rear_hw_defs.h"
 
 /* Intra-component Headers */
@@ -36,8 +37,7 @@ StatusCode killswitch_init(Event event, const Task *task) {
 
   if (state == GPIO_STATE_LOW) {
     gpio_register_interrupt(&killswitch_address, &killswitch_settings, event, task);
-  }
-  else {
+  } else {
     /* TODO: Trigger Killswitch pressed events */
   }
 

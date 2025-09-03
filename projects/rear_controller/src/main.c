@@ -17,9 +17,9 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "rear_controller.h"
 #include "killswitch.h"
 #include "precharge.h"
+#include "rear_controller.h"
 
 void pre_loop_init() {
   killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());

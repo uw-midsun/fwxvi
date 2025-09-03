@@ -22,9 +22,11 @@
  */
 
 /** @brief  Precharge pin */
-#define REAR_CONTROLLER_PRECHARGE_GPIO { .port = GPIO_PORT_A, .pin = 3 }
+#define REAR_CONTROLLER_PRECHARGE_GPIO \
+  { .port = GPIO_PORT_A, .pin = 3 }
 
 /** @brief  Killswitch pin */
-#define REAR_CONTROLLER_KILLSWITCH_GPIO { .port = GPIO_PORT_A, .pin = 11 }
+#define REAR_CONTROLLER_KILLSWITCH_GPIO \
+  { .port = GPIO_PORT_A, .pin = 11 }
 
 /** @} */
