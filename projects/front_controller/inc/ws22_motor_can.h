@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file   motor_can.h
+ * @file   ws22_motor_can.h
  *
- * @brief  Header file for Motor CAN interface
+ * @brief  Header file for Wavesculptor 22 CAN
  *
  * @date   2025-06-29
  * @author Midnight Sun Team #24 - MSXVI
