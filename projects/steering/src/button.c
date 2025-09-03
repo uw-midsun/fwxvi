@@ -23,14 +23,13 @@
  * @param button The button to initialize
  * @param config The button configuration
  */
-void button_init(Button *button, ButtonConfig *config){
-    button->config = config;
-    GpioState raw = gpio_get_state(&config->gpio);
-    bool is_pressed = (raw == GPIO_STATE_LOW && button->config->active_low) ||
-                      (raw == GPIO_STATE_HIGH && !button->config->active_low);
-    button->last_raw = is_pressed ? 0 : 1;
-    button->state = is_pressed ?  BUTTON_PRESSED : BUTTON_IDLE;
-    button->counter = 0;
+void button_init(Button *button, ButtonConfig *config) {
+  button->config = config;
+  GpioState raw = gpio_get_state(&config->gpio);
+  bool is_pressed = (raw == GPIO_STATE_LOW && button->config->active_low) || (raw == GPIO_STATE_HIGH && !button->config->active_low);
+  button->last_raw = is_pressed ? 0 : 1;
+  button->state = is_pressed ? BUTTON_PRESSED : BUTTON_IDLE;
+  button->counter = 0;
 }
 
 /**
@@ -39,52 +38,50 @@ void button_init(Button *button, ButtonConfig *config){
  * @param button The button to update
  * @param state Current GPIO state from the button's input pin
  */
- void button_update(Button *button, GpioState state) {
-    bool is_pressed = (state == GPIO_STATE_LOW  && button->config->active_low) ||
-                      (state == GPIO_STATE_HIGH && !button->config->active_low);
-    uint8_t current_raw = is_pressed ? 1 : 0;
+void button_update(Button *button, GpioState state) {
+  bool is_pressed = (state == GPIO_STATE_LOW && button->config->active_low) || (state == GPIO_STATE_HIGH && !button->config->active_low);
+  uint8_t current_raw = is_pressed ? 1 : 0;
 
-    if (current_raw != button->last_raw) {
-        button->counter = 1;              
-        button->last_raw = current_raw;
+  if (current_raw != button->last_raw) {
+    button->counter = 1;
+    button->last_raw = current_raw;
 
-        if (button->counter == button->config->debounce_ms) {
-            ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
-            if (new_state != button->state) {
-                if (new_state == BUTTON_PRESSED) {
-                    if (button->config->callbacks.rising_edge_cb) {
-                        button->config->callbacks.rising_edge_cb(button);
-                    }
-                } else {
-                    if (button->config->callbacks.falling_edge_cb) {
-                        button->config->callbacks.falling_edge_cb(button);
-                    }
-                }
-                button->state = new_state;
-            }
-        }
-        return;                          
-    }
-
-    if (button->counter < button->config->debounce_ms) {
-        button->counter++;
-        if (button->counter != button->config->debounce_ms) {
-            return;                      
-        }
-    }
-
-    ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
-    if (new_state != button->state) {
+    if (button->counter == button->config->debounce_ms) {
+      ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
+      if (new_state != button->state) {
         if (new_state == BUTTON_PRESSED) {
-            if (button->config->callbacks.rising_edge_cb) {
-                button->config->callbacks.rising_edge_cb(button);
-            }
+          if (button->config->callbacks.rising_edge_cb) {
+            button->config->callbacks.rising_edge_cb(button);
+          }
         } else {
-            if (button->config->callbacks.falling_edge_cb) {
-                button->config->callbacks.falling_edge_cb(button);
-            }
+          if (button->config->callbacks.falling_edge_cb) {
+            button->config->callbacks.falling_edge_cb(button);
+          }
         }
         button->state = new_state;
+      }
     }
-}
+    return;
+  }
 
+  if (button->counter < button->config->debounce_ms) {
+    button->counter++;
+    if (button->counter != button->config->debounce_ms) {
+      return;
+    }
+  }
+
+  ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
+  if (new_state != button->state) {
+    if (new_state == BUTTON_PRESSED) {
+      if (button->config->callbacks.rising_edge_cb) {
+        button->config->callbacks.rising_edge_cb(button);
+      }
+    } else {
+      if (button->config->callbacks.falling_edge_cb) {
+        button->config->callbacks.falling_edge_cb(button);
+      }
+    }
+    button->state = new_state;
+  }
+}

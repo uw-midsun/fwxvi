@@ -32,7 +32,7 @@
  */
 typedef struct {
   Button buttons[BUTTON_MANAGER_MAX_BUTTONS]; /**< Array of buttons */
-  uint8_t num_buttons; /**< Number of buttons in the array */
+  uint8_t num_buttons;                        /**< Number of buttons in the array */
 } ButtonManager;
 
 /**

@@ -27,7 +27,7 @@
  * @brief Button states representing current input
  */
 typedef enum {
-  BUTTON_IDLE,    /**< Button is not pressed */
+  BUTTON_IDLE,   /**< Button is not pressed */
   BUTTON_PRESSED /**< Button is pressed */
 } ButtonState;
 
@@ -40,28 +40,28 @@ typedef struct Button Button;
  * @brief Button Callbacks
  */
 typedef struct {
-  void (*rising_edge_cb)(Button *button);   /**< Called on rising edge (button press) */
-  void (*falling_edge_cb)(Button *button);  /**< Called on falling edge (button release) */
+  void (*rising_edge_cb)(Button *button);  /**< Called on rising edge (button press) */
+  void (*falling_edge_cb)(Button *button); /**< Called on falling edge (button release) */
 } ButtonCallbacks;
 
 /**
  * @brief Button configuration structure
  */
 typedef struct {
-  GpioAddress gpio;           /**< GPIO address for the button */
-  bool active_low;            /**< True if button is active low */
-  uint8_t debounce_ms;        /**< Debounce time in milliseconds */
-  ButtonCallbacks callbacks;  /**< Edge callback functions */
+  GpioAddress gpio;          /**< GPIO address for the button */
+  bool active_low;           /**< True if button is active low */
+  uint8_t debounce_ms;       /**< Debounce time in milliseconds */
+  ButtonCallbacks callbacks; /**< Edge callback functions */
 } ButtonConfig;
 
 /**
  * @brief Button instance structure
  */
 typedef struct Button {
-  ButtonConfig *config;   /**< Pointer to button configuration */
-  uint8_t last_raw;       /**< Last raw GPIO value */
-  uint8_t counter;        /**< Debounce counter */
-  ButtonState state;      /**< Current debounced state */
+  ButtonConfig *config; /**< Pointer to button configuration */
+  uint8_t last_raw;     /**< Last raw GPIO value */
+  uint8_t counter;      /**< Debounce counter */
+  ButtonState state;    /**< Current debounced state */
 } Button;
 
 /**
