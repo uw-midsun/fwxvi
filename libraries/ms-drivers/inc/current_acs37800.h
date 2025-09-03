@@ -38,40 +38,40 @@ typedef struct {
 
 
 
-/* @brief Initialize the ACS37800 driver
- * @param storage - a pointer to the ACS37800 struct, to be initialized
- * @param i2c_port - I2C port peripheral 
- * @param i2c_address - I2C address peripheral 
- * @return STATUS_CODE_OK on success
+/** @brief Initialize the ACS37800 driver
+  * @param storage - a pointer to the ACS37800 struct, to be initialized
+  * @param i2c_port - I2C port peripheral 
+  * @param i2c_address - I2C address peripheral 
+  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddress *i2c_address);
 
- /* @brief Gets the instantaneous current in amps
- * @param storage - pointer to already initialized ACS37800 struct
- * @param out_current_amps - current in amps
- * @return STATUS_CODE_OK on success
+/** @brief Gets the instantaneous current in amps
+  * @param storage - pointer to already initialized ACS37800 struct
+  * @param out_current_amps - current in amps
+  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_amps);
 
-/* @brief Gets the instantaneous voltage in volts
- * @param storage - pointer to already initialized ACS37800 struct
- * @param out_voltage_mV - voltage in milivolts
- * @return STATUS_CODE_OK on success
+/** @brief Gets the instantaneous voltage in volts
+  * @param storage - pointer to already initialized ACS37800 struct
+  * @param out_voltage_mV - voltage in milivolts
+  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV);
 
-/* @brief Gets the instantaneous power in watts
- * @param storage - pointer to already initialized ACS37800 struct
- * @param out_power - power in watts
- * @return STATUS_CODE_OK on success
+/** @brief Gets the instantaneous power in watts
+  * @param storage - pointer to already initialized ACS37800 struct
+  * @param out_power - power in watts
+  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_power(ACS37800_Storage *storage, float *out_power_watts);
 
-/* @brief Gets the 16 bit value from the ACS37800 volatile register
- * @param storage - pointer to already initialized ACS37800 struct
- * @param reg - register address
- * @param out - 32 bit value at that register
- * @return STATUS_CODE_OK on success
+/** @brief Gets the 16 bit value from the ACS37800 volatile register
+  * @param storage - pointer to already initialized ACS37800 struct
+  * @param reg - register address
+  * @param out - 32 bit value at that register
+  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_register(ACS37800_Storage *storage, ACS37800_Registers reg, uint32_t *out_raw);
 
