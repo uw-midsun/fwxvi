@@ -27,14 +27,15 @@ Bmi323Storage bmi323_storage;
 
 Bmi323Settings bmi323_settings = {
     .spi_port = IMU_SPI_PORT,
-    .spi_settings = {
-        .baudrate = IMU_SPI_BAUDRATE,
-        .mode = IMU_SPI_MODE,
-        .sdo = IMU_SPI_SDO,
-        .sdi = IMU_SPI_SDI,
-        .sclk = IMU_SPI_SCLK,
-        .cs = IMU_SPI_NSS,
-    },
+    .spi_settings =
+        {
+            .baudrate = IMU_SPI_BAUDRATE,
+            .mode = IMU_SPI_MODE,
+            .sdo = IMU_SPI_SDO,
+            .sdi = IMU_SPI_SDI,
+            .sclk = IMU_SPI_SCLK,
+            .cs = IMU_SPI_NSS,
+        },
     .accel_range = IMU_ACCEL_RANGE_2G,
     .gyro_range = IMU_GYRO_RANGE_500_DEG,
 };
