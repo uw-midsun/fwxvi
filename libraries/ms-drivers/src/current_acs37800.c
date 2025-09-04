@@ -21,8 +21,8 @@ StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddres
   }
 
   // i2c peripherals
-  storage->i2c_port = i2c_port;
-  storage->i2c_address = i2c_address;
+  storage->i2c_port = *i2c_port;
+  storage->i2c_address = *i2c_address;
 
   // conversion scaling factors
   storage->current_per_amp = CURRENT_SCALE;
@@ -33,7 +33,7 @@ StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddres
 }
 
 StatusCode acs37800_get_register(ACS37800_Storage *storage, ACS37800_Registers reg, uint32_t *out_raw) {
-  if (storage == NULL || reg == NULL) {
+  if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -58,7 +58,7 @@ StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_am
 
   uint32_t raw_data;
 
-  StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, raw_data);
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, &raw_data);
 
   // the current value is signed (16 bits upper)
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
@@ -75,7 +75,7 @@ StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV
 
   uint32_t raw_data;
 
-  StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, raw_data);
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, &raw_data);
 
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
@@ -92,12 +92,12 @@ StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power
 
   uint32_t raw_data;
 
-  StatusCode status = acs37800_get_register(storage, ACS37800_REG_PACTIVE_PIMAGE, raw_data);
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_PACTIVE_PIMAGE, &raw_data);
 
   // the active power value is signed (16 bits lower)
-  int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
+  int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_power_mW = (float)(voltage_raw)*storage->power_per_watt;
+  *out_power_mW = (float)(power_raw)*storage->power_per_watt;
 
   return STATUS_CODE_OK;
 }
