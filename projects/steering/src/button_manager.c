@@ -14,6 +14,7 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
+#include "log.h"
 
 /* Intra-component Headers */
 #include "button_manager.h"
@@ -26,69 +27,125 @@
  * Left turn button handlers
  ************************************************************************************************/
 
-static void left_turn_btn_falling_edge_cb(Button *button) {}
+static void left_turn_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
+#endif
+}
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - LeftTurn Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Right turn button handlers
  ************************************************************************************************/
 
-static void right_turn_btn_falling_edge_cb(Button *button) {}
+static void right_turn_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
+#endif
+}
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - RightTurn Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Hazards button handlers
  ************************************************************************************************/
 
-static void hazards_btn_falling_edge_cb(Button *button) {}
+static void hazards_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
+#endif
+}
 
 static void hazards_btn_rising_edge_cb(Button *button) {
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Drive button handlers
  ************************************************************************************************/
 
-static void drive_btn_falling_edge_cb(Button *button) {}
+static void drive_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
+#endif
+}
 
 static void drive_btn_rising_edge_cb(Button *button) {
   drive_state_manager_request(DRIVE_STATE_DRIVE);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Drive Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Reverse button handlers
  ************************************************************************************************/
 
-static void reverse_btn_falling_edge_cb(Button *button) {}
+static void reverse_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
+#endif
+}
 
 static void reverse_btn_rising_edge_cb(Button *button) {
   drive_state_manager_request(DRIVE_STATE_REVERSE);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Reverse Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Neutral button handlers
  ************************************************************************************************/
 
-static void neutral_btn_falling_edge_cb(Button *button) {}
+static void neutral_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
+#endif
+}
 
 static void neutral_btn_rising_edge_cb(Button *button) {
   drive_state_manager_request(DRIVE_STATE_NEUTRAL);
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
+#endif
 }
 
 /************************************************************************************************
  * Horn button handlers
  ************************************************************************************************/
 
-static void horn_btn_falling_edge_cb(Button *button) {}
+static void horn_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
+#endif
+}
 
-static void horn_btn_rising_edge_cb(Button *button) {}
+static void horn_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
+#endif
+}
 
 /************************************************************************************************
  * Button configs

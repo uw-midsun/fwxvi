@@ -27,8 +27,7 @@ Bmi323Storage bmi323_storage;
 
 Bmi323Settings bmi323_settings = {
     .spi_port = IMU_SPI_PORT,
-    .spi_settings =
-        {
+    .spi_settings = {
             .baudrate = IMU_SPI_BAUDRATE,
             .mode = IMU_SPI_MODE,
             .sdo = IMU_SPI_SDO,
