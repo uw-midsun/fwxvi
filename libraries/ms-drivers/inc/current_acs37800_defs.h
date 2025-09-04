@@ -22,6 +22,11 @@
  */
 
 
+// Table value formula, NEED the Rsense and Riso resistor values for seperate calculation
+#define VOLTAGE_SCALE ((0.84 * 1.19) / 32768.0)
+#define CURRENT_SCALE ((0.84 * 1.19) / 32768.0)
+#define POWER_SCALE ((0.704 * 1.42) / 32768.0)
+
 // register map is on pg.38
 // https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx
 typedef enum {

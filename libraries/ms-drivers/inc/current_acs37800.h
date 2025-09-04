@@ -62,10 +62,10 @@ StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV
 
 /** @brief Gets the instantaneous power in watts
   * @param storage - pointer to already initialized ACS37800 struct
-  * @param out_power - power in watts
+  * @param out_power - power in miliwatts
   * @return STATUS_CODE_OK on success
  */
-StatusCode acs37800_get_power(ACS37800_Storage *storage, float *out_power_watts);
+StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power_mW);
 
 /** @brief Gets the 16 bit value from the ACS37800 volatile register
   * @param storage - pointer to already initialized ACS37800 struct
