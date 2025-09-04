@@ -58,9 +58,9 @@ StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_am
  */
 StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV);
 
-/** @brief Gets the instantaneous power in watts
+/** @brief Gets the instantaneous power in milliwatts
   * @param storage - pointer to already initialized ACS37800 struct
-  * @param out_power - power in miliwatts
+  * @param out_power - power in milliwatts
   * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power_mW);
