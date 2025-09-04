@@ -274,3 +274,27 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
 
   return s_i2c_transfer(i2c, addr, write_data, tx_len + 1U, false);
 }
+
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len) {
+  if (rx_data == NULL || i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (!s_port[i2c].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if (xSemaphoreTake(s_i2c_port_handle[i2c], pdMS_TO_TICKS(I2C_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
+
+  HAL_StatusTypeDef hal_status = HAL_I2C_Mem_Read(&s_i2c_handles[i2c], addr << 1U, mem_addr, I2C_MEMADD_SIZE_8BIT, rx_data, rx_len, HAL_MAX_DELAY);
+
+  xSemaphoreGive(s_i2c_port_handle[i2c]);
+
+  if (hal_status != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  return STATUS_CODE_OK;
+}
