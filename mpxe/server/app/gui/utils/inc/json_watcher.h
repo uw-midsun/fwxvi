@@ -27,8 +27,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup json_watcher
- * @brief    json_watcher Firmware
+ * @defgroup MPXE_GUI
+ * @brief    Gui model for MPXE
  * @{
  */
 

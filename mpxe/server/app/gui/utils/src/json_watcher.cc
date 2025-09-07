@@ -45,7 +45,7 @@ void JSONWatcher::setDirectory(const QString& dir_path) {
     m_watcher.addPath(m_dir);
     /* initial scan -> emit */
     const QStringList list = scanDirJsons();
-    setFiles(list);              /* arms file watcher & timestamps */
+    setFiles(list);          
     emit clientsListChanged(list);
   }
 }
