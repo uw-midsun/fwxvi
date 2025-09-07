@@ -1,6 +1,22 @@
+/************************************************************************************************
+ * @file    main.cc
+ *
+ * @brief   Main source file
+ *
+ * @date    2025-08-30
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Qt library headers */
+
+/* Inter-component Headers */
 #include "json_watcher.h"
 #include "main_window.h"
 #include "utils.h"
+
+/* Intra-component Headers */
 
 int main(int argc, char *argv[]) {
   QApplication app{ argc, argv };

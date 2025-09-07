@@ -11,19 +11,19 @@
 #include <map>
 
 /* Qt library headers */
-#include <QObject>
+#include <QDebug>
+#include <QFormLayout>
 #include <QIcon>
 #include <QLabel>
-#include <QFormLayout>
-#include <QToolBar>
-#include <QSplitter>
+#include <QList>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QObject>
+#include <QSplitter>
 #include <QStackedWidget>
-#include <QWidget>
-#include <QList>
+#include <QToolBar>
 #include <QVariantMap>
-#include <QDebug>
+#include <QWidget>
 
 /* Inter-component headers */
 #include "utils.h"
@@ -32,27 +32,26 @@
 #include "main_window.h"
 
 inline void printMap(const std::map<QString, QVariant> &m, int indent = 0) {
-    QString indentStr(indent * 2, ' '); // 2 spaces per level
+  QString indentStr(indent * 2, ' '); 
 
-    for (const auto &pair : m) {
-        const QVariant &val = pair.second;
-        if (val.canConvert<QVariantMap>()) {
-            qDebug().noquote() << indentStr << pair.first << ": {";
-            QVariantMap vmap = val.toMap();
-            std::map<QString, QVariant> nested;
-            for (auto it = vmap.constBegin(); it != vmap.constEnd(); ++it) {
-                nested[it.key()] = it.value();
-            }
-            printMap(nested, indent + 1);
-            qDebug().noquote() << indentStr << "}";
-        } else {
-            qDebug().noquote() << indentStr << pair.first << ":" << val.toString();
-        }
+  for (const auto &pair : m) {
+    const QVariant &val = pair.second;
+    if (val.canConvert<QVariantMap>()) {
+      qDebug().noquote() << indentStr << pair.first << ": {";
+      QVariantMap vmap = val.toMap();
+      std::map<QString, QVariant> nested;
+      for (auto it = vmap.constBegin(); it != vmap.constEnd(); ++it) {
+        nested[it.key()] = it.value();
+      }
+      printMap(nested, indent + 1);
+      qDebug().noquote() << indentStr << "}";
+    } else {
+      qDebug().noquote() << indentStr << pair.first << ":" << val.toString();
     }
+  }
 }
 
-std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QVariant>& root, const QString& key) const
-{
+std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QVariant> &root, const QString &key) const {
   std::map<QString, QVariant> out;
 
   std::map<QString, QVariant>::const_iterator it = root.find(key);
@@ -68,17 +67,22 @@ std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QV
   return out;
 }
 
-MainWindow::MainWindow(const AppState &app_state, QWidget *parent):
-  QMainWindow{parent}, 
-  m_state{app_state}, m_list{nullptr}, m_stack{nullptr},
-  m_overview_page{nullptr}, m_afe_page{nullptr}, m_gpio_page{nullptr}, 
-  m_spi_page{nullptr}, m_i2c_page{nullptr}, m_adc_page{nullptr}
-{
+MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
+    QMainWindow{ parent },
+    m_state{ app_state },
+    m_list{ nullptr },
+    m_stack{ nullptr },
+    m_overview_page{ nullptr },
+    m_afe_page{ nullptr },
+    m_gpio_page{ nullptr },
+    m_spi_page{ nullptr },
+    m_i2c_page{ nullptr },
+    m_adc_page{ nullptr } {
   setWindowTitle(QStringLiteral("MPXE Client GUI"));
   resize(1200, 800);
 
   setWindowIcon(QIcon("mpxe/server/app/gui/assets/ms_logo.png"));
-  QToolBar* tb = new QToolBar(QStringLiteral("Main"), this);
+  QToolBar *tb = new QToolBar(QStringLiteral("Main"), this);
   addToolBar(tb);
 
   m_list = new QListWidget(this);
@@ -96,23 +100,23 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent):
 
   m_overview_page = new OverviewPage(m_state.payload, m_state.client_files, m_state.current_client_index, m_stack);
   m_afe_page = new AfePage(afe_payload, m_stack);
-  m_gpio_page = new GpioPage(gpio_payload, m_stack); 
- 
+  m_gpio_page = new GpioPage(gpio_payload, m_stack);
+
   m_spi_page = new QWidget(m_stack);
   {
-    QFormLayout* f = new QFormLayout(m_spi_page);
+    QFormLayout *f = new QFormLayout(m_spi_page);
     f->addRow(new QLabel(QStringLiteral("SPI Page")), new QLabel(QStringLiteral("TODO")));
   }
 
   m_i2c_page = new QWidget(m_stack);
   {
-    QFormLayout* f = new QFormLayout(m_i2c_page);
+    QFormLayout *f = new QFormLayout(m_i2c_page);
     f->addRow(new QLabel(QStringLiteral("I2C Page")), new QLabel(QStringLiteral("TODO")));
   }
 
   m_adc_page = new QWidget(m_stack);
   {
-    QFormLayout* f = new QFormLayout(m_adc_page);
+    QFormLayout *f = new QFormLayout(m_adc_page);
     f->addRow(new QLabel(QStringLiteral("ADC Page")), new QLabel(QStringLiteral("TODO")));
   }
 
@@ -128,7 +132,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent):
   QObject::connect(m_list, SIGNAL(currentRowChanged(int)), m_stack, SLOT(setCurrentIndex(int)));
   m_list->setCurrentRow(0);
 
-  QSplitter* split = new QSplitter(this);
+  QSplitter *split = new QSplitter(this);
   split->addWidget(m_list);
   split->addWidget(m_stack);
   split->setStretchFactor(1, 1);
@@ -141,7 +145,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent):
   QObject::connect(m_overview_page, SIGNAL(clientSelected(QString)), this, SLOT(loadClient(QString)));
 }
 
-void MainWindow::loadClient(const QString& path) {
+void MainWindow::loadClient(const QString &path) {
   QVariantMap vm;
   if (!readJsonFileToVariantMap(path, vm)) {
     return;
@@ -152,20 +156,16 @@ void MainWindow::loadClient(const QString& path) {
 }
 
 void MainWindow::refreshOverview() {
-  if (m_overview_page){
+  if (m_overview_page) {
     m_overview_page->setPayload(m_state.payload);
   }
 }
 
 void MainWindow::reloadClientFromFile(const QString &path) {
-  // Guard: ignore changes for non-selected files
-  const bool isCurrent =
-      (m_state.current_client_index >= 0 &&
-       m_state.current_client_index < m_state.client_files.size() &&
-       m_state.client_files.at(m_state.current_client_index) == path);
+  const bool isCurrent = (m_state.current_client_index >= 0 && m_state.current_client_index < m_state.client_files.size() && m_state.client_files.at(m_state.current_client_index) == path);
 
   if (!isCurrent) {
-    return; // <-- prevents repaint with other file's data
+    return; 
   }
 
   QVariantMap vm;
@@ -190,24 +190,18 @@ void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
   }
 }
 
-void MainWindow::replaceClientFiles(const QStringList& files, int newIndex) {
+void MainWindow::replaceClientFiles(const QStringList &files, int newIndex) {
   m_state.client_files = files;
 
-  // Update Overview page combobox (does not emit signal while updating)
   if (m_overview_page) {
     m_overview_page->setClients(files, newIndex);
   }
 
-  // Update current index
-  m_state.current_client_index = (newIndex >= 0 && newIndex < files.size())
-                                 ? newIndex : -1;
+  m_state.current_client_index = (newIndex >= 0 && newIndex < files.size()) ? newIndex : -1;
 }
 
-void MainWindow::onClientsListChanged(const QStringList& files) {
-  const QString prevSel = (m_state.current_client_index >= 0 &&
-                           m_state.current_client_index < m_state.client_files.size())
-                            ? m_state.client_files.at(m_state.current_client_index)
-                            : QString();
+void MainWindow::onClientsListChanged(const QStringList &files) {
+  const QString prevSel = (m_state.current_client_index >= 0 && m_state.current_client_index < m_state.client_files.size()) ? m_state.client_files.at(m_state.current_client_index) : QString();
 
   /* replace list in UI */
   int newIndex = -1;

@@ -82,7 +82,7 @@ void applyDarkTheme(QApplication &app);
 /**
  * @brief   Set a coherent color palette for a given palette group
  * @param   pal Palette to mutate
- * @param   g   Color group (Active / Inactive / Disabled)
+ * @param   g Color group (Active / Inactive / Disabled)
  */
 void setPaletteGroup(QPalette &pal, QPalette::ColorGroup g);
 

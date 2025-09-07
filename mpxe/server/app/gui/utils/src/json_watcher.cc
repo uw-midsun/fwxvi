@@ -17,13 +17,11 @@
 /* Intra-component Headers */
 #include "json_watcher.h"
 
-JSONWatcher::JSONWatcher(QObject *parent):
-  QObject{parent} 
-{
+JSONWatcher::JSONWatcher(QObject *parent) : QObject{ parent } {
   QObject::connect(&m_watcher, SIGNAL(fileChanged(QString)), this, SLOT(onFsChanged(QString)));
   QObject::connect(&m_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(onDirChanged(QString)));
 
-  m_debounce.setSingleShot(true); 
+  m_debounce.setSingleShot(true);
   m_debounce.setInterval(DEBOUNCE_INTERVAL);
   QObject::connect(&m_debounce, SIGNAL(timeout()), this, SLOT(onDebounceTimeout()));
 
@@ -32,7 +30,7 @@ JSONWatcher::JSONWatcher(QObject *parent):
   QObject::connect(&m_poll, SIGNAL(timeout()), this, SLOT(onPollTick()));
 }
 
-void JSONWatcher::setDirectory(const QString& dir_path) {
+void JSONWatcher::setDirectory(const QString &dir_path) {
   QString abs = QDir(dir_path).absolutePath();
   if (m_dir == abs) return;
 
@@ -45,7 +43,7 @@ void JSONWatcher::setDirectory(const QString& dir_path) {
     m_watcher.addPath(m_dir);
     /* initial scan -> emit */
     const QStringList list = scanDirJsons();
-    setFiles(list);          
+    setFiles(list);
     emit clientsListChanged(list);
   }
 }
@@ -58,7 +56,7 @@ void JSONWatcher::setFiles(const QStringList &files) {
   /* ensure uniqueness + absolute + sorted */
   QStringList unique = m_files;
   unique.removeDuplicates();
-  std::sort(unique.begin(), unique.end(), [](const QString& a, const QString& b){ return a.toLower() < b.toLower(); });
+  std::sort(unique.begin(), unique.end(), [](const QString &a, const QString &b) { return a.toLower() < b.toLower(); });
   m_files = unique;
 
   rearmFileWatcher();
@@ -73,7 +71,10 @@ void JSONWatcher::setFiles(const QStringList &files) {
 }
 
 void JSONWatcher::setPollingMs(int interval_ms) {
-  if (interval_ms <= 0) { m_poll.stop(); return; }
+  if (interval_ms <= 0) {
+    m_poll.stop();
+    return;
+  }
   m_poll.setInterval(interval_ms);
   if (!m_poll.isActive()) m_poll.start();
 }
@@ -93,7 +94,7 @@ void JSONWatcher::onDirChanged(const QString & /*dir*/) {
 }
 
 void JSONWatcher::onDebounceTimeout() {
-  for (const QString& p : std::as_const(m_pending)) {
+  for (const QString &p : std::as_const(m_pending)) {
     emit fileChangedDebounced(p);
   }
   m_pending.clear();
@@ -102,7 +103,7 @@ void JSONWatcher::onDebounceTimeout() {
 
 void JSONWatcher::onPollTick() {
   /* 1) poll file timestamp changes */
-  for (const QString& p : std::as_const(m_files)) {
+  for (const QString &p : std::as_const(m_files)) {
     const QFileInfo fi(p);
     if (!fi.exists()) continue;
     const QDateTime mt = fi.lastModified();
@@ -142,6 +143,6 @@ QStringList JSONWatcher::scanDirJsons() const {
   QStringList files = dir.entryList(QStringList() << "*.json", QDir::Files | QDir::Readable, QDir::Name);
   for (int i = 0; i < files.size(); ++i) files[i] = dir.absoluteFilePath(files[i]);
   files.removeDuplicates();
-  std::sort(files.begin(), files.end(), [](const QString& a, const QString& b){ return a.toLower() < b.toLower(); });
+  std::sort(files.begin(), files.end(), [](const QString &a, const QString &b) { return a.toLower() < b.toLower(); });
   return files;
 }
