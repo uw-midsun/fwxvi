@@ -54,7 +54,7 @@ class OverviewPage : public QWidget {
 
     static const constexpr unsigned int SPACE_STRETCH_SIZE = 1; /**< Stretch factor for spacing in layouts */
     
-    inline static const QString MARKDOWN_PATH = QStringLiteral("../../../../command.md"); /**< Path to command markdown */
+    inline static const QString MARKDOWN_PATH = QStringLiteral("mpxe/command.md"); /**< Path to command markdown */
 
     /**
      * @brief   Update the payload and refresh displayed values

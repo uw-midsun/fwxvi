@@ -158,12 +158,21 @@ void MainWindow::refreshOverview() {
 }
 
 void MainWindow::reloadClientFromFile(const QString &path) {
+  // Guard: ignore changes for non-selected files
+  const bool isCurrent =
+      (m_state.current_client_index >= 0 &&
+       m_state.current_client_index < m_state.client_files.size() &&
+       m_state.client_files.at(m_state.current_client_index) == path);
+
+  if (!isCurrent) {
+    return; // <-- prevents repaint with other file's data
+  }
+
   QVariantMap vm;
   if (!readJsonFileToVariantMap(path, vm)) {
     return;
   }
   m_state.payload = toStdMap(vm);
-  m_state.current_client_index = m_state.client_files.indexOf(path);
   applyPayload(m_state.payload);
 }
 
@@ -172,10 +181,13 @@ void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
     m_overview_page->setPayload(payload);
   }
   if (m_afe_page) {
-    const std::map<QString, QVariant> afe_payload = extractSubmap(payload, QStringLiteral("afe"));
+    const auto afe_payload = extractSubmap(payload, QStringLiteral("afe"));
     m_afe_page->setPayload(afe_payload);
   }
-
+  if (m_gpio_page) {
+    const auto gpio_payload = extractSubmap(payload, QStringLiteral("gpio"));
+    m_gpio_page->setPayload(gpio_payload);
+  }
 }
 
 void MainWindow::replaceClientFiles(const QStringList& files, int newIndex) {
@@ -189,4 +201,27 @@ void MainWindow::replaceClientFiles(const QStringList& files, int newIndex) {
   // Update current index
   m_state.current_client_index = (newIndex >= 0 && newIndex < files.size())
                                  ? newIndex : -1;
+}
+
+void MainWindow::onClientsListChanged(const QStringList& files) {
+  const QString prevSel = (m_state.current_client_index >= 0 &&
+                           m_state.current_client_index < m_state.client_files.size())
+                            ? m_state.client_files.at(m_state.current_client_index)
+                            : QString();
+
+  /* replace list in UI */
+  int newIndex = -1;
+  if (!prevSel.isEmpty()) {
+    newIndex = files.indexOf(prevSel);
+  }
+  if (newIndex < 0 && !files.isEmpty()) {
+    newIndex = 0; /* choose first if previous selection vanished */
+  }
+
+  replaceClientFiles(files, newIndex);
+
+  /* if selection changed due to removal, load new current */
+  if (newIndex >= 0 && (prevSel.isEmpty() || files.value(newIndex) != prevSel)) {
+    loadClient(files.at(newIndex));
+  }
 }

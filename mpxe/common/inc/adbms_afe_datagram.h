@@ -16,7 +16,13 @@
 /* Intra-component Headers */
 #include "command_code.h"
 
+/**
+ * @defgroup AfeDatagram
+ * @brief    Shared datagram class
+ * @{
+ */
 namespace Datagram {
+
 
 class ADBMS_AFE {
  public:

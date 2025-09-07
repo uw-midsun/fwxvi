@@ -89,6 +89,8 @@ class MainWindow : public QMainWindow {
      */
     void reloadClientFromFile(const QString &path);
 
+    void onClientsListChanged(const QStringList& files);
+
   private slots:
     /**
      * @brief   Load a client JSON and update all pages
@@ -131,9 +133,9 @@ class MainWindow : public QMainWindow {
     QPointer<QListWidget> m_list;     /**< Navigation list (left side) */
     QPointer<QStackedWidget> m_stack; /**< Stacked page container (right side) */
 
-    QPointer<OverviewPage> m_overview_page; /**< Overview page */
-    QPointer<AfePage> m_afe_page;           /**< AFE page */
-    QPointer<QWidget> m_gpio_page;          /**< GPIO page */
+    QPointer<OverviewPage> m_overview_page;   /**< Overview page */
+    QPointer<AfePage> m_afe_page;             /**< AFE page */
+    QPointer<GpioPage> m_gpio_page;           /**< GPIO page */
 
     /* Future pages go here, to be implemented */
     QPointer<QWidget> m_spi_page;  /**< Placeholder SPI page */

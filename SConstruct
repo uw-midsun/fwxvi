@@ -212,10 +212,30 @@ elif COMMAND == "mpxe":
     AlwaysBuild(Command('#/mpxe', mpxe_elf, mpxe_run))
 
 ###########################################################
+# RUN MPXE GUI 
+###########################################################
+elif COMMAND == "mpxe-gui":
+    # Ensure we’re on x86 for the desktop GUI
+    PLATFORM = "x86"
+    VARS["PLATFORM"] = PLATFORM
+
+    # Build everything (including the GUI) using build.scons
+    SConscript('scons/build.scons', exports='VARS')
+
+    GUI_ELF = Dir('#/build').Dir(PLATFORM).Dir('bin').Dir('projects').File('mpxe_gui')
+
+    def gui_run(target, source, env):
+        print('Running MPXE GUI', GUI_ELF)
+        subprocess.run(GUI_ELF.path)
+
+    AlwaysBuild(Command('#/mpxe-gui', GUI_ELF, gui_run))
+    Default('#/mpxe-gui')
+    
+###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build
-    SConscript('scons/build.scons', exports='VARS')
+     SConscript('scons/build.scons', exports='VARS')
 
 ###########################################################
 # Helper targets for x86
