@@ -1,4 +1,7 @@
 {
+    "libs": [
+      "FreeRTOS"
+    ],
     "arm_libs": [
       "core"
     ]

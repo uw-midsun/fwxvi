@@ -84,5 +84,38 @@ void ltdc_load_clut(uint32_t *table) {
 }
 
 void ltdc_draw(void) {
-    // TODO: Implement drawing using framebuffer and CLUT!
+    // Fill screen with grey if config is not set
+    if (!ltdc_config.framebuffer || !ltdc_config.clut) {
+        SDL_SetRenderDrawColor(ltdc_config.renderer, 100, 100, 100, 255);
+        SDL_RenderClear(ltdc_config.renderer);
+        SDL_RenderPresent(ltdc_config.renderer);
+
+        return;
+    }
+
+    // Loop through row and column
+    for (uint16_t y = 0; y < ltdc_config.height; y++) {
+        for (uint16_t x = 0; x < ltdc_config.width; x++) {
+            // Calculate index into framebuffer (1-D)
+            size_t fb_index = y * (ltdc_config.width + x);
+
+            // 8-bit index into CLUT in L8 format
+            uint8_t pixel_index = ltdc_config.framebuffer[fb_index];
+
+            // RGB888 value from CLUT
+            uint32_t rgb = ltdc_config.clut[pixel_index];
+
+            // Extract r, g, b from 0x00RRGGBB
+            uint8_t r = (rgb >> 16) & 0xFF;
+            uint8_t g = (rgb >> 8)  & 0xFF;
+            uint8_t b = rgb & 0xFF;
+
+            SDL_SetRenderDrawColor(ltdc_config.renderer, r, g, b, 255);
+            SDL_RenderDrawPoint(ltdc_config.renderer, x, y);
+        }
+    }
+
+    SDL_RenderPresent(ltdc_config.renderer);
+
+    return;
 }

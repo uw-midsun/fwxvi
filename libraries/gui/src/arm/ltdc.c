@@ -26,3 +26,5 @@ typedef struct {
     LTDC_InitTypeDef init;
     LTDC_LayerCfgTypeDef layer_cfg;   
 } LtdcConfig;
+
+// TBD
