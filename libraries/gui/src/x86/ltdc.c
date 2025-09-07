@@ -74,13 +74,36 @@ void ltdc_init(void) {
         return;
     }
 }
- 
+
+void ltdc_destroy(void) {
+    // TODO: Delete when you get scons working
+    SDL_Delay(3000);  // For testing purposes only
+
+    if (ltdc_config.renderer) {
+        SDL_DestroyRenderer(ltdc_config.renderer);
+        ltdc_config.renderer = NULL;
+    }
+
+    if (ltdc_config.window) {
+        SDL_DestroyWindow(ltdc_config.window);
+        ltdc_config.window = NULL;
+    }
+
+    SDL_Quit();
+
+    return;
+}
+
 void ltdc_set_framebuffer(uint8_t *buffer) {
     ltdc_config.framebuffer = buffer;
+    
+    return;
 }
 
 void ltdc_load_clut(uint32_t *table) {
     ltdc_config.clut = table;
+
+    return;
 }
 
 void ltdc_draw(void) {
