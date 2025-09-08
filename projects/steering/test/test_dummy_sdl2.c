@@ -8,12 +8,12 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <SDL2/SDL.h>
+#include <libgen.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <libgen.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <SDL2/SDL.h>
 
 /* Inter-component Headers */
 #include "unity.h"
@@ -23,8 +23,7 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
-static void get_test_results_paths(const char *filename, char *out_dir, size_t dir_size,
-                                  char *out_file, size_t file_size) {
+static void get_test_results_paths(const char *filename, char *out_dir, size_t dir_size, char *out_file, size_t file_size) {
   char file_path[512];
   strncpy(file_path, __FILE__, sizeof(file_path) - 1);
   file_path[sizeof(file_path) - 1] = '\0';
@@ -37,11 +36,7 @@ static void get_test_results_paths(const char *filename, char *out_dir, size_t d
 void setup_test(void) {
   TEST_ASSERT_EQUAL_MESSAGE(0, SDL_Init(SDL_INIT_VIDEO), "SDL_Init failed");
 
-  window = SDL_CreateWindow("SDL Dummy Test",
-                            SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED,
-                            200, 200,
-                            SDL_WINDOW_SHOWN);
+  window = SDL_CreateWindow("SDL Dummy Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 200, 200, SDL_WINDOW_SHOWN);
   TEST_ASSERT_NOT_NULL_MESSAGE(window, "SDL_CreateWindow failed");
 
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -88,7 +83,7 @@ void test_sdl_saves_output_to_file(void) {
   char out_file[512];
   get_test_results_paths("test_dummy_sdl2.bmp", out_dir, sizeof(out_dir), out_file, sizeof(out_file));
 
-  struct stat st = {0};
+  struct stat st = { 0 };
   if (stat(out_dir, &st) == -1) {
     mkdir(out_dir, 0755);
   }
@@ -96,11 +91,7 @@ void test_sdl_saves_output_to_file(void) {
   SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, 200, 200, 32, SDL_PIXELFORMAT_RGBA32);
   TEST_ASSERT_NOT_NULL_MESSAGE(surface, "SDL_CreateRGBSurfaceWithFormat failed");
 
-  TEST_ASSERT_EQUAL_MESSAGE(0, SDL_RenderReadPixels(renderer, NULL,
-                                                    SDL_PIXELFORMAT_RGBA32,
-                                                    surface->pixels,
-                                                    surface->pitch),
-                            "SDL_RenderReadPixels failed");
+  TEST_ASSERT_EQUAL_MESSAGE(0, SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA32, surface->pixels, surface->pitch), "SDL_RenderReadPixels failed");
 
   TEST_ASSERT_EQUAL_MESSAGE(0, SDL_SaveBMP(surface, out_file), "SDL_SaveBMP failed");
 
