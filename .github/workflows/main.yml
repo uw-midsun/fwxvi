@@ -71,24 +71,6 @@ jobs:
           sudo ./requirements.sh
           pip install -r requirements.txt --upgrade
 
-      - name: Install libncurses5
-        run: |
-          sudo apt install libncurses-dev
-          sudo apt install nlohmann-json3-dev
-
-      - name: Install STM32 toolchain
-        env:
-          GCC_PATH: arm-gnu-toolchain-11.3.rel1
-          GCC_ARCHIVE_PATH: arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi.tar.xz
-          GCC_URL: https://developer.arm.com/-/media/Files/downloads/gnu/11.3.rel1/binrel/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi.tar.xz
-        run: |
-          cd ${HOME}
-          wget -nv $GCC_URL -O $GCC_ARCHIVE_PATH
-          mkdir -p $GCC_PATH
-          tar -xf $GCC_ARCHIVE_PATH -C $GCC_PATH --strip-components=1
-          echo "${HOME}/${GCC_PATH}/bin" >> $GITHUB_PATH
-          rm $GCC_ARCHIVE_PATH
-
       - name: Force PATH to update
         run: hash -r
 
