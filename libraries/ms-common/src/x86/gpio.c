@@ -69,7 +69,6 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
 }
 
 StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
-  printf("Hello");
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }

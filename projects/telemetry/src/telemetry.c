@@ -52,7 +52,7 @@ TASK(can_message_processor, TASK_STACK_512) {
     /* Wait for new data to be in the queue */
     datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
 
-    status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, &datagram_length);
+    status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
 
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Failed to transmit to telemetry transceiver!\n");
