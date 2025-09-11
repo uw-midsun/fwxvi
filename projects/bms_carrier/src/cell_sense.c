@@ -189,7 +189,9 @@ static StatusCode s_cell_sense_conversions() {
   // TODO: Figure out why cell_conv cannot happen without spi timing out (Most likely RTOS
   // implemntation error) Retry Mechanism
   for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
+    // status = adbms_afe_trigger_cell_conv(adbms_afe_storage); 
+    RETRY_OPERATION(LTC_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage),
+                  status);
     if (status == STATUS_CODE_OK) {
       break;
     }
@@ -200,7 +202,8 @@ static StatusCode s_cell_sense_conversions() {
     // If this has failed, try once more after a short delay
     LOG_DEBUG("Cell trigger conv failed, retrying): %d\n", status);
     delay_ms(RETRY_DELAY_MS);
-    status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
+    // status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
+    RETRY_OPERATION(LTC_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
   }
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell conv failed): %d\n", status);
@@ -236,7 +239,9 @@ static StatusCode s_cell_sense_conversions() {
     if (check_therm) {
       // Trigger and read thermistor value
       for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = adbms_afe_trigger_aux_conv(adbms_afe_storage, s_thermistor_map[thermistor]);
+        RETRY_OPERATION(LTC_RETRIES, RETRY_DELAY_MS,
+                      ltc_afe_impl_trigger_aux_conv(adbms_afe_storage, s_thermistor_map[thermistor]),
+                      status);
         if (status == STATUS_CODE_OK) {
           break;
         }
@@ -251,7 +256,9 @@ static StatusCode s_cell_sense_conversions() {
       delay_ms(AUX_CONV_DELAY_MS);
 
       for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = adbms_afe_read_aux(adbms_afe_storage, thermistor);
+        // status = adbms_afe_read_aux(adbms_afe_storage, thermistor);      
+        RETRY_OPERATION(LTC_RETRIES, RETRY_DELAY_MS,
+                      adbms_afe_read_aux(adbms_afe_storage, thermistor), status);
         if (status == STATUS_CODE_OK) {
           break;
         }

@@ -59,7 +59,7 @@
 #define ADBMS_AFE_SPI_PORT SPI_PORT_2
 
 /** @brief AFE SPI Baudrate */
-#define ADBMS_AFE_SPI_BAUDRATE SPI_BAUDRATE_1_25MHZ
+#define ADBMS_AFE_SPI_BAUDRATE SPI_BAUDRATE_312_5KHZ
 
 /** @brief  AFE SPI Serial data out */
 #define ADBMS_AFE_SPI_SDO_GPIO \
