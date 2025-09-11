@@ -40,7 +40,7 @@ StatusCode acs37800_get_register(ACS37800_Storage *storage, ACS37800_Registers r
   uint8_t reg_addr = (uint8_t)reg;
   uint8_t rx_buff[4];
 
-  StatusCode status = i2c_read_reg(storage->i2c_port, storage->i2c_address, reg_addr, rx_buff, sizeof(rx_buff));
+  StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, reg_addr, rx_buff, sizeof(rx_buff));
 
   if (status != STATUS_CODE_OK) {
     return status;
@@ -59,6 +59,9 @@ StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_am
   uint32_t raw_data;
 
   StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   // the current value is signed (16 bits upper)
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
@@ -76,6 +79,9 @@ StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV
   uint32_t raw_data;
 
   StatusCode status = acs37800_get_register(storage, ACS37800_REG_VCODES_ICODES, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
@@ -93,11 +99,109 @@ StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power
   uint32_t raw_data;
 
   StatusCode status = acs37800_get_register(storage, ACS37800_REG_PACTIVE_PIMAGE, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
 
   // the active power value is signed (16 bits lower)
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
   *out_power_mW = (float)(power_raw)*storage->power_per_watt;
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode acs37800_get_overcurrent_flag(ACS37800_Storage *storage, bool *overcurrent_flag) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint32_t raw_data;
+
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_STATUS, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  uint32_t converted_data = raw_data & 0x00000003;
+
+  if (converted_data == 1) {
+    overcurrent_flag = true;
+  } else {
+    overcurrent_flag = false;
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode acs37800_reset_overcurrent_flag(ACS37800_Storage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint32_t raw_data;
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_STATUS, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  // write all of it back, reset the FAULTLATCH address
+  uint8_t tx_buff[4] = {
+    (uint8_t)((raw_data >> 24) & 0xFF),
+    (uint8_t)((raw_data >> 16) & 0xFF),
+    (uint8_t)((raw_data >> 8) & 0xFF),
+    (uint8_t)(raw_data & 0xFF),
+  };
+
+  StatusCode status = i2c_write_reg(storage->i2c_port, storage->i2c_address, ACS37800_REG_STATUS, tx_buff, sizeof(tx_buff));
+  
+  return status;
+}
+
+StatusCode acs37800_get_overvoltage_flag(ACS37800_Storage *storage, bool *overvoltage_flag) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint32_t raw_data;
+
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_STATUS, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  uint32_t converted_data = raw_data & 0x00000004;
+
+  if (converted_data == 1) {
+    overvoltage_flag = true;
+  } else {
+    overvoltage_flag = false;
+  }
+
+  return STATUS_CODE_OK;
+}
+
+
+StatusCode acs37800_get_undervoltage_flag(ACS37800_Storage *storage, bool *undervoltage_flag) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint32_t raw_data;
+
+  StatusCode status = acs37800_get_register(storage, ACS37800_REG_STATUS, &raw_data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  uint32_t converted_data = raw_data & 0x00000005;
+
+  if (converted_data == 1) {
+    undervoltage_flag = true;
+  } else {
+    undervoltage_flag = false;
+  }
 
   return STATUS_CODE_OK;
 }

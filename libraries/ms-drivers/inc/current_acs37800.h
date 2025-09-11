@@ -11,6 +11,7 @@
 
 /* Standard library Headers */
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Inter-component Headers */
 #include "gpio.h"
@@ -64,6 +65,33 @@ StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power_mW);
+
+/** @brief Gets if the ACS37800 unit detects over-current (latched)
+ * @param storage - pointer to already initialized ACS37800 struct
+ * @param overcurrent_flag - boolean to state if over-current happened (true -> over-current active)
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode acs37800_get_overcurrent_flag(ACS37800_Storage *storage, bool *overcurrent_flag);
+
+/** @brief Resets the latched overcurrent fault, needs to write 1 to 0x2D register
+ * @param storage - pointer to already initialized ACS37800 struct
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode acs37800_reset_overcurrent_flag(ACS37800_Storage *storage);
+
+/** @brief Gets if the ACS37800 unit detects over-voltage
+ * @param storage - pointer to already initialized ACS37800 struct
+ * @param overcurrent_flag - boolean to state if over-voltage happened (true -> over-voltage active)
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode acs37800_get_overvoltage_flag(ACS37800_Storage *storage, bool *overvoltage_flag);
+
+/** @brief Gets if the ACS37800 unit detects under-voltage
+ * @param storage - pointer to already initialized ACS37800 struct
+ * @param overcurrent_flag - boolean to state if under-voltage happened (true -> under-voltage active)
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode acs37800_get_undervoltage_flag(ACS37800_Storage *storage, bool *undervoltage_flag);
 
 /** @brief Gets the 16 bit value from the ACS37800 volatile register
  * @param storage - pointer to already initialized ACS37800 struct
