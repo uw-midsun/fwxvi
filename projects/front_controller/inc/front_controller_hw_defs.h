@@ -71,7 +71,7 @@
 
 /** @brief  Front Controller steering load switch enable */
 #define FRONT_CONTROLLER_STEERING_LS_ENABLE \
-  { .port = GPIO_PORT_B, .pin = 3}
+  { .port = GPIO_PORT_B, .pin = 3 }
 
 /** @brief  Front Controller horn load switch enable */
 #define FRONT_CONTROLLER_HORN_LS_ENABLE \
@@ -91,23 +91,23 @@
 
 /** @brief  Front Controller current sense mux select 0 */
 #define FRONT_CONTROLLER_MUX_SEL_0 \
-  { .port = GPIO_PORT_B, .pin = 12}
+  { .port = GPIO_PORT_B, .pin = 12 }
 
 /** @brief  Front Controller current sense mux select 1 */
 #define FRONT_CONTROLLER_MUX_SEL_1 \
-  { .port = GPIO_PORT_B, .pin = 13}
+  { .port = GPIO_PORT_B, .pin = 13 }
 
 /** @brief  Front Controller current sense mux select 2 */
 #define FRONT_CONTROLLER_MUX_SEL_2 \
-  { .port = GPIO_PORT_B, .pin = 14}
+  { .port = GPIO_PORT_B, .pin = 14 }
 
 /** @brief  Front Controller current sense mux select 3 */
 #define FRONT_CONTROLLER_MUX_SEL_3 \
-  { .port = GPIO_PORT_B, .pin = 15}
+  { .port = GPIO_PORT_B, .pin = 15 }
 
 /** @brief  Front Controller current sense mux input */
 #define FRONT_CONTROLLER_MUX_OUTPUT \
-  { .port = GPIO_PORT_A, .pin = 2}
+  { .port = GPIO_PORT_A, .pin = 2 }
 
 /************************************************************************************************
  * Pedal definitions
