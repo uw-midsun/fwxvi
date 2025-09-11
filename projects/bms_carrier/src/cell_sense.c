@@ -49,7 +49,18 @@
  * @brief   Thermistor mapping for the ADBMS1818 hardware schematic
  */
 typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERMISTOR_3, THERMISTOR_4, THERMISTOR_7, THERMISTOR_5, THERMISTOR_6, NUM_THERMISTORS } ThermistorMap;
-
+                                                          
+#define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
+  do {                                                                    \
+    uint8_t _retries_left = (max_retries);                                \
+    (status_var) = STATUS_CODE_INTERNAL_ERROR;                            \
+    while (_retries_left-- > 0) {                                         \
+      (status_var) = (operation);                                         \
+      if ((status_var) == STATUS_CODE_OK) break;                          \
+      delay_ms(delay_ms_val);                                             \
+    }                                                                     \
+  } while (0)
+  
 /************************************************************************************************
  * Private variables
  ************************************************************************************************/
@@ -68,8 +79,8 @@ static const AdbmsAfeSettings s_afe_settings = {
   .cell_bitset = { 0xFFFU, 0xFFFU, 0xFFFU },
   .aux_bitset = { 0x14U, 0x15U, 0x15U },
 
-  .num_devices = 3U,
-  .num_cells = 12U,
+  .num_devices = 2U,
+  .num_cells = 18U,
   .num_thermistors = NUM_THERMISTORS,
 };
 
