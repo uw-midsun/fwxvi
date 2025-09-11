@@ -126,9 +126,9 @@ StatusCode acs37800_get_overcurrent_flag(ACS37800_Storage *storage, bool *overcu
   uint32_t converted_data = raw_data & 0x00000003;
 
   if (converted_data == 1) {
-    overcurrent_flag = true;
+    *overcurrent_flag = true;
   } else {
-    overcurrent_flag = false;
+    *overcurrent_flag = false;
   }
 
   return STATUS_CODE_OK;
@@ -153,7 +153,7 @@ StatusCode acs37800_reset_overcurrent_flag(ACS37800_Storage *storage) {
     (uint8_t)(raw_data & 0xFF),
   };
 
-  StatusCode status = i2c_write_reg(storage->i2c_port, storage->i2c_address, ACS37800_REG_STATUS, tx_buff, sizeof(tx_buff));
+  status = i2c_write_reg(storage->i2c_port, storage->i2c_address, ACS37800_REG_STATUS, tx_buff, sizeof(tx_buff));
 
   return status;
 }
@@ -173,9 +173,9 @@ StatusCode acs37800_get_overvoltage_flag(ACS37800_Storage *storage, bool *overvo
   uint32_t converted_data = raw_data & 0x00000004;
 
   if (converted_data == 1) {
-    overvoltage_flag = true;
+    *overvoltage_flag = true;
   } else {
-    overvoltage_flag = false;
+    *overvoltage_flag = false;
   }
 
   return STATUS_CODE_OK;
@@ -196,9 +196,9 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800_Storage *storage, bool *under
   uint32_t converted_data = raw_data & 0x00000005;
 
   if (converted_data == 1) {
-    undervoltage_flag = true;
+    *undervoltage_flag = true;
   } else {
-    undervoltage_flag = false;
+    *undervoltage_flag = false;
   }
 
   return STATUS_CODE_OK;
