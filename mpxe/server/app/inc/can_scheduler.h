@@ -13,8 +13,8 @@
 
 /* Standard library Headers */
 #include <atomic>
-#include <cstdint>
 #include <string>
+#include <cstdint>
 
 /* Inter-component Headers */
 #include <arpa/inet.h>
@@ -35,32 +35,33 @@
  * @{
  */
 
-#define NUM_FAST_CYCLE_MESSAGES 3U    /**< Number of fast cycle messages */
+
+#define NUM_FAST_CYCLE_MESSAGES   2U /**< Number of fast cycle messages */
 #define NUM_MEDIUM_CYCLE_MESSAGES 12U /**< Number of medium cycle messages */
-#define NUM_SLOW_CYCLE_MESSAGES 7U    /**< Number of slow cycle messages */
+#define NUM_SLOW_CYCLE_MESSAGES   7U /**< Number of slow cycle messages */
 
 /**
- * @brief   Fast cycle Broadcast Manager message for the Linux Kernel
- */
+  * @brief   Fast cycle Broadcast Manager message for the Linux Kernel
+  */
 struct {
-  struct can_frame frame[NUM_FAST_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for fast cycle */
-  struct bcm_msg_head msg_head;                    /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_FAST_CYCLE_MESSAGES];    /**< CAN message frames that shall be scheduled for fast cycle */
+  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
 } canFastCycleBCM;
 
 /**
- * @brief   Medium cycle Broadcast Manager message for the Linux Kernel
- */
+  * @brief   Medium cycle Broadcast Manager message for the Linux Kernel
+  */
 struct {
-  struct can_frame frame[NUM_MEDIUM_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for medium cycle */
-  struct bcm_msg_head msg_head;                      /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_MEDIUM_CYCLE_MESSAGES];  /**< CAN message frames that shall be scheduled for medium cycle */
+  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
 } canMediumCycleBCM;
 
 /**
- * @brief   Slow cycle Broadcast Manager message for the Linux Kernel
- */
+  * @brief   Slow cycle Broadcast Manager message for the Linux Kernel
+  */
 struct {
-  struct can_frame frame[NUM_SLOW_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for slow cycle */
-  struct bcm_msg_head msg_head;                    /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_SLOW_CYCLE_MESSAGES];    /**< CAN message frames that shall be scheduled for slow cycle */
+  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
 } canSlowCycleBCM;
 
 /**
@@ -72,46 +73,48 @@ struct {
  */
 class CanScheduler {
  private:
-  const std::string CAN_INTERFACE_NAME = "vcan0"; /**< SocketCAN interface name */
+  const std::string CAN_INTERFACE_NAME = "vcan0";                   /**< SocketCAN interface name */
 
   static const constexpr unsigned int FAST_CYCLE_SPEED_MS = 1U;     /**< CAN fast cycle period in milliseconds */
   static const constexpr unsigned int MEDIUM_CYCLE_SPEED_MS = 100U; /**< CAN medium cycle period in milliseconds */
   static const constexpr unsigned int SLOW_CYCLE_SPEED_MS = 1000U;  /**< CAN slow cycle period in milliseconds */
 
-  static const constexpr unsigned int SLOW_CYCLE_BCM_ID = 0U;   /**< Linux Broadcast Manager Id for tracking fast cycle messages */
-  static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U; /**< Linux Broadcast Manager Id for tracking medium cycle messages */
-  static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;   /**< Linux Broadcast Manager Id for tracking slow cycle messages */
+  static const constexpr unsigned int SLOW_CYCLE_BCM_ID = 0U;       /**< Linux Broadcast Manager Id for tracking fast cycle messages */
+  static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U;     /**< Linux Broadcast Manager Id for tracking medium cycle messages */
+  static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;       /**< Linux Broadcast Manager Id for tracking slow cycle messages */
 
-  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 22U; /**< Total number of messages */
-  static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U;  /**< Max message length in bytes */
+  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 21U; /**< Total number of messages */
+  static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U; /**< Max message length in bytes */
 
-  static const constexpr unsigned int FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager fast_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int FAST_BMS_CARRIER_BATTERY_VT_FRAME_INDEX = 1U;              /**< Broadcast Manager battery_vt to Frame index mapping */
-  static const constexpr unsigned int FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX = 2U;             /**< Broadcast Manager cc_pedal to Frame index mapping */
+  
+  static const constexpr unsigned int FAST_BMS_CARRIER_BATTERY_VT_FRAME_INDEX = 0U; /**< Broadcast Manager battery_vt to Frame index mapping */
+  static const constexpr unsigned int FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX = 1U; /**< Broadcast Manager fast_one_shot_msg to Frame index mapping */
 
-  static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 1U;                         /**< Broadcast Manager gyro_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 2U;                        /**< Broadcast Manager accel_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_BATTERY_STATUS_FRAME_INDEX = 3U;            /**< Broadcast Manager battery_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MC_STATUS_FRAME_INDEX = 4U;                 /**< Broadcast Manager mc_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_CONTROLLER_VC_FRAME_INDEX = 5U;       /**< Broadcast Manager motor_controller_vc to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_VELOCITY_FRAME_INDEX = 6U;            /**< Broadcast Manager motor_velocity to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_SINK_TEMPS_FRAME_INDEX = 7U;          /**< Broadcast Manager motor_sink_temps to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_BMS_CARRIER_DSP_BOARD_TEMPS_FRAME_INDEX = 8U;           /**< Broadcast Manager dsp_board_temps to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX = 9U;                /**< Broadcast Manager cc_info to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX = 10U;           /**< Broadcast Manager cc_steering to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX = 11U;   /**< Broadcast Manager cc_regen_percentage to Frame index mapping */
+  
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX = 0U; /**< Broadcast Manager test_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 1U; /**< Broadcast Manager gyro_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 2U; /**< Broadcast Manager accel_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_BATTERY_STATUS_FRAME_INDEX = 3U; /**< Broadcast Manager battery_status to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MC_STATUS_FRAME_INDEX = 4U; /**< Broadcast Manager mc_status to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_CONTROLLER_VC_FRAME_INDEX = 5U; /**< Broadcast Manager motor_controller_vc to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_VELOCITY_FRAME_INDEX = 6U; /**< Broadcast Manager motor_velocity to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_MOTOR_SINK_TEMPS_FRAME_INDEX = 7U; /**< Broadcast Manager motor_sink_temps to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_BMS_CARRIER_DSP_BOARD_TEMPS_FRAME_INDEX = 8U; /**< Broadcast Manager dsp_board_temps to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 9U; /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX = 10U; /**< Broadcast Manager steering_state to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX = 11U; /**< Broadcast Manager front_controller_pedal_data to Frame index mapping */
 
-  static const constexpr unsigned int SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX = 0U;                 /**< Broadcast Manager telemetry to Frame index mapping */
-  static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 1U; /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int SLOW_BMS_CARRIER_BATTERY_INFO_FRAME_INDEX = 2U;            /**< Broadcast Manager battery_info to Frame index mapping */
-  static const constexpr unsigned int SLOW_BMS_CARRIER_BATTERY_RELAY_INFO_FRAME_INDEX = 3U;      /**< Broadcast Manager battery_relay_info to Frame index mapping */
-  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE1_STATUS_FRAME_INDEX = 4U;             /**< Broadcast Manager afe1_status to Frame index mapping */
-  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE2_STATUS_FRAME_INDEX = 5U;             /**< Broadcast Manager afe2_status to Frame index mapping */
-  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE3_STATUS_FRAME_INDEX = 6U;             /**< Broadcast Manager afe3_status to Frame index mapping */
+  
+  static const constexpr unsigned int SLOW_BMS_CARRIER_BATTERY_INFO_FRAME_INDEX = 0U; /**< Broadcast Manager battery_info to Frame index mapping */
+  static const constexpr unsigned int SLOW_BMS_CARRIER_BATTERY_RELAY_INFO_FRAME_INDEX = 1U; /**< Broadcast Manager battery_relay_info to Frame index mapping */
+  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE1_STATUS_FRAME_INDEX = 2U; /**< Broadcast Manager afe1_status to Frame index mapping */
+  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE2_STATUS_FRAME_INDEX = 3U; /**< Broadcast Manager afe2_status to Frame index mapping */
+  static const constexpr unsigned int SLOW_BMS_CARRIER_AFE3_STATUS_FRAME_INDEX = 4U; /**< Broadcast Manager afe3_status to Frame index mapping */
+  static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 5U; /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
+  static const constexpr unsigned int SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX = 6U; /**< Broadcast Manager telemetry to Frame index mapping */
 
-  int m_bcmCanSocket;              /**< The CAN schedulers Broadcast Manager socket FD */
-  std::atomic<bool> m_isConnected; /**< Boolean flag to track the CAN schedulers connection status */
+  int m_bcmCanSocket;               /**< The CAN schedulers Broadcast Manager socket FD */
+  std::atomic<bool> m_isConnected;  /**< Boolean flag to track the CAN schedulers connection status */
 
   /**
    * @brief   Schedules all CAN data by updating the Broacast Manager socket
@@ -134,40 +137,25 @@ class CanScheduler {
    */
   void startCanScheduler();
   /**
-   * @brief   Update the CAN value for telemetry telemetry_data
-   * @param   telemetry_data_value New value for the signal
+   * @brief   Update the CAN value for test_data fault
+   * @param   fault_value New value for the signal
    */
-  void update_telemetry_telemetry_data(uint64_t telemetry_data_value);
+  void update_test_data_fault(uint16_t fault_value);
   /**
-   * @brief   Update the CAN value for fast_one_shot_msg sig1
-   * @param   sig1_value New value for the signal
+   * @brief   Update the CAN value for test_data fault_val
+   * @param   fault_val_value New value for the signal
    */
-  void update_fast_one_shot_msg_sig1(uint16_t sig1_value);
+  void update_test_data_fault_val(uint16_t fault_val_value);
   /**
-   * @brief   Update the CAN value for fast_one_shot_msg sig2
-   * @param   sig2_value New value for the signal
+   * @brief   Update the CAN value for test_data aux_batt_v
+   * @param   aux_batt_v_value New value for the signal
    */
-  void update_fast_one_shot_msg_sig2(uint16_t sig2_value);
+  void update_test_data_aux_batt_v(uint16_t aux_batt_v_value);
   /**
-   * @brief   Update the CAN value for medium_one_shot_msg sig1
-   * @param   sig1_value New value for the signal
+   * @brief   Update the CAN value for test_data afe_status
+   * @param   afe_status_value New value for the signal
    */
-  void update_medium_one_shot_msg_sig1(uint16_t sig1_value);
-  /**
-   * @brief   Update the CAN value for medium_one_shot_msg sig2
-   * @param   sig2_value New value for the signal
-   */
-  void update_medium_one_shot_msg_sig2(uint16_t sig2_value);
-  /**
-   * @brief   Update the CAN value for slow_one_shot_msg sig1
-   * @param   sig1_value New value for the signal
-   */
-  void update_slow_one_shot_msg_sig1(uint16_t sig1_value);
-  /**
-   * @brief   Update the CAN value for slow_one_shot_msg sig2
-   * @param   sig2_value New value for the signal
-   */
-  void update_slow_one_shot_msg_sig2(uint16_t sig2_value);
+  void update_test_data_afe_status(uint8_t afe_status_value);
   /**
    * @brief   Update the CAN value for gyro_data x_axis
    * @param   x_axis_value New value for the signal
@@ -439,55 +427,75 @@ class CanScheduler {
    */
   void update_afe3_status_v3(uint16_t v3_value);
   /**
-   * @brief   Update the CAN value for cc_pedal throttle_output
-   * @param   throttle_output_value New value for the signal
+   * @brief   Update the CAN value for fast_one_shot_msg sig1
+   * @param   sig1_value New value for the signal
    */
-  void update_cc_pedal_throttle_output(uint32_t throttle_output_value);
+  void update_fast_one_shot_msg_sig1(uint16_t sig1_value);
   /**
-   * @brief   Update the CAN value for cc_pedal brake_output
-   * @param   brake_output_value New value for the signal
+   * @brief   Update the CAN value for fast_one_shot_msg sig2
+   * @param   sig2_value New value for the signal
    */
-  void update_cc_pedal_brake_output(uint8_t brake_output_value);
+  void update_fast_one_shot_msg_sig2(uint16_t sig2_value);
   /**
-   * @brief   Update the CAN value for cc_info target_velocity
+   * @brief   Update the CAN value for medium_one_shot_msg sig1
+   * @param   sig1_value New value for the signal
+   */
+  void update_medium_one_shot_msg_sig1(uint16_t sig1_value);
+  /**
+   * @brief   Update the CAN value for medium_one_shot_msg sig2
+   * @param   sig2_value New value for the signal
+   */
+  void update_medium_one_shot_msg_sig2(uint16_t sig2_value);
+  /**
+   * @brief   Update the CAN value for slow_one_shot_msg sig1
+   * @param   sig1_value New value for the signal
+   */
+  void update_slow_one_shot_msg_sig1(uint16_t sig1_value);
+  /**
+   * @brief   Update the CAN value for slow_one_shot_msg sig2
+   * @param   sig2_value New value for the signal
+   */
+  void update_slow_one_shot_msg_sig2(uint16_t sig2_value);
+  /**
+   * @brief   Update the CAN value for steering_state target_velocity
    * @param   target_velocity_value New value for the signal
    */
-  void update_cc_info_target_velocity(uint32_t target_velocity_value);
+  void update_steering_state_target_velocity(uint32_t target_velocity_value);
   /**
-   * @brief   Update the CAN value for cc_info drive_state
+   * @brief   Update the CAN value for steering_state drive_state
    * @param   drive_state_value New value for the signal
    */
-  void update_cc_info_drive_state(uint8_t drive_state_value);
+  void update_steering_state_drive_state(uint8_t drive_state_value);
   /**
-   * @brief   Update the CAN value for cc_info cruise_control
+   * @brief   Update the CAN value for steering_state cruise_control
    * @param   cruise_control_value New value for the signal
    */
-  void update_cc_info_cruise_control(uint8_t cruise_control_value);
+  void update_steering_state_cruise_control(uint8_t cruise_control_value);
   /**
-   * @brief   Update the CAN value for cc_info regen_braking
+   * @brief   Update the CAN value for steering_state regen_braking
    * @param   regen_braking_value New value for the signal
    */
-  void update_cc_info_regen_braking(uint8_t regen_braking_value);
+  void update_steering_state_regen_braking(uint8_t regen_braking_value);
   /**
-   * @brief   Update the CAN value for cc_info hazard_enabled
+   * @brief   Update the CAN value for steering_state hazard_enabled
    * @param   hazard_enabled_value New value for the signal
    */
-  void update_cc_info_hazard_enabled(uint8_t hazard_enabled_value);
+  void update_steering_state_hazard_enabled(uint8_t hazard_enabled_value);
   /**
-   * @brief   Update the CAN value for cc_steering input_cc
-   * @param   input_cc_value New value for the signal
+   * @brief   Update the CAN value for telemetry telemetry_data
+   * @param   telemetry_data_value New value for the signal
    */
-  void update_cc_steering_input_cc(uint8_t input_cc_value);
+  void update_telemetry_telemetry_data(uint64_t telemetry_data_value);
   /**
-   * @brief   Update the CAN value for cc_steering input_lights
-   * @param   input_lights_value New value for the signal
+   * @brief   Update the CAN value for front_controller_pedal_data percentage
+   * @param   percentage_value New value for the signal
    */
-  void update_cc_steering_input_lights(uint8_t input_lights_value);
+  void update_front_controller_pedal_data_percentage(uint32_t percentage_value);
   /**
-   * @brief   Update the CAN value for cc_regen_percentage percent
-   * @param   percent_value New value for the signal
+   * @brief   Update the CAN value for front_controller_pedal_data brake_enabled
+   * @param   brake_enabled_value New value for the signal
    */
-  void update_cc_regen_percentage_percent(uint32_t percent_value);
+  void update_front_controller_pedal_data_brake_enabled(uint8_t brake_enabled_value);
 };
 
 /** @} */
