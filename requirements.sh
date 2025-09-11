@@ -44,7 +44,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     apt-get install -y nlohmann-json3-dev
 
     echo "==> Install clang and gcc"
-    apt-get -y install binutils-arm-none-eabi gcc-arm-none-eabi libncurses-dev software-properties-common
+    apt-get -y install binutils-arm-none-eabi gcc-arm-none-eabi libncurses-dev software-properties-common libsdl2-dev
     add-apt-repository -y ppa:ubuntu-toolchain-r/test
     apt-get -y install gcc-11 g++-11 clang clang-format gdb
 
@@ -82,7 +82,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 
     brew update
-    brew install tmux git vim curl scons can-utils gcc llvm gdb minicom openocd python3
+    brew install tmux git vim curl scons can-utils gcc llvm gdb minicom openocd python3 sdl2 
 
     echo "==> Install Python requirements"
     pip3 install --upgrade pip
