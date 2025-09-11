@@ -103,7 +103,6 @@ StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power
     return status;
   }
 
-
   // the active power value is signed (16 bits lower)
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
@@ -155,7 +154,7 @@ StatusCode acs37800_reset_overcurrent_flag(ACS37800_Storage *storage) {
   };
 
   StatusCode status = i2c_write_reg(storage->i2c_port, storage->i2c_address, ACS37800_REG_STATUS, tx_buff, sizeof(tx_buff));
-  
+
   return status;
 }
 
@@ -181,7 +180,6 @@ StatusCode acs37800_get_overvoltage_flag(ACS37800_Storage *storage, bool *overvo
 
   return STATUS_CODE_OK;
 }
-
 
 StatusCode acs37800_get_undervoltage_flag(ACS37800_Storage *storage, bool *undervoltage_flag) {
   if (storage == NULL) {

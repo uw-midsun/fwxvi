@@ -10,8 +10,8 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 #include "gpio.h"
