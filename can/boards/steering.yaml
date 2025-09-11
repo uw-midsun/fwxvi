@@ -6,17 +6,23 @@
 
 ---
 Messages:
-  front_controller_pedal_data:
-    id: 21
+  steering_state: 
+    id: 5
+    critical: true
     cycle: "medium"
-    critical: false
     target:
       telemetry:
         watchdog: 0
       bms_carrier:
         watchdog: 0
     signals:
-      percentage:
+      target_velocity:
         length: 32
-      brake_enabled:
-        length:  8
+      drive_state:
+        length: 8
+      cruise_control:
+        length: 8
+      regen_braking:
+        length: 8
+      hazard_enabled:
+        length: 8

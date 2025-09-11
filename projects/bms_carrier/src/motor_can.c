@@ -48,19 +48,20 @@ float clamp_float(float value) {
 }
 
 void update_target_current_velocity() {
-  float throttle_percent = get_float(get_cc_pedal_throttle_output());
-  bool brake = get_cc_pedal_brake_output();
-  float target_vel = (int)(get_cc_info_target_velocity()) * VEL_TO_RPM_RATIO;
+  float throttle_percent = get_float(get_front_controller_pedal_data_percentage());
+  bool brake = get_front_controller_pedal_data_brake_enabled();
+  float target_vel = (int)(get_steering_state_target_velocity()) * VEL_TO_RPM_RATIO;
   float car_vel = fabs((s_car_velocity_l + s_car_velocity_r) / 2);
   float opd_thresh = opd_threshold(car_vel);
 
-  DriveState drive_state = get_cc_info_drive_state();
+  DriveState drive_state = get_steering_state_drive_state();
 
   // Regen returns a value btwn 0-100 to represent the max regen we can perform
   // 0 means our cells max voltage is close to 4.2V or regen is off so we should stop regen braking
   // 100 means we are below 4.0V so regen braking is allowed
-  float regen = get_float(get_cc_regen_percentage_percent());
-  bool cruise = get_cc_info_cruise_control();
+  // LEGACY CODE: float regen = get_float(get_cc_regen_percentage_percent());
+  float regen = 1.0f;
+  bool cruise = get_steering_state_cruise_control();
 
   if ((drive_state == VEHICLE_DRIVE) && cruise && (throttle_percent <= opd_thresh)) {
     drive_state = VEHICLE_CRUISE;
