@@ -15,7 +15,7 @@
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
-#include "rear_hw_defs.h"
+#include "rear_controller_hw_defs.h"
 
 /* Intra-component Headers */
 #include "status.h"

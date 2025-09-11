@@ -30,52 +30,43 @@ NS_ :
 
 BS_:
 
-BU_: TELEMETRY CAN_COMMUNICATION IMU BMS_CARRIER CENTRE_CONSOLE
+BU_: REAR_CONTROLLER IMU BMS_CARRIER CAN_COMMUNICATION STEERING TELEMETRY FRONT_CONTROLLER
 
-BO_   1856 telemetry: 8 telemetry
-  SG_ data : 0|64@1+ (1,0) [0|18446744073709551615] "" telemetry
+BO_  320  test_data: 7 rear_controller
+  SG_ fault : 0|16@1+ (1,0) [0|65535] "" power_distribution
+  SG_ fault_val : 16|16@1+ (1,0) [0|65535] "" power_distribution
+  SG_ aux_batt_v : 32|16@1+ (1,0) [0|65535] "" power_distribution
+  SG_ afe_status : 48|8@1+ (1,0) [0|255] "" power_distribution
 
-BO_   1905 fast_one_shot_msg: 4 can_communication
-  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
-  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
-
-BO_   1889 medium_one_shot_msg: 4 can_communication
-  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
-  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
-
-BO_   1873 slow_one_shot_msg: 4 can_communication
-  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
-  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
-
-BO_   1842 gyro_data: 6 imu
+BO_   1841 gyro_data: 6 imu
   SG_ x_axis : 0|16@1+ (1,0) [0|65535] "" telemetry
   SG_ y_axis : 16|16@1+ (1,0) [0|65535] "" telemetry
   SG_ z_axis : 32|16@1+ (1,0) [0|65535] "" telemetry
 
-BO_   1826 accel_data: 6 imu
+BO_   1825 accel_data: 6 imu
   SG_ x_axis : 0|16@1+ (1,0) [0|65535] "" telemetry
   SG_ y_axis : 16|16@1+ (1,0) [0|65535] "" telemetry
   SG_ z_axis : 32|16@1+ (1,0) [0|65535] "" telemetry
 
-BO_  19  battery_status: 7 bms_carrier
+BO_  18  battery_status: 7 bms_carrier
   SG_ fault : 0|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ fault_val : 16|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ aux_batt_v : 32|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ afe_status : 48|8@1+ (1,0) [0|255] "" centre_console, power_distribution
 
-BO_  35  battery_vt: 8 bms_carrier
+BO_  34  battery_vt: 8 bms_carrier
   SG_ voltage : 0|16@1+ (1,0) [0|65535] "" centre_console
   SG_ current : 16|16@1+ (1,0) [0|65535] "" centre_console
   SG_ temperature : 32|16@1+ (1,0) [0|65535] "" centre_console
   SG_ batt_perc : 48|16@1+ (1,0) [0|65535] "" centre_console
 
-BO_  51  battery_info: 6 bms_carrier
+BO_  50  battery_info: 6 bms_carrier
   SG_ fan1 : 0|8@1+ (1,0) [0|255] "" centre_console
   SG_ fan2 : 8|8@1+ (1,0) [0|255] "" centre_console
   SG_ max_cell_v : 16|16@1+ (1,0) [0|65535] "" centre_console
   SG_ min_cell_v : 32|16@1+ (1,0) [0|65535] "" centre_console
 
-BO_  67  mc_status: 7 bms_carrier
+BO_  66  mc_status: 7 bms_carrier
   SG_ limit_bitset_l : 0|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ error_bitset_l : 8|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ limit_bitset_r : 16|8@1+ (1,0) [0|255] "" centre_console, power_distribution
@@ -84,66 +75,74 @@ BO_  67  mc_status: 7 bms_carrier
   SG_ overtemp_bitset : 40|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ precharge_status : 48|8@1+ (1,0) [0|255] "" centre_console, power_distribution
 
-BO_   1923 motor_controller_vc: 8 bms_carrier
+BO_   1922 motor_controller_vc: 8 bms_carrier
   SG_ mc_voltage_l : 0|16@1+ (1,0) [0|65535] "" centre_console
   SG_ mc_current_l : 16|16@1+ (1,0) [0|65535] "" centre_console
   SG_ mc_voltage_r : 32|16@1+ (1,0) [0|65535] "" centre_console
   SG_ mc_current_r : 48|16@1+ (1,0) [0|65535] "" centre_console
 
-BO_  915  motor_velocity: 5 bms_carrier
+BO_  914  motor_velocity: 5 bms_carrier
   SG_ velocity_l : 0|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ velocity_r : 16|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ brakes_enabled : 32|8@1+ (1,0) [0|255] "" centre_console, power_distribution
 
-BO_   1955 motor_sink_temps: 8 bms_carrier
+BO_   1954 motor_sink_temps: 8 bms_carrier
   SG_ motor_temp_l : 0|16@1+ (1,0) [0|65535] "" centre_console
   SG_ heatsink_temp_l : 16|16@1+ (1,0) [0|65535] "" centre_console
   SG_ motor_temp_r : 32|16@1+ (1,0) [0|65535] "" centre_console
   SG_ heatsink_temp_r : 48|16@1+ (1,0) [0|65535] "" centre_console
 
-BO_   1971 dsp_board_temps: 4 bms_carrier
+BO_   1970 dsp_board_temps: 4 bms_carrier
   SG_ dsp_temp_l : 0|16@1+ (1,0) [0|65535] "" centre_console
   SG_ dsp_temp_r : 16|16@1+ (1,0) [0|65535] "" centre_console
 
-BO_   1987 battery_relay_info: 1 bms_carrier
+BO_   1986 battery_relay_info: 1 bms_carrier
   SG_ state : 0|8@1+ (1,0) [0|255] "" power_distribution
 
-BO_   2003 AFE1_status: 8 bms_carrier
+BO_   2002 AFE1_status: 8 bms_carrier
   SG_ id : 0|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ temp : 8|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ v1 : 16|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v2 : 32|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v3 : 48|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
 
-BO_   2019 AFE2_status: 8 bms_carrier
+BO_   2018 AFE2_status: 8 bms_carrier
   SG_ id : 0|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ temp : 8|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ v1 : 16|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v2 : 32|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v3 : 48|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
 
-BO_   2035 AFE3_status: 8 bms_carrier
+BO_   2034 AFE3_status: 8 bms_carrier
   SG_ id : 0|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ temp : 8|8@1+ (1,0) [0|255] "" centre_console, power_distribution
   SG_ v1 : 16|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v2 : 32|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
   SG_ v3 : 48|16@1+ (1,0) [0|65535] "" centre_console, power_distribution
 
-BO_  84  cc_pedal: 5 centre_console
-  SG_ throttle_output : 0|32@1+ (1,0) [0|4294967295] "" bms_carrier, power_distribution
-  SG_ brake_output : 32|8@1+ (1,0) [0|255] "" bms_carrier, power_distribution
+BO_   1907 fast_one_shot_msg: 4 can_communication
+  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
+  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
 
-BO_  100  cc_info: 8 centre_console
-  SG_ target_velocity : 0|32@1+ (1,0) [0|4294967295] "" bms_carrier, power_distribution
-  SG_ drive_state : 32|8@1+ (1,0) [0|255] "" bms_carrier, power_distribution
-  SG_ cruise_control : 40|8@1+ (1,0) [0|255] "" bms_carrier, power_distribution
-  SG_ regen_braking : 48|8@1+ (1,0) [0|255] "" bms_carrier, power_distribution
-  SG_ hazard_enabled : 56|8@1+ (1,0) [0|255] "" bms_carrier, power_distribution
+BO_   1891 medium_one_shot_msg: 4 can_communication
+  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
+  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
 
-BO_  116  cc_steering: 2 centre_console
-  SG_ input_cc : 0|8@1+ (1,0) [0|255] "" power_distribution, bms_carrier
-  SG_ input_lights : 8|8@1+ (1,0) [0|255] "" power_distribution, bms_carrier
+BO_   1875 slow_one_shot_msg: 4 can_communication
+  SG_ sig1 : 0|16@1+ (1,0) [0|65535] "" can_communication
+  SG_ sig2 : 16|16@1+ (1,0) [0|65535] "" can_communication
 
-BO_  132  cc_regen_percentage: 4 centre_console
-  SG_ percent : 0|32@1+ (1,0) [0|4294967295] "" bms_carrier
+BO_  84  steering_state: 8 steering
+  SG_ target_velocity : 0|32@1+ (1,0) [0|4294967295] "" telemetry, bms_carrier
+  SG_ drive_state : 32|8@1+ (1,0) [0|255] "" telemetry, bms_carrier
+  SG_ cruise_control : 40|8@1+ (1,0) [0|255] "" telemetry, bms_carrier
+  SG_ regen_braking : 48|8@1+ (1,0) [0|255] "" telemetry, bms_carrier
+  SG_ hazard_enabled : 56|8@1+ (1,0) [0|255] "" telemetry, bms_carrier
+
+BO_   1861 telemetry: 8 telemetry
+  SG_ telemetry_data : 0|64@1+ (1,0) [0|18446744073709551615] "" telemetry
+
+BO_   1366 front_controller_pedal_data: 5 front_controller
+  SG_ percentage : 0|32@1+ (1,0) [0|4294967295] "" telemetry, bms_carrier
+  SG_ brake_enabled : 32|8@1+ (1,0) [0|255] "" telemetry, bms_carrier
 

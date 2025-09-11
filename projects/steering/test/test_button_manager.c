@@ -1,12 +1,11 @@
 /************************************************************************************************
- * @file   test_button_manager.c
+ * @file    test_button_manager.c
  *
- * @brief  Test file for button manager
+ * @brief   Test file for button manager
  *
- * @date   2025-07-28
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2025-09-03
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
-
 /* Standard library Headers */
 #include <stdbool.h>
 #include <stdint.h>
@@ -17,124 +16,139 @@
 
 /* Intra-component Headers */
 #include "button_manager.h"
+#include "drive_state_manager.h"
+#include "light_signal_manager.h"
+#include "steering.h"
+#include "steering_hw_defs.h"
+
+/* --- Constants --- */
+#define DEBOUNCE_CYCLES (STEERING_BUTTON_DEBOUNCE_PERIOD_MS + 1)
 
 /* --- Mock GPIO Implementation --- */
 static GpioState mock_gpio_states[BUTTON_MANAGER_MAX_BUTTONS];
+
+static LightsSignalState signal_requested;
+static DriveState drive_requested;
 
 GpioState TEST_MOCK(gpio_get_state)(const GpioAddress *addr) {
   return mock_gpio_states[addr->pin];
 }
 
-/* --- Callback Flags & Functions --- */
-static bool pressed_called;
-static bool released_called;
-static bool btn0_pressed;
-static bool btn1_released;
-
-void test_press_callback(Button *btn) {
-  (void)btn;
-  pressed_called = true;
-}
-void test_release_callback(Button *btn) {
-  (void)btn;
-  released_called = true;
-}
-void test_btn0_press(Button *btn) {
-  (void)btn;
-  btn0_pressed = true;
-}
-void test_btn1_release(Button *btn) {
-  (void)btn;
-  btn1_released = true;
+StatusCode TEST_MOCK(lights_signal_manager_request)(LightsSignalState state) {
+  signal_requested = state;
+  return STATUS_CODE_OK;
 }
 
-/* --- Button Manager & Configs --- */
+StatusCode TEST_MOCK(drive_state_manager_request)(DriveState state) {
+  drive_requested = state;
+  return STATUS_CODE_OK;
+}
+
+/* --- Button Manager Instance --- */
 static ButtonManager manager;
 
-static ButtonConfig default_config[] = {
-  { .gpio = { .port = GPIO_PORT_A, .pin = 0 }, .active_low = true, .debounce_ms = 2, .callbacks = { .rising_edge_cb = test_press_callback, .falling_edge_cb = test_release_callback } }
-};
+/* --- Helpers --- */
+static void simulate_updates(uint8_t cycles) {
+  for (uint8_t i = 0; i < cycles; i++) {
+    TEST_ASSERT_OK(button_manager_update(&manager));
+  }
+}
 
-/* --- Setup/Teardown --- */
 void setup_test(void) {
-  pressed_called = false;
-  released_called = false;
-  btn0_pressed = false;
-  btn1_released = false;
+  signal_requested = LIGHTS_SIGNAL_REQUEST_OFF;
+  drive_requested = DRIVE_STATE_INVALID;
+
   for (uint8_t i = 0; i < BUTTON_MANAGER_MAX_BUTTONS; i++) {
     mock_gpio_states[i] = GPIO_STATE_HIGH;
   }
 
-  TEST_ASSERT_OK(button_manager_init(&manager, default_config, 1));
+  TEST_ASSERT_OK(button_manager_init(&manager));
 }
 
 void teardown_test(void) {
   /* nothing to clean up */
 }
 
-void test_button_press_and_release(void) {
-  // Simulate press and release with debounce_ms = 2
-  for (int i = 0; i < 7; ++i) {
-    if (i == 1) mock_gpio_states[0] = GPIO_STATE_LOW;   // Simulate press
-    if (i == 4) mock_gpio_states[0] = GPIO_STATE_HIGH;  // Simulate release
-    TEST_ASSERT_OK(button_manager_update(&manager));
-  }
+void test_left_turn_button_triggers_signal(void) {
+  GpioAddress button_under_test = STEERING_LEFT_TURN_BUTTON;
 
-  TEST_ASSERT_TRUE_MESSAGE(pressed_called, "Press callback was not called");
-  TEST_ASSERT_TRUE_MESSAGE(released_called, "Release callback was not called");
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  TEST_ASSERT_EQUAL(LIGHTS_SIGNAL_STATE_LEFT, signal_requested);
 }
 
-void test_multi_button_independent_callbacks(void) {
-  ButtonConfig multi_configs[2] = { { .gpio = { .port = 0, .pin = 0 }, .active_low = true, .debounce_ms = 1, .callbacks = { .rising_edge_cb = test_btn0_press, .falling_edge_cb = NULL } },
-                                    { .gpio = { .port = 0, .pin = 1 }, .active_low = true, .debounce_ms = 1, .callbacks = { .rising_edge_cb = NULL, .falling_edge_cb = test_btn1_release } } };
+void test_right_turn_button_triggers_signal(void) {
+  GpioAddress button_under_test = STEERING_RIGHT_TURN_BUTTON;
 
-  TEST_ASSERT_OK(button_manager_init(&manager, multi_configs, 2));
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  // Simulate press on button 0
-  mock_gpio_states[0] = GPIO_STATE_LOW;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  TEST_ASSERT_TRUE_MESSAGE(btn0_pressed, "Button0 press callback not called");
-  TEST_ASSERT_FALSE_MESSAGE(btn1_released, "Button1 release should NOT have fired");
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  // Simulate full press + release on button 1
-  mock_gpio_states[1] = GPIO_STATE_LOW;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  TEST_ASSERT_OK(button_manager_update(&manager));
-
-  mock_gpio_states[1] = GPIO_STATE_HIGH;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  TEST_ASSERT_OK(button_manager_update(&manager));
-
-  TEST_ASSERT_TRUE_MESSAGE(btn1_released, "Button1 release callback not called");
+  TEST_ASSERT_EQUAL(LIGHTS_SIGNAL_STATE_RIGHT, signal_requested);
 }
 
-void test_null_callbacks_no_crash(void) {
-  ButtonConfig null_cfg = { .gpio = { .port = 0, .pin = 0 }, .active_low = true, .debounce_ms = 1, .callbacks = { .rising_edge_cb = NULL, .falling_edge_cb = NULL } };
+void test_hazards_button_triggers_signal(void) {
+  GpioAddress button_under_test = STEERING_HAZARDS_BUTTON;
 
-  TEST_ASSERT_OK(button_manager_init(&manager, &null_cfg, 1));
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  mock_gpio_states[0] = GPIO_STATE_LOW;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  mock_gpio_states[0] = GPIO_STATE_HIGH;
-  TEST_ASSERT_OK(button_manager_update(&manager));
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  TEST_PASS_MESSAGE("Null callbacks did not cause crash");
+  TEST_ASSERT_EQUAL(LIGHTS_SIGNAL_STATE_HAZARD, signal_requested);
 }
 
-void test_short_bounce_no_trigger(void) {
-  ButtonConfig bounce_cfg = { .gpio = { .port = 0, .pin = 0 }, .active_low = true, .debounce_ms = 3, .callbacks = { .rising_edge_cb = test_press_callback, .falling_edge_cb = test_release_callback } };
+void test_drive_button_triggers_drive_state(void) {
+  GpioAddress button_under_test = STEERING_DRIVE_BUTTON;
 
-  TEST_ASSERT_OK(button_manager_init(&manager, &bounce_cfg, 1));
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  mock_gpio_states[0] = GPIO_STATE_LOW;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  mock_gpio_states[0] = GPIO_STATE_HIGH;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  mock_gpio_states[0] = GPIO_STATE_LOW;
-  TEST_ASSERT_OK(button_manager_update(&manager));
-  mock_gpio_states[0] = GPIO_STATE_HIGH;
-  TEST_ASSERT_OK(button_manager_update(&manager));
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
 
-  TEST_ASSERT_FALSE_MESSAGE(pressed_called, "Press should NOT have fired on short bounce");
-  TEST_ASSERT_FALSE_MESSAGE(released_called, "Release should NOT have fired on short bounce");
+  TEST_ASSERT_EQUAL(DRIVE_STATE_DRIVE, drive_requested);
+}
+
+void test_reverse_button_triggers_drive_state(void) {
+  GpioAddress button_under_test = STEERING_REVERSE_BUTTON;
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  TEST_ASSERT_EQUAL(DRIVE_STATE_REVERSE, drive_requested);
+}
+
+void test_neutral_button_triggers_drive_state(void) {
+  GpioAddress button_under_test = STEERING_NEUTRAL_BUTTON;
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  TEST_ASSERT_EQUAL(DRIVE_STATE_NEUTRAL, drive_requested);
+}
+
+void test_short_bounce_on_button_does_not_trigger(void) {
+  GpioAddress button_under_test = STEERING_DRIVE_BUTTON;
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
+  simulate_updates(STEERING_BUTTON_DEBOUNCE_PERIOD_MS - 2);
+
+  mock_gpio_states[button_under_test.pin] = GPIO_STATE_HIGH;
+  simulate_updates(DEBOUNCE_CYCLES);
+
+  TEST_ASSERT_EQUAL(DRIVE_STATE_INVALID, drive_requested);
 }
