@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************************************
- * @file   rear_hw_defs.h
+ * @file   rear_controller_hw_defs.h
  *
  * @brief  Rear controller board hardware definitions
  *
