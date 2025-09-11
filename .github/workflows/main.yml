@@ -69,7 +69,6 @@ jobs:
 
       - name: Get and run setup script
         run: |
-          wget https://raw.githubusercontent.com/uw-midsun/box/master/requirements.sh
           chmod +x ./requirements.sh
           sudo ./requirements.sh
           pip install -r requirements.txt --upgrade
