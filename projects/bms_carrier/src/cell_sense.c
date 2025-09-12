@@ -104,6 +104,16 @@ static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U
                                                           1668U,  1622U,  1577U,  1533U,  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,
                                                           1078U,  1052U,  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
                                                           721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U };
+// Murata NCP15XH103F03RC 10k NTC, B(25/50)=3380 K
+// Index = °C (0..124), Value = resistance (ohms)
+static const uint16_t s_resistance_lookup[TABLE_SIZE] = {
+  28224U,        26978U,  25796U,  24674U,  23608U,  22595U,  21632U,  20717U,  19847U,  19019U,  18231U,  17481U,  16767U,  16087U,  15438U,  14820U,  14231U,  13669U,  13133U,  1262212133U,   11667U,  11221U,  10796U,
+  10389U,        10000U,  9628U,   9272U,   8932U,   8606U,   8295U,   7996U,   7710U,   7436U,   7174U,   6922U,   6681U,   6449U,   6227U,   6014U,   5810U,   5614U,   5425U,   5244U,5070U,    4903U,   4743U,   4589U,
+  4440U, 4297U,   4160U,   4028U,   3901U,   3779U,   3661U,   3547U,   3438U,   3333U,   3231U,   3133U,   3039U,   2948U,   2861U,   2776U,   2695U,   2616U,   2540U,   2467U,   2396U,2327U,    2261U,   2197U,
+  2136U, 2076U,   2019U,   1963U,   1909U,   1857U,   1807U,   1758U,   1711U,   1665U,   1621U,   1578U,   1537U,   1497U,   1458U,   1420U,   1384U,   1349U,   1315U,   1281U,   1249U,1218U,    1188U,   1158U,
+  1130U, 1102U,   1076U,   1050U,   1024U,   1000U,   976U,    953U,    930U,    909U,    888U,    867U,    847U,    828U,    809U,    790U,    772U,    755U,    738U,    722U,    706U, 690U,     675U,    660U,
+  646U,  632U,    619U,    605U,    593U
+};
 
 /************************************************************************************************
  * Private function definitions
@@ -111,7 +121,10 @@ static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U
 
 static void s_balance_cells(uint16_t min_voltage) {
   uint16_t balancing_threshold = min_voltage;
-
+  float current = 0;
+  //TODO: read current
+  if(current > 7.0f) //don't balance
+    return;
   /* Adjust balancing threshold */
   if (min_voltage >= AFE_BALANCING_UPPER_THRESHOLD) {
     /* If the minimum cell voltage is greater than 4.15V, we want minimum 2mV imbalance */
