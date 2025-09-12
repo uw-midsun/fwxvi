@@ -222,6 +222,9 @@ void test_update_state(void) {
  * @brief Check Kinematics calculations
  */
 
+void test_kinematic_calculations(void){
+
+}
 
 /**
  * @brief Test covariance prediction
@@ -240,3 +243,20 @@ void test_mult_zero(void){
      matrix_mult(STATE_SIZE, STATE_SIZE, STATE_SIZE, STATE_SIZE, A, B, result);
      TEST_ASSERT_TRUE(compare_matrices(STATE_SIZE, STATE_SIZE, result, expected));
 }
+
+
+/**
+ * @brief Test inverting matrices
+ */
+/* FSM Initialization Test */
+TEST_IN_TASK
+void test_matrix_mult_zero(void){
+    double A0[3][3]={{0}};
+    doubel B0[3][3]={{0}};
+    doubel R0[3][3]={{0}};
+    double E0[3][3]={{0}};
+    matrix_mult(3, 3, 3, 3, A0. B0, R0);
+    assert_matrices_close(&R0[0][0], &E0[0][0], 3, 3, 0.0);
+}
+
+

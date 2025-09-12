@@ -7,7 +7,7 @@ static float voltage_weight = 1.0f;
 /* Cell voltage. 0.2A Load taken off this page
  * https://lygte-info.dk/review/batteries2012/LG%2021700%20M50%205000mAh%20(Grey)%20UK.html */
 /* Placeholder lookup for testing */
-static float voltage_lookup[LUT_SIZE] = { 2.80, 3.00, 3.12, 3.18, 3.22, 3.25, 3.28, 3.30, 3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 3.52, 3.54, 3.56,
+ float voltage_lookup[LUT_SIZE] = { 2.80, 3.00, 3.12, 3.18, 3.22, 3.25, 3.28, 3.30, 3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 3.52, 3.54, 3.56,
                                           3.58, 3.60, 3.62, 3.64, 3.66, 3.68, 3.70, 3.72, 3.74, 3.76, 3.78, 3.80, 3.82, 3.84, 3.86, 3.89, 3.93, 3.98, 4.07, 4.15 };
 
 // Ramps the voltage when its less than 30% SOC or greater than 70% SOC
@@ -27,7 +27,7 @@ static void update_storage() {
   s_storage.last_time = pdTICKS_TO_MS(xTaskGetTickCount());
 }
 
-float perdict_voltage() {
+float predict_voltage() {
   // Voltage under load + Ohmic voltage drop in battery pack
   return (float)bms->pack_voltage + bms->pack_current * (PACK_INTERNAL_RESISTANCE_mOHMS / 1000.0f);
 }
@@ -51,7 +51,7 @@ void ocv_voltage_soc() {
   uint8_t low_index = 0xff;
   uint8_t upper_index = 0;
 
-  float pack_voltage = perdict_voltage();
+  float pack_voltage = predict_voltage();
 
   if (pack_voltage >= (voltage_lookup[LUT_SIZE - 1] * bms->config.series_count * VOLTS_TO_mV)) {
     s_storage.v_soc = 100.0f;
@@ -109,7 +109,7 @@ StatusCode state_of_charge_init(BmsStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-// TEST FUNCTIONS
+// TEST FUNCTIONS (empty)
 
 void set_last_time(uint32_t last_time) {
   s_storage.last_time = last_time;

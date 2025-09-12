@@ -62,4 +62,7 @@ float get_v_soc(void);
 float get_averaged_soc(void);
 int32_t get_last_current(void);
 float get_voltage_weight(void);
+
+extern float voltage_lookup[LUT_SIZE];
+
 /** @} */

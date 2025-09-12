@@ -48,4 +48,7 @@ typedef struct {
   Max17261Storage fuel_guage_storage;
 } BmsStorage;
 
+
+
+
 /** @} */

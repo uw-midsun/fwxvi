@@ -49,6 +49,14 @@ double R[MEASUREMENT_SIZE][MEASUREMENT_SIZE] = {
 double U[MEASUREMENT_SIZE] = {0};
 
 
+typedef struct{
+    double x[STATE_SIZE];
+    double P[STATE_SIZE][STATE_SIZE];
+    double Q[STATE_SIZE][STATE_SIZE];
+    double R[MEASUREMENT_SIZE][MEASUREMENT_SIZE];
+    double A[STATE_SIZE][STATE_SIZE];
+}EkfFilter;
+
 
 /**
 *@brief Takes in 2 matrices and performs matrix multiplication, of any size
@@ -227,7 +235,7 @@ StatusCode update_state(void) {
         }
     }
 
-    // Update covariance: P = (I - K*H)*P
+    // Update covariance: P=  (I - K*H)*P
     double I_KH[STATE_SIZE][STATE_SIZE] = {0};
     double KH[STATE_SIZE][STATE_SIZE] = {0};
 
