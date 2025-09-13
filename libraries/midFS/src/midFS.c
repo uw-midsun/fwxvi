@@ -1,3 +1,12 @@
+/************************************************************************************************
+ * @file   midFS.c
+ *
+ * @brief  Source file for file system library
+ *
+ * @date   2025-09-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include "midFS.h"
 
 #define SUPERBLOCK_OFFSET 0

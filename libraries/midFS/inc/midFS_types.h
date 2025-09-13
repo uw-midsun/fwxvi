@@ -1,3 +1,14 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   midFS_types.c
+ *
+ * @brief  Header file for various types used in file system library
+ *
+ * @date   2025-09-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include <stdint.h>
 
 #define BLOCKS_PER_GROUP 64

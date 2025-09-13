@@ -1,3 +1,14 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   midFS.h
+ *
+ * @brief  Header file for file system library
+ *
+ * @date   2025-09-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
