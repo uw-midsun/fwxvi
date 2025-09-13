@@ -1,3 +1,12 @@
+/************************************************************************************************
+ * @file   bootstrap.c
+ *
+ * @brief  Source file for bootstrap application
+ *
+ * @date   2025-09-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include "bootstrap.h"
 uint32_t crc32_table[256];
 
@@ -35,7 +44,7 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest){
     *crc_dest = ~crc;
 }
 
-StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest){
+FsStatus read_crc32(const char *file_path, size_t length, uint32_t *crc_dest){
     return fs_read_file(file_path, crc_dest);
 }
 

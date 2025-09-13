@@ -50,6 +50,7 @@ typedef struct{
 }SuperBlock; //size: 54 bytes
 
 typedef enum{
+    FS_STATUS_INCOMPLETE = -5,
     FS_STATUS_PATH_NOT_FOUND = -4,
     FS_STATUS_OUT_OF_RANGE = -3,
     FS_STATUS_OUT_OF_SPACE = -2,

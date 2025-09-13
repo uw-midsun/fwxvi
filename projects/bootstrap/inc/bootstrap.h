@@ -1,3 +1,14 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   bootstrap.h
+ *
+ * @brief  Header file for bootstrap application
+ *
+ * @date   2025-09-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
 #include "midFS.h"
 #include <stdint.h>
 #include <string.h>
@@ -37,7 +48,7 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest);
  * Reads CRC value from file system
  * 
  */
-StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
+FsStatus read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
 
 
 /**

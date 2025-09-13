@@ -38,6 +38,8 @@ void setup_test(void) {
 void teardown_test(void) {}
 
 void test_example(void) {
+    uint8_t *content;
+
     status = fs_add_file("test.txt", (uint8_t *)"This is a test file.", 21, 0);
     status = fs_add_file("test2.txt", (uint8_t *)"This is another test file.", 27, 0);
 
@@ -48,20 +50,20 @@ void test_example(void) {
     fs_add_file("root/rootTest.txt", (uint8_t *)"This is nested a test file.", 28, 0);
     fs_add_file("root/rootTest2.txt", (uint8_t *)"Hi.", 4, 0);
     fs_add_file("root2/root2Test.txt", (uint8_t *)"This is another nested a test file.", 36, 0);
-    fs_read_file("/test.txt");
-    status = fs_read_file("/root/rootTest.txt");
+    fs_read_file("/test.txt", content);
+    status = fs_read_file("/root/rootTest.txt", content);
     fs_list("/");
     fs_list("root");
     fs_list("root2");
     
-    fs_read_file("/root2/root2Test.txt");
-    fs_read_file("/root/rootTest.txt");
-    fs_read_file("/root/rootTest2.txt");
+    fs_read_file("/root2/root2Test.txt", content);
+    fs_read_file("/root/rootTest.txt", content);
+    fs_read_file("/root/rootTest2.txt", content);
     
     fs_add_file("root/nestedRoot", NULL, 0, 1);
     fs_add_file("root/nestedRoot/nestedRootTest.txt", (uint8_t *)"This is a double nested test file.", 35, 0);
     
-    fs_read_file("/root/nestedRoot/nestedRootTest.txt");
+    fs_read_file("/root/nestedRoot/nestedRootTest.txt", content);
     fs_list("root/nestedRoot");
     fs_list("root");
     

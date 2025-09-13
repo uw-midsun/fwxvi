@@ -36,7 +36,8 @@ void test_bs(void){
 }
 
 void test_fs_read_file_nonexistent(void){
-    status=fs_read_file("/nonexistent.txt");
+    uint8_t *content;
+    status=fs_read_file("/nonexistent.txt", content);
     TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
 
     status = fs_delete_file("/nonexistent.txt");

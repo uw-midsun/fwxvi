@@ -45,7 +45,9 @@ void test_fs_read_file_nonexistent(void){
     status=fs_write_file(file_path, (uint8_t *)extra_content, strlen(extra_content));
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, status);
 
-    status=fs_read_file(file_path);
+    uint8_t *content;
+
+    status=fs_read_file(file_path, content);
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, status);
 
 }
