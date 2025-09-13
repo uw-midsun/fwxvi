@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include "midFS_types.h"
-#include "status.h"
 #include <string.h>
 #include <stdio.h>
 #include "midFS_hal.h"
@@ -25,9 +24,11 @@ extern BlockGroup *blockGroups;
 /**
  * Initializes the file system, must be called
  * Wipes the memory
+ * Initializes the first block group and root folder
  * 
+ * @return FS_STATUS_OK
  */
-StatusCode fs_init();
+FsStatus fs_init();
 
 /**
  * Copies FS memory from HAL
@@ -44,80 +45,89 @@ StatusCode fs_commit();
 /**
  * Helper function that creates a block group at the next available index
  * 
- * @return  STATUS_CODE_INCOMPLETE if there is no more space
+ * @return  FS_STATUS_OUT_OF_SPACE if there is no more space
  */
-StatusCode fs_create_block_group(uint32_t *index);
+FsStatus fs_create_block_group(uint32_t *index);
 
 /**
  * Helper function that reads the contents of a block group at index blockIndex into local parameter dest
  * 
- * @return  STATUS_CODE_OUT_OF_RANGE if blockIndex is out of range
+ * @return  FS_STATUS_OUT_OF_RANGE if blockIndex is out of range
  */
-StatusCode fs_read_block_group(uint32_t blockIndex, BlockGroup *dest);
+FsStatus fs_read_block_group(uint32_t blockIndex, BlockGroup *dest);
 
 /**
  * Helper function to write the contents of local block group src to block group at index blockIndex
  * 
- * @return  STATUS_CODE_OUT_OF_RANGE if blockIndex is out of range
+ * @return  FS_STATUS_OUT_OF_RANGE if blockIndex is out of range
  */
-StatusCode fs_write_block_group(uint32_t blockIndex, BlockGroup *src);
+FsStatus fs_write_block_group(uint32_t blockIndex, BlockGroup *src);
 
 /**
  * Add file with given path, content, size
  * 
- * @return  STATUS_CODE_INVALID_ARGS if path is invalid
+ * @return  FS_STATUS_INVALID_ARGS if path is invalid
+ *          FS_STATUS_PATH_NOT_FOUND if we cannot resolve path
  */
-StatusCode fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isFolder);
+FsStatus fs_add_file(const char * path, uint8_t* content, uint32_t size, uint8_t isFolder);
 
 /**
  * Delete file with given path name
  * 
- * @return  STATUS_CODE_INVALID_ARGS if path is invalid
- */
-StatusCode fs_delete_file(const char* path);
+ * @return  FS_STATUS_INVALID_ARGS if path is invalid
+ *          FS_STATUS_PATH_NOT_FOUND if we cannot resolve path
+ *  */
+FsStatus fs_delete_file(const char* path);
 
 /**
  * Prints out the contents of the file given the path
+ * 
+ * @return FS_STATUS_INVALID_ARGS if we cannot find file
+*          FS_STATUS_PATH_NOT_FOUND if we cannot resolve path
  */
-StatusCode fs_read_file(const char *path, uint8_t *content);
+FsStatus fs_read_file(const char *path, uint8_t *content);
 
 /**
  * Writes content to a file with given path, can write in place or moves file to new location in memory if needed
  * 
- * @return  STATUS_CODE_INVALID_ARGS if path is invalid
- *          STATUS_CODE_INCOMPLETE if there is no more space
+ * @return  FS_STATUS_INVALID_ARGS if path is invalid
+ *          FS_STATUS_OUT_OF_SPACE if there is no more space
  */
-StatusCode fs_write_file(const char * path, uint8_t *content, uint32_t contentSize);
+FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize);
 
 /**
  * Lists all files in a given path, the path must lead to a directory
  * 
- * @return  STATUS_CODE_INVALID_ARGS if path is invalid
+ * @return  FS_STATUS_INVALID_ARGS if path is invalid
  */
-StatusCode fs_list(const char * path);
+FsStatus fs_list(const char * path);
 
 /**
  * Given a file path, store the path name in folderPath and the file name in fileName
  * 
+ * @return  FS_STATUS_OK
  */
-StatusCode fs_split_path(char *path, char *folderPath, char *fileName);
+FsStatus fs_split_path(char *path, char *folderPath, char *fileName);
 
 /**
  * Given the path to a folder, return the global index of the block storing the folder content
  * 
+ * @return  FS_STATUS_PATH_NOT_FOUND if path cannot be found
  */
-StatusCode fs_resolve_path(const char *folderPath, uint32_t* path);
+FsStatus fs_resolve_path(const char *folderPath, uint32_t* path);
 
 /**
  * A function that finds contiguous memory of size blocksNeeded and writes it to incomingBlockAddress
  * 
+ * @return  FS_STATUS_OUT_OF_SPACE if there is no more space
  */
-StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAddress);
+FsStatus fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAddress);
 
 /**
  * A function that determines if a file with specified path already exists and writes the result to doesFileExist
  * 
+ * @return  FS_STATUS_PATH_NOT_FOUND if path cannot be found
  */
-StatusCode fs_does_file_exist(const char *path, uint8_t *doesFileExist);
+FsStatus fs_does_file_exist(const char *path, uint8_t *doesFileExist);
 
 #endif // FILE_SYSTEM_H
