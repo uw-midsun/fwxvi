@@ -4,7 +4,7 @@
 #define BLOCK_SIZE 512
 #define NUM_BLOCK_GROUPS 64
 #define FS_TOTAL_SIZE (BLOCKS_PER_GROUP*BLOCK_SIZE*NUM_BLOCK_GROUPS) + sizeof(SuperBlock)
-#define FILE_ENTRY_SIZE 40 //sizeof(FileEntry)
+#define FILE_ENTRY_SIZE 40
 #define FOLDER_CAPACITY 512
 #define MAX_FILENAME_LENGTH 32
 #define MAX_PATH_LENGTH 128
@@ -21,9 +21,7 @@ typedef struct{
     uint16_t startBlockIndex;
     uint8_t valid; //1 -> in use, 0 -> not in use
     FileType type; //if type == folder, startBlockIndex is the index of an array of files
-}FileEntry;
-
-//size: 40 bytes
+}FileEntry; //size: 40 bytes
 
 typedef struct{
     uint8_t blockBitmap[BLOCKS_PER_GROUP];
@@ -39,6 +37,12 @@ typedef struct{
     uint16_t numBlocks;
     uint32_t nextBlockGroup; //address of the next (first) block group
     FileEntry rootFolderMetadata;
-}SuperBlock;
+}SuperBlock; //size: 54 bytes
 
-//size: 54 bytes
+typedef enum{
+    FS_STATUS_PATH_NOT_FOUND = -4,
+    FS_STATUS_OUT_OF_RANGE = -3,
+    FS_STATUS_OUT_OF_SPACE = -2,
+    FS_STATUS_INVALID_ARGS = -1,
+    FS_STATUS_OK = 0 
+}FsStatus;
