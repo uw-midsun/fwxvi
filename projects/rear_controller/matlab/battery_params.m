@@ -47,7 +47,7 @@
 %
 % =========================================================================
 
-function params = battery_params()
+function params = battery_params() %#codegen
     params = struct();
 
     % --- Pack topology ---
@@ -82,10 +82,14 @@ function params = battery_params()
 
     cap_mAh = ocv_table(:,1);                       % [mAh]
     V_ocv   = ocv_table(:,2);                       % [V]
-    soc     = cap_mAh / (params.Q_cell_Ah * 1000);  % normalize to cell capacity
+    soc     = cap_mAh / (params.Q_cell_Ah * 1000); % normalize to cell capacity
 
-    params.SOC_table = soc;
-    params.OCV_table = V_ocv;
+    % Downsample to 100 points for embedded target
+    params.SOC_OCV_table_size = 100;
+    idx = round(linspace(1, length(soc), params.SOC_OCV_table_size));  % even spacing indices
+
+    params.SOC_table = soc(idx);
+    params.OCV_table = V_ocv(idx);
 
     % Interpolants
     params.ocv_fun  = @(soc_query) interp1(params.SOC_table, params.OCV_table, soc_query, 'linear', 'extrap');
