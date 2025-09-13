@@ -19,7 +19,6 @@
 #define FOLDER_CAPACITY 512
 #define MAX_FILENAME_LENGTH 32
 #define MAX_PATH_LENGTH 128
-#define FS_TOTAL_BLOCK_GROUPS ((FS_TOTAL_SIZE - sizeof(SuperBlock)) / sizeof(BlockGroup))
 
 typedef enum{
     FILETYPE_FILE = 0,

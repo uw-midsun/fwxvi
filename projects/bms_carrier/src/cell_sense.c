@@ -13,7 +13,6 @@
 #include "delay.h"
 #include "global_enums.h"
 #include "ltc_afe.h"
-#include "ltc_afe_impl.h"
 #include "spi.h"
 
 /* Intra-component Headers */
@@ -60,21 +59,17 @@ typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERM
 int calculate_temperature(uint16_t thermistor);
 
 static const LtcAfeSettings s_afe_settings = {
-  .mosi = LTC_AFE_SPI_SDO_GPIO,
-  .miso = LTC_AFE_SPI_SDI_GPIO,
-  .sclk = LTC_AFE_SPI_SCK_GPIO,
-  .cs = LTC_AFE_SPI_CS_GPIO,
+  .spi_settings = { .sdo = LTC_AFE_SPI_SDO_GPIO, .sdi = LTC_AFE_SPI_SDI_GPIO, .sclk = LTC_AFE_SPI_SCK_GPIO, .cs = LTC_AFE_SPI_CS_GPIO, .baudrate = LTC_AFE_SPI_BAUDRATE },
 
   .spi_port = LTC_AFE_SPI_PORT,
-  .spi_baudrate = 750000,
 
   .adc_mode = LTC_AFE_ADC_MODE_7KHZ,
 
-  .cell_bitset = { 0xFFF, 0xFFF, 0xFFF },
-  .aux_bitset = { 0x14, 0x15, 0x15 },
+  .cell_bitset = { 0xFFFU, 0xFFFU, 0xFFFU },
+  .aux_bitset = { 0x14U, 0x15U, 0x15U },
 
-  .num_devices = 3,
-  .num_cells = 12,
+  .num_devices = 3U,
+  .num_cells = 12U,
   .num_thermistors = NUM_THERMISTORS,
 };
 
@@ -121,16 +116,14 @@ static void s_balance_cells(uint16_t min_voltage) {
   /* Toggle cell discharge in the LTC6811 configuration if cell voltage is above the balancing threshold */
   for (size_t cell = 0U; cell < (s_afe_settings.num_devices * s_afe_settings.num_cells); cell++) {
     if (CELL_VOLTAGE_LOOKUP(cell) > balancing_threshold) {
-      ltc_afe_impl_toggle_cell_discharge(ltc_afe_storage, cell, true);
+      ltc_afe_toggle_cell_discharge(ltc_afe_storage, cell, true);
     } else {
-      ltc_afe_impl_toggle_cell_discharge(ltc_afe_storage, cell, false);
+      ltc_afe_toggle_cell_discharge(ltc_afe_storage, cell, false);
     }
   }
 
-  LOG_DEBUG("Config discharge bitset %d\n", ltc_afe_storage->discharge_bitset[0]);
-
   /* Commit the discharge configuration to the LTC6811 */
-  ltc_afe_impl_write_config(ltc_afe_storage);
+  ltc_afe_write_config(ltc_afe_storage);
 }
 
 static StatusCode s_check_thermistors() {
@@ -174,7 +167,8 @@ static StatusCode s_check_thermistors() {
       }
     }
   }
-  ltc_afe_storage->max_temp = max_temp;
+
+  bms_storage->max_temperature = max_temp;
 
   return status;
 }
@@ -184,7 +178,7 @@ static StatusCode s_cell_sense_conversions() {
   // TODO: Figure out why cell_conv cannot happen without spi timing out (Most likely RTOS
   // implemntation error) Retry Mechanism
   for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = ltc_afe_impl_trigger_cell_conv(ltc_afe_storage);
+    status = ltc_afe_trigger_cell_conv(ltc_afe_storage);
     if (status == STATUS_CODE_OK) {
       break;
     }
@@ -195,7 +189,7 @@ static StatusCode s_cell_sense_conversions() {
     // If this has failed, try once more after a short delay
     LOG_DEBUG("Cell trigger conv failed, retrying): %d\n", status);
     delay_ms(RETRY_DELAY_MS);
-    status = ltc_afe_impl_trigger_cell_conv(ltc_afe_storage);
+    status = ltc_afe_trigger_cell_conv(ltc_afe_storage);
   }
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell conv failed): %d\n", status);
@@ -205,7 +199,7 @@ static StatusCode s_cell_sense_conversions() {
   delay_ms(CONV_DELAY_MS);
 
   for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = ltc_afe_impl_read_cells(ltc_afe_storage);
+    status = ltc_afe_read_cells(ltc_afe_storage);
     if (status == STATUS_CODE_OK) {
       break;
     }
@@ -231,7 +225,7 @@ static StatusCode s_cell_sense_conversions() {
     if (check_therm) {
       // Trigger and read thermistor value
       for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = ltc_afe_impl_trigger_aux_conv(ltc_afe_storage, s_thermistor_map[thermistor]);
+        status = ltc_afe_trigger_aux_conv(ltc_afe_storage, s_thermistor_map[thermistor]);
         if (status == STATUS_CODE_OK) {
           break;
         }
@@ -246,7 +240,7 @@ static StatusCode s_cell_sense_conversions() {
       delay_ms(AUX_CONV_DELAY_MS);
 
       for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = ltc_afe_impl_read_aux(ltc_afe_storage, thermistor);
+        status = ltc_afe_read_aux(ltc_afe_storage, thermistor);
         if (status == STATUS_CODE_OK) {
           break;
         }

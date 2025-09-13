@@ -24,4 +24,6 @@
 
 FotaError fota_init();
 
+void fota_process(void);
+
 /** @} */

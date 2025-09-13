@@ -1,4 +1,13 @@
 import os
+import shutil
+
+cc_compiler = 'gcc'
+cxx_compiler = 'g++'
+ccache_path = 'ccache'
+
+if shutil.which(ccache_path):
+    cc_compiler = ccache_path + ' ' + cc_compiler
+    cxx_compiler = ccache_path + ' ' + cxx_compiler
 
 commonflags = [
     '-g',
@@ -7,6 +16,7 @@ commonflags = [
     '-Wextra',
     '-Wno-unused-variable',
     '-Wno-unused-parameter',
+    '-Wno-unused-value',
     '-Wpointer-arith',
     '-ffunction-sections',
     '-fdata-sections',
@@ -16,7 +26,7 @@ commonflags = [
 cflags = [
     '-std=gnu11',
     '-Wno-discarded-qualifiers',
-    '-Werror',
+    # '-Werror',
 ] + commonflags
 
 cxxflags = [
@@ -39,8 +49,8 @@ link_flags = [
 x86_env = Environment(
     ENV = { 'PATH': os.environ['PATH'] },
 
-    CC='gcc',
-    CXX='g++',
+    CC=cc_compiler,
+    CXX=cxx_compiler,
     CCFLAGS=cflags + define_flags,
     CXXFLAGS=cxxflags + define_flags,
     CPPPATH=[],

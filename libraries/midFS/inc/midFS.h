@@ -16,17 +16,42 @@
 #include "midFS_types.h"
 #include <string.h>
 #include <stdio.h>
+#include "midFS_hal.h"
 
 #define FS_NULL_BLOCK_GROUP 0xFFFFFFFF
 #define FS_INVALID_BLOCK 0xFFFFFFF
 #define FS_NULL_FILE 0xFFFFFFFF
+// #define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
+#define FS_HAL_ADDRESS 0x0803C000
+
+extern SuperBlock *superBlock;
+extern BlockGroup *blockGroups;
+// extern uint8_t fs_memory[FS_TOTAL_SIZE];
+
+//max size: 206KB
+//512B per block, we can have 412 blocks
+
 
 /**
- * Initializes the file system, must be called. Additionally initializes the first block group and root folder
+ * Initializes the file system, must be called
+ * Wipes the memory
+ * Initializes the first block group and root folder
  * 
  * @return FS_STATUS_OK
  */
 FsStatus fs_init();
+
+/**
+ * Copies FS memory from HAL
+ * 
+ */
+StatusCode fs_pull();
+
+/**
+ * Writes local copy of fs_memory back to actual one using HAL_write
+ * 
+ */
+StatusCode fs_commit();
 
 /**
  * Helper function that creates a block group at the next available index
@@ -71,7 +96,7 @@ FsStatus fs_delete_file(const char* path);
  * @return FS_STATUS_INVALID_ARGS if we cannot find file
 *          FS_STATUS_PATH_NOT_FOUND if we cannot resolve path
  */
-FsStatus fs_read_file(const char *path);
+FsStatus fs_read_file(const char *path, uint8_t *content);
 
 /**
  * Writes content to a file with given path, can write in place or moves file to new location in memory if needed
@@ -79,7 +104,7 @@ FsStatus fs_read_file(const char *path);
  * @return  FS_STATUS_INVALID_ARGS if path is invalid
  *          FS_STATUS_OUT_OF_SPACE if there is no more space
  */
-FsStatus fs_write_file(const char * path, uint8_t * content, uint32_t contentSize);
+FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize);
 
 /**
  * Lists all files in a given path, the path must lead to a directory

@@ -62,7 +62,6 @@ nlohmann::json JSONManager::loadProjectJSON(const std::string &projectName) {
     }
 
     return nlohmann::json::parse(projectFile);
-
   } catch (const std::exception &e) {
     std::cerr << "Error loading project JSON: " << e.what() << std::endl;
   }

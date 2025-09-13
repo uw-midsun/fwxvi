@@ -134,7 +134,6 @@ void Client::connectServer() {
       close(m_clientSocket);
       throw std::runtime_error("Failed to create process messages thread");
     }
-
   } catch (std::exception &e) {
     std::cerr << "Error connecting to the server: " << e.what() << std::endl;
   }

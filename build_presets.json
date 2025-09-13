@@ -1,0 +1,126 @@
+{
+    "selected_preset": "STM32L433CCU6_bootstrap_debug",
+
+    "presets": {
+        "STM32L433CCU6_bootloader_debug": {
+            "hardware": "STM32L433CCU6",
+            "flash": "bootloader",
+            "build_config": "debug"
+        },
+        "STM32L433CCU6_bootloader_release": {
+            "hardware": "STM32L433CCU6",
+            "flash": "bootloader",
+            "build_config": "release"
+        },
+        "STM32L433CCU6_application_debug": {
+            "hardware": "STM32L433CCU6",
+            "flash": "application",
+            "build_config": "debug"
+        },
+        "STM32L433CCU6_application_release": {
+            "hardware": "STM32L433CCU6",
+            "flash": "application",
+            "build_config": "release"
+        },
+        "STM32L433CCU6_bootstrap_debug": {
+            "hardware": "STM32L433CCU6",
+            "flash": "bootstrap",
+            "build_config": "debug"
+        },
+        "STM32L433CCU6_bootstrap_release": {
+            "hardware": "STM32L433CCU6",
+            "flash": "bootstrap",
+            "build_config": "release"
+        },
+        "STM32L433CCU6_legacy_debug": {
+            "hardware": "STM32L433CCU6",
+            "flash": "legacy",
+            "build_config": "debug"
+        },
+        "STM32L433CCU6_legacy_release": {
+            "hardware": "STM32L433CCU6",
+            "flash": "legacy",
+            "build_config": "release"
+        },
+        "STM32L4P5VET6_bootloader_debug": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "bootloader",
+            "build_config": "debug"
+        },
+        "STM32L4P5VET6_bootloader_release": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "bootloader",
+            "build_config": "release"
+        },
+        "STM32L4P5VET6_application_debug": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "application",
+            "build_config": "debug"
+        },
+        "STM32L4P5VET6_application_release": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "application",
+            "build_config": "release"
+        },
+        "STM32L4P5VET6_bootstrap_debug": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "bootstrap",
+            "build_config": "debug"
+        },
+        "STM32L4P5VET6_bootstrap_release": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "bootstrap",
+            "build_config": "release"
+        },
+        "STM32L4P5VET6_legacy_debug": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "legacy",
+            "build_config": "debug"
+        },
+        "STM32L4P5VET6_legacy_release": {
+            "hardware": "STM32L4P5VET6",
+            "flash": "legacy",
+            "build_config": "release"
+        },
+        "STM32L496RGT6_bootloader_debug": {
+            "hardware": "STM32L496RGT6",
+            "flash": "bootloader",
+            "build_config": "debug"
+        },
+        "STM32L496RGT6_bootloader_release": {
+            "hardware": "STM32L496RGT6",
+            "flash": "bootloader",
+            "build_config": "release"
+        },
+        "STM32L496RGT6_application_debug": {
+            "hardware": "STM32L496RGT6",
+            "flash": "application",
+            "build_config": "debug"
+        },
+        "STM32L496RGT6_application_release": {
+            "hardware": "STM32L496RGT6",
+            "flash": "application",
+            "build_config": "release"
+        },
+        "STM32L496RGT6_bootstrap_debug": {
+            "hardware": "STM32L496RGT6",
+            "flash": "bootstrap",
+            "build_config": "debug"
+        },
+        "STM32L496RGT6_bootstrap_release": {
+            "hardware": "STM32L496RGT6",
+            "flash": "bootstrap",
+            "build_config": "release"
+        },
+        "STM32L496RGT6_legacy_debug": {
+            "hardware": "STM32L496RGT6",
+            "flash": "legacy",
+            "build_config": "debug"
+        },
+        "STM32L496RGT6_legacy_release": {
+            "hardware": "STM32L496RGT6",
+            "flash": "legacy",
+            "build_config": "release"
+        }
+    }
+}

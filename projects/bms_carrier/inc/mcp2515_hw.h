@@ -47,7 +47,7 @@ typedef struct Mcp2515Settings {
 
 typedef struct Mcp2515Storage {
   SpiPort spi_port;
-  volatile CanQueue rx_queue;
+  CanQueue rx_queue;
   Mcp2515Errors errors;
   bool loopback;
 } Mcp2515Storage;

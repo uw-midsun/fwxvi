@@ -13,7 +13,7 @@
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "ms_semaphore.h"
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_adc.h"
 #include "stm32l4xx_hal_dma.h"
 
