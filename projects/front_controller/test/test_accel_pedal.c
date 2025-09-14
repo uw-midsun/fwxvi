@@ -31,7 +31,7 @@ static FrontControllerStorage mock_storage = { 0 };
 static GpioAddress mock_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 static uint16_t mock_raw_adc_reading = 0;
 
-StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
+StatusCode TEST_MOCK(adc_read_aw)(GpioAddress *addr, uint16_t *reading) {
   if (reading == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

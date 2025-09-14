@@ -48,6 +48,8 @@ typedef struct {
   float accel_input_remap_min;       /**< Pedal input value mapped to zero torque (e.g. 0.2 to avoid dead torque zone) */
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
+  float brake_pedal_deadzone;        /**< Deadzone for break pedal input [0.0 - 1.0]  */
+  float brake_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
 } FrontControllerConfig;
 
 /**
@@ -56,7 +58,7 @@ typedef struct {
 typedef struct {
   bool brake_enabled; /**< Horn enabled (set by horn button callback) */
 
-  uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/hw */
+  uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
   float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
 
   struct PowerSenseStorage *power_sense_storage; /**< Power sense storage */
