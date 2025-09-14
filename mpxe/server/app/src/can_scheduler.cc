@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the CanScheduler class
  *
- * @date   2025-05-10
+ * @date   2025-09-11
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -36,15 +36,12 @@ void CanScheduler::scheduleCanMessages() {
   canFastCycleBCM.msg_head.ival2.tv_sec = FAST_CYCLE_SPEED_MS / 1000U;
   canFastCycleBCM.msg_head.ival2.tv_usec = (FAST_CYCLE_SPEED_MS % 1000U) * 1000U;
 
-  canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG;
-  canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
-  memset(canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canFastCycleBCM.frame[FAST_BMS_CARRIER_BATTERY_VT_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_VT;
   canFastCycleBCM.frame[FAST_BMS_CARRIER_BATTERY_VT_FRAME_INDEX].can_dlc = 8U;
   memset(canFastCycleBCM.frame[FAST_BMS_CARRIER_BATTERY_VT_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_PEDAL;
-  canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].can_dlc = 5U;
-  memset(canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG;
+  canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
+  memset(canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
 
   if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
     throw std::runtime_error("Failed to schedule CAN BCM Fast cycle messages");
@@ -61,9 +58,9 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.msg_head.ival2.tv_sec = MEDIUM_CYCLE_SPEED_MS / 1000U;
   canMediumCycleBCM.msg_head.ival2.tv_usec = (MEDIUM_CYCLE_SPEED_MS % 1000U) * 1000U;
 
-  canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG;
-  canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
-  memset(canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_TEST_DATA;
+  canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].can_dlc = 7U;
+  memset(canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA;
   canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].can_dlc = 6U;
   memset(canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
@@ -88,15 +85,15 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.frame[MEDIUM_BMS_CARRIER_DSP_BOARD_TEMPS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_BMS_CARRIER_DSP_BOARD_TEMPS;
   canMediumCycleBCM.frame[MEDIUM_BMS_CARRIER_DSP_BOARD_TEMPS_FRAME_INDEX].can_dlc = 4U;
   memset(canMediumCycleBCM.frame[MEDIUM_BMS_CARRIER_DSP_BOARD_TEMPS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_INFO;
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].can_dlc = 8U;
-  memset(canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_STEERING;
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX].can_dlc = 2U;
-  memset(canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE;
-  canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].can_dlc = 4U;
-  memset(canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG;
+  canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
+  memset(canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_STEERING_STEERING_STATE;
+  canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].can_dlc = 8U;
+  memset(canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA;
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_dlc = 5U;
+  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
 
   if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
     throw std::runtime_error("Failed to schedule CAN BCM Medium cycle messages");
@@ -113,12 +110,6 @@ void CanScheduler::scheduleCanMessages() {
   canSlowCycleBCM.msg_head.ival2.tv_sec = SLOW_CYCLE_SPEED_MS / 1000U;
   canSlowCycleBCM.msg_head.ival2.tv_usec = (SLOW_CYCLE_SPEED_MS % 1000U) * 1000U;
 
-  canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY;
-  canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].can_dlc = 8U;
-  memset(canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG;
-  canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
-  memset(canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canSlowCycleBCM.frame[SLOW_BMS_CARRIER_BATTERY_INFO_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_BMS_CARRIER_BATTERY_INFO;
   canSlowCycleBCM.frame[SLOW_BMS_CARRIER_BATTERY_INFO_FRAME_INDEX].can_dlc = 6U;
   memset(canSlowCycleBCM.frame[SLOW_BMS_CARRIER_BATTERY_INFO_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
@@ -134,6 +125,12 @@ void CanScheduler::scheduleCanMessages() {
   canSlowCycleBCM.frame[SLOW_BMS_CARRIER_AFE3_STATUS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_BMS_CARRIER_AFE3_STATUS;
   canSlowCycleBCM.frame[SLOW_BMS_CARRIER_AFE3_STATUS_FRAME_INDEX].can_dlc = 8U;
   memset(canSlowCycleBCM.frame[SLOW_BMS_CARRIER_AFE3_STATUS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG;
+  canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
+  memset(canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY;
+  canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].can_dlc = 8U;
+  memset(canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
 
   if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
     throw std::runtime_error("Failed to schedule CAN BCM Slow cycle messages");
@@ -167,98 +164,52 @@ void CanScheduler::startCanScheduler() {
     std::cerr << "Error running CAN Scheduler: " << e.what() << std::endl;
   }
 }
-void CanScheduler::update_telemetry_telemetry_data(uint64_t telemetry_data_value) {
+void CanScheduler::update_test_data_fault(uint16_t fault_value) {
   try {
     unsigned int start_byte = 0;
 
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 0U] = (telemetry_data_value >> 0U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 1U] = (telemetry_data_value >> 8U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 2U] = (telemetry_data_value >> 16U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 3U] = (telemetry_data_value >> 24U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 4U] = (telemetry_data_value >> 32U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 5U] = (telemetry_data_value >> 40U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 6U] = (telemetry_data_value >> 48U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 7U] = (telemetry_data_value >> 56U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update telemetry telemetry_data");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_fast_one_shot_msg_sig1(uint16_t sig1_value) {
-  try {
-    unsigned int start_byte = 0;
-
-    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
-    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update fast_one_shot_msg sig1");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_fast_one_shot_msg_sig2(uint16_t sig2_value) {
-  try {
-    unsigned int start_byte = 2;
-
-    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
-    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update fast_one_shot_msg sig2");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_medium_one_shot_msg_sig1(uint16_t sig1_value) {
-  try {
-    unsigned int start_byte = 0;
-
-    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 0U] = (fault_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 1U] = (fault_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update medium_one_shot_msg sig1}");
+      throw std::runtime_error("Failed to update test_data fault}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_medium_one_shot_msg_sig2(uint16_t sig2_value) {
+void CanScheduler::update_test_data_fault_val(uint16_t fault_val_value) {
   try {
     unsigned int start_byte = 2;
 
-    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 0U] = (fault_val_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 1U] = (fault_val_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update medium_one_shot_msg sig2}");
+      throw std::runtime_error("Failed to update test_data fault_val}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_slow_one_shot_msg_sig1(uint16_t sig1_value) {
+void CanScheduler::update_test_data_aux_batt_v(uint16_t aux_batt_v_value) {
   try {
-    unsigned int start_byte = 0;
+    unsigned int start_byte = 4;
 
-    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update slow_one_shot_msg sig1");
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 0U] = (aux_batt_v_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 1U] = (aux_batt_v_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update test_data aux_batt_v}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_slow_one_shot_msg_sig2(uint16_t sig2_value) {
+void CanScheduler::update_test_data_afe_status(uint8_t afe_status_value) {
   try {
-    unsigned int start_byte = 2;
+    unsigned int start_byte = 6;
 
-    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
-    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update slow_one_shot_msg sig2");
+    canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_TEST_DATA_FRAME_INDEX].data[start_byte + 0U] = (afe_status_value >> 0U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update test_data afe_status}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
@@ -948,130 +899,188 @@ void CanScheduler::update_afe3_status_v3(uint16_t v3_value) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_pedal_throttle_output(uint32_t throttle_output_value) {
+void CanScheduler::update_fast_one_shot_msg_sig1(uint16_t sig1_value) {
   try {
     unsigned int start_byte = 0;
 
-    canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data[start_byte + 0U] = (throttle_output_value >> 0U) & 0xFFU;
-    canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data[start_byte + 1U] = (throttle_output_value >> 8U) & 0xFFU;
-    canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data[start_byte + 2U] = (throttle_output_value >> 16U) & 0xFFU;
-    canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data[start_byte + 3U] = (throttle_output_value >> 24U) & 0xFFU;
+    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
+    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_pedal throttle_output");
+      throw std::runtime_error("Failed to update fast_one_shot_msg sig1");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_pedal_brake_output(uint8_t brake_output_value) {
+void CanScheduler::update_fast_one_shot_msg_sig2(uint16_t sig2_value) {
   try {
-    unsigned int start_byte = 4;
+    unsigned int start_byte = 2;
 
-    canFastCycleBCM.frame[FAST_CENTRE_CONSOLE_CC_PEDAL_FRAME_INDEX].data[start_byte + 0U] = (brake_output_value >> 0U) & 0xFFU;
+    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
+    canFastCycleBCM.frame[FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_pedal brake_output");
+      throw std::runtime_error("Failed to update fast_one_shot_msg sig2");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_info_target_velocity(uint32_t target_velocity_value) {
+void CanScheduler::update_medium_one_shot_msg_sig1(uint16_t sig1_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 0U] = (target_velocity_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 1U] = (target_velocity_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 2U] = (target_velocity_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 3U] = (target_velocity_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_info target_velocity}");
+      throw std::runtime_error("Failed to update medium_one_shot_msg sig1}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_info_drive_state(uint8_t drive_state_value) {
+void CanScheduler::update_medium_one_shot_msg_sig2(uint16_t sig2_value) {
+  try {
+    unsigned int start_byte = 2;
+
+    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update medium_one_shot_msg sig2}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_slow_one_shot_msg_sig1(uint16_t sig1_value) {
+  try {
+    unsigned int start_byte = 0;
+
+    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig1_value >> 0U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig1_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update slow_one_shot_msg sig1");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_slow_one_shot_msg_sig2(uint16_t sig2_value) {
+  try {
+    unsigned int start_byte = 2;
+
+    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 0U] = (sig2_value >> 0U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX].data[start_byte + 1U] = (sig2_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update slow_one_shot_msg sig2");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_steering_state_target_velocity(uint32_t target_velocity_value) {
+  try {
+    unsigned int start_byte = 0;
+
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 0U] = (target_velocity_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 1U] = (target_velocity_value >> 8U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 2U] = (target_velocity_value >> 16U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 3U] = (target_velocity_value >> 24U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update steering_state target_velocity}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_steering_state_drive_state(uint8_t drive_state_value) {
   try {
     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 0U] = (drive_state_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 0U] = (drive_state_value >> 0U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_info drive_state}");
+      throw std::runtime_error("Failed to update steering_state drive_state}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_info_cruise_control(uint8_t cruise_control_value) {
+void CanScheduler::update_steering_state_cruise_control(uint8_t cruise_control_value) {
   try {
     unsigned int start_byte = 5;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 0U] = (cruise_control_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 0U] = (cruise_control_value >> 0U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_info cruise_control}");
+      throw std::runtime_error("Failed to update steering_state cruise_control}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_info_regen_braking(uint8_t regen_braking_value) {
+void CanScheduler::update_steering_state_regen_braking(uint8_t regen_braking_value) {
   try {
     unsigned int start_byte = 6;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 0U] = (regen_braking_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 0U] = (regen_braking_value >> 0U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_info regen_braking}");
+      throw std::runtime_error("Failed to update steering_state regen_braking}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_info_hazard_enabled(uint8_t hazard_enabled_value) {
+void CanScheduler::update_steering_state_hazard_enabled(uint8_t hazard_enabled_value) {
   try {
     unsigned int start_byte = 7;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_INFO_FRAME_INDEX].data[start_byte + 0U] = (hazard_enabled_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX].data[start_byte + 0U] = (hazard_enabled_value >> 0U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_info hazard_enabled}");
+      throw std::runtime_error("Failed to update steering_state hazard_enabled}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_steering_input_cc(uint8_t input_cc_value) {
+void CanScheduler::update_telemetry_telemetry_data(uint64_t telemetry_data_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX].data[start_byte + 0U] = (input_cc_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_steering input_cc}");
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 0U] = (telemetry_data_value >> 0U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 1U] = (telemetry_data_value >> 8U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 2U] = (telemetry_data_value >> 16U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 3U] = (telemetry_data_value >> 24U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 4U] = (telemetry_data_value >> 32U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 5U] = (telemetry_data_value >> 40U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 6U] = (telemetry_data_value >> 48U) & 0xFFU;
+    canSlowCycleBCM.frame[SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX].data[start_byte + 7U] = (telemetry_data_value >> 56U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update telemetry telemetry_data");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_cc_steering_input_lights(uint8_t input_lights_value) {
-  try {
-    unsigned int start_byte = 1;
-
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_STEERING_FRAME_INDEX].data[start_byte + 0U] = (input_lights_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_steering input_lights}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_cc_regen_percentage_percent(uint32_t percent_value) {
+void CanScheduler::update_front_controller_pedal_data_percentage(uint32_t percentage_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].data[start_byte + 0U] = (percent_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].data[start_byte + 1U] = (percent_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].data[start_byte + 2U] = (percent_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_CENTRE_CONSOLE_CC_REGEN_PERCENTAGE_FRAME_INDEX].data[start_byte + 3U] = (percent_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (percentage_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 1U] = (percentage_value >> 8U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 2U] = (percentage_value >> 16U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 3U] = (percentage_value >> 24U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update cc_regen_percentage percent}");
+      throw std::runtime_error("Failed to update front_controller_pedal_data percentage}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_front_controller_pedal_data_brake_enabled(uint8_t brake_enabled_value) {
+  try {
+    unsigned int start_byte = 4;
+
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (brake_enabled_value >> 0U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update front_controller_pedal_data brake_enabled}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;

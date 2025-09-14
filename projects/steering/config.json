@@ -5,7 +5,11 @@
         "master"
     ],
     "x86_libs": [
-        "ms-mpxe"
+        "ms-mpxe",
+        "SDL2"
     ],
-    "can": false
+    "mocks": {
+        "test_button_manager": ["gpio_get_state", "lights_signal_manager_request", "drive_state_manager_request"]
+    },
+    "can": true
 }

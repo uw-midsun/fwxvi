@@ -123,6 +123,21 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
  */
 StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len);
 
+/**
+ * @brief   Reads from a memory address using the I2C port
+ * @details This sends the peripheral address, mem_addr, REPEATED_START, peripheral address [reads RX DATA]
+ *          This uses the HAL_I2C_Mem_Read function
+ * @param   i2c Specifies which I2C port to write with
+ * @param   addr Specifies the I2C address to read from
+ * @param   mem_addr Specifies the memory address to read from
+ * @param   rx_data Pointer to a buffer to receive data
+ * @param   rx_len Length of the data to receive
+ * @return  STATUS_CODE_OK if reading succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
+ */
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len);
+
 #ifdef MS_PLATFORM_X86
 
 /**

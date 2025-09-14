@@ -133,7 +133,7 @@ def build_library(library_name, dependencies=None):
         if dep not in library_targets and LIB_DIR.Dir(dep).exists():
             dep_target = build_library(dep)
             dep_targets.append(dep_target)
-    
+
     # Build this library
     target = env.Library(
         target=LIB_BIN_DIR.File(f'lib{entry.name}.a'),
@@ -156,7 +156,8 @@ def build_library(library_name, dependencies=None):
 def build_ms_mpxe_library():
     if 'ms-common' not in library_targets:
         build_library('ms-common')
-
+    if 'ms-drivers' not in library_targets:
+        build_library('ms-drivers')
     ms_mpxe_dir = ROOT.Dir("libraries").Dir("ms-mpxe")
     ms_mpxe_dir_src = ms_mpxe_dir.Dir("src")
     ms_mpxe_dir_inc = ms_mpxe_dir.Dir("inc")
@@ -244,7 +245,8 @@ def create_mpxe_common_lib():
 def create_mpxe_client_lib():
     if 'ms-common' not in library_targets:
         build_library('ms-common')
-    
+    if 'ms-drivers' not in library_targets:
+        build_library('ms-drivers')
     if 'mpxe_common' not in library_targets:
         create_mpxe_common_lib()
 
@@ -264,12 +266,13 @@ def create_mpxe_client_lib():
     client_incs += inc(mpxe_client_app_dir)
     client_incs += inc(mpxe_common_dir)
     client_incs += inc(LIB_DIR.Dir("ms-common"))
+    client_incs += inc(LIB_DIR.Dir("ms-drivers"))
 
     # Create the client library
     client_lib = cxx_env.Library(
         target=LIB_BIN_DIR.File('libmpxe_client.a'),
         source=client_srcs,
-        LIBS=env['LIBS'] + ['mpxe_common', 'ms-common'],
+        LIBS=env['LIBS'] + ['mpxe_common', 'ms-common', 'ms-drivers'],
         LIBPATH=[LIB_BIN_DIR],
         CPPPATH=env['CPPPATH'] + client_incs,
         CXXFLAGS=env['CXXFLAGS'],
@@ -303,6 +306,7 @@ def create_mpxe_server():
     server_incs += inc(mpxe_server_app_dir)
     server_incs += inc(mpxe_common_dir)
     server_incs += inc(LIB_DIR.Dir("ms-common"))
+    server_incs += inc(LIB_DIR.Dir("ms-drivers"))
 
     # Create the client library
     server_exe = cxx_env.Program(
@@ -330,12 +334,13 @@ def create_mpxe_server():
 
 # 1. Build ms-common first
 ms_common_lib = build_library('ms-common')
+ms_drivers_lib = build_library('ms-drivers')
 
 # 2. Build all other non-MPXE libraries
 for entry in LIB_DIR.glob('*'):
-    if entry.name not in ['ms-common', 'ms-mpxe']:
+    if entry.name not in ['ms-common', 'ms-mpxe', 'ms-drivers']:
         build_library(entry.name)
-
+    
 # 3. Build MPXE common and client libraries
 mpxe_common_lib = create_mpxe_common_lib()
 mpxe_client_lib = create_mpxe_client_lib()
@@ -363,13 +368,17 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
     lib_deps = get_lib_deps(entry)
-    
-    # Use a C++ environment if ms-mpxe is in dependencies
+
     build_env = env
     if 'ms-mpxe' in lib_deps:
-        lib_deps += ['mpxe_common']
-        lib_deps += ['mpxe_client']
+        lib_deps += ['mpxe_common', 'mpxe_client']
         build_env = cxx_env
+
+    cppflags, ldflags = [], []
+    if PLATFORM == "x86" and "SDL2" in lib_deps:
+        import subprocess, shlex
+        cppflags = shlex.split(subprocess.check_output(["pkg-config", "--cflags", "sdl2"]).decode())
+        ldflags  = shlex.split(subprocess.check_output(["pkg-config", "--libs", "sdl2"]).decode())
 
     # SCons automagically handles object creation and linking
     if PLATFORM == 'x86' and config['arm_only']:
@@ -384,6 +393,8 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
             LIBS=build_env['LIBS'] + lib_deps * 2,
             LIBPATH=[LIB_BIN_DIR],
             CCFLAGS=build_env['CCFLAGS'] + config['cflags'],
+            CXXFLAGS=build_env.get('CXXFLAGS', []) + cppflags,
+            LINKFLAGS=build_env.get('LINKFLAGS', []) + ldflags,
         )
 
     # .bin file only required for arm, not x86

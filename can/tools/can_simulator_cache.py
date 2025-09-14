@@ -9,27 +9,12 @@ class CanSimulatorDataCache:
     def __init__(self):
         self.data = {
 
-            "telemetry_telemetry": {
-                # telemetry cache definitions
-                "data": 0,
-            },
-
-            "can_communication_fast_one_shot_msg": {
-                # fast_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_medium_one_shot_msg": {
-                # medium_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_slow_one_shot_msg": {
-                # slow_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
+            "rear_controller_test_data": {
+                # test_data cache definitions
+                "fault": 0,
+                "fault_val": 0,
+                "aux_batt_v": 0,
+                "afe_status": 0,
             },
 
             "imu_gyro_data": {
@@ -142,14 +127,26 @@ class CanSimulatorDataCache:
                 "v3": 0,
             },
 
-            "centre_console_cc_pedal": {
-                # cc_pedal cache definitions
-                "throttle_output": 0,
-                "brake_output": 0,
+            "can_communication_fast_one_shot_msg": {
+                # fast_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
             },
 
-            "centre_console_cc_info": {
-                # cc_info cache definitions
+            "can_communication_medium_one_shot_msg": {
+                # medium_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
+            },
+
+            "can_communication_slow_one_shot_msg": {
+                # slow_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
+            },
+
+            "steering_steering_state": {
+                # steering_state cache definitions
                 "target_velocity": 0,
                 "drive_state": 0,
                 "cruise_control": 0,
@@ -157,15 +154,15 @@ class CanSimulatorDataCache:
                 "hazard_enabled": 0,
             },
 
-            "centre_console_cc_steering": {
-                # cc_steering cache definitions
-                "input_cc": 0,
-                "input_lights": 0,
+            "telemetry_telemetry": {
+                # telemetry cache definitions
+                "telemetry_data": 0,
             },
 
-            "centre_console_cc_regen_percentage": {
-                # cc_regen_percentage cache definitions
-                "percent": 0,
+            "front_controller_front_controller_pedal_data": {
+                # front_controller_pedal_data cache definitions
+                "percentage": 0,
+                "brake_enabled": 0,
             }
 
         }

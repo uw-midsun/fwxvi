@@ -35,3 +35,6 @@ doxygen/html
 
 # MPXE Simulation
 mpxe/Simulation_JSON/*
+
+# Test results
+**/test_results/*

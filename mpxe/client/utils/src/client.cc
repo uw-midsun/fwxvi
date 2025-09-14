@@ -26,12 +26,12 @@ void Client::processMessagesProcedure() {
     if (!m_messageQueue.empty()) {
       auto message = m_messageQueue.front();
       m_messageQueue.pop();
-
       if (m_messageCallback) {
         m_messageCallback(this, message);
       }
-      pthread_mutex_unlock(&m_mutex);
     }
+
+    pthread_mutex_unlock(&m_mutex);
   }
 }
 
@@ -57,7 +57,7 @@ void Client::receiverProcedure() {
       disconnectServer();
       throw std::runtime_error("Select error: " + std::string(strerror(errno)));
     } else if (selectResult > 0 && FD_ISSET(m_clientSocket, &readSet)) {
-      size_t bytesRead = read(m_clientSocket, &message[0], sizeof(message));
+      size_t bytesRead = read(m_clientSocket, &message[0], message.length());
 
       if (bytesRead <= 0) {
         disconnectServer();
