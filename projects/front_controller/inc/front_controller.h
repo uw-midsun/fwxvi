@@ -49,8 +49,8 @@ typedef struct {
   float accel_input_remap_min;       /**< Pedal input value mapped to zero torque (e.g. 0.2 to avoid dead torque zone) */
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
-  float brake_pedal_deadzone;        /**< Deadzone for break pedal input [0.0 - 1.0]  */
-  float brake_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
+  float brake_pedal_deadzone;        /**< Deadzone for brake pedal input [0.0 - 1.0]  */
+  float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
 } FrontControllerConfig;
 
 /**
@@ -64,6 +64,7 @@ typedef struct {
 
   struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
+  struct BrakePedalStorage *brake_pedal_storage;      /**< Brake pedal storage */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
 
   FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
