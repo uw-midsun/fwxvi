@@ -96,23 +96,28 @@ static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
   [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3, [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
 };
 
-static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U, 23951U, 22963U, 22021U, 21123U, 20267U, 19450U, 18670U, 17925U, 17214U, 16534U, 15886U, 15266U, 14674U,
-                                                          14173U, 13718U, 13256U, 12805U, 12394U, 12081U, 11628U, 11195U, 10780U, 10000U, 9634U,  9283U,  8947U,  8624U,  8314U,  8018U,
-                                                          7733U,  7460U,  7199U,  6947U,  6706U,  6475U,  6252U,  6039U,  5834U,  5636U,  5445U,  5262U,  5093U,  4927U,  4763U,  4601U,
-                                                          4446U,  4300U,  4161U,  4026U,  3896U,  3771U,  3651U,  3535U,  3423U,  3315U,  3211U,  3111U,  3014U,  2922U,  2833U,  2748U,
-                                                          2665U,  2586U,  2509U,  2435U,  2364U,  2294U,  2227U,  2162U,  2101U,  2040U,  1981U,  1925U,  1868U,  1817U,  1765U,  1716U,
-                                                          1668U,  1622U,  1577U,  1533U,  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,
-                                                          1078U,  1052U,  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
-                                                          721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U };
+// static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U, 23951U, 22963U, 22021U, 21123U, 20267U, 19450U, 18670U, 17925U, 17214U, 16534U, 15886U, 15266U, 14674U,
+//                                                           14173U, 13718U, 13256U, 12805U, 12394U, 12081U, 11628U, 11195U, 10780U, 10000U, 9634U,  9283U,  8947U,  8624U,  8314U,  8018U,
+//                                                           7733U,  7460U,  7199U,  6947U,  6706U,  6475U,  6252U,  6039U,  5834U,  5636U,  5445U,  5262U,  5093U,  4927U,  4763U,  4601U,
+//                                                           4446U,  4300U,  4161U,  4026U,  3896U,  3771U,  3651U,  3535U,  3423U,  3315U,  3211U,  3111U,  3014U,  2922U,  2833U,  2748U,
+//                                                           2665U,  2586U,  2509U,  2435U,  2364U,  2294U,  2227U,  2162U,  2101U,  2040U,  1981U,  1925U,  1868U,  1817U,  1765U,  1716U,
+//                                                           1668U,  1622U,  1577U,  1533U,  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,
+//                                                           1078U,  1052U,  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
+//                                                           721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U };
 // Murata NCP15XH103F03RC 10k NTC, B(25/50)=3380 K
-// Index = °C (0..124), Value = resistance (ohms)
-static const uint16_t s_resistance_lookup[TABLE_SIZE] = {
-  28224U,        26978U,  25796U,  24674U,  23608U,  22595U,  21632U,  20717U,  19847U,  19019U,  18231U,  17481U,  16767U,  16087U,  15438U,  14820U,  14231U,  13669U,  13133U,  1262212133U,   11667U,  11221U,  10796U,
-  10389U,        10000U,  9628U,   9272U,   8932U,   8606U,   8295U,   7996U,   7710U,   7436U,   7174U,   6922U,   6681U,   6449U,   6227U,   6014U,   5810U,   5614U,   5425U,   5244U,5070U,    4903U,   4743U,   4589U,
-  4440U, 4297U,   4160U,   4028U,   3901U,   3779U,   3661U,   3547U,   3438U,   3333U,   3231U,   3133U,   3039U,   2948U,   2861U,   2776U,   2695U,   2616U,   2540U,   2467U,   2396U,2327U,    2261U,   2197U,
-  2136U, 2076U,   2019U,   1963U,   1909U,   1857U,   1807U,   1758U,   1711U,   1665U,   1621U,   1578U,   1537U,   1497U,   1458U,   1420U,   1384U,   1349U,   1315U,   1281U,   1249U,1218U,    1188U,   1158U,
-  1130U, 1102U,   1076U,   1050U,   1024U,   1000U,   976U,    953U,    930U,    909U,    888U,    867U,    847U,    828U,    809U,    790U,    772U,    755U,    738U,    722U,    706U, 690U,     675U,    660U,
-  646U,  632U,    619U,    605U,    593U
+// Index = °C (0, 0.5, 1, ..,  124), Value = resistance (ohms)
+static const uint16_t s_resistance_lookup[249] = {
+  28224,        27593,  26978,  26379,  25796,  25228,  24674,  24134,  23608,  23095,  22595,  22108,  21632,  21169,      20717,  20277,  19847,  19428,  19019,  18620,  18231,  17852,  17481,  17120,
+  16767,        16423,  16087,  15759,  15438,  15126,  14820,  14522,  14231,  13947,  13669,  13398,  13133,  12874,      12622,  12375,  12133,  11897,  11667,  11441,  11221,  11006,  10796,  10590,
+  10389,        10192,  10000,  9812,   9628,   9448,   9272,   9100,   8932,   8767,   8606,   8449,   8295,   8144,       7996,   7852,   7710,   7572,   7436,   7303,   7174,   7046,   6922,   6800,
+  6681, 6564,   6449,   6337,   6227,   6120,   6014,   5911,   5810,   5711,   5614,   5518,   5425,   5334,   5244,       5156,   5070,   4986,   4903,   4822,   4743,   4665,   4589,   4514,
+  4440, 4368,   4297,   4228,   4160,   4093,   4028,   3964,   3901,   3839,   3779,   3719,   3661,   3603,   3547,       3492,   3438,   3385,   3333,   3281,   3231,   3182,   3133,   3086,
+  3039, 2993,   2948,   2904,   2861,   2818,   2776,   2735,   2695,   2655,   2616,   2577,   2540,   2503,   2467,       2431,   2396,   2361,   2327,   2294,   2261,   2229,   2197,   2166,
+  2136, 2106,   2076,   2047,   2019,   1991,   1963,   1936,   1909,   1883,   1857,   1832,   1807,   1782,   1758,       1734,   1711,   1688,   1665,   1643,   1621,   1600,   1578,   1558,
+  1537, 1517,   1497,   1477,   1458,   1439,   1420,   1402,   1384,   1366,   1349,   1331,   1315,   1298,   1281,       1265,   1249,   1233,   1218,   1203,   1188,   1173,   1158,   1144,
+  1130, 1116,   1102,   1089,   1076,   1062,   1050,   1037,   1024,   1012,   1000,   988,    976,    964,    953942,     930,    920,    909,    898,    888,    877,    867,    857,
+  847,  837,    828,    818,    809,    799,    790,    781,    772,    764,    755,    747,    738,    730,    722714,     706,    698,    690,    683,    675,    668,    660,    653,
+  646,  639,    632,    625,    619,    612,    605,    599,    593
 };
 
 /************************************************************************************************
@@ -163,26 +168,26 @@ static StatusCode s_check_thermistors() {
         uint8_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + thermistor;
         adbms_afe_storage->aux_voltages[index] = calculate_temperature(adbms_afe_storage->aux_voltages[index]);
 
-        LOG_DEBUG("Thermistor reading device %d, %d: %d\n", device, thermistor, adbms_afe_storage->aux_voltages[index]);
+        LOG_DEBUG("Thermistor reading device %d, %d: %.2f\n", device, thermistor, (float)adbms_afe_storage->aux_voltages[index]/10.0);
 
         /* Ignore temperature readings outside of the valid temperature range */
-        if (adbms_afe_storage->aux_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
+        if (adbms_afe_storage->aux_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD * 10) {
           continue;
         }
 
-        if (adbms_afe_storage->aux_voltages[index] > max_temp) {
+        if (adbms_afe_storage->aux_voltages[index] > max_temp * 10) {
           max_temp = adbms_afe_storage->aux_voltages[index];
         }
 
         delay_ms(3);
         if (bms_storage->pack_current < 0) {
-          if (adbms_afe_storage->aux_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE) {
+          if (adbms_afe_storage->aux_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE * 10) {
             LOG_DEBUG("CELL OVERTEMP\n");
             fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
             status = STATUS_CODE_INTERNAL_ERROR;
           }
         } else {
-          if (adbms_afe_storage->aux_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE) {
+          if (adbms_afe_storage->aux_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE * 10) {
             LOG_DEBUG("CELL OVERTEMP\n");
             fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
             status = STATUS_CODE_INTERNAL_ERROR;
@@ -345,7 +350,7 @@ static StatusCode s_cell_sense_run() {
 /************************************************************************************************
  * Public function definitions
  ************************************************************************************************/
-
+//returns in units of (0.1C) -> thermistor = 5 means 0.5 C
 int calculate_temperature(uint16_t thermistor) {
   thermistor = (uint16_t)(thermistor * ADC_GAIN);                                          // 100uV
   uint16_t thermistor_resistance = (thermistor * TEMP_RESISTANCE) / (VREF2 - thermistor);  // Ohms
@@ -355,7 +360,7 @@ int calculate_temperature(uint16_t thermistor) {
   for (uint8_t i = 1U; i < TABLE_SIZE; ++i) {
     if (abs(thermistor_resistance - s_resistance_lookup[i]) < min_diff) {
       min_diff = abs(thermistor_resistance - s_resistance_lookup[i]);
-      thermistor = i;
+      thermistor = i * 5;
     }
   }
   return thermistor;
@@ -388,9 +393,9 @@ StatusCode log_cell_sense() {
 
   // Thermistors to send are at index 0, 2, 4 for each device
   if (afe_message_index < NUM_AFE_MSGS - 1) {  // Only 3 thermistors per device, so 4th message will be ignored
-    set_AFE1_status_temp(adbms_afe_storage->aux_voltages[afe_message_index * 2]);
-    set_AFE2_status_temp(adbms_afe_storage->aux_voltages[ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + afe_message_index * 2]);
-    set_AFE3_status_temp(adbms_afe_storage->aux_voltages[ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE * 2 + afe_message_index * 2]);
+    set_AFE1_status_temp(adbms_afe_storage->aux_voltages[afe_message_index * 2]/10);
+    set_AFE2_status_temp(adbms_afe_storage->aux_voltages[ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + afe_message_index * 2]/10);
+    set_AFE3_status_temp(adbms_afe_storage->aux_voltages[ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE * 2 + afe_message_index * 2]/10);
   }
 
   afe_message_index = (afe_message_index + 1) % NUM_AFE_MSGS;
