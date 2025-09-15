@@ -32,6 +32,10 @@ static AdbmsAfeStorage *p_afe = NULL;
  */
 
 static void s_calc_offsets(AdbmsAfeStorage *afe) {
+  if (afe == NULL) {
+    return;
+  }
+
   AdbmsAfeSettings *settings = afe->settings;
 
   size_t enabled_cell_index = 0;
@@ -66,7 +70,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     LOG_DEBUG("AFE: Configured cell count exceeds device limitations.");
     return STATUS_CODE_INVALID_ARGS;
   }
-  if (config->num_thermistors > ADBMS_AFE_MAX_THERMISTORS) {
+  if (config->num_thermistors > ADBMS_AFE_MAX_CELL_THERMISTORS) {
     LOG_DEBUG("AFE: Configured thermistor count exceeds limitations.");
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -74,20 +78,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
   p_afe = afe;
   memset(afe, 0, sizeof(*afe));
 
-  /* Initialize memory of AFE structure: reset values and copy configuration settings */
-  afe->settings = malloc(sizeof(*afe->settings));
-  if (!afe->settings) {
-    LOG_DEBUG("Settings Not allocated properly");
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  afe->device_configs = calloc(0, sizeof(*afe->device_configs));
-  if (!afe->device_configs) {
-    LOG_DEBUG("Device Configs not allocated properly");
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  memcpy(afe->settings, config, sizeof(AdbmsAfeSettings));
+  afe->settings = config;
 
   /* Calculate offset for cell result array due to some cells being disabled */
   s_calc_offsets(afe);
@@ -106,11 +97,19 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t device_cell) {
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t index) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t device_num) {
   return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   AdbmsAfeSettings *settings = afe->settings;
 
   /* Loop through 4 register groups */
@@ -135,33 +134,27 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
-  AdbmsAfeSettings *settings = afe->settings;
-
-  size_t len = settings->num_devices * sizeof(AdbmsAfeAuxData);
-
-  /* Loop through devices */
-  for (uint16_t device = 0; device < settings->num_devices; ++device) {
-    /* If pin not available - move on */
-    if (!((settings->aux_bitset[device] >> device_cell) & 0x1)) {
-      LOG_DEBUG(
-          "Device: %u\n"
-          "Device Cell: %u\n"
-          "Not available.\n",
-          device, device_cell);
-      continue;
-    }
-
-    uint16_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + device_cell;
-    LOG_DEBUG("Aux voltage: %d\n", afe->aux_voltages[index]);
+StatusCode adbms_afe_read_thermistor(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index) {
+  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
+  uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
+  LOG_DEBUG("Board %d Thermistor %d voltage: %d\n", device_num, thermistor_index, afe->board_thermistor_voltages[index]);
+  return STATUS_CODE_OK;
+}
+
+StatusCode adbms_afe_read_board_temp(AdbmsAfeStorage *afe, uint8_t device_num) {
+  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  LOG_DEBUG("Board %d thermistor voltage: %d\n", device_num, afe->board_thermistor_voltages[device_num]);
   return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge) {
-  if (!afe || !afe->settings || !afe->device_configs) {
-    LOG_DEBUG("ADBMS AFE not initialized");
+  if (!afe || !afe->settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -179,22 +172,28 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   uint16_t dev_idx = phys_cell / cells_per_dev;
   uint16_t device = num_devices - dev_idx - 1;
 
-  uint16_t bit_in_dev = phys_cell % cells_per_dev;
+  uint16_t cell_indx_in_dev = phys_cell % cells_per_dev;
 
-  if (bit_in_dev < 12) {
-    AdbmsAfeConfigRegisterAData *cfgA = &afe->device_configs->devices[device].cfgA;
+  if (cell_indx_in_dev < 12) {
+    /* Cells 0-11 belong to CFGRA */
+    AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[dev_idx].cfg;
 
-    if (discharge)
-      cfgA->discharge_bitset |= (1u << bit_in_dev);
-    else
-      cfgA->discharge_bitset &= ~(1u << bit_in_dev);
+    if (discharge) {
+      cfgA->discharge_bitset |= (1U << cell_indx_in_dev);
+    } else {
+      cfgA->discharge_bitset &= ~(1U << cell_indx_in_dev);
+    }
+
   } else {
-    AdbmsAfeConfigRegisterBData *cfgB = &afe->device_configs->devices[device].cfgB;
-    uint16_t b_bit = bit_in_dev - 12;
-    if (discharge)
-      cfgB->discharge_bitset |= (1u << b_bit);
-    else
-      cfgB->discharge_bitset &= ~(1u << b_bit);
+    /* Cells 12-17 belong to CFGRB */
+    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[dev_idx].cfg;
+
+    uint8_t bit_index = cell_indx_in_dev - 12;
+    if (discharge) {
+      cfgB->discharge_bitset |= (1U << bit_index);
+    } else {
+      cfgB->discharge_bitset &= ~(1U << bit_index);
+    }
   }
 
   return STATUS_CODE_OK;
@@ -206,6 +205,10 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
 }
 
 StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   size_t cell_count = afe->settings->num_cells;
   if (cell_index >= cell_count) {
     LOG_DEBUG("Invalid cell index number (%u), cell count is %zu", cell_index, cell_count);
@@ -224,33 +227,40 @@ StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, 
   afe->cell_voltages[cell_index] = voltage;
   return STATUS_CODE_OK;
 }
-StatusCode adbms_afe_set_aux_voltage(AdbmsAfeStorage *afe, uint8_t aux_index, float voltage) {
-  size_t thermistors = afe->settings->num_thermistors;
-  if (aux_index >= thermistors) {
-    LOG_DEBUG("Invalid aux index number");
+
+StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index, float voltage) {
+  if (afe == NULL || thermistor_index >= ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE || device_num >= ADBMS_AFE_MAX_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  size_t device_index = aux_index / ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-  size_t aux_pin = aux_index % ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
 
-  if (!((afe->settings->aux_bitset[device_index] >> aux_pin) & 0x1)) {
-    LOG_DEBUG("Aux channel %zu on device %zu is disabled; skipping set.", aux_pin, device_index);
-    return STATUS_CODE_OK;
-  }
+  uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
+  afe->thermistor_voltages[index] = voltage;
 
-  afe->aux_voltages[aux_index] = voltage;
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage) {
+StatusCode adbms_afe_set_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, float voltage) {
+  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  afe->board_thermistor_voltages[device_num] = voltage;
+  return STATUS_CODE_OK;
+}
+
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   size_t afe_count = afe->settings->num_devices;
 
-  if (afe_index >= afe_count) {
+  if (device_num >= afe_count) {
     LOG_DEBUG("Afe device does not exist, invalid index");
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  const uint8_t start = afe_index * ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+  const uint8_t start = device_num * ADBMS_AFE_MAX_CELLS_PER_DEVICE;
   const uint8_t end = start + ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
   for (uint8_t cell_index = start; cell_index < end; ++cell_index) {
@@ -260,48 +270,91 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t afe_
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_dev_aux_voltages(AdbmsAfeStorage *afe, size_t afe_index, float voltage) {
+StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   size_t afe_count = afe->settings->num_devices;
 
-  if (afe_index >= afe_count) {
+  if (device_num >= afe_count) {
     LOG_DEBUG("Afe device does not exist, invalid index");
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  const uint16_t start = afe_index * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-  const uint16_t end = start + ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-
-  for (uint8_t aux_index = start; aux_index < end; ++aux_index) {
-    adbms_afe_set_aux_voltage(afe, aux_index, voltage);
+  for (uint8_t thermistor_index = 0; thermistor_index < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; ++thermistor_index) {
+    adbms_afe_set_thermistor_voltage(afe, device_num, thermistor_index, voltage);
   }
 
   return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   uint8_t device_count = afe->settings->num_devices;
   for (uint8_t device = 0; device < device_count; ++device) {
     adbms_afe_set_afe_dev_cell_voltages(afe, device, voltage);
   }
   return STATUS_CODE_OK;
 }
-StatusCode adbms_afe_set_pack_aux_voltages(AdbmsAfeStorage *afe, float voltage) {
+
+StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   uint8_t device_count = afe->settings->num_devices;
   for (uint8_t device = 0; device < device_count; ++device) {
-    adbms_afe_set_afe_dev_aux_voltages(afe, device, voltage);
+    adbms_afe_set_afe_dev_thermistor_voltages(afe, device, voltage);
   }
   return STATUS_CODE_OK;
 }
 
-uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t index) {
-  return afe->cell_voltages[index];
+StatusCode adbms_afe_set_pack_board_thermistor_voltages(AdbmsAfeStorage *afe, float voltage) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint8_t device_count = afe->settings->num_devices;
+  for (uint8_t device = 0; device < device_count; ++device) {
+    adbms_afe_set_board_thermistor_voltage(afe, device, voltage);
+  }
+  return STATUS_CODE_OK;
 }
 
-uint16_t adbms_afe_get_aux_voltage(AdbmsAfeStorage *afe, uint16_t index) {
-  return afe->aux_voltages[index];
+uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index) {
+  if (afe == NULL) {
+    return 0;
+  }
+
+  return afe->cell_voltages[cell_index];
+}
+
+uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint16_t thermistor_index) {
+  if (afe == NULL) {
+    return 0;
+  }
+
+  uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
+  return afe->thermistor_voltages[index];
+}
+
+uint16_t adbms_afe_get_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num) {
+  if (afe == NULL) {
+    return 0;
+  }
+
+  return afe->board_thermistor_voltages[device_num];
 }
 
 bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {
+  if (afe == NULL) {
+    return 0;
+  }
+
   bool discharge = 0;
   uint16_t cell_in_lookup = cell;
   uint16_t device_index = cell_in_lookup / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
@@ -310,11 +363,11 @@ bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {
   uint16_t bit_position = cell_in_lookup % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
   if (bit_position < 12) {
-    uint16_t bitset = afe->device_configs->devices[device].cfgA.discharge_bitset;
+    uint16_t bitset = afe->config_a[device].cfg.discharge_bitset;
     discharge = (bitset >> bit_position) & 0x1;
   } else {
     uint16_t b_bit = bit_position - 12;
-    uint16_t bitset = afe->device_configs->devices[device].cfgB.discharge_bitset;
+    uint16_t bitset = afe->config_b[device].cfg.discharge_bitset;
     discharge = (bitset >> b_bit) & 0x1;
   }
 
