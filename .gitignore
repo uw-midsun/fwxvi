@@ -38,3 +38,5 @@ mpxe/Simulation_JSON/*
 
 # Test results
 **/test_results/*
+
+**/**compile_commands**.json

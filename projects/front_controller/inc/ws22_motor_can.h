@@ -3,21 +3,22 @@
 /************************************************************************************************
  * @file   ws22_motor_can.h
  *
- * @brief  Header file for Wavesculptor 22 CAN
+ * @brief  Header file for Wavesculptor 22 CAN interface
  *
  * @date   2025-06-29
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
 #include "can.h"
-#include "can_hw.h"
-#include "can_msg.h"
+#include "status.h"
 
 /* Intra-component Headers */
+#include "front_controller.h"
 
 /**
  * @defgroup Front_Controller
@@ -25,84 +26,122 @@
  * @{
  */
 
-#define MOTOR_CAN_CONTROL_BASE 0x500
-#define MOTOR_CAN_CONTROLLER_BASE 0x400
+/* CAN Message Base Addresses */
+#define WS22_CAN_BASE_CONTROL 0x500U /**< Base address for control messages */
+#define WS22_CAN_BASE_STATUS 0x400U  /**< Base address for status messages */
 
-#define STATUS_INFO (MOTOR_CAN_CONTROLLER_BASE + 0X01)
-#define BUS_MEASUREMENT (MOTOR_CAN_CONTROLLER_BASE + 0X02)
-#define VELOCTIY_MEASUREMENT (MOTOR_CAN_CONTROLLER_BASE + 0X03)
-#define PHASE_CURRENT (MOTOR_CAN_CONTROLLER_BASE + 0X04)
-#define MOTOR_VOLTAGE (MOTOR_CAN_CONTROLLER_BASE + 0X05)
-#define MOTOR_CURRENT (MOTOR_CAN_CONTROLLER_BASE + 0X06)
-#define MOTOR_BACK_EMF (MOTOR_CAN_CONTROLLER_BASE + 0x07)
-#define RAIL_15V (MOTOR_CAN_CONTROLLER_BASE + 0x08)
-#define HEAT_SINK_MOTOR_TEMP (MOTOR_CAN_CONTROLLER_BASE + 0x0B)
+/* CAN Message IDs */
+#define WS22_CAN_ID_DRIVE_CMD (WS22_CAN_BASE_CONTROL + 0x01U)
+#define WS22_CAN_ID_STATUS_INFO (WS22_CAN_BASE_STATUS + 0x01U)
+#define WS22_CAN_ID_BUS_MEASUREMENT (WS22_CAN_BASE_STATUS + 0x02U)
+#define WS22_CAN_ID_VELOCITY_MEASUREMENT (WS22_CAN_BASE_STATUS + 0x03U)
+#define WS22_CAN_ID_PHASE_CURRENT (WS22_CAN_BASE_STATUS + 0x04U)
+#define WS22_CAN_ID_MOTOR_VOLTAGE (WS22_CAN_BASE_STATUS + 0x05U)
+#define WS22_CAN_ID_MOTOR_CURRENT (WS22_CAN_BASE_STATUS + 0x06U)
+#define WS22_CAN_ID_MOTOR_BACK_EMF (WS22_CAN_BASE_STATUS + 0x07U)
+#define WS22_CAN_ID_RAIL_15V (WS22_CAN_BASE_STATUS + 0x08U)
+#define WS22_CAN_ID_TEMPERATURE (WS22_CAN_BASE_STATUS + 0x0BU)
 
-typedef struct TxData {
-  float current;      // Range: 0.0 to 1.0
-  uint32_t velocity;  // Range: 0 to ~12000 rpm
-} TxData;
+/**
+ * @brief Motor control command data structure
+ */
+typedef struct {
+  float current;     /**< Motor current command (0.0 to 1.0) */
+  uint32_t velocity; /**< Motor velocity command (0 to 12000 rpm) */
+} Ws22MotorControlData;
 
-typedef struct RxData {
-  // Status Info - base address + 0x01
-  uint16_t error_flags;
-  uint16_t limit_flags;
+/**
+ * @brief Motor status and telemetry data structure
+ */
+typedef struct {
+  /* Status Information (0x401) */
+  uint16_t error_flags; /**< Motor controller error flags */
+  uint16_t limit_flags; /**< Motor controller limit flags */
 
-  // Bus Measurement - base address + 0x02
-  float bus_current;
-  float bus_voltage;
+  /* Bus Measurements (0x402) */
+  float bus_current; /**< DC bus current (A) */
+  float bus_voltage; /**< DC bus voltage (V) */
 
-  // Velocity Measurement - base address + 0x03
-  float vehicle_velocity;
-  float motor_velocity;
+  /* Velocity Measurements (0x403) */
+  float vehicle_velocity; /**< Vehicle velocity (m/s) */
+  float motor_velocity;   /**< Motor velocity (rpm) */
 
-  // Phase Current - base address + 0x04
-  float phase_c_current;
-  float phase_b_current;
+  /* Phase Currents (0x404) */
+  float phase_b_current; /**< Phase B current (A) */
+  float phase_c_current; /**< Phase C current (A) */
 
-  // Motor Voltage - base address + 0x05
-  float voltage_d;
-  float voltage_q;
+  /* Motor Voltages (0x405) */
+  float voltage_d; /**< D-axis voltage (V) */
+  float voltage_q; /**< Q-axis voltage (V) */
 
-  // Motor Current - base address + 0x06
-  float current_d;
-  float current_q;
+  /* Motor Currents (0x406) */
+  float current_d; /**< D-axis current (A) */
+  float current_q; /**< Q-axis current (A) */
 
-  // Motor BackEMF  - base address + 0x07
-  float back_EMF_d;  // always zero
-  float back_EMF_q;
+  /* Motor Back EMF (0x407) */
+  float back_emf_d; /**< D-axis back EMF (V) */
+  float back_emf_q; /**< Q-axis back EMF (V) */
 
-  // 15V Voltage Rail Measurement - base address + 0x08
-  float rail_15V_supply;
+  /* Power Rail (0x408) */
+  float rail_15v_supply; /**< 15V rail voltage (V) */
 
-  // Heat-sink and Motor Temp - base address + 0x0B
-  float heat_sink_temp;
-  float motor_temp;
-} RxData;
+  /* Temperature Measurements (0x40B) */
+  float heat_sink_temp; /**< Heat sink temperature (°C) */
+  float motor_temp;     /**< Motor temperature (°C) */
+} Ws22MotorTelemetryData;
 
-StatusCode motor_can_transmit(uint32_t id, bool extended, const uint8_t *msg, uint8_t dlc);
+/**
+ * @brief WS22 motor CAN interface storage structure
+ */
+typedef struct Ws22MotorCanStorage {
+  Ws22MotorControlData control;     /**< Motor control data */
+  Ws22MotorTelemetryData telemetry; /**< Motor telemetry data */
+} Ws22MotorCanStorage;
 
-void tx_set_current(float current);
-void tx_set_velocity(uint32_t velocity);
+/**
+ * @brief   Initialize the WS22 motor CAN interface
+ * @param   storage Pointer to Front controller storage structure
+ * @return  STATUS_CODE_OK on success, error code otherwise
+ */
+StatusCode ws22_motor_can_init(FrontControllerStorage *storage);
 
-RxData get_rx_data(void);
+/**
+ * @brief   Set motor control current command
+ * @param   current Motor current command (0.0 to 1.0)
+ * @return  STATUS_CODE_OK on success, STATUS_CODE_INVALID_ARGS if out of range
+ */
+StatusCode ws22_motor_can_set_current(float current);
 
-void rx_set_limit_flags(uint16_t flags);
-void rx_set_error_flags(uint16_t flags);
-void rx_set_bus_current(float current);
-void rx_set_bus_voltage(float voltage);
-void rx_set_vehicle_velocity(float velocity);
-void rx_set_motor_velocity(float velocity);
-void rx_set_phase_c_current(float current);
-void rx_set_phase_b_current(float current);
-void rx_set_voltage_d(float voltage);
-void rx_set_voltage_q(float voltage);
-void rx_set_current_d(float current);
-void rx_set_current_q(float current);
-void rx_set_back_EMF_d(float voltage);
-void rx_set_back_EMF_q(float voltage);
-void rx_set_rail_15v_supply(float voltage);
-void rx_set_heat_sink_temp(float degrees);
-void rx_set_motor_temp(float degrees);
+/**
+ * @brief   Set motor control velocity command
+ * @param   velocity Motor velocity command (rpm)
+ * @return  STATUS_CODE_OK on success, STATUS_CODE_INVALID_ARGS if out of range
+ */
+StatusCode ws22_motor_can_set_velocity(uint32_t velocity);
+
+/**
+ * @brief   Build and transmit motor drive command
+ * @return  STATUS_CODE_OK on success, error code otherwise
+ */
+StatusCode ws22_motor_can_transmit_drive_command(void);
+
+/**
+ * @brief   Process received CAN message for motor controller
+ * @param   msg Pointer to received CAN message
+ * @return  STATUS_CODE_OK on success, STATUS_CODE_UNIMPLEMENTED for unknown message IDs
+ */
+StatusCode ws22_motor_can_process_rx(CanMessage *msg);
+
+/**
+ * @brief   Get current motor control data
+ * @return  Pointer to motor control data (read-only)
+ */
+Ws22MotorControlData *ws22_motor_can_get_control_data(void);
+
+/**
+ * @brief   Get current motor telemetry data
+ * @return  Pointer to motor telemetry data (read-only)
+ */
+Ws22MotorTelemetryData *ws22_motor_can_get_telemetry_data(void);
 
 /** @} */

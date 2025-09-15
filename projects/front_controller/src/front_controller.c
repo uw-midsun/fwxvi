@@ -17,8 +17,10 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "ws22_motor_can.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -38,7 +40,7 @@ static const CanSettings s_can_settings = {
   .tx = FRONT_CONTROLLER_CAN_TX,
   .rx = FRONT_CONTROLLER_CAN_RX,
   .loopback = false,
-  .can_rx_all_cb = NULL,
+  .can_rx_all_cb = ws22_motor_can_process_rx,
 };
 
 StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
@@ -51,6 +53,9 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   log_init();
   can_init(&s_can_storage, &s_can_settings);
+
+  accel_pedal_init(storage);
+  ws22_motor_can_init(storage);
 
   return STATUS_CODE_OK;
 }

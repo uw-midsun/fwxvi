@@ -33,6 +33,7 @@ StatusCode accel_pedal_run() {
 
   uint16_t adc_reading = s_accel_pedal_storage.calibration_data.lower_value;
   adc_read_raw(&s_accel_pedal_gpio, &adc_reading);
+
   /**
    * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
    * to get percentage press. Negatives and > 100 values will be clamped
