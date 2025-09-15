@@ -27,6 +27,7 @@
 /* Forward declarations */
 struct PowerSenseStorage;
 struct AccelPedalStorage;
+struct Ws22MotorCanStorage;
 
 /** @brief  Front controller pedal set to 2% deadzone  */
 #define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.02f
@@ -61,9 +62,11 @@ typedef struct {
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
   float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
 
-  struct PowerSenseStorage *power_sense_storage; /**< Power sense storage */
-  struct AccelPedalStorage *accel_pedal_storage; /**< Acceleration pedal storage */
-  FrontControllerConfig *config;                 /**< Pointer to the front controller configuration data */
+  struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
+  struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
+  struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
+
+  FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;
 
 /**

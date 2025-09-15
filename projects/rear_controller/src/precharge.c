@@ -10,17 +10,16 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "precharge.h"
-
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
-#include "rear_controller_hw_defs.h"
-
-/* Intra-component Headers */
 #include "status.h"
 
-static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_GPIO;
+/* Intra-component Headers */
+#include "precharge.h"
+#include "rear_controller_hw_defs.h"
+
+static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
 static InterruptSettings precharge_settings = {
   INTERRUPT_TYPE_INTERRUPT,
