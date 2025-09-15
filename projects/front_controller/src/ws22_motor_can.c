@@ -164,7 +164,6 @@ StatusCode ws22_motor_can_init(FrontControllerStorage *storage) {
 
 StatusCode ws22_motor_can_set_current(float current) {
   if (current < 0.0f || current > 1.0f) {
-    LOG_DEBUG("Current command out of range: %f (valid: 0.0-1.0)", (double)current);
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -174,7 +173,6 @@ StatusCode ws22_motor_can_set_current(float current) {
 
 StatusCode ws22_motor_can_set_velocity(uint32_t velocity) {
   if (velocity > 12000U) {
-    LOG_DEBUG("Velocity command out of range: %u (max: 12000 rpm)", velocity);
     return STATUS_CODE_INVALID_ARGS;
   }
 
