@@ -61,4 +61,12 @@ typedef struct {
   RearControllerConfig *config;
 } RearControllerStorage;
 
+
+StatusCode relay_init(); → This close pos relay, solar, neg relay
+StatusCode relay_fault(); → Open all the relays
+StatusCode relay_solar_close(); → Close solar relay
+StatusCode relay_solar_open(); → Open solar relay
+StatusCode relay_motor_close(); → Close motor relay
+StatusCode relay_motor_open(); → Open motor relay
+
 /** @} */
