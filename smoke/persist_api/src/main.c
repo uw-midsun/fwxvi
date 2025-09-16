@@ -11,22 +11,22 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
+#include "flash.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
-#include "status.h"
-#include "delay.h"
+#include "mcu.h"
 #include "persist.h"
-#include "flash.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
-#define PERSIST_WRITER_MODE   0U
-#define PERSIST_READER_MODE   1U
+#define PERSIST_WRITER_MODE 0U
+#define PERSIST_READER_MODE 1U
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
-#define PERSIST_MODE          PERSIST_WRITER_MODE
+#define PERSIST_MODE PERSIST_WRITER_MODE
 
 typedef struct TestStruct {
   uint32_t x;
@@ -38,23 +38,25 @@ TestStruct test_struct = { 0U };
 PersistStorage storage = { 0U };
 
 TASK(persist_api, TASK_STACK_1024) {
+  flash_init();
 #if (PERSIST_MODE == PERSIST_WRITER_MODE)
-persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), true);
+  persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), true);
 
-test_struct.x = 32;
-test_struct.y = 3.2;
-test_struct.z = 't';
+  test_struct.x = 32;
+  test_struct.y = 3.2;
+  test_struct.z = 't';
 
-persist_commit(&storage);
-LOG_DEBUG("Writter commited.");
+  persist_commit(&storage);
+  LOG_DEBUG("Writter commited.");
 
 #else
-persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
-LOG_DEBUG("Test struct X: %u, Y: %f, Z: %c", test_struct.x, test_struct.y, test_struct.z);
+  persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
+  LOG_DEBUG("Test struct X: %u, Y: %f, Z: %c", test_struct.x, test_struct.y, test_struct.z);
 
 #endif
 
-  while (true) {}
+  while (true) {
+  }
 }
 
 #ifdef MS_PLATFORM_X86

@@ -10,15 +10,15 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
 #include "gpio.h"
 #include "log.h"
+#include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "front_controller_hw_defs.h"
 #include "pedal_calib.h"
 #include "persist.h"
-#include "front_controller_hw_defs.h"
 
 GpioAddress accel_pedal_gpio = { .port = GPIO_PORT_A, .pin = 3 };
 GpioAddress brake_pedal_gpio = { .port = GPIO_PORT_A, .pin = 5 };
@@ -30,30 +30,28 @@ typedef struct PedalPersistData {
   PedalCalibrationData brake_pedal_data;
 } PedalPersistData;
 
-
 TASK(pedal_calib, TASK_STACK_1024) {
-
   PedalPersistData pedal_persist_data = { 0U };
   PedalCalibrationStorage pedal_storage;
 
   PersistStorage persist_storage = { 0U };
 
-  //accel pedal data collection & set to struct
+  // accel pedal data collection & set to struct
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data), PEDAL_PRESSED, &accel_pedal_gpio);
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data), PEDAL_UNPRESSED, &accel_pedal_gpio);
 
-  //brake pedal data collection & set to struct
+  // brake pedal data collection & set to struct
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_PRESSED, &brake_pedal_gpio);
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_UNPRESSED, &brake_pedal_gpio);
 
-  //set up persist 
+  // set up persist
   persist_init(&persist_storage, LAST_PAGE, &pedal_persist_data, sizeof(pedal_persist_data), true);
 
-  //commit
+  // commit
   persist_commit(&persist_storage);
 
-
-  while (true) {}
+  while (true) {
+  }
 }
 
 #ifdef MS_PLATFORM_X86
