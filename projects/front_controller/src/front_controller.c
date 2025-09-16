@@ -20,6 +20,7 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "pedal_calib_reader.h"
 #include "ws22_motor_can.h"
 
 /************************************************************************************************
@@ -53,9 +54,11 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   log_init();
   can_init(&s_can_storage, &s_can_settings);
+  flash_init();
 
   accel_pedal_init(storage);
   ws22_motor_can_init(storage);
+  pedal_calib_read(storage);
 
   return STATUS_CODE_OK;
 }

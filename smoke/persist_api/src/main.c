@@ -29,8 +29,8 @@
 #define PERSIST_MODE PERSIST_WRITER_MODE
 
 typedef struct TestStruct {
-  uint32_t x;
-  float y;
+  uint16_t x;
+  uint16_t y;
   char z;
 } TestStruct;
 
@@ -43,7 +43,7 @@ TASK(persist_api, TASK_STACK_1024) {
   persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), true);
 
   test_struct.x = 32;
-  test_struct.y = 3.2;
+  test_struct.y = 2;
   test_struct.z = 't';
 
   persist_commit(&storage);
@@ -51,7 +51,7 @@ TASK(persist_api, TASK_STACK_1024) {
 
 #else
   persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
-  LOG_DEBUG("Test struct X: %u, Y: %f, Z: %c", test_struct.x, test_struct.y, test_struct.z);
+  LOG_DEBUG("Test struct X: %u, Y: %u, Z: %c", test_struct.x, test_struct.y, test_struct.z);
 
 #endif
 

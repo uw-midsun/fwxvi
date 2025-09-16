@@ -51,6 +51,10 @@ TASK(pedal_calib, TASK_STACK_1024) {
   // commit
   persist_commit(&persist_storage);
 
+  // print values
+  LOG_DEBUG("Accel Pedal Max: %u \n Accel Pedal Min: %u \n Brake Pedal Max: %u \n Brake Pedal Min %u \n", pedal_persist_data.accel_pedal_data.upper_value,
+            pedal_persist_data.accel_pedal_data.lower_value, pedal_persist_data.brake_pedal_data.upper_value, pedal_persist_data.brake_pedal_data.lower_value);
+
   while (true) {
   }
 }
