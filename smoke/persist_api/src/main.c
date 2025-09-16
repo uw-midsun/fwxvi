@@ -46,6 +46,7 @@ test_struct.y = 3.2;
 test_struct.z = 't';
 
 persist_commit(&storage);
+LOG_DEBUG("Writter commited.");
 
 #else
 persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
