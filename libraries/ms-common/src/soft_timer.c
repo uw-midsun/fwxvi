@@ -21,21 +21,21 @@ StatusCode soft_timer_start(SoftTimer *timer) {
     return STATUS_CODE_UNINITIALIZED;
   }
   if (xTimerStart(timer->id, 0) != pdPASS) {
-    return status_msg(STATUS_CODE_INTERNAL_ERROR, "timer command queue is full");
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   return STATUS_CODE_OK;
 }
 
 StatusCode soft_timer_cancel(SoftTimer *timer) {
   if (xTimerDelete(timer->id, 0) != pdPASS) {
-    return status_msg(STATUS_CODE_INTERNAL_ERROR, "timer command queue is full");
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   return STATUS_CODE_OK;
 }
 
 StatusCode soft_timer_reset(SoftTimer *timer) {
   if (xTimerReset(timer->id, 0) != pdPASS) {
-    return status_msg(STATUS_CODE_INTERNAL_ERROR, "timer command queue is full");
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   return STATUS_CODE_OK;
 }

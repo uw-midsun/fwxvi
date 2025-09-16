@@ -4,7 +4,7 @@
  * @brief  Smoke test for software_timer_api
  *
  * @date   2025-09-15
- * @author Midnight Sun Team #24 - MSXVI
+ * @author Arthigan Jeyamohan
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -16,11 +16,41 @@
 #include "tasks.h"
 #include "status.h"
 #include "delay.h"
+#include "log.h"
+
+/* Functions to test
+soft_timer_init_and_start
+soft_timer_init
+soft_timer_start
+soft_timer_cancel
+soft_timer_reset
+soft_timer_inuse
+soft_timer_remaining_time
+*/
 
 /* Intra-component Headers */
 
+
 TASK(software_timer_api, TASK_STACK_1024) {
-  while (true) {}
+
+  StatusCode status = STATUS_CODE_OK;
+
+  while (true) {
+    LOG_DEBUG("Running Software Timer API Smoke!\n");
+
+    do {
+
+      //Setting up time to call callback function
+
+      uint32_t time = 500;
+
+
+    } while(false);
+
+    LOG_DEBUG("Done test! Exited with status code %d\n", status);
+    status = STATUS_CODE_OK;
+    delay_ms(500);
+  }
 }
 
 #ifdef MS_PLATFORM_X86
