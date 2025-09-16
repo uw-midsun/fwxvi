@@ -31,6 +31,7 @@ typedef struct PedalPersistData {
 } PedalPersistData;
 
 TASK(pedal_calib, TASK_STACK_1024) {
+  flash_init();
   PedalPersistData pedal_persist_data = { 0U };
   PedalCalibrationStorage pedal_storage;
 
