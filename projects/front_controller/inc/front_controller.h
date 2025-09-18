@@ -61,6 +61,7 @@ typedef struct {
 
   struct PowerSenseStorage *power_sense_storage; /**< Power sense storage */
   struct AccelPedalStorage *accel_pedal_storage; /**< Acceleration pedal storage */
+  struct OpdStorage *opd_storage;
   FrontControllerConfig *config;                 /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;
 
