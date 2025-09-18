@@ -15,14 +15,13 @@
 #include "current_acs37800.h"
 
 // initialize the storage object
-StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddress *i2c_address) {
-  if (storage == NULL || i2c_address == NULL || i2c_port == NULL) {
+StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
+  if (storage == NULL || i2c_address < 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
   // i2c peripherals
-  storage->i2c_port = *i2c_port;
-  storage->i2c_address = *i2c_address;
+  storage->i2c_port = i2c_port;
+  storage->i2c_address = i2c_address;
 
   // conversion scaling factors
   storage->current_per_amp = CURRENT_SCALE;
