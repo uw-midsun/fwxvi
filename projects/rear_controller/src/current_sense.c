@@ -40,9 +40,9 @@ StatusCode current_sense_run() {
 
   float current = filter_step(REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA, current_reading, rear_controller_state->csense_prev_current);
 
-  if (current > PACK_MAX_DISCHARGE_CURRENT_MA || current < PACK_MAX_CHARGE_CURRENT_MA) {
+  if (current > PACK_MAX_DISCHARGE_CURRENT_A || current < PACK_MAX_CHARGE_CURRENT_A) {
     rear_controller_state->csense_overcurrents++;
-    if (rear_controller_state->csense_overcurrents > OVERCURRENT_RESPONSE_HZ * 2.0) {
+    if (rear_controller_state->csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
       rear_controller_state_manager_step(REAR_CONTROLLER_STATE_FAULT);
     }
   } else {
