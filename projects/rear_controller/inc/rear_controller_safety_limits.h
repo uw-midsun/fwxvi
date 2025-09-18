@@ -45,7 +45,7 @@
  * Fault Response Times [ms]
  ************************************************************************************************/
 #define SHORT_CIRCUIT_RESPONSE_MS 1U   /**< HW trip reaction time */
-#define OVERCURRENT_RESPONSE_MS 50U    /**< Delay before over-current trips */
+#define OVERCURRENT_RESPONSE_HZ 20U    /**< Delay before over-current trips */
 #define OVERTEMP_RESPONSE_MS 500U      /**< Delay before over-temp trips */
 #define UNDERVOLTAGE_RESPONSE_MS 1000U /**< Delay before under-voltage trips */
 #define OVERVOLTAGE_RESPONSE_MS 1000U  /**< Delay before over-voltage trips */
