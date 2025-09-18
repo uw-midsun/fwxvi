@@ -18,10 +18,11 @@
 #include "log.h"
 
 void delay_ms(uint32_t time_ms) {
-  if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
-    LOG_WARN("Scheduler is not running.");
+  if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+    vTaskDelay(time_ms);
+  } else {
+    /* TODO: Handle non-RTOS delays */
   }
-  vTaskDelay(time_ms);
 }
 
 void non_blocking_delay_ms(uint32_t time_ms) {

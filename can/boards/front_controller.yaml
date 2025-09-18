@@ -6,13 +6,17 @@
 
 ---
 Messages:
-  pedal_data:
+  front_controller_pedal_data:
     id: 21
     cycle: "medium"
     critical: false
     target:
       telemetry:
-        watchdog: 5
+        watchdog: 0
+      bms_carrier:
+        watchdog: 0
     signals:
       percentage:
         length: 32
+      brake_enabled:
+        length:  8

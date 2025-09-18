@@ -1,221 +1,238 @@
 /************************************************************************************************
- * @file    motor_can.c
+ * @file   ws22_motor_can.c
  *
- * @brief   motor can source file
+ * @brief  Source file for Wavesculptor 22 CAN interface
  *
- * @date    2025-06-29
- * @author  Midnight Sun Team #24 - MSXVI
+ * @date   2025-06-29
+ * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 #include <string.h>
 
 /* Inter-component Headers */
+#include "log.h"
 
 /* Intra-component Headers */
 #include "ws22_motor_can.h"
 
-TxData tx_data;
-RxData rx_data;
+static FrontControllerStorage *front_controller_storage = NULL;
 
-CanMessage msg;
+static Ws22MotorCanStorage s_ws22_motor_can_storage = { 0 };
 
-// Setter functions
-void tx_set_current(float current) {
-  tx_data.current = current;
-}
+static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanMessage *msg) {
+  if (control_data == NULL || msg == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
-void tx_set_velocity(uint32_t velocity) {
-  tx_data.velocity = velocity;
-}
+  msg->id.raw = WS22_CAN_ID_DRIVE_CMD;
+  msg->extended = false;
+  msg->dlc = 8U;
 
-CanMessage build_drive_command(CanId id) {
-  msg.id.raw = MOTOR_CAN_CONTROL_BASE + 0x01;
-  msg.extended = false;
-  msg.dlc = 8;
+  /* Pack velocity (little-endian) */
+  msg->data_u8[0] = (uint8_t)(control_data->velocity & 0xFFU);
+  msg->data_u8[1] = (uint8_t)((control_data->velocity >> 8U) & 0xFFU);
+  msg->data_u8[2] = (uint8_t)((control_data->velocity >> 16U) & 0xFFU);
+  msg->data_u8[3] = (uint8_t)((control_data->velocity >> 24U) & 0xFFU);
 
-  // Velocity
-  msg.data_u8[0] = tx_data.velocity;
-  msg.data_u8[1] = tx_data.velocity >> 8;
-  msg.data_u8[2] = tx_data.velocity >> 16;
-  msg.data_u8[3] = tx_data.velocity >> 24;
-
-  // Convert float to 4 bytes
+  /* Pack current as float */
   union {
     float f;
     uint8_t bytes[4];
   } current_union;
-  current_union.f = tx_data.current;
+  current_union.f = control_data->current;
 
-  // Current
-  msg.data_u8[4] = current_union.bytes[0];
-  msg.data_u8[5] = current_union.bytes[1];
-  msg.data_u8[6] = current_union.bytes[2];
-  msg.data_u8[7] = current_union.bytes[3];
+  msg->data_u8[4] = current_union.bytes[0];
+  msg->data_u8[5] = current_union.bytes[1];
+  msg->data_u8[6] = current_union.bytes[2];
+  msg->data_u8[7] = current_union.bytes[3];
 
-  return msg;
-}
-
-StatusCode motor_can_transmit(uint32_t id, bool extended, const uint8_t *msg, uint8_t dlc) {
-  if (msg == NULL || dlc > 8) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  CanMessage tx_msg;
-  tx_msg.id.raw = id;
-  tx_msg.extended = extended;
-  tx_msg.dlc = dlc;
-
-  for (uint8_t i = 0; i < dlc; i++) {
-    tx_msg.data_u8[i] = msg[i];
-  }
-  for (uint8_t i = dlc; i < 8; i++) {
-    tx_msg.data_u8[i] = 0;
-  }
-
-  return can_transmit(&tx_msg);
-}
-
-// rx data setter functions
-void rx_set_limit_flags(uint16_t flags) {
-  rx_data.limit_flags = flags;
-}
-void rx_set_error_flags(uint16_t flags) {
-  rx_data.error_flags = flags;
-}
-void rx_set_bus_current(float current) {
-  rx_data.bus_current = current;
-}
-void rx_set_bus_voltage(float voltage) {
-  rx_data.bus_voltage = voltage;
-}
-void rx_set_vehicle_velocity(float velocity) {
-  rx_data.vehicle_velocity = velocity;
-}
-void rx_set_motor_velocity(float velocity) {
-  rx_data.motor_velocity = velocity;
-}
-void rx_set_phase_c_current(float current) {
-  rx_data.phase_c_current = current;
-}
-void rx_set_phase_b_current(float current) {
-  rx_data.phase_b_current = current;
-}
-void rx_set_voltage_d(float voltage) {
-  rx_data.voltage_d = voltage;
-}
-void rx_set_voltage_q(float voltage) {
-  rx_data.voltage_q = voltage;
-}
-void rx_set_current_d(float current) {
-  rx_data.current_d = current;
-}
-void rx_set_current_q(float current) {
-  rx_data.current_q = current;
-}
-void rx_set_back_EMF_d(float voltage) {
-  rx_data.back_EMF_d = voltage;
-}
-void rx_set_back_EMF_q(float voltage) {
-  rx_data.back_EMF_q = voltage;
-}
-void rx_set_rail_15v_supply(float voltage) {
-  rx_data.rail_15V_supply = voltage;
-}
-void rx_set_heat_sink_temp(float degrees) {
-  rx_data.heat_sink_temp = degrees;
-}
-void rx_set_motor_temp(float degrees) {
-  rx_data.motor_temp = degrees;
-}
-
-// filling rx_data struct
-StatusCode motor_can_rx_all_cb(CanMessage *msg) {
-  switch (msg->id.raw) {
-    case STATUS_INFO: {
-      uint16_t limit_flags = (msg->data_u8[1] << 8) | msg->data_u8[0];
-      uint16_t error_flags = (msg->data_u8[3] << 8) | msg->data_u8[2];
-
-      rx_set_limit_flags(limit_flags);
-      rx_set_error_flags(error_flags);
-      break;
-    }
-
-    case BUS_MEASUREMENT: {
-      float voltage, current;
-      memcpy(&voltage, &msg->data_u8[0], sizeof(float));
-      memcpy(&current, &msg->data_u8[4], sizeof(float));
-
-      rx_set_bus_current(current);
-      rx_set_bus_voltage(voltage);
-      break;
-    }
-    case VELOCTIY_MEASUREMENT: {
-      float motor, vehicle;
-      memcpy(&motor, &msg->data_u8[0], sizeof(float));
-      memcpy(&vehicle, &msg->data_u8[4], sizeof(float));
-
-      rx_set_vehicle_velocity(vehicle);
-      rx_set_motor_velocity(motor);
-      break;
-    }
-    case PHASE_CURRENT: {
-      float b, c;
-      memcpy(&b, &msg->data_u8[0], sizeof(float));
-      memcpy(&c, &msg->data_u8[4], sizeof(float));
-
-      rx_set_phase_c_current(c);
-      rx_set_phase_b_current(b);
-      break;
-    }
-    case MOTOR_VOLTAGE: {
-      float d, q;
-      memcpy(&q, &msg->data_u8[0], sizeof(float));
-      memcpy(&d, &msg->data_u8[4], sizeof(float));
-
-      rx_set_voltage_d(d);
-      rx_set_voltage_q(q);
-      break;
-    }
-    case MOTOR_CURRENT: {
-      float d, q;
-      memcpy(&q, &msg->data_u8[0], sizeof(float));
-      memcpy(&d, &msg->data_u8[4], sizeof(float));
-
-      rx_set_current_d(d);
-      rx_set_current_q(q);
-
-      break;
-    }
-    case MOTOR_BACK_EMF: {
-      float d, q;
-      memcpy(&q, &msg->data_u8[0], sizeof(float));
-      memcpy(&d, &msg->data_u8[4], sizeof(float));
-
-      rx_set_back_EMF_d(d);
-      rx_set_back_EMF_q(q);
-      break;
-    }
-    case RAIL_15V: {
-      float voltage;
-      memcpy(&voltage, &msg->data_u8[4], sizeof(float));
-
-      rx_set_rail_15v_supply(voltage);
-      break;
-    }
-    case HEAT_SINK_MOTOR_TEMP: {
-      float heat_sink, motor;
-      memcpy(&motor, &msg->data_u8[0], sizeof(float));
-      memcpy(&heat_sink, &msg->data_u8[4], sizeof(float));
-
-      rx_set_heat_sink_temp(heat_sink);
-      rx_set_motor_temp(motor);
-      break;
-    }
-  }
   return STATUS_CODE_OK;
 }
 
-RxData get_rx_data(void) {
-  return rx_data;
+static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 4U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  telemetry->limit_flags = (uint16_t)((msg->data_u8[1] << 8U) | msg->data_u8[0]);
+  telemetry->error_flags = (uint16_t)((msg->data_u8[3] << 8U) | msg->data_u8[2]);
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->bus_voltage, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->bus_current, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->motor_velocity, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->vehicle_velocity, &msg->data_u8[4], sizeof(float));
+
+  /* Read vehicle velocity is in units of m/s */
+  front_controller_storage->vehicle_speed_kph = telemetry->motor_velocity * 3.6f;
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->phase_b_current, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->phase_c_current, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->voltage_q, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->voltage_d, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_motor_current(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->current_q, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->current_d, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->back_emf_q, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->back_emf_d, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->rail_15v_supply, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+  if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&telemetry->motor_temp, &msg->data_u8[0], sizeof(float));
+  memcpy(&telemetry->heat_sink_temp, &msg->data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode ws22_motor_can_init(FrontControllerStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  front_controller_storage = storage;
+  front_controller_storage->ws22_motor_can_storage = &s_ws22_motor_can_storage;
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode ws22_motor_can_set_current(float current) {
+  if (current < 0.0f || current > 1.0f) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_ws22_motor_can_storage.control.current = current;
+  return STATUS_CODE_OK;
+}
+
+StatusCode ws22_motor_can_set_velocity(uint32_t velocity) {
+  if (velocity > 12000U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  s_ws22_motor_can_storage.control.velocity = velocity;
+  return STATUS_CODE_OK;
+}
+
+StatusCode ws22_motor_can_transmit_drive_command(void) {
+  CanMessage msg;
+
+  StatusCode status = s_build_drive_command(&s_ws22_motor_can_storage.control, &msg);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  return can_transmit(&msg);
+}
+
+StatusCode ws22_motor_can_process_rx(CanMessage *msg) {
+  if (msg == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  switch (msg->id.raw) {
+    case WS22_CAN_ID_STATUS_INFO:
+      return s_process_status_info(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_BUS_MEASUREMENT:
+      return s_process_bus_measurement(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_VELOCITY_MEASUREMENT:
+      return s_process_velocity_measurement(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_PHASE_CURRENT:
+      return s_process_phase_current(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_MOTOR_VOLTAGE:
+      return s_process_motor_voltage(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_MOTOR_CURRENT:
+      return s_process_motor_current(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_MOTOR_BACK_EMF:
+      return s_process_motor_back_emf(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_RAIL_15V:
+      return s_process_rail_15v(&s_ws22_motor_can_storage.telemetry, msg);
+
+    case WS22_CAN_ID_TEMPERATURE:
+      return s_process_temperature(&s_ws22_motor_can_storage.telemetry, msg);
+
+    default:
+      return STATUS_CODE_UNIMPLEMENTED;
+  }
+}
+
+Ws22MotorControlData *ws22_motor_can_get_control_data(void) {
+  return &s_ws22_motor_can_storage.control;
+}
+
+Ws22MotorTelemetryData *ws22_motor_can_get_telemetry_data(void) {
+  return &s_ws22_motor_can_storage.telemetry;
 }
