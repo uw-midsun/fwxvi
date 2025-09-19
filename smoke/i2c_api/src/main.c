@@ -65,11 +65,10 @@ TASK(i2c_api, TASK_STACK_1024) {
     i2c_set_rx_data(I2C_PORT_2, rx_sim_data, length);
 #endif
 
-    LOG_DEBUG("-------- Reading from device --------\n");
+    LOG_DEBUG("-------- Reading from device (register) --------\n");
     i2c_read(I2C_PORT_2, address, read_data, length);
     print_bytes("READ", read_data, length);
     LOG_DEBUG("\n");
-    delay_ms(500);
 
 #ifdef MS_PLATFORM_X86
     i2c_set_rx_data(I2C_PORT_2, rx_sim_data, length);
@@ -79,6 +78,12 @@ TASK(i2c_api, TASK_STACK_1024) {
     i2c_read_reg(I2C_PORT_2, address, 0x12, read_data2, length);
     print_bytes("READ REG", read_data2, length);
     LOG_DEBUG("\n");
+
+    LOG_DEBUG("-------- Reading from device (mem) 0x12 --------\n");
+    i2c_read_mem(I2C_PORT_2, address, 0x12, read_data2, length);
+    print_bytes("READ MEM", read_data, length);
+    LOG_DEBUG("\n");
+    delay_ms(500);
 
 #ifdef MS_PLATFORM_X86
     /* Clear the register write */

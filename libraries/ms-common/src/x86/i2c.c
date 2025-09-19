@@ -135,3 +135,7 @@ StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len) {
   }
   return STATUS_CODE_OK;
 }
+
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len) {
+  return i2c_read_reg(i2c, addr, mem_addr, rx_data, rx_len);
+}
