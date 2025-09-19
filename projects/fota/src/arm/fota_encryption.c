@@ -51,17 +51,17 @@ uint32_t fota_calculate_crc32(uint8_t *data_start, uint32_t word_size) {
 
 uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size) {
   /* FOTA Flash layer will handle invalid addresses */
-  if(flash_size == 0U){
+  if (flash_size == 0U) {
     return 0U;
   }
 
-  //require 4-byte alignment and size to be a multiple of 4
-  if((flash_size & 0x3U) != 0U || (flash_base_addr & 0x3U) != 0U){
+  // require 4-byte alignment and size to be a multiple of 4
+  if ((flash_size & 0x3U) != 0U || (flash_base_addr & 0x3U) != 0U) {
     return 0U;
   }
-  
+
   const uint32_t CHUNK_WORDS = 2048U / 4U;
-  const uint32_t total_words = flash_size >> 2; //convert bytes to words
+  const uint32_t total_words = flash_size >> 2;  // convert bytes to words
 
   const uint32_t *p = (const uint32_t *)flash_base_addr;
   uint32_t remaining_words = total_words;
@@ -69,11 +69,11 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
 
   __HAL_CRC_DR_RESET(&s_crc_handle);
 
-  while(remaining_words > 0U){
+  while (remaining_words > 0U) {
     uint32_t this_words = (remaining_words > CHUNK_WORDS) ? CHUNK_WORDS : remaining_words;
 
     crc = HAL_CRC_Accumulate(&s_crc_handle, (uint32_t *)p, this_words);
-    
+
     p += this_words;
     remaining_words -= this_words;
   }

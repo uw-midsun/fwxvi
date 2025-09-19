@@ -7,7 +7,12 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "midFS.h"
+
+/* Intra-component Headers */
 
 #define SUPERBLOCK_OFFSET 0
 #define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))

@@ -12,41 +12,35 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
+#include "midFS.h"
 #include "test_helpers.h"
 #include "unity.h"
-#include "midFS.h"
 /* External library Headers */
 
 /* Intra-component Headers */
 
 StatusCode status;
 
-void setup_test(void){
-    UNITY_BEGIN();
-    status=fs_init();
-    printf("%d", status);
-    printf("Test setup complete \n");
+void setup_test(void) {
+  UNITY_BEGIN();
+  status = fs_init();
+  printf("%d", status);
+  printf("Test setup complete \n");
 }
 
+void teardown_test(void) {}
 
-void teardown_test(void){}
+void test_bs(void) {}
 
-void test_bs(void){
-    
+void test_fs_read_file_nonexistent(void) {
+  uint8_t *content;
+  status = fs_read_file("/nonexistent.txt", content);
+  TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
+
+  status = fs_delete_file("/nonexistent.txt");
+  TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
+
+  const char *data = "I dont exist";
+  status = fs_write_file("/nonexistent.txt", (uint8_t *)data, strlen(data));
+  TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
 }
-
-void test_fs_read_file_nonexistent(void){
-    uint8_t *content;
-    status=fs_read_file("/nonexistent.txt", content);
-    TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
-
-    status = fs_delete_file("/nonexistent.txt");
-    TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
-
-    const char *data="I dont exist";
-    status= fs_write_file("/nonexistent.txt", (uint8_t *)data, strlen(data));
-    TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, status);
-}
-
-
-
