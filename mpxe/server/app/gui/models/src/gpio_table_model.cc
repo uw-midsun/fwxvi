@@ -19,29 +19,20 @@
 /* LOCAL HELPERS
 -------------------------------------------------------- */
 
-enum Col {
-  PinCol = 0,
-  ModeCol,
-  StateCol,
-  AltFnCol
-};
+enum Col { PinCol = 0, ModeCol, StateCol, AltFnCol };
 
 inline QString dashIfEmpty(const QString &s) {
   if (s.isEmpty()) {
     return QStringLiteral("-");
-  }
-  else {
+  } else {
     return s;
   }
 }
 
-/* 
+/*
 -------------------------------------------------------- */
 
-GpioTableModel::GpioTableModel(const std::map<QString, QVariant> &data_map,
-                               QObject *parent):
-    QAbstractTableModel{parent}
-{
+GpioTableModel::GpioTableModel(const std::map<QString, QVariant> &data_map, QObject *parent) : QAbstractTableModel{ parent } {
   m_rows.reserve(data_map.size());
 
   std::map<QString, QVariant>::const_iterator it = data_map.begin();
@@ -69,8 +60,7 @@ GpioTableModel::GpioTableModel(const std::map<QString, QVariant> &data_map,
 int GpioTableModel::rowCount(const QModelIndex &parent) const {
   if (parent.isValid()) {
     return 0;
-  }
-  else {
+  } else {
     return static_cast<int>(m_rows.size());
   }
 }
@@ -78,8 +68,7 @@ int GpioTableModel::rowCount(const QModelIndex &parent) const {
 int GpioTableModel::columnCount(const QModelIndex &parent) const {
   if (parent.isValid()) {
     return 0;
-  }
-  else {
+  } else {
     return GPIO_COLUMN_COUNT;
   }
 }
@@ -100,11 +89,16 @@ QVariant GpioTableModel::data(const QModelIndex &index, int role) const {
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
     switch (c) {
-      case PinCol:   return dashIfEmpty(row.pin);
-      case ModeCol:  return dashIfEmpty(row.mode);
-      case StateCol: return dashIfEmpty(row.state);
-      case AltFnCol: return dashIfEmpty(row.alt_function);
-      default:       return QVariant();
+      case PinCol:
+        return dashIfEmpty(row.pin);
+      case ModeCol:
+        return dashIfEmpty(row.mode);
+      case StateCol:
+        return dashIfEmpty(row.state);
+      case AltFnCol:
+        return dashIfEmpty(row.alt_function);
+      default:
+        return QVariant();
     }
   }
 
@@ -115,16 +109,19 @@ QVariant GpioTableModel::data(const QModelIndex &index, int role) const {
   return QVariant();
 }
 
-QVariant GpioTableModel::headerData(int section,
-                                    Qt::Orientation orientation,
-                                    int role) const {
+QVariant GpioTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
-      case 0: return QStringLiteral("Pin");
-      case 1: return QStringLiteral("Mode");
-      case 2: return QStringLiteral("State");
-      case 3: return QStringLiteral("Alternate Function");
-      default: return QVariant();
+      case 0:
+        return QStringLiteral("Pin");
+      case 1:
+        return QStringLiteral("Mode");
+      case 2:
+        return QStringLiteral("State");
+      case 3:
+        return QStringLiteral("Alternate Function");
+      default:
+        return QVariant();
     }
   }
 

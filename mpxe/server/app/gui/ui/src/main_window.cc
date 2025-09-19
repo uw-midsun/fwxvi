@@ -145,7 +145,7 @@ void MainWindow::reloadClientFromFile(const QString &path) {
   const bool isCurrent = (m_state.current_client_index >= 0 && m_state.current_client_index < m_state.client_files.size() && m_state.client_files.at(m_state.current_client_index) == path);
 
   if (!isCurrent) {
-    return; 
+    return;
   }
 
   QVariantMap vm;

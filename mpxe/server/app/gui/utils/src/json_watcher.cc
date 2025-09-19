@@ -40,7 +40,7 @@ void JSONWatcher::setDirectory(const QString &dir_path) {
   }
 
   m_dir = abs;
-  
+
   if (!m_dir.isEmpty()) {
     m_watcher.addPath(m_dir);
 
@@ -108,8 +108,7 @@ void JSONWatcher::onPollTick() {
   /* 1) poll file timestamp changes */
   for (const QString &p : std::as_const(m_files)) {
     const QFileInfo fi(p);
-    if (!fi.exists()) 
-      continue;
+    if (!fi.exists()) continue;
 
     const QDateTime mt = fi.lastModified();
     auto it = m_last_modified.find(p);

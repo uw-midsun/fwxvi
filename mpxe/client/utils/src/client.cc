@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /************************************************************************************************
  * @file   client.cc
  *
@@ -184,4 +183,3 @@ Client::~Client() {
   pthread_mutex_destroy(&m_mutex);
   sem_destroy(&m_messageSemaphore);
 }
->>>>>>> origin/main

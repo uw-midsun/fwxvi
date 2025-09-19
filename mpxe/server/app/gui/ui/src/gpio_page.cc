@@ -9,19 +9,19 @@
 #include <map>
 
 /* Qt library headers */
+#include <QAbstractItemView>
+#include <QHeaderView>
 #include <QString>
+#include <QTableView>
+#include <QVBoxLayout>
 #include <QVariant>
 #include <QVariantMap>
-#include <QVBoxLayout>
-#include <QHeaderView>
-#include <QTableView>
-#include <QAbstractItemView>
 
 /* Inter-component headers */
-#include "gpio_table_model.h"
 #include "dict_table_model.h"
-#include "voltage_table_model.h"
+#include "gpio_table_model.h"
 #include "utils.h"
+#include "voltage_table_model.h"
 
 /* Intra-component headers */
 #include "gpio_page.h"
@@ -30,9 +30,7 @@
 -------------------------------------------------------- */
 
 /* Extract map from input_map[key_wanted] where value is a QVariantMap */
-static std::map<QString, QVariant>
-extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted)
-{
+static std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
   std::map<QString, QVariant> out;
 
   std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
@@ -48,15 +46,10 @@ extractMapInline(const std::map<QString, QVariant> &input_map, const QString &ke
   return out;
 }
 
-/* 
+/*
 -------------------------------------------------------- */
 
-GpioPage::GpioPage(const std::map<QString, QVariant> &payload, QWidget *parent):
-    QWidget{parent},
-    m_payload{payload},
-    m_tabs{new QTabWidget(this)},
-    m_gpio_proxy{nullptr}
-{
+GpioPage::GpioPage(const std::map<QString, QVariant> &payload, QWidget *parent) : QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_gpio_proxy{ nullptr } {
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(m_tabs);
@@ -68,9 +61,7 @@ void GpioPage::setPayload(const std::map<QString, QVariant> &payload) {
   rebuild();
 }
 
-std::map<QString, QVariant> GpioPage::extractMap(const std::map<QString, QVariant> &input_map,
-                                                 const QString &key_wanted) const
-{
+std::map<QString, QVariant> GpioPage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
   return extractMapInline(input_map, key_wanted);
 }
 

@@ -8,14 +8,14 @@
 /* Standard library headers */
 
 /* Qt library headers */
-#include <QObject>
+#include <QAbstractItemView>
 #include <QFileInfo>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QObject>
 #include <QTableView>
 #include <QVBoxLayout>
-#include <QAbstractItemView>
 
 /* Inter-component headers */
 #include "command_table_model.h"
@@ -27,22 +27,19 @@
 /* LOCAL HELPERS
 -------------------------------------------------------- */
 
-static QString valOrDash(const std::map<QString, QVariant> &m, const QString &k)
-{
+static QString valOrDash(const std::map<QString, QVariant> &m, const QString &k) {
   std::map<QString, QVariant>::const_iterator it = m.find(k);
   if (it != m.end()) {
     return it->second.toString();
-  }
-  else {
+  } else {
     return QStringLiteral("-");
   }
 }
 
-/* 
+/*
 -------------------------------------------------------- */
 
-QLabel* OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidget *parent)
-{
+QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidget *parent) {
   QLabel *label = new QLabel(text, parent);
   QString styles;
 
@@ -59,22 +56,18 @@ QLabel* OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
   return label;
 }
 
-OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload,
-                           const QStringList &clientFiles,
-                           int currentIndex,
-                           QWidget *parent):
-    QWidget{parent},
-    m_clients{nullptr},
-    m_project_lbl{nullptr},
-    m_hardware_lbl{nullptr},
-    m_version_lbl{nullptr},
-    m_status_widget{nullptr},
-    m_status_dot{nullptr},
-    m_status_text{nullptr},
-    m_created_label{nullptr},
-    m_client_files{clientFiles},
-    m_payload{payload}
-{
+OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent) :
+    QWidget{ parent },
+    m_clients{ nullptr },
+    m_project_lbl{ nullptr },
+    m_hardware_lbl{ nullptr },
+    m_version_lbl{ nullptr },
+    m_status_widget{ nullptr },
+    m_status_dot{ nullptr },
+    m_status_text{ nullptr },
+    m_created_label{ nullptr },
+    m_client_files{ clientFiles },
+    m_payload{ payload } {
   /* Top row client selector */
   QWidget *top = new QWidget(this);
   QHBoxLayout *h = new QHBoxLayout(top);
@@ -146,8 +139,7 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload,
   setPayload(payload);
 }
 
-void OverviewPage::setClients(const QStringList &files, int index)
-{
+void OverviewPage::setClients(const QStringList &files, int index) {
   m_client_files = files;
 
   m_clients->blockSignals(true);
@@ -165,8 +157,7 @@ void OverviewPage::setClients(const QStringList &files, int index)
   m_clients->blockSignals(false);
 }
 
-void OverviewPage::setPayload(const std::map<QString, QVariant> &payload)
-{
+void OverviewPage::setPayload(const std::map<QString, QVariant> &payload) {
   m_payload = payload;
 
   QString project = valOrDash(m_payload, QStringLiteral("project_name"));
@@ -191,8 +182,7 @@ void OverviewPage::setPayload(const std::map<QString, QVariant> &payload)
   m_created_label->setText(created);
 }
 
-void OverviewPage::onClientChanged(int index)
-{
+void OverviewPage::onClientChanged(int index) {
   if (index < 0 || index >= m_client_files.size()) {
     return;
   }

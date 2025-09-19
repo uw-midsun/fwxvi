@@ -17,16 +17,13 @@
 /* Intra-component headers */
 #include "voltage_table_model.h"
 
-/* 
+/*
 -------------------------------------------------------- */
 
-VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map,
-                                     int min_mv,
-                                     int max_mv,
-                                     QObject *parent):
-    QAbstractTableModel{parent},
-    m_min_mv{min_mv},
-    m_max_mv{std::max(max_mv, min_mv + 1)} /* ensure max > min */
+VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map, int min_mv, int max_mv, QObject *parent) :
+    QAbstractTableModel{ parent },
+    m_min_mv{ min_mv },
+    m_max_mv{ std::max(max_mv, min_mv + 1) } /* ensure max > min */
 {
   m_rows.reserve(data_map.size());
 
@@ -36,8 +33,7 @@ VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map
 
     if (mv < m_min_mv) {
       mv = m_min_mv;
-    }
-    else if (mv > m_max_mv) {
+    } else if (mv > m_max_mv) {
       mv = m_max_mv;
     }
 
@@ -54,8 +50,7 @@ VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map
 int VoltageTableModel::rowCount(const QModelIndex &parent) const {
   if (parent.isValid()) {
     return 0;
-  }
-  else {
+  } else {
     return static_cast<int>(m_rows.size());
   }
 }
@@ -63,8 +58,7 @@ int VoltageTableModel::rowCount(const QModelIndex &parent) const {
 int VoltageTableModel::columnCount(const QModelIndex &parent) const {
   if (parent.isValid()) {
     return 0;
-  }
-  else {
+  } else {
     return VOLTAGE_COLUMN_COUNT;
   }
 }
@@ -74,24 +68,28 @@ QVariant VoltageTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   }
 
-  const Row& r = m_rows[static_cast<std::size_t>(index.row())];
+  const Row &r = m_rows[static_cast<std::size_t>(index.row())];
   bool colorize = (index.column() == 1 || index.column() == 2 || index.column() == 3);
 
   if (role == Qt::DisplayRole) {
     switch (index.column()) {
-      case 0: return r.key;
-      case 1: return QString::number(r.mv) + QStringLiteral(" mV");
-      case 2: return QString::number(r.percent) + QStringLiteral("%");
-      case 3: return r.bar;
-      default: return QVariant();
+      case 0:
+        return r.key;
+      case 1:
+        return QString::number(r.mv) + QStringLiteral(" mV");
+      case 2:
+        return QString::number(r.percent) + QStringLiteral("%");
+      case 3:
+        return r.bar;
+      default:
+        return QVariant();
     }
   }
 
   if (role == Qt::TextAlignmentRole) {
     if (index.column() == 0) {
       return static_cast<int>(Qt::AlignLeft | Qt::AlignVCenter);
-    }
-    else {
+    } else {
       return static_cast<int>(Qt::AlignCenter);
     }
   }
@@ -103,16 +101,19 @@ QVariant VoltageTableModel::data(const QModelIndex &index, int role) const {
   return QVariant();
 }
 
-QVariant VoltageTableModel::headerData(int section,
-                                       Qt::Orientation orientation,
-                                       int role) const {
+QVariant VoltageTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
-      case 0: return QStringLiteral("Cell");
-      case 1: return QStringLiteral("Value");
-      case 2: return QStringLiteral("Volt %");
-      case 3: return QStringLiteral("Gauge");
-      default: return QVariant();
+      case 0:
+        return QStringLiteral("Cell");
+      case 1:
+        return QStringLiteral("Value");
+      case 2:
+        return QStringLiteral("Volt %");
+      case 3:
+        return QStringLiteral("Gauge");
+      default:
+        return QVariant();
     }
   }
 
@@ -124,12 +125,11 @@ void VoltageTableModel::setRange(int min_mv, int max_mv) {
   m_max_mv = std::max(max_mv, min_mv + 1);
 
   for (std::size_t i = 0; i < m_rows.size(); ++i) {
-    Row& r = m_rows[i];
+    Row &r = m_rows[i];
 
     if (r.mv < m_min_mv) {
       r.mv = m_min_mv;
-    }
-    else if (r.mv > m_max_mv) {
+    } else if (r.mv > m_max_mv) {
       r.mv = m_max_mv;
     }
 
@@ -142,7 +142,7 @@ void VoltageTableModel::setRange(int min_mv, int max_mv) {
   }
 }
 
-int VoltageTableModel::toIntMV(const QVariant& var) {
+int VoltageTableModel::toIntMV(const QVariant &var) {
   if (!var.isValid() || var.isNull()) {
     return 0;
   }
@@ -159,8 +159,7 @@ int VoltageTableModel::toIntMV(const QVariant& var) {
   int mv = s.toInt(&ok);
   if (ok) {
     return mv;
-  }
-  else {
+  } else {
     return 0;
   }
 }
@@ -198,11 +197,9 @@ QString VoltageTableModel::percentToBar(int pct) {
 QBrush VoltageTableModel::colorForPercent(int pct) {
   if (pct < 20) {
     return QBrush(QColor(252, 127, 124));
-  }
-  else if (pct < 40) {
+  } else if (pct < 40) {
     return QBrush(Qt::yellow);
-  }
-  else {
+  } else {
     return QBrush(QColor(78, 199, 126));
   }
 }

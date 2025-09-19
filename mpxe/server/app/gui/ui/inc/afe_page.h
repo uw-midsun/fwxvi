@@ -41,51 +41,50 @@
 class AfePage : public QWidget {
   Q_OBJECT
 
-  public:
-    static constexpr int MIN_VOLTAGE = 0;     /**< Minimum voltage used for gauge scaling */
-    static constexpr int MAX_VOLTAGE = 5000;  /**< Maximum voltage used for gauge scaling */
+ public:
+  static constexpr int MIN_VOLTAGE = 0;    /**< Minimum voltage used for gauge scaling */
+  static constexpr int MAX_VOLTAGE = 5000; /**< Maximum voltage used for gauge scaling */
 
-    /**
-     * @brief   Construct a new AfePage widget
-     * @details Initializes internal state and builds tabs from the provided payload.
-     * @param   payload Initial AFE payload map (nested QVariantMaps expected)
-     * @param   parent  Parent widget (can be nullptr)
-     */
-    explicit AfePage(const std::map<QString, QVariant> &payload, QWidget *parent = nullptr);
+  /**
+   * @brief   Construct a new AfePage widget
+   * @details Initializes internal state and builds tabs from the provided payload.
+   * @param   payload Initial AFE payload map (nested QVariantMaps expected)
+   * @param   parent  Parent widget (can be nullptr)
+   */
+  explicit AfePage(const std::map<QString, QVariant> &payload, QWidget *parent = nullptr);
 
-  public slots:
-    /**
-     * @brief   Replace the current payload and rebuild the UI
-     * @details Clears existing tabs and regenerates tables from the new payload.
-     * @param   payload New AFE payload map (nested QVariantMaps expected)
-     */
-    void setPayload(const std::map<QString, QVariant> &payload);
+ public slots:
+  /**
+   * @brief   Replace the current payload and rebuild the UI
+   * @details Clears existing tabs and regenerates tables from the new payload.
+   * @param   payload New AFE payload map (nested QVariantMaps expected)
+   */
+  void setPayload(const std::map<QString, QVariant> &payload);
 
-  private:
-    /**
-     * @brief   Rebuild all tabs from the current payload
-     * @details Clears the tab widget, extracts sub-maps, and rebuilds the models/views.
-     */
-    void rebuild();
+ private:
+  /**
+   * @brief   Rebuild all tabs from the current payload
+   * @details Clears the tab widget, extracts sub-maps, and rebuilds the models/views.
+   */
+  void rebuild();
 
-    /**
-     * @brief   Extracts a nested QVariantMap under a key as std::map<QString,QVariant>
-     * @details Looks up key_wanted inside input_map. If the value is a QVariantMap,
-     *          it converts that map into a std::map<QString,QVariant> and returns it.
-     * @param   input_map  Root map containing nested QVariantMaps
-     * @param   key_wanted Key name whose nested map should be extracted
-     * @return  std::map<QString, QVariant> Flattened copy of the nested map; empty if not found
-     */
-    std::map<QString, QVariant> extractMap(const std::map<QString, QVariant> &input_map,
-                                           const QString &key_wanted) const;
+  /**
+   * @brief   Extracts a nested QVariantMap under a key as std::map<QString,QVariant>
+   * @details Looks up key_wanted inside input_map. If the value is a QVariantMap,
+   *          it converts that map into a std::map<QString,QVariant> and returns it.
+   * @param   input_map  Root map containing nested QVariantMaps
+   * @param   key_wanted Key name whose nested map should be extracted
+   * @return  std::map<QString, QVariant> Flattened copy of the nested map; empty if not found
+   */
+  std::map<QString, QVariant> extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const;
 
-  private:
-    std::map<QString, QVariant> m_payload;    /**< Current AFE payload used to build tabs */
-    QPointer<QTabWidget> m_tabs;              /**< Tab widget container for sub-tables */
+ private:
+  std::map<QString, QVariant> m_payload; /**< Current AFE payload used to build tabs */
+  QPointer<QTabWidget> m_tabs;           /**< Tab widget container for sub-tables */
 
-    QSortFilterProxyModel *m_discharge_proxy; /**< Proxy model for the discharge table */
-    QSortFilterProxyModel *m_pack_proxy;      /**< Proxy model for the main pack table */
-    QSortFilterProxyModel *m_therm_proxy;     /**< Proxy model for the thermistors table */
+  QSortFilterProxyModel *m_discharge_proxy; /**< Proxy model for the discharge table */
+  QSortFilterProxyModel *m_pack_proxy;      /**< Proxy model for the main pack table */
+  QSortFilterProxyModel *m_therm_proxy;     /**< Proxy model for the thermistors table */
 };
 
 /** @} */

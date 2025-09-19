@@ -23,12 +23,10 @@
 /* Intra-component headers */
 #include "afe_page.h"
 
-
 /**
  * @brief Extract maps from afe{...} ex: main_pack, thermistor_temperature, and so on
  */
-inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map,
-                                                    const QString &key_wanted) {
+inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
   std::map<QString, QVariant> out;
   std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
 
@@ -43,15 +41,10 @@ inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVar
   return out;
 }
 
-AfePage::AfePage(const std::map<QString, QVariant> &payload, QWidget *parent): QWidget(parent),
-  m_payload{payload},
-  m_tabs{new QTabWidget(this)},
-  m_discharge_proxy{nullptr},
-  m_pack_proxy{nullptr},
-  m_therm_proxy{nullptr}
-{
+AfePage::AfePage(const std::map<QString, QVariant> &payload, QWidget *parent) :
+    QWidget(parent), m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_discharge_proxy{ nullptr }, m_pack_proxy{ nullptr }, m_therm_proxy{ nullptr } {
   QVBoxLayout *layout = new QVBoxLayout(this);
-  layout->setContentsMargins(0,0,0,0);
+  layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(m_tabs);
   rebuild();
 }
@@ -61,14 +54,13 @@ void AfePage::setPayload(const std::map<QString, QVariant> &payload) {
   rebuild();
 }
 
-std::map<QString, QVariant> AfePage::extractMap(const std::map<QString, QVariant> &input_map, 
-                                                const QString &key_wanted) const {
+std::map<QString, QVariant> AfePage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
   return extractMapInline(input_map, key_wanted);
 }
 
 void AfePage::rebuild() {
   m_tabs->clear();
-  
+
   const std::map<QString, QVariant> discharge_map = extractMap(m_payload, QStringLiteral("cell_discharge"));
   const std::map<QString, QVariant> main_pack_map = extractMap(m_payload, QStringLiteral("main_pack"));
   const std::map<QString, QVariant> therm_map = extractMap(m_payload, QStringLiteral("thermistor_temperature"));

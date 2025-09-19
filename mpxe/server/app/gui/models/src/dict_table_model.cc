@@ -21,13 +21,7 @@
 /* Intra-component headers */
 #include "dict_table_model.h"
 
-
-DictTableModel::DictTableModel(const std::map<QString, QVariant> &data,
-                               bool editable_variables,
-                               QObject *parent):
-    QAbstractTableModel{parent},
-    m_editable{editable_variables} 
-{
+DictTableModel::DictTableModel(const std::map<QString, QVariant> &data, bool editable_variables, QObject *parent) : QAbstractTableModel{ parent }, m_editable{ editable_variables } {
   std::map<QString, QVariant>::const_iterator it = data.begin();
   for (; it != data.end(); ++it) {
     m_keys << it->first;
@@ -43,15 +37,13 @@ int DictTableModel::rowCount(const QModelIndex &parent) const {
 }
 
 int DictTableModel::columnCount(const QModelIndex &parent) const {
-  if (parent.isValid()) { 
+  if (parent.isValid()) {
     return 0;
   }
   return 2; /* Name | Value */
 }
 
-QVariant DictTableModel::headerData(int section,
-                                    Qt::Orientation orientation,
-                                    int role) const {
+QVariant DictTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
   if (role == Qt::TextAlignmentRole) {
     return QVariant(static_cast<int>(Qt::AlignLeft | Qt::AlignVCenter));
   }
@@ -59,9 +51,12 @@ QVariant DictTableModel::headerData(int section,
   if (role == Qt::DisplayRole) {
     if (orientation == Qt::Horizontal) {
       switch (section) {
-        case 0: return QStringLiteral("Name");
-        case 1: return QStringLiteral("Value");
-        default: return QVariant();
+        case 0:
+          return QStringLiteral("Name");
+        case 1:
+          return QStringLiteral("Value");
+        default:
+          return QVariant();
       }
     }
     return QVariant(section + 1); /* Row numbers */
@@ -88,10 +83,9 @@ QVariant DictTableModel::data(const QModelIndex &index, int role) const {
   if (role == Qt::BackgroundRole && col == 1) {
     const QString str = val.toString().trimmed().toLower();
     if (str == QStringLiteral("on")) {
-      return QColor(29, 89, 58);  /* green */
-    }
-    else if (str == QStringLiteral("off")) {
-      return QColor(94, 32, 30);  /* red */
+      return QColor(29, 89, 58); /* green */
+    } else if (str == QStringLiteral("off")) {
+      return QColor(94, 32, 30); /* red */
     }
   }
 
@@ -119,7 +113,7 @@ bool DictTableModel::setValueAtRow(int row, const QVariant &value) {
   m_values[row] = value;
 
   const QModelIndex idx = index(row, 1);
-  emit dataChanged(idx, idx, {Qt::DisplayRole, Qt::EditRole, Qt::BackgroundRole});
+  emit dataChanged(idx, idx, { Qt::DisplayRole, Qt::EditRole, Qt::BackgroundRole });
 
   return true;
 }

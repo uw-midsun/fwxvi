@@ -12,10 +12,10 @@
 /* Qt library headers */
 #include <QFile>
 #include <QIODevice>
-#include <QTextStream>
-#include <QStringConverter>
 #include <QRegularExpression>
+#include <QStringConverter>
 #include <QStringList>
+#include <QTextStream>
 #include <QVariant>
 
 /* Inter-component headers */
@@ -27,18 +27,14 @@
 -------------------------------------------------------- */
 
 /** @brief Matches numbered or plain command lines */
-static const QRegularExpression cmd_regex(
-  QStringLiteral(R"(^\s*(?:\d+\s*[\.\)])?\s*([A-Za-z]+)\s+([A-Za-z_]+)(.*)$)")
-);
+static const QRegularExpression cmd_regex(QStringLiteral(R"(^\s*(?:\d+\s*[\.\)])?\s*([A-Za-z]+)\s+([A-Za-z_]+)(.*)$)"));
 
 /** @brief  Filter out "Example: ..." bullets
  *  @return Bool indicating whether current line is an example line or not
  */
 static inline bool isExampleLine(const QString &str) {
-  static const QRegularExpression ex_regex(
-    QStringLiteral(R"(^\s*[-*]\s*example\s*:)"
-  ), QRegularExpression::CaseInsensitiveOption);
-  
+  static const QRegularExpression ex_regex(QStringLiteral(R"(^\s*[-*]\s*example\s*:)"), QRegularExpression::CaseInsensitiveOption);
+
   return ex_regex.match(str).hasMatch();
 }
 
@@ -49,7 +45,7 @@ static inline bool isExampleLine(const QString &str) {
  * @param second The second token that is passed (Could be empty)
  */
 static void extractParams(const QString &tail, QString &first, QString &second) {
-  /* simplified() converts all types of spaces into a single space, 
+  /* simplified() converts all types of spaces into a single space,
      trimmed() removes trailing and leading space */
   QString str = tail.simplified().trimmed();
 
@@ -62,8 +58,8 @@ static void extractParams(const QString &tail, QString &first, QString &second) 
     return;
   }
 
-  first = tokens.front();                       // e.g., "[PORT][PIN]"
-  second  = tokens.mid(1).join(QLatin1Char(' ')); // e.g., "[STATE]"
+  first = tokens.front();                         // e.g., "[PORT][PIN]"
+  second = tokens.mid(1).join(QLatin1Char(' '));  // e.g., "[STATE]"
 }
 
 /**
@@ -71,7 +67,7 @@ static void extractParams(const QString &tail, QString &first, QString &second) 
  * @details For example, if we have ALIRNFLWEFSILE, we get ALI..ILE displayed
  * @param   str The long string passed in
  * @param   max_chars Maximum number of characters displayed
- * @return  QString 
+ * @return  QString
  */
 static inline QString elideMiddle(const QString &str, int max_chars = CommandTableModel::MAX_CHARS_DISPLAYED) {
   if (str.size() <= max_chars) {
@@ -86,13 +82,10 @@ static inline QString elideMiddle(const QString &str, int max_chars = CommandTab
   return str.left(left) + QStringLiteral("...") + str.right(right);
 }
 
-/* 
+/*
 -------------------------------------------------------- */
 
-CommandTableModel::CommandTableModel(const QString &markdown_path, QObject *parent): 
-  QAbstractTableModel{parent}, 
-  m_rows{}
-{
+CommandTableModel::CommandTableModel(const QString &markdown_path, QObject *parent) : QAbstractTableModel{ parent }, m_rows{} {
   if (!markdown_path.isEmpty()) {
     resetFromFile(markdown_path);
   }
@@ -108,9 +101,7 @@ int CommandTableModel::columnCount(const QModelIndex &parent) const {
   return 4; /* Type, Command, Parameter, Additional Parameters */
 }
 
-QVariant CommandTableModel::headerData(int section,
-                                       Qt::Orientation orientation,
-                                       int role) const {
+QVariant CommandTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
   if (orientation != Qt::Horizontal) {
     if (role == Qt::DisplayRole) return QVariant(section + 1);
     return QVariant();
@@ -122,11 +113,16 @@ QVariant CommandTableModel::headerData(int section,
 
   if (role == Qt::DisplayRole) {
     switch (section) {
-      case 0: return QStringLiteral("Type");
-      case 1: return QStringLiteral("Command");
-      case 2: return QStringLiteral("Parameter");
-      case 3: return QStringLiteral("Additional Parameters");
-      default: return QVariant();
+      case 0:
+        return QStringLiteral("Type");
+      case 1:
+        return QStringLiteral("Command");
+      case 2:
+        return QStringLiteral("Parameter");
+      case 3:
+        return QStringLiteral("Additional Parameters");
+      default:
+        return QVariant();
     }
   }
 
@@ -139,30 +135,34 @@ QVariant CommandTableModel::data(const QModelIndex &index, int role) const {
   }
 
   const int row_idx = index.row();
-  if (row_idx < 0 || row_idx >= m_rows.size()){
+  if (row_idx < 0 || row_idx >= m_rows.size()) {
     return QVariant();
-  } 
+  }
 
   const Row &row = m_rows[row_idx];
 
   /* Replaces things with - if not provided in md file */
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
     switch (index.column()) {
-      case 0: return row.type.isEmpty()    ? QStringLiteral("-") : row.type;
-      case 1: return row.command.isEmpty() ? QStringLiteral("-") : row.command;
-      case 2: return row.param_1.isEmpty() ? QStringLiteral("-") : row.param_1;
+      case 0:
+        return row.type.isEmpty() ? QStringLiteral("-") : row.type;
+      case 1:
+        return row.command.isEmpty() ? QStringLiteral("-") : row.command;
+      case 2:
+        return row.param_1.isEmpty() ? QStringLiteral("-") : row.param_1;
       case 3: {
         const QString shown = elideMiddle(row.param_2);
         return shown.isEmpty() ? QStringLiteral("-") : shown;
       }
-      default: return QVariant();
+      default:
+        return QVariant();
     }
   }
 
   /* When hovering over ABC..HIJ text shows the full text ABCDEFGHIJ */
   if (role == Qt::ToolTipRole) {
     if (index.column() == 3 && !row.param_2.isEmpty()) {
-      return row.param_2; 
+      return row.param_2;
     }
   }
 
@@ -225,11 +225,10 @@ void CommandTableModel::parseMarkdown(const QString &markdown_text) {
     if (typeRaw.isEmpty() || cmdRaw.isEmpty()) continue;
 
     Row row;
-    row.type = typeRaw.toLower();     /* ex: afe, gpio, adc */
-    row.command = cmdRaw.toLower();   /* ex: set_cell */
+    row.type = typeRaw.toLower();   /* ex: afe, gpio, adc */
+    row.command = cmdRaw.toLower(); /* ex: set_cell */
     extractParams(tail, row.param_1, row.param_2);
 
     m_rows.push_back(row);
   }
-
 }
