@@ -566,12 +566,12 @@ FsStatus fs_write_file(const char *path, uint8_t *content, uint32_t contentSize)
 
 FsStatus fs_create_block_group(uint32_t *index) {
   for (uint32_t i = 0; i < NUM_BLOCK_GROUPS; i++) {
-    if (blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP && memcmp(&blockGroups[i], &(BlockGroup){ 0 }, sizeof(BlockGroup)) == 0) {
-      // block group is empty
-      memset(&blockGroups[i], 0, sizeof(BlockGroup));  // clear it just to be safe
-      *index = i;
-      return FS_STATUS_OK;
-    }
+    // if (blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP && memcmp(&blockGroups[i], &(BlockGroup){ 0 }, sizeof(BlockGroup)) == 0) {
+    //   // block group is empty
+    //   memset(&blockGroups[i], 0, sizeof(BlockGroup));  // clear it just to be safe
+    //   *index = i;
+    //   return FS_STATUS_OK;
+    // }
   }
 
   *index = FS_INVALID_BLOCK;
