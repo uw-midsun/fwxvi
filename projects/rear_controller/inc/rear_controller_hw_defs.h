@@ -74,7 +74,7 @@
   { .port = GPIO_PORT_C, .pin = 12 }
 
 /************************************************************************************************
- * Current sense I2C definitions
+ * Current sense definitions
  ************************************************************************************************/
 
 /** @brief  Current sense I2C port */
@@ -89,7 +89,7 @@
   { .port = GPIO_PORT_B, .pin = 6 }
 
 /** @brief  Current sense slave address */
-#define REAR_CONTROLLER_CURRENT_SENSE_MAX17261_I2C_ADDR (96)
+#define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
 
 /************************************************************************************************
  * AFEs (LTC6811) SPI definitions
