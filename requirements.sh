@@ -65,7 +65,10 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     echo "==> Install other toolchain pieces"
     apt-get -y install minicom openocd
-
+    
+    echo "==> Install Qt6" 
+    sudo apt-get -y install qt6-base-dev qt6-tools-dev-tools qt6-tools-dev
+    
     echo "==> Setup for minicom"
     mkdir -p /etc/minicom
     touch /etc/minicom/minirc.dfl
