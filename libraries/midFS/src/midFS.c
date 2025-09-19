@@ -202,7 +202,9 @@ FsStatus fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_t 
 
   printf("Located parent block at index: %ld\n\r", parentBlockLocation);
 
-  if (parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
+  if (parentBlockLocation == FS_INVALID_BLOCK) {
+    return FS_STATUS_INVALID_ARGS;
+  }
 
   // locate the block group
   BlockGroup *parentGroup = &blockGroups[parentBlockLocation / BLOCKS_PER_GROUP];
@@ -355,8 +357,9 @@ FsStatus fs_delete_file(const char *path) {
 
   printf("Located parent block at index: %ld\n\r", parentBlockLocation);
 
-  if (parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
-
+  if (parentBlockLocation == FS_INVALID_BLOCK) {
+    return FS_STATUS_INVALID_ARGS;
+  }
   // locate the block group
   BlockGroup *parentGroup = &blockGroups[parentBlockLocation / BLOCKS_PER_GROUP];
 
@@ -667,7 +670,9 @@ FsStatus fs_list(const char *path) {
 
   printf("%d\n\r", parentBlockLocation == FS_INVALID_BLOCK);
 
-  if (parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
+  if (parentBlockLocation == FS_INVALID_BLOCK) {
+    return FS_STATUS_INVALID_ARGS;
+  }
 
   // printf("Located parent block at index: %d\n\r", parentBlockLocation);
 
@@ -730,7 +735,9 @@ FsStatus fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlockAd
     }
     // if there is no space and we havent found free space, go to the next block
 
-    if (memoryFound) break;  // we found an address, break
+    if (memoryFound) {
+      break;  // we found an address, break
+    }
 
     // if we still have not found an address, we need to go to the next block group
 
@@ -768,7 +775,9 @@ FsStatus fs_does_file_exist(const char *path, uint8_t *doesFileExist) {
     return status;
   }
 
-  if (parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
+  if (parentBlockLocation == FS_INVALID_BLOCK) {
+    return FS_STATUS_INVALID_ARGS;
+  }
 
   // locate the block group
   BlockGroup *parentGroup = &blockGroups[parentBlockLocation / BLOCKS_PER_GROUP];
