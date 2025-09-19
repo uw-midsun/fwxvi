@@ -568,15 +568,12 @@ FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize
     }
 
     return FS_STATUS_OK;
-
 }
 
 FsStatus fs_create_block_group(uint32_t *index){
     for(uint32_t i = 0; i < NUM_BLOCK_GROUPS; i++){
-        if(
-            blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP &&
-            memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0 //block group is empty
-        ){
+        if(blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP && memcmp(&blockGroups[i], &(BlockGroup){0}, sizeof(BlockGroup)) == 0){
+            //block group is empty
             memset(&blockGroups[i], 0, sizeof(BlockGroup)); //clear it just to be safe
             *index = i;
             return FS_STATUS_OK;
@@ -588,13 +585,17 @@ FsStatus fs_create_block_group(uint32_t *index){
 }
 
 FsStatus fs_read_block_group(uint32_t blockIndex, BlockGroup *dest){
-    if(blockIndex >= NUM_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    if(blockIndex >= NUM_BLOCK_GROUPS){
+        return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    }
     memcpy(dest, &blockGroups[blockIndex], sizeof(BlockGroup));
     return FS_STATUS_OK;
 }
 
 FsStatus fs_write_block_group(uint32_t blockIndex, BlockGroup *src){
-    if(blockIndex >= NUM_BLOCK_GROUPS) return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    if(blockIndex >= NUM_BLOCK_GROUPS){
+        return STATUS_CODE_OUT_OF_RANGE; //block index is too high
+    } 
     memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
     return FS_STATUS_OK;
 }
