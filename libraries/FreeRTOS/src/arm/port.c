@@ -485,7 +485,6 @@ void xPortPendSVHandler( void )
 	);
 }
 /*-----------------------------------------------------------*/
-
 void xPortSysTickHandler( void )
 {
 	/* The SysTick runs at the lowest interrupt priority, so when this interrupt
@@ -507,6 +506,7 @@ void xPortSysTickHandler( void )
 		}
 		portENABLE_INTERRUPTS();
 	}
+
 }
 /*-----------------------------------------------------------*/
 
