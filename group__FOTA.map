@@ -1,0 +1,5 @@
+<map id="FOTA" name="FOTA">
+<area shape="rect" id="node1" title="Firmware Over the Air (FOTA) Update system." alt="" coords="5,31,61,56"/>
+<area shape="rect" id="node2" href="$group__GPIO.html" title="GPIO library." alt="" coords="193,5,248,31"/>
+<area shape="rect" id="node3" href="$group__UART.html" title="UART library." alt="" coords="192,55,249,80"/>
+</map>
