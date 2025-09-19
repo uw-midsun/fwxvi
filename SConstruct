@@ -1,6 +1,9 @@
+from SCons.Script import *
 from scons.common import flash_run
 import subprocess
-
+import scons_compiledb
+import os
+import json
 
 def set_target(option, opt, value, parser):
     if opt == '--project':
@@ -12,7 +15,6 @@ def set_target(option, opt, value, parser):
     if opt == '--python' or opt == '--py':
         target = f'py/{value}'
     setattr(parser.values, option.dest, target)
-
 
 ###########################################################
 # Build arguments
@@ -72,29 +74,49 @@ AddOption(
     help="(x86) Specifies the sanitizer. One of 'asan' for Address sanitizer or 'tsan' for Thread sanitizer. Defaults to none."
 )
 
-AddOption(
-    '--flash',
-    dest='flash',
-    type='choice',
-    choices=('bootloader', 'application', "default"),
-    default='default',
-    help="Specifies which application to flash. The bootloader, application or the entire flash bank"
-)
+NUM_JOBS = os.cpu_count() or 4
 
-AddOption(
-    '--build-config',
-    dest='build_config',
-    type='choice',
-    choices=('debug', 'release'),
-    default='debug',
-    help="Specifies if the build optimizes for size or provides more debug informtation"
-)
+if not GetOption('num_jobs'):
+    AddOption('--jobs', dest='num_jobs', type='int', default=NUM_JOBS)
 
-PLATFORM = GetOption('platform')
-TARGET = GetOption('name')
-BUILD_CONFIG = GetOption('build_config')
-FLASH_TYPE = GetOption('flash')
-TESTFILE = GetOption('testfile')
+PLATFORM        = GetOption('platform')
+TARGET          = GetOption('name')
+TESTFILE        = GetOption('testfile')
+
+###########################################################
+# Load build preset
+###########################################################
+
+HARDWARE_TYPE   = "STM32L433CCU6"
+FLASH_TYPE      = "legacy"
+BUILD_CONFIG    = "debug"
+
+build_presets_file = File('build_presets.json')
+
+if build_presets_file.exists():
+    with open(build_presets_file.abspath, 'r') as f:
+        build_preset = json.load(f)
+        selected_build_preset = build_preset.get("selected_preset")
+
+    if selected_build_preset:
+        # Retrieve the settings for the selected preset
+        preset_settings = build_preset["presets"].get(selected_build_preset)
+
+        if preset_settings:
+            print(f"Loaded selected preset: '{selected_build_preset}'")
+            print(f"    Hardware: {preset_settings['hardware']}")
+            print(f"    Flash: {preset_settings['flash']}")
+            print(f"    Build Config: {preset_settings['build_config']}")
+
+            HARDWARE_TYPE = preset_settings['hardware']
+            FLASH_TYPE = preset_settings['flash']
+            BUILD_CONFIG = preset_settings['build_config']
+        else:
+            print(f"Error: Selected preset '{selected_build_preset}' not found in presets.")
+    else:
+        print("No 'selected_build_preset' field found in the configuration.")
+else:
+    print("build_presets.json does not exist. Please check update your branch or restore it!")
 
 ###########################################################
 # Environment setup
@@ -107,14 +129,19 @@ if COMMAND == "mpxe":
     PLATFORM = "x86"
 
 # Retrieve the construction environment from the appropriate platform script
-env = SConscript(f'platform/{PLATFORM}.py', exports=['FLASH_TYPE', 'BUILD_CONFIG'])
+env = SConscript(f'platform/{PLATFORM}.py', exports=['HARDWARE_TYPE', 'FLASH_TYPE', 'BUILD_CONFIG'])
+
+database_name = f"compile_commands_{PLATFORM}.json"
+config = scons_compiledb.Config(db=database_name)
+scons_compiledb.enable_with_cmdline(env, config)
 
 VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
+    "HARDWARE_TYPE": HARDWARE_TYPE,
     "FLASH_TYPE": FLASH_TYPE,
-    "TESTFILE": TESTFILE,
     "BUILD_CONFIG": BUILD_CONFIG,
+    "TESTFILE": TESTFILE,
     "env": env,
 }
 
@@ -132,11 +159,15 @@ elif SANITIZER == 'tsan':
     env['CXXFLAGS'] += ["-fsanitize=thread"]
     env['LINKFLAGS'] += ["-fsanitize=thread"]
 
+env['CXXCOMSTR'] = "Compiling  $TARGET"
 env['CCCOMSTR'] = "Compiling  $TARGET"
 env['ARCOMSTR'] = "Archiving  $TARGET"
 env['ASCOMSTR'] = "Assembling $TARGET"
 env['LINKCOMSTR'] = "Linking    $TARGET"
 env['RANLIBCOMSTR'] = "Indexing   $TARGET"
+
+SetOption('implicit_cache', True)
+SetOption('max_drift', 1)
 
 env.Append(CPPDEFINES=[GetOption('define')])
 
@@ -269,7 +300,7 @@ if PLATFORM == 'arm' and TARGET:
 
     # flash the MCU using openocd
     def flash_run_target(target, source, env):
-        serialData = flash_run(project_bin, FLASH_TYPE)
+        serialData = flash_run(project_bin, HARDWARE_TYPE, FLASH_TYPE)
         exit(0)
 
     AlwaysBuild(Command('#/flash', project_bin, flash_run_target))

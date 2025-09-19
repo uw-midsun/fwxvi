@@ -8,10 +8,9 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 
 /* Inter-component Headers */
-#include <stdbool.h>
-// #include "log.h"
 
 /* Intra-component Headers */
 #include "fota.h"

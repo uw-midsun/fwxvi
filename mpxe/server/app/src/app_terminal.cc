@@ -92,8 +92,8 @@ void Terminal::handleAfeCommands(const std::string &action, std::vector<std::str
     message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_AUX, "-1", "");
   } else if (action == "get_discharge" && tokens.size() >= 3) {
     message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_DISCHARGE, tokens[2], "");
-  } else if (action == "get_pack_discharge"){
-    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_DISCHARGE, "-1", ""); 
+  } else if (action == "get_pack_discharge") {
+    message = serverAfeManager.createAfeCommand(CommandCode::AFE_GET_PACK_DISCHARGE, "-1", "");
   } else {
     std::cerr << "Unsupported action: " << action << std::endl;
   }

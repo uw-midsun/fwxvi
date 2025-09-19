@@ -40,7 +40,7 @@ std::string ADBMS_AFE::serialize(const CommandCode &commandCode) const {
   serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_discharges), AFE_MAX_CELLS);
 
   serializeInteger<uint8_t>(serializedData, CACHE_SIZE * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.cache), CACHE_SIZE * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cache), CACHE_SIZE * sizeof(uint16_t));
 
   return encodeCommand(commandCode, serializedData);
 }
@@ -59,13 +59,13 @@ void ADBMS_AFE::deserialize(std::string &afeDatagramPayload) {
   std::memcpy(m_afeDatagram.aux_voltages, afeDatagramPayload.data() + offset, AFE_MAX_THERMISTORS * sizeof(uint16_t));
   offset += AFE_MAX_THERMISTORS * sizeof(uint16_t);
 
-  deserializeInteger<uint8_t>(afeDatagramPayload, offset); // length (ignored or validated)
+  deserializeInteger<uint8_t>(afeDatagramPayload, offset);  // length (ignored or validated)
   std::memcpy(m_afeDatagram.cell_discharges, afeDatagramPayload.data() + offset, AFE_MAX_CELLS);
   offset += AFE_MAX_CELLS;
 
   deserializeInteger<uint8_t>(afeDatagramPayload, offset);
   std::memcpy(m_afeDatagram.cache, afeDatagramPayload.data() + offset, CACHE_SIZE * sizeof(uint16_t));
-  offset += CACHE_SIZE; 
+  offset += CACHE_SIZE;
 }
 
 /* SETTERS
@@ -104,8 +104,7 @@ void ADBMS_AFE::setDeviceCellVoltage(std::size_t dev_index, uint16_t voltage) {
 
   std::size_t idx = static_cast<std::size_t>(CacheIndex::CELL_DEV_0) + dev_index;
   CacheIndex cache_index = static_cast<CacheIndex>(idx);
-  setCache(cache_index, voltage); 
-
+  setCache(cache_index, voltage);
 }
 
 void ADBMS_AFE::setDeviceAuxVoltage(std::size_t dev_index, uint16_t voltage) {
@@ -116,7 +115,7 @@ void ADBMS_AFE::setDeviceAuxVoltage(std::size_t dev_index, uint16_t voltage) {
 
   std::size_t idx = static_cast<std::size_t>(CacheIndex::AUX_DEV_0) + dev_index;
   CacheIndex cache_index = static_cast<CacheIndex>(idx);
-  setCache(cache_index, voltage); 
+  setCache(cache_index, voltage);
 }
 
 void ADBMS_AFE::setPackCellVoltage(uint16_t voltage) {
@@ -130,7 +129,7 @@ void ADBMS_AFE::setPackAuxVoltage(uint16_t voltage) {
   for (uint8_t i = 0; i < AFE_MAX_THERMISTORS; ++i) {
     setAuxVoltage((i), voltage);
   }
-  setCache(CacheIndex::AUX_PACK, voltage); 
+  setCache(CacheIndex::AUX_PACK, voltage);
 }
 
 void ADBMS_AFE::setCellDischarge(bool is_discharge, uint8_t cell_index) {
@@ -149,7 +148,7 @@ void ADBMS_AFE::setCellPackDischarge(bool is_discharge) {
   setCache(CacheIndex::DISCHARGE_PACK, static_cast<uint16_t>(is_discharge));
 }
 
-void ADBMS_AFE::setCache(CacheIndex cache_index, uint16_t value){
+void ADBMS_AFE::setCache(CacheIndex cache_index, uint16_t value) {
   m_afeDatagram.cache[static_cast<std::size_t>(cache_index)] = value;
 }
 

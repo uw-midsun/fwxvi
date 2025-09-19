@@ -91,7 +91,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::AFE_SET_PACK_DISCHARGE: {
-      clientAfeManager.setCellPackDischarge(payload); 
+      clientAfeManager.setCellPackDischarge(payload);
       break;
     }
     case CommandCode::AFE_GET_CELL: {

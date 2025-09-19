@@ -42,8 +42,13 @@ static void s_wakeup_idle(AdbmsAfeStorage *afe) {
   AdbmsAfeSettings *settings = afe->settings;
 
   for (size_t i = 0; i < settings->num_devices; i++) {
+<<<<<<< HEAD
     gpio_set_state(&settings->spi_settings.cs, GPIO_STATE_LOW);
     gpio_set_state(&settings->spi_settings.cs, GPIO_STATE_HIGH);
+=======
+    gpio_set_state(&settings->spi_settings->cs, GPIO_STATE_LOW);
+    gpio_set_state(&settings->spi_settings->cs, GPIO_STATE_HIGH);
+>>>>>>> origin/main
     delay_ms(1);
   }
 }
@@ -82,6 +87,7 @@ static StatusCode s_build_cmd(uint16_t command, uint8_t *cmd, size_t len) {
 
   return STATUS_CODE_OK;
 }
+<<<<<<< HEAD
 
 /* Used as a wrapper internally, since in some functions we don't want the default gpio_pins */
 static StatusCode s_write_config(AdbmsAfeStorage *afe, uint8_t *gpio_enable_pins) {
@@ -111,6 +117,54 @@ static StatusCode s_write_config(AdbmsAfeStorage *afe, uint8_t *gpio_enable_pins
   size_t len = SIZEOF_ADBMS_AFE_WRITE_CONFIG_PACKET(settings->num_devices);
   s_wakeup_idle(afe);
   return spi_exchange(settings->spi_port, (uint8_t *)config_packet, len, NULL, 0);
+=======
+static StatusCode s_write_cfga(AdbmsAfeStorage *afe) {
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+  AdbmsAfeSettings *settings = afe->settings;
+
+  for (uint8_t i = 0; i < settings->num_devices; i++) {
+    uint16_t pec = crc15_calculate((uint8_t *)&afe->config_a[i].cfg, sizeof(AdbmsAfeConfigRegisterAData));
+    afe->config_a[i].pec = (uint16_t)((pec >> 8) | (pec << 8));
+  }
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE];
+  s_build_cmd(ADBMS1818_WRCFGA_RESERVED, cmd, sizeof(cmd));
+
+  s_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, sizeof(cmd), (uint8_t *)afe->config_a, settings->num_devices * sizeof(AdbmsAfeWriteConfigAPacket));
+}
+
+static StatusCode s_write_cfgb(AdbmsAfeStorage *afe) {
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+  AdbmsAfeSettings *settings = afe->settings;
+
+  for (uint8_t i = 0; i < settings->num_devices; i++) {
+    uint16_t pec = crc15_calculate((uint8_t *)&afe->config_b[i].cfg, sizeof(AdbmsAfeConfigRegisterBData));
+    afe->config_b[i].pec = (uint16_t)((pec >> 8) | (pec << 8));
+  }
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE];
+  s_build_cmd(ADBMS1818_WRCFGB_RESERVED, cmd, sizeof(cmd));
+
+  s_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, sizeof(cmd), (uint8_t *)afe->config_b, settings->num_devices * sizeof(AdbmsAfeWriteConfigBPacket));
+}
+
+static StatusCode s_write_config(AdbmsAfeStorage *afe, const uint8_t *gpio_enable_pins) {
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+
+  if (gpio_enable_pins) {
+    for (uint8_t i = 0; i < afe->settings->num_devices; i++) {
+      afe->config_a[i].cfg.gpio = (gpio_enable_pins[0] >> 3);
+      afe->config_b[i].cfg.gpio = (gpio_enable_pins[1] & 0x0F);
+    }
+  }
+
+  StatusCode status = s_write_cfga(afe);
+  if (status != STATUS_CODE_OK) return status;
+
+  return s_write_cfgb(afe);
+>>>>>>> origin/main
 }
 
 /**
@@ -142,6 +196,13 @@ static void s_calc_offsets(AdbmsAfeStorage *afe) {
 }
 
 StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) {
+<<<<<<< HEAD
+=======
+  if (afe == NULL || config == NULL || config->spi_settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+>>>>>>> origin/main
   /* Validate configuration settings based on device limitations */
   if (config->num_devices > ADBMS_AFE_MAX_DEVICES) {
     LOG_DEBUG("AFE: Configured device count exceeds user-defined limit. Update ADBMS_AFE_MAX_DEVICES if necessary.");
@@ -151,19 +212,30 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     LOG_DEBUG("AFE: Configured cell count exceeds device limitations.");
     return STATUS_CODE_INVALID_ARGS;
   }
+<<<<<<< HEAD
   if (config->num_thermistors > ADBMS_AFE_MAX_THERMISTORS) {
+=======
+  if (config->num_thermistors > ADBMS_AFE_MAX_CELL_THERMISTORS) {
+>>>>>>> origin/main
     LOG_DEBUG("AFE: Configured thermistor count exceeds limitations.");
     return STATUS_CODE_INVALID_ARGS;
   }
 
   /* Initialize memory of AFE structure: reset values and copy configuration settings */
   memset(afe, 0, sizeof(*afe));
+<<<<<<< HEAD
   memcpy(afe->settings, config, sizeof(AdbmsAfeSettings));
 
   /* Set up SPI communication based on provided settings */
   SpiSettings spi_config = afe->settings->spi_settings;
 
   spi_init(config->spi_port, &spi_config);
+=======
+  afe->settings = config;
+
+  /* Set up SPI communication based on provided settings */
+  spi_init(config->spi_port, config->spi_settings);
+>>>>>>> origin/main
 
   /* Calculate offset for cell result array due to some cells being disabled */
   s_calc_offsets(afe);
@@ -171,6 +243,21 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
   /* Initialize 15-bit CRC lookup table to optimize packet error code (PEC) calculation */
   crc15_init_table();
 
+<<<<<<< HEAD
+=======
+  for (uint8_t i = 0; i < config->num_devices; i++) {
+    AdbmsAfeConfigRegisterAData *cfgrA = &afe->config_a[i].cfg;
+    AdbmsAfeConfigRegisterBData *cfgrB = &afe->config_b[i].cfg;
+
+    memset(cfgrA, 0, sizeof(*cfgrA));
+    memset(cfgrB, 0, sizeof(*cfgrB));
+
+    cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_30_S;
+    cfgrA->adcopt = ((config->adc_mode + 1) > 3);
+    cfgrA->dten = true;
+  }
+
+>>>>>>> origin/main
   /* Set same duty cycle for all cells in the AFE system */
   StatusCode status = adbms_afe_set_discharge_pwm_cycle(afe, ADBMS1818_PWMC_DC_100);
 
@@ -187,10 +274,16 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
 }
 
 StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
+<<<<<<< HEAD
+=======
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+
+>>>>>>> origin/main
   uint8_t gpio_bits[2];
   gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO2_PD_OFF | ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF | ADBMS1818_GPIO5_PD_OFF;
   gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_ON | ADBMS1818_GPIO8_PD_ON | ADBMS1818_GPIO9_PD_OFF;
 
+<<<<<<< HEAD
   AdbmsAfeSettings *settings = afe->settings;
 
   for (uint8_t curr_device = 0; curr_device < settings->num_devices; curr_device++) {
@@ -220,6 +313,8 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
     cfgrB->reserved4 = 0;
   }
 
+=======
+>>>>>>> origin/main
   return s_write_config(afe, gpio_bits);
 }
 
@@ -239,6 +334,7 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
 }
 
+<<<<<<< HEAD
 /* Start GPIOs ADC conversion and poll status for XXXXX */
 //TODO GPIO 4 and GPIO 5 are being read? But ADAX does not allow for that??
 StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) {
@@ -258,6 +354,72 @@ StatusCode adbms_afe_trigger_aux_conv(AdbmsAfeStorage *afe, uint8_t thermistor) 
 
   uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
   s_build_cmd(adax, cmd, ADBMS1818_CMD_SIZE);
+=======
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t index) {
+  if (!afe || !afe->settings) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  AdbmsAfeSettings *settings = afe->settings;
+
+  if (device_num >= settings->num_devices || index >= 16) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  bool use_gpio5 = (index >= 8);
+  uint8_t mux_index = index % 8;
+
+  /* Build gpio_bits for this device */
+  uint8_t gpio_bits[2] = { 0 };
+  gpio_bits[0] = (mux_index << 3) | (use_gpio5 ? ADBMS1818_GPIO5_PD_OFF : ADBMS1818_GPIO4_PD_OFF);
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
+
+  StatusCode status = s_write_config(afe, gpio_bits);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  /* Build ADAX command to start AUX conversion */
+  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7);
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  status = s_build_cmd(adax, cmd, ADBMS1818_CMD_SIZE);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  s_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
+}
+
+StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t device_num) {
+  if (!afe || !afe->settings) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (device_num >= ADBMS_AFE_MAX_DEVICES) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  /* enable GPIO6 (AUXB channel 2) */
+  uint8_t gpio_bits[2] = { 0 };
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
+
+  StatusCode status = s_write_config(afe, gpio_bits);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  AdbmsAfeSettings *settings = afe->settings;
+  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+  uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7);
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  status = s_build_cmd(adax, cmd, ADBMS1818_CMD_SIZE);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+>>>>>>> origin/main
 
   s_wakeup_idle(afe);
   return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
@@ -280,7 +442,11 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
 
     /* Loop through the number of AFE devices connected for each voltage group */
     for (uint8_t device = 0; device < settings->num_devices; ++device) {
+<<<<<<< HEAD
       uint16_t received_pec = devices_data[device].pec >> 8 | devices_data[device].pec << 8;  // Swap endianness
+=======
+      uint16_t received_pec = (devices_data[device].pec >> 8) | (devices_data[device].pec << 8);
+>>>>>>> origin/main
       uint16_t data_pec = crc15_calculate((uint8_t *)&devices_data[device], 6);
 
       /* Check if there is an error in the data */
@@ -310,6 +476,7 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
+<<<<<<< HEAD
 StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
   AdbmsAfeSettings *settings = afe->settings;
   AdbmsAfeAuxData devices_reg_data[ADBMS_AFE_MAX_DEVICES] = { 0 };
@@ -356,12 +523,93 @@ StatusCode adbms_afe_read_aux(AdbmsAfeStorage *afe, uint8_t device_cell) {
     afe->aux_voltages[afe->aux_result_lookup[index_2]] = v_read_2;
   }
 
+=======
+StatusCode adbms_afe_read_thermistor(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t index) {
+  if (!afe || !afe->settings) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  AdbmsAfeSettings *settings = afe->settings;
+
+  if (device_num >= settings->num_devices || index >= 16) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  bool use_gpio5 = (index >= 8);
+
+  AdbmsAfeAuxData devices_reg_data[ADBMS_AFE_MAX_DEVICES] = { 0 };
+  size_t len = sizeof(AdbmsAfeAuxData) * settings->num_devices;
+
+  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  /* PEC check for this device */
+  uint16_t received_pec = (devices_reg_data[device_num].pec >> 8) | (devices_reg_data[device_num].pec << 8);
+  uint16_t data_pec = crc15_calculate((uint8_t *)&devices_reg_data[device_num], 6);
+  if (received_pec != data_pec) {
+    LOG_DEBUG("PEC mismatch on Thermistor AUXB read: dev=%u", device_num);
+    LOG_DEBUG("RECEIVED_PEC: %d\n\r", received_pec);
+    LOG_DEBUG("DATA_PEC: %d\n\r", data_pec);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  uint16_t raw = devices_reg_data[device_num].reg.voltages[use_gpio5 ? 1 : 0];
+
+  /* Update central storage */
+  uint16_t global_index = device_num * 16 + index;
+  if (global_index < settings->num_thermistors) {
+    afe->thermistor_voltages[global_index] = raw;
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode adbms_afe_read_board_temp(AdbmsAfeStorage *afe, uint8_t device_num) {
+  if (!afe || !afe->settings) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  AdbmsAfeSettings *settings = afe->settings;
+
+  if (device_num >= settings->num_devices) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  AdbmsAfeAuxData devices_reg_data[ADBMS_AFE_MAX_DEVICES] = { 0 };
+  size_t len = sizeof(AdbmsAfeAuxData) * settings->num_devices;
+
+  StatusCode status = s_read_register(afe, ADBMS_AFE_REGISTER_AUX_B, (uint8_t *)devices_reg_data, len);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  /* PEC check for this device */
+  uint16_t received_pec = (devices_reg_data[device_num].pec >> 8) | (devices_reg_data[device_num].pec << 8);
+  uint16_t data_pec = crc15_calculate((uint8_t *)&devices_reg_data[device_num], 6);
+
+  if (received_pec != data_pec) {
+    LOG_DEBUG("PEC mismatch on AUXB read (board temp dev=%u)", device_num);
+    LOG_DEBUG("RECEIVED_PEC: %d\n\r", received_pec);
+    LOG_DEBUG("DATA_PEC: %d\n\r", data_pec);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  /* Update central storage, voltages[2] = GPIO6 */
+  uint16_t raw = devices_reg_data[device_num].reg.voltages[2];
+  afe->board_thermistor_voltages[device_num] = raw;
+
+>>>>>>> origin/main
   return STATUS_CODE_OK;
 }
 
 StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge) {
   if (cell >= ADBMS_AFE_MAX_CELLS) {
+<<<<<<< HEAD
     LOG_DEBUG("Cell number is out of bounds");
+=======
+>>>>>>> origin/main
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -369,6 +617,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   uint16_t cell_indx_in_dev = cell % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
   if (cell_indx_in_dev < 12) {
+<<<<<<< HEAD
     AdbmsAfeConfigRegisterAData *config_reg_data = &afe->device_configs->devices[device_index].cfgA;
     if (discharge) {
       config_reg_data->discharge_bitset |= (1 << cell_indx_in_dev);
@@ -381,6 +630,26 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
       config_reg_data->discharge_bitset |= (1 << cell_indx_in_dev);
     } else {
       config_reg_data->discharge_bitset &= ~(1 << cell_indx_in_dev);
+=======
+    /* Cells 0-11 belong to CFGRA */
+    AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[device_index].cfg;
+
+    if (discharge) {
+      cfgA->discharge_bitset |= (1U << cell_indx_in_dev);
+    } else {
+      cfgA->discharge_bitset &= ~(1U << cell_indx_in_dev);
+    }
+
+  } else {
+    /* Cells 12-17 belong to CFGRB */
+    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[device_index].cfg;
+
+    uint8_t bit_index = cell_indx_in_dev - 12;
+    if (discharge) {
+      cfgB->discharge_bitset |= (1U << bit_index);
+    } else {
+      cfgB->discharge_bitset &= ~(1U << bit_index);
+>>>>>>> origin/main
     }
   }
 
