@@ -441,7 +441,9 @@ FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize
         return fs_status;
     }
 
-    if(parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
+    if(parentBlockLocation == FS_INVALID_BLOCK){
+        return FS_STATUS_INVALID_ARGS;
+    }
 
     //locate the block group
     BlockGroup *parentGroup = &blockGroups[parentBlockLocation/BLOCKS_PER_GROUP];

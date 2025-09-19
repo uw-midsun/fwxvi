@@ -40,11 +40,11 @@ void teardown_test(void) {}
 void test_example(void) {
     status = fs_add_file("/test.txt", (uint8_t *)"This is a test file.", 21, 0);
     status = fs_add_file("/test2.txt", (uint8_t *)"This is another test file.", 27, 0);
-    status = fs_add_file("/testlarge.txt", (uint8_t *)"This is a test file that is so large that it needs multiple blocks to be stored. \
-    This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. \
-    This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. \
-    This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored. \
-    This is a test file that is so large that it needs multiple blocks to be stored. END", 652, 0);
+    status = fs_add_file("/testlarge.txt", (uint8_t *)"This is a test file that is so large that it needs multiple blocks to be stored."
+    "This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored."
+    "This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored."
+    "This is a test file that is so large that it needs multiple blocks to be stored. This is a test file that is so large that it needs multiple blocks to be stored."
+    "This is a test file that is so large that it needs multiple blocks to be stored. END", 652, 0);
 
     status = fs_add_file("/test3.txt", (uint8_t *)"This test file goes after a large test file to see if anything gets messed up", 78, 0);
     
@@ -58,10 +58,10 @@ void test_example(void) {
     status = fs_delete_file("/test3.txt");
     status = fs_read_file("/test3.txt", read_content);
     
-    status = fs_write_file("/test.txt", (uint8_t *)" This is some additional content large enough so that we can no longer write in place. \
-    This is some additional content large enough so that we can no longer write in place. This is some additional content large enough so that we can no longer write in place. \
-    This is some additional content large enough so that we can no longer write in place. MIDDLE This is some additional content large enough so that we can no longer write in place. \
-    This is some additional content large enough so that we can no longer write in place. END", 528);
+    status = fs_write_file("/test.txt", (uint8_t *)" This is some additional content large enough so that we can no longer write in place."
+    "This is some additional content large enough so that we can no longer write in place. This is some additional content large enough so that we can no longer write in place."
+    "This is some additional content large enough so that we can no longer write in place. MIDDLE This is some additional content large enough so that we can no longer write in place."
+    "This is some additional content large enough so that we can no longer write in place. END", 528);
 
     status = fs_read_file("/test.txt", read_content);
 
