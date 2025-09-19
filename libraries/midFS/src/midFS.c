@@ -568,6 +568,7 @@ FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize
     }
 
     return FS_STATUS_OK;
+
 }
 
 FsStatus fs_create_block_group(uint32_t *index){
