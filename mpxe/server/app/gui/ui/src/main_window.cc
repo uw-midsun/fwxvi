@@ -31,26 +31,6 @@
 /* Intra-component headers */
 #include "main_window.h"
 
-inline void printMap(const std::map<QString, QVariant> &m, int indent = 0) {
-  QString indentStr(indent * 2, ' '); 
-
-  for (const auto &pair : m) {
-    const QVariant &val = pair.second;
-    if (val.canConvert<QVariantMap>()) {
-      qDebug().noquote() << indentStr << pair.first << ": {";
-      QVariantMap vmap = val.toMap();
-      std::map<QString, QVariant> nested;
-      for (auto it = vmap.constBegin(); it != vmap.constEnd(); ++it) {
-        nested[it.key()] = it.value();
-      }
-      printMap(nested, indent + 1);
-      qDebug().noquote() << indentStr << "}";
-    } else {
-      qDebug().noquote() << indentStr << pair.first << ":" << val.toString();
-    }
-  }
-}
-
 std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QVariant> &root, const QString &key) const {
   std::map<QString, QVariant> out;
 

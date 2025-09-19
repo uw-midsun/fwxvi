@@ -38,9 +38,12 @@ void JSONWatcher::setDirectory(const QString &dir_path) {
   if (!m_dir.isEmpty()) {
     m_watcher.removePath(m_dir);
   }
+
   m_dir = abs;
+  
   if (!m_dir.isEmpty()) {
     m_watcher.addPath(m_dir);
+
     /* initial scan -> emit */
     const QStringList list = scanDirJsons();
     setFiles(list);
@@ -105,7 +108,9 @@ void JSONWatcher::onPollTick() {
   /* 1) poll file timestamp changes */
   for (const QString &p : std::as_const(m_files)) {
     const QFileInfo fi(p);
-    if (!fi.exists()) continue;
+    if (!fi.exists()) 
+      continue;
+
     const QDateTime mt = fi.lastModified();
     auto it = m_last_modified.find(p);
     if (it == m_last_modified.end()) {
@@ -141,7 +146,11 @@ QStringList JSONWatcher::scanDirJsons() const {
   if (m_dir.isEmpty()) return {};
   QDir dir(m_dir);
   QStringList files = dir.entryList(QStringList() << "*.json", QDir::Files | QDir::Readable, QDir::Name);
-  for (int i = 0; i < files.size(); ++i) files[i] = dir.absoluteFilePath(files[i]);
+
+  for (int i = 0; i < files.size(); ++i) {
+    files[i] = dir.absoluteFilePath(files[i]);
+  }
+
   files.removeDuplicates();
   std::sort(files.begin(), files.end(), [](const QString &a, const QString &b) { return a.toLower() < b.toLower(); });
   return files;
