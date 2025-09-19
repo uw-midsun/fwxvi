@@ -7,6 +7,9 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "current_sense.h"
 
 #include "current_acs37800.h"
@@ -14,6 +17,8 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_state_manager.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
 static RearControllerStorage *rear_controller_state;
