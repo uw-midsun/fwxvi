@@ -425,6 +425,8 @@ FsStatus fs_delete_file(const char* path){
 }
 
 FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize){
+    FsStatus fs_status = FS_STATUS_OK;
+
     printf("fs_write_file command\n\r");
     char folderPath[MAX_PATH_LENGTH];
     char folderName[MAX_FILENAME_LENGTH];
@@ -434,9 +436,9 @@ FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize
     //returns a index in global space, meaning the blockgroup is given by parentBlockLocation / BLOCKS_PER_GROUP, the block index is given by parentBlockLocation % BLOCKS_PER_GROUP
     uint32_t parentBlockLocation;
 
-    FsStatus status = fs_resolve_path(folderPath, &parentBlockLocation);
-    if(status != FS_STATUS_OK){
-        return status;
+    fs_status = fs_resolve_path(folderPath, &parentBlockLocation);
+    if(fs_status != FS_STATUS_OK){
+        return fs_status;
     }
 
     if(parentBlockLocation == FS_INVALID_BLOCK) return FS_STATUS_INVALID_ARGS;
@@ -498,21 +500,26 @@ FsStatus fs_write_file(const char * path, uint8_t *content, uint32_t contentSize
 
     printf("Can write in place: %ld\n\r", canWriteInPlace);
 
-    if(canWriteInPlace == 1){ //we have sufficient contiguous blocks after our old file to write in place
+    if(canWriteInPlace == 1){ 
+        //we have sufficient contiguous blocks after our old file to write in place
         BlockGroup * oldFileGroup = &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP];
         memcpy(&oldFileGroup->dataBlocks[oldFile.startBlockIndex % BLOCKS_PER_GROUP][oldFile.size], content, contentSize); //copy in new content after old content
         File[fileLocation].size = oldFile.size + contentSize; //update size of file entry
         fs_write_block_group(parentBlockLocation/BLOCKS_PER_GROUP, parentGroup); //update the current block
 
-    }else{ //if we cannot write in place we must find more space (search for contiguous space of length newBlocksNeeded)
+    }else{ 
+        //if we cannot write in place we must find more space (search for contiguous space of length newBlocksNeeded)
         uint32_t incomingBlockAddress = UINT32_MAX;
         
-        fs_locate_memory(newBlocksNeeded, &incomingBlockAddress);
+        fs_status = fs_locate_memory(newBlocksNeeded, &incomingBlockAddress);
+        if(fs_status != FS_STATUS_OK){
+            return fs_status;
+        }
         
         BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
 
         //create a new array to store old content + new content
-        uint8_t fullContent[oldFile.size + contentSize];
+        uint8_t fullContent[MAX_FILE_CONTENT_POST_WRITE];
 
         uint32_t copied = 0;
 
@@ -593,13 +600,13 @@ FsStatus fs_split_path(char *path, char *folderPath, char *fileName){
     const char *lastSlash = strrchr(path, '/');
 
     if(!lastSlash || lastSlash == path){
-        strcpy(folderPath, "/");
-        strcpy(fileName, (lastSlash) ? lastSlash + 1 : path);
+        snprintf(folderPath, MAX_PATH_LENGTH, "%s", "/");
+        snprintf(fileName, MAX_FILENAME_LENGTH, "%s", (lastSlash) ? lastSlash + 1 : path);
     }else{
         uint32_t folderLen = lastSlash - path;
         strncpy(folderPath, path, folderLen);
         folderPath[folderLen] = '\0';
-        strcpy(fileName, lastSlash + 1);
+        snprintf(fileName, MAX_FILENAME_LENGTH, "%s", lastSlash + 1);
     }
 
     return FS_STATUS_OK;
@@ -619,7 +626,8 @@ FsStatus fs_resolve_path(const char* folderPath, uint32_t* path){
     strncpy(copy, folderPath, MAX_PATH_LENGTH);
     copy[MAX_PATH_LENGTH-1] = '\0';
 
-    char *currentFile = strtok(copy, "/");
+    char *saveptr;
+    char *currentFile = strtok_r(copy, "/", &saveptr);
     uint32_t currentBlock = 0;    
 
 
@@ -642,7 +650,7 @@ FsStatus fs_resolve_path(const char* folderPath, uint32_t* path){
             printf("could not resolve path. exiting... \n\r");
             return FS_STATUS_PATH_NOT_FOUND;
         }
-        currentFile = strtok(NULL, "/");
+        currentFile = strtok_r(NULL, "/", &saveptr);
     }
     *path = currentBlock;
 
