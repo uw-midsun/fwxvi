@@ -10,13 +10,13 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
-#include "status.h"
-#include "delay.h"
+#include "mcu.h"
 #include "midFS.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -50,20 +50,20 @@ int main() {
   fs_pull();
   fs_list("/");
 
-  uint8_t crc_poly[8] = {0};
+  uint8_t crc_poly[8] = { 0 };
 
   fs_read_file("/crc.txt", crc_poly);
 
   printf("%s\n", crc_poly);
   // tasks_init();
   // log_init();
-  
+
   // tasks_init_task(filesystem_api, TASK_PRIORITY(3), NULL);
-  
+
   // tasks_start();
-  
+
   // LOG_DEBUG("exiting main?");
-  
+
   while (true) {
     printf("FS_init");
   }
