@@ -33,10 +33,11 @@
 /**
  * @class   AfePage
  * @brief   Page widget that displays AFE cells and sensors in tabbed tables
- * @details Builds three tabs from the provided payload:
- *          - "Cell Discharge" as a key/value table
- *          - "Main Pack" as a voltage table with percent + gauge
- *          - "Thermistors" as a voltage table with percent + gauge
+ * @details Builds tabs from the provided payload:
+ *          - "Cell Discharge"    as a key/value table (DictTableModel)
+ *          - "Main Pack"         as a voltage table with percent + gauge (VoltageTableModel)
+ *          - "Thermistors"       as a 2-column key/value table (DictTableModel)
+ *          - "Board Thermistors" as a 2-column key/value table when present
  */
 class AfePage : public QWidget {
   Q_OBJECT
@@ -65,6 +66,10 @@ class AfePage : public QWidget {
   /**
    * @brief   Rebuild all tabs from the current payload
    * @details Clears the tab widget, extracts sub-maps, and rebuilds the models/views.
+   *          - Cell Discharge uses DictTableModel
+   *          - Main Pack uses VoltageTableModel (with Volt% + Gauge)
+   *          - Thermistors uses DictTableModel (2 columns)
+   *          - Board Thermistors (if available) uses DictTableModel (2 columns) in its own tab
    */
   void rebuild();
 

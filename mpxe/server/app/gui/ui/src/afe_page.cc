@@ -4,7 +4,7 @@
  * @brief   Afe Page
  *
  * @date    2025-08-30
- * @author  Midnight Sun Team #24 - MSXVI
+ * @author  Midnight Sun
  ************************************************************************************************/
 
 /* Standard library headers */
@@ -42,7 +42,7 @@ inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVar
 }
 
 AfePage::AfePage(const std::map<QString, QVariant> &payload, QWidget *parent) :
-    QWidget(parent), m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_discharge_proxy{ nullptr }, m_pack_proxy{ nullptr }, m_therm_proxy{ nullptr } {
+    QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_discharge_proxy{ nullptr }, m_pack_proxy{ nullptr }, m_therm_proxy{ nullptr } {
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(m_tabs);
@@ -64,8 +64,9 @@ void AfePage::rebuild() {
   const std::map<QString, QVariant> discharge_map = extractMap(m_payload, QStringLiteral("cell_discharge"));
   const std::map<QString, QVariant> main_pack_map = extractMap(m_payload, QStringLiteral("main_pack"));
   const std::map<QString, QVariant> therm_map = extractMap(m_payload, QStringLiteral("thermistor_temperature"));
+  const std::map<QString, QVariant> board_map = extractMap(m_payload, QStringLiteral("board_thermistors"));
 
-  /* Discharge as plain key/value */
+  /* Discharge */
   {
     DictTableModel *model = new DictTableModel(discharge_map, false, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
@@ -73,7 +74,7 @@ void AfePage::rebuild() {
     m_tabs->addTab(tws.widget, QStringLiteral("Cell Discharge"));
   }
 
-  /* Main Pack with percent + gauge */
+  /* Main Pack */
   {
     VoltageTableModel *model = new VoltageTableModel(main_pack_map, MIN_VOLTAGE, MAX_VOLTAGE, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
@@ -89,19 +90,30 @@ void AfePage::rebuild() {
     m_tabs->addTab(tws.widget, QStringLiteral("Main Pack"));
   }
 
-  /* Thermistors with percent + gauge */
+  /* Thermistors */
   {
-    VoltageTableModel *model = new VoltageTableModel(therm_map, MIN_VOLTAGE, MAX_VOLTAGE, m_tabs);
+    DictTableModel *model = new DictTableModel(therm_map, false, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_therm_proxy = tws.proxy;
 
     if (tws.table) {
       tws.table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-      tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-      tws.table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-      tws.table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-      tws.table->setColumnWidth(3, 80);
+      tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+      tws.table->verticalHeader()->setVisible(false);
     }
     m_tabs->addTab(tws.widget, QStringLiteral("Thermistors"));
+  }
+
+  /* Board Thermistors as separate tab */
+  {
+    DictTableModel *model = new DictTableModel(board_map, false, m_tabs);
+    TableWithSearch tws = makeSearchableTable(model, m_tabs);
+
+    if (tws.table) {
+      tws.table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+      tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+      tws.table->verticalHeader()->setVisible(false);
+    }
+    m_tabs->addTab(tws.widget, QStringLiteral("Board Thermistors"));
   }
 }

@@ -66,24 +66,28 @@ void applicationMessageCallback(Client *client, std::string &message) {
       clientAfeManager.setAfeCell(payload);
       break;
     }
-    case CommandCode::AFE_SET_AUX: {
-      clientAfeManager.setAfeAux(payload);
+    case CommandCode::AFE_SET_THERMISTOR: {
+      clientAfeManager.setAfeTherm(payload);
       break;
     }
     case CommandCode::AFE_SET_DEV_CELL: {
       clientAfeManager.setAfeDevCell(payload);
       break;
     }
-    case CommandCode::AFE_SET_DEV_AUX: {
-      clientAfeManager.setAfeDevAux(payload);
+    case CommandCode::AFE_SET_DEV_THERMISTOR: {
+      clientAfeManager.setAfeDevTherm(payload);
       break;
     }
     case CommandCode::AFE_SET_PACK_CELL: {
       clientAfeManager.setAfePackCell(payload);
       break;
     }
-    case CommandCode::AFE_SET_PACK_AUX: {
-      clientAfeManager.setAfePackAux(payload);
+    case CommandCode::AFE_SET_PACK_THERMISTOR: {
+      clientAfeManager.setAfePackTherm(payload);
+      break;
+    }
+    case CommandCode::AFE_SET_BOARD_TEMP: {
+      clientAfeManager.setAfeBoardTherm(payload); 
       break;
     }
     case CommandCode::AFE_SET_DISCHARGE: {
@@ -98,24 +102,24 @@ void applicationMessageCallback(Client *client, std::string &message) {
       client->sendMessage(clientAfeManager.processAfeCell(payload));
       break;
     }
-    case CommandCode::AFE_GET_AUX: {
-      client->sendMessage(clientAfeManager.processAfeAux(payload));
+    case CommandCode::AFE_GET_THERMISTOR: {
+      client->sendMessage(clientAfeManager.processAfeTherm(payload));
       break;
     }
     case CommandCode::AFE_GET_DEV_CELL: {
       client->sendMessage(clientAfeManager.processAfeDevCell(payload));
       break;
     }
-    case CommandCode::AFE_GET_DEV_AUX: {
-      client->sendMessage(clientAfeManager.processAfeDevAux(payload));
+    case CommandCode::AFE_GET_DEV_THERMISTOR: {
+      client->sendMessage(clientAfeManager.processAfeDevTherm(payload));
       break;
     }
     case CommandCode::AFE_GET_PACK_CELL: {
       client->sendMessage(clientAfeManager.processAfePackCell());
       break;
     }
-    case CommandCode::AFE_GET_PACK_AUX: {
-      client->sendMessage(clientAfeManager.processAfePackAux());
+    case CommandCode::AFE_GET_PACK_THERMISTOR: {
+      client->sendMessage(clientAfeManager.processAfePackTherm());
       break;
     }
     case CommandCode::AFE_GET_DISCHARGE: {
@@ -124,6 +128,11 @@ void applicationMessageCallback(Client *client, std::string &message) {
     }
     case CommandCode::AFE_GET_PACK_DISCHARGE: {
       client->sendMessage(clientAfeManager.processCellPackDischarge());
+      break;
+    }
+    case CommandCode::AFE_GET_BOARD_TEMP: {
+      client->sendMessage(clientAfeManager.processAfeBoardTherm(payload));
+      break;
     }
     default: {
       break;
