@@ -115,8 +115,8 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing shared voltage value
    */
-  void updateAfeBoardThermVoltage(std::string &projectName, std::string &payload); 
-  
+  void updateAfeBoardThermVoltage(std::string &projectName, std::string &payload);
+
   /**
    * @brief   Update the discharge state of a specific AFE cell using the provided payload
    * @details Loads the target AFE project, extracts the discharge state of the given cell index

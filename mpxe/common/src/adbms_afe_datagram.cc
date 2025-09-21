@@ -36,8 +36,8 @@ std::string ADBMS_AFE::serialize(const CommandCode &commandCode) const {
   serializeInteger<uint8_t>(serializedData, AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
   serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.therm_voltages), AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
 
-  serializeInteger<uint8_t>(serializedData, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t)); 
-  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.board_therm_voltages), AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
+  serializeInteger<uint8_t>(serializedData, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.board_therm_voltages), AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(AFE_MAX_CELLS));
   serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_discharges), AFE_MAX_CELLS);
@@ -65,7 +65,7 @@ void ADBMS_AFE::deserialize(std::string &afeDatagramPayload) {
   deserializeInteger<uint8_t>(afeDatagramPayload, offset);
   std::memcpy(m_afeDatagram.board_therm_voltages, afeDatagramPayload.data() + offset, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
   offset += AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t);
-  
+
   deserializeInteger<uint8_t>(afeDatagramPayload, offset);  // length (ignored or validated)
   std::memcpy(m_afeDatagram.cell_discharges, afeDatagramPayload.data() + offset, AFE_MAX_CELLS);
   offset += AFE_MAX_CELLS;
@@ -152,7 +152,7 @@ void ADBMS_AFE::setBoardTherm(std::size_t dev_index, uint16_t voltage) {
     std::cout << "Invalid index" << std::endl;
     return;
   }
-  m_afeDatagram.board_therm_voltages[dev_index] = voltage; 
+  m_afeDatagram.board_therm_voltages[dev_index] = voltage;
 }
 
 void ADBMS_AFE::setCellPackDischarge(bool is_discharge) {
@@ -191,9 +191,9 @@ uint16_t ADBMS_AFE::getThermVoltage(std::size_t index) const {
 }
 
 uint16_t ADBMS_AFE::getBoardThermVoltage(std::size_t dev_index) const {
-  if (dev_index < AFE_MAX_BOARD_THERMISTORS) return m_afeDatagram.board_therm_voltages[dev_index]; 
-  std::cout << "Invalid index" << std::endl; 
-  return -1; 
+  if (dev_index < AFE_MAX_BOARD_THERMISTORS) return m_afeDatagram.board_therm_voltages[dev_index];
+  std::cout << "Invalid index" << std::endl;
+  return -1;
 }
 
 bool ADBMS_AFE::getCellDischarge(uint8_t cell_index) const {

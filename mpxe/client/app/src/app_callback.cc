@@ -87,7 +87,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::AFE_SET_BOARD_TEMP: {
-      clientAfeManager.setAfeBoardTherm(payload); 
+      clientAfeManager.setAfeBoardTherm(payload);
       break;
     }
     case CommandCode::AFE_SET_DISCHARGE: {

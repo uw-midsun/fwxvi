@@ -131,16 +131,16 @@ void AfeManager::setAfePackTherm(std::string &payload) {
 }
 
 void AfeManager::setAfeBoardTherm(std::string &payload) {
-  m_afeDatagram.deserialize(payload); 
+  m_afeDatagram.deserialize(payload);
 
-  std::size_t dev_index = m_afeDatagram.getDevIndex(); 
-  uint16_t voltage = m_afeDatagram.getBoardThermVoltage(dev_index); 
+  std::size_t dev_index = m_afeDatagram.getDevIndex();
+  uint16_t voltage = m_afeDatagram.getBoardThermVoltage(dev_index);
 
   if (dev_index >= ADBMS_AFE_MAX_DEVICES) {
     std::cout << "Invalid Index" << std::endl;
     return;
   }
-  AdbmsAfeStorage *p_afe = adbms_afe_get_storage(); 
+  AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
     adbms_afe_set_board_thermistor_voltage(p_afe, dev_index, voltage);
@@ -295,20 +295,20 @@ std::string AfeManager::processAfePackTherm() {
 }
 
 std::string AfeManager::processAfeBoardTherm(std::string &payload) {
-  m_afeDatagram.deserialize(payload); 
-  std::size_t dev_index = m_afeDatagram.getDevIndex(); 
+  m_afeDatagram.deserialize(payload);
+  std::size_t dev_index = m_afeDatagram.getDevIndex();
 
-  uint16_t voltage = 0; 
+  uint16_t voltage = 0;
 
-  AdbmsAfeStorage *p_afe = adbms_afe_get_storage(); 
+  AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    voltage = adbms_afe_get_board_thermistor_voltage(p_afe, dev_index); 
+    voltage = adbms_afe_get_board_thermistor_voltage(p_afe, dev_index);
   }
 
-  m_afeDatagram.setBoardTherm(dev_index, voltage); 
+  m_afeDatagram.setBoardTherm(dev_index, voltage);
 
-  return m_afeDatagram.serialize(CommandCode::AFE_GET_BOARD_TEMP); 
+  return m_afeDatagram.serialize(CommandCode::AFE_GET_BOARD_TEMP);
 }
 
 std::string AfeManager::processCellDischarge(std::string &payload) {

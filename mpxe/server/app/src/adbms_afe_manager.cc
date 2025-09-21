@@ -140,13 +140,13 @@ void AfeManager::updateAfeThermPackVoltage(std::string &projectName, std::string
 }
 
 void AfeManager::updateAfeBoardThermVoltage(std::string &projectName, std::string &payload) {
-  loadAfeInfo(projectName); 
+  loadAfeInfo(projectName);
 
-  m_afeDatagram.deserialize(payload); 
-  std::size_t dev_index = m_afeDatagram.getDevIndex(); 
-  std::size_t board_therm_voltage = m_afeDatagram.getBoardThermVoltage(dev_index); 
+  m_afeDatagram.deserialize(payload);
+  std::size_t dev_index = m_afeDatagram.getDevIndex();
+  std::size_t board_therm_voltage = m_afeDatagram.getBoardThermVoltage(dev_index);
 
-  m_afeInfo["board_thermistors"]["board_" + std::to_string(dev_index)] = std::to_string(board_therm_voltage) + " mv"; 
+  m_afeInfo["board_thermistors"]["board_" + std::to_string(dev_index)] = std::to_string(board_therm_voltage) + " mv";
 
   saveAfeInfo(projectName);
 }
@@ -234,11 +234,11 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
       }
 
       case CommandCode::AFE_SET_BOARD_TEMP: {
-        uint16_t voltage = static_cast<uint16_t>(std::stoi(data)); 
-        std::size_t dev_index = static_cast<std::size_t>(std::stoul(index)); 
-        
-        m_afeDatagram.setBoardTherm(dev_index, voltage); 
-        m_afeDatagram.setDeviceIndex(dev_index); 
+        uint16_t voltage = static_cast<uint16_t>(std::stoi(data));
+        std::size_t dev_index = static_cast<std::size_t>(std::stoul(index));
+
+        m_afeDatagram.setBoardTherm(dev_index, voltage);
+        m_afeDatagram.setDeviceIndex(dev_index);
         break;
       }
 
@@ -303,8 +303,8 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
         break;
       }
       case CommandCode::AFE_GET_BOARD_TEMP: {
-        std::size_t idx = static_cast<std::size_t>(std::stoul(index)); 
-        m_afeDatagram.setDeviceIndex(idx); 
+        std::size_t idx = static_cast<std::size_t>(std::stoul(index));
+        m_afeDatagram.setDeviceIndex(idx);
         break;
       }
       case CommandCode::AFE_GET_DISCHARGE: {

@@ -39,20 +39,20 @@ class ADBMS_AFE {
     THERMISTOR_DEV_2, /**< Store thermistor temperature voltage for device 2 */
     THERMISTOR_PACK,  /**< Store thermistor voltage value for pack */
     BOARD_THERMISTOR,
-    DISCHARGE_PACK,   /**< Store cell discharge value for pack */
-    MAX_CACHE,        /**< Max cache index */
+    DISCHARGE_PACK, /**< Store cell discharge value for pack */
+    MAX_CACHE,      /**< Max cache index */
   };
 
   static constexpr size_t CACHE_SIZE = static_cast<size_t>(CacheIndex::MAX_CACHE); /**< Max cache index */
-  
-  static constexpr uint8_t AFE_MAX_DEVICES = 3;                       /**< Max number of AFE devices supported */
-  static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE = 18;             /**< Max cell channels per AFE device */
-  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS_PER_DEVICE = 16;        /**< Max thermistors per AFE device */
-  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS_PER_DEVICE = 1;  /**< Max board thermistors per Afe device */
 
-  static constexpr uint8_t AFE_MAX_CELLS = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;                          /**< Total cell channels supported */
-  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_CELL_THERMISTORS_PER_DEVICE;              /**< Total thermistor channels supported */
-  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_BOARD_THERMISTORS_PER_DEVICE;  /**< Total board thermistors */
+  static constexpr uint8_t AFE_MAX_DEVICES = 3;                      /**< Max number of AFE devices supported */
+  static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE = 18;            /**< Max cell channels per AFE device */
+  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS_PER_DEVICE = 16; /**< Max thermistors per AFE device */
+  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS_PER_DEVICE = 1; /**< Max board thermistors per Afe device */
+
+  static constexpr uint8_t AFE_MAX_CELLS = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;                         /**< Total cell channels supported */
+  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_CELL_THERMISTORS_PER_DEVICE;   /**< Total thermistor channels supported */
+  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_BOARD_THERMISTORS_PER_DEVICE; /**< Total board thermistors */
 
   /**
    * @brief  Cell Discharge State
@@ -169,7 +169,7 @@ class ADBMS_AFE {
    * @param dev_index The index of the device to set
    * @param voltage The new voltage value to set
    */
-  void setBoardTherm(std::size_t dev_index, uint16_t voltage); 
+  void setBoardTherm(std::size_t dev_index, uint16_t voltage);
 
   /**
    * @brief Set the Cache value for index
@@ -203,7 +203,7 @@ class ADBMS_AFE {
    * @return Voltage in millivolts
    */
   uint16_t getThermVoltage(std::size_t index) const;
- 
+
   /**
    * @brief   Get the Board Thermistor Voltage
    * @param   dev_index The index of the device to set

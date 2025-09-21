@@ -97,9 +97,9 @@ class AfeManager {
    * @brief   Set the Afe Board Thermistor voltage for a specific device
    * @details This function shall be called upon receiving a board-specific request.
    *          This function is not responsible for handling update errors
-   * @param   payload 
+   * @param   payload
    */
-  void setAfeBoardTherm(std::string &payload); 
+  void setAfeBoardTherm(std::string &payload);
 
   /**
    * @brief   Sets AFE discharge cells for individual cells
@@ -175,7 +175,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeBoardTherm(std::string &payload); 
+  std::string processAfeBoardTherm(std::string &payload);
 
   /**
    * @brief   Process a set or toggle cell discharge command from the server.

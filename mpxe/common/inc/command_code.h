@@ -59,7 +59,7 @@ enum class CommandCode {
 
   /* ADBMS AFE commands */
   AFE_SET_CELL,            /**< Set single cell voltage */
-  AFE_SET_THERMISTOR,      /**< Set single thermistor voltage */                    
+  AFE_SET_THERMISTOR,      /**< Set single thermistor voltage */
   AFE_SET_DEV_CELL,        /**< Set cell voltages for all cells in device */
   AFE_SET_DEV_THERMISTOR,  /**< Set thermistor voltages for all thermistor in device */
   AFE_SET_PACK_CELL,       /**< Set cell voltages for all cells */
@@ -68,11 +68,11 @@ enum class CommandCode {
   AFE_SET_PACK_DISCHARGE,  /**< Set discharge for whole pack */
   AFE_SET_BOARD_TEMP,      /**< Set board thermistor voltage */
   AFE_GET_CELL,            /**< Get a single cell voltage reading */
-  AFE_GET_THERMISTOR,      /**< Get a single thermistor voltage reading */        
-  AFE_GET_DEV_CELL,        /**< Get cell voltages for all cells in device */ 
-  AFE_GET_DEV_THERMISTOR,  /**< Get thermistor voltages for all thermistor in device */  
+  AFE_GET_THERMISTOR,      /**< Get a single thermistor voltage reading */
+  AFE_GET_DEV_CELL,        /**< Get cell voltages for all cells in device */
+  AFE_GET_DEV_THERMISTOR,  /**< Get thermistor voltages for all thermistor in device */
   AFE_GET_PACK_CELL,       /**< Get cell voltages for all cells */
-  AFE_GET_PACK_THERMISTOR, /**< Get thermistor voltages for all thermistor */            
+  AFE_GET_PACK_THERMISTOR, /**< Get thermistor voltages for all thermistor */
   AFE_GET_DISCHARGE,       /**< Get single cell discharge */
   AFE_GET_PACK_DISCHARGE,  /**< Get Discharge for whole pack */
   AFE_GET_BOARD_TEMP,      /**< Get board thermistor voltage */
