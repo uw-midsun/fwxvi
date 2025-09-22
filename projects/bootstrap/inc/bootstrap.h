@@ -57,7 +57,7 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest);
  * Reads CRC value from file system
  *
  */
-FsStatus read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
+FsStatus read_crc32(const char *file_path, size_t length, uint8_t *crc_dest);
 
 /**
  * Main application executed at runtime

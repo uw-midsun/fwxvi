@@ -50,7 +50,7 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest) {
   *crc_dest = ~crc;
 }
 
-FsStatus read_crc32(const char *file_path, size_t length, uint32_t *crc_dest) {
+FsStatus read_crc32(const char *file_path, size_t length, uint8_t *crc_dest) {
   return fs_read_file(file_path, crc_dest);
 }
 
@@ -65,7 +65,7 @@ void bootstrap_main(void) {
   compute_crc32((uint8_t *)BOOTLOADER_ADDR, BOOTLOADER_SIZE, &computed_crc);
 
   printf("reading stored CRC\n\r");
-  uint32_t stored_crc = 0;
+  uint8_t stored_crc = 0;
   read_crc32(CRC_FILE_PATH, CRC_SIZE, &stored_crc);
 
   if (computed_crc == stored_crc) {
