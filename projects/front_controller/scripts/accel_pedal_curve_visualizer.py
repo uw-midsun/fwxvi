@@ -5,6 +5,7 @@
 #
 #  @ingroup Front_Controller
 
+# To run this do: python3 projects/front_controller/scripts/accel_pedal_curve_visualizer.py --csv_file=[INSERT PATH TO CSV FILE]
 
 import argparse
 import os
@@ -76,10 +77,10 @@ def main():
     """
     @brief Main function for acceleration pedal curve visualizer
     """
-    print("Welcome to fota_python")
+    print("Welcome to accel_pedal_curve_visualizer")
 
     parser = argparse.ArgumentParser(description="Visualize Accel Pedal Curve Data")
-    parser.add_argument("csv_file", help="Path to the CSV file containing the curve data")
+    parser.add_argument("--csv_file", help="Path to the CSV file containing the curve data")
 
     args = parser.parse_args()
 

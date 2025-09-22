@@ -31,13 +31,12 @@ const SpiSettings spi_config = {
 
 AdbmsAfeSettings s_settings = { .adc_mode = ADBMS_AFE_ADC_MODE_27KHZ,
                                 .cell_bitset[0] = 0x0FFFU,
-                                .aux_bitset[0] = 0x00FFU,
 
                                 .num_devices = 3,
                                 .num_cells = ADBMS_AFE_MAX_CELLS,
-                                .num_thermistors = ADBMS_AFE_MAX_THERMISTORS,
+                                .num_thermistors = ADBMS_AFE_MAX_CELL_THERMISTORS,
 
-                                .spi_settings = spi_config,
+                                .spi_settings = &spi_config,
                                 .spi_port = SPI_PORT_2 };
 
 AdbmsAfeStorage s_afe;

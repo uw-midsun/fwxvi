@@ -117,4 +117,8 @@
 #define FRONT_CONTROLLER_ACCEL_PEDAL \
   { .port = GPIO_PORT_A, .pin = 3 }
 
+/** @brief  Front Controller brake pedal input */
+#define FRONT_CONTROLLER_BRAKE_PEDAL \
+  { .port = GPIO_PORT_A, .pin = 5 }
+
 /** @} */

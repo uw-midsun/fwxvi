@@ -1,17 +1,19 @@
 #pragma once
 
 /************************************************************************************************
- * @file   power_path_manager.h
+ * @file   curretn_sense.h
  *
- * @brief  Power path manager class for the rear controller board
+ * @brief Current sensing for Rear_Controller
  *
- * @date   2025-05-28
+ * @date   2025-09-17
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "rear_controller.h"
+#include "status.h"
 
 /* Intra-component Headers */
 
@@ -20,5 +22,9 @@
  * @brief    Rear Controller Board Firmware
  * @{
  */
+
+StatusCode current_sense_run();
+
+StatusCode current_sense_init(RearControllerStorage *rear_controller_storage);
 
 /** @} */

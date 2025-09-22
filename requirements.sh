@@ -82,11 +82,27 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 
     brew update
-    brew install tmux git vim curl scons can-utils gcc llvm gdb minicom openocd python3 sdl2 
+
+    brew tap ArmMbed/homebrew-formulae
+
+    brew install \
+      tmux \
+      git \
+      vim \
+      curl \
+      arm-none-eabi-gcc \
+      gcc \
+      llvm \
+      gdb \
+      minicom \
+      openocd \
+      python@3 \
+      sdl2 \
+      nlohmann-json
 
     echo "==> Install Python requirements"
-    pip3 install --upgrade pip
-    pip3 install -r requirements.txt
+    /opt/homebrew/bin/pip3 install --upgrade pip
+    /opt/homebrew/bin/pip3 install -r requirements.txt
 
     add_to_path_if_not_exists
 
