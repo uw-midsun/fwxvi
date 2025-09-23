@@ -80,7 +80,6 @@ static const AdbmsAfeSettings s_afe_settings = {
   .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
   .cell_bitset = { 0xFFFU, 0xFFFU, 0xFFFU },
-  .aux_bitset = { 0x14U, 0x15U, 0x15U },
 
   .num_devices = 2U,
   .num_cells = 18U,
@@ -154,11 +153,11 @@ static StatusCode s_check_thermistors() {
 
   /* Loop over all devices and thermistors */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
-    for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE; thermistor++) {
+    for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
       /* Check if the temperature ADC is enabled for the provided device and thermistor channel */
-      if ((s_afe_settings.aux_bitset[device] >> thermistor) & 1U) {
+      if ((s_afe_settings.cell_bitset[device] >> thermistor) & 1U) {
         /* Calculate the ADC voltage index given the device and thermistor number */
-        uint8_t index = device * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE + thermistor;
+        uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
         adbms_afe_storage->aux_voltages[index] = calculate_temperature(adbms_afe_storage->aux_voltages[index]);
 
         LOG_DEBUG("Thermistor reading device %d, %d: %.2f\n", device, thermistor, (float)adbms_afe_storage->aux_voltages[index]/10.0);
@@ -242,7 +241,7 @@ static StatusCode s_cell_sense_conversions() {
     // Check therm bitset to determine if we need to read any at this index
     bool check_therm = false;
     for (uint8_t dev = 0; dev < s_afe_settings.num_devices; dev++) {
-      if ((s_afe_settings.aux_bitset[dev] >> thermistor) & 0x1) {
+      if ((s_afe_settings.cell_bitset[dev] >> thermistor) & 0x1) {
         check_therm = true;
       }
     }
