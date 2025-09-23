@@ -21,6 +21,7 @@
 #include "cell_sense.h"
 #include "fault_bps.h"
 #include "relays.h"
+#include "current_sense.h"
 
 /************************************************************************************************
  * Private defines
@@ -42,6 +43,8 @@
 #define AFE_NUM_RETRIES 5U
 /** @brief  Temperature threshold for invalid readings */
 #define CELL_TEMP_OUTLIER_THRESHOLD 80
+/** @brief  Maximum pack current - 7.0A -> 7000mA */
+#define PACK_OVERCURRENT_CURRENT 7000
 /** @brief  Private define to lookup cell voltage */
 #define CELL_VOLTAGE_LOOKUP(cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[cell]])
 
@@ -86,8 +89,6 @@ static const AdbmsAfeSettings s_afe_settings = {
 
 static AdbmsAfeStorage *adbms_afe_storage;
 
-static BmsStorage *bms_storage;
-
 static bool s_cell_data_updated = false;
 
 uint8_t afe_message_index = 0U;
@@ -96,14 +97,8 @@ static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
   [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3, [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
 };
 
-// static const uint16_t s_resistance_lookup[TABLE_SIZE] = { 27219U, 26076U, 24988U, 23951U, 22963U, 22021U, 21123U, 20267U, 19450U, 18670U, 17925U, 17214U, 16534U, 15886U, 15266U, 14674U,
-//                                                           14173U, 13718U, 13256U, 12805U, 12394U, 12081U, 11628U, 11195U, 10780U, 10000U, 9634U,  9283U,  8947U,  8624U,  8314U,  8018U,
-//                                                           7733U,  7460U,  7199U,  6947U,  6706U,  6475U,  6252U,  6039U,  5834U,  5636U,  5445U,  5262U,  5093U,  4927U,  4763U,  4601U,
-//                                                           4446U,  4300U,  4161U,  4026U,  3896U,  3771U,  3651U,  3535U,  3423U,  3315U,  3211U,  3111U,  3014U,  2922U,  2833U,  2748U,
-//                                                           2665U,  2586U,  2509U,  2435U,  2364U,  2294U,  2227U,  2162U,  2101U,  2040U,  1981U,  1925U,  1868U,  1817U,  1765U,  1716U,
-//                                                           1668U,  1622U,  1577U,  1533U,  1490U,  1449U,  1410U,  1371U,  1334U,  1298U,  1263U,  1229U,  1197U,  1164U,  1134U,  1107U,
-//                                                           1078U,  1052U,  1025U,  999U,   973U,   949U,   925U,   902U,   880U,   858U,   837U,   816U,   796U,   777U,   758U,   739U,
-//                                                           721U,   704U,   687U,   671U,   655U,   640U,   625U,   610U,   596U,   582U,   569U,   556U,   543U };
+static RearControllerStorage *rear_controller_storage;
+
 // Murata NCP15XH103F03RC 10k NTC, B(25/50)=3380 K
 // Index = °C (0, 0.5, 1, ..,  124), Value = resistance (ohms)
 static const uint16_t s_resistance_lookup[249] = {
@@ -126,9 +121,7 @@ static const uint16_t s_resistance_lookup[249] = {
 
 static void s_balance_cells(uint16_t min_voltage) {
   uint16_t balancing_threshold = min_voltage;
-  float current = 0;
-  //TODO: read current
-  if(current > 7.0f) //don't balance
+  if(rear_controller_storage->pack_current > PACK_OVERCURRENT_CURRENT) //don't balance
     return;
   /* Adjust balancing threshold */
   if (min_voltage >= AFE_BALANCING_UPPER_THRESHOLD) {
@@ -180,7 +173,7 @@ static StatusCode s_check_thermistors() {
         }
 
         delay_ms(3);
-        if (bms_storage->pack_current < 0) {
+        if (rear_controller_storage->pack_current < 0) {
           if (adbms_afe_storage->aux_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE * 10) {
             LOG_DEBUG("CELL OVERTEMP\n");
             fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
@@ -197,7 +190,7 @@ static StatusCode s_check_thermistors() {
     }
   }
 
-  bms_storage->max_temperature = max_temp;
+  rear_controller_storage->max_temperature = max_temp;
 
   return status;
 }
@@ -419,13 +412,15 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   }
 }
 
-StatusCode cell_sense_init(BmsStorage *storage) {
+StatusCode cell_sense_init(RearControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  bms_storage = storage;
-  adbms_afe_storage = &(bms_storage->adbms_afe_storage);
+  current_sense_init(storage);
+
+  rear_controller_storage = storage;
+  adbms_afe_storage = &(rear_controller_storage->adbms_afe_storage);
   tasks_init_task(cell_sense_conversions, TASK_PRIORITY(2), NULL);
   return STATUS_CODE_OK;
 }
