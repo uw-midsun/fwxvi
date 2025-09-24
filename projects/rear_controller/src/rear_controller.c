@@ -10,9 +10,9 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "flash.h"
 #include "gpio.h"
 #include "mcu.h"
-#include "flash.h"
 
 /* Intra-component Headers */
 #include "rear_controller.h"
