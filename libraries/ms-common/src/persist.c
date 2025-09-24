@@ -44,7 +44,7 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
   persist->blob = blob;
   persist->blob_size = blob_size;
   persist->prev_flash_addr = PERSIST_INVALID_ADDR;
-  persist->page = page;
+  persist->page = page - 1U;
 
   // Load stored data
   PersistHeader header = {
@@ -104,30 +104,31 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
 }
 
 StatusCode persist_commit(PersistStorage *persist) {
-  // Mark previous section as invalid
+  /* Mark previous section as invalid */
   if (persist->prev_flash_addr != PERSIST_INVALID_ADDR) {
-    uint32_t invalid = 0;
+    uint32_t invalid = 0U;
     flash_write(persist->prev_flash_addr, (uint8_t *)&invalid, sizeof(invalid));
   }
 
-  // Check if we're overrunning the page
+  /* Check if we're overrunning the page */
   if (persist->flash_addr + sizeof(PersistHeader) + persist->blob_size >= PERSIST_END_ADDR) {
-    flash_erase(persist->page, 1);
+    flash_erase(persist->page, 1U);
     persist->flash_addr = PERSIST_BASE_ADDR;
   }
 
-  // Write persist blob size, skipping the marker
-  PersistHeader header = { .size_bytes = persist->blob_size };
-  LOG_DEBUG("Committing persistance layer to 0x%" PRIx32 "\n", (uint32_t)persist->flash_addr);
-  StatusCode ret = flash_write(persist->flash_addr + sizeof(header.marker), (uint8_t *)&header.size_bytes, sizeof(header.size_bytes));
-  status_ok_or_return(ret);
+  PersistHeader header = { .marker = PERSIST_VALID_MARKER, .size_bytes = persist->blob_size };
 
-  // Write persist blob
-  ret = flash_write(persist->flash_addr + sizeof(header), (uint8_t *)persist->blob, persist->blob_size);
-  status_ok_or_return(ret);
+  status_ok_or_return(flash_write(persist->flash_addr, (uint8_t *)&header, sizeof(header)));
+
+  /* Write persist blob */
+  status_ok_or_return(flash_write(persist->flash_addr + sizeof(header), (uint8_t *)persist->blob, persist->blob_size));
 
   persist->prev_flash_addr = persist->flash_addr;
   persist->flash_addr += sizeof(header) + persist->blob_size;
+
+  if (persist->flash_addr % FLASH_MEMORY_WRITE_ALIGNMENT != 0U) {
+    persist->flash_addr += FLASH_MEMORY_WRITE_ALIGNMENT - (persist->flash_addr % FLASH_MEMORY_WRITE_ALIGNMENT);
+  }
 
   return STATUS_CODE_OK;
 }
