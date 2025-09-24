@@ -29,7 +29,12 @@ typedef struct {
   uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
 } OpdCalibrationStorage;
 
-typedef struct {
+typedef enum{
+    ACCEL_STATE_DRIVING,
+    ACCEL_STATE_BRAKING
+}AccelState;
+
+typedef struct OpdStorage{
   float accel_percentage;
   float prev_accel_percentage;
   AccelState accel_state;
@@ -40,20 +45,15 @@ typedef struct {
 } OpdStorage;
 
 typedef enum{
-    ACCEL_STATE_DRIVING,
-    ACCEL_STATE_BRAKING
-}AccelState;
-
-typedef enum{
     PTS_TYPE_LINEAR,
     PTS_TYPE_EXPONENTIAL,
     PTS_TYPE_QUADRATIC
 }PtsRelationType;
 
 typedef enum{
-    CURVE_TYPE_LINEAR,
-    CURVE_TYPE_EXPONENTIAL,
-    CURVE_TYPE_QUADRATIC
+    CURVE_TYPE_LINEAR
+    // CURVE_TYPE_EXPONENTIAL,
+    // CURVE_TYPE_QUADRATIC
 }curveType;
 
 StatusCode opd_run();

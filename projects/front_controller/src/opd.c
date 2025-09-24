@@ -23,6 +23,7 @@ static GpioAddress s_one_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 static FrontControllerStorage *front_controller_storage;
 
 static OpdStorage s_one_pedal_storage = { 0U };
+static bool pts_compare_handler(float p, float s, PtsRelationType relation_type);
 
 StatusCode opd_run(){
     if(front_controller_storage == NULL){
@@ -47,6 +48,7 @@ StatusCode opd_run(){
 
     s_one_pedal_storage.accel_percentage = calculated_reading;
 
+    return STATUS_CODE_OK;
 }
 
 StatusCode opd_init(FrontControllerStorage *storage){
@@ -64,7 +66,7 @@ StatusCode opd_init(FrontControllerStorage *storage){
 }
 
 StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading){
-    float current_speed = (float)(front_controller_storage->vehicle_speed_kph / s_one_pedal_storage.max_vehicle_speed_kph);
+    float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
     if(pts_compare_handler(pedal_percentage, current_speed, relation_type)){
         s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
@@ -76,6 +78,7 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
         *calculated_reading = s_one_pedal_storage.max_braking_percentage - (m * pedal_percentage);
     }
 
+    return STATUS_CODE_OK;
 }
 
 StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, curveType curve_type){
@@ -83,9 +86,11 @@ StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relatio
         case CURVE_TYPE_LINEAR:
             return opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
     }
+
+    return STATUS_CODE_OK;
 }
 
-bool pts_compare_handler(float p, float s, PtsRelationType relation_type){
+static bool pts_compare_handler(float p, float s, PtsRelationType relation_type){
     switch(relation_type){
         case PTS_TYPE_LINEAR:
             if(p > s){
@@ -94,7 +99,7 @@ bool pts_compare_handler(float p, float s, PtsRelationType relation_type){
                 return false;
             }
         case PTS_TYPE_EXPONENTIAL:
-            if(pow(p, 2) > s){
+            if(powf(p, 2) > s){
                 return true;
             }else{
                 return false;
@@ -108,4 +113,7 @@ bool pts_compare_handler(float p, float s, PtsRelationType relation_type){
         default:
             return false;
     }
+
+    //should never get here
+    return false;
 }
