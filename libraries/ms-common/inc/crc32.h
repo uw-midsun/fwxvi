@@ -1,12 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * @file   retarget.h
+ * @file    crc32.h
  *
- * @brief  Retarget library for Hard fault handling
+ * @brief   Crc32
  *
- * @date   2025-01-28
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2025-09-19
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -16,15 +16,9 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup MCU
- * @brief    MCU library
+ * @defgroup crc32
+ * @brief    crc32 Firmware
  * @{
  */
-
-/**
- * @brief   Initialze the UART interface for hard fault register dumping
- */
-void retarget_init();
-void test_print();
 
 /** @} */
