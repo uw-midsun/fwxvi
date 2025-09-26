@@ -81,6 +81,21 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
     return STATUS_CODE_OK;
 }
 
+StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading){
+    float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
+    float m;
+    if(pts_compare_handler(pedal_percentage, current_speed, relation_type)){
+        s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
+        m = 1 / ((1 - current_speed) * (1 - current_speed));
+    }else{
+        s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
+        m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
+    }
+    *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
+
+    return STATUS_CODE_OK;
+}
+
 StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, curveType curve_type){
     switch(curve_type){
         case CURVE_TYPE_LINEAR:
