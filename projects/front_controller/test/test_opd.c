@@ -50,7 +50,7 @@ StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
 
 void setup_test(void) {
   static FrontControllerConfig config = {
-    .accel_input_deadzone = 0.00f,
+    .accel_input_deadzone = 0.1f,
     .accel_input_curve_exponent = 2.0f,
     .accel_input_remap_min = 0.2f,
     .accel_low_pass_filter_alpha = 1.0f,
@@ -97,8 +97,8 @@ void test_opd_visualize_curve(void) {
 
   fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");
 
-  for(uint32_t speed = 0; speed <= 100; speed+=10){
-    for (uint16_t adc_val = mock_storage.opd_storage->calibration_data.lower_value; adc_val <= mock_storage.opd_storage->calibration_data.upper_value; adc_val += 10) {
+  for (uint16_t adc_val = mock_storage.opd_storage->calibration_data.lower_value; adc_val <= mock_storage.opd_storage->calibration_data.upper_value; adc_val += 10) {
+      for(uint32_t speed = 0; speed <= 100; speed+=10){
       mock_raw_adc_reading = adc_val;
   
       float normalized_accel_percentage = (((float)adc_val - (float)mock_storage.opd_storage->calibration_data.lower_value) /
@@ -113,11 +113,11 @@ void test_opd_visualize_curve(void) {
       mock_storage.opd_storage->max_braking_percentage = 0.5;
   
       if(normalized_accel_percentage < mock_storage.config->accel_input_deadzone){
-          calculated_reading = -1.0f;
+          calculated_reading = 0.0f;
       }else{
           opd_linear_calculate(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
       }
-      fprintf(f, "%u,%.5f,%.5f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)((float)mock_storage.vehicle_speed_kph / (float)mock_storage.opd_storage->max_vehicle_speed_kph));
+      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)((float)mock_storage.vehicle_speed_kph / (float)mock_storage.opd_storage->max_vehicle_speed_kph));
     }
 
   }
