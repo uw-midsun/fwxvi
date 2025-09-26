@@ -115,7 +115,11 @@ void test_opd_visualize_curve(void) {
       if(normalized_accel_percentage < mock_storage.config->accel_input_deadzone){
           calculated_reading = 0.0f;
       }else{
-          opd_linear_calculate(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+          if(normalized_accel_percentage < 0.5){
+            opd_quadratic_calculate(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+          }else{
+            opd_linear_calculate(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+          }
       }
       fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)((float)mock_storage.vehicle_speed_kph / (float)mock_storage.opd_storage->max_vehicle_speed_kph));
     }
