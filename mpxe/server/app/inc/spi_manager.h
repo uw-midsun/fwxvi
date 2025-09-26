@@ -32,12 +32,26 @@
  */
 class SPIManager {
  private:
+
+  using SPIObjectInfo = std::unordered_map<std::string, std::string>;
+  std::unordered_map<std::string, SPIObjectInfo> m_SPIInfo;
+  Datagram::SPI m_SPIDatagram;
+
+  void loadSPIInfo(std::string &projectName);
+
+  void saveSPIInfo(std::string &projectName);
+
  public:
   /**
    * @brief   Constructs a SPIManager object
    * @details Default constructor
    */
+
   SPIManager() = default;
+
+
+  std::string createSPICommand(CommandCode commandCode, std::string &SPIport, std::string data);
+
 };
 
 /** @} */

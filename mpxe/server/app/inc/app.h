@@ -20,6 +20,7 @@
 #include "can_listener.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
+#include "spi_manager.h"
 /**
  * @defgroup ServerAppMain
  * @brief    Server Application Main Interface
@@ -33,6 +34,7 @@
 
 extern JSONManager serverJSONManager;   /**< Global JSON Manager */
 extern GpioManager serverGpioManager;   /**< Global GPIO Manager */
+extern SPIManager serverSPIManager;   /**< Global SPI Manager */
 extern CanListener serverCanListener;   /**< Global CAN Listener */
 extern CanScheduler serverCanScheduler; /**< Global CAN Scheduler */
 extern AfeManager serverAfeManager;

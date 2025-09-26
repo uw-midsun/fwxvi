@@ -42,6 +42,9 @@ enum class CommandCode {
   /* I2C Commands */
 
   /* SPI Commands */
+  SPI_SET_RX_DATA,        /**< Packages SPI port and read data */
+  SPI_SET_TX_DATA,        /**< Packages SPI port and transmit data */ 
+
 
   /* UART Commands */
 
