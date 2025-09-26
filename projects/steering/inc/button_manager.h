@@ -25,6 +25,8 @@
  * @{
  */
 
+#define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
+
 #define BUTTON_MANAGER_MAX_BUTTONS 10 /**< Maximum number of buttons supported */
 
 /**
@@ -38,13 +40,11 @@ typedef struct {
 /**
  * @brief   Initialize the button manager
  * @param   manager Pointer to the ButtonManager instance
- * @param   configs
- * @param   num_buttons
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
 
-StatusCode button_manager_init(ButtonManager *manager, ButtonConfig *configs, uint8_t num_buttons);
+StatusCode button_manager_init(ButtonManager *manager);
 
 /**
  * @brief   Update the button manager

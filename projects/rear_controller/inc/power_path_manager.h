@@ -16,7 +16,7 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup Rear Controller
+ * @defgroup Rear_Controller
  * @brief    Rear Controller Board Firmware
  * @{
  */

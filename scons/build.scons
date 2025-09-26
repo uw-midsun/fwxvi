@@ -27,7 +27,6 @@ SMOKE_DIR = ROOT.Dir('smoke')
 LIB_BIN_DIR = BIN_DIR.Dir('libraries')
 LIB_OBJ_DIR = OBJ_DIR.Dir('libraries')
 LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
-LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-drivers").Dir("inc")
 
 AUTOGEN_DIR = ROOT.Dir("autogen")
 
@@ -369,13 +368,17 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
     lib_deps = get_lib_deps(entry)
-    
-    # Use a C++ environment if ms-mpxe is in dependencies
+
     build_env = env
     if 'ms-mpxe' in lib_deps:
-        lib_deps += ['mpxe_common']
-        lib_deps += ['mpxe_client']
+        lib_deps += ['mpxe_common', 'mpxe_client']
         build_env = cxx_env
+
+    cppflags, ldflags = [], []
+    if PLATFORM == "x86" and "SDL2" in lib_deps:
+        import subprocess, shlex
+        cppflags = shlex.split(subprocess.check_output(["pkg-config", "--cflags", "sdl2"]).decode())
+        ldflags  = shlex.split(subprocess.check_output(["pkg-config", "--libs", "sdl2"]).decode())
 
     # SCons automagically handles object creation and linking
     if PLATFORM == 'x86' and config['arm_only']:
@@ -390,6 +393,8 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
             LIBS=build_env['LIBS'] + lib_deps * 2,
             LIBPATH=[LIB_BIN_DIR],
             CCFLAGS=build_env['CCFLAGS'] + config['cflags'],
+            CXXFLAGS=build_env.get('CXXFLAGS', []) + cppflags,
+            LINKFLAGS=build_env.get('LINKFLAGS', []) + ldflags,
         )
 
     # .bin file only required for arm, not x86

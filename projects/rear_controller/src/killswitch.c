@@ -15,12 +15,12 @@
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
-#include "rear_hw_defs.h"
+#include "rear_controller_hw_defs.h"
 
 /* Intra-component Headers */
 #include "status.h"
 
-static GpioAddress killswitch_address = REAR_CONTROLLER_KILLSWITCH_GPIO;
+static GpioAddress killswitch_address = REAR_CONTROLLER_KILLSWITCH_MONITOR_GPIO;
 
 static InterruptSettings killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,

@@ -52,7 +52,7 @@ void AfeManager::setAfeAux(std::string &payload) {
 
   uint8_t aux_index = m_afeDatagram.getIndex();
 
-  if (aux_index >= ADBMS_AFE_MAX_THERMISTORS) {
+  if (aux_index >= ADBMS_AFE_MAX_CELL_THERMISTORS) {
     std::cout << "Invalid Index" << std::endl;
     return;
   }
@@ -62,7 +62,8 @@ void AfeManager::setAfeAux(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    adbms_afe_set_aux_voltage(p_afe, aux_index, voltage);
+    /* TODO: Update the entire MPXE toolchain to use new ADBMS API */
+    adbms_afe_set_thermistor_voltage(p_afe, 0, aux_index, voltage);
   }
 }
 
@@ -101,7 +102,7 @@ void AfeManager::setAfeDevAux(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    adbms_afe_set_afe_dev_aux_voltages(p_afe, device_index, voltage);
+    adbms_afe_set_afe_dev_thermistor_voltages(p_afe, device_index, voltage);
   }
 }
 
@@ -125,7 +126,7 @@ void AfeManager::setAfePackAux(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    adbms_afe_set_pack_aux_voltages(p_afe, voltage);
+    adbms_afe_set_pack_thermistor_voltages(p_afe, voltage);
   }
 }
 
@@ -186,7 +187,8 @@ std::string AfeManager::processAfeAux(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    voltage = adbms_afe_get_aux_voltage(p_afe, aux_index);
+    /* TODO: Update the entire MPXE toolchain to use new ADBMS API */
+    voltage = adbms_afe_get_thermistor_voltage(p_afe, 0, aux_index);
   }
 
   m_afeDatagram.setAuxVoltage(aux_index, voltage);
@@ -219,19 +221,18 @@ std::string AfeManager::processAfeDevAux(std::string &payload) {
   m_afeDatagram.deserialize(payload);
 
   std::size_t dev_index = m_afeDatagram.getDevIndex();
-  const uint16_t start = dev_index * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-  const uint16_t end = start + ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
 
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
-  for (uint16_t aux = start; aux < end; ++aux) {
+  for (uint16_t thermistor_index = 0; thermistor_index < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; ++thermistor_index) {
     uint16_t voltage = 0;
 
     if (p_afe != NULL) {
-      voltage = adbms_afe_get_aux_voltage(p_afe, aux);
+      /* TODO: Update the entire MPXE toolchain to use new ADBMS API */
+      voltage = adbms_afe_get_thermistor_voltage(p_afe, dev_index, thermistor_index);
     }
 
-    m_afeDatagram.setAuxVoltage(aux, voltage);
+    m_afeDatagram.setAuxVoltage(thermistor_index, voltage);
   }
 
   return m_afeDatagram.serialize(CommandCode::AFE_GET_DEV_AUX);
@@ -261,17 +262,15 @@ std::string AfeManager::processAfePackAux() {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   for (std::size_t dev_index = 0; dev_index < ADBMS_AFE_MAX_DEVICES; ++dev_index) {
-    const uint16_t start = dev_index * ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-    const uint16_t end = start + ADBMS_AFE_MAX_THERMISTORS_PER_DEVICE;
-
-    for (uint16_t aux = start; aux < end; ++aux) {
+    for (uint16_t thermistor_index = 0; thermistor_index < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; ++thermistor_index) {
       uint16_t voltage = 0;
 
       if (p_afe != NULL) {
-        voltage = adbms_afe_get_aux_voltage(p_afe, aux);
+        /* TODO: Update the entire MPXE toolchain to use new ADBMS API */
+        voltage = adbms_afe_get_thermistor_voltage(p_afe, dev_index, thermistor_index);
       }
 
-      m_afeDatagram.setAuxVoltage(aux, voltage);
+      m_afeDatagram.setAuxVoltage(thermistor_index, voltage);
     }
   }
 

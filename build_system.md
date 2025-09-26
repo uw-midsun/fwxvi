@@ -41,6 +41,9 @@ options can occur anywhere in the command string
     --build-config=<Build type>
         Specify if we are building in release or debug mode
 
+    --compile-db=
+        Create a compile_commands.json for use with clangd
+
 Commands:
     NONE
         Build the specified target, or all target if not specified.

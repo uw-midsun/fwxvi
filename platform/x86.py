@@ -47,7 +47,7 @@ link_flags = [
 ]
 
 x86_env = Environment(
-    ENV = { 'PATH': os.environ['PATH'] },
+    ENV = os.environ,
 
     CC=cc_compiler,
     CXX=cxx_compiler,
