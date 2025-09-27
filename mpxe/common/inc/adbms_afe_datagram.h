@@ -18,32 +18,41 @@
 
 namespace Datagram {
 
+/**
+ * @class   Datagram::ADBMS_Afe
+ * @brief   Class for managing stored values in AFE
+ * @details This class provides an interface for simulating values in the ADBMS1818 AFE.
+ *          You may store values held by each battery cell, as well as, each thermistor.
+ */
 class ADBMS_AFE {
  public:
-  static constexpr uint8_t AFE_MAX_DEVICES = 3;                /**< Max number of AFE devices supported */
-  static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE = 18;      /**< Max cell channels per AFE device */
-  static constexpr uint8_t AFE_MAX_THERMISTORS_PER_DEVICE = 9; /**< Max thermistors per AFE device */
-
-  static constexpr uint8_t AFE_MAX_CELLS = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;             /**< Total cell channels supported */
-  static constexpr uint8_t AFE_MAX_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_THERMISTORS_PER_DEVICE; /**< Total thermistor channels supported */
-
   /**
    * @brief Index defintions for cache array
    */
   enum class CacheIndex {
-    CELL_DEV_0 = 0, /**< Store cell voltage value for device 0 */
-    CELL_DEV_1,     /**< Store cell voltage value for device 1 */
-    CELL_DEV_2,     /**< Store cell voltage value for device 2 */
-    CELL_PACK,      /**< Store cell voltage value for pack */
-    AUX_DEV_0,      /**< Store aux voltage value for device 0 */
-    AUX_DEV_1,      /**< Store aux voltage value for device 1 */
-    AUX_DEV_2,      /**< Store aux voltage value for device 2 */
-    AUX_PACK,       /**< Store aux voltage value for pack */
+    CELL_DEV_0 = 0,   /**< Store cell voltage value for device 0 */
+    CELL_DEV_1,       /**< Store cell voltage value for device 1 */
+    CELL_DEV_2,       /**< Store cell voltage value for device 2 */
+    CELL_PACK,        /**< Store cell voltage value for pack */
+    THERMISTOR_DEV_0, /**< Store thermistor temperature voltage for device 0 */
+    THERMISTOR_DEV_1, /**< Store thermistor temperature voltage for device 1 */
+    THERMISTOR_DEV_2, /**< Store thermistor temperature voltage for device 2 */
+    THERMISTOR_PACK,  /**< Store thermistor voltage value for pack */
+    BOARD_THERMISTOR,
     DISCHARGE_PACK, /**< Store cell discharge value for pack */
     MAX_CACHE,      /**< Max cache index */
   };
 
   static constexpr size_t CACHE_SIZE = static_cast<size_t>(CacheIndex::MAX_CACHE); /**< Max cache index */
+
+  static constexpr uint8_t AFE_MAX_DEVICES = 3;                      /**< Max number of AFE devices supported */
+  static constexpr uint8_t AFE_MAX_CELLS_PER_DEVICE = 18;            /**< Max cell channels per AFE device */
+  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS_PER_DEVICE = 16; /**< Max thermistors per AFE device */
+  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS_PER_DEVICE = 1; /**< Max board thermistors per Afe device */
+
+  static constexpr uint8_t AFE_MAX_CELLS = AFE_MAX_DEVICES * AFE_MAX_CELLS_PER_DEVICE;                         /**< Total cell channels supported */
+  static constexpr uint8_t AFE_MAX_CELL_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_CELL_THERMISTORS_PER_DEVICE;   /**< Total thermistor channels supported */
+  static constexpr uint8_t AFE_MAX_BOARD_THERMISTORS = AFE_MAX_DEVICES * AFE_MAX_BOARD_THERMISTORS_PER_DEVICE; /**< Total board thermistors */
 
   /**
    * @brief  Cell Discharge State
@@ -54,15 +63,16 @@ class ADBMS_AFE {
   };
 
   /**
-   * @brief Ltc Afe Datagram payload storage
+   * @brief ADBMS1818 Afe Datagram payload storage
    */
   struct Payload {
-    uint8_t index;         /**< Cell/Aux index */
+    uint8_t index;         /**< Cell/Thermistor/Board Thermistor index */
     std::size_t dev_index; /**< device Index */
 
-    uint16_t cell_voltages[AFE_MAX_CELLS];      /**< Data storage for cell voltages */
-    uint16_t aux_voltages[AFE_MAX_THERMISTORS]; /**< Data for aux voltages */
-    bool cell_discharges[AFE_MAX_CELLS];        /**< Cell discharges enabled/disabled */
+    uint16_t cell_voltages[AFE_MAX_CELLS];                    /**< Data storage for cell voltages */
+    uint16_t therm_voltages[AFE_MAX_CELL_THERMISTORS];        /**< Data storage for thermistor voltages */
+    uint16_t board_therm_voltages[AFE_MAX_BOARD_THERMISTORS]; /**< Data storage for board thermistor voltages */
+    bool cell_discharges[AFE_MAX_CELLS];                      /**< Cell discharges enabled/disabled */
 
     uint16_t cache[CACHE_SIZE]; /**< Stores temporary dev/pack values */
   };
@@ -114,7 +124,7 @@ class ADBMS_AFE {
    * @param index Global aux index (0, ..., AFE_MAX_THERMISTORS-1)
    * @param voltage Voltage in mV
    */
-  void setAuxVoltage(uint8_t index, uint16_t voltage);
+  void setThermVoltage(uint8_t index, uint16_t voltage);
 
   /**
    * @brief Set cell voltages for a device
@@ -128,7 +138,7 @@ class ADBMS_AFE {
    * @param dev_index device index
    * @param voltage Voltage in mV
    */
-  void setDeviceAuxVoltage(std::size_t dev_index, uint16_t voltage);
+  void setDeviceThermVoltage(std::size_t dev_index, uint16_t voltage);
 
   /**
    * @brief Set a pack cell voltage reading
@@ -140,7 +150,7 @@ class ADBMS_AFE {
    * @brief Set a pack aux voltage reading
    * @param voltage Voltage in mV
    */
-  void setPackAuxVoltage(uint16_t voltage);
+  void setPackThermVoltage(uint16_t voltage);
 
   /**
    * @brief Set discharges of cell
@@ -153,6 +163,13 @@ class ADBMS_AFE {
    * @param is_discharge Is discharge enabled for cell
    */
   void setCellPackDischarge(bool is_discharge);
+
+  /**
+   * @brief Set the board thermistor voltage
+   * @param dev_index The index of the device to set
+   * @param voltage The new voltage value to set
+   */
+  void setBoardTherm(std::size_t dev_index, uint16_t voltage);
 
   /**
    * @brief Set the Cache value for index
@@ -174,18 +191,25 @@ class ADBMS_AFE {
   std::size_t getDevIndex() const;
 
   /**
-   * @brief Get a single cell voltage reading
-   * @param index Global cell index (0 .. AFE_MAX_CELLS-1)
+   * @brief  Get a single cell voltage reading
+   * @param  index Global cell index (0 .. AFE_MAX_CELLS-1)
    * @return Voltage in millivolts
    */
   uint16_t getCellVoltage(std::size_t index) const;
 
   /**
-   * @brief Get a single aux (thermistor) voltage reading
-   * @param index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
+   * @brief  Get a single aux (thermistor) voltage reading
+   * @param  index Global aux index (0 .. AFE_MAX_THERMISTORS-1)
    * @return Voltage in millivolts
    */
-  uint16_t getAuxVoltage(std::size_t index) const;
+  uint16_t getThermVoltage(std::size_t index) const;
+
+  /**
+   * @brief   Get the Board Thermistor Voltage
+   * @param   dev_index The index of the device to set
+   * @return  Voltage in millivolts
+   */
+  uint16_t getBoardThermVoltage(std::size_t dev_index) const;
 
   /**
    * @brief Get the cell discharge status of a cell
