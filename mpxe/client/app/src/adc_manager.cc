@@ -189,5 +189,3 @@ std::string AdcManager::processReadAdcAllConverted() {
 
   return m_adcDatagram.serialize(CommandCode::ADC_GET_ALL_CONVERTED);
 }
-
-

@@ -149,7 +149,7 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
     } else if (interface == "afe") {
       handleAfeCommands(action, tokens);
     } else if (interface == "adc") {
-      handleAdcCommands(action, tokens); 
+      handleAdcCommands(action, tokens);
     } else if (interface == "i2c") {
     } else if (interface == "spi") {
     } else {

@@ -98,11 +98,11 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       break;
     }
     case CommandCode::ADC_GET_RAW: {
-      serverAdcManager.updateAdcRaw(clientName, payload); 
+      serverAdcManager.updateAdcRaw(clientName, payload);
       break;
     }
     case CommandCode::ADC_GET_ALL_RAW: {
-      serverAdcManager.updateAdcRawAll(clientName, payload); 
+      serverAdcManager.updateAdcRawAll(clientName, payload);
       break;
     }
     case CommandCode::ADC_GET_CONVERTED: {
@@ -110,8 +110,8 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       break;
     }
     case CommandCode::ADC_GET_ALL_CONVERTED: {
-      serverAdcManager.updateAdcConvertedAll(clientName, payload); 
-      break; 
+      serverAdcManager.updateAdcConvertedAll(clientName, payload);
+      break;
     }
     default: {
       break;

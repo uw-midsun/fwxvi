@@ -128,24 +128,24 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::ADC_SET_RAW: {
-      clientAdcManager.setAdcRaw(payload); 
+      clientAdcManager.setAdcRaw(payload);
       break;
     }
     case CommandCode::ADC_SET_ALL_RAW: {
-      clientAdcManager.setAdcAllRaw(payload); 
+      clientAdcManager.setAdcAllRaw(payload);
       break;
     }
     case CommandCode::ADC_GET_RAW: {
-      client->sendMessage(clientAdcManager.processReadAdcRaw(payload)); 
+      client->sendMessage(clientAdcManager.processReadAdcRaw(payload));
       break;
     }
     case CommandCode::ADC_GET_ALL_RAW: {
-      client->sendMessage(clientAdcManager.processReadAdcAllRaw()); 
+      client->sendMessage(clientAdcManager.processReadAdcAllRaw());
       break;
     }
     case CommandCode::ADC_GET_CONVERTED: {
       client->sendMessage(clientAdcManager.processReadAdcConverted(payload));
-      break; 
+      break;
     }
     case CommandCode::ADC_GET_ALL_CONVERTED: {
       client->sendMessage(clientAdcManager.processReadAdcAllConverted());

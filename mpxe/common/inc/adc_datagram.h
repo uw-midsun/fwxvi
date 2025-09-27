@@ -33,7 +33,7 @@ namespace Datagram {
  */
 class Adc {
  public:
-  //TODO: Was 19, why? <- FIgure out
+  // TODO: Was 19, why? <- FIgure out
   static const constexpr uint8_t MPXE_NUM_ADC_CHANNELS = 16U; /**< Total Number of ADC Channels */
 
   /**
