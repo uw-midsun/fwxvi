@@ -28,7 +28,7 @@
 /**
  * @class AdcManager
  * @brief   Class that manages receiving and transmitting ADC commands and JSON logging
- * @details This class is responsible for transmitting serialized messages for reading/writing ADC values. 
+ * @details This class is responsible for transmitting serialized messages for reading/writing ADC values.
  *          It shall support reading/writing to all channels or individual channels
  *          The class shall cache current ADC data using a hash-map.
  */
