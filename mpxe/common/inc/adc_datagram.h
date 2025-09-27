@@ -33,7 +33,8 @@ namespace Datagram {
  */
 class Adc {
  public:
-  static const constexpr uint8_t MPXE_NUM_ADC_CHANNELS = 19U; /**< Total Number of ADC Channels */
+  //TODO: Was 19, why? <- FIgure out
+  static const constexpr uint8_t MPXE_NUM_ADC_CHANNELS = 16U; /**< Total Number of ADC Channels */
 
   /**
    * @brief   GPIO Port definition
@@ -41,6 +42,7 @@ class Adc {
   enum class Port {
     GPIO_PORT_A = 0, /**< GPIO port A */
     GPIO_PORT_B,     /**< GPIO port B */
+    GPIO_PORT_C,     /**< GPIO port C */
     NUM_GPIO_PORTS   /**< Number of GPIO Ports */
   };
 

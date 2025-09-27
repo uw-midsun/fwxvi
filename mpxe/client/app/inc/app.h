@@ -16,6 +16,7 @@
 /* Intra-component Headers */
 #include "adbms_afe_manager.h"
 #include "gpio_manager.h"
+#include "adc_manager.h"
 
 /**
  * @defgroup ClientAppMain

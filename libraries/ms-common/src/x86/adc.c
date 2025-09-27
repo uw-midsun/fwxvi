@@ -7,7 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library Headers */
+ /* Standard library Headers */
 #include <stddef.h>
 #include <string.h>
 

@@ -24,6 +24,8 @@ extern "C" {
 #include "adc_manager.h"
 #include "app.h"
 
+#include <cstring> //TODO DElete debugging rn
+
 void AdcManager::setAdcRaw(std::string &payload) {
   m_adcDatagram.deserialize(payload);
 
@@ -189,3 +191,4 @@ std::string AdcManager::processReadAdcAllConverted() {
 
   return m_adcDatagram.serialize(CommandCode::ADC_GET_ALL_CONVERTED);
 }
+
