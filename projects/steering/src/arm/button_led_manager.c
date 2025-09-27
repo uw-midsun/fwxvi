@@ -14,6 +14,7 @@
 #include "gpio.h"
 #include "interrupts.h"
 #include "stm32l4xx.h"
+#include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_dma.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_tim.h"
