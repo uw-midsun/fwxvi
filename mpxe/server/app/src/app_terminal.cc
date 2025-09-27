@@ -55,7 +55,7 @@ void Terminal::handleGpioCommands(const std::string &action, std::vector<std::st
   if (!message.empty()) {
     m_Server->sendMessage(m_targetClient, message);
   } else {
-    std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
+    std::cout << "Invalid command. Refer to command.md" << std::endl;
   }
   m_targetClient = nullptr;
 }
@@ -101,8 +101,36 @@ void Terminal::handleAfeCommands(const std::string &action, std::vector<std::str
   if (!message.empty()) {
     m_Server->sendMessage(m_targetClient, message);
   } else {
-    std::cout << "Invalid command. Refer to sim_command.md" << std::endl;
+    std::cout << "Invalid command. Refer to command.md" << std::endl;
   }
+  m_targetClient = nullptr;
+}
+
+void Terminal::handleAdcCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+
+  if (action == "set_raw" && tokens.size() >= 4) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_RAW, tokens[2], tokens[3]);
+  } else if (action == "set_all_raw" && tokens.size() >= 3) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_ALL_RAW, "", tokens[2]);
+  } else if (action == "get_raw" && tokens.size() >= 3) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_GET_RAW, tokens[2], "");
+  } else if (action == "get_all_raw" && tokens.size() >= 2) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_GET_ALL_RAW, "", "");
+  } else if (action == "get_converted" && tokens.size() >= 3) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_GET_CONVERTED, tokens[2], "");
+  } else if (action == "get_all_converted" && tokens.size() >= 2) {
+    message = serverAdcManager.createAdcCommand(CommandCode::ADC_GET_ALL_CONVERTED, "", "");
+  } else {
+    std::cerr << "Unsupported action: " << action << std::endl;
+  }
+
+  if (!message.empty()) {
+    m_Server->sendMessage(m_targetClient, message);
+  } else {
+    std::cout << "Invalid ADC command. Refer to command.md" << std::endl;
+  }
+
   m_targetClient = nullptr;
 }
 
@@ -120,6 +148,8 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
       handleGpioCommands(action, tokens);
     } else if (interface == "afe") {
       handleAfeCommands(action, tokens);
+    } else if (interface == "adc") {
+      handleAdcCommands(action, tokens);
     } else if (interface == "i2c") {
     } else if (interface == "spi") {
     } else {

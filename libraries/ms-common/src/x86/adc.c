@@ -149,7 +149,6 @@ StatusCode adc_read_raw(GpioAddress *address, uint16_t *reading) {
 
   /* Index of reading is its rank - 1 */
   *reading = s_adc_readings[s_adc_ranks[channel] - 1U];
-
   return STATUS_CODE_OK;
 }
 
