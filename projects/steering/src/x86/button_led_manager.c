@@ -16,6 +16,7 @@
 /* Intra-component Headers */
 #include "button_led_manager.h"
 #include "steering.h"
+#include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage;
 

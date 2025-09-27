@@ -36,7 +36,7 @@
 
 #define LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
 #define LED_DMA_IRQn DMA1_Channel2_IRQn
-#define LED_DMA_REQUEST DMA_REQUEST_8
+#define LED_DMA_REQUEST DMA_REQUEST_7
 
 static uint32_t s_timer_arr = 0U;
 static uint16_t s_t1_high_ticks = 0U;
@@ -63,7 +63,6 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
     s_button_led_manager.needs_update = false;
   }
 }
-
 static void button_led_manager_compute_timing_from_clock(void) {
   /* Get PCLK1 and APB1 prescaler state */
   RCC_ClkInitTypeDef clkcfg;
@@ -79,30 +78,30 @@ static void button_led_manager_compute_timing_from_clock(void) {
   }
 
   /* Compute target tick counts for one SK6812 bit period */
-  double target_counts_d = (double)tim_clk * (SK6812_BIT_PERIOD_US * 1e-6);
+  float target_counts_f = (float)tim_clk * (SK6812_BIT_PERIOD_US * 1e-6f);
 
-  /* Find PSC and ARR such that (ARR+1) * (PSC+1) ~= target_counts_d */
+  /* Find PSC and ARR such that (ARR+1) * (PSC+1) ~= target_counts_f */
   uint32_t psc = 0;
   uint32_t arr = 0;
 
-  if (target_counts_d <= 1.0) {
+  if (target_counts_f <= 1.0f) {
     psc = 0;
     arr = 1;
-  } else if (target_counts_d <= 65535.0) {
+  } else if (target_counts_f <= 65535.0f) {
     psc = 0;
-    arr = (uint32_t)(target_counts_d + 0.5); /* round */
+    arr = (uint32_t)(target_counts_f + 0.5f); /* round */
   } else {
     /* Compute ceil(target_counts / 65536) - 1 for prescaler */
-    uint32_t needed = (uint32_t)((target_counts_d + 65535.0) / 65536.0);
+    uint32_t needed = (uint32_t)((target_counts_f + 65535.0f) / 65536.0f);
     if (needed == 0) needed = 1U;
     psc = (needed > 0) ? (needed - 1U) : 0U;
-    double arr_d = ((double)tim_clk / (double)(psc + 1U)) * (SK6812_BIT_PERIOD_US * 1e-6);
-    if (arr_d < 1.0)
+    float arr_f = ((float)tim_clk / (float)(psc + 1U)) * (SK6812_BIT_PERIOD_US * 1e-6f);
+    if (arr_f < 1.0f)
       arr = 1U;
-    else if (arr_d > 65535.0)
+    else if (arr_f > 65535.0f)
       arr = 65535U;
     else
-      arr = (uint32_t)(arr_d + 0.5);
+      arr = (uint32_t)(arr_f + 0.5f);
   }
 
   /* Ensure ARR fits in 16-bit */
@@ -123,9 +122,9 @@ static void button_led_manager_compute_timing_from_clock(void) {
   s_timer_arr = (uint32_t)s_tim2_handle.Init.Period;
 
   /* Compute high-time ticks for logical '1' and '0' */
-  double counts_per_bit = (double)(s_timer_arr + 1U);
-  s_t1_high_ticks = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5);
-  s_t0_high_ticks = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5);
+  float counts_per_bit = (float)(s_timer_arr + 1U);
+  s_t1_high_ticks = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
+  s_t0_high_ticks = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
 
   if (s_t1_high_ticks == 0) s_t1_high_ticks = 1;
   if (s_t0_high_ticks == 0) s_t0_high_ticks = 0;
