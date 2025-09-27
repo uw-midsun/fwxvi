@@ -1,6 +1,7 @@
 from SCons.Script import *
 from scons.common import flash_run
 import subprocess
+import scons_compiledb
 import os
 import json
 
@@ -129,6 +130,10 @@ if COMMAND == "mpxe":
 
 # Retrieve the construction environment from the appropriate platform script
 env = SConscript(f'platform/{PLATFORM}.py', exports=['HARDWARE_TYPE', 'FLASH_TYPE', 'BUILD_CONFIG'])
+
+database_name = f"compile_commands.json"
+config = scons_compiledb.Config(db=database_name)
+scons_compiledb.enable_with_cmdline(env, config)
 
 VARS = {
     "PLATFORM": PLATFORM,
