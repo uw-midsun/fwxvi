@@ -15,32 +15,42 @@
 #define ADC_KEY "adc"
 
 
-std::string stringifyReadings(const uint8_t *buffer, uint8_t bufferLength) {
-    std::string result;
-    std::size_t count = bufferLength / sizeof(uint16_t);
-    for (size_t i = 0; i < count; i++) {
-        uint16_t value = static_cast<uint16_t>(buffer[2 * i]) |
-                         (static_cast<uint16_t>(buffer[2 * i + 1]) << 8);
+std::string AdcManager::stringifyReadings(const uint8_t *&buffer, size_t bufferLength) {
+  if (bufferLength % 2 != 0) {
+    throw std::runtime_error("ADC payload length not even");
+  }
 
-        result += std::to_string(value);   
-        if (i + 1 < count) {
-            result += ", ";
-        }
-    }
+  std::string result;
+  bool first = true;
 
-    return result;
+  for (size_t remaining = bufferLength; remaining >= 2; remaining -= 2) {
+    uint16_t value = static_cast<uint16_t>(buffer[0]) | (static_cast<uint16_t>(buffer[1]) << 8);
+    buffer += 2;
+
+    if (!first) 
+      result += ", ";
+
+    first = false;
+
+    result += std::to_string(value);
+  }
+
+  return result;
 }
 
 std::string AdcManager::stringifyGpioAddress(GpioPort port, uint8_t pin) {
-    for (const Mapping &entry : channelMap) {
-      //TODO Why do I get VSCode error? I might be dyslexic
-        if (entry.port == port && entry.pin == pin) {
-            char portLetter = "ABC"[static_cast<int>(port)];
-            return "Channel " + std::to_string(entry.channel) +
-                   " -> " + portLetter + std::to_string(pin);
-        }
+  char portLetter = "ABC"[static_cast<int>(port)];
+  return std::string(1, portLetter) + std::to_string(pin);
+}
+
+std::string AdcManager::getChannel(GpioPort port, uint8_t pin) {
+  for (const Mapping &entry : channelMap) {
+    if (entry.port == port && entry.pin == pin) {
+      std::string channelNumString = (entry.channel < 10) ? "0" + std::to_string(entry.channel) : std::to_string(entry.channel);
+      return "channel " + channelNumString;
     }
-    return "Invalid mapping";
+  }
+  return "Invalid Channel"; 
 }
 
 void AdcManager::loadAdcInfo(std::string &projectName) {
@@ -64,10 +74,12 @@ void AdcManager::updateAdcRaw(std::string &projectName, std::string &payload) {
 
   GpioPort port = m_adcDatagram.getGpioPort(); 
   uint8_t pin = m_adcDatagram.getGpioPin(); 
-
-  std::string GpioAddress = stringifyGpioAddress(port, pin); 
   
-  m_adcInfo[RAW_READINGS][GpioAddress] = dataString; 
+  std::string channelKey = getChannel(port, pin);
+
+  m_adcInfo[RAW_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(port, pin); 
+  m_adcInfo[RAW_READINGS][channelKey]["Reading"] = dataString;
+
   saveAdcInfo(projectName);
 }
 
@@ -77,12 +89,12 @@ void AdcManager::updateAdcRawAll(std::string &projectName, std::string &payload)
 
   const uint8_t *receivedData = m_adcDatagram.getBuffer(); 
   const uint8_t dataLength = m_adcDatagram.getBufferLength(); 
-
-  std::string dataString = stringifyReadings(receivedData, dataLength);
   
   for (const Mapping &entry : channelMap) {
-    std::string gpioAddress = stringifyGpioAddress(entry.port, entry.pin);
-    m_adcInfo[RAW_READINGS][gpioAddress] = dataString;
+    std::string channelKey = getChannel(entry.port, entry.pin);
+
+    m_adcInfo[RAW_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(entry.port, entry.pin); 
+    m_adcInfo[RAW_READINGS][channelKey]["Reading"] = stringifyReadings(receivedData, 2);
   } 
 
   saveAdcInfo(projectName);
@@ -100,34 +112,38 @@ void AdcManager::updateAdcConverted(std::string &projectName, std::string &paylo
   GpioPort port = m_adcDatagram.getGpioPort(); 
   uint8_t pin = m_adcDatagram.getGpioPin(); 
 
-  std::string GpioAddress = stringifyGpioAddress(port, pin); 
-  
-  m_adcInfo[CONV_READINGS][GpioAddress] = dataString; 
+  std::string channelKey = getChannel(port, pin);
+  m_adcInfo[CONV_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(port, pin); 
+  m_adcInfo[CONV_READINGS][channelKey]["Reading"] = dataString;
+
   saveAdcInfo(projectName);
 }
 
 void AdcManager::updateAdcConvertedAll(std::string &projectName, std::string &payload) {
   loadAdcInfo(projectName);
   m_adcDatagram.deserialize(payload);
-  m_adcDatagram.deserialize(payload);
 
   const uint8_t *receivedData = m_adcDatagram.getBuffer(); 
   const uint8_t dataLength = m_adcDatagram.getBufferLength(); 
-
-  std::string dataString = stringifyReadings(receivedData, dataLength);
   
   for (const Mapping &entry : channelMap) {
-    std::string gpioAddress = stringifyGpioAddress(entry.port, entry.pin);
-    m_adcInfo[CONV_READINGS][gpioAddress] = dataString;
+    std::string channelKey = getChannel(entry.port, entry.pin);
+    m_adcInfo[CONV_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(entry.port, entry.pin); 
+    m_adcInfo[CONV_READINGS][channelKey]["Reading"] = stringifyReadings(receivedData, 2);
   } 
   saveAdcInfo(projectName);
 } 
 
-//TODO Add error checks for GPIO Address
 std::string AdcManager::createAdcCommand(CommandCode commandCode, std::string gpioAddress, std::string reading) {
   try {
     switch (commandCode) {
       case CommandCode::ADC_SET_RAW: { 
+        if (gpioAddress.empty() || gpioAddress.size() < 2) {
+          throw std::runtime_error(
+              "Invalid format for port/pin specification. Good examples: 'A0' "
+              "'C1' 'B1'");
+          break;
+        }
         GpioPort port = static_cast<GpioPort>(gpioAddress[0] - 'A'); 
         uint8_t pin = static_cast<uint8_t>(std::stoi(gpioAddress.substr(1))); 
         uint16_t readingValue = static_cast<uint16_t>(std::stoi(reading)); 
@@ -143,30 +159,14 @@ std::string AdcManager::createAdcCommand(CommandCode commandCode, std::string gp
         m_adcDatagram.setBuffer(reinterpret_cast<const uint8_t *>(&readingValue), 2); 
         break;
       }
-      //TODO Not sure if being used, might just remove it
-      // case CommandCode::ADC_SET_CONVERTED: {
-      //   GpioPort port = static_cast<GpioPort>(gpioAddress[0] - 'A'); 
-      //   uint8_t pin = static_cast<uint8_t>(std::stoi(gpioAddress.substr(1))); 
-
-      //   m_adcDatagram.setGpioPin(pin);
-      //   m_adcDatagram.setGpioPort(port); 
-      //   break;
-      // }
-      // case CommandCode::ADC_SET_ALL_CONVERTED: {
-      //   break;
-      // }
-      case CommandCode::ADC_GET_RAW: {
-        GpioPort port = static_cast<GpioPort>(gpioAddress[0] - 'A'); 
-        uint8_t pin = static_cast<uint8_t>(std::stoi(gpioAddress.substr(1))); 
-
-        m_adcDatagram.setGpioPin(pin);
-        m_adcDatagram.setGpioPort(port); 
-        break;
-      }
-      case CommandCode::ADC_GET_ALL_RAW: {
-        break;
-      }
+      case CommandCode::ADC_GET_RAW: 
       case CommandCode::ADC_GET_CONVERTED: {
+        if (gpioAddress.empty() || gpioAddress.size() < 2) {
+          throw std::runtime_error(
+              "Invalid format for port/pin specification. Good examples: 'A0' "
+              "'C1' 'B1'");
+          break;
+        }
         GpioPort port = static_cast<GpioPort>(gpioAddress[0] - 'A'); 
         uint8_t pin = static_cast<uint8_t>(std::stoi(gpioAddress.substr(1))); 
 
@@ -174,6 +174,7 @@ std::string AdcManager::createAdcCommand(CommandCode commandCode, std::string gp
         m_adcDatagram.setGpioPort(port); 
         break;
       }
+      case CommandCode::ADC_GET_ALL_RAW: 
       case CommandCode::ADC_GET_ALL_CONVERTED: {
         break;
       }

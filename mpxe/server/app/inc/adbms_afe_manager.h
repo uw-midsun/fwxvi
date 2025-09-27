@@ -29,13 +29,17 @@
 /**
  * @class   AfeManager
  * @brief   Class that manages receiving and transmitting Afe commands and JSON logging
- * @details This class is... (Write later)
+ * @details This class is responsible for transmitting serialized messages for reading cell/thermistor 
+ *          information. It shall support reading all cells/thermistors or individual ones
+ *          The class shall cache current Afe data using a hash-map.
  */
 class AfeManager {
  private:
+  /** @brief Hash maps to store Afe information */
   using AfeObjectInfo = std::unordered_map<std::string, std::string>;
-  std::unordered_map<std::string, AfeObjectInfo> m_afeInfo;
-  Datagram::ADBMS_AFE m_afeDatagram;
+  std::unordered_map<std::string, AfeObjectInfo> m_afeInfo;           /**< Hash map to store Afe data */
+  
+  Datagram::ADBMS_AFE m_afeDatagram; /**< Datagram object to serialize/deserialize payloads */  
 
   /**
    * @brief  Loads the Hash-map cache with a projects Afe data

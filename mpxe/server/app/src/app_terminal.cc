@@ -113,10 +113,6 @@ void Terminal::handleAdcCommands(const std::string &action, std::vector<std::str
     message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_RAW, tokens[2], tokens[3]);
   } else if (action == "set_all_raw" && tokens.size() >= 3) {
     message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_ALL_RAW, "", tokens[2]);
-  } else if (action == "set_converted" && tokens.size() >= 3) {
-    message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_CONVERTED, tokens[2], "");
-  } else if (action == "set_all_converted" && tokens.size() >= 2) {
-    message = serverAdcManager.createAdcCommand(CommandCode::ADC_SET_ALL_CONVERTED, "", "");
   } else if (action == "get_raw" && tokens.size() >= 3) {
     message = serverAdcManager.createAdcCommand(CommandCode::ADC_GET_RAW, tokens[2], "");
   } else if (action == "get_all_raw" && tokens.size() >= 2) {
