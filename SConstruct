@@ -266,8 +266,6 @@ else:  # command not recognised, default to build
 # Helper targets for x86
 ###########################################################
 if PLATFORM == 'x86':
-    print(len(COMMAND_LINE_TARGETS))
-
     # For MPXE files, these are passed in as an additional non-target argument
     if TARGET is None and len(COMMAND_LINE_TARGETS) >= 2:
         TARGET = "projects/" + COMMAND_LINE_TARGETS[1]
