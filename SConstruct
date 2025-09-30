@@ -125,7 +125,7 @@ else:
 COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
 
 # Force x86 if the command is for MPXE
-if COMMAND == "mpxe":
+if COMMAND == "mpxe" or COMMAND == "mpxe-gui":
     PLATFORM = "x86"
 
 # Retrieve the construction environment from the appropriate platform script

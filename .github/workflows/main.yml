@@ -100,4 +100,4 @@ jobs:
         run: |
           scons --platform=x86 --define="${DEFINES}"
           scons mpxe
-          scons mpxe-gui --platform=x86
+          scons mpxe-gui

@@ -459,7 +459,7 @@ mpxe_gui = qtEnv.Program(
     target=BIN_DIR.Dir('projects').File('mpxe_gui'),
     source=gui_cc
 )
-Alias('mpxe-gui-build', mpxe_gui)
+Alias('mpxe-gui', mpxe_gui)
 
 ###########################################################
 # Python
