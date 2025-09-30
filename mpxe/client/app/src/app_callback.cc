@@ -20,6 +20,7 @@
 
 GpioManager clientGpioManager;
 AfeManager clientAfeManager;
+AdcManager clientAdcManager;
 
 void applicationMessageCallback(Client *client, std::string &message) {
   std::string data = message;
@@ -132,6 +133,31 @@ void applicationMessageCallback(Client *client, std::string &message) {
     }
     case CommandCode::AFE_GET_BOARD_TEMP: {
       client->sendMessage(clientAfeManager.processAfeBoardTherm(payload));
+      break;
+      break;
+    }
+    case CommandCode::ADC_SET_RAW: {
+      clientAdcManager.setAdcRaw(payload);
+      break;
+    }
+    case CommandCode::ADC_SET_ALL_RAW: {
+      clientAdcManager.setAdcAllRaw(payload);
+      break;
+    }
+    case CommandCode::ADC_GET_RAW: {
+      client->sendMessage(clientAdcManager.processReadAdcRaw(payload));
+      break;
+    }
+    case CommandCode::ADC_GET_ALL_RAW: {
+      client->sendMessage(clientAdcManager.processReadAdcAllRaw());
+      break;
+    }
+    case CommandCode::ADC_GET_CONVERTED: {
+      client->sendMessage(clientAdcManager.processReadAdcConverted(payload));
+      break;
+    }
+    case CommandCode::ADC_GET_ALL_CONVERTED: {
+      client->sendMessage(clientAdcManager.processReadAdcAllConverted());
       break;
     }
     default: {

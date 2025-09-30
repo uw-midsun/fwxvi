@@ -10,10 +10,13 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "status.h"
 
 /**
  * @defgroup steering
@@ -23,6 +26,7 @@
 
 /* Forward declarations */
 struct ButtonManager;
+struct ButtonLEDManager;
 
 #define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
 
@@ -39,6 +43,12 @@ typedef enum {
   STEERING_BUTTON_NEUTRAL,
 
   STEERING_BUTTON_HORN,
+  STEERING_BUTTON_REGEN,
+
+  STEERING_BUTTON_PUSH_TO_TALK,
+
+  STEERING_BUTTON_CRUISE_CONTROL_UP,
+  STEERING_BUTTON_CRUISE_CONTROL_DOWN,
 
   NUM_STEERING_BUTTONS,
 } SteeringButtons;
@@ -63,8 +73,9 @@ typedef struct {
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */
   uint8_t light_signal;                     /**< Light signal state (see #LightsSignalState) */
 
-  struct ButtonManager *button_manager; /**< Button manager storage */
-  SteeringConfig *config;               /**< Pointer to the steering configuration data */
+  struct ButtonManager *button_manager;        /**< Button manager */
+  struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
+  SteeringConfig *config;                      /**< Pointer to the steering configuration data */
 } SteeringStorage;
 
 /**

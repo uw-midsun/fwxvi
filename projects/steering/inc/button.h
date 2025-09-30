@@ -19,8 +19,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup BUTTON
- * @brief    Driver for an individual GPIO-connected button with debounce and edge-triggered callbacks
+ * @defgroup steering
+ * @brief    steering Firmware
  * @{
  */
 
