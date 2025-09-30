@@ -66,9 +66,21 @@ Commands:
         (x86) Run the project's binary.
         - e.g. `scons sim --platform=x86 <target>` (`scons sim --platform=x86 --project=new_led`)
 
-    vehicle_sim
-        (x86) Runs a full vehicle simulation
-        - e.g. 'scons vehicle_sim --platform=x86'
+    mpxe_server
+        (x86) Builds the MPXE simulation server
+        - e.g. 'scons mpxe_server'
+    
+    sim mpxe_server
+        (x86) Run the MPXE simulation server
+        - e.g. 'scons sim mpxe_server'
+
+    mpxe_gui
+        (x86) Builds the MPXE simulation GUI
+        - e.g. 'scons mpxe_gui'
+
+    sim mpxe_gui
+        (x86) Run the MPXE simulation GUI
+        - e.g. 'scons sim mpxe_gui'
 
     gdb
         (x86) Run the project's binary with gdb.
