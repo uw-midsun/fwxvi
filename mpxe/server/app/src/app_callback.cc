@@ -69,24 +69,24 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       serverAfeManager.updateAfeCellVoltage(clientName, payload);
       break;
     }
-    case CommandCode::AFE_GET_AUX: {
-      serverAfeManager.updateAfeAuxVoltage(clientName, payload);
+    case CommandCode::AFE_GET_THERMISTOR: {
+      serverAfeManager.updateAfeThermVoltage(clientName, payload);
       break;
     }
     case CommandCode::AFE_GET_DEV_CELL: {
       serverAfeManager.updateAfeCellDevVoltage(clientName, payload);
       break;
     }
-    case CommandCode::AFE_GET_DEV_AUX: {
-      serverAfeManager.updateAfeAuxDevVoltage(clientName, payload);
+    case CommandCode::AFE_GET_DEV_THERMISTOR: {
+      serverAfeManager.updateAfeThermDevVoltage(clientName, payload);
       break;
     }
     case CommandCode::AFE_GET_PACK_CELL: {
       serverAfeManager.updateAfeCellPackVoltage(clientName, payload);
       break;
     }
-    case CommandCode::AFE_GET_PACK_AUX: {
-      serverAfeManager.updateAfeAuxPackVoltage(clientName, payload);
+    case CommandCode::AFE_GET_PACK_THERMISTOR: {
+      serverAfeManager.updateAfeThermPackVoltage(clientName, payload);
       break;
     }
     case CommandCode::AFE_GET_DISCHARGE: {
@@ -95,6 +95,11 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
     }
     case CommandCode::AFE_GET_PACK_DISCHARGE: {
       serverAfeManager.updateAfeCellPackDischarge(clientName, payload);
+      break;
+    }
+    case CommandCode::AFE_GET_BOARD_TEMP: {
+      serverAfeManager.updateAfeBoardThermVoltage(clientName, payload);
+      break;
       break;
     }
     case CommandCode::ADC_GET_RAW: {
