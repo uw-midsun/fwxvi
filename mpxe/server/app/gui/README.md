@@ -25,7 +25,7 @@ If it is not there, please move it there
 ### Building it
 To Build:
 ```bash
-scons mpxe-gui --platform=x86
+scons mpxe_gui --platform=x86
 ```
 Should automatically launch the GUI application, if it hasn't, or if you just want to run the GUI app again, you can just run the executable directly:
 ```bash

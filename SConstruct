@@ -125,7 +125,7 @@ else:
 COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
 
 # Force x86 if the command is for MPXE
-if COMMAND == "mpxe" or COMMAND == "mpxe-gui":
+if COMMAND == "mpxe_server" or COMMAND == "mpxe_gui" or COMMAND == "sim":
     PLATFORM = "x86"
 
 # Retrieve the construction environment from the appropriate platform script
@@ -233,22 +233,29 @@ elif COMMAND == "cantools":
 # Run MPXE Server
 ###########################################################
 
-elif COMMAND == "mpxe":
+elif COMMAND == "mpxe_server":
     PLATFORM = "x86"
     VARS["PLATFORM"] = PLATFORM
+
+    # Build the server ELF
     SConscript('scons/build.scons', exports='VARS')
     MPXE_ELF = BIN_DIR.Dir("projects").File("mpxe_server")
+
+    Default(MPXE_ELF)
 
 ###########################################################
 # RUN MPXE GUI 
 ###########################################################
-
-elif COMMAND == "mpxe-gui":
+elif COMMAND == "mpxe_gui":
     PLATFORM = "x86"
     VARS["PLATFORM"] = PLATFORM
+
+    # Build the GUI ELF
     SConscript('scons/build.scons', exports='VARS')
     MPXE_GUI_ELF = BIN_DIR.Dir("projects").File("mpxe_gui")
 
+    Default(MPXE_GUI_ELF)
+    
 ###########################################################
 # Build
 ###########################################################
@@ -259,34 +266,26 @@ else:  # command not recognised, default to build
 # Helper targets for x86
 ###########################################################
 if PLATFORM == 'x86':
-    if TARGET:
-        project_elf = BIN_DIR.File(TARGET)
-        # os.exec the x86 project ELF file to simulate it
+    print(len(COMMAND_LINE_TARGETS))
 
-        def sim_run(target, source, env):
-            print('Simulating', project_elf)
-            subprocess.run([project_elf.path, TARGET.split("/")[-1]])
+    # For MPXE files, these are passed in as an additional non-target argument
+    if TARGET is None and len(COMMAND_LINE_TARGETS) >= 2:
+        TARGET = "projects/" + COMMAND_LINE_TARGETS[1]
 
-        AlwaysBuild(Command('#/sim', project_elf, sim_run))
+    project_elf = BIN_DIR.File(TARGET)
+    # os.exec the x86 project ELF file to simulate it
 
-        # open gdb with the elf file
-        def gdb_run(target, source, env):
-            subprocess.run(['/usr/bin/gdb', project_elf.path])
+    def sim_run(target, source, env):
+        print('Simulating', project_elf)
+        subprocess.run([project_elf.path, TARGET.split("/")[-1]])
 
-        AlwaysBuild(Command('#/gdb', project_elf, gdb_run))
+    AlwaysBuild(Command('#/sim', project_elf, sim_run))
 
-    if COMMAND == "mpxe":
-        def mpxe_run(target, source, env):
-            print('Running MPXE Server', MPXE_ELF)
-            subprocess.run(MPXE_ELF.path)
-        AlwaysBuild(Command('#/sim', MPXE_ELF, mpxe_run))
+    # open gdb with the elf file
+    def gdb_run(target, source, env):
+        subprocess.run(['/usr/bin/gdb', project_elf.path])
 
-    if COMMAND == "mpxe-gui":
-        def gui_run(target, source, env):
-            print('Running MPXE GUI', MPXE_GUI_ELF)
-            subprocess.run(MPXE_GUI_ELF.path)
-
-        AlwaysBuild(Command('#/sim', MPXE_GUI_ELF, gui_run))
+    AlwaysBuild(Command('#/gdb', project_elf, gdb_run))
 
 ###########################################################
 # Helper targets for arm
