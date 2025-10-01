@@ -44,10 +44,10 @@ typedef enum {
  * @brief   Vehicle power states
  */
 typedef enum {
-  VEHICLE_POWER_STATE_IDLE,      /**< Ready but not driving or charging, cars in neutral */
-  VEHICLE_POWER_STATE_DRIVE,     /**< Driving: motor relays closed, LV enabled */
-  VEHICLE_POWER_STATE_CHARGE,    /**< Charging: charger detected, motor relay may be required */
-  VEHICLE_POWER_STATE_FAULT      /**< Faulted: relays open, latched until reset */
+  VEHICLE_POWER_STATE_IDLE,   /**< Ready but not driving or charging, cars in neutral */
+  VEHICLE_POWER_STATE_DRIVE,  /**< Driving: motor relays closed, LV enabled */
+  VEHICLE_POWER_STATE_CHARGE, /**< Charging: charger detected, motor relay may be required */
+  VEHICLE_POWER_STATE_FAULT   /**< Faulted: relays open, latched until reset */
 } VehiclePowerStates;
 
 /************************************************************************************************
@@ -107,10 +107,10 @@ typedef enum {
  * @brief   Steering lights definitions
  */
 typedef enum {
-  STEERING_LIGHTS_OFF_STATE,      /**< Steering lights off turn */
-  STEERING_LIGHTS_LEFT_STATE,     /**< Steering light left turn */
-  STEERING_LIGHTS_RIGHT_STATE,    /**< Steering light right turn */
-  NUM_STEERING_LIGHTS,            /**< Number of steering light states */
+  STEERING_LIGHTS_OFF_STATE,   /**< Steering lights off turn */
+  STEERING_LIGHTS_LEFT_STATE,  /**< Steering light left turn */
+  STEERING_LIGHTS_RIGHT_STATE, /**< Steering light right turn */
+  NUM_STEERING_LIGHTS,         /**< Number of steering light states */
 } SteeringLightState;
 
 /**
