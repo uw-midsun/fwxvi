@@ -14,20 +14,16 @@
 /* Intra-component Headers */
 #include "current_acs37800.h"
 
+#include "current_acs37800_defs.h"
+
 // initialize the storage object
-StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort *i2c_port, I2CAddress *i2c_address) {
-  if (storage == NULL || i2c_address == NULL || i2c_port == NULL) {
+StatusCode acs37800_init(ACS37800_Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
+  if (storage == NULL || i2c_address < 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
   // i2c peripherals
-  storage->i2c_port = *i2c_port;
-  storage->i2c_address = *i2c_address;
-
-  // conversion scaling factors
-  storage->current_per_amp = CURRENT_SCALE;
-  storage->voltage_per_volt = VOLTAGE_SCALE;
-  storage->power_per_watt = POWER_SCALE;
+  storage->i2c_port = i2c_port;
+  storage->i2c_address = i2c_address;
 
   return STATUS_CODE_OK;
 }
@@ -66,7 +62,7 @@ StatusCode acs37800_get_current(ACS37800_Storage *storage, float *out_current_am
   // the current value is signed (16 bits upper)
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
 
-  *out_current_amps = (float)(current_raw)*storage->current_per_amp;
+  *out_current_amps = (float)(current_raw)*CURRENT_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -86,7 +82,7 @@ StatusCode acs37800_get_voltage(ACS37800_Storage *storage, float *out_voltage_mV
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_voltage_mV = (float)(voltage_raw)*storage->voltage_per_volt;
+  *out_voltage_mV = (float)(voltage_raw)*VOLTAGE_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -106,7 +102,7 @@ StatusCode acs37800_get_active_power(ACS37800_Storage *storage, float *out_power
   // the active power value is signed (16 bits lower)
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_power_mW = (float)(power_raw)*storage->power_per_watt;
+  *out_power_mW = (float)(power_raw)*POWER_SCALE;
 
   return STATUS_CODE_OK;
 }

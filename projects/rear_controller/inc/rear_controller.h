@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "adbms_afe.h"
+#include "current_acs37800.h"
 
 /* Intra-component Headers */
 
@@ -24,6 +25,8 @@
 
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
 #define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
+#define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
+#define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
 
 typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
@@ -61,6 +64,12 @@ typedef struct {
   int16_t max_cell_temperature;
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
+
+  /* Current Sense*/
+  ACS37800_Storage acs37800;
+  float csense_prev_current;
+  int32_t csense_overcurrents;
+  int32_t csense_retries;
 
   RearControllerConfig *config;
 } RearControllerStorage;
