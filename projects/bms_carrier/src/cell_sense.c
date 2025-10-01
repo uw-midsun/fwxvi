@@ -322,6 +322,7 @@ static StatusCode s_cell_sense_run() {
 
   if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD) {
     // bms_open_solar();
+    rear_controller_storage->solar_relay_closed = false;
   }
 
   if (max_voltage >= CELL_OVERVOLTAGE) {
