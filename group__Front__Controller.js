@@ -1,0 +1,98 @@
+var group__Front__Controller =
+[
+    [ "AccelPedalCalibrationData", "structAccelPedalCalibrationData.html", [
+      [ "lower_value", "structAccelPedalCalibrationData.html#af3778ad4bfbe359881684d58068335cf", null ],
+      [ "upper_value", "structAccelPedalCalibrationData.html#a6ecb691ffe7d8ba84e0cc77adc872a16", null ]
+    ] ],
+    [ "AccelPedalStorage", "structAccelPedalStorage.html", null ],
+    [ "BrakePedalCalibrationData", "structBrakePedalCalibrationData.html", [
+      [ "lower_value", "structBrakePedalCalibrationData.html#af3778ad4bfbe359881684d58068335cf", null ],
+      [ "upper_value", "structBrakePedalCalibrationData.html#a6ecb691ffe7d8ba84e0cc77adc872a16", null ]
+    ] ],
+    [ "BrakePedalStorage", "structBrakePedalStorage.html", null ],
+    [ "FrontControllerConfig", "structFrontControllerConfig.html", [
+      [ "accel_input_curve_exponent", "structFrontControllerConfig.html#a79858f22bce6242a8b4a4663adfd7494", null ],
+      [ "accel_input_deadzone", "structFrontControllerConfig.html#a68d0b6de76af8e35268223e920b63807", null ],
+      [ "accel_input_remap_min", "structFrontControllerConfig.html#af41abf32c48507c620c7b719011af32a", null ],
+      [ "accel_low_pass_filter_alpha", "structFrontControllerConfig.html#a60880b9ac77a58b3cbf197fac9b44239", null ],
+      [ "brake_low_pass_filter_alpha", "structFrontControllerConfig.html#a257c66bcee264735bbb1df595dab5397", null ],
+      [ "brake_pedal_deadzone", "structFrontControllerConfig.html#af65c8b7c4c7b2efdce14847ed70019b9", null ]
+    ] ],
+    [ "FrontControllerStorage", "structFrontControllerStorage.html", [
+      [ "accel_pedal_storage", "structFrontControllerStorage.html#a320f5b8085bbf1f516ca1169f83a5469", null ],
+      [ "accel_percentage", "structFrontControllerStorage.html#aa1e7f463ba5cb98490c8a9c9be626c82", null ],
+      [ "brake_enabled", "structFrontControllerStorage.html#a98215959bc6b586ff0ea1a1614b999cb", null ],
+      [ "brake_pedal_storage", "structFrontControllerStorage.html#a3ce01548c8c110270053da58a8551a57", null ],
+      [ "config", "structFrontControllerStorage.html#a6e005b2b76b60560b806f15b4941ed79", null ],
+      [ "power_sense_storage", "structFrontControllerStorage.html#af8af68fa740d365e00a2608b791ec955", null ],
+      [ "vehicle_speed_kph", "structFrontControllerStorage.html#af4f1dac6ddfdb1a6b50f47d93cfd0c08", null ],
+      [ "ws22_motor_can_storage", "structFrontControllerStorage.html#a3bfdc5e200bab9d4c3e79baa0b8b78db", null ]
+    ] ],
+    [ "Ws22MotorControlData", "structWs22MotorControlData.html", [
+      [ "current", "structWs22MotorControlData.html#af9653d31acfffa5a40aa709b2065e00b", null ],
+      [ "velocity", "structWs22MotorControlData.html#acc10b20778519bc8a69cc8f78ff8a6f4", null ]
+    ] ],
+    [ "Ws22MotorTelemetryData", "structWs22MotorTelemetryData.html", [
+      [ "back_emf_d", "structWs22MotorTelemetryData.html#a9ccaf21627e2136edea8a5b51e61f262", null ],
+      [ "back_emf_q", "structWs22MotorTelemetryData.html#a6f11fb44b8183474682e61006f9c0dcf", null ],
+      [ "bus_current", "structWs22MotorTelemetryData.html#abef19438d23581f41177d45849b2dbb3", null ],
+      [ "bus_voltage", "structWs22MotorTelemetryData.html#ab5b31a04d0e22cd08a758aac9ca5db0a", null ],
+      [ "current_d", "structWs22MotorTelemetryData.html#a4db6536fe757799f28d95ad8df1e4f19", null ],
+      [ "current_q", "structWs22MotorTelemetryData.html#adfa5054fa0cf6731ac7628460c1ddbfe", null ],
+      [ "error_flags", "structWs22MotorTelemetryData.html#afa541ef7565f5701f705d7cb86bde02f", null ],
+      [ "heat_sink_temp", "structWs22MotorTelemetryData.html#abe027c48c7c039a29d7b2185064885e8", null ],
+      [ "limit_flags", "structWs22MotorTelemetryData.html#a1b74640d2e0be7fa373f4424dd4440bf", null ],
+      [ "motor_temp", "structWs22MotorTelemetryData.html#afc54151eaa4ebd7d1fda55b7dc6e7c31", null ],
+      [ "motor_velocity", "structWs22MotorTelemetryData.html#a9df6fbeb406e8d1b7be0b7cba2a85d39", null ],
+      [ "phase_b_current", "structWs22MotorTelemetryData.html#a30898e038d472cdf225a1e8f75e6d99c", null ],
+      [ "phase_c_current", "structWs22MotorTelemetryData.html#aa13c93a19ecb9d60fa965cbc8b6e42da", null ],
+      [ "rail_15v_supply", "structWs22MotorTelemetryData.html#abec2be94d124ffe91eb3a7fc81cf3679", null ],
+      [ "vehicle_velocity", "structWs22MotorTelemetryData.html#a5741eb5726c6ddfdbb0165e7e7c36f4e", null ],
+      [ "voltage_d", "structWs22MotorTelemetryData.html#a043f0b6a757ad78b905c4fd53beb7e6f", null ],
+      [ "voltage_q", "structWs22MotorTelemetryData.html#a3b95b4c4b08e98e35a21803b8d424d76", null ]
+    ] ],
+    [ "Ws22MotorCanStorage", "structWs22MotorCanStorage.html", [
+      [ "control", "structWs22MotorCanStorage.html#a11cedb61dc345f53a80402c1c9024540", null ],
+      [ "telemetry", "structWs22MotorCanStorage.html#afe68038d718f79bd8420933b031d9aac", null ]
+    ] ],
+    [ "FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT", "group__Front__Controller.html#gad730f9f29cdbc7dc28ef51e075e83601", null ],
+    [ "FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE", "group__Front__Controller.html#ga7b420ce8697bb597d053d6e485615a72", null ],
+    [ "FRONT_CONTROLLER_ACCEL_LPF_ALPHA", "group__Front__Controller.html#ga414c59276660d24b83457ff9928f4685", null ],
+    [ "FRONT_CONTROLLER_ACCEL_PEDAL", "group__Front__Controller.html#ga2dfd03a32dace14977abd3b7335f0969", null ],
+    [ "FRONT_CONTROLLER_ACCEL_REMAP_MIN", "group__Front__Controller.html#ga5c66a4e1bd84335adf846d6b4bce1817", null ],
+    [ "FRONT_CONTROLLER_BPS_LIGHT_LS_ENABLE", "group__Front__Controller.html#ga5ef387fa925a6ccc9492135af62185a2", null ],
+    [ "FRONT_CONTROLLER_BRAKE_LIGHT_LS_ENABLE", "group__Front__Controller.html#gaeed66a75bf0e35af98b10dce8085a648", null ],
+    [ "FRONT_CONTROLLER_BRAKE_PEDAL", "group__Front__Controller.html#gaf4c86931c2dbd74200feb0a75ef2da60", null ],
+    [ "FRONT_CONTROLLER_CAN_RX", "group__Front__Controller.html#ga75a789b060ee3e47d6a1c3a0c9b475aa", null ],
+    [ "FRONT_CONTROLLER_CAN_TX", "group__Front__Controller.html#gae952413070ad9e94576577848d2c05f3", null ],
+    [ "FRONT_CONTROLLER_DRIVER_FAN_LS_ENABLE", "group__Front__Controller.html#ga45933ad014ff2e0f318d0613a04262d1", null ],
+    [ "FRONT_CONTROLLER_HEADLIGHT_LS_ENABLE", "group__Front__Controller.html#ga9616aec850bd164cd521bd7a96d908d9", null ],
+    [ "FRONT_CONTROLLER_HORN_LS_ENABLE", "group__Front__Controller.html#ga18c47767321017502a2fcb5e35481ec9", null ],
+    [ "FRONT_CONTROLLER_LEFT_SIG_LS_ENABLE", "group__Front__Controller.html#gae98761b34b3b199464ef1d50d02268f9", null ],
+    [ "FRONT_CONTROLLER_MUX_OUTPUT", "group__Front__Controller.html#ga14fa4b95607f7e8eb4debd640ce33437", null ],
+    [ "FRONT_CONTROLLER_MUX_SEL_0", "group__Front__Controller.html#gaa815c5568b901a1f950d6210374b84b4", null ],
+    [ "FRONT_CONTROLLER_MUX_SEL_1", "group__Front__Controller.html#ga683cb912e43098ee2901cbb877cfd7b9", null ],
+    [ "FRONT_CONTROLLER_MUX_SEL_2", "group__Front__Controller.html#gaa2b51833a887e0e344bb4a243b22516f", null ],
+    [ "FRONT_CONTROLLER_MUX_SEL_3", "group__Front__Controller.html#ga7f98314758a5e51ad7fac21a5d56e370", null ],
+    [ "FRONT_CONTROLLER_REV_CAM_LS_ENABLE", "group__Front__Controller.html#ga4d9f8a5e42ce06f03610f0a7d485ee45", null ],
+    [ "FRONT_CONTROLLER_RIGHT_SIG_LS_ENABLE", "group__Front__Controller.html#ga265f76672193dc3b54a1147a6516e143", null ],
+    [ "FRONT_CONTROLLER_SPARE_1_LS_ENABLE", "group__Front__Controller.html#gaa031d698ff47e09cea88955f5a49e44b", null ],
+    [ "FRONT_CONTROLLER_SPARE_2_LS_ENABLE", "group__Front__Controller.html#ga9dd54a4c4e0718768fdb396ba13c51ea", null ],
+    [ "FRONT_CONTROLLER_STEERING_LS_ENABLE", "group__Front__Controller.html#ga2ce88a0eaad10475e43de3775f2bef17", null ],
+    [ "FRONT_CONTROLLER_TELEM_LS_ENABLE", "group__Front__Controller.html#gab65faac6ce9bf0f572242ff1581d541b", null ],
+    [ "WS22_CAN_BASE_CONTROL", "group__Front__Controller.html#gabeee04d7ba828e37c1e202517292de62", null ],
+    [ "WS22_CAN_BASE_STATUS", "group__Front__Controller.html#ga183095841e722e62925f86439a7698ee", null ],
+    [ "Ws22MotorCanStorage", "group__Front__Controller.html#ga2a98246ba34681941a1cd02b209531e0", null ],
+    [ "accel_pedal_init", "group__Front__Controller.html#ga4a6b97b45d9518e72fbbc3ad5f83e607", null ],
+    [ "accel_pedal_run", "group__Front__Controller.html#ga9a3232c28bc581b4f167fb4209d17a66", null ],
+    [ "brake_pedal_init", "group__Front__Controller.html#gafff58f976403491f17e763e35973903c", null ],
+    [ "brake_pedal_run", "group__Front__Controller.html#gad80597ef177a8fe5f49762b0472a239d", null ],
+    [ "front_controller_init", "group__Front__Controller.html#gabf7f2f6b6e6803804c3dd641bee12cf7", null ],
+    [ "ws22_motor_can_get_control_data", "group__Front__Controller.html#gade4db2ef96bbcd33c2a1b910bb98dc6a", null ],
+    [ "ws22_motor_can_get_telemetry_data", "group__Front__Controller.html#gaf353b4dba45f25f85f54d4245960f40d", null ],
+    [ "ws22_motor_can_init", "group__Front__Controller.html#gaf41ac04531c2ad3adb02e0e144a6bb62", null ],
+    [ "ws22_motor_can_process_rx", "group__Front__Controller.html#ga48e20d6aa1913042d1eb8321516918bf", null ],
+    [ "ws22_motor_can_set_current", "group__Front__Controller.html#ga139cf479a010aca7a48ada8c5a8a39b0", null ],
+    [ "ws22_motor_can_set_velocity", "group__Front__Controller.html#ga8c96bd93fdab5dadf93cf59e921b1a9c", null ],
+    [ "ws22_motor_can_transmit_drive_command", "group__Front__Controller.html#ga85093b01288f1275881e4b5d50f266cf", null ]
+];

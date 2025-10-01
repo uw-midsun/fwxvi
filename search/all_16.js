@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['validation_5fflag_0',['validation_flag',['../structFotaDatagramPayload__JumpToApp.html#a59fac034e74d40f9df78285fd740891c',1,'FotaDatagramPayload_JumpToApp']]],
+  ['values_1',['values',['../unionAdbmsAfeRegisterData.html#af47cf112b37cdbfec13f9d57476b3728',1,'AdbmsAfeRegisterData']]],
+  ['vehicle_5fbrake_2',['VEHICLE_BRAKE',['../group__GlobalEnums.html#gga815bc97444ec2d36e47cdb9ace92b8f1a8ff4478bfa3c13569ebc2390d076b9e9',1,'global_enums.h']]],
+  ['vehicle_5fcruise_3',['VEHICLE_CRUISE',['../group__GlobalEnums.html#gga815bc97444ec2d36e47cdb9ace92b8f1a8b6cbb2bfe1c3407c453bd4bc01e2bd1',1,'global_enums.h']]],
+  ['vehicle_5fdrive_4',['VEHICLE_DRIVE',['../group__GlobalEnums.html#gga815bc97444ec2d36e47cdb9ace92b8f1a8775bd72b70e72fb7c7ee9d7f235b2da',1,'global_enums.h']]],
+  ['vehicle_5fneutral_5',['VEHICLE_NEUTRAL',['../group__GlobalEnums.html#gga815bc97444ec2d36e47cdb9ace92b8f1a79ccaae0e0604bd0d458cb23011d26fb',1,'global_enums.h']]],
+  ['vehicle_5fpower_5fstate_5fcharge_6',['VEHICLE_POWER_STATE_CHARGE',['../group__GlobalEnums.html#ggac3e2c8f7a9a27afe0c8cff3ac3848e5fa54d38368814261662685b6c3387ee5d7',1,'global_enums.h']]],
+  ['vehicle_5fpower_5fstate_5fdrive_7',['VEHICLE_POWER_STATE_DRIVE',['../group__GlobalEnums.html#ggac3e2c8f7a9a27afe0c8cff3ac3848e5fa5975951f89529ee396a03bd2e134011b',1,'global_enums.h']]],
+  ['vehicle_5fpower_5fstate_5ffault_8',['VEHICLE_POWER_STATE_FAULT',['../group__GlobalEnums.html#ggac3e2c8f7a9a27afe0c8cff3ac3848e5faf3b2331a4dba84ea09f96672e18ebf70',1,'global_enums.h']]],
+  ['vehicle_5fpower_5fstate_5fidle_9',['VEHICLE_POWER_STATE_IDLE',['../group__GlobalEnums.html#ggac3e2c8f7a9a27afe0c8cff3ac3848e5faa296ca311f9045edf664b769c5e7a50c',1,'global_enums.h']]],
+  ['vehicle_5freverse_10',['VEHICLE_REVERSE',['../group__GlobalEnums.html#gga815bc97444ec2d36e47cdb9ace92b8f1a226043549ac880e6407536529a4fcae9',1,'global_enums.h']]],
+  ['vehicle_5fspeed_5fkph_11',['vehicle_speed_kph',['../structFrontControllerStorage.html#af4f1dac6ddfdb1a6b50f47d93cfd0c08',1,'FrontControllerStorage']]],
+  ['vehicle_5fvelocity_12',['vehicle_velocity',['../structWs22MotorTelemetryData.html#a5741eb5726c6ddfdbb0165e7e7c36f4e',1,'Ws22MotorTelemetryData']]],
+  ['vehicledrivestate_13',['VehicleDriveState',['../group__GlobalEnums.html#ga815bc97444ec2d36e47cdb9ace92b8f1',1,'global_enums.h']]],
+  ['vehiclepowerstates_14',['VehiclePowerStates',['../group__GlobalEnums.html#gac3e2c8f7a9a27afe0c8cff3ac3848e5f',1,'global_enums.h']]],
+  ['velocity_15',['velocity',['../structWs22MotorControlData.html#acc10b20778519bc8a69cc8f78ff8a6f4',1,'Ws22MotorControlData']]],
+  ['version_5fmajor_16',['version_major',['../structFotaDFUContext.html#a8c974d5e91fd19e59c6be97d749c3254',1,'FotaDFUContext::version_major()'],['../structFotaDatagramPayload__FirmwareMetadata.html#a8c974d5e91fd19e59c6be97d749c3254',1,'FotaDatagramPayload_FirmwareMetadata::version_major()']]],
+  ['version_5fminor_17',['version_minor',['../structFotaDFUContext.html#a994753ceaa7736e4ea13cf0f60bdf3af',1,'FotaDFUContext::version_minor()'],['../structFotaDatagramPayload__FirmwareMetadata.html#a994753ceaa7736e4ea13cf0f60bdf3af',1,'FotaDatagramPayload_FirmwareMetadata::version_minor()']]],
+  ['voltage_5fd_18',['voltage_d',['../structWs22MotorTelemetryData.html#a043f0b6a757ad78b905c4fd53beb7e6f',1,'Ws22MotorTelemetryData']]],
+  ['voltage_5fq_19',['voltage_q',['../structWs22MotorTelemetryData.html#a3b95b4c4b08e98e35a21803b8d424d76',1,'Ws22MotorTelemetryData']]],
+  ['voltages_20',['voltages',['../unionAdbmsAfeRegisterData.html#af1d8bac6e038e941d485f50a0bcfe31b',1,'AdbmsAfeRegisterData']]]
+];
