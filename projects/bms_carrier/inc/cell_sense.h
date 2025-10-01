@@ -18,7 +18,7 @@
 #include "gpio.h"
 
 /* Intra-component Headers */
-#include "bms_carrier.h"
+#include "../../rear_controller/inc/rear_controller.h"
 
 /**
  * @defgroup bms_carrier
@@ -44,7 +44,7 @@
 #define AFE_BALANCING_UPPER_THRESHOLD 41500
 #define AFE_BALANCING_LOWER_THRESHOLD 40000
 
-StatusCode cell_sense_init(BmsStorage *storage);
+StatusCode cell_sense_init(RearControllerStorage *storage);
 
 // Mark cell for discharging (takes effect after config is re-written)
 // |cell| should be [0, settings.num_cells)
