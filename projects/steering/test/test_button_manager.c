@@ -25,7 +25,7 @@
 #define DEBOUNCE_CYCLES (STEERING_BUTTON_DEBOUNCE_PERIOD_MS + 1)
 
 /* --- Mock GPIO Implementation --- */
-static GpioState mock_gpio_states[BUTTON_MANAGER_MAX_BUTTONS];
+static GpioState mock_gpio_states[NUM_STEERING_BUTTONS];
 
 static LightsSignalState signal_requested;
 static DriveState drive_requested;
@@ -46,11 +46,14 @@ StatusCode TEST_MOCK(drive_state_manager_request)(DriveState state) {
 
 /* --- Button Manager Instance --- */
 static ButtonManager manager;
+static SteeringStorage steering_storage = {
+  .button_manager = &manager,
+};
 
 /* --- Helpers --- */
 static void simulate_updates(uint8_t cycles) {
   for (uint8_t i = 0; i < cycles; i++) {
-    TEST_ASSERT_OK(button_manager_update(&manager));
+    TEST_ASSERT_OK(button_manager_update());
   }
 }
 
@@ -58,11 +61,11 @@ void setup_test(void) {
   signal_requested = LIGHTS_SIGNAL_REQUEST_OFF;
   drive_requested = DRIVE_STATE_INVALID;
 
-  for (uint8_t i = 0; i < BUTTON_MANAGER_MAX_BUTTONS; i++) {
+  for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
     mock_gpio_states[i] = GPIO_STATE_HIGH;
   }
 
-  TEST_ASSERT_OK(button_manager_init(&manager));
+  TEST_ASSERT_OK(button_manager_init(&steering_storage));
 }
 
 void teardown_test(void) {
