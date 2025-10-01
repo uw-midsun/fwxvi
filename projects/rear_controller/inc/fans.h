@@ -16,6 +16,12 @@
 /* Intra-component Headers */
 #include "rear_controller.h"
 
+/**
+ * @defgroup fans
+ * @brief    fans Firmware
+ * @{
+ */
+
 #define FAN_TEMP_THRESHOLD_C 40
 #define FAN_TEMP_INVALID -100
 
@@ -30,3 +36,5 @@ StatusCode fans_init(RearControllerStorage *storage);
  * @return  STATUS_CODE_OK if executed succesfully
  */
 StatusCode fans_run(RearControllerStorage *storage);
+
+/** @} */

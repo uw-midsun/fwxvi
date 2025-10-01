@@ -82,7 +82,7 @@
   { .port = GPIO_PORT_B, .pin = 0 }
 
 /** @brief  Rear Controller fan sense 1 */
-#define REAR_CONTROLLER_MOTOR_FAN_SENSE_2\
+#define REAR_CONTROLLER_MOTOR_FAN_SENSE_2 \
   { .port = GPIO_PORT_B, .pin = 1 }
 
 /************************************************************************************************
