@@ -59,6 +59,10 @@ typedef struct {
   bool pcs_valid;          /**< PCS input valid state */
   bool aux_valid;          /**< Aux valid state */
 
+  /* Temperature monitoring */
+  int16_t max_board_temperature;
+  int16_t max_cell_temperature;
+
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
 
   /* Current Sense*/
