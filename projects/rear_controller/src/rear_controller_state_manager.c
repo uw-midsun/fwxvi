@@ -23,6 +23,7 @@ static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
   switch (new_state) {
     case REAR_CONTROLLER_STATE_INIT:
+      rear
       /* TODO: Open all relays, reset internal flags */
       break;
 

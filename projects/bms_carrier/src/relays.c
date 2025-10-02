@@ -36,7 +36,8 @@ static struct RelayStorage relay_storage = { .pos_relay_en = BMS_POS_RELAY_ENABL
 
 static BmsStorage *bms_storage;
 
-static const GpioAddress *s_relays_sense[NUM_BMS_RELAYS] = { &relay_storage.pos_relay_sense, &relay_storage.neg_relay_sense, &relay_storage.solar_relay_sense };
+
+
 
 static StatusCode s_close_relays(void) {
   /* 250 MS Gap between each relay closing due to the excessive current draw */
