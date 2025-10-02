@@ -19,10 +19,6 @@
 
 #define SPI_KEY "spi"
 
-static Payload makePayload(SPI::Port port, const uint8_t* data, size_t length) {
-    Payload payload{};
-    payload.spiPort = port;
-
     if (length > SPI_MAX_BUFFER_SIZE) {
         throw std::runtime_error("Payload size exceeds SPI_MAX_BUFFER_SIZE");
     }
@@ -42,22 +38,66 @@ void SPIManager::saveSPIInfo(std::string &projectName){
   m_SPIInfo.clear();
 }
 
-std::string createSPICommand(CommandCode commandCode, std::string &SPIport, std::string data){
-    try{
-        switch (CommandCode) {
-            case CommandCode::SPI_SET_TX_DATA: {
-                m_SPIDatagram.setSPIPort(SPIport);
+// Converts "0x12, 0x14, 0x56, 0x17" → {0x12, 0x14, 0x56, 0x17}
+std::vector<uint8_t> parseHexData(const std::string &dataStr) {
+    std::vector<uint8_t> bytes;
+    std::stringstream ss(dataStr);
+    std::string token;
 
-            }
+    while (std::getline(ss, token, ',')) {
+        // Trim whitespace
+        token.erase(0, token.find_first_not_of(" \t\n\r"));
+        token.erase(token.find_last_not_of(" \t\n\r") + 1);
 
-            case CommandCode::SPI_SET_RX_DATA: {
-
-
-            }
+        if (token.rfind("0x", 0) != 0 && token.rfind("0X", 0) != 0) {
+            throw std::invalid_argument("Invalid hex format: " + token);
         }
 
-        return m_SPIDatagram.serialize(commandCode);
+        uint16_t value;
+        std::stringstream hexstream(token);
+        hexstream >> std::hex >> value;
 
+        if (value > 0xFF) {
+            throw std::out_of_range("Value exceeds 1 byte: " + token);
+        }
+
+        bytes.push_back(static_cast<uint8_t>(value));
     }
 
+    return bytes;
+}
+
+std::string SPIManager::createSPICommand(CommandCode commandCode, const std::string &SPIport, const std::string &data) {
+    Datagram::SPI m_SPIDatagram;
+
+    // Convert port string → enum
+    Datagram::SPI::Port port;
+    if (SPIport == "SPI_PORT_1") {
+        port = Datagram::SPI::Port::SPI_PORT_1;
+    } else if (SPIport == "SPI_PORT_2") {
+        port = Datagram::SPI::Port::SPI_PORT_2;
+    } else {
+        throw std::invalid_argument("Invalid SPI port string: " + SPIport);
+    }
+
+    switch (commandCode) {
+        case CommandCode::SPI_SET_TX_DATA: {
+            m_SPIDatagram.setSPIPort(port);
+
+            auto bytes = parseHexData(data);
+            m_SPIDatagram.setBuffer(bytes.data(), bytes.size());
+            break;
+        }
+
+        case CommandCode::SPI_SET_RX_DATA: {
+            m_SPIDatagram.setSPIPort(port);
+            // RX might just request data from client → no buffer needed
+            break;
+        }
+
+        default:
+            throw std::invalid_argument("Unsupported SPI CommandCode");
+    }
+
+    return m_SPIDatagram.serialize(commandCode);
 }

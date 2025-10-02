@@ -49,6 +49,7 @@ class SPIManager {
 
   SPIManager() = default;
 
+  std::vector<uint8_t> parseHexData(const std::string &dataStr);
 
   std::string createSPICommand(CommandCode commandCode, std::string &SPIport, std::string data);
 
