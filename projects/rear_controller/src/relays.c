@@ -42,7 +42,7 @@
 #define KILLSWITCH_EVENT_IT 3U
 
 
-static struct RelayStorage relay_storage{
+static RelayStorage relay_storage{
     .pos_relay_en=REAR_CONTROLLER_NEG_RELAY_ENABLE_GPIO,    /**< Positive relay enable */
     .pos_relay_sense=REAR_CONTROLLER_POS_RELAY_SENSE_GPIO, /**< Positive relay sense */
     
