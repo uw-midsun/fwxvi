@@ -1,6 +1,8 @@
 import csv
 from collections import defaultdict
+
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 
 PEDAL_COL = 1   # pedal input (normalized)
 ACCEL_COL = 2   # accel percentage
@@ -36,7 +38,6 @@ plt.ylabel('Accel percentage')
 plt.title('Pedal input vs Accel percentage\nColor = State, Opacity = Speed')
 plt.grid(True)
 
-import matplotlib.lines as mlines
 green_line = mlines.Line2D([], [], color='green', label='State 0')
 red_line   = mlines.Line2D([], [], color='red',   label='State 1')
 plt.legend(handles=[green_line, red_line], title="State")
