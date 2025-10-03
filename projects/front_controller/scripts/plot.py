@@ -1,6 +1,6 @@
 import csv
-import matplotlib.pyplot as plt
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 PEDAL_COL = 1   # pedal input (normalized)
 ACCEL_COL = 2   # accel percentage
@@ -8,7 +8,7 @@ STATE_COL = 3   # 0 = accel, 1 = braking
 SPEED_COL = 4   # speed (0.0 to 1.0 in 0.1 steps)
 
 groups = defaultdict(list)
-with open('test_results/opd_curve.csv', 'r') as f:
+with open('test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     next(reader, None)
     for row in reader:
@@ -27,9 +27,9 @@ for speed in sorted(groups.keys()):
         if y0 == -1 or y1 == -1:
             continue
 
-        color = 'green' if s0 == 0 else 'red'
+        COLOR = 'green' if s0 == 0 else 'red'
         alpha = 0.2 + 0.8 * speed
-        plt.plot([x0, x1], [y0, y1], color=color, alpha=alpha)
+        plt.plot([x0, x1], [y0, y1], color=COLOR, alpha=alpha)
 
 plt.xlabel('Pedal input (normalized)')
 plt.ylabel('Accel percentage')
