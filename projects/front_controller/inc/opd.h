@@ -54,3 +54,5 @@ StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relatio
 StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading);
 
 StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading);
+
+/** @} */

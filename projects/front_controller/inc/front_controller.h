@@ -68,7 +68,7 @@ typedef struct {
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
   struct OpdStorage *opd_storage;
 
-  FrontControllerConfig *config;                 /**< Pointer to the front controller configuration data */
+  FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;
 
 /**

@@ -21,7 +21,7 @@ with open('test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
         groups[speed].append((x, y, state))
 
 for speed in sorted(groups.keys()):
-    pts = sorted(groups[speed], key=lambda p: p[0]) 
+    pts = sorted(groups[speed], key=lambda p: p[0])
     for i in range(len(pts) - 1):
         x0, y0, s0 = pts[i]
         x1, y1, s1 = pts[i + 1]
@@ -39,7 +39,7 @@ plt.title('Pedal input vs Accel percentage\nColor = State, Opacity = Speed')
 plt.grid(True)
 
 green_line = mlines.Line2D([], [], color='green', label='State 0')
-red_line   = mlines.Line2D([], [], color='red',   label='State 1')
+red_line = mlines.Line2D([], [], color='red', label='State 1')
 plt.legend(handles=[green_line, red_line], title="State")
 
 plt.show()
