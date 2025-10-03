@@ -24,9 +24,9 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
-#include "opd.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "opd.h"
 
 static FrontControllerStorage mock_storage = { 0 };
 static GpioAddress mock_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
@@ -98,16 +98,16 @@ void test_opd_visualize_curve(void) {
   fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");
 
   for (uint16_t adc_val = mock_storage.opd_storage->calibration_data.lower_value; adc_val <= mock_storage.opd_storage->calibration_data.upper_value; adc_val += 10) {
-      for(uint32_t speed = 0; speed <= 100; speed+=1){
+    for (uint32_t speed = 0; speed <= 100; speed += 1) {
       mock_raw_adc_reading = adc_val;
-  
+
       float normalized_accel_percentage = (((float)adc_val - (float)mock_storage.opd_storage->calibration_data.lower_value) /
-                                          ((float)mock_storage.opd_storage->calibration_data.upper_value - (float)mock_storage.opd_storage->calibration_data.lower_value));
-  
+                                           ((float)mock_storage.opd_storage->calibration_data.upper_value - (float)mock_storage.opd_storage->calibration_data.lower_value));
+
       normalized_accel_percentage = fminf(fmaxf(normalized_accel_percentage, 0.0f), 1.0f);
-  
+
       float calculated_reading;
-  
+
       mock_storage.vehicle_speed_kph = speed;
       mock_storage.opd_storage->max_vehicle_speed_kph = 100;
       mock_storage.opd_storage->max_braking_percentage = 0.75;
@@ -119,7 +119,6 @@ void test_opd_visualize_curve(void) {
 
       fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)normalized_speed);
     }
-
   }
 
   fclose(f);
