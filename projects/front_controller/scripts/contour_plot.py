@@ -16,7 +16,7 @@ with open('../test/test_results/opd_curve.csv', 'r') as f:
         accel = float(r[ACCEL_COL])
         state = int(r[STATE_COL])
         speed = float(r[SPEED_COL])
-        if accel == -1:
+        if accel == -1 or accel == 'inf' or accel == 'NaN':
             continue
         signed_accel = accel if state == 0 else -accel
         rows.append((pedal, speed, signed_accel))
@@ -38,11 +38,11 @@ levels = np.linspace(-abs_max, abs_max, 21)
 fig, ax = plt.subplots(figsize=(7, 5))
 c = ax.contourf(pedals, speeds, A, levels=levels, cmap='RdYlGn')
 cb = fig.colorbar(c, ax=ax)
-cb.set_label('Signed Acceleration (pos=State 0, neg=State 1)')
+cb.set_label('Signed Acceleration (pos=Accelerating, neg=Braking)')
 
-ax.set_xlabel('Pedal input (normalized or ADC)')
-ax.set_ylabel('Speed (0–1)')
-ax.set_title('Pedal–Speed Contour: positive=braking (State 0), negative=driving (State 1)')
+ax.set_xlabel('Pedal input (normalized)')
+ax.set_ylabel('Speed (normalized)')
+ax.set_title('Pedal-Speed Contour')
 ax.grid(True)
 plt.tight_layout()
 plt.show()

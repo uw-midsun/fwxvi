@@ -51,9 +51,9 @@ typedef enum{
 }PtsRelationType;
 
 typedef enum{
-    CURVE_TYPE_LINEAR
-    // CURVE_TYPE_EXPONENTIAL,
-    // CURVE_TYPE_QUADRATIC
+    CURVE_TYPE_LINEAR,
+    CURVE_TYPE_EXPONENTIAL,
+    CURVE_TYPE_QUADRATIC
 }curveType;
 
 StatusCode opd_run();
