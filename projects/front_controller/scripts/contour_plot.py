@@ -8,7 +8,7 @@ STATE_COL = 3   # 0 = accel, 1 = braking
 SPEED_COL = 4   # speed (0.0 to 1.0 in 0.1 steps)
 
 rows = []
-with open('../test/test_results/opd_curve.csv', 'r') as f:
+with open('../test/test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     next(reader)
     for r in reader:
@@ -16,7 +16,7 @@ with open('../test/test_results/opd_curve.csv', 'r') as f:
         accel = float(r[ACCEL_COL])
         state = int(r[STATE_COL])
         speed = float(r[SPEED_COL])
-        if accel == -1 or accel == 'inf' or accel == 'NaN':
+        if accel == -1:
             continue
         signed_accel = accel if state == 0 else -accel
         rows.append((pedal, speed, signed_accel))
