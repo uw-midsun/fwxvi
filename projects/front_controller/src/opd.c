@@ -69,10 +69,12 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
     float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
     if(pts_compare_handler(pedal_percentage, current_speed, relation_type)){
+        front_controller_storage->brake_enabled = false;
         s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
         float m = 1 / (1 - current_speed);
         *calculated_reading = (0.25 * m * (pedal_percentage - 1)) + 1;
     }else{
+        front_controller_storage->brake_enabled = true;
         s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
         float m = 1 / current_speed;
         *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
@@ -85,9 +87,11 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
     float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
     float m;
     if(pts_compare_handler(pedal_percentage, current_speed, relation_type)){
+        front_controller_storage->brake_enabled = false;
         s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
         m = 1 / ((1 - current_speed) * (1 - current_speed));
     }else{
+        front_controller_storage->brake_enabled = true;
         s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
         m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
     }
