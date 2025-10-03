@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 PEDAL_COL = 1   # pedal input (normalized)
 ACCEL_COL = 2   # accel percentage
 STATE_COL = 3   # 0 = accel, 1 = braking
-SPEED_COL = 4   # speed (0.0 to 1.0 in 0.1 steps)
+SPEED_COL = 4   # speed (normalized)
 
 rows = []
 with open('../test/test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
