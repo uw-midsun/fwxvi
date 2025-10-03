@@ -71,11 +71,11 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
     if(pts_compare_handler(pedal_percentage, current_speed, relation_type)){
         s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
         float m = 1 / (1 - current_speed);
-        *calculated_reading = (m * (pedal_percentage - 1)) + 1;
+        *calculated_reading = (0.25 * m * (pedal_percentage - 1)) + 1;
     }else{
         s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
-        float m = s_one_pedal_storage.max_braking_percentage / current_speed;
-        *calculated_reading = s_one_pedal_storage.max_braking_percentage - (m * pedal_percentage);
+        float m = 1 / current_speed;
+        *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
     }
 
     return STATUS_CODE_OK;
@@ -100,6 +100,13 @@ StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relatio
     switch(curve_type){
         case CURVE_TYPE_LINEAR:
             return opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+        case CURVE_TYPE_QUADRATIC:
+            return opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
+        case CURVE_TYPE_EXPONENTIAL: {
+            StatusCode ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+            *calculated_reading = powf(*calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
+            return ret;
+        }
     }
 
     return STATUS_CODE_OK;
