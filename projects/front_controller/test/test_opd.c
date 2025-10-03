@@ -1,9 +1,9 @@
 /************************************************************************************************
- * @file   test_accel_pedal.c
+ * @file   test_opd.c
  *
- * @brief  Unit tests for accel_pedal module
+ * @brief  Unit tests for opd module
  *
- * @date   2025-09-10
+ * @date   2025-10-03
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
