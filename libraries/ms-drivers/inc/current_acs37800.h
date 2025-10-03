@@ -30,11 +30,6 @@
 typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
-
-  // convert raw data to valid units
-  float current_per_amp;
-  float voltage_per_volt;
-  float power_per_watt;
 } ACS37800_Storage;
 
 /** @brief Initialize the ACS37800 driver

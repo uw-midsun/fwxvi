@@ -17,8 +17,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup LIGHTS_SIGNAL_MANAGER
- * @brief    Controls light signals for left, right, and hazard indications
+ * @defgroup steering
+ * @brief    steering Firmware
  * @{
  */
 
