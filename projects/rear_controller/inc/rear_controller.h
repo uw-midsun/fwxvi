@@ -10,10 +10,12 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-
+#include <stdbool.h>
+#include <stdint.h>
 /* Inter-component Headers */
 #include "adbms_afe.h"
-
+#include "gpio.h"
+#include "status.h"
 /* Intra-component Headers */
 
 /**
