@@ -125,13 +125,13 @@ else:
 COMMAND = COMMAND_LINE_TARGETS[0] if COMMAND_LINE_TARGETS else ""
 
 # Force x86 if the command is for MPXE
-if COMMAND == "mpxe":
+if COMMAND == "mpxe_server" or COMMAND == "mpxe_gui" or COMMAND == "sim":
     PLATFORM = "x86"
 
 # Retrieve the construction environment from the appropriate platform script
 env = SConscript(f'platform/{PLATFORM}.py', exports=['HARDWARE_TYPE', 'FLASH_TYPE', 'BUILD_CONFIG'])
 
-database_name = f"compile_commands_{PLATFORM}.json"
+database_name = f"compile_commands.json"
 config = scons_compiledb.Config(db=database_name)
 scons_compiledb.enable_with_cmdline(env, config)
 
@@ -232,26 +232,44 @@ elif COMMAND == "cantools":
 ###########################################################
 # Run MPXE Server
 ###########################################################
-elif COMMAND == "mpxe":
+
+elif COMMAND == "mpxe_server":
+    PLATFORM = "x86"
+    VARS["PLATFORM"] = PLATFORM
+
+    # Build the server ELF
     SConscript('scons/build.scons', exports='VARS')
-    mpxe_elf = BIN_DIR.Dir("projects").File("mpxe_server")
+    MPXE_ELF = BIN_DIR.Dir("projects").File("mpxe_server")
 
-    def mpxe_run(target, source, env):
-        print('Running MPXE Server', mpxe_elf)
-        subprocess.run(mpxe_elf.path)
+    Default(MPXE_ELF)
 
-    AlwaysBuild(Command('#/mpxe', mpxe_elf, mpxe_run))
+###########################################################
+# RUN MPXE GUI 
+###########################################################
+elif COMMAND == "mpxe_gui":
+    PLATFORM = "x86"
+    VARS["PLATFORM"] = PLATFORM
 
+    # Build the GUI ELF
+    SConscript('scons/build.scons', exports='VARS')
+    MPXE_GUI_ELF = BIN_DIR.Dir("projects").File("mpxe_gui")
+
+    Default(MPXE_GUI_ELF)
+    
 ###########################################################
 # Build
 ###########################################################
 else:  # command not recognised, default to build
-    SConscript('scons/build.scons', exports='VARS')
+     SConscript('scons/build.scons', exports='VARS')
 
 ###########################################################
 # Helper targets for x86
 ###########################################################
-if PLATFORM == 'x86' and TARGET:
+if PLATFORM == 'x86':
+    # For MPXE files, these are passed in as an additional non-target argument
+    if TARGET is None and len(COMMAND_LINE_TARGETS) >= 2:
+        TARGET = "projects/" + COMMAND_LINE_TARGETS[1]
+
     project_elf = BIN_DIR.File(TARGET)
     # os.exec the x86 project ELF file to simulate it
 

@@ -17,8 +17,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup DRIVE_STATE_MANAGER
- * @brief    Controls drive state for neutral, drive, and reverse.
+ * @defgroup steering
+ * @brief    steering Firmware
  * @{
  */
 

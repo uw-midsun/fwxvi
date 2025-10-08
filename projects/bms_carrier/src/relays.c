@@ -8,7 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-
+#if 0
 /* Inter-component Headers */
 #include "delay.h"
 #include "global_enums.h"
@@ -119,3 +119,5 @@ StatusCode relays_init(BmsStorage *storage) {
   set_battery_relay_info_state(BMS_RELAY_STATE_CLOSE);
   return STATUS_CODE_OK;
 }
+
+#endif

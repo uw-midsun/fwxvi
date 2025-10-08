@@ -14,8 +14,8 @@
 #include <stdint.h>
 /* Inter-component Headers */
 #include "adbms_afe.h"
-#include "gpio.h"
-#include "status.h"
+#include "current_acs37800.h"
+
 /* Intra-component Headers */
 
 /**
@@ -26,6 +26,8 @@
 
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
 #define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
+#define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
+#define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
 
 typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
@@ -60,7 +62,40 @@ typedef struct {
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
 
+  /* Current Sense*/
+  ACS37800_Storage acs37800;
+  float csense_prev_current;
+  int32_t csense_overcurrents;
+  int32_t csense_retries;
+
   RearControllerConfig *config;
 } RearControllerStorage;
 
+
+StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
+
+/**
+ * @brief Commands all relays to open, entering a safe fault state.
+ */
+StatusCode relay_fault(void);
+
+/**
+ * @brief Commands the solar relay to close.
+ */
+StatusCode relay_solar_close(void);
+
+/**
+ * @brief Commands the solar relay to open.
+ */
+StatusCode relay_solar_open(void);
+
+/**
+ * @brief Commands the motor relay to close.
+ */
+StatusCode relay_motor_close(void);
+
+/**
+ * @brief Commands the motor relay to open.
+ */
+StatusCode relay_motor_open(void);
 /** @} */

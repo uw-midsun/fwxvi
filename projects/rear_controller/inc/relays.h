@@ -7,7 +7,9 @@
 #include "rear_controller_hw_defs.h"
 
 
-#define NUM_REAR_RELAYS 3U
+#define NUM_REAR_RELAYS 4U
+#define REAR_CLOSE_RELAYS_DELAY_MS 250U
+#define KILLSWICTH_EVENT_IT 3U
 
 #define REAR_CLOSE_RELAYS_DELAY_MS 250U
 
