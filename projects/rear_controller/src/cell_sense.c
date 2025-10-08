@@ -47,7 +47,8 @@
 /** @brief  Maximum pack current - 7.0A -> 7000mA */
 #define PACK_OVERCURRENT_CURRENT 7000
 /** @brief  Private define to lookup cell voltage */
-#define CELL_VOLTAGE_LOOKUP(cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[cell]])
+#define CELL_PER_DEVICE 16
+#define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
 /** @brief  Max number of retries for reading cell*/
 #define BMS_MAX_RETRIES 5U
 
@@ -378,11 +379,13 @@ StatusCode log_cell_sense() {
 
   // uint8_t read_index = afe_message_index * READINGS_PER_AFE_MSG;
   // set_AFE1_status_id(afe_message_index);
+  AFE1_status_A(afe_message_index, CELL_VOLTAGE_LOOKUP(0, 0), CELL_VOLTAGE_LOOKUP(0, 1), CELL_VOLTAGE_LOOKUP(0, 2), CELL_VOLTAGE_LOOKUP(0, 3));
   // set_AFE1_status_v1(CELL_VOLTAGE_LOOKUP(read_index));
   // set_AFE1_status_v2(CELL_VOLTAGE_LOOKUP(read_index + 1));
   // set_AFE1_status_v3(CELL_VOLTAGE_LOOKUP(read_index + 2));
 
   // read_index = (uint8_t)s_afe_settings.num_cells + afe_message_index * READINGS_PER_AFE_MSG;
+  AFE1_status_B(afe_message_index, CELL_VOLTAGE_LOOKUP(1, 0), CELL_VOLTAGE_LOOKUP(1, 1), CELL_VOLTAGE_LOOKUP(1, 2), CELL_VOLTAGE_LOOKUP(1, 3));
   // set_AFE2_status_id(afe_message_index);
   // set_AFE2_status_v1(CELL_VOLTAGE_LOOKUP(read_index));
   // set_AFE2_status_v2(CELL_VOLTAGE_LOOKUP(read_index + 1));
@@ -394,6 +397,7 @@ StatusCode log_cell_sense() {
   // set_AFE3_status_v2(CELL_VOLTAGE_LOOKUP(read_index + 1));
   // set_AFE3_status_v3(CELL_VOLTAGE_LOOKUP(read_index + 2));
 
+  // AFE_temperature(?)
   // // Thermistors to send are at index 0, 2, 4 for each device
   // if (afe_message_index < NUM_AFE_MSGS - 1) {  // Only 3 thermistors per device, so 4th message will be ignored
   //   set_AFE1_status_temp(adbms_afe_storage->cell_voltages[afe_message_index * 2]/10);
