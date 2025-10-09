@@ -22,11 +22,11 @@
  * @{
  */
 
-#define FAN_TEMP_THRESHOLD_C 40
-#define FAN_TEMP_INVALID -100
+#define REAR_CONTROLLER_FAN_TEMP_THRESHOLD_C 40
 
 /**
  * @brief   Initializes the fan sub-system
+ * @param   storage Pointer to the rear controller storage
  * @return  STATUS_CODE_OK if initialized succesfully
  */
 StatusCode fans_init(RearControllerStorage *storage);
@@ -35,6 +35,6 @@ StatusCode fans_init(RearControllerStorage *storage);
  * @brief   Checks the max board and cell temperatures in storage, compares them against the fan threshold, and turns on or off accordingly
  * @return  STATUS_CODE_OK if executed succesfully
  */
-StatusCode fans_run(RearControllerStorage *storage);
+StatusCode fans_run(void);
 
 /** @} */
