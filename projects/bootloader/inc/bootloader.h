@@ -53,27 +53,6 @@ typedef enum {
 } BootloaderPingStates;
 
 /**
- * @brief   Private Bootloader State Storage
- */
-//TODO Delete, Splitting into two structs distributed across dfu and packet handler
-typedef struct {
-  uintptr_t application_start;       /**< Application start address */                      
-  uintptr_t current_write_address;   /**< Current write address */                          
-  uint32_t bytes_written;            /**< Number of bytes written to flash */               
-  uint32_t data_size;                /**< Data size (ie: Binary application size) */        
-  uint32_t packet_crc32;             /**< Packet CRC32 if available */                      
-  uint16_t expected_sequence_number; /**< Next expected sequence number for validation */   
-  uint16_t buffer_index;             /**< Data buffer index for correct reading/writing */  
-  BootloaderPingStates ping_type;    /**< Ping state of bootloader */                       
-  uint8_t ping_data_len;             /**< Length of ping data */                            
-  BootloaderStates state;            /**< Internal state tracker */                                  
-  BootloaderError error;             /**< Bootloader error tracker */                                
-  uint16_t target_nodes;             /**< Target MCU Ids */                                          
-  bool first_byte_received;          /**< Boolean flag to track if the first byte was received */   
-  bool first_ping_received;          /**< Boolean flag to track if the first ping was received */    
-} BootloaderStateData;
-
-/**
  * @brief   Initialize the bootloader
  * @return  BOOTLOADER_ERROR_NONE if the bootloader is initialized successfully
  */

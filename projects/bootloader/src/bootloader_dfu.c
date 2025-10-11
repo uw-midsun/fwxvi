@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "stm32l4xx.h"
 
 /* Intra-component Headers */
 #include "bootloader_dfu.h"
@@ -62,7 +63,8 @@ BootloaderError bootloader_jump_app() {
 }
 
 BootloaderError bootloader_fault() {
-  /* Implement code to reset the board. */
-  
+  send_ack_datagram(NACK, BOOTLOADER_FAULT); 
+  NVIC_SystemReset(); 
+  /* Just a reset, could pivot to something else if needed */ 
   return BOOTLOADER_INTERNAL_ERR;
 }

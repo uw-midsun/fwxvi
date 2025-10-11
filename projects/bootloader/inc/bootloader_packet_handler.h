@@ -23,6 +23,9 @@
  * @{
  */
 
+/**
+ * @brief   Stores info related to receiving data
+ */
 typedef struct {
   uintptr_t current_write_address;   /**< Current write address */                   
   uint32_t bytes_written;            /**< Number of bytes written to flash */               

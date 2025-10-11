@@ -110,7 +110,7 @@ static BootloaderError s_receive_chunk(PacketManager *pm, BootloaderDatagram *da
 
 static BootloaderError s_on_flash_success(PacketManager *pm, uint8_t *flash_buffer) {
   pm->bytes_written += pm->buffer_index;
-  pm->current_write_address += pm->buffer_index; //? What to do with current write address maybe add to pakcet manager struct?
+  pm->current_write_address += pm->buffer_index; 
   pm->buffer_index = 0;
 
   memset(flash_buffer, 0, sizeof(flash_buffer));
