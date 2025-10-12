@@ -12,7 +12,7 @@
 
 /* Inter-component Headers */
 #include "log.h"
-
+#include "relays.h"
 /* Intra-component Headers */
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_state_manager.h"
@@ -23,7 +23,8 @@ static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
   switch (new_state) {
     case REAR_CONTROLLER_STATE_INIT:
-      rear
+      // relays_fault();
+
       /* TODO: Open all relays, reset internal flags */
       break;
 

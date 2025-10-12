@@ -77,25 +77,27 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
 /**
  * @brief Commands all relays to open, entering a safe fault state.
  */
-StatusCode relay_fault(void);
+StatusCode rear_fault(void);
 
 /**
  * @brief Commands the solar relay to close.
  */
-StatusCode relay_solar_close(void);
+StatusCode rear_solar_close(void);
 
 /**
  * @brief Commands the solar relay to open.
  */
-StatusCode relay_solar_open(void);
+StatusCode rear_solar_open(void);
 
 /**
  * @brief Commands the motor relay to close.
  */
-StatusCode relay_motor_close(void);
+StatusCode rear_motor_close(void);
 
 /**
  * @brief Commands the motor relay to open.
  */
-StatusCode relay_motor_open(void);
+StatusCode rear_motor_open(void);
+
+StatusCode relays_deinit(void);
 /** @} */

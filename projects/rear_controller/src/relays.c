@@ -1,4 +1,4 @@
-#pragma once
+// #pragma once
 
 /************************************************************************************************
  * @file   relays.h
@@ -131,11 +131,10 @@ if (gpio_get_state(&s_relay_storage.killswitch_sense) == GPIO_STATE_LOW) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-   s_rear_controller_storage->pos_relay_closed = false;
+  s_rear_controller_storage->pos_relay_closed = false;
   s_rear_controller_storage->neg_relay_closed = false;
   s_rear_controller_storage->solar_relay_closed = false;
   s_rear_controller_storage->motor_relay_closed = false;
-  //status_ok_or_return(s_close_main_relays());
     return STATUS_CODE_OK;
 }
 StatusCode relays_fault(void){
@@ -152,7 +151,7 @@ StatusCode relays_fault(void){
     return STATUS_CODE_OK;
 }
 
-StatusCode rear_close_motor(void){
+StatusCode relays_close_motor(void){
     gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_HIGH);
     delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
@@ -164,7 +163,7 @@ StatusCode rear_close_motor(void){
     return STATUS_CODE_OK;
 }
 
-StatusCode rear_open_motor(void){
+StatusCode relays_open_motor(void){
     gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_LOW);
     
     if(gpio_get_state(&s_relay_storage.motor_relay_sense) != GPIO_STATE_LOW){
@@ -175,7 +174,7 @@ StatusCode rear_open_motor(void){
     return STATUS_CODE_OK;
 }
 
-StatusCode relay_close_solar(void) {
+StatusCode relays_close_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_HIGH);
   delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
   
@@ -190,7 +189,7 @@ StatusCode relay_close_solar(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode relay_open_solar(void) {
+StatusCode relays_open_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_LOW);
   
   if (gpio_get_state(&s_relay_storage.solar_relay_sense) != GPIO_STATE_LOW) {
@@ -206,12 +205,12 @@ StatusCode relay_open_solar(void) {
 
 
 
-bool relay_is_killswitch_active(void) {
+bool relays_is_killswitch_active(void) {
   return (gpio_get_state(&s_relay_storage.killswitch_sense) == GPIO_STATE_LOW);
 }
 
 
-StatusCode relay_verify_states(void) {
+StatusCode relays_verify_states(void) {
   // Check positive relay
   if ((s_rear_controller_storage->pos_relay_closed && 
        (gpio_get_state(&s_relay_storage.pos_relay_sense) != GPIO_STATE_HIGH)) || 
@@ -248,5 +247,10 @@ StatusCode relay_verify_states(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
   
+  return STATUS_CODE_OK;
+}
+
+StatusCode relays_deinit(void) {
+  s_rear_controller_storage = NULL;
   return STATUS_CODE_OK;
 }
