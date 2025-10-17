@@ -7,18 +7,20 @@
  * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2/@copilot)
  ************************************************************************************************/
 
-#include "rear_controller.h"
-
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
+/* Inter-component Headers */
 #include "log.h"
-#include "relays.h" 
+#include "rear_controller.h"
+#include "relays.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
-
-static RearControllerStorage *s_rear_controller_storage=NULL;
+static RearControllerStorage *s_rear_controller_storage = NULL;
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -48,6 +50,27 @@ StatusCode rear_fault(void) {
   return relays_fault();
 }
 
+
+StatusCode rear_pos_close(void) {
+  LOG_DEBUG("Closing positive relay\n");
+  return relays_close_pos();
+}
+
+StatusCode rear_pos_open(void) {
+  LOG_DEBUG("Opening positive relay\n");
+  return relays_open_pos();
+}
+
+StatusCode rear_neg_close(void) {
+  LOG_DEBUG("Closing negative relay\n");
+  return relays_close_neg();
+}
+
+StatusCode rear_neg_open(void) {
+  LOG_DEBUG("Opening negative relay\n");
+  return relays_open_neg();
+}
+
 StatusCode rear_solar_close(void) {
   LOG_DEBUG("Closing solar relay\n");
   return relays_close_solar();
@@ -69,7 +92,8 @@ StatusCode rear_motor_open(void) {
 }
 
 StatusCode rear_controller_deinit(void) {
-    s_rear_controller_storage = NULL;
-    relays_deinit();
-    return STATUS_CODE_OK;
+  s_rear_controller_storage = NULL;
+  relays_deinit();
+  return STATUS_CODE_OK;
 }
+

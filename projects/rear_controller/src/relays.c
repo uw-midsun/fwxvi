@@ -93,7 +93,7 @@ static RearControllerStorage *s_rear_controller_storage;
 
 
 /*
- * @brief Close all main power relays (Positive, Negative, and Solar)
+ * @brief Close all main power relays (positive, negative, motor, and solar)
  */
 
 StatusCode relays_init(RearControllerStorage *storage){
@@ -137,6 +137,10 @@ if (gpio_get_state(&s_relay_storage.killswitch_sense) == GPIO_STATE_LOW) {
   s_rear_controller_storage->motor_relay_closed = false;
     return STATUS_CODE_OK;
 }
+
+/**
+ * @briedf Opens all relays, entering a safe fault state.
+ */
 StatusCode relays_fault(void){
 
     gpio_set_state(&s_relay_storage.pos_relay_en, GPIO_STATE_LOW);
@@ -151,6 +155,9 @@ StatusCode relays_fault(void){
     return STATUS_CODE_OK;
 }
 
+/**
+ * @brief Closes the motor relay.
+ */
 StatusCode relays_close_motor(void){
     gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_HIGH);
     delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
@@ -163,6 +170,10 @@ StatusCode relays_close_motor(void){
     return STATUS_CODE_OK;
 }
 
+/**
+ * @brief Opens the motor relay.
+ */
+
 StatusCode relays_open_motor(void){
     gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_LOW);
     
@@ -173,6 +184,9 @@ StatusCode relays_open_motor(void){
     s_rear_controller_storage->motor_relay_closed=false;
     return STATUS_CODE_OK;
 }
+/**
+ * @brief Closes the solar relay.
+ */
 
 StatusCode relays_close_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_HIGH);
@@ -189,6 +203,9 @@ StatusCode relays_close_solar(void) {
   return STATUS_CODE_OK;
 }
 
+/**
+ * @brief Opens the solar relay.
+ */
 StatusCode relays_open_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_LOW);
   
@@ -203,13 +220,19 @@ StatusCode relays_open_solar(void) {
   return STATUS_CODE_OK;
 }
 
-
+/**
+ * @brief Checks if the killswitch is active.
+ * @return true if the killswitch is active, false otherwise.
+ */
 
 bool relays_is_killswitch_active(void) {
   return (gpio_get_state(&s_relay_storage.killswitch_sense) == GPIO_STATE_LOW);
 }
 
-
+/** 
+* @brief Verifies that the relay states match the expected states in storage.
+* @return STATUS_CODE_OK if all relay states match, STATUS_CODE_INTERNAL_ERROR otherwise.
+*/
 StatusCode relays_verify_states(void) {
   // Check positive relay
   if ((s_rear_controller_storage->pos_relay_closed && 
@@ -253,4 +276,46 @@ StatusCode relays_verify_states(void) {
 StatusCode relays_deinit(void) {
   s_rear_controller_storage = NULL;
   return STATUS_CODE_OK;
+}
+
+StatusCode relays_close_pos(void) {
+    gpio_set_state(&s_relay_storage.pos_relay_en, GPIO_STATE_HIGH);
+    delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
+    if (gpio_get_state(&s_relay_storage.pos_relay_sense) != GPIO_STATE_HIGH) {
+        LOG_DEBUG("Positive relay failed to close\n");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }
+    s_rear_controller_storage->pos_relay_closed = true;
+    return STATUS_CODE_OK;
+}
+
+StatusCode relays_open_pos(void) {
+    gpio_set_state(&s_relay_storage.pos_relay_en, GPIO_STATE_LOW);
+    if (gpio_get_state(&s_relay_storage.pos_relay_sense) != GPIO_STATE_LOW) {
+        LOG_DEBUG("Positive relay failed to open\n");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }
+    s_rear_controller_storage->pos_relay_closed = false;
+    return STATUS_CODE_OK;
+}
+
+StatusCode relays_close_neg(void) {
+    gpio_set_state(&s_relay_storage.neg_relay_en, GPIO_STATE_HIGH);
+    delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
+    if (gpio_get_state(&s_relay_storage.neg_relay_sense) != GPIO_STATE_HIGH) {
+        LOG_DEBUG("Negative relay failed to close\n");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }
+    s_rear_controller_storage->neg_relay_closed = true;
+    return STATUS_CODE_OK;
+}
+
+StatusCode relays_open_neg(void) {
+    gpio_set_state(&s_relay_storage.neg_relay_en, GPIO_STATE_LOW);
+    if (gpio_get_state(&s_relay_storage.neg_relay_sense) != GPIO_STATE_LOW) {
+        LOG_DEBUG("Negative relay failed to open\n");
+        return STATUS_CODE_INTERNAL_ERROR;
+    }
+    s_rear_controller_storage->neg_relay_closed = false;
+    return STATUS_CODE_OK;
 }

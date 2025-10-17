@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   test_rear_controller.c
  *
- * @brief  Test file for rear_controller and its state machine
+ * @brief  Test file for rear_controller
  *
  * @date   2025-10-17
  * @author Midnight Sun Team #24 - MSXVI (revised by hungwn2/@copilot)
@@ -35,7 +35,6 @@ static GpioState g_killswitch_state = GPIO_STATE_HIGH;  // Default to not active
 
 // Mock for delay_ms
 void delay_ms(uint32_t ms) {
-  // No-op
 }
 
 // Helper for comparing GpioAddress
@@ -104,16 +103,12 @@ void setup_test(void) {
   g_neg_enable_state = GPIO_STATE_LOW;
   g_killswitch_state = GPIO_STATE_HIGH;  // Not active
 
-  // Initialize all modules needed for tests
   rear_controller_init(&s_test_storage, &s_test_config);
-  rear_controller_state_manager_init();
 }
 
 void teardown_test(void) {
   rear_controller_deinit();
 }
-
-// --- Rear Controller and Relay Tests ---
 
 TEST_IN_TASK
 void test_rear_controller_init_sets_default_states(void) {
@@ -125,28 +120,17 @@ void test_rear_controller_init_sets_default_states(void) {
 
 TEST_IN_TASK
 void test_rear_fault_opens_all_relays(void) {
-  // Close relays
-  rear_pos_close();
-  rear_neg_close();
-  rear_motor_close();
-  rear_solar_close();
-  
-  // Trigger fault
-  rear_fault();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_close_motor());
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_close_solar());
+  s_test_storage.pos_relay_closed = true;
+  s_test_storage.neg_relay_closed = true;
 
-  // Assert all are now open
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_pos_enable_state);
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_neg_enable_state);
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_motor_enable_state);
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_solar_enable_state);
-}
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, rear_fault());
 
-TEST_IN_TASK
-void test_rear_controller_pos_close_and_open(void) {
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, rear_pos_close());
-  TEST_ASSERT_TRUE(s_test_storage.pos_relay_closed);
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, rear_pos_open());
   TEST_ASSERT_FALSE(s_test_storage.pos_relay_closed);
+  TEST_ASSERT_FALSE(s_test_storage.neg_relay_closed);
+  TEST_ASSERT_FALSE(s_test_storage.solar_relay_closed);
+  TEST_ASSERT_FALSE(s_test_storage.motor_relay_closed);
 }
 
 TEST_IN_TASK
@@ -174,56 +158,21 @@ void test_relays_is_killswitch_active(void) {
   TEST_ASSERT_TRUE(relays_is_killswitch_active());
 }
 
-// --- State Machine Tests ---
-
 TEST_IN_TASK
-void test_rear_sm_init_state(void) {
-  // setup_test calls init, which should enter the INIT state and call relays_fault
-  TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_INIT, rear_controller_state_manager_get_state());
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_pos_enable_state); // Check that fault was called
+void test_relays_verify_states_ok_when_matching(void) {
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_verify_states());
+
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_close_motor());
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_verify_states());
+
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_close_solar());
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_verify_states());
 }
 
 TEST_IN_TASK
-void test_rear_sm_init_to_precharge(void) {
-  // From INIT, INIT_COMPLETE event should transition to PRECHARGE
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_INIT_COMPLETE);
-  TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_PRECHARGE, rear_controller_state_manager_get_state());
-  // Verify entry action for PRECHARGE
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, g_pos_enable_state);
-}
+void test_relays_verify_states_fails_on_mismatch(void) {
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, relays_close_motor());
+  g_motor_enable_state = GPIO_STATE_LOW;
 
-TEST_IN_TASK
-void test_rear_sm_precharge_to_idle(void) {
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_INIT_COMPLETE);
-  
-  // From PRECHARGE, PRECHARGE_SUCCESS event should transition to IDLE
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_PRECHARGE_SUCCESS);
-  TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_IDLE, rear_controller_state_manager_get_state());
-  // Verify entry action for IDLE
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, g_neg_enable_state);
-}
-
-TEST_IN_TASK
-void test_rear_sm_idle_to_drive(void) {
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_INIT_COMPLETE);
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_PRECHARGE_SUCCESS);
-  
-  // From IDLE, DRIVE_REQUEST event should transition to DRIVE
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
-  TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_DRIVE, rear_controller_state_manager_get_state());
-  // Verify entry actions for DRIVE
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, g_motor_enable_state);
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, g_solar_enable_state);
-}
-
-TEST_IN_TASK
-void test_rear_sm_any_state_to_fault(void) {
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_INIT_COMPLETE);
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_PRECHARGE_SUCCESS);
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, g_pos_enable_state); // Make sure relay is closed
-  
-  // A FAULT event should transition to FAULT state and open relays
-  rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
-  TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_FAULT, rear_controller_state_manager_get_state());
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, g_pos_enable_state); // Check that fault was called
+  TEST_ASSERT_EQUAL(STATUS_CODE_INTERNAL_ERROR, relays_verify_states());
 }

@@ -36,9 +36,6 @@ static struct RelayStorage relay_storage = { .pos_relay_en = BMS_POS_RELAY_ENABL
 
 static BmsStorage *bms_storage;
 
-
-
-
 static StatusCode s_close_relays(void) {
   /* 250 MS Gap between each relay closing due to the excessive current draw */
   gpio_set_state(&bms_storage->relay_storage->pos_relay_en, GPIO_STATE_HIGH);

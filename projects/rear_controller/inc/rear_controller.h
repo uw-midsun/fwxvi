@@ -71,7 +71,6 @@ typedef struct {
   RearControllerConfig *config;
 } RearControllerStorage;
 
-
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
 
 /**
@@ -100,4 +99,9 @@ StatusCode rear_motor_close(void);
 StatusCode rear_motor_open(void);
 
 StatusCode relays_deinit(void);
+
+StatusCode rear_pos_close(void);
+StatusCode rear_pos_open(void);
+StatusCode rear_neg_close(void);
+StatusCode rear_neg_open(void);
 /** @} */

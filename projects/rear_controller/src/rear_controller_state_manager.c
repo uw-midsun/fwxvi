@@ -23,28 +23,34 @@ static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
   switch (new_state) {
     case REAR_CONTROLLER_STATE_INIT:
-      // relays_fault();
+      relays_fault();
 
       /* TODO: Open all relays, reset internal flags */
       break;
 
     case REAR_CONTROLLER_STATE_PRECHARGE:
-      /* TODO: Close positive relay and allow it to precharge */
+      relays_close_pos();
+        /* TODO: Close positive relay and allow it to precharge */
       break;
 
     case REAR_CONTROLLER_STATE_IDLE:
+      relays_close_neg();
       /* TODO: Check if precharging the neg relay is done, then close negative relay */
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
+      relays_close_motor();
+      relays_close_solar();
       /* TODO: Check if motor precharge is done. If yes then close motor relay and enable LV motor supply. If not then do not engage, remain in idle */
       break;
 
     case REAR_CONTROLLER_STATE_CHARGE:
+      relays_close_motor();
       /* TODO: Make any changes required for charging. Previous car required us to close motor relay */
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
+      relays_fault();
       /* TODO: Disable everything for safety, open all relays and disable LV motor */
       break;
   }
@@ -112,6 +118,8 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
       break;
 
     default:
+      //Shouldnt reach here
+      rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       break;
   }
 
