@@ -50,7 +50,6 @@ StatusCode rear_fault(void) {
   return relays_fault();
 }
 
-
 StatusCode rear_pos_close(void) {
   LOG_DEBUG("Closing positive relay\n");
   return relays_close_pos();
@@ -96,4 +95,3 @@ StatusCode rear_controller_deinit(void) {
   relays_deinit();
   return STATUS_CODE_OK;
 }
-

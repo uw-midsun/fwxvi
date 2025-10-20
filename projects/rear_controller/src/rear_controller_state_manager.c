@@ -30,7 +30,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
 
     case REAR_CONTROLLER_STATE_PRECHARGE:
       relays_close_pos();
-        /* TODO: Close positive relay and allow it to precharge */
+      /* TODO: Close positive relay and allow it to precharge */
       break;
 
     case REAR_CONTROLLER_STATE_IDLE:
@@ -69,7 +69,6 @@ StatusCode rear_controller_state_manager_init(void) {
 
   return STATUS_CODE_OK;
 }
-
 StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
   if (!s_is_initialized) {
     return STATUS_CODE_UNINITIALIZED;
@@ -100,17 +99,23 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
-      if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-      else if (event == REAR_CONTROLLER_EVENT_FAULT)
+      if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
+        // Open all relays and return to the safe INIT state.
+        relays_fault();
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+      } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+      }
       break;
 
     case REAR_CONTROLLER_STATE_CHARGE:
-      if (event == REAR_CONTROLLER_EVENT_CHARGER_REMOVED)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-      else if (event == REAR_CONTROLLER_EVENT_FAULT)
+      if (event == REAR_CONTROLLER_EVENT_CHARGER_REMOVED) {
+        // Open all relays and return to the safe INIT state.
+        relays_fault();
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+      } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+      }
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
@@ -118,7 +123,6 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
       break;
 
     default:
-      //Shouldnt reach here
       rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       break;
   }
