@@ -10,6 +10,8 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 #include "adbms_afe.h"
@@ -64,14 +66,11 @@ typedef struct {
   int16_t max_cell_temperature;
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
-
-  /* Current Sense*/
-  ACS37800_Storage acs37800;
-  float csense_prev_current;
-  int32_t csense_overcurrents;
-  int32_t csense_retries;
+  ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
   RearControllerConfig *config;
 } RearControllerStorage;
+
+StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
 
 /** @} */
