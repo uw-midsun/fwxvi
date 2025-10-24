@@ -12,18 +12,19 @@
 
 /* Inter-component Headers */
 #include "log.h"
-#include "relays.h"
+
 /* Intra-component Headers */
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_state_manager.h"
+#include "relays.h"
 
-static bool s_is_initialized = false;
+static RearControllerStorage *rear_controller_storage = NULL;
 static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
 
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
   switch (new_state) {
     case REAR_CONTROLLER_STATE_INIT:
-      relays_fault();
+      relays_reset();
 
       /* TODO: Open all relays, reset internal flags */
       break;
@@ -50,27 +51,29 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
-      relays_fault();
+      relays_reset();
       /* TODO: Disable everything for safety, open all relays and disable LV motor */
       break;
   }
 
   s_current_state = new_state;
-  LOG_DEBUG("RearController State Manager entered state: %d\n", new_state);
+  LOG_DEBUG("RearController State Manager entered state: %d\r\n", new_state);
 }
 
-StatusCode rear_controller_state_manager_init(void) {
-  if (s_is_initialized) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
+StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
+  rear_controller_storage = storage;
+
   rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
-  s_is_initialized = true;
 
   return STATUS_CODE_OK;
 }
+
 StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
-  if (!s_is_initialized) {
+  if (rear_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -101,7 +104,7 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
     case REAR_CONTROLLER_STATE_DRIVE:
       if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
         // Open all relays and return to the safe INIT state.
-        relays_fault();
+        relays_reset();
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
@@ -110,8 +113,7 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
     case REAR_CONTROLLER_STATE_CHARGE:
       if (event == REAR_CONTROLLER_EVENT_CHARGER_REMOVED) {
-        // Open all relays and return to the safe INIT state.
-        relays_fault();
+        relays_reset();
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);

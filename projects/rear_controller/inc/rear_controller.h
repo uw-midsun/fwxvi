@@ -73,35 +73,4 @@ typedef struct {
 
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
 
-/**
- * @brief Commands all relays to open, entering a safe fault state.
- */
-StatusCode rear_fault(void);
-
-/**
- * @brief Commands the solar relay to close.
- */
-StatusCode rear_solar_close(void);
-
-/**
- * @brief Commands the solar relay to open.
- */
-StatusCode rear_solar_open(void);
-
-/**
- * @brief Commands the motor relay to close.
- */
-StatusCode rear_motor_close(void);
-
-/**
- * @brief Commands the motor relay to open.
- */
-StatusCode rear_motor_open(void);
-
-StatusCode relays_deinit(void);
-
-StatusCode rear_pos_close(void);
-StatusCode rear_pos_open(void);
-StatusCode rear_neg_close(void);
-StatusCode rear_neg_open(void);
 /** @} */

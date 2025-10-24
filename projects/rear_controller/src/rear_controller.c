@@ -14,19 +14,21 @@
 
 /* Inter-component Headers */
 #include "log.h"
-#include "rear_controller.h"
-#include "relays.h"
-
-/* Intra-component Headers */
 #include "status.h"
 
-static RearControllerStorage *s_rear_controller_storage = NULL;
+/* Intra-component Headers */
+#include "rear_controller.h"
+#include "rear_controller_state_manager.h"
+#include "relays.h"
+
+static RearControllerStorage *rear_controller_storage = NULL;
+
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  s_rear_controller_storage = storage;
+  rear_controller_storage = storage;
   storage->config = config;
 
   storage->pos_relay_closed = false;
@@ -40,58 +42,8 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   storage->aux_valid = false;
 
   status_ok_or_return(relays_init(storage));
+  status_ok_or_return(rear_controller_state_manager_init(storage));
 
-  LOG_DEBUG("Rear controller initialized\n");
-  return STATUS_CODE_OK;
-}
-
-StatusCode rear_fault(void) {
-  LOG_DEBUG("Entering fault state\n");
-  return relays_fault();
-}
-
-StatusCode rear_pos_close(void) {
-  LOG_DEBUG("Closing positive relay\n");
-  return relays_close_pos();
-}
-
-StatusCode rear_pos_open(void) {
-  LOG_DEBUG("Opening positive relay\n");
-  return relays_open_pos();
-}
-
-StatusCode rear_neg_close(void) {
-  LOG_DEBUG("Closing negative relay\n");
-  return relays_close_neg();
-}
-
-StatusCode rear_neg_open(void) {
-  LOG_DEBUG("Opening negative relay\n");
-  return relays_open_neg();
-}
-
-StatusCode rear_solar_close(void) {
-  LOG_DEBUG("Closing solar relay\n");
-  return relays_close_solar();
-}
-
-StatusCode rear_solar_open(void) {
-  LOG_DEBUG("Opening solar relay\n");
-  return relays_open_solar();
-}
-
-StatusCode rear_motor_close(void) {
-  LOG_DEBUG("Closing motor relay\n");
-  return relays_close_motor();
-}
-
-StatusCode rear_motor_open(void) {
-  LOG_DEBUG("Opening motor relay\n");
-  return relays_open_motor();
-}
-
-StatusCode rear_controller_deinit(void) {
-  s_rear_controller_storage = NULL;
-  relays_deinit();
+  LOG_DEBUG("Rear controller initialized\r\n");
   return STATUS_CODE_OK;
 }
