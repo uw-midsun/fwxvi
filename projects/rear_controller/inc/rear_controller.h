@@ -24,6 +24,9 @@
  * @{
  */
 
+/* Forward declarations */
+struct ACS37800Storage;
+
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
 #define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
 #define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
@@ -63,7 +66,7 @@ typedef struct {
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
 
   /* Current Sense*/
-  ACS37800_Storage acs37800;
+  struct ACS37800Storage *acs37800_storage;
   float csense_prev_current;
   int32_t csense_overcurrents;
   int32_t csense_retries;

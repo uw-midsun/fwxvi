@@ -29,20 +29,20 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   }
 
   rear_controller_storage = storage;
-  storage->config = config;
+  rear_controller_storage->config = config;
 
-  storage->pos_relay_closed = false;
-  storage->neg_relay_closed = false;
-  storage->solar_relay_closed = false;
-  storage->motor_relay_closed = false;
-  storage->motor_lv_enabled = false;
-  storage->precharge_complete = false;
-  storage->killswitch_active = false;
-  storage->pcs_valid = false;
-  storage->aux_valid = false;
+  rear_controller_storage->pos_relay_closed = false;
+  rear_controller_storage->neg_relay_closed = false;
+  rear_controller_storage->solar_relay_closed = false;
+  rear_controller_storage->motor_relay_closed = false;
+  rear_controller_storage->motor_lv_enabled = false;
+  rear_controller_storage->precharge_complete = false;
+  rear_controller_storage->killswitch_active = false;
+  rear_controller_storage->pcs_valid = false;
+  rear_controller_storage->aux_valid = false;
 
-  status_ok_or_return(relays_init(storage));
-  status_ok_or_return(rear_controller_state_manager_init(storage));
+  status_ok_or_return(relays_init(rear_controller_storage));
+  status_ok_or_return(rear_controller_state_manager_init(rear_controller_storage));
 
   LOG_DEBUG("Rear controller initialized\r\n");
   return STATUS_CODE_OK;
