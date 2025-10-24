@@ -13,15 +13,18 @@
 #include "current_sense.h"
 
 #include "current_acs37800.h"
+#include "status.h"
+
+/* Intra-component Headers */
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_state_manager.h"
 
-/* Intra-component Headers */
-#include "status.h"
+static float csense_prev_current;
+static int32_t csense_overcurrents;
+static int32_t csense_retries;
 
-static ACS37800_Storage s_acs37800_storage;
 static RearControllerStorage *rear_controller_storage;
 
 // https://blog.mbedded.ninja/programming/signal-processing/digital-filters/exponential-moving-average-ema-filter/.
@@ -35,8 +38,8 @@ StatusCode current_sense_run() {
   StatusCode status = acs37800_get_current(&rear_controller_storage->acs37800_storage, &current_reading);
 
   if (status != STATUS_CODE_OK) {
-    if (rear_controller_storage->csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
-      rear_controller_storage->csense_retries++;
+    if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
+      csense_retries++;
       return STATUS_CODE_OK;
     } else {
       rear_controller_state_manager_step(REAR_CONTROLLER_STATE_FAULT);
@@ -44,20 +47,20 @@ StatusCode current_sense_run() {
     }
   }
 
-  rear_controller_storage->csense_retries = 0;
+  csense_retries = 0;
 
-  float current = filter_step(REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA, current_reading, rear_controller_storage->csense_prev_current);
+  float current = filter_step(REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA, current_reading, csense_prev_current);
 
   if (current > PACK_MAX_DISCHARGE_CURRENT_A || current < PACK_MAX_CHARGE_CURRENT_A) {
-    rear_controller_storage->csense_overcurrents++;
-    if (rear_controller_storage->csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
+    csense_overcurrents++;
+    if (csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
       rear_controller_state_manager_step(REAR_CONTROLLER_STATE_FAULT);
     }
   } else {
-    rear_controller_storage->csense_overcurrents = 0;
+    csense_overcurrents = 0;
   }
 
-  rear_controller_storage->csense_prev_current = current;
+  csense_prev_current = current;
 
   return STATUS_CODE_OK;
 }
@@ -68,9 +71,8 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
   }
 
   rear_controller_storage = storage;
-  rear_controller_storage->acs37800_storage = &s_acs37800_storage;
 
-  status_ok_or_return(acs37800_init(rear_controller_storage->acs37800_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR));
+  status_ok_or_return(acs37800_init(&rear_controller_storage->acs37800_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR));
 
   return STATUS_CODE_OK;
 }

@@ -12,6 +12,7 @@
 /* Standard library Headers */
 #include <stdbool.h>
 #include <stdint.h>
+
 /* Inter-component Headers */
 #include "adbms_afe.h"
 #include "current_acs37800.h"
@@ -23,9 +24,6 @@
  * @brief    Rear Controller Board Firmware
  * @{
  */
-
-/* Forward declarations */
-struct ACS37800Storage;
 
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
 #define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
@@ -64,12 +62,7 @@ typedef struct {
   bool aux_valid;          /**< Aux valid state */
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
-
-  /* Current Sense*/
-  struct ACS37800Storage *acs37800_storage;
-  float csense_prev_current;
-  int32_t csense_overcurrents;
-  int32_t csense_retries;
+  ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
   RearControllerConfig *config;
 } RearControllerStorage;
