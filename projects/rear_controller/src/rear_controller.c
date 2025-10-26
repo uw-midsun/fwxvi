@@ -13,10 +13,10 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "can.h"
+#include "flash.h"
 #include "log.h"
 #include "status.h"
-#include "flash.h"
-#include "can.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
