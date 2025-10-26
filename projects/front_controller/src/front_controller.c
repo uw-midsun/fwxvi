@@ -10,10 +10,13 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "can.h"
+#include "dac.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
+#include "opamp.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
@@ -53,9 +56,15 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   front_controller_storage->config = config;
 
   log_init();
+
+  /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
+  opamp_init();
+  dac_init();
+  adc_init();
 
+  /* Initialize front controller systems */
   accel_pedal_init(storage);
   ws22_motor_can_init(storage);
   pedal_calib_read(storage);

@@ -19,6 +19,7 @@
 
 /* Intra-component Headers */
 #include "adbms_afe_manager.h"
+#include "adc_manager.h"
 #include "app.h"
 #include "app_callback.h"
 #include "app_terminal.h"
@@ -28,6 +29,7 @@
 
 JSONManager serverJSONManager;
 GpioManager serverGpioManager;
+AdcManager serverAdcManager;
 AfeManager serverAfeManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;

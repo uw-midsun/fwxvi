@@ -33,8 +33,11 @@ std::string ADBMS_AFE::serialize(const CommandCode &commandCode) const {
   serializeInteger<uint8_t>(serializedData, AFE_MAX_CELLS * sizeof(uint16_t));
   serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_voltages), AFE_MAX_CELLS * sizeof(uint16_t));
 
-  serializeInteger<uint8_t>(serializedData, AFE_MAX_THERMISTORS * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.aux_voltages), AFE_MAX_THERMISTORS * sizeof(uint16_t));
+  serializeInteger<uint8_t>(serializedData, AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.therm_voltages), AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
+
+  serializeInteger<uint8_t>(serializedData, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.board_therm_voltages), AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(AFE_MAX_CELLS));
   serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_discharges), AFE_MAX_CELLS);
@@ -56,8 +59,12 @@ void ADBMS_AFE::deserialize(std::string &afeDatagramPayload) {
   offset += AFE_MAX_CELLS * sizeof(uint16_t);
 
   deserializeInteger<uint8_t>(afeDatagramPayload, offset);
-  std::memcpy(m_afeDatagram.aux_voltages, afeDatagramPayload.data() + offset, AFE_MAX_THERMISTORS * sizeof(uint16_t));
-  offset += AFE_MAX_THERMISTORS * sizeof(uint16_t);
+  std::memcpy(m_afeDatagram.therm_voltages, afeDatagramPayload.data() + offset, AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
+  offset += AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t);
+
+  deserializeInteger<uint8_t>(afeDatagramPayload, offset);
+  std::memcpy(m_afeDatagram.board_therm_voltages, afeDatagramPayload.data() + offset, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
+  offset += AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t);
 
   deserializeInteger<uint8_t>(afeDatagramPayload, offset);  // length (ignored or validated)
   std::memcpy(m_afeDatagram.cell_discharges, afeDatagramPayload.data() + offset, AFE_MAX_CELLS);
@@ -87,13 +94,13 @@ void ADBMS_AFE::setCellVoltage(uint8_t index, uint16_t voltage) {
   m_afeDatagram.cell_voltages[index] = voltage;
 }
 
-void ADBMS_AFE::setAuxVoltage(uint8_t index, uint16_t voltage) {
-  if (index >= AFE_MAX_THERMISTORS) {
+void ADBMS_AFE::setThermVoltage(uint8_t index, uint16_t voltage) {
+  if (index >= AFE_MAX_BOARD_THERMISTORS) {
     std::cout << "Invalid Index" << std::endl;
     return;
   }
 
-  m_afeDatagram.aux_voltages[index] = voltage;
+  m_afeDatagram.therm_voltages[index] = voltage;
 }
 
 void ADBMS_AFE::setDeviceCellVoltage(std::size_t dev_index, uint16_t voltage) {
@@ -107,13 +114,13 @@ void ADBMS_AFE::setDeviceCellVoltage(std::size_t dev_index, uint16_t voltage) {
   setCache(cache_index, voltage);
 }
 
-void ADBMS_AFE::setDeviceAuxVoltage(std::size_t dev_index, uint16_t voltage) {
-  uint8_t start = dev_index * AFE_MAX_THERMISTORS_PER_DEVICE;
-  for (uint8_t i = 0; i < AFE_MAX_THERMISTORS_PER_DEVICE; ++i) {
-    setAuxVoltage((start + i), voltage);
+void ADBMS_AFE::setDeviceThermVoltage(std::size_t dev_index, uint16_t voltage) {
+  uint8_t start = dev_index * AFE_MAX_CELL_THERMISTORS_PER_DEVICE;
+  for (uint8_t i = 0; i < AFE_MAX_CELL_THERMISTORS_PER_DEVICE; ++i) {
+    setThermVoltage((start + i), voltage);
   }
 
-  std::size_t idx = static_cast<std::size_t>(CacheIndex::AUX_DEV_0) + dev_index;
+  std::size_t idx = static_cast<std::size_t>(CacheIndex::THERMISTOR_DEV_0) + dev_index;
   CacheIndex cache_index = static_cast<CacheIndex>(idx);
   setCache(cache_index, voltage);
 }
@@ -125,11 +132,11 @@ void ADBMS_AFE::setPackCellVoltage(uint16_t voltage) {
   setCache(CacheIndex::CELL_PACK, voltage);
 }
 
-void ADBMS_AFE::setPackAuxVoltage(uint16_t voltage) {
-  for (uint8_t i = 0; i < AFE_MAX_THERMISTORS; ++i) {
-    setAuxVoltage((i), voltage);
+void ADBMS_AFE::setPackThermVoltage(uint16_t voltage) {
+  for (uint8_t i = 0; i < AFE_MAX_CELL_THERMISTORS; ++i) {
+    setThermVoltage((i), voltage);
   }
-  setCache(CacheIndex::AUX_PACK, voltage);
+  setCache(CacheIndex::THERMISTOR_PACK, voltage);
 }
 
 void ADBMS_AFE::setCellDischarge(bool is_discharge, uint8_t cell_index) {
@@ -140,8 +147,16 @@ void ADBMS_AFE::setCellDischarge(bool is_discharge, uint8_t cell_index) {
   m_afeDatagram.cell_discharges[cell_index] = is_discharge;
 }
 
+void ADBMS_AFE::setBoardTherm(std::size_t dev_index, uint16_t voltage) {
+  if (dev_index >= AFE_MAX_BOARD_THERMISTORS) {
+    std::cout << "Invalid index" << std::endl;
+    return;
+  }
+  m_afeDatagram.board_therm_voltages[dev_index] = voltage;
+}
+
 void ADBMS_AFE::setCellPackDischarge(bool is_discharge) {
-  for (uint8_t i = 0; i < AFE_MAX_CELLS; ++i) {
+  for (uint8_t i = 0; i < AFE_MAX_CELL_THERMISTORS; ++i) {
     setCellDischarge(is_discharge, i);
   }
 
@@ -169,9 +184,15 @@ uint16_t ADBMS_AFE::getCellVoltage(std::size_t index) const {
   return -1;
 }
 
-uint16_t ADBMS_AFE::getAuxVoltage(std::size_t index) const {
-  if (index < AFE_MAX_THERMISTORS) return m_afeDatagram.aux_voltages[index];
+uint16_t ADBMS_AFE::getThermVoltage(std::size_t index) const {
+  if (index < AFE_MAX_CELL_THERMISTORS) return m_afeDatagram.therm_voltages[index];
   std::cout << "Invalid Index" << std::endl;
+  return -1;
+}
+
+uint16_t ADBMS_AFE::getBoardThermVoltage(std::size_t dev_index) const {
+  if (dev_index < AFE_MAX_BOARD_THERMISTORS) return m_afeDatagram.board_therm_voltages[dev_index];
+  std::cout << "Invalid index" << std::endl;
   return -1;
 }
 

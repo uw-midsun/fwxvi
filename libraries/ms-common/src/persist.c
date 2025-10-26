@@ -18,9 +18,9 @@
 /* Intra-component Headers */
 #include "status.h"
 
-// Erased flash defaults to all 1's
-#define PERSIST_VALID_MARKER 0xFFFFFFFF
-#define PERSIST_INVALID_SIZE 0xFFFFFFFF
+/* Erased flash defaults to all 1's */
+#define PERSIST_VALID_MARKER 0xFFFFFFFFU
+#define PERSIST_INVALID_SIZE 0xFFFFFFFFU
 #define PERSIST_INVALID_ADDR UINTPTR_MAX
 #define PERSIST_BASE_ADDR FLASH_PAGE_TO_ADDR(persist->page)
 #define PERSIST_END_ADDR (PERSIST_BASE_ADDR + FLASH_PAGE_SIZE)

@@ -158,7 +158,7 @@ def create_arm_env(hardware, flash_type='default', build_config='debug'):
     else:
         build_config_flags = release_flags
     return Environment(
-        ENV = { 'PATH': os.environ['PATH'] },
+        ENV = os.environ,
 
         CC=compiler,
         CCFLAGS=common_flags + build_config_flags + arch_cflags + get_defines(hardware),

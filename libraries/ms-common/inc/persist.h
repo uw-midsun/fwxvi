@@ -25,10 +25,10 @@
  * @{
  */
 
-// Commit data every second if dirty
+/* Commit data every second if dirty */
 #define PERSIST_COMMIT_TIMEOUT_MS 1000
 
-typedef struct PersistStorage {
+typedef struct {
   void *blob;
   size_t blob_size;
   uintptr_t flash_addr;

@@ -204,6 +204,8 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
   return STATUS_CODE_OK;
 }
 
+/* SETTERS AND GETTERS */
+
 StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
