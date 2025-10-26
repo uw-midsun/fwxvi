@@ -29,9 +29,9 @@ for speed in sorted(groups.keys()):
         if y0 == -1 or y1 == -1:
             continue
 
-        COLOR = 'green' if s0 == 0 else 'red'
+        color = 'green' if s0 == 0 else 'red'
         alpha = 0.2 + 0.8 * speed
-        plt.plot([x0, x1], [y0, y1], color=COLOR, alpha=alpha)
+        plt.plot([x0, x1], [y0, y1], color=color, alpha=alpha)
 
 plt.xlabel('Pedal input (normalized)')
 plt.ylabel('Accel percentage')
