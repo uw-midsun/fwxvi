@@ -10,8 +10,8 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "delay.h"
 #include "dac.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
