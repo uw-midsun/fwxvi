@@ -8,5 +8,8 @@
     "x86_libs": [
         "ms-mpxe"
     ],
+    "include": [
+        "projects/front_controller/inc"
+    ],
     "can": false
 }

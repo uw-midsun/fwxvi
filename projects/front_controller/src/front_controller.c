@@ -13,6 +13,7 @@
 #include "adc.h"
 #include "can.h"
 #include "dac.h"
+#include "flash.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
