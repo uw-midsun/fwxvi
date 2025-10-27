@@ -1,0 +1,17 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "ms-drivers"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/rear_controller/inc"
+    ],
+    "sources": [
+        "projects/rear_controller/src/thermistor.o"
+    ],
+    "can": false
+}
