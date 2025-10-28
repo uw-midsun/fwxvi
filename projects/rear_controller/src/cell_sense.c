@@ -148,11 +148,13 @@ static void s_balance_cells(uint16_t min_voltage) {
   }
 
   /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
-  for (size_t cell = 0U; cell < (s_afe_settings.num_devices * s_afe_settings.num_cells); cell++) {
-    if (CELL_VOLTAGE_LOOKUP(0, cell) > balancing_threshold) {
-      adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell, true);
-    } else {
-      adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell, false);
+  for(size_t dev = 0U; dev < s_afe_settings.num_devices; dev++){
+    for (size_t cell = 0U; cell <  s_afe_settings.num_cells; cell++) {
+      if (CELL_VOLTAGE_LOOKUP(dev, cell) > balancing_threshold) {
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell * dev, true);
+      } else {
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell * dev, false);
+      }
     }
   }
 
@@ -301,16 +303,17 @@ static StatusCode s_cell_sense_run() {
 
   uint16_t max_voltage = 0U;
   uint16_t min_voltage = 0xFFFFU;
-
-  for (size_t cell = 0U; cell < (s_afe_settings.num_devices * s_afe_settings.num_cells); cell++) {
-    LOG_DEBUG("CELL %d: %d\n\r", (uint8_t)cell, CELL_VOLTAGE_LOOKUP(0, cell));
-    delay_ms(5U);
-
-    if (CELL_VOLTAGE_LOOKUP(0, cell) > max_voltage) {
-      max_voltage = CELL_VOLTAGE_LOOKUP(0, cell);
-    }
-    if (CELL_VOLTAGE_LOOKUP(0, cell) < min_voltage) {
-      min_voltage = CELL_VOLTAGE_LOOKUP(0, cell);
+  for(size_t dev = 0U; dev < s_afe_settings.num_devices; dev ++){
+    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t current_cell_voltage = CELL_VOLTAGE_LOOKUP(dev, cell);
+      LOG_DEBUG("CELL %d: %d\n\r", (uint8_t)cell, current_cell_voltage);
+      delay_ms(5U);
+      if (current_cell_voltage > max_voltage) {
+        max_voltage = current_cell_voltage;
+      }
+      if (current_cell_voltage < min_voltage) {
+        min_voltage = current_cell_voltage;
+      }
     }
   }
   delay_ms(10);
