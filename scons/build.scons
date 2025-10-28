@@ -1,6 +1,7 @@
 from scons.common import parse_config
 from pathlib import Path
 import os
+import subprocess
 import shutil
 
 Import("VARS")
@@ -415,17 +416,24 @@ if PLATFORM == 'x86':
 ###########################################################
 # MPXE GUI BUILD
 ###########################################################
-# Check if Qt6 is available by testing for the 'moc' command
-def check_qt6_installed(qt6dir):
-    moc_path = os.path.join(qt6dir, 'bin', 'moc-qt6')
-    if not os.path.isfile(moc_path):  # Check if the moc command exists in the Qt6 bin directory
-        moc_path = os.path.join(qt6dir, 'libexec', 'moc-qt6')
-    if not os.path.isfile(moc_path):  # Check in alternate locations
+def check_qt6_installed():
+    try:
+        subprocess.run(
+            ["pkg-config", "--exists", "Qt6Core"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        return True
+    except subprocess.CalledProcessError:
         return False
-    return True
+    except FileNotFoundError:
+        # pkg-config itself not found
+        print("pkg-config not found on this system.")
+        return False
 
 qt6dir = os.environ.get("QT6DIR", "/usr/lib/qt6")
-if check_qt6_installed(qt6dir):
+if check_qt6_installed():
     print("Qt6 detected, proceeding with Qt6 build.")
     qtEnv = cxx_env.Clone(QT6DIR=qt6dir, tools=['gui_build_tool'], toolpath=['#scons'])
     qtEnv.EnableQt6Modules(['QtCore', 'QtGui', 'QtWidgets'])
