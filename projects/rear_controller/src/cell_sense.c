@@ -23,6 +23,7 @@
 #include "bms_hw_defs.h"
 #include "cell_sense.h"
 #include "rear_controller.h"
+#include "thermistor.h"
 
 /************************************************************************************************
  * Private defines
@@ -111,22 +112,6 @@ static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
 
 static RearControllerStorage *rear_controller_storage;
 
-// Murata NCP15XH103F03RC 10k NTC, B(25/50)=3380 K
-// Index = °C (0, 0.5, 1, ..,  124), Value = resistance (ohms)
-static const uint16_t s_resistance_lookup[249] = {
-  28224,        27593,  26978,  26379,  25796,  25228,  24674,  24134,  23608,  23095,  22595,  22108,  21632,  21169,      20717,  20277,  19847,  19428,  19019,  18620,  18231,  17852,  17481,  17120,
-  16767,        16423,  16087,  15759,  15438,  15126,  14820,  14522,  14231,  13947,  13669,  13398,  13133,  12874,      12622,  12375,  12133,  11897,  11667,  11441,  11221,  11006,  10796,  10590,
-  10389,        10192,  10000,  9812,   9628,   9448,   9272,   9100,   8932,   8767,   8606,   8449,   8295,   8144,       7996,   7852,   7710,   7572,   7436,   7303,   7174,   7046,   6922,   6800,
-  6681, 6564,   6449,   6337,   6227,   6120,   6014,   5911,   5810,   5711,   5614,   5518,   5425,   5334,   5244,       5156,   5070,   4986,   4903,   4822,   4743,   4665,   4589,   4514,
-  4440, 4368,   4297,   4228,   4160,   4093,   4028,   3964,   3901,   3839,   3779,   3719,   3661,   3603,   3547,       3492,   3438,   3385,   3333,   3281,   3231,   3182,   3133,   3086,
-  3039, 2993,   2948,   2904,   2861,   2818,   2776,   2735,   2695,   2655,   2616,   2577,   2540,   2503,   2467,       2431,   2396,   2361,   2327,   2294,   2261,   2229,   2197,   2166,
-  2136, 2106,   2076,   2047,   2019,   1991,   1963,   1936,   1909,   1883,   1857,   1832,   1807,   1782,   1758,       1734,   1711,   1688,   1665,   1643,   1621,   1600,   1578,   1558,
-  1537, 1517,   1497,   1477,   1458,   1439,   1420,   1402,   1384,   1366,   1349,   1331,   1315,   1298,   1281,       1265,   1249,   1233,   1218,   1203,   1188,   1173,   1158,   1144,
-  1130, 1116,   1102,   1089,   1076,   1062,   1050,   1037,   1024,   1012,   1000,   988,    976,    964,    953,        942,     930,    920,    909,    898,    888,    877,    867,    857,
-  847,  837,    828,    818,    809,    799,    790,    781,    772,    764,    755,    747,    738,    730,    722,        714,     706,    698,    690,    683,    675,    668,    660,    653,
-  646,  639,    632,    625,    619,    612,    605,    599,    593
-};
-
 /************************************************************************************************
  * Private function definitions
  ************************************************************************************************/
@@ -173,28 +158,28 @@ static StatusCode s_check_thermistors() {
       if ((s_afe_settings.cell_bitset[device] >> thermistor) & 1U) {
         /* Calculate the ADC voltage index given the device and thermistor number */
         uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
-        adbms_afe_storage->cell_voltages[index] = calculate_temperature(adbms_afe_storage->cell_voltages[index]);
+        adbms_afe_storage->cell_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->cell_voltages[index]);
         //TODO: make this division floating point
         LOG_DEBUG("Thermistor reading device %d, %d: %d\n", device, thermistor, adbms_afe_storage->cell_voltages[index]/10);
 
         /* Ignore temperature readings outside of the valid temperature range */
-        if (adbms_afe_storage->cell_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD * 10) {
+        if (adbms_afe_storage->cell_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
           continue;
         }
 
-        if (adbms_afe_storage->cell_voltages[index] > max_temp * 10) {
+        if (adbms_afe_storage->cell_voltages[index] > max_temp) {
           max_temp = adbms_afe_storage->cell_voltages[index];
         }
 
         delay_ms(3);
         if (rear_controller_storage->pack_current < 0) {
-          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE * 10) {
+          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE) {
             LOG_DEBUG("CELL OVERTEMP\n");
             // fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
             status = STATUS_CODE_INTERNAL_ERROR;
           }
         } else {
-          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE * 10) {
+          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE) {
             LOG_DEBUG("CELL OVERTEMP\n");
             // fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
             status = STATUS_CODE_INTERNAL_ERROR;
@@ -203,9 +188,6 @@ static StatusCode s_check_thermistors() {
       }
     }
   }
-
-  // rear_controller_storage->max_temperature = max_temp;
-
   return status;
 }
 
@@ -357,21 +339,6 @@ static StatusCode s_cell_sense_run() {
 /************************************************************************************************
  * Public function definitions
  ************************************************************************************************/
-//returns in units of (0.1C) -> thermistor = 5 means 0.5 C
-int calculate_temperature(uint16_t thermistor) {
-  thermistor = (uint16_t)(thermistor * ADC_GAIN);                                          // 100uV
-  uint16_t thermistor_resistance = (thermistor * TEMP_RESISTANCE) / (VREF2 - thermistor);  // Ohms
-  delay_ms(10);
-  uint16_t min_diff = abs(thermistor_resistance - s_resistance_lookup[0]);
-
-  for (uint8_t i = 1U; i < TABLE_SIZE; ++i) {
-    if (abs(thermistor_resistance - s_resistance_lookup[i]) < min_diff) {
-      min_diff = abs(thermistor_resistance - s_resistance_lookup[i]);
-      thermistor = i * 5;
-    }
-  }
-  return thermistor;
-}
 
 StatusCode log_cell_sense() {
   /* AFE messages are split into 3 (For each AFE) */
