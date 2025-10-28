@@ -13,6 +13,7 @@
 #include "adc.h"
 #include "can.h"
 #include "dac.h"
+#include "flash.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
@@ -23,6 +24,7 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "pedal_calib_reader.h"
 #include "ws22_motor_can.h"
 
 /************************************************************************************************
@@ -58,6 +60,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
+  flash_init();
   opamp_init();
   dac_init();
   adc_init();
@@ -65,6 +68,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   /* Initialize front controller systems */
   accel_pedal_init(storage);
   ws22_motor_can_init(storage);
+  pedal_calib_read(storage);
 
   return STATUS_CODE_OK;
 }
