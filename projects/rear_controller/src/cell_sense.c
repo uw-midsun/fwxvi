@@ -238,42 +238,40 @@ static StatusCode s_cell_sense_conversions() {
     // Check therm bitset to determine if we need to read any at this index
     bool check_therm = false;
     for (uint8_t dev = 0; dev < s_afe_settings.num_devices; dev++) {
-      if ((s_afe_settings.cell_bitset[dev] >> thermistor) & 0x1) {
-        check_therm = true;
-      }
-    }
+        if ((s_afe_settings.cell_bitset[dev] >> thermistor) & 0x1) {
+          check_therm = true;
+        }
 
-    if (check_therm) {
-      // Trigger and read thermistor value
-      for(uint8_t dev = 0; dev < s_afe_settings.num_devices; dev++){
-        for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-          status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage, dev, thermistor);
-          if (status == STATUS_CODE_OK) {
-            break;
+      if (check_therm) {
+        // Trigger and read thermistor value
+          for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
+            status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage, dev, thermistor);
+            if (status == STATUS_CODE_OK) {
+              break;
+            }
+            LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
+            delay_ms(RETRY_DELAY_MS);
           }
-          LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
-          delay_ms(RETRY_DELAY_MS);
-        }
-        if (status) {
-          LOG_DEBUG("Thermistor conv failed for therm %d: Status %d\n", (uint8_t)thermistor, status);
-          // fault_bps_set(BMS_FAULT_COMMS_LOSS_AFE);
-          return status;
-        }
-        delay_ms(AUX_CONV_DELAY_MS);
+          if (status) {
+            LOG_DEBUG("Thermistor conv failed for therm %d: Status %d\n", (uint8_t)thermistor, status);
+            // fault_bps_set(BMS_FAULT_COMMS_LOSS_AFE);
+            return status;
+          }
+          delay_ms(AUX_CONV_DELAY_MS);
 
-        for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-          status = adbms_afe_read_thermistor(adbms_afe_storage, dev, thermistor);      
-          if (status == STATUS_CODE_OK) {
-            break;
+          for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
+            status = adbms_afe_read_thermistor(adbms_afe_storage, dev, thermistor);      
+            if (status == STATUS_CODE_OK) {
+              break;
+            }
+            LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
+            delay_ms(RETRY_DELAY_MS);
           }
-          LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
-          delay_ms(RETRY_DELAY_MS);
-        }
-        if (status) {
-          LOG_DEBUG("Thermistor read trigger failed for thermistor %d,  %d\n", (uint8_t)thermistor, status);
-          // fault_bps_set(BMS_FAULT_COMMS_LOSS_AFE);
-          return status;
-        }
+          if (status) {
+            LOG_DEBUG("Thermistor read trigger failed for thermistor %d,  %d\n", (uint8_t)thermistor, status);
+            // fault_bps_set(BMS_FAULT_COMMS_LOSS_AFE);
+            return status;
+          }
       }
     }
   }
