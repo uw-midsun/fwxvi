@@ -1,0 +1,43 @@
+# Normalize all text files to LF line endings
+* text=auto eol=lf
+
+# Language-specific overrides
+
+# C/C++/Header files
+*.c     text eol=lf
+*.cpp   text eol=lf
+*.cc    text eol=lf
+*.h     text eol=lf
+*.hpp   text eol=lf
+
+# Python, MATLAB, scripts
+*.py    text eol=lf
+*.m     text eol=lf
+*.sh    text eol=lf
+*.bash  text eol=lf
+
+# Scons
+*.scons text eol=lf
+SConstruct text eol=lf
+SConscript text eol=lf
+
+# Config files / JSON / YAML
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+
+# Binary files (never touched)
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.gz    binary
+*.tar   binary
+*.exe   binary
+*.dll   binary
+*.so    binary
+*.bin   binary

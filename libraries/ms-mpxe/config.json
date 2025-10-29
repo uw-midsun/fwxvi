@@ -1,6 +1,8 @@
 {
     "libs": [
-        "FreeRTOS"
+        "FreeRTOS",
+        "ms-common",
+        "ms-drivers"
     ],
     "mpxe": true
 }

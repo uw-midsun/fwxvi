@@ -17,14 +17,20 @@
 #include "log.h"
 
 StatusCode event_from_notification(uint32_t *notification, Event *event) {
+  if (event == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   if (notification == NULL) {
     *event = INVALID_EVENT;
     return STATUS_CODE_INVALID_ARGS;
   }
+
   if (*notification == 0) {
     *event = INVALID_EVENT;
     return STATUS_CODE_OK;
   }
+
   /* Get index of first event */
   *event = 31 - __builtin_clz(*notification);
   /* Clear bit */

@@ -493,17 +493,20 @@ void xPortSysTickHandler( void )
 	save and then restore the interrupt mask value as its value is already
 	known. */
 	HAL_IncTick();
-	portDISABLE_INTERRUPTS();
-	{
-		/* Increment the RTOS tick. */
-		if( xTaskIncrementTick() != pdFALSE )
+
+	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+		portDISABLE_INTERRUPTS();
 		{
-			/* A context switch is required.  Context switching is performed in
-			the PendSV interrupt.  Pend the PendSV interrupt. */
-			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+			/* Increment the RTOS tick. */
+			if( xTaskIncrementTick() != pdFALSE )
+			{
+				/* A context switch is required.  Context switching is performed in
+				the PendSV interrupt.  Pend the PendSV interrupt. */
+				portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+			}
 		}
+		portENABLE_INTERRUPTS();
 	}
-	portENABLE_INTERRUPTS();
 }
 /*-----------------------------------------------------------*/
 

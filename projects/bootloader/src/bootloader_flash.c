@@ -11,7 +11,7 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_flash.h"
 
 /* Intra-component Headers */
@@ -95,8 +95,8 @@ BootloaderError boot_flash_read(uintptr_t address, uint8_t *buffer, size_t buffe
 }
 
 BootloaderError boot_verify_flash_memory() {
-  volatile uint32_t *flash_pointer = (volatile uint32_t *)APPLICATION_START_ADDRESS;
-  uint32_t size_in_words = APPLICATION_SIZE / sizeof(uint32_t);
+  volatile uint32_t *flash_pointer = (volatile uint32_t *)APP_ACTIVE_START_ADDRESS;
+  uint32_t size_in_words = APP_ACTIVE_SIZE / sizeof(uint32_t);
 
   for (uint32_t i = 0; i < size_in_words; i++) {
     if (flash_pointer[i] != 0xFFFFFFFF) {

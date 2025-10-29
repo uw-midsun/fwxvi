@@ -17,13 +17,24 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "current_sense.h"
+#include "killswitch.h"
+#include "precharge.h"
 #include "rear_controller.h"
 
-void pre_loop_init() {}
+static RearControllerStorage state;
+
+void pre_loop_init() {
+  killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
+  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
+  current_sense_init(&state);
+}
 
 void run_1000hz_cycle() {}
 
-void run_10hz_cycle() {}
+void run_10hz_cycle() {
+  current_sense_run();
+}
 
 void run_1hz_cycle() {}
 

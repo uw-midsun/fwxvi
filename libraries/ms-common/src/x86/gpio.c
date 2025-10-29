@@ -69,7 +69,6 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
 }
 
 StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
-  printf("Hello");
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -79,12 +78,6 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
   uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
 
   GpioMode mode = s_gpio_pin_modes[index];
-  if (mode != GPIO_OUTPUT_OPEN_DRAIN && mode != GPIO_OUTPUT_PUSH_PULL) {
-    LOG_WARN("Attempting to set an input pin. Port: %d, pin: %d, check your configuration\n", address->port, address->pin);
-    taskEXIT_CRITICAL();
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
   s_gpio_pin_state[index] = state;
 
 #ifdef DEBUG

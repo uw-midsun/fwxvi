@@ -11,7 +11,7 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_can.h"
 #include "stm32l4xx_hal_rcc.h"
@@ -54,7 +54,7 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings) {
     return BOOTLOADER_INVALID_ARGS;
   }
 
-  if (s_can_gpio_init()  != BOOTLOADER_ERROR_NONE) {
+  if (s_can_gpio_init() != BOOTLOADER_ERROR_NONE) {
     return BOOTLOADER_CAN_INIT_ERR;
   }
 

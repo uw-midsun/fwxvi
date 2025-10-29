@@ -55,15 +55,16 @@ typedef struct PedalCalibBlob {
 
 /** @brief A struct that stores the max and min reading along with a sample counter for the data that is being passed in from ADC */
 typedef struct PedalCalibrationStorage {
-  int16_t min_reading;
-  int16_t max_reading;
+  uint16_t min_reading;
+  uint16_t max_reading;
   volatile uint32_t sample_counter;
 } PedalCalibrationStorage;
 
 /** @brief A global struct that stores the throttle pedal and calibration data */
 extern PedalCalibBlob global_calib_blob;
 
-/* @brief Reads data from ADC and calculates appropriate pedal calibration values
+/**
+ * @brief Reads data from ADC and calculates appropriate pedal calibration values
  *
  * @param calib_storage - A struct for storing the max and min reading while looping through adc reading for a given number of samples
  * @param data - A struct that stores the final calculated values for the upper and lower values for the pedal
