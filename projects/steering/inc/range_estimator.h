@@ -11,7 +11,7 @@
 
 /**
  * @defgroup steering
- * @brief    steering Firmware
+ * @brief    Csteering Firmware
  * @{
  */
 
@@ -22,6 +22,6 @@
  * 
  */
 
-float estimate_remaining_range_km(float read_voltage);
+float estimate_remaining_range_km(void);
 
 /** @} */
