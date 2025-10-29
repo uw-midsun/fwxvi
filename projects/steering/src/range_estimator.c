@@ -31,7 +31,5 @@ float estimate_remaining_range_km(void) {
 
     float km_remaining = laps_remaining * DISTANCE_PER_LAP_KM; //calculate remaining km
 
-    printf("Remaining range: %.2f km\n", km_remaining); //for debugging
-
     return km_remaining;
 }
