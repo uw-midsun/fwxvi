@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include "stm32l433xx.h"
 
 /* Inter-component Headers */
 #include "can.h"
@@ -75,6 +76,27 @@ TASK(can_communication, TASK_STACK_1024) {
         LOG_DEBUG("Byte %d: 0x%02X\n", i, rx_msg.data_u8[i]);
       }
     }
+
+    delay_ms(250U);
+
+    volatile CAN_TypeDef *can_reg = CAN1;
+    LOG_DEBUG("CAN1 REG DUMP:\r\n"
+            " MCR: 0x%08lX\r\n"
+            " MSR: 0x%08lX\r\n"
+            " TSR: 0x%08lX\r\n"
+            " RF0R: 0x%08lX\r\n"
+            " RF1R: 0x%08lX\r\n"
+            " IER: 0x%08lX\r\n"
+            " ESR: 0x%08lX\r\n"
+            " BTR: 0x%08lX\r\n",
+            can_reg->MCR,
+            can_reg->MSR,
+            can_reg->TSR,
+            can_reg->RF0R,
+            can_reg->RF1R,
+            can_reg->IER,
+            can_reg->ESR,
+            can_reg->BTR);
   }
 }
 
