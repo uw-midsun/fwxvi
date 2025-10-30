@@ -1,8 +1,8 @@
 {
-    "libs": [
-      "FreeRTOS"
-    ],
     "arm_libs": [
       "core"
+    ],
+    "x86_libs": [
+        "SDL2"
     ]
 }
