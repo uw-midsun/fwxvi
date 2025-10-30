@@ -23,6 +23,10 @@
 #include "steering.h"
 #include "steering_hw_defs.h"
 
+static SteeringStorage *steering_storage;
+
+static ButtonManager s_button_manager = { 0U };
+
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
@@ -227,27 +231,28 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
  * Public functions
  ************************************************************************************************/
 
-StatusCode button_manager_init(ButtonManager *manager) {
-  if (manager == NULL) {
+StatusCode button_manager_init(SteeringStorage *storage) {
+  if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  manager->num_buttons = NUM_STEERING_BUTTONS;
+  steering_storage = storage;
+  steering_storage->button_manager = &s_button_manager;
 
   for (uint8_t i = 0U; i < NUM_STEERING_BUTTONS; i++) {
-    status_ok_or_return(button_init(&manager->buttons[i], &s_button_configs[i]));
+    status_ok_or_return(button_init(&steering_storage->button_manager->buttons[i], &s_button_configs[i]));
   }
 
   return STATUS_CODE_OK;
 }
 
-StatusCode button_manager_update(ButtonManager *manager) {
-  if (manager == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
+StatusCode button_manager_update(void) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
   }
 
-  for (uint8_t i = 0; i < manager->num_buttons; i++) {
-    status_ok_or_return(button_update(&manager->buttons[i]));
+  for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
+    status_ok_or_return(button_update(&steering_storage->button_manager->buttons[i]));
   }
 
   return STATUS_CODE_OK;

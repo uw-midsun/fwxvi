@@ -39,6 +39,9 @@ mpxe/Simulation_JSON/*
 # Test results
 **/test_results/*
 
+**/**compile_commands**.json
+
+
 # Matlab/Simulink
 **/slprj/
 **/_ert_rtw/

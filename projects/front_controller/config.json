@@ -2,13 +2,15 @@
     "libs": [
         "FreeRTOS",
         "ms-common",
+        "ms-drivers",
         "master"
     ],
     "x86_libs": [
         "ms-mpxe"
     ],
     "mocks": {
-        "test_accel_pedal": ["adc_read_raw"]
+        "test_accel_pedal": ["adc_read_raw"],
+        "test_brake_pedal": ["adc_read_raw"]
     },
     "can": true
 }

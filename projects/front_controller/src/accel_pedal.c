@@ -12,13 +12,17 @@
 
 /* Inter-component Headers */
 #include "adc.h"
+#include "dac.h"
 #include "gpio.h"
 #include "log.h"
+#include "opamp.h"
 #include "pedal_calib.h"
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
+
+#define ACCEL_PEDAL_OPAMP_VREF_MV 1650
 
 static GpioAddress s_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 
@@ -33,6 +37,7 @@ StatusCode accel_pedal_run() {
 
   uint16_t adc_reading = s_accel_pedal_storage.calibration_data.lower_value;
   adc_read_raw(&s_accel_pedal_gpio, &adc_reading);
+
   /**
    * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
    * to get percentage press. Negatives and > 100 values will be clamped
@@ -71,6 +76,19 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   /* Initialize hardware */
   gpio_init_pin(&s_accel_pedal_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
   adc_add_channel(&s_accel_pedal_gpio);
+
+  dac_enable_channel(DAC_CHANNEL1);
+  dac_set_voltage(DAC_CHANNEL1, ACCEL_PEDAL_OPAMP_VREF_MV);
+
+  OpampConfig config = {
+    .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */
+    .vinm_sel = OPAMP_INVERTING_IO0,       /* PA0 - External feedback network */
+    .pga_gain = OPAMP_PROGRAMMABLE_GAIN_2, /* Not used in standalone mode */
+    .output_to_adc = true                  /* Flag for documentation */
+  };
+
+  opamp_configure(OPAMP_1, &config);
+  opamp_start(OPAMP_1);
 
   // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
   return STATUS_CODE_OK;

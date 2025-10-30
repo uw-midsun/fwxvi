@@ -29,13 +29,17 @@
 /**
  * @class   AfeManager
  * @brief   Class that manages receiving and transmitting Afe commands and JSON logging
- * @details This class is... (Write later)
+ * @details This class is responsible for transmitting serialized messages for reading cell/thermistor
+ *          information. It shall support reading all cells/thermistors or individual ones
+ *          The class shall cache current Afe data using a hash-map.
  */
 class AfeManager {
  private:
+  /** @brief Hash maps to store Afe information */
   using AfeObjectInfo = std::unordered_map<std::string, std::string>;
-  std::unordered_map<std::string, AfeObjectInfo> m_afeInfo;
-  Datagram::ADBMS_AFE m_afeDatagram;
+  std::unordered_map<std::string, AfeObjectInfo> m_afeInfo; /**< Hash map to store Afe data */
+
+  Datagram::ADBMS_AFE m_afeDatagram; /**< Datagram object to serialize/deserialize payloads */
 
   /**
    * @brief  Loads the Hash-map cache with a projects Afe data
@@ -66,13 +70,13 @@ class AfeManager {
   void updateAfeCellVoltage(std::string &projectName, std::string &payload);
 
   /**
-   * @brief   Update a single auxiliary voltage for a project using the provided payload
-   * @details Parses the payload to extract the voltage and index of the targeted auxiliary input,
-   *          then updates the corresponding aux field in the project info map
+   * @brief   Update a single thermistor voltage for a project using the provided payload
+   * @details Parses the payload to extract the voltage and index of the targeted thermistor input,
+   *          then updates the corresponding thermistor field in the project info map
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and index
    */
-  void updateAfeAuxVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermVoltage(std::string &projectName, std::string &payload);
 
   /**
    * @brief   Update all cell voltages for a specific AFE device using the provided payload
@@ -84,13 +88,13 @@ class AfeManager {
   void updateAfeCellDevVoltage(std::string &projectName, std::string &payload);
 
   /**
-   * @brief   Update all auxiliary voltages for a specific AFE device using the provided payload
+   * @brief   Update all thermistor voltages for a specific AFE device using the provided payload
    * @details Calculates the voltage for a given device index, and updates voltages for
-   *          all auxiliary inputs belonging to that device in the project info map
+   *          all thermistor inputs belonging to that device in the project info map
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and device index
    */
-  void updateAfeAuxDevVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermDevVoltage(std::string &projectName, std::string &payload);
 
   /**
    * @brief   Update all cell voltages across the entire AFE pack using the provided payload
@@ -102,13 +106,20 @@ class AfeManager {
   void updateAfeCellPackVoltage(std::string &projectName, std::string &payload);
 
   /**
-   * @brief   Update all auxiliary voltages across the entire AFE pack using the provided payload
+   * @brief   Update all thermistor voltages across the entire AFE pack using the provided payload
    * @details Iterates across all devices in the pack and updates each of their
-   *          auxiliary voltages with the value extracted from the payload
+   *          thermistor voltages with the value extracted from the payload
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing shared voltage value
    */
-  void updateAfeAuxPackVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermPackVoltage(std::string &projectName, std::string &payload);
+
+  /**
+   * @brief   Update board's thermistor voltage for a specific device
+   * @param   projectName Name of the project to be updated
+   * @param   payload Message data payload containing shared voltage value
+   */
+  void updateAfeBoardThermVoltage(std::string &projectName, std::string &payload);
 
   /**
    * @brief   Update the discharge state of a specific AFE cell using the provided payload
@@ -135,7 +146,6 @@ class AfeManager {
    * @details This function shall support all ADBMS AFE CommandCodes
    * @param   commandCode Command code
    * @param   data Data payload to be transmitted
-   * @param   channel Optional (Eg: "Cell0", "Cell1", "Aux0", "Aux1")
    * @return  Fully serialized data payload to be transmitted to the client
    */
   std::string createAfeCommand(CommandCode commandCode, std::string index, std::string data);

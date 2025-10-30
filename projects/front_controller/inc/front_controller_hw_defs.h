@@ -117,4 +117,16 @@
 #define FRONT_CONTROLLER_ACCEL_PEDAL \
   { .port = GPIO_PORT_A, .pin = 3 }
 
+/** @brief  Front Controller brake pedal input */
+#define FRONT_CONTROLLER_BRAKE_PEDAL \
+  { .port = GPIO_PORT_A, .pin = 5 }
+
+/************************************************************************************************
+ * Board LED definition
+ ************************************************************************************************/
+
+/** @brief  Front Controller accelerator pedal input */
+#define FRONT_CONTROLLER_BOARD_LED \
+  { .port = GPIO_PORT_B, .pin = 10 }
+
 /** @} */

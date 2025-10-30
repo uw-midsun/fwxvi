@@ -27,6 +27,9 @@
 /** @brief  Flash memory must be aligned to 4-bytes since STM32 is 32-bit device */
 #define FLASH_MEMORY_ALIGNMENT 4U
 
+/** @brief  When writing data, flash memory must be aligned to 8-bytes */
+#define FLASH_MEMORY_WRITE_ALIGNMENT 8U
+
 /** @brief  Flash memory begins at 0x0800 0000 as per ARM specification */
 #define FLASH_BASE_ADDR (0x08000000U)
 
@@ -46,6 +49,9 @@
 
 /** @brief  Total number of flash pages in the STM32L433CCU6 */
 #define NUM_FLASH_PAGES 128U
+
+/** @brief  Last flash page number in the STM32L433CCU6 */
+#define FLASH_LAST_PAGE_NUM (NUM_FLASH_PAGES - 1U)
 
 /**
  * @brief   Initialize flash API

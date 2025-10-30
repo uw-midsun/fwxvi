@@ -208,30 +208,17 @@ typedef struct {
   uint8_t clk[ADBMS1818_NUM_COMM_REG_BYTES];
 } _PACKED AdbmsAfeSendCommRegPacket;
 
-/** @brief Configuration Register Group (CFGAR) packet for EACH device */
+/** @brief Configuration Register Group A packet for each device */
 typedef struct {
-  AdbmsAfeConfigRegisterAData reg;
+  AdbmsAfeConfigRegisterAData cfg;
   uint16_t pec;
-} _PACKED AdbmsAfeWriteDeviceConfigAPacket;
+} _PACKED AdbmsAfeWriteConfigAPacket;
 
-/** @brief Configuration Register Group (CFGBxR) packet for EACH device */
+/** @brief Configuration Register Group B packet for each device */
 typedef struct {
-  AdbmsAfeConfigRegisterAData cfgA;
-  uint16_t pecA;
-
-  AdbmsAfeConfigRegisterBData cfgB;
-  uint16_t pecB;
-} _PACKED AdbmsAfeWriteDeviceConfigPacket;
-
-/**
- * @brief WRCFG + all slave registers
- * @note  Devices are ordered with the last slave first */
-typedef struct {
-  uint8_t wrcfg[ADBMS1818_CMD_SIZE]; /**< Command for writing onto config register */
-
-  AdbmsAfeWriteDeviceConfigPacket devices[ADBMS_AFE_MAX_CELLS_PER_DEVICE]; /**< Config for EACH device */
-} _PACKED AdbmsAfeWriteConfigPacket;
-#define SIZEOF_ADBMS_AFE_WRITE_CONFIG_PACKET(devices) (ADBMS1818_CMD_SIZE + (devices) * sizeof(AdbmsAfeWriteDeviceConfigPacket))
+  AdbmsAfeConfigRegisterBData cfg;
+  uint16_t pec;
+} _PACKED AdbmsAfeWriteConfigBPacket;
 
 typedef union {
   uint16_t voltages[3]; /**< 3 voltage readings stored as 16-bit values */
