@@ -42,6 +42,8 @@
  * Validation result: Not run
  */
 
+// NOLINTBEGIN
+
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
 
@@ -121,6 +123,8 @@ typedef char_T byte_T;
 typedef void *pointer_T;
 
 #endif /* RTWTYPES_H */
+
+// NOLINTEND
 
 /*
  * File trailer for generated code.
