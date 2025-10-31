@@ -20,7 +20,7 @@ for root, _, files in os.walk(BASE_DIR):
         ext = Path(file).suffix.lower()
         if ext in VALID_EXTS:
             src = Path(root) / file
-            if ext in ( ".h", ".hpp" ):
+            if ext in (".h", ".hpp"):
                 dst = INC_DIR / file
             else:  # .c, .cc, .cpp
                 dst = SRC_DIR / file
