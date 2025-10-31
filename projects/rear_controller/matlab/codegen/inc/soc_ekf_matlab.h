@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: ekf_soc_estimator.h
+ * File: soc_ekf_matlab.h
  *
- * Code generated for Simulink model 'ekf_soc_estimator'.
+ * Code generated for Simulink model 'soc_ekf_matlab'.
  *
- * Model version                  : 1.42
- * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Sun Sep 14 17:54:27 2025
+ * Model version                  : 1.43
+ * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
+ * C/C++ source code generated on : Thu Oct 30 18:39:26 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -19,13 +19,12 @@
  * Validation result: Not run
  */
 
-#ifndef ekf_soc_estimator_h_
-#define ekf_soc_estimator_h_
-#ifndef ekf_soc_estimator_COMMON_INCLUDES_
-#define ekf_soc_estimator_COMMON_INCLUDES_
+#ifndef RTW_HEADER_soc_ekf_matlab_h_
+#define RTW_HEADER_soc_ekf_matlab_h_
+#ifndef soc_ekf_matlab_COMMON_INCLUDES_
+#define soc_ekf_matlab_COMMON_INCLUDES_
 #include "rtwtypes.h"
-#include "math.h"
-#endif                                 /* ekf_soc_estimator_COMMON_INCLUDES_ */
+#endif                                 /* soc_ekf_matlab_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -35,6 +34,8 @@
 #ifndef rtmSetErrorStatus
 #define rtmSetErrorStatus(rtm, val)    ((rtm)->errorStatus = (val))
 #endif
+
+#define soc_ekf_matlab_M               (rtM)
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
@@ -72,20 +73,10 @@ typedef struct {
   real_T P_new_tmp[4];
   real_T Fd_m[4];
   real_T Fd_c[4];
-  real_T Fd_k[4];
+  real_T kalman_gain[2];
   real_T tau;
   real_T soc_m;
-  real_T idx;
-  real_T b_idx;
 } DW;
-
-/* Constant parameters (default storage) */
-typedef struct {
-  /* Computed Parameter: Constant_Value
-   * Referenced by: '<Root>/Constant'
-   */
-  battery_bus Constant_Value;
-} ConstP;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -93,6 +84,7 @@ typedef struct {
   real_T P_prev[4];                    /* '<Root>/P_prev' */
   real_T u_k;                          /* '<Root>/u_k' */
   real_T z_k;                          /* '<Root>/z_k' */
+  battery_bus params;                  /* '<Root>/params' */
   real_T dt;                           /* '<Root>/dt' */
 } ExtU;
 
@@ -117,23 +109,12 @@ extern ExtU rtU;
 /* External outputs (root outports fed by signals with default storage) */
 extern ExtY rtY;
 
-/* Constant parameters (default storage) */
-extern const ConstP rtConstP;
-
 /* Model entry point functions */
-extern void ekf_soc_estimator_initialize(void);
-extern void ekf_soc_estimator_step(void);
+extern void soc_ekf_matlab_initialize(void);
+extern void soc_ekf_matlab_step(void);
 
 /* Real-time Model object */
 extern RT_MODEL *const rtM;
-
-/*-
- * These blocks were eliminated from the model due to optimizations:
- *
- * Block '<Root>/Scope' : Unused code path elimination
- * Block '<Root>/Scope1' : Unused code path elimination
- * Block '<Root>/Scope2' : Unused code path elimination
- */
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -141,18 +122,21 @@ extern RT_MODEL *const rtM;
  * is <system>/block_name, where system is the system number (uniquely
  * assigned by Simulink) and block_name is the name of the block.
  *
- * Use the MATLAB hilite_system command to trace the generated code back
- * to the model.  For example,
+ * Note that this particular code originates from a subsystem build,
+ * and has its own system numbers different from the parent model.
+ * Refer to the system hierarchy for this subsystem below, and use the
+ * MATLAB hilite_system command to trace the generated code back
+ * to the parent model.  For example,
  *
- * hilite_system('<S3>')    - opens system 3
- * hilite_system('<S3>/Kp') - opens and selects block Kp which resides in S3
+ * hilite_system('ekf_soc_estimator/soc_ekf_matlab')    - opens subsystem ekf_soc_estimator/soc_ekf_matlab
+ * hilite_system('ekf_soc_estimator/soc_ekf_matlab/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
  * '<Root>' : 'ekf_soc_estimator'
- * '<S1>'   : 'ekf_soc_estimator/MATLAB Function'
+ * '<S1>'   : 'ekf_soc_estimator/soc_ekf_matlab'
  */
-#endif                                 /* ekf_soc_estimator_h_ */
+#endif                                 /* RTW_HEADER_soc_ekf_matlab_h_ */
 
 /*
  * File trailer for generated code.

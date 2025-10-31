@@ -5,11 +5,11 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'ekf_soc_estimator'.
+ * Code generated for Simulink model 'soc_ekf_matlab'.
  *
- * Model version                  : 1.42
- * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Sun Sep 14 17:54:27 2025
+ * Model version                  : 1.43
+ * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
+ * C/C++ source code generated on : Thu Oct 30 18:39:26 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
