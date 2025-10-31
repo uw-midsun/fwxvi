@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    rtmodel.h
+ *
+ * @brief   Rtmodel
+ *
+ * @date    2025-10-31
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "soc_ekf_matlab.h"
+
+/**
+ * @defgroup rtmodel
+ * @brief    rtmodel Firmware
+ * @{
+ */
+
 /*
  * Academic License - for use in teaching, academic research, and meeting
  * course requirements at degree granting institutions only.  Not for
@@ -21,16 +45,17 @@
 
 #ifndef RTW_HEADER_rtmodel_h_
 #define RTW_HEADER_rtmodel_h_
-#include "soc_ekf_matlab.h"
 
 /* Macros generated for backwards compatibility  */
 #ifndef rtmGetStopRequested
-#define rtmGetStopRequested(rtm)       ((void*) 0)
+#define rtmGetStopRequested(rtm) ((void *)0)
 #endif
-#endif                                 /* RTW_HEADER_rtmodel_h_ */
+#endif /* RTW_HEADER_rtmodel_h_ */
 
 /*
  * File trailer for generated code.
  *
  * [EOF]
  */
+
+/** @} */

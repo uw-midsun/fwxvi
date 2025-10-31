@@ -13,29 +13,29 @@
 #include <string.h>
 
 /* Inter-component Headers */
+#include "log.h"
 #include "test_helpers.h"
 #include "unity.h"
-#include "log.h"
 
 /* Intra-component Headers */
 #include "rear_controller.h"
 #include "state_of_charge.h"
 
-#define TEST_SERIES_COUNT        (36U)
-#define TEST_PARALLEL_COUNT      (9U)
-#define TEST_CELL_CAPACITY_AH    (4.5f)
+#define TEST_SERIES_COUNT (36U)
+#define TEST_PARALLEL_COUNT (9U)
+#define TEST_CELL_CAPACITY_AH (4.5f)
 
-#define TEST_PACK_MIN_VOLTAGE_MV (2500.0f * TEST_SERIES_COUNT)   // 90,000 mV
-#define TEST_PACK_MAX_VOLTAGE_MV (4200.0f * TEST_SERIES_COUNT)   // 151,200 mV
+#define TEST_PACK_MIN_VOLTAGE_MV (2500.0f * TEST_SERIES_COUNT)  // 90,000 mV
+#define TEST_PACK_MAX_VOLTAGE_MV (4200.0f * TEST_SERIES_COUNT)  // 151,200 mV
 
-#define TEST_PACK_CAPACITY_AH    (TEST_CELL_CAPACITY_AH * TEST_PARALLEL_COUNT)
-#define TEST_PACK_CAPACITY_C     (TEST_PACK_CAPACITY_AH * 3600.0f)
+#define TEST_PACK_CAPACITY_AH (TEST_CELL_CAPACITY_AH * TEST_PARALLEL_COUNT)
+#define TEST_PACK_CAPACITY_C (TEST_PACK_CAPACITY_AH * 3600.0f)
 
 static RearControllerConfig s_config = {
-    .series_count = TEST_SERIES_COUNT,
-    .parallel_count = TEST_PARALLEL_COUNT,
-    .cell_capacity_Ah = TEST_CELL_CAPACITY_AH,
-    .precharge_timeout_ms = 5000,
+  .series_count = TEST_SERIES_COUNT,
+  .parallel_count = TEST_PARALLEL_COUNT,
+  .cell_capacity_Ah = TEST_CELL_CAPACITY_AH,
+  .precharge_timeout_ms = 5000,
 };
 
 static RearControllerStorage s_storage;

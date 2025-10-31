@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    soc_ekf_matlab.h
+ *
+ * @brief   Soc Ekf Matlab
+ *
+ * @date    2025-10-31
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "rtwtypes.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup soc_ekf_matlab
+ * @brief    soc_ekf_matlab Firmware
+ * @{
+ */
+
 /*
  * Academic License - for use in teaching, academic research, and meeting
  * course requirements at degree granting institutions only.  Not for
@@ -23,19 +47,18 @@
 #define RTW_HEADER_soc_ekf_matlab_h_
 #ifndef soc_ekf_matlab_COMMON_INCLUDES_
 #define soc_ekf_matlab_COMMON_INCLUDES_
-#include "rtwtypes.h"
-#endif                                 /* soc_ekf_matlab_COMMON_INCLUDES_ */
+#endif /* soc_ekf_matlab_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
-#define rtmGetErrorStatus(rtm)         ((rtm)->errorStatus)
+#define rtmGetErrorStatus(rtm) ((rtm)->errorStatus)
 #endif
 
 #ifndef rtmSetErrorStatus
-#define rtmSetErrorStatus(rtm, val)    ((rtm)->errorStatus = (val))
+#define rtmSetErrorStatus(rtm, val) ((rtm)->errorStatus = (val))
 #endif
 
-#define soc_ekf_matlab_M               (rtM)
+#define soc_ekf_matlab_M (rtM)
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
@@ -80,24 +103,24 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real_T x_prev[2];                    /* '<Root>/x_prev' */
-  real_T P_prev[4];                    /* '<Root>/P_prev' */
-  real_T u_k;                          /* '<Root>/u_k' */
-  real_T z_k;                          /* '<Root>/z_k' */
-  battery_bus params;                  /* '<Root>/params' */
-  real_T dt;                           /* '<Root>/dt' */
+  real_T x_prev[2];   /* '<Root>/x_prev' */
+  real_T P_prev[4];   /* '<Root>/P_prev' */
+  real_T u_k;         /* '<Root>/u_k' */
+  real_T z_k;         /* '<Root>/z_k' */
+  battery_bus params; /* '<Root>/params' */
+  real_T dt;          /* '<Root>/dt' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real_T x_new[2];                     /* '<Root>/x_new' */
-  real_T P_new[4];                     /* '<Root>/P_new' */
-  real_T y_pred;                       /* '<Root>/y_pred' */
+  real_T x_new[2]; /* '<Root>/x_new' */
+  real_T P_new[4]; /* '<Root>/P_new' */
+  real_T y_pred;   /* '<Root>/y_pred' */
 } ExtY;
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
-  const char_T * volatile errorStatus;
+  const char_T *volatile errorStatus;
 };
 
 /* Block signals and states (default storage) */
@@ -136,10 +159,12 @@ extern RT_MODEL *const rtM;
  * '<Root>' : 'ekf_soc_estimator'
  * '<S1>'   : 'ekf_soc_estimator/soc_ekf_matlab'
  */
-#endif                                 /* RTW_HEADER_soc_ekf_matlab_h_ */
+#endif /* RTW_HEADER_soc_ekf_matlab_h_ */
 
 /*
  * File trailer for generated code.
  *
  * [EOF]
  */
+
+/** @} */
