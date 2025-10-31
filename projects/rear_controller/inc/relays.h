@@ -13,11 +13,11 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
-#include "rear_controller.h"
-#include "rear_controller_hw_defs.h"
+#include "status.h"
 
 /* Intra-component Headers */
-#include "status.h"
+#include "rear_controller.h"
+#include "rear_controller_hw_defs.h"
 
 /**
  * @defgroup Rear_Controller

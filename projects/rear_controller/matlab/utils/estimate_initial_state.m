@@ -26,7 +26,7 @@
 %
 % =========================================================================
 
-function x0 = estimate_initial_state(params, v_samples, u_samples)
+function x0 = estimate_initial_state(params, v_samples, u_samples) %#codegen
     V_avg = mean(v_samples(:));
     soc0 = ocv_to_soc(params, V_avg);
 

@@ -370,6 +370,12 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     incs += map(ROOT.Dir, config.get("include", []))
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
+    # include_path relative to where config.json is
+    for p in config.get("include_path", []):
+        base = ROOT.Dir(p)
+        incs += inc(base)
+        srcs += src(base)
+
     lib_deps = get_lib_deps(entry)
 
     build_env = env
