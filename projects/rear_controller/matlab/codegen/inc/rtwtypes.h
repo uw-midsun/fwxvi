@@ -90,8 +90,8 @@ typedef double real64_T;
  * Generic type definitions: boolean_T, char_T, byte_T, int_T, uint_T,       *
  *                           real_T, time_T, ulong_T, ulonglong_T.           *
  *===========================================================================*/
-typedef double real_T;
-typedef double time_T;
+typedef float real_T;
+typedef float time_T;
 typedef unsigned char boolean_T;
 typedef int int_T;
 typedef unsigned int uint_T;
