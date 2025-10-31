@@ -47,10 +47,6 @@ void setup_test(void) {
 
 void teardown_test(void) {}
 
-/************************************************************************************************
- * Tests
- ************************************************************************************************/
-
 TEST_IN_TASK
 void test_soc_init_valid_config(void) {
   StatusCode status = state_of_charge_init(&s_storage);
@@ -62,10 +58,6 @@ TEST_IN_TASK
 void test_soc_init_null_storage(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, state_of_charge_init(NULL));
 }
-
-/************************************************************************************************
- * Integration behavior: simulate discharging and charging
- ************************************************************************************************/
 
 TEST_IN_TASK
 void test_soc_decreases_under_discharge(void) {
@@ -83,7 +75,6 @@ void test_soc_decreases_under_discharge(void) {
   float soc_after = s_storage.estimated_state_of_charge;
 
   // Should trend downward
-  LOG_DEBUG("SOC AFTER: %f, SOC BEFORE: %f\r\n", soc_after, soc_before);
   TEST_ASSERT_TRUE(soc_after < soc_before + 0.01f);
 }
 
@@ -104,10 +95,6 @@ void test_soc_increases_under_charge(void) {
 
   TEST_ASSERT_TRUE(soc_after > soc_before - 0.01f);
 }
-
-/************************************************************************************************
- * Boundary voltage tests
- ************************************************************************************************/
 
 TEST_IN_TASK
 void test_soc_high_voltage_maps_to_high_soc(void) {
@@ -132,10 +119,6 @@ void test_soc_low_voltage_maps_to_low_soc(void) {
   float soc = s_storage.estimated_state_of_charge;
   TEST_ASSERT_TRUE(soc < 0.1f);
 }
-
-/************************************************************************************************
- * Reinit safety test
- ************************************************************************************************/
 
 TEST_IN_TASK
 void test_soc_reinit_is_safe(void) {
