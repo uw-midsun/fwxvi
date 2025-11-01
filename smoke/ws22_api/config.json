@@ -1,0 +1,18 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "can": true,
+    
+    "include": [
+        "projects/front_controller/inc"
+    ],
+
+    "sources": [
+        "projects/front_controller/src/ws22_motor_can.o"
+    ]
+} 
