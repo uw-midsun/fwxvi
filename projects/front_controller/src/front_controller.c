@@ -13,6 +13,7 @@
 #include "adc.h"
 #include "can.h"
 #include "dac.h"
+#include "flash.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
@@ -23,6 +24,7 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "pedal_calib_reader.h"
 #include "ws22_motor_can.h"
 
 /************************************************************************************************
@@ -46,6 +48,8 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = ws22_motor_can_process_rx,
 };
 
+static GpioAddress s_front_controller_board_led = FRONT_CONTROLLER_BOARD_LED;
+
 StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -58,6 +62,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
+  flash_init();
   opamp_init();
   dac_init();
   adc_init();
@@ -65,6 +70,12 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   /* Initialize front controller systems */
   accel_pedal_init(storage);
   ws22_motor_can_init(storage);
+  pedal_calib_read(storage);
+
+  /* Enable Board LED */
+  gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+
+  LOG_DEBUG("Front controller initialized\r\n");
 
   return STATUS_CODE_OK;
 }

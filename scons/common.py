@@ -14,6 +14,7 @@ def parse_config(entry):
         'arm_libs': [],
         'cflags': [],
         'mocks': {},
+        "include_path" : [],
         'no_lint': False,
         "mpxe": False,
         "can": False,

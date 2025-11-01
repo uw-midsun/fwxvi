@@ -60,6 +60,7 @@ typedef struct {
   bool killswitch_active;  /**< Killswitch active state */
   bool pcs_valid;          /**< PCS input valid state */
   bool aux_valid;          /**< Aux valid state */
+  uint16_t bps_fault;      /**< Fault */
 
   /* Temperature monitoring */
   int16_t max_board_temperature;
