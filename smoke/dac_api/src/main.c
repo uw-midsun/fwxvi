@@ -25,32 +25,29 @@
 TASK(dac_api, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
-  //Test 1: Checking if the DAC can initialize 
+  // Test 1: Checking if the DAC can initialize
   status = dac_init();
-  if (status == STATUS_CODE_OK){
+  if (status == STATUS_CODE_OK) {
     LOG_DEBUG("DAC initialized\n");
-  }
-  else{
+  } else {
     LOG_DEBUG("DAC cannot be initialized\n");
   }
   delay_ms(500);
 
-  //Test 2: Enable channel 1 
+  // Test 2: Enable channel 1
   status = dac_enable_channel(DAC_CHANNEL1);
-  if (status == STATUS_CODE_OK){
+  if (status == STATUS_CODE_OK) {
     LOG_DEBUG("Channel 1 enabled\n");
-  }
-  else{
+  } else {
     LOG_DEBUG("Channel 1 cannot be enabled\n");
   }
   delay_ms(500);
 
-  //Test 3: Set the voltage
+  // Test 3: Set the voltage
   status = dac_set_voltage(DAC_CHANNEL1, DAC_API_TEST_VOLTAGE_MV);
-  if (status == STATUS_CODE_OK){
+  if (status == STATUS_CODE_OK) {
     LOG_DEBUG("Voltage set, should read 3300mV\n");
-  }
-  else{
+  } else {
     LOG_DEBUG("Voltage cannot be set\n");
   }
   delay_ms(500);
