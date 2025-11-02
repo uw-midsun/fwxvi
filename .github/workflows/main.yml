@@ -99,3 +99,5 @@ jobs:
         id: build-x86
         run: |
           scons --platform=x86 --define="${DEFINES}"
+          scons mpxe_server
+          scons mpxe_gui

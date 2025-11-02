@@ -34,7 +34,7 @@
 %
 % =========================================================================
 
-function [x_new, P_new, y_pred] = ekf_step(x_prev, P_prev, u_k, z_k, params, dt)
+function [x_new, P_new, y_pred] = ekf_step(x_prev, P_prev, u_k, z_k, params, dt) %#codegen
     % =========================================================================
     % NOISE COVARIANCE SETUP
     %

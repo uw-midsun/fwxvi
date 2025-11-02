@@ -10,9 +10,12 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
 #include "adbms_afe.h"
+#include "current_acs37800.h"
 
 /* Intra-component Headers */
 
@@ -24,6 +27,8 @@
 
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
 #define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
+#define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
+#define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
 
 typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
@@ -55,10 +60,18 @@ typedef struct {
   bool killswitch_active;  /**< Killswitch active state */
   bool pcs_valid;          /**< PCS input valid state */
   bool aux_valid;          /**< Aux valid state */
+  uint16_t bps_fault;      /**< Fault */
+
+  /* Temperature monitoring */
+  int16_t max_board_temperature;
+  int16_t max_cell_temperature;
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
+  ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
   RearControllerConfig *config;
 } RearControllerStorage;
+
+StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
 
 /** @} */
