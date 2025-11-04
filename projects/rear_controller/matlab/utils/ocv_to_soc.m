@@ -25,7 +25,7 @@
 %
 % =========================================================================
 
-function soc = ocv_to_soc(params, v)
+function soc = ocv_to_soc(params, v) %#codegen
     v_cell = double(v) / double(params.N_series);
 
     soc_tab = params.SOC_table;

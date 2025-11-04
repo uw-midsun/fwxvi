@@ -17,6 +17,7 @@
 #include "status.h"
 
 /* Intra-component Headers */
+#include "rear_controller.h"
 
 /**
  * @defgroup Rear_Controller
@@ -48,15 +49,16 @@ typedef enum {
 
 /**
  * @brief   Initialize the state machine
- * @return  STATUS_CODE_OK if initialized succesfully
+ * @param   storage Pointer to the rear controller storage
+ * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_RESOURCE_EXHAUSTED if initialized already
  */
-StatusCode rear_controller_state_manager_init(void);
+StatusCode rear_controller_state_manager_init(RearControllerStorage *storage);
 
 /**
  * @brief   Advance the state machine based on inputs/events.
  * @param   event The triggering event
- * @return  STATUS_CODE_OK if initialized succesfully
+ * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_UNINITIALIZED if uninitialized
  */
 StatusCode rear_controller_state_manager_step(RearControllerEvent event);
