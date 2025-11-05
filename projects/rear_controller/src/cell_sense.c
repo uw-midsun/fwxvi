@@ -24,6 +24,8 @@
 #include "cell_sense.h"
 #include "rear_controller.h"
 #include "thermistor.h"
+#include "can.h"
+#include "system_can.h"
 
 /************************************************************************************************
  * Private defines
@@ -111,6 +113,17 @@ static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
 };
 
 static RearControllerStorage *rear_controller_storage;
+
+static CanStorage s_can_storage = { 0 };
+
+const CanSettings can_settings = {
+  .device_id = SYSTEM_CAN_DEVICE_REAR_CONTROLLER,
+  .bitrate = CAN_HW_BITRATE_500KBPS,
+  .tx = { GPIO_PORT_B, 9 },
+  .rx = { GPIO_PORT_B, 8 },
+  .loopback = false,
+  .silent = false,
+};
 
 /************************************************************************************************
  * Private function definitions
@@ -337,6 +350,41 @@ static StatusCode s_cell_sense_run() {
 /************************************************************************************************
  * Public function definitions
  ************************************************************************************************/
+void AFE1_status_A(){
+  CanMessage tx_msg = { .id.raw = 59, .data_u16 = {CELL_VOLTAGE_LOOKUP(0, 0), 
+    CELL_VOLTAGE_LOOKUP(0, 1), CELL_VOLTAGE_LOOKUP(0, 2), CELL_VOLTAGE_LOOKUP(0, 3)}, 
+    .dlc = 8U, .extended = false };
+  can_transmit(&tx_msg);
+}
+
+void AFE1_status_B(){
+  CanMessage tx_msg = { .id.raw = 60, .data_u8 = {CELL_VOLTAGE_LOOKUP(0, 4), 
+    CELL_VOLTAGE_LOOKUP(0, 5), CELL_VOLTAGE_LOOKUP(0, 6), CELL_VOLTAGE_LOOKUP(0, 7)}, 
+    .dlc = 8U, .extended = false };
+  can_transmit(&tx_msg);
+}
+
+void AFE1_status_A(){
+  CanMessage tx_msg = { .id.raw = 59, .data_u16 = {CELL_VOLTAGE_LOOKUP(1, 0), 
+    CELL_VOLTAGE_LOOKUP(, 1), CELL_VOLTAGE_LOOKUP(1, 2), CELL_VOLTAGE_LOOKUP(1, 3)}, 
+    .dlc = 8U, .extended = false };
+  can_transmit(&tx_msg);
+}
+
+void AFE1_status_B(){
+  CanMessage tx_msg = { .id.raw = 60, .data_u8 = {CELL_VOLTAGE_LOOKUP(1, 4), 
+    CELL_VOLTAGE_LOOKUP(1, 5), CELL_VOLTAGE_LOOKUP(1, 6), CELL_VOLTAGE_LOOKUP(1, 7)}, 
+    .dlc = 8U, .extended = false };
+  can_transmit(&tx_msg);
+}
+
+void AFE_temperature(){
+  CanMessage tx_msg = { .id.raw = 60, .data_u8 = {CELL_VOLTAGE_LOOKUP(1, 4), 
+    CELL_VOLTAGE_LOOKUP(1, 5), CELL_VOLTAGE_LOOKUP(1, 6), CELL_VOLTAGE_LOOKUP(1, 7)}, 
+    .dlc = 8U, .extended = false };
+  can_transmit(&tx_msg);
+
+}
 
 StatusCode log_cell_sense() {
   /* AFE messages are split into 3 (For each AFE) */
@@ -345,15 +393,18 @@ StatusCode log_cell_sense() {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
+  AFE1_status_A();
+  AFE1_status_B();
+  AFE2_status_A();
+  AFE2_status_B();
+
   // uint8_t read_index = afe_message_index * READINGS_PER_AFE_MSG;
   // set_AFE1_status_id(afe_message_index);
-  // AFE1_status_A(afe_message_index, CELL_VOLTAGE_LOOKUP(0, 0), CELL_VOLTAGE_LOOKUP(0, 1), CELL_VOLTAGE_LOOKUP(0, 2), CELL_VOLTAGE_LOOKUP(0, 3));
   // set_AFE1_status_v1(CELL_VOLTAGE_LOOKUP(read_index));
   // set_AFE1_status_v2(CELL_VOLTAGE_LOOKUP(read_index + 1));
   // set_AFE1_status_v3(CELL_VOLTAGE_LOOKUP(read_index + 2));
 
   // read_index = (uint8_t)s_afe_settings.num_cells + afe_message_index * READINGS_PER_AFE_MSG;
-  // AFE1_status_B(afe_message_index, CELL_VOLTAGE_LOOKUP(1, 0), CELL_VOLTAGE_LOOKUP(1, 1), CELL_VOLTAGE_LOOKUP(1, 2), CELL_VOLTAGE_LOOKUP(1, 3));
   // set_AFE2_status_id(afe_message_index);
   // set_AFE2_status_v1(CELL_VOLTAGE_LOOKUP(read_index));
   // set_AFE2_status_v2(CELL_VOLTAGE_LOOKUP(read_index + 1));
@@ -400,6 +451,7 @@ StatusCode cell_sense_init(RearControllerStorage *storage) {
   }
 
   cell_sense_init(storage);
+  can_init(&s_can_storage, &can_settings);
 
   rear_controller_storage = storage;
   adbms_afe_storage = &(rear_controller_storage->adbms_afe_storage);
