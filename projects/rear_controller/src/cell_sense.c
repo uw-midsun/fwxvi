@@ -364,14 +364,14 @@ void AFE1_status_B(){
   can_transmit(&tx_msg);
 }
 
-void AFE1_status_A(){
+void AFE2_status_A(){
   CanMessage tx_msg = { .id.raw = 59, .data_u16 = {CELL_VOLTAGE_LOOKUP(1, 0), 
     CELL_VOLTAGE_LOOKUP(, 1), CELL_VOLTAGE_LOOKUP(1, 2), CELL_VOLTAGE_LOOKUP(1, 3)}, 
     .dlc = 8U, .extended = false };
   can_transmit(&tx_msg);
 }
 
-void AFE1_status_B(){
+void AFE2_status_B(){
   CanMessage tx_msg = { .id.raw = 60, .data_u8 = {CELL_VOLTAGE_LOOKUP(1, 4), 
     CELL_VOLTAGE_LOOKUP(1, 5), CELL_VOLTAGE_LOOKUP(1, 6), CELL_VOLTAGE_LOOKUP(1, 7)}, 
     .dlc = 8U, .extended = false };
