@@ -26,7 +26,7 @@
 %
 % =========================================================================
 
-function y = ssm_output_fn(x, u, params)
+function y = ssm_output_fn(x, u, params) %#codegen
     soc = x(1);
     Vrc = x(2);
 
