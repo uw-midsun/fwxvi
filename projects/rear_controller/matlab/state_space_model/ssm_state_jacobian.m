@@ -30,7 +30,7 @@
 %
 % =========================================================================
 
-function F = ssm_state_jacobian(~, ~, params, dt)
+function F = ssm_state_jacobian(~, ~, params, dt) %#codegen
     R1 = params.R1_pack;
     C1 = params.C1_pack;
     tau = R1 * C1;

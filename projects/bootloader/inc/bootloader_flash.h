@@ -42,14 +42,14 @@
  * @param   addr Address to be converted to page number
  * @return  Page number
  */
-#define BOOTLOADER_ADDR_TO_PAGE(addr) (((uintptr_t)(addr) - (uintptr_t)APPLICATION_START_ADDRESS) / BOOTLOADER_PAGE_BYTES)
+#define BOOTLOADER_ADDR_TO_PAGE(addr) (((uintptr_t)(addr) - (uintptr_t)APP_ACTIVE_START_ADDRESS) / BOOTLOADER_PAGE_BYTES)
 
 /**
  * @brief   Convert page number to memory address
  * @param   page Page number
  * @return  32-bit address
  */
-#define BOOTLOADER_PAGE_TO_ADDR(page) ((uintptr_t)(page) * (uintptr_t)BOOTLOADER_PAGE_BYTES + (uintptr_t)APPLICATION_START_ADDRESS)
+#define BOOTLOADER_PAGE_TO_ADDR(page) ((uintptr_t)(page) * (uintptr_t)BOOTLOADER_PAGE_BYTES + (uintptr_t)APP_ACTIVE_START_ADDRESS)
 
 /**
  * @brief   Write to flash memory

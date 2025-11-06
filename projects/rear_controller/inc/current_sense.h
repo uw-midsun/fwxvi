@@ -12,10 +12,10 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "rear_controller.h"
 #include "status.h"
 
 /* Intra-component Headers */
+#include "rear_controller.h"
 
 /**
  * @defgroup Rear_Controller

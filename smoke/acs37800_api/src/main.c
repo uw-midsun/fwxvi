@@ -35,7 +35,7 @@ I2CSettings i2c_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_
 #define I2CP I2C_PORT_1
 #define I2CA 0x0
 
-ACS37800_Storage storage;
+ACS37800Storage storage;
 
 void build_packet(uint8_t packet[4], int16_t voltage, int16_t current) {
   packet[0] = (uint8_t)(voltage >> 8);

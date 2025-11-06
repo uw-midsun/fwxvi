@@ -73,6 +73,18 @@
 #define REAR_CONTROLLER_MOTOR_LV_ENABLE_GPIO \
   { .port = GPIO_PORT_C, .pin = 12 }
 
+/** @brief  Rear Controller fan pwm */
+#define REAR_CONTROLLER_MOTOR_FAN_PWM \
+  { .port = GPIO_PORT_B, .pin = 4 }
+
+/** @brief  Rear Controller fan sense 2 */
+#define REAR_CONTROLLER_MOTOR_FAN_SENSE_1 \
+  { .port = GPIO_PORT_B, .pin = 0 }
+
+/** @brief  Rear Controller fan sense 1 */
+#define REAR_CONTROLLER_MOTOR_FAN_SENSE_2 \
+  { .port = GPIO_PORT_B, .pin = 1 }
+
 /************************************************************************************************
  * Current sense definitions
  ************************************************************************************************/

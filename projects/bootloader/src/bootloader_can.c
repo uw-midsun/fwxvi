@@ -54,7 +54,7 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings) {
     return BOOTLOADER_INVALID_ARGS;
   }
 
-  if (s_can_gpio_init()  != BOOTLOADER_ERROR_NONE) {
+  if (s_can_gpio_init() != BOOTLOADER_ERROR_NONE) {
     return BOOTLOADER_CAN_INIT_ERR;
   }
 

@@ -32,7 +32,7 @@
 %
 % =========================================================================
 
-function [x_out, P_out] = apply_soft_reset(x_in, P_in, V_avg, params, alpha)
+function [x_out, P_out] = apply_soft_reset(x_in, P_in, V_avg, params, alpha) %#codegen
     soc_ocv = ocv_to_soc(params, V_avg);
 
     x_out = x_in;

@@ -47,7 +47,7 @@
 %
 % =========================================================================
 
-function params = battery_params()
+function params = battery_params() %#codegen
     params = struct();
 
     % --- Pack topology ---
@@ -82,12 +82,82 @@ function params = battery_params()
 
     cap_mAh = ocv_table(:,1);                       % [mAh]
     V_ocv   = ocv_table(:,2);                       % [V]
-    soc     = cap_mAh / (params.Q_cell_Ah * 1000);  % normalize to cell capacity
+    soc     = cap_mAh / (params.Q_cell_Ah * 1000); % normalize to cell capacity
 
-    params.SOC_table = soc;
-    params.OCV_table = V_ocv;
+    % Downsample to 100 points for embedded target
+    params.SOC_OCV_table_size = 100;
+    idx = round(linspace(1, length(soc), params.SOC_OCV_table_size));  % even spacing indices
+
+    params.SOC_table = soc(idx);
+    params.OCV_table = V_ocv(idx);
 
     % Interpolants
     params.ocv_fun  = @(soc_query) interp1(params.SOC_table, params.OCV_table, soc_query, 'linear', 'extrap');
     params.ocv_grad = @(soc_query) gradient(params.ocv_fun(soc_query), soc_query);
+
+    % Load tables into C header files
+    exportDir = fullfile(scriptPath, '..', 'inc');
+    if ~exist(exportDir, 'dir')
+        mkdir(exportDir);
+    end
+
+    headerPath = fullfile(exportDir, 'state_of_charge_lut.h');
+    fid = fopen(headerPath, 'w');
+
+    % --- Doxygen / header block ---
+    fprintf(fid, '#pragma once\n\n');
+    fprintf(fid, '/************************************************************************************************\n');
+    fprintf(fid, ' * @file    state_of_charge_lut.h\n');
+    fprintf(fid, ' *\n');
+    fprintf(fid, ' * @brief   Auto-generated SOC–OCV lookup table for the State of Charge estimator\n\n');
+    fprintf(fid, ' * @date    %s\n', datestr(now, 'yyyy-mm-dd'));
+    fprintf(fid, ' * @author  ');
+    fprintf(fid, 'Midnight Sun Team #24 - MSXVI\n');
+    fprintf(fid, ' ************************************************************************************************/\n\n');
+
+    fprintf(fid, '/**\n');
+    fprintf(fid, ' * @defgroup Rear_Controller\n');
+    fprintf(fid, ' * @brief    Rear Controller Board Firmware\n');
+    fprintf(fid, ' * @{\n');
+    fprintf(fid, ' */\n\n');
+
+    % --- Table size define ---
+    fprintf(fid, '#define SOC_OCV_TABLE_SIZE (%d)\n\n', params.SOC_OCV_table_size);
+
+    % --- SOC table define ---
+    fprintf(fid, '/** @brief SOC table initializer list */\n');
+    fprintf(fid, '#define SOC_TABLE_VALUES { \\\n');
+    for i = 1:params.SOC_OCV_table_size
+        fprintf(fid, '    %.6ff', params.SOC_table(i));
+        if i < params.SOC_OCV_table_size
+            fprintf(fid, ',');
+        end
+        if mod(i, 8) == 0 || i == params.SOC_OCV_table_size
+            fprintf(fid, ' \\\n');
+        else
+            fprintf(fid, ' ');
+        end
+    end
+    fprintf(fid, '}\n\n');
+
+    % --- OCV table define ---
+    fprintf(fid, '/** @brief OCV table initializer list */\n');
+    fprintf(fid, '#define OCV_TABLE_VALUES { \\\n');
+    for i = 1:params.SOC_OCV_table_size
+        fprintf(fid, '    %.6ff', params.OCV_table(i));
+        if i < params.SOC_OCV_table_size
+            fprintf(fid, ',');
+        end
+        if mod(i, 8) == 0 || i == params.SOC_OCV_table_size
+            fprintf(fid, ' \\\n');
+        else
+            fprintf(fid, ' ');
+        end
+    end
+    fprintf(fid, '}\n\n');
+
+    fprintf(fid, '/** @} */\n');
+
+    fclose(fid);
+    fprintf('C header file generated: %s\n', headerPath);
 end

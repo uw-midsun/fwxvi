@@ -13,7 +13,7 @@ Messages:
     target:
       telemetry:
         watchdog: 0
-      bms_carrier:
+      rear_controller:
         watchdog: 0
     signals:
       percentage:

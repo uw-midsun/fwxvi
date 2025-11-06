@@ -38,7 +38,7 @@ typedef struct AccelPedalStorage {
 
 /**
  * @brief   Reads the pedal percentage and applies deadzone and filtering before updating the storage
- * @return  STATUS_CODE_OK if pedal is read succesfully
+ * @return  STATUS_CODE_OK if pedal is read successfully
  *          STATUS_CODE_UNINITIALIZED if pedal is not initialized
  *          STATUS_CODE_INTERNAL_ERROR if ADC fails
  */
@@ -46,7 +46,7 @@ StatusCode accel_pedal_run();
 
 /**
  * @brief   Initializes the acceleration pedal hardware interface loads calibration data from memory
- * @return  STATUS_CODE_OK if pedal is initialized succesfully
+ * @return  STATUS_CODE_OK if pedal is initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is provided
  */
 StatusCode accel_pedal_init(FrontControllerStorage *storage);

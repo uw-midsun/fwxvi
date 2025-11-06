@@ -25,28 +25,38 @@
 %
 % =========================================================================
 
-function ocv = ocv_from_soc(params, soc)
+function ocv = ocv_from_soc(params, soc) %#codegen
+    coder.inline('always');
+
     % Clamp SOC to [0,1] and convert for lookup indexing
     soc_lookup = 1 - min(max(soc, 0), 1);  
     
     soc_tab = params.SOC_table;
     ocv_tab = params.OCV_table;
-    N = numel(soc_tab);
-
+    N = params.SOC_OCV_table_size;
+    
     % --- Interpolation / Clamping ---
     if soc_lookup <= soc_tab(1)
         ocv_cell = ocv_tab(1);
     elseif soc_lookup >= soc_tab(N)
         ocv_cell = ocv_tab(N);
     else
-        % Find interpolation index
-        idx = find(soc_lookup >= soc_tab(1:end-1) & soc_lookup <= soc_tab(2:end), 1, 'first');
-        if isempty(idx)
-            idx = N-1;
+        % Replace find with a loop
+        idx = -1;
+        for k = 1:N-1
+            if soc_lookup >= soc_tab(k) && soc_lookup <= soc_tab(k+1)
+                idx = k;
+                break;
+            end
+        end
+        if idx == -1
+            idx = N - 1;
         end
 
-        s0 = soc_tab(idx); s1 = soc_tab(idx+1);
-        v0 = ocv_tab(idx); v1 = ocv_tab(idx+1);
+        s0 = soc_tab(idx); 
+        s1 = soc_tab(idx+1);
+        v0 = ocv_tab(idx); 
+        v1 = ocv_tab(idx+1);
 
         if (s1 - s0) == 0
             ocv_cell = v0;
@@ -57,7 +67,12 @@ function ocv = ocv_from_soc(params, soc)
 
     % --- Scale to pack ---
     if isfield(params, 'N_series')
-        ocv = double(params.N_series) * double(ocv_cell);
+        % Ensure N_series is scalar double
+        N_series = double(params.N_series);
+        if ~isscalar(N_series)
+            N_series = N_series(1); % fallback if needed
+        end
+        ocv = N_series * double(ocv_cell);
     else
         ocv = double(ocv_cell); % fallback to cell voltage if N_series missing
     end

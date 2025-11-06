@@ -12,6 +12,7 @@
 /* Standard library Headers */
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 /* Inter-component Headers */
 
@@ -27,6 +28,7 @@
 /** @brief  Convert bytes to number of words for ARM32 system */
 #define BYTES_TO_WORD(bytes) (bytes / 4)
 
+#define ALLIGNMENT_SIZE 4 /**< The data buffer allignment size */
 /**
  * @brief   Initialize the CRC hardware component
  * @return  BOOTLOADER_ERROR_NONE if initialized successfully

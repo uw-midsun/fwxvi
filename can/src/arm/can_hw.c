@@ -54,10 +54,10 @@ typedef struct CanHwTiming {
 /* Generated settings using http://www.bittiming.can-wiki.info/ */
 /* For 80 MHz APB1 clock. CAN Sampling occurs at ~87.5% of the frame */
 static CanHwTiming s_timing[NUM_CAN_HW_BITRATES] = {
-  [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ },
-  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 8, .bs1 = CAN_BS1_15TQ, .bs2 = CAN_BS2_2TQ },
-  [CAN_HW_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_12TQ, .bs2 = CAN_BS2_1TQ }
+  [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
+  [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
+  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
+  [CAN_HW_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ }
 };
 
 static uint8_t s_num_filters;

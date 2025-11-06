@@ -2,6 +2,7 @@
     "libs": [
         "FreeRTOS",
         "ms-common",
+        "ms-gui",
         "master"
     ],
     "x86_libs": [

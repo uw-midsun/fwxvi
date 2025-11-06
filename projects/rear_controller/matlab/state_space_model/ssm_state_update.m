@@ -31,7 +31,7 @@
 %
 % =========================================================================
 
-function x_next = ssm_state_update(x, u, params, dt)
+function x_next = ssm_state_update(x, u, params, dt) %#codegen
     SOC = x(1);
     Vrc = x(2);
 
