@@ -18,12 +18,15 @@ ACK_TIMEOUT = 5.0
 
 
 class FotaTx():
-    """ @brief Fota transmit class to send datagrams over XBee """
+    """ 
+    @brief Fota transmit class to send datagrams over XBee
+    """
+
     def __init__(self, packet_sender: FotaPacketSender, serial_receive: FotaRx):
+        """@brief initialize the transport layer for the fota packet sender"""
         self._packet_sender = packet_sender
         self._tx_queue = []
         self._serial_receive = serial_receive
-
 
     def send_packet(self, packet: FotaPacket) -> bool:
         """@brief send packet through serial """
@@ -33,9 +36,9 @@ class FotaTx():
 
         if ack.ack_status == 0:
             return True
-        
+
         return False
-    
+
     def queue_datagram(self, datagram: FotaDatagram):
         """@brief pack a datagram into a queue to send over transmit layer """
         transmit_queue = []
@@ -47,7 +50,7 @@ class FotaTx():
 
     def transmit(self) -> bool:
         """@brief start tranmission of anything in tx_queue"""
-        
+
         if not self._tx_queue:
             print("Nothing in queue to transmit")
             return False
@@ -62,7 +65,6 @@ class FotaTx():
                     print("ERROR: could not send packet, or did not receive ack")
                     return False
 
-            
             print("Finished transmitting Datagram")
             return True
 
@@ -71,15 +73,16 @@ class FotaTx():
             return False
 
     def ack_wait(self) -> FotaAck:
+        """@brief method to receieve the acknowledgment and parse it into a class object"""
         buffer = bytearray()
         received_bytes = 0
-        expected_len = 1 + 1 + 4 + 256 # from ACK struct, see fota_ack.py
+        expected_len = 1 + 1 + 4 + 256  # from ACK struct, see fota_ack.py
 
         while received_bytes < expected_len:
             buffer += self._serial_receive.recieve()
 
         if received_bytes == expected_len:
             return FotaAck(buffer)
-        
+
         print(f"ERROR: could not parse ack packet")
         return None

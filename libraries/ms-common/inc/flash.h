@@ -39,10 +39,10 @@
 #endif
 
 /** @brief  Convert page number to a memory address */
-#define FLASH_PAGE_TO_ADDR(page) (FLASH_BASE_ADDR + ((page) * FLASH_PAGE_SIZE))
+#define FLASH_PAGE_TO_ADDR(page) (FLASH_BASE_ADDR + ((page)*FLASH_PAGE_SIZE))
 
 /** @brief  Convert memory address to a page number */
-#define FLASH_ADDR_TO_PAGE(addr) (((addr) - FLASH_BASE_ADDR) / FLASH_PAGE_SIZE)
+#define FLASH_ADDR_TO_PAGE(addr) (((addr)-FLASH_BASE_ADDR) / FLASH_PAGE_SIZE)
 
 /** @brief Maximum time permitted for a flash transaction */
 #define FLASH_TIMEOUT_MS 100U

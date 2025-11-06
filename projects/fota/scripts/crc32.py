@@ -14,7 +14,7 @@ class CRC32:
         i = 0
 
         while i + 4 <= buf_len:
-            b = [buf[i+3], buf[i+2], buf[i+1], buf[i+0]]  
+            b = [buf[i + 3], buf[i + 2], buf[i + 1], buf[i + 0]]
             i += 4
             for byte in b:
                 crc = ((crc << 8) & 0xFFFFFFFF) ^ self.crc_table[(crc >> 24) ^ byte]
