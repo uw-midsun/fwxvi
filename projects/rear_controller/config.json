@@ -7,6 +7,12 @@
     ],
     "x86_libs": [
         "ms-mpxe"
+    ],        
+    "include": [
+        "projects/rear_controller/matlab/codegen/inc"
+    ],
+    "sources": [
+        "projects/rear_controller/matlab/codegen/src/soc_ekf_matlab.c"
     ],
     "mocks": {
         "test_rear_controller_state_manager": ["relays_reset", "relays_close_pos", "relays_close_neg", "relays_close_motor", "relays_close_solar"]
