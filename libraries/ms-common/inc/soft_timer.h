@@ -1,50 +1,96 @@
 #pragma once
 
-// Software-based timers using FreeRTOS
-// Soft timers should only be used for delayed function calls, use tasks and delayUntil for periodic
-// code running
+/************************************************************************************************
+ * @file   soft_timer.h
+ *
+ * @brief  Header file for the software timer library
+ *
+ * @date   2025-11-06
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
 #include <stdbool.h>
 #include <stdint.h>
 
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 #include "FreeRTOS.h"
 #include "status.h"
 #include "timers.h"
 
+/**
+ * @defgroup RTOS_Helpers
+ * @brief    RTOS helper libraries
+ * @{
+ */
+
+/** @brief  Redefine FreeRTOS TimerHandle_t to SoftTimerId */
 typedef TimerHandle_t SoftTimerId;
 
-// Soft timer storage, must be declared statically
-typedef struct SoftTimer {
+/**
+ * @brief   Soft timer storage
+ */
+typedef struct {
   StaticTimer_t buffer;
   SoftTimerId id;
 } SoftTimer;
 
-// Soft timer callback, called when soft timer expire
+/** @brief  Software timer callback function */
 typedef void (*SoftTimerCallback)(SoftTimerId id);
 
-// Adds a software timer. The provided duration is the number of
-// miliseconds before running and the callback is the process to run once
-// the time has expired.
-StatusCode soft_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback,
-                                     SoftTimer *timer);
-
-// Creates a new software timer with given params (same as soft_timer_init_and_start) but doesn't
-// start the timer
+/**
+ * @brief   Creates a new software timer without starting it
+ * @param   duration_ms Duration of the timer in milliseconds
+ * @param   callback Callback function to execute when the timer expires
+ * @param   timer Pointer to the timer instance
+ * @return  STATUS_CODE_OK if the timer was successfully initialized
+ */
 StatusCode soft_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
 
-// Starts the software timer. The timer must already be initialized
+/**
+ * @brief   Starts an initialized software timer
+ * @param   timer Pointer to the timer instance
+ * @return  STATUS_CODE_OK if the timer was successfully started
+ */
 StatusCode soft_timer_start(SoftTimer *timer);
 
-// Cancels the soft timer specified by name. Returns true if successful.
-// the timer is not cancelled immediately,
+/**
+ * @brief   Initializes and starts a software timer
+ * @param   duration_ms Duration of the timer in milliseconds
+ * @param   callback Callback function to execute when the timer expires
+ * @param   timer Pointer to the timer instance
+ * @return  STATUS_CODE_OK if the timer was successfully initialized and started
+ */
+StatusCode soft_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
+
+/**
+ * @brief   Cancels a running software timer
+ * @param   timer Pointer to the timer instance
+ * @return  STATUS_CODE_OK if the timer was successfully cancelled
+ */
 StatusCode soft_timer_cancel(SoftTimer *timer);
 
-// restart the timer
+/**
+ * @brief   Restarts a software timer
+ * @param   timer Pointer to the timer instance
+ * @return  STATUS_CODE_OK if the timer was successfully restarted
+ */
 StatusCode soft_timer_reset(SoftTimer *timer);
 
-// Checks if the software timer is running
+/**
+ * @brief   Checks if a software timer is currently active
+ * @param   timer Pointer to the timer instance
+ * @return  true if the timer is running, false otherwise
+ */
 bool soft_timer_inuse(SoftTimer *timer);
 
-// Checks the time left in ticks on a particular timer. Returns a 0 if the timer
-// has expired and is no longer in use.
+/**
+ * @brief   Gets the remaining time on a software timer
+ * @param   timer Pointer to the timer instance
+ * @return  Remaining time in ticks, or 0 if the timer has expired
+ */
 uint32_t soft_timer_remaining_time(SoftTimer *timer);
+
+/** @} */

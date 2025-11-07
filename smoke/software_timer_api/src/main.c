@@ -9,21 +9,14 @@
 
 /* Standard library Headers */
 
-/* Functions to test
-soft_timer_init_and_start
-soft_timer_init
-soft_timer_start
-soft_timer_cancel
-soft_timer_reset
-soft_timer_inuse
-soft_timer_remaining_time
-*/
-
-/* Intra-component Headers */
-#include "soft_timer.h"
+/* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
+#include "mcu.h"
+#include "soft_timer.h"
 #include "tasks.h"
+
+/* Intra-component Headers */
 
 static SoftTimer s_timer1;
 static SoftTimer s_timer2;
@@ -52,19 +45,19 @@ TASK(software_timer_api, TASK_STACK_1024) {
   LOG_DEBUG("Timer 1 in use? %d\n", soft_timer_inuse(&s_timer1));
   LOG_DEBUG("Timer 2 in use? %d\n", soft_timer_inuse(&s_timer2));
 
-  LOG_DEBUG("Remaining time for Timer 1: %lu ms\n", soft_timer_remaining_time(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %lu ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Remaining time for Timer 1: %u ms\n", soft_timer_remaining_time(&s_timer1));
+  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", soft_timer_remaining_time(&s_timer2));
 
   delay_ms(1200);
   LOG_DEBUG("After 1.2s delay -> Timer 1 in use? %d\n", soft_timer_inuse(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %lu ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", soft_timer_remaining_time(&s_timer2));
 
   // Reset timer 2 (should restart it)
   LOG_DEBUG("Resetting Timer 2\n");
   soft_timer_reset(&s_timer2);
 
   delay_ms(500);
-  LOG_DEBUG("Timer 2 remaining time after reset: %lu ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Timer 2 remaining time after reset: %u ms\n", soft_timer_remaining_time(&s_timer2));
 
   // Cancel timer 2 before it expires
   LOG_DEBUG("Canceling Timer 2\n");
