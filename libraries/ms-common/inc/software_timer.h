@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************************************
- * @file   soft_timer.h
+ * @file   software_timer.h
  *
  * @brief  Header file for the software timer library
  *
@@ -47,14 +47,14 @@ typedef void (*SoftTimerCallback)(SoftTimerId id);
  * @param   timer Pointer to the timer instance
  * @return  STATUS_CODE_OK if the timer was successfully initialized
  */
-StatusCode soft_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
+StatusCode software_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
 
 /**
  * @brief   Starts an initialized software timer
  * @param   timer Pointer to the timer instance
  * @return  STATUS_CODE_OK if the timer was successfully started
  */
-StatusCode soft_timer_start(SoftTimer *timer);
+StatusCode software_timer_start(SoftTimer *timer);
 
 /**
  * @brief   Initializes and starts a software timer
@@ -63,34 +63,34 @@ StatusCode soft_timer_start(SoftTimer *timer);
  * @param   timer Pointer to the timer instance
  * @return  STATUS_CODE_OK if the timer was successfully initialized and started
  */
-StatusCode soft_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
+StatusCode software_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer);
 
 /**
  * @brief   Cancels a running software timer
  * @param   timer Pointer to the timer instance
  * @return  STATUS_CODE_OK if the timer was successfully cancelled
  */
-StatusCode soft_timer_cancel(SoftTimer *timer);
+StatusCode software_timer_cancel(SoftTimer *timer);
 
 /**
  * @brief   Restarts a software timer
  * @param   timer Pointer to the timer instance
  * @return  STATUS_CODE_OK if the timer was successfully restarted
  */
-StatusCode soft_timer_reset(SoftTimer *timer);
+StatusCode software_timer_reset(SoftTimer *timer);
 
 /**
  * @brief   Checks if a software timer is currently active
  * @param   timer Pointer to the timer instance
  * @return  true if the timer is running, false otherwise
  */
-bool soft_timer_inuse(SoftTimer *timer);
+bool software_timer_inuse(SoftTimer *timer);
 
 /**
  * @brief   Gets the remaining time on a software timer
  * @param   timer Pointer to the timer instance
  * @return  Remaining time in ticks, or 0 if the timer has expired
  */
-uint32_t soft_timer_remaining_time(SoftTimer *timer);
+uint32_t software_timer_remaining_time(SoftTimer *timer);
 
 /** @} */

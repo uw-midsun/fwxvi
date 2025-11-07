@@ -1,5 +1,5 @@
 /************************************************************************************************
- * @file   soft_timer.c
+ * @file   software_timer.c
  *
  * @brief  Source code for the software timer library
  *
@@ -12,9 +12,9 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
-#include "soft_timer.h"
+#include "software_timer.h"
 
-StatusCode soft_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
+StatusCode software_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
   if (timer->id != NULL) {
     /* Timer already exist/inuse, delete the old timer */
     xTimerDelete(timer->id, 0);
@@ -25,7 +25,7 @@ StatusCode soft_timer_init(uint32_t duration_ms, SoftTimerCallback callback, Sof
   return STATUS_CODE_OK;
 }
 
-StatusCode soft_timer_start(SoftTimer *timer) {
+StatusCode software_timer_start(SoftTimer *timer) {
   if (timer->id == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -35,12 +35,12 @@ StatusCode soft_timer_start(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-StatusCode soft_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
-  status_ok_or_return(soft_timer_init(duration_ms, callback, timer));
-  return soft_timer_start(timer);
+StatusCode software_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
+  status_ok_or_return(software_timer_init(duration_ms, callback, timer));
+  return software_timer_start(timer);
 }
 
-StatusCode soft_timer_cancel(SoftTimer *timer) {
+StatusCode software_timer_cancel(SoftTimer *timer) {
   if (xTimerDelete(timer->id, 0) != pdPASS) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -48,7 +48,7 @@ StatusCode soft_timer_cancel(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-StatusCode soft_timer_reset(SoftTimer *timer) {
+StatusCode software_timer_reset(SoftTimer *timer) {
   if (xTimerReset(timer->id, 0) != pdPASS) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -56,12 +56,12 @@ StatusCode soft_timer_reset(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-bool soft_timer_inuse(SoftTimer *timer) {
+bool software_timer_inuse(SoftTimer *timer) {
   return xTimerIsTimerActive(timer->id);
 }
 
-uint32_t soft_timer_remaining_time(SoftTimer *timer) {
-  if (!soft_timer_inuse(timer)) {
+uint32_t software_timer_remaining_time(SoftTimer *timer) {
+  if (!software_timer_inuse(timer)) {
     return 0;
   }
 

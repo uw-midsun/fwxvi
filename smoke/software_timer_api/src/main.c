@@ -13,7 +13,7 @@
 #include "delay.h"
 #include "log.h"
 #include "mcu.h"
-#include "soft_timer.h"
+#include "software_timer.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -35,41 +35,41 @@ TASK(software_timer_api, TASK_STACK_1024) {
 
   // Initialize and start timer 1 (1 second)
   LOG_DEBUG("Initializing and starting Timer 1 (1000 ms)\n");
-  soft_timer_init_and_start(1000, prv_timer_callback1, &s_timer1);
+  software_timer_init_and_start(1000, prv_timer_callback1, &s_timer1);
 
   // Initialize and start timer 2 (2 seconds)
   LOG_DEBUG("Initializing and starting Timer 2 (2000 ms)\n");
-  soft_timer_init_and_start(2000, prv_timer_callback2, &s_timer2);
+  software_timer_init_and_start(2000, prv_timer_callback2, &s_timer2);
 
   delay_ms(500);
-  LOG_DEBUG("Timer 1 in use? %d\n", soft_timer_inuse(&s_timer1));
-  LOG_DEBUG("Timer 2 in use? %d\n", soft_timer_inuse(&s_timer2));
+  LOG_DEBUG("Timer 1 in use? %d\n", software_timer_inuse(&s_timer1));
+  LOG_DEBUG("Timer 2 in use? %d\n", software_timer_inuse(&s_timer2));
 
-  LOG_DEBUG("Remaining time for Timer 1: %u ms\n", soft_timer_remaining_time(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Remaining time for Timer 1: %u ms\n", software_timer_remaining_time(&s_timer1));
+  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", software_timer_remaining_time(&s_timer2));
 
   delay_ms(1200);
-  LOG_DEBUG("After 1.2s delay -> Timer 1 in use? %d\n", soft_timer_inuse(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("After 1.2s delay -> Timer 1 in use? %d\n", software_timer_inuse(&s_timer1));
+  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", software_timer_remaining_time(&s_timer2));
 
   // Reset timer 2 (should restart it)
   LOG_DEBUG("Resetting Timer 2\n");
-  soft_timer_reset(&s_timer2);
+  software_timer_reset(&s_timer2);
 
   delay_ms(500);
-  LOG_DEBUG("Timer 2 remaining time after reset: %u ms\n", soft_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Timer 2 remaining time after reset: %u ms\n", software_timer_remaining_time(&s_timer2));
 
   // Cancel timer 2 before it expires
   LOG_DEBUG("Canceling Timer 2\n");
-  soft_timer_cancel(&s_timer2);
-  LOG_DEBUG("Timer 2 in use after cancel? %d\n", soft_timer_inuse(&s_timer2));
+  software_timer_cancel(&s_timer2);
+  LOG_DEBUG("Timer 2 in use after cancel? %d\n", software_timer_inuse(&s_timer2));
 
   // Reuse timer 1 (should clean up correctly)
   LOG_DEBUG("Re-initializing Timer 1 for 1500 ms\n");
-  soft_timer_init_and_start(1500, prv_timer_callback1, &s_timer1);
+  software_timer_init_and_start(1500, prv_timer_callback1, &s_timer1);
 
   delay_ms(2000);
-  LOG_DEBUG("Timer 1 done? %d\n", !soft_timer_inuse(&s_timer1));
+  LOG_DEBUG("Timer 1 done? %d\n", !software_timer_inuse(&s_timer1));
 
   LOG_DEBUG("-------- SOFTWARE TIMER SMOKE TEST COMPLETE --------\n\n");
 
