@@ -122,6 +122,6 @@ BO_  84  steering_state: 8 steering
   SG_ regen_braking : 48|8@1+ (1,0) [0|255] "" telemetry, rear_controller
   SG_ hazard_enabled : 56|8@1+ (1,0) [0|255] "" telemetry, rear_controller
 
-BO_   1860 telemetry: 8 telemetry
+BO_   1861 telemetry: 8 telemetry
   SG_ telemetry_data : 0|64@1+ (1,0) [0|18446744073709551615] "" telemetry
 

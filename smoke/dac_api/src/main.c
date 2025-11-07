@@ -23,11 +23,6 @@
 #define DAC_API_TEST_VOLTAGE_MV 3300
 
 TASK(dac_api, TASK_STACK_1024) {
-<<<<<<< HEAD
-  dac_init();
-  dac_enable_channel(DAC_CHANNEL1);
-  dac_set_voltage(DAC_CHANNEL1, DAC_API_TEST_VOLTAGE_MV);
-=======
   StatusCode status = STATUS_CODE_OK;
 
   // Test 1: Checking if the DAC can initialize
@@ -56,7 +51,6 @@ TASK(dac_api, TASK_STACK_1024) {
     LOG_DEBUG("Voltage cannot be set\n");
   }
   delay_ms(500);
->>>>>>> main
 
   while (true) {
   }

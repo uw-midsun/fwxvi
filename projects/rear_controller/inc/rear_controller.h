@@ -66,10 +66,6 @@ typedef struct {
   int16_t max_board_temperature;
   int16_t max_cell_temperature;
 
-  /* Temperature monitoring */
-  int16_t max_board_temperature;
-  int16_t max_cell_temperature;
-
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
   ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
