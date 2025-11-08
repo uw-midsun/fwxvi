@@ -26,8 +26,9 @@ SdSpiSettings sd_spi_test_settings {
   .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
   .mode = SPI_MODE_3,
   .mosi = { .port = GPIO_PORT_B, .pin = 15 },
-  .sclk = { .port = GPIO_PORT_B, .pin = 14 },
-  .cs = { .port = GPIO_PORT_B, .pin = 13 }
+  .miso = { .port = GPIO_PORT_B, .pin = 14 },
+  .sclk = { .port = GPIO_PORT_B, .pin = 13 },
+  .cs = { .port = GPIO_PORT_B, .pin = 12 }
 };
 
 SdSpiPort spi = SD_SPI_PORT_2; 
