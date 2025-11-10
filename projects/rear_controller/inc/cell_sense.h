@@ -19,6 +19,8 @@
 
 /* Intra-component Headers */
 #include "rear_controller.h"
+#include "rear_controller_setters.h"
+#include "rear_controller_getters.h"
 
 /**
  * @defgroup bms_carrier
