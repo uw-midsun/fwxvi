@@ -1,0 +1,73 @@
+import struct
+import time
+from can import Message
+from can.interface import Bus
+from can.broadcastmanager import BroadcastManager
+from threading import Lock, Thread, Event
+
+{% include "system_can.py.jinja2" %}
+
+messages_fast = []
+messages_medium = []
+messages_slow = []
+
+def pack(num, size):
+    """
+    Packs a number into a little-endian unsigned byte string.
+    Floats are packed as 32-bit floats.
+    """
+    if isinstance(num, float) and size == 32:
+        return struct.pack("<f", num)
+    elif size == 64:
+        return struct.pack("<Q", num)
+    elif size == 32:
+        return struct.pack("<I", num)
+    elif size == 16:
+        return struct.pack("<H", num)
+    elif size == 8:
+        return struct.pack("<B", num)
+    else:
+        raise ValueError(f"Unknown size {size} for number {num}")
+
+{% for signal, value in signals.items() %}
+{{ signal }} = {{ value }}
+{% endfor %}
+
+{% for message in messages %}
+{% set msg_name = 'SYSTEM_CAN_MESSAGE_' ~ message.sender | upper ~ '_' ~ message.name | upper %}
+{{ msg_name }} = Message(
+    arbitration_id=SystemCanMessageId.{{ msg_name }}_ID.value,
+    is_extended_id=False,
+    data=b''.join([
+        {%- for signal in message.signals -%}
+        pack({{ signal.name }}, {{ signal.length }})
+        {{- '' if loop.last else ', # ' + signal.name + '\n        ' -}}
+        {% endfor -%}
+    ])
+)
+messages_{{ message.cycle }}.append({{ msg_name }})
+{% endfor %}
+# -------------------------
+
+def main():
+    # Use 'virtual' interface for local simulation
+    bus = Bus(channel='virtual', interface='virtual')
+
+    bcm = BroadcastManager(bus)
+    
+    task_fast = bcm.add_cyclic_task(messages_fast, period={{ cycle_periods.fast }})
+    task_medium = bcm.add_cyclic_task(messages_medium, period={{ cycle_periods.medium }})
+    task_slow = bcm.add_cyclic_task(messages_slow, period={{ cycle_periods.slow }})
+
+    print("Simulator running. Press Ctrl+C to stop.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nStopping simulator...")
+        bcm.stop()
+        bus.shutdown()
+        print("Shutdown complete.")
+
+if __name__ == "__main__":
+    main()
