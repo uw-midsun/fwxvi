@@ -26,6 +26,7 @@
 #include "thermistor.h"
 #include "can.h"
 #include "system_can.h"
+#include "relays.h"
 
 /************************************************************************************************
  * Private defines
@@ -76,9 +77,6 @@ typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERM
  ************************************************************************************************/
 
 /* Forward definition */
-
-int calculate_temperature(uint16_t thermistor);
-
 SpiSettings adbms_spi_config = {
   .baudrate = ADBMS_AFE_SPI_BAUDRATE,
   .mode = SPI_MODE_3,
@@ -106,6 +104,7 @@ static bool s_cell_data_updated = false;
 
 uint8_t afe_message_index = 0U;
 
+//is this still needed?
 static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
   [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3, [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
 };
@@ -315,8 +314,7 @@ static StatusCode s_cell_sense_run() {
   set_battery_stats_B_min_cell_voltage(min_voltage);
 
   if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD) {
-    // bms_open_solar();
-    rear_controller_storage->solar_relay_closed = false;
+    relays_open_solar();
   }
 
   if (max_voltage >= CELL_OVERVOLTAGE) {
