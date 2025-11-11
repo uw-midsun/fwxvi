@@ -152,37 +152,40 @@ static StatusCode s_check_thermistors() {
 
   /* Loop over all devices and thermistors */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
+    adbms_afe_storage->board_thermistor_voltages[device] = calculate_board_thermistor_temperature(adbms_afe_storage->board_thermistor_voltages[device]);
+    if (adbms_afe_storage->thermistor_voltages[device] >= BOARD_MAX_TEMPERATURE) {
+      LOG_DEBUG("BOARD OVERTEMP\n");
+      set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
+      status = STATUS_CODE_INTERNAL_ERROR;
+    }
+    
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
-      /* Check if the temperature ADC is enabled for the provided device and thermistor channel */
-      if ((s_afe_settings.cell_bitset[device] >> thermistor) & 1U) {
-        /* Calculate the ADC voltage index given the device and thermistor number */
-        uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
-        adbms_afe_storage->cell_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->cell_voltages[index]);
-        //TODO: make this division floating point
-        LOG_DEBUG("Thermistor reading device %d, %d: %d\n", device, thermistor, adbms_afe_storage->cell_voltages[index]/10);
+      uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
+      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index]);
+      //TODO: make this division floating point
+      LOG_DEBUG("Thermistor reading device %d, %d: %d\n", device, thermistor, adbms_afe_storage->thermistor_voltages[index]/10);
 
-        /* Ignore temperature readings outside of the valid temperature range */
-        if (adbms_afe_storage->cell_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
-          continue;
+      /* Ignore temperature readings outside of the valid temperature range */
+      if (adbms_afe_storage->thermistor_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
+        continue;
+      }
+
+      if (adbms_afe_storage->thermistor_voltages[index] > max_temp) {
+        max_temp = adbms_afe_storage->thermistor_voltages[index];
+      }
+
+      delay_ms(3);
+      if (rear_controller_storage->pack_current < 0) {
+        if (adbms_afe_storage->thermistor_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE) {
+          LOG_DEBUG("CELL OVERTEMP\n");
+          set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          status = STATUS_CODE_INTERNAL_ERROR;
         }
-
-        if (adbms_afe_storage->cell_voltages[index] > max_temp) {
-          max_temp = adbms_afe_storage->cell_voltages[index];
-        }
-
-        delay_ms(3);
-        if (rear_controller_storage->pack_current < 0) {
-          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE) {
-            LOG_DEBUG("CELL OVERTEMP\n");
-            set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_CELL);
-            status = STATUS_CODE_INTERNAL_ERROR;
-          }
-        } else {
-          if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE) {
-            LOG_DEBUG("CELL OVERTEMP\n");
-            set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_CELL);
-            status = STATUS_CODE_INTERNAL_ERROR;
-          }
+      } else {
+        if (adbms_afe_storage->thermistor_voltages[index] >= CELL_MAX_TEMPERATURE_CHARGE) {
+          LOG_DEBUG("CELL OVERTEMP\n");
+          set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
     }
@@ -235,6 +238,9 @@ static StatusCode s_cell_sense_conversions() {
     // Check therm bitset to determine if we need to read any at this index
     bool check_therm = false;
     for (uint8_t dev = 0; dev < s_afe_settings.num_devices; dev++) {
+      adbms_afe_trigger_board_temp_conv(adbms_afe_storage, dev);
+      adbms_afe_read_board_temp(adbms_afe_storage, dev);
+
         if ((s_afe_settings.cell_bitset[dev] >> thermistor) & 0x1) {
           check_therm = true;
         }
