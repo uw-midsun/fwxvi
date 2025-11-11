@@ -79,7 +79,7 @@ typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERM
 
 int calculate_temperature(uint16_t thermistor);
 
-SpiSettings spi_test_settings = {
+SpiSettings adbms_spi_config = {
   .baudrate = ADBMS_AFE_SPI_BAUDRATE,
   .mode = SPI_MODE_3,
   .sdo = ADBMS_AFE_SPI_SDO_GPIO,
@@ -89,13 +89,11 @@ SpiSettings spi_test_settings = {
 };
 
 static const AdbmsAfeSettings s_afe_settings = {
-  .spi_settings = &spi_test_settings,
+  .spi_settings = &adbms_spi_config,
 
   .spi_port = ADBMS_AFE_SPI_PORT,
 
   .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
-
-  .cell_bitset = { 0xFFFU, 0xFFFU, 0xFFFU },
 
   .num_devices = 2U,
   .num_cells = 18U,
