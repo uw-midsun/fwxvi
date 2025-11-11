@@ -188,7 +188,6 @@ static StatusCode s_check_thermistors() {
         if (rear_controller_storage->pack_current < 0) {
           if (adbms_afe_storage->cell_voltages[index] >= CELL_MAX_TEMPERATURE_DISCHARGE) {
             LOG_DEBUG("CELL OVERTEMP\n");
-            // fault_bps_set(BMS_FAULT_OVERTEMP_CELL);
             set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_CELL);
             status = STATUS_CODE_INTERNAL_ERROR;
           }
@@ -413,7 +412,6 @@ StatusCode cell_sense_init(RearControllerStorage *storage) {
   }
 
   cell_sense_init(storage);
-  // can_init(&s_can_storage, &can_settings);
 
   rear_controller_storage = storage;
   adbms_afe_storage = &(rear_controller_storage->adbms_afe_storage);
