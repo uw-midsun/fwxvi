@@ -22,7 +22,7 @@
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
 
-#define ACCEL_PEDAL_OPAMP_VREF_MV 1650
+#define ACCEL_PEDAL_OPAMP_VREF_MV 500
 
 static GpioAddress s_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 
@@ -38,6 +38,7 @@ StatusCode accel_pedal_run() {
   uint16_t adc_reading = s_accel_pedal_storage.calibration_data.lower_value;
   adc_read_raw(&s_accel_pedal_gpio, &adc_reading);
 
+  LOG_DEBUG("adc_reading: %u\r\n", adc_reading);
   /**
    * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
    * to get percentage press. Negatives and > 100 values will be clamped

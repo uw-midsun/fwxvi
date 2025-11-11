@@ -139,7 +139,7 @@ static uint8_t s_full_duplex_transfer(uint8_t byte) {
 }
 
 static uint8_t s_wait_for_response() {
-  uint16_t timeout = 0x100U;
+  uint16_t timeout = 0xFFFFU;
   uint8_t readvalue;
 
   do {
@@ -257,6 +257,8 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   /* Step 1: Send 80 clock cycles with CS high to wake up card */
   /* 10 * 8 bits = 80 clocked bits */
   s_clock_dummy_bytes(10U);
+
+  delay_ms(10);
 
   /* Step 2: reset */
   SdResponse r1;

@@ -55,12 +55,25 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   steering_storage = storage;
   steering_storage->config = config;
 
-  log_init();
   can_init(&s_can_storage, &s_can_settings);
   drive_state_manager_init();
   lights_signal_manager_init();
   button_manager_init(steering_storage);
   button_led_manager_init(steering_storage);
+
+  button_led_manager_set_color(STEERING_BUTTON_LEFT_LIGHT, (LEDPixels){255, 255, 0});
+  button_led_manager_set_color(STEERING_BUTTON_RIGHT_LIGHT, (LEDPixels){255, 255, 0});
+  button_led_manager_set_color(STEERING_BUTTON_HAZARDS, (LEDPixels){120, 0, 0});
+
+  button_led_manager_set_color(STEERING_BUTTON_DRIVE, (LEDPixels){0, 0, 120});
+  button_led_manager_set_color(STEERING_BUTTON_REVERSE, (LEDPixels){120, 0, 120});
+  button_led_manager_set_color(STEERING_BUTTON_NEUTRAL, (LEDPixels){0, 0, 0});
+
+  button_led_manager_set_color(STEERING_BUTTON_HORN, (LEDPixels){0, 150, 150});
+  button_led_manager_set_color(STEERING_BUTTON_REGEN, (LEDPixels){0, 120, 0});
+
+  button_led_manager_set_color(STEERING_BUTTON_CRUISE_CONTROL_UP, (LEDPixels){255, 255, 255});
+  button_led_manager_set_color(STEERING_BUTTON_CRUISE_CONTROL_DOWN, (LEDPixels){100, 100, 255});
 
   return STATUS_CODE_OK;
 }

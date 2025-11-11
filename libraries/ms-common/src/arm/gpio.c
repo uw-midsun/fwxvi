@@ -30,10 +30,12 @@ StatusCode gpio_init(void) {
   /* Enable GPIO clocks and disable JTAG, using only SWD. */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /* We are not given any GPIO PORT C/E pins on our Controller Board */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
+
+#ifdef STM32L4P5xx
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+#endif
 
   /* Disables the JTAG (Trace interface). Uses TRACE_MODE = 00, freeing up all pins */
   MODIFY_REG(DBGMCU->CR, DBGMCU_CR_TRACE_IOEN_Msk, 0x00000000U);

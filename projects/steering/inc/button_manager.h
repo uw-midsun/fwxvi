@@ -26,7 +26,7 @@
  * @{
  */
 
-#define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
+#define BUTTON_MANAGER_DEBUG 1 /**< Set to 1 to enable debug prints */
 
 /**
  * @brief Button Manager structure

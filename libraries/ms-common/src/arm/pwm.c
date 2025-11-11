@@ -34,6 +34,11 @@ static void s_enable_periph_clock(PwmTimer timer) {
     case PWM_TIMER_2:
       __HAL_RCC_TIM2_CLK_ENABLE();
       break;
+    case PWM_TIMER_4:
+#ifdef STM32L4P5xx
+      __HAL_RCC_TIM4_CLK_ENABLE();
+#endif
+      break;
     case PWM_TIMER_15:
       __HAL_RCC_TIM15_CLK_ENABLE();
       break;
@@ -59,6 +64,11 @@ StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
       break;
     case PWM_TIMER_2:
       s_timer_handle[timer].Instance = TIM2;
+      break;
+    case PWM_TIMER_4:
+#ifdef STM32L4P5xx
+      s_timer_handle[timer].Instance = TIM4;
+#endif
       break;
     case PWM_TIMER_15:
       s_timer_handle[timer].Instance = TIM15;
@@ -107,6 +117,10 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
       break;
     case PWM_TIMER_2:
       /* TIM2 supports all 4 channels */
+      channel_supported = (channel < 4);
+      break;
+    case PWM_TIMER_4:
+      /* TIM4 supports all 4 channels */
       channel_supported = (channel < 4);
       break;
     case PWM_TIMER_15:

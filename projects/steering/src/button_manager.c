@@ -152,12 +152,60 @@ static void horn_btn_rising_edge_cb(Button *button) {
 }
 
 /************************************************************************************************
+ * Regen button handlers
+ ************************************************************************************************/
+
+static void regen_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+#endif
+}
+
+static void regen_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control up button handlers
+ ************************************************************************************************/
+
+static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_up_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control down button handlers
+ ************************************************************************************************/
+
+static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_down_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
  * Button configs
  ************************************************************************************************/
 
 static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     [STEERING_BUTTON_LEFT_LIGHT] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = left_turn_btn_falling_edge_cb,
@@ -167,7 +215,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_RIGHT_LIGHT] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = right_turn_btn_falling_edge_cb,
@@ -177,7 +225,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_HAZARDS] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = hazards_btn_falling_edge_cb,
@@ -187,7 +235,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_DRIVE] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = drive_btn_falling_edge_cb,
@@ -197,7 +245,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_REVERSE] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = reverse_btn_falling_edge_cb,
@@ -207,7 +255,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_NEUTRAL] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = neutral_btn_falling_edge_cb,
@@ -217,13 +265,43 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_HORN] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = horn_btn_falling_edge_cb,
             .rising_edge_cb  = horn_btn_rising_edge_cb,
         },
         .gpio = STEERING_HORN_BUTTON
+    },
+
+    [STEERING_BUTTON_REGEN] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = regen_btn_falling_edge_cb,
+          .rising_edge_cb  = regen_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_REGEN_BUTTON
+    },
+
+    [STEERING_BUTTON_CRUISE_CONTROL_UP] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = cruise_control_up_btn_falling_edge_cb,
+          .rising_edge_cb  = cruise_control_up_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_CC_UP_BUTTON
+    },
+
+    [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = cruise_control_down_btn_falling_edge_cb,
+          .rising_edge_cb  = cruise_control_down_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_CC_DOWN_BUTTON
     },
 };
 

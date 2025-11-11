@@ -39,31 +39,55 @@
 
 /** @brief  Steering left turn button */
 #define STEERING_LEFT_TURN_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 3 }
+  { .port = GPIO_PORT_B, .pin = 12 }
 
 /** @brief  Steering right turn button */
 #define STEERING_RIGHT_TURN_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 4 }
+  { .port = GPIO_PORT_A, .pin = 6 }
 
 /** @brief  Steering hazards button */
 #define STEERING_HAZARDS_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 5 }
+  { .port = GPIO_PORT_C, .pin = 5 }
 
 /** @brief  Steering neutral button */
 #define STEERING_NEUTRAL_BUTTON \
-  { .port = GPIO_PORT_A, .pin = 5 }
+  { .port = GPIO_PORT_B, .pin = 2 }
 
 /** @brief  Steering drive button */
 #define STEERING_DRIVE_BUTTON \
-  { .port = GPIO_PORT_A, .pin = 6 }
+  { .port = GPIO_PORT_B, .pin = 1 }
 
 /** @brief  Steering reverse button */
 #define STEERING_REVERSE_BUTTON \
-  { .port = GPIO_PORT_A, .pin = 7 }
+  { .port = GPIO_PORT_E, .pin = 7 }
 
 /** @brief  Steering horn button */
 #define STEERING_HORN_BUTTON \
+  { .port = GPIO_PORT_A, .pin = 7 }
+
+/** @brief  Steering horn button */
+#define STEERING_REGEN_BUTTON \
+  { .port = GPIO_PORT_E, .pin = 8 }
+
+/** @brief  Steering cruise control up button */
+#define STEERING_CC_UP_BUTTON \
+  { .port = GPIO_PORT_B, .pin = 13 }
+
+/** @brief  Steering cruise control down button */
+#define STEERING_CC_DOWN_BUTTON \
+  { .port = GPIO_PORT_B, .pin = 14 }
+
+/************************************************************************************************
+ * LED turn signals
+ ************************************************************************************************/
+
+/** @brief  Left turn LED */
+#define STEERING_LEFT_TURN_LED \
   { .port = GPIO_PORT_B, .pin = 6 }
+
+/** @brief  Right turn LED */
+#define STEERING_RIGHT_TURN_LED \
+  { .port = GPIO_PORT_B, .pin = 7 }
 
 /************************************************************************************************
  * Display control
