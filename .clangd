@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - -std=c11
+    - -I/usr/include
+    - -I/usr/local/include
