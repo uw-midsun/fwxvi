@@ -111,17 +111,6 @@ static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
 
 static RearControllerStorage *rear_controller_storage;
 
-static CanStorage s_can_storage = { 0 };
-
-const CanSettings can_settings = {
-  .device_id = SYSTEM_CAN_DEVICE_REAR_CONTROLLER,
-  .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = { GPIO_PORT_B, 9 },
-  .rx = { GPIO_PORT_B, 8 },
-  .loopback = false,
-  .silent = false,
-};
-
 /************************************************************************************************
  * Private function definitions
  ************************************************************************************************/
