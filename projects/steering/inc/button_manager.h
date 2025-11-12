@@ -26,7 +26,7 @@
  * @{
  */
 
-#define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
+#define BUTTON_MANAGER_DEBUG 1 /**< Set to 1 to enable debug prints */
 
 /**
  * @brief Button Manager structure
@@ -42,6 +42,13 @@ typedef struct ButtonManager {
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
 StatusCode button_manager_init(SteeringStorage *storage);
+
+/**
+ * @brief   Reset the button manager state
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
+ */
+StatusCode button_manager_reset(void);
 
 /**
  * @brief   Update the button manager

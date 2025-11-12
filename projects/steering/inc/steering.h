@@ -28,24 +28,30 @@
 struct ButtonManager;
 struct ButtonLEDManager;
 
+/** @brief  Steering button debounce period millisecond */
 #define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
+
+/** @brief  Maximum cruise control spesed in kilometers per hour*/
+#define STEERING_CRUISE_MAX_SPEED_KMH 80U
+
+/** @brief  Minimum cruise control speed in kilometers per hour */
+#define STEERING_CRUISE_MIN_SPEED_KMH 40U
 
 /**
  * @brief   Steering buttons
  */
 typedef enum {
-  STEERING_BUTTON_LEFT_LIGHT,
-  STEERING_BUTTON_RIGHT_LIGHT,
   STEERING_BUTTON_HAZARDS,
-
   STEERING_BUTTON_DRIVE,
-  STEERING_BUTTON_REVERSE,
   STEERING_BUTTON_NEUTRAL,
+  STEERING_BUTTON_REVERSE,
 
-  STEERING_BUTTON_HORN,
   STEERING_BUTTON_REGEN,
 
-  STEERING_BUTTON_PUSH_TO_TALK,
+  STEERING_BUTTON_LEFT_LIGHT,
+  STEERING_BUTTON_RIGHT_LIGHT,
+
+  STEERING_BUTTON_HORN,
 
   STEERING_BUTTON_CRUISE_CONTROL_UP,
   STEERING_BUTTON_CRUISE_CONTROL_DOWN,
