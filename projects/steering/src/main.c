@@ -33,6 +33,7 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
+  cruise_control_run();
   button_led_manager_update();
 }
 
