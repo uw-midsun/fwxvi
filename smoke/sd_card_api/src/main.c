@@ -99,6 +99,7 @@ TASK(sd_card_api, TASK_STACK_1024) {
 
   LOG_DEBUG("Workarea unmounted\n");
 
+  while (true) {}
 }
 
 #ifdef MS_PLATFORM_X86
