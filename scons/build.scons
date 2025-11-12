@@ -370,6 +370,12 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     incs += map(ROOT.Dir, config.get("include", []))
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
+    # include_path relative to where config.json is
+    for p in config.get("include_path", []):
+        base = ROOT.Dir(p)
+        incs += inc(base)
+        srcs += src(base)
+
     lib_deps = get_lib_deps(entry)
 
     build_env = env
@@ -388,7 +394,7 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
         print(f'Project: {entry} is only for ARM devices. Cannot build x86 version.')
     else:
         target = build_env.Program(
-            target=BIN_DIR.File(entry.path),
+            target=BIN_DIR.File(entry.path + '.elf' if PLATFORM == 'arm' else entry.path),
             source=srcs,
             CPPPATH=build_env['CPPPATH'] + incs + lib_incs,
             # link each library twice so that dependency cycles are resolved
@@ -402,9 +408,7 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
 
     # .bin file only required for arm, not x86
     if PLATFORM == 'arm':
-        target = env.Bin(target=BIN_DIR.File(entry.path + '.bin'),
-                         source=target)
-    
+        target = env.Bin(target=BIN_DIR.File(entry.path + '.bin'), source=target)
 
     # Create an alias for the entry so we can do `scons leds` and it Just Works
     Alias(entry.path, target)

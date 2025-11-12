@@ -65,7 +65,6 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   flash_init();
   opamp_init();
   dac_init();
-  adc_init();
 
   /* Initialize front controller systems */
   accel_pedal_init(storage);
@@ -74,6 +73,9 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+
+  /* ADC initialization must happen at the very end, so all channels are registered */
+  adc_init();
 
   LOG_DEBUG("Front controller initialized\r\n");
 
