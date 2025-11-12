@@ -19,13 +19,13 @@
 /* Intra-component Headers */
 #include "button_led_manager.h"
 #include "button_manager.h"
+#include "buzzer.h"
+#include "display.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
+#include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
-#include "buzzer.h"
-#include "party_mode.h"
-#include "display.h"
 
 /************************************************************************************************
  * Storage definitions

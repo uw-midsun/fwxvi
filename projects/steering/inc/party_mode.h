@@ -25,7 +25,6 @@
  * @{
  */
 
-
 /**
  * @brief   Initialize party mode system
  * @param   storage Pointer to the steering storage

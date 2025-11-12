@@ -17,10 +17,10 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "button_manager.h"
 #include "button_led_manager.h"
-#include "steering.h"
+#include "button_manager.h"
 #include "party_mode.h"
+#include "steering.h"
 
 SteeringStorage steering_storage;
 

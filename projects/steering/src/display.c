@@ -25,14 +25,14 @@ static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_current_ctrl = STEERING_DISPLAY_CURRENT_CTRL;
 
 StatusCode display_init(SteeringStorage *storage) {
-    if (storage == NULL) {
-        return STATUS_CODE_INVALID_ARGS;
-    }
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
-    steering_storage = storage;
+  steering_storage = storage;
 
-    gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-    gpio_init_pin(&s_display_current_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_current_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-    return STATUS_CODE_OK;
+  return STATUS_CODE_OK;
 }

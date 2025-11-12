@@ -52,6 +52,18 @@
 #define LOG_RX_PIN 11
 #endif
 
+#ifndef LOG_GPIO_PORT
+#define LOG_GPIO_PORT GPIO_PORT_B
+#endif
+
+#ifndef LOG_TX_PIN
+#define LOG_TX_PIN 6
+#endif
+
+#ifndef LOG_RX_PIN
+#define LOG_RX_PIN 7
+#endif
+
 #ifndef IN_ORDER_LOGS
 #define IN_ORDER_LOGS 1
 #endif

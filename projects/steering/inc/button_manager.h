@@ -43,7 +43,6 @@ typedef struct ButtonManager {
  */
 StatusCode button_manager_init(SteeringStorage *storage);
 
-
 /**
  * @brief   Reset the button manager state
  * @return  STATUS_CODE_OK if initialized successfully

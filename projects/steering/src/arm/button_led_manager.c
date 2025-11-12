@@ -85,14 +85,14 @@ static void button_led_manager_compute_timing_from_clock(void) {
   /* For SK6812: 1.2µs bit period
    * Strategy: Use PSC=0 for maximum resolution
    * ARR = (tim_clk * 1.2µs) - 1
-   * 
+   *
    * Example: If tim_clk = 80MHz:
    * ARR = (80,000,000 * 1.2e-6) - 1 = 96 - 1 = 95
    */
-  
+
   uint32_t psc = 0;
   float target_counts = (float)tim_clk * SK6812_BIT_PERIOD_US * 1e-6f;
-  uint32_t arr = (uint32_t)(target_counts + 0.5f); // Round
+  uint32_t arr = (uint32_t)(target_counts + 0.5f);  // Round
 
   if (arr > 0) {
     arr = arr - 1U;
@@ -181,7 +181,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   s_dma_tim2_ch3_handle.Init.PeriphInc = DMA_PINC_DISABLE;
   s_dma_tim2_ch3_handle.Init.MemInc = DMA_MINC_ENABLE;
   s_dma_tim2_ch3_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  s_dma_tim2_ch3_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;    /**< Buffer is uint16_t */
+  s_dma_tim2_ch3_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
   s_dma_tim2_ch3_handle.Init.Mode = DMA_NORMAL;
   s_dma_tim2_ch3_handle.Init.Priority = DMA_PRIORITY_HIGH;
 

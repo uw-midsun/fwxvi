@@ -22,45 +22,20 @@
 #include "buzzer.h"
 #include "steering_hw_defs.h"
 
-#define BUZZER_TIMER            PWM_TIMER_4
-#define BUZZER_CHANNEL          PWM_CHANNEL_1
-#define BUZZER_GPIO_ALTFN       GPIO_ALT2_TIM4
-#define BUZZER_DUTY             50U
+#define BUZZER_TIMER PWM_TIMER_4
+#define BUZZER_CHANNEL PWM_CHANNEL_1
+#define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
+#define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
 
 /* Upbeat ascending startup jingle */
-static const Note MELODY_STARTUP[] = {
-  {NOTE_C5, 100},
-  {NOTE_E5, 100},
-  {NOTE_G5, 100},
-  {NOTE_C6, 150},
-  {NOTE_REST, 50},
-  {NOTE_G5, 120},
-  {NOTE_C6, 150},
-  {NOTE_E6, 250},
-  {NOTE_REST, 0}
-};
+static Note MELODY_STARTUP[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 120 }, { NOTE_C6, 150 }, { NOTE_E6, 250 }, { NOTE_REST, 0 } };
 
 /* Descending "uh-oh" error sound */
-static const Note MELODY_ERROR[] = {
-  {NOTE_A5, 150},
-  {NOTE_F5, 150},
-  {NOTE_D5, 150},
-  {NOTE_A4, 300},
-  {NOTE_REST, 0}
-};
+static Note MELODY_ERROR[] = { { NOTE_A5, 150 }, { NOTE_F5, 150 }, { NOTE_D5, 150 }, { NOTE_A4, 300 }, { NOTE_REST, 0 } };
 
 /* Triumphant success fanfare */
-static const Note MELODY_SUCCESS[] = {
-  {NOTE_C5, 100},
-  {NOTE_E5, 100},
-  {NOTE_G5, 100},
-  {NOTE_C6, 150},
-  {NOTE_REST, 50},
-  {NOTE_G5, 100},
-  {NOTE_C6, 250},
-  {NOTE_REST, 0}
-};
+static Note MELODY_SUCCESS[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 100 }, { NOTE_C6, 250 }, { NOTE_REST, 0 } };
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
@@ -165,7 +140,7 @@ StatusCode buzzer_play_melody(Note *melody) {
 
   /* Stop current playback if any */
   s_melody_playing = false;
-  
+
   /* Return error if any active timers */
   if (s_beep_timer.id != NULL && software_timer_inuse(&s_beep_timer)) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
@@ -202,7 +177,7 @@ StatusCode buzzer_play_success(void) {
 
 StatusCode buzzer_stop(void) {
   s_melody_playing = false;
-  
+
   /* Cancel both timers */
   if (s_beep_timer.id != NULL && software_timer_inuse(&s_beep_timer)) {
     software_timer_cancel(&s_beep_timer);
@@ -210,7 +185,7 @@ StatusCode buzzer_stop(void) {
   if (s_melody_timer.id != NULL && software_timer_inuse(&s_melody_timer)) {
     software_timer_cancel(&s_melody_timer);
   }
-  
+
   pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
   return STATUS_CODE_OK;
 }

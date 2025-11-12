@@ -20,9 +20,9 @@
 
 /* Intra-component Headers */
 
-#define TEST_PWM_TIMER     PWM_TIMER_4
-#define TEST_PWM_TIMER_CH  PWM_CHANNEL_1
-#define TEST_PWM_ALTFN     GPIO_ALT2_TIM4
+#define TEST_PWM_TIMER PWM_TIMER_4
+#define TEST_PWM_TIMER_CH PWM_CHANNEL_1
+#define TEST_PWM_ALTFN GPIO_ALT2_TIM4
 #define TEST_PWM_PERIOD_US 1000U
 
 GpioAddress pwm_test_pin = { .port = GPIO_PORT_D, .pin = 12U };
