@@ -20,6 +20,7 @@ class FotaDatagramHeader():
     """
     @brief Defined format for the datagram header
     """
+    # pylint: disable=too-many-arguments
     def __init__(self, target_node, length, num_packets, datagram_crc32, datagram_id):
         """@brief FotaDatagramHeader initiali"""
         self._target_node = target_node

@@ -13,6 +13,7 @@ class CRC32:
     """
     crc_table = {}
 
+    # pylint: disable=unused-argument
     def __init__(self, _poly):
         """
         @brief Initialize the FOTA crc32 

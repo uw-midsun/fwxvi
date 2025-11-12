@@ -8,18 +8,17 @@
 #  @ingroup FOTA_Python
 
 
-class FotaUI:
+# class FotaUI:
 
-    def __init__(self):
-        pass
+#     def __init__(self):
+#         pass
 
-    def update_ui(self):
-        pass
+#     def update_ui(self):
+#         pass
 
-    def open_binary(self):
-        pass
+#     def open_binary(self):
+#         pass
 
-    def validate(self):
-        pass
+#     def validate(self):
+#         pass
 
-    
