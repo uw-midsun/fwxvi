@@ -12,23 +12,19 @@
 #include "gpio.h"
 
 /* Intra-component Headers */
+#include "front_controller_hw_defs.h"
 #include "power_control_manager.h"
+#include "power_control_outputs.h"
 
 // Mapping table to connect output enum ID to its hardware pin
-static const GpioAddress output_pins[NUM_OUTPUTS] {
-  [HEADLIGHT] = {.port = GPIO_PORT_A, .pin = 1},
-  [LEFT_SIG] = { .port = GPIO_PORT_A, .pin = 8 },
-  [RIGHT_SIG] = { .port = GPIO_PORT_A, .pin = 9 },
-  [BRAKE_LIGHT] = { .port = GPIO_PORT_A, .pin = 10 },
-  [BPS_LIGHT] = { .port = GPIO_PORT_A, .pin = 11 },
-  [DRIVER_FAN] = { .port = GPIO_PORT_A, .pin = 12 },
-  [REV_CAM] = { .port = GPIO_PORT_A, .pin = 15 },
-  [TELEM] = { .port = GPIO_PORT_B, .pin = 2 },
-  [STEERING] = { .port = GPIO_PORT_B, .pin = 3 },
-  [HORN] = { .port = GPIO_PORT_B, .pin = 4 },
-  [SPARE_1] = { .port = GPIO_PORT_B, .pin = 10 },
-  [SPARE_2] = { .port = GPIO_PORT_B, .pin = 11 },
-}
+const GpioAddress output_pins[NUM_OUTPUTS] = {
+  [HEADLIGHT] = FRONT_CONTROLLER_HEADLIGHT_LS_ENABLE, [LEFT_SIG] = FRONT_CONTROLLER_LEFT_SIG_LS_ENABLE,
+  [RIGHT_SIG] = FRONT_CONTROLLER_RIGHT_SIG_LS_ENABLE, [BRAKE_LIGHT] = FRONT_CONTROLLER_BRAKE_LIGHT_LS_ENABLE,
+  [BPS_LIGHT] = FRONT_CONTROLLER_BPS_LIGHT_LS_ENABLE, [DRIVER_FAN] = FRONT_CONTROLLER_DRIVER_FAN_LS_ENABLE,
+  [REV_CAM] = FRONT_CONTROLLER_REV_CAM_LS_ENABLE,     [TELEM] = FRONT_CONTROLLER_TELEM_LS_ENABLE,
+  [STEERING] = FRONT_CONTROLLER_STEERING_LS_ENABLE,   [HORN] = FRONT_CONTROLLER_HORN_LS_ENABLE,
+  [SPARE_1] = FRONT_CONTROLLER_SPARE_1_LS_ENABLE,     [SPARE_2] = FRONT_CONTROLLER_SPARE_2_LS_ENABLE,
+};
 
 // Initializing all GPIO pins with correct address and low state
 void power_control_manager_init() {
@@ -87,11 +83,6 @@ const OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
 
 // fix this, not sure if it wil lwork if you want to enable or disable a certain output
 void power_control_set_output_group(OutputGroup group, bool enable) {
-
-  if (group >= NUM_OUTPUT_GROUPS) {
-    return;
-  }
-
   OutputGroupDef *grp = output_group_map[group];
 
   if (grp == NULL) {
@@ -99,15 +90,12 @@ void power_control_set_output_group(OutputGroup group, bool enable) {
   }
 
   for (uint8_t i = 0; i < grp->num_outputs; i++) {
-
-    OutputId id = grp->outputs[i];          // enum ID
+    OutputId id = grp->outputs[i];  // enum ID
 
     if (enable) {
-      gpio_set_state(&output_pins[id], GPIO_STATE_HIGH);    // look up the pin, then set it
+      gpio_set_state(&output_pins[id], GPIO_STATE_HIGH);  // look up the pin, then set it
     } else if (!enable) {
       gpio_set_state(&output_pins[id], GPIO_STATE_LOW);
     }
   }
 }
-
-

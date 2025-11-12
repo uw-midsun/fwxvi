@@ -25,18 +25,6 @@
  */
 
 // Enum for the output groups
-typedef enum {
-  OUTPUT_GROUP_ALL = 0,  // Reserved value
-  IDLE_GROUP,
-  LEFT_GROUP,
-  RIGHT_GROUP,
-  HAZARD_GROUP,
-  BPS_GROUP,
-  BRAKE_GROUP,
-  HORN_GROUP,
-  NUM_OUTPUT_GROUPS,
-} OutputGroup;
-
 
 typedef enum {
   HEADLIGHT = 0,
@@ -46,19 +34,30 @@ typedef enum {
   BPS_LIGHT,
   DRIVER_FAN,
   REV_CAM,
-  TELE,
-  STEERIN,
-  HOR,
+  TELEM,
+  STEERING,
+  HORN,
   SPARE_1,
   SPARE_2,
   NUM_OUTPUTS,
 } OutputId;
 
+typedef enum {
+  OUTPUT_GROUP_ALL = 0,
+  IDLE_GROUP,
+  LEFT_GROUP,
+  RIGHT_GROUP,
+  HAZARD_GROUP,
+  BPS_GROUP,
+  BRAKE_GROUP,
+  NUM_OUTPUT_GROUPS,
+} OutputGroup;
+
 typedef struct OutputGroupDef {
-  uint8_t num_outputs;    // how many outputs are in each group
+  uint8_t num_outputs;   // how many outputs are in each group
   OutputId outputs[12];  // array for which outputs belong to each group
 } OutputGroupDef;
 
-extern GpioAddress output_pins[NUM_OUTPUTS];
+extern const GpioAddress output_pins[NUM_OUTPUTS];
 extern const OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS];
 /** @} */
