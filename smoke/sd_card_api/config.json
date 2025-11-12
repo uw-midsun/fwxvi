@@ -1,0 +1,18 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "FATFs"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/telemetry/inc"
+    ],
+    "sources": [
+        "projects/telemetry/src/sd_card_interface.o",
+        "projects/telemetry/src/arm/sd_card_spi.o"
+    ],
+    "can": false
+}
