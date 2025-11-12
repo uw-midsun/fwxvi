@@ -105,11 +105,11 @@ class FotaDatagramHeader():
         """@brief creates the header packet given the datagramcrc32 """
         # Placeholder payload with 0 for packet_crc32
         header_payload = (
-            self._target_node.to_bytes(1, BYTE_ORDER) +          # target_node_id (1 byte)
-            self._type.to_bytes(1, BYTE_ORDER) +                 # type (1 byte)
-            self._num_packets.to_bytes(2, BYTE_ORDER) +          # num_packets (2 bytes)
-            self._datagram_id.to_bytes(4, BYTE_ORDER) +          # datagram_id (4 bytes)
-            self._length.to_bytes(4, BYTE_ORDER) +               # total_length (4 bytes)
+            self.target_node.to_bytes(1, BYTE_ORDER) +          # target_node_id (1 byte)
+            self.type.to_bytes(1, BYTE_ORDER) +                 # type (1 byte)
+            self.num_packets.to_bytes(2, BYTE_ORDER) +          # num_packets (2 bytes)
+            self.datagram_id.to_bytes(4, BYTE_ORDER) +          # datagram_id (4 bytes)
+            self.length.to_bytes(4, BYTE_ORDER) +               # total_length (4 bytes)
             datagram_crc32.to_bytes(4, BYTE_ORDER) +             # datagram_crc32 (4 bytes)
             (0).to_bytes(4, BYTE_ORDER)                          # packet_crc32 placeholder (4 bytes)
         )
@@ -119,11 +119,11 @@ class FotaDatagramHeader():
 
         # Rebuild the header payload with actual packet_crc32
         header_payload = (
-            self._target_node.to_bytes(1, BYTE_ORDER) +
-            self._type.to_bytes(1, BYTE_ORDER) +
-            self._num_packets.to_bytes(2, BYTE_ORDER) +
-            self._datagram_id.to_bytes(4, BYTE_ORDER) +
-            self._length.to_bytes(4, BYTE_ORDER) +
+            self.target_node.to_bytes(1, BYTE_ORDER) +
+            self.type.to_bytes(1, BYTE_ORDER) +
+            self.num_packets.to_bytes(2, BYTE_ORDER) +
+            self.datagram_id.to_bytes(4, BYTE_ORDER) +
+            self.length.to_bytes(4, BYTE_ORDER) +
             datagram_crc32.to_bytes(4, BYTE_ORDER) +
             packet_crc32.to_bytes(4, BYTE_ORDER)
         )
@@ -193,17 +193,17 @@ class FotaDatagram():
 
         datagram_crc = self.calculate_datagram_crc32()
 
-        if self._datagram_header is None:
-            self._datagram_header = FotaDatagramHeader(node_id, total_len, self._packet_num, datagram_crc, datagram_id)
+        if self.datagram_header is None:
+            self.datagram_header = FotaDatagramHeader(node_id, total_len, self._packet_num, datagram_crc, datagram_id)
         else:
-            self._datagram_header._target_node = node_id
-            self._datagram_header._type = 0
-            self._datagram_header._length = total_len
-            self._datagram_header._num_packets = self._packet_num
-            self._datagram_header._datagram_crc32 = datagram_crc
-            self._datagram_header._datagram_id = datagram_id
+            self.datagram_header.target_node = node_id
+            self.datagram_header.type = 0
+            self.datagram_header.length = total_len
+            self.datagram_header.num_packets = self._packet_num
+            self.datagram_header.datagram_crc32 = datagram_crc
+            self.datagram_header.datagram_id = datagram_id
 
-            self._datagram_header.create_header_packet(datagram_crc)
+            self.datagram_header.create_header_packet(datagram_crc)
 
     def calculate_datagram_crc32(self) -> int:
         """@brief create the crc32 from datagram"""

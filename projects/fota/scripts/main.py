@@ -10,6 +10,7 @@
 #
 #  @ingroup FOTA_Python
 
+from fota_ui import FotaUI
 
 def main():
     """

@@ -6,3 +6,20 @@
 #  @details
 #
 #  @ingroup FOTA_Python
+
+
+class FotaUI:
+
+    def __init__(self):
+        pass
+
+    def update_ui(self):
+        pass
+
+    def open_binary(self):
+        pass
+
+    def validate(self):
+        pass
+
+    

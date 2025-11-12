@@ -33,7 +33,7 @@ class FotaAck:
         """
         expected_len = struct.calcsize(ACK_STRUCT_FORMAT)
         if len(raw_bytes) < expected_len:
-            raise ValueError(f"Incomplete ACK recieved!")
+            raise ValueError("Incomplete ACK recieved!")
 
         ack_status, response_to_type, err_code, err_msg = struct.unpack(ACK_STRUCT_FORMAT, raw_bytes)
 

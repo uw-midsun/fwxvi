@@ -43,23 +43,23 @@ class FotaTx():
         """@brief pack a datagram into a queue to send over transmit layer """
         transmit_queue = []
 
-        transmit_queue.append(datagram._datagram_header)
+        transmit_queue.append(datagram.datagram_header)
 
-        for packet in datagram._packet_list:
+        for packet in datagram.packet_list:
             transmit_queue.append(packet)
 
     def transmit(self) -> bool:
         """@brief start tranmission of anything in tx_queue"""
 
-        if not self._tx_queue:
+        if not self.tx_queue:
             print("Nothing in queue to transmit")
             return False
 
         print("Transmitting datagram")
 
         try:
-            for packet in self._tx_queue:
-                status = self._packet_sender.send(packet)
+            for packet in self.tx_queue:
+                status = self.packet_sender.send(packet)
 
                 if not status:
                     print("ERROR: could not send packet, or did not receive ack")
@@ -79,10 +79,10 @@ class FotaTx():
         expected_len = 1 + 1 + 4 + 256  # from ACK struct, see fota_ack.py
 
         while received_bytes < expected_len:
-            buffer += self._serial_receive.recieve()
+            buffer += self.serial_receive.recieve()
 
         if received_bytes == expected_len:
             return FotaAck(buffer)
 
-        print(f"ERROR: could not parse ack packet")
+        print("ERROR: could not parse ack packet")
         return None
