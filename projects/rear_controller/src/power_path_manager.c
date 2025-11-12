@@ -28,6 +28,9 @@ static GpioAddress pcs_valid2 = REAR_CONTROLLER_PCS_VALID2;
 static GpioAddress aux_valid1 = REAR_CONTROLLER_AUX_VALID1;
 static GpioAddress aux_valid2 = REAR_CONTROLLER_AUX_VALID2;
 
+static StatusCode power_path_voltage_sense(GpioAddress *voltage_address, uint32_t *vin_mV);
+static StatusCode power_path_current_sense(GpioAddress *current_address, int32_t *current_mA);
+
 StatusCode power_path_manager_init(RearControllerStorage *storage) {
 
   if (storage == NULL){
