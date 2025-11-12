@@ -43,6 +43,14 @@ typedef struct ButtonManager {
  */
 StatusCode button_manager_init(SteeringStorage *storage);
 
+
+/**
+ * @brief   Reset the button manager state
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
+ */
+StatusCode button_manager_reset(void);
+
 /**
  * @brief   Update the button manager
  * @param   manager Pointer to the ButtonManager instance

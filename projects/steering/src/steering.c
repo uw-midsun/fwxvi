@@ -23,6 +23,9 @@
 #include "light_signal_manager.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "buzzer.h"
+#include "party_mode.h"
+#include "display.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -58,22 +61,13 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   can_init(&s_can_storage, &s_can_settings);
   drive_state_manager_init();
   lights_signal_manager_init();
-  button_manager_init(steering_storage);
   button_led_manager_init(steering_storage);
+  button_manager_init(steering_storage);
+  buzzer_init();
+  party_mode_init(steering_storage);
+  display_init(steering_storage);
 
-  button_led_manager_set_color(STEERING_BUTTON_LEFT_LIGHT, (LEDPixels){255, 255, 0});
-  button_led_manager_set_color(STEERING_BUTTON_RIGHT_LIGHT, (LEDPixels){255, 255, 0});
-  button_led_manager_set_color(STEERING_BUTTON_HAZARDS, (LEDPixels){120, 0, 0});
-
-  button_led_manager_set_color(STEERING_BUTTON_DRIVE, (LEDPixels){0, 0, 120});
-  button_led_manager_set_color(STEERING_BUTTON_REVERSE, (LEDPixels){120, 0, 120});
-  button_led_manager_set_color(STEERING_BUTTON_NEUTRAL, (LEDPixels){0, 0, 0});
-
-  button_led_manager_set_color(STEERING_BUTTON_HORN, (LEDPixels){0, 150, 150});
-  button_led_manager_set_color(STEERING_BUTTON_REGEN, (LEDPixels){0, 120, 0});
-
-  button_led_manager_set_color(STEERING_BUTTON_CRUISE_CONTROL_UP, (LEDPixels){255, 255, 255});
-  button_led_manager_set_color(STEERING_BUTTON_CRUISE_CONTROL_DOWN, (LEDPixels){100, 100, 255});
+  buzzer_play_startup();
 
   return STATUS_CODE_OK;
 }

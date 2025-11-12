@@ -82,7 +82,7 @@ StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
 
   uint32_t clock_freq;
   /* Based on Pg 36 of datasheet. Clock tree */
-  if (timer == PWM_TIMER_2) {
+  if (timer == PWM_TIMER_2 || timer == PWM_TIMER_4) {
     clock_freq = HAL_RCC_GetPCLK1Freq();
   } else {
     clock_freq = HAL_RCC_GetPCLK2Freq();

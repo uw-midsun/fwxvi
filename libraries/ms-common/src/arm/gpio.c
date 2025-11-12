@@ -35,6 +35,7 @@ StatusCode gpio_init(void) {
 
 #ifdef STM32L4P5xx
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 #endif
 
   /* Disables the JTAG (Trace interface). Uses TRACE_MODE = 00, freeing up all pins */

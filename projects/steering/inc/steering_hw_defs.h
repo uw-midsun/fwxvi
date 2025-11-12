@@ -109,4 +109,12 @@
 #define STEERING_RGB_LIGHTS_PWM_PIN \
   { .port = GPIO_PORT_A, .pin = 2 }
 
+/************************************************************************************************
+ * Buzzer
+ ************************************************************************************************/
+
+/** @brief  PWM pin for the buzzer */
+#define STEERING_BUZZER_PWM_PIN \
+  { .port = GPIO_PORT_D, .pin = 12 }
+
 /** @} */

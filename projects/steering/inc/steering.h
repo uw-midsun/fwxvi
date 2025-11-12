@@ -29,7 +29,7 @@ struct ButtonManager;
 struct ButtonLEDManager;
 
 /** @brief  Steering button debounce period millisecond */
-#define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 2U
+#define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
 
 /** @brief  Maximum cruise control spesed in kilometers per hour*/
 #define STEERING_CRUISE_MAX_SPEED_KMH 80U

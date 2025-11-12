@@ -27,14 +27,9 @@ StatusCode button_init(Button *button, ButtonConfig *config) {
   button->config = config;
 
   gpio_init_pin(&config->gpio, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
-  delay_ms(config->debounce_ms);
 
-  GpioState startup_state = gpio_get_state(&config->gpio);
-
-  bool is_pressed = (startup_state == GPIO_STATE_LOW && button->config->active_low) || (startup_state == GPIO_STATE_HIGH && !button->config->active_low);
-
-  button->last_raw = is_pressed ? 1U : 0U;
-  button->state = is_pressed ? BUTTON_PRESSED : BUTTON_IDLE;
+  button->last_raw = 0U;
+  button->state = BUTTON_IDLE;
   button->counter = 0U;
 
   return STATUS_CODE_OK;
@@ -60,13 +55,13 @@ StatusCode button_update(Button *button) {
       ButtonState new_state = current_raw ? BUTTON_PRESSED : BUTTON_IDLE;
 
       if (new_state != button->state) {
-        if (new_state == BUTTON_PRESSED) {
-          if (button->config->callbacks.rising_edge_cb) {
-            button->config->callbacks.rising_edge_cb(button);
-          }
-        } else {
+        if (state == GPIO_STATE_LOW) {
           if (button->config->callbacks.falling_edge_cb) {
             button->config->callbacks.falling_edge_cb(button);
+          }
+        } else {
+          if (button->config->callbacks.rising_edge_cb) {
+            button->config->callbacks.rising_edge_cb(button);
           }
         }
 
