@@ -78,7 +78,7 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   adc_add_channel(&s_accel_pedal_gpio);
 
   dac_enable_channel(DAC_CHANNEL1);
-  dac_set_voltage(DAC_CHANNEL1, &s_accel_pedal_storage.calibration_data.lower_value);
+  dac_set_voltage(DAC_CHANNEL1, s_accel_pedal_storage.calibration_data.lower_value);
 
   OpampConfig config = {
     .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */

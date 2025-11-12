@@ -39,7 +39,12 @@
 /* STM32L4P5 uses DMAMUX - TIM2_CH3 is request ID 60 */
 #define LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
 #define LED_DMA_IRQn DMA1_Channel2_IRQn
-#define LED_DMAMUX_REQUEST_TIM2_CH3 DMA_REQUEST_TIM2_CH3  // TIM2_CH3 DMAMUX request ID for STM32L4P5
+
+#ifdef STM32L4P5xx
+#define LED_DMAMUX_REQUEST_TIM2_CH3 DMA_REQUEST_TIM2_CH3
+#else
+#define LED_DMAMUX_REQUEST_TIM2_CH3 0U
+#endif
 
 static uint32_t s_timer_arr = 0U;
 static uint16_t s_t1_high_ticks = 0U;
