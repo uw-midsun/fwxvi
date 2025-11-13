@@ -22,9 +22,9 @@
 #include "sd_card_interface.h"
 #include "sd_card_spi.h"
 
-SdSpiSettings sd_spi_test_settings {
+SdSpiSettings sd_spi_test_settings = {
   .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
-  .mode = SPI_MODE_3,
+  .mode = SD_SPI_MODE_1,
   .mosi = { .port = GPIO_PORT_B, .pin = 15 },
   .miso = { .port = GPIO_PORT_B, .pin = 14 },
   .sclk = { .port = GPIO_PORT_B, .pin = 13 },
@@ -34,14 +34,6 @@ SdSpiSettings sd_spi_test_settings {
 SdSpiPort spi = SD_SPI_PORT_2; 
 
 TASK(sd_card_api, TASK_STACK_1024) {
-  LOG_DEBUG("Initializing SD SPI port...\n");
-
-  if (sd_spi_init(spi, &sd_spi_test_settings) == STATUS_CODE_OK) {
-    LOG_DEBUG("SD SPI port initialized\n");
-  } else {
-    LOG_DEBUG("SD SPI port initialization failure\n");
-  }
-
   LOG_DEBUG("Linking driver...\n");
 
   if (sd_card_link_driver(spi, &sd_spi_test_settings) == STATUS_CODE_OK) {
