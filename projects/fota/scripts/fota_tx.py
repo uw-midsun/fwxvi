@@ -51,15 +51,15 @@ class FotaTx():
     def transmit(self) -> bool:
         """@brief start tranmission of anything in tx_queue"""
 
-        if not self.tx_queue:
+        if not self._tx_queue:
             print("Nothing in queue to transmit")
             return False
 
         print("Transmitting datagram")
 
         try:
-            for packet in self.tx_queue:
-                status = self.packet_sender.send(packet)
+            for packet in self._tx_queue:
+                status = self._packet_sender.send(packet)
 
                 if not status:
                     print("ERROR: could not send packet, or did not receive ack")
@@ -79,7 +79,7 @@ class FotaTx():
         expected_len = 1 + 1 + 4 + 256  # from ACK struct, see fota_ack.py
 
         while received_bytes < expected_len:
-            buffer += self.serial_receive.recieve()
+            buffer += self._serial_receive.recieve()
 
         if received_bytes == expected_len:
             return FotaAck(buffer)

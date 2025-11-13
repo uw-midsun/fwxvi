@@ -62,7 +62,6 @@ typedef enum FotaDatagramType {
  *
  * All fields are encoded in little-endian format.
 
-
 /**
  * @brief Structure representing the datagram header (In the payload)
  */
