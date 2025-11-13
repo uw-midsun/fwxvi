@@ -18,6 +18,8 @@
 #include "button_manager.h"
 
 static SteeringStorage *steering_storage;
+bool up_prev_state = false;
+bool down_prev_state = false;
 
 StatusCode cruise_control_init(SteeringStorage *storage) {
     if (storage == NULL) {
@@ -71,6 +73,10 @@ StatusCode cruise_control_run() {
         } else {
             steering_storage->cruise_control_enabled = true;
         }
+    } else if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED){
+        cruise_control_up_handler();
+    } else if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED){
+        cruise_control_down_handler();
     }
 
     return STATUS_CODE_OK;
