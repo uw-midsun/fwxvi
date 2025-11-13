@@ -16,6 +16,7 @@ BYTE_ORDER = 'little'
 CRC32_INST = CRC32(STANDARD_CRC32_POLY)
 
 # pylint: disable=R0902
+# pylint: disable=R0917
 class FotaDatagramHeader():
     """
     @brief Defined format for the datagram header
