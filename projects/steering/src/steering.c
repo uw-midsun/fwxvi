@@ -26,6 +26,7 @@
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "cruise_control.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -66,6 +67,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   buzzer_init();
   party_mode_init(steering_storage);
   display_init(steering_storage);
+  cruise_control_init(steering_storage);
 
   buzzer_play_startup();
 
