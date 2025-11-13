@@ -16,7 +16,7 @@
 #include "mpu.h"
 
 #define MPU_REGION_MIN_SIZE 32U
-#define IS_POWER_OF_TWO(x) (((x) != 0) && (((x) & ((x)-1U)) == 0))
+#define IS_POWER_OF_TWO(x) (((x) != 0) && (((x) & ((x) - 1U)) == 0))
 
 static StatusCode s_validate_region_settings(MPURegion *region, MPURegionSettings *settings) {
   /* Validate region number */

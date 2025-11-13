@@ -12,6 +12,7 @@
 
 from fota_ui import FotaUI
 
+
 def main():
     """
     @brief Main function for fota

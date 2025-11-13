@@ -27,9 +27,10 @@ class FotaAck:
     """
     @brief Acknowledge class object to parse receive packets
     """
+
     def __init__(self, raw_bytes: bytes):
         """
-        @brief Initialize the FOTA acknowledge 
+        @brief Initialize the FOTA acknowledge
         """
         expected_len = struct.calcsize(ACK_STRUCT_FORMAT)
         if len(raw_bytes) < expected_len:

@@ -18,7 +18,7 @@ ACK_TIMEOUT = 5.0
 
 
 class FotaTx():
-    """ 
+    """
     @brief Fota transmit class to send datagrams over XBee
     """
 

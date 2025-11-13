@@ -16,7 +16,7 @@ class CRC32:
     # pylint: disable=unused-argument
     def __init__(self, _poly):
         """
-        @brief Initialize the FOTA crc32 
+        @brief Initialize the FOTA crc32
         """
         for i in range(256):
             c = i << 24
@@ -26,7 +26,7 @@ class CRC32:
 
     def calculate(self, buf):
         """
-        @brief returns crc32 hash of the buffer 
+        @brief returns crc32 hash of the buffer
         """
         crc = 0xFFFFFFFF
         buf_len = len(buf)
@@ -48,6 +48,6 @@ class CRC32:
 
     def crc_int_to_bytes(self, i):
         """
-        @brief converts the into to bytes 
+        @brief converts the into to bytes
         """
         return [(i >> 24) & 0xFF, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF]

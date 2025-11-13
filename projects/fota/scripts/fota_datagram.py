@@ -21,6 +21,7 @@ class FotaDatagramHeader():
     @brief Defined format for the datagram header
     """
     # pylint: disable=too-many-arguments
+
     def __init__(self, target_node, length, num_packets, datagram_crc32, datagram_id):
         """@brief FotaDatagramHeader initiali"""
         self._target_node = target_node
@@ -35,7 +36,7 @@ class FotaDatagramHeader():
     def target_node(self):
         """@brief GETTER for target node """
         return self._target_node
-    
+
     @target_node.setter
     def target_node(self, new_val):
         """@brief SETTER for the target node ID of the datagram"""
@@ -45,7 +46,7 @@ class FotaDatagramHeader():
     def type(self):
         """@brief GETTER for the datagram type"""
         return self._type
-    
+
     @type.setter
     def type(self, new_val):
         """@brief SETTER for the datagram type"""
@@ -55,7 +56,7 @@ class FotaDatagramHeader():
     def length(self):
         """@brief GETTER for the total length (in bytes) of the datagram"""
         return self._length
-    
+
     @length.setter
     def length(self, new_val):
         """@brief SETTER for the total datagram length"""
@@ -65,7 +66,7 @@ class FotaDatagramHeader():
     def num_packets(self):
         """@brief GETTER for the number of packets in the datagram"""
         return self._num_packets
-    
+
     @num_packets.setter
     def num_packets(self, new_val):
         """@brief SETTER for the number of packets in the datagram"""
@@ -75,7 +76,7 @@ class FotaDatagramHeader():
     def datagram_crc32(self):
         """@brief GETTER for the CRC32 checksum of the datagram"""
         return self._datagram_crc32
-    
+
     @datagram_crc32.setter
     def datagram_crc32(self, new_val):
         """@brief SETTER for the datagram CRC32 checksum"""
@@ -85,7 +86,7 @@ class FotaDatagramHeader():
     def datagram_id(self):
         """@brief GETTER for the datagram ID"""
         return self._datagram_id
-    
+
     @datagram_id.setter
     def datagram_id(self, new_val):
         """@brief SETTER for the datagram ID"""
@@ -95,12 +96,11 @@ class FotaDatagramHeader():
     def header_packet(self):
         """@brief GETTER for the FotaPacket that represents the datagram header"""
         return self._header_packet
-    
+
     @header_packet.setter
     def header_packet(self, new_val):
         """@brief SETTER for the datagram header FotaPacket"""
         self._header_packet = new_val
-
 
     def create_header_packet(self, datagram_crc32):
         """@brief creates the header packet given the datagramcrc32 """
@@ -151,28 +151,25 @@ class FotaDatagram():
         self._packet_num = 0
         self._complete_send = False
 
-
     @property
     def datagram_header(self):
         """@brief GETTER for datagram header """
         return self._datagram_header
-    
+
     @property
     def packet_list(self):
         """@brief GETTER for the list of packets that make up the datagram"""
         return self._packet_list
-    
+
     @property
     def packet_num(self):
         """@brief GETTER for the total number of packets in the datagram"""
         return self._packet_num
-    
+
     @property
     def complete_send(self):
         """@brief GETTER to check if the datagram has been fully transmitted"""
         return self._complete_send
-
-    
 
     def bin_to_datagram(self, path, datagram_id, node_id) -> None:
         """@brief given a path, turn the binary into the datagram"""
