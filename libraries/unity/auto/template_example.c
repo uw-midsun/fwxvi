@@ -5,7 +5,7 @@
 #include "gpio.h"
 #include "interrupt.h"
 #include "log.h"
-#include "soft_timer.h"
+#include "software_timer.h"
 #include "task_test_helpers.h"
 #include "test_helpers.h"
 #include "unity.h"

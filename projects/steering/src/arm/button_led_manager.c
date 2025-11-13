@@ -1,9 +1,9 @@
 /************************************************************************************************
  * @file    button_led_manager.c
  *
- * @brief   Button LED manager source file - SK6812 Implementation
+ * @brief   Button LED manager source file - SK6812 Implementation (Fixed for STM32L4P5VET6)
  *
- * @date    2025-09-27
+ * @date    2025-11-10
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -25,8 +25,8 @@
 #include "steering_hw_defs.h"
 
 /* SK6812 timing parameters (from datasheet) */
-/** @brief  Total bit period = 1.25µs */
-#define SK6812_BIT_PERIOD_US 1.25f
+/** @brief  Total bit period = 1.2µs (corrected from 1.25µs) */
+#define SK6812_BIT_PERIOD_US 1.2f
 /** @brief  '1' high time = 0.6µs */
 #define SK6812_T1H_US 0.60f
 /** @brief  '0' high time = 0.3µs */
@@ -34,9 +34,17 @@
 /** @brief  Reset low time >= 80µs */
 #define SK6812_RESET_US 80.0f
 
+/* DMA configuration for STM32L4P5 - TIM2_CH3 uses DMA1 Channel2 */
+/* Note: Channel1 is occupied by ADC, so we use Channel2 */
+/* STM32L4P5 uses DMAMUX - TIM2_CH3 is request ID 60 */
 #define LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
 #define LED_DMA_IRQn DMA1_Channel2_IRQn
-#define LED_DMA_REQUEST DMA_REQUEST_7
+
+#ifdef STM32L4P5xx
+#define LED_DMAMUX_REQUEST_TIM2_CH3 DMA_REQUEST_TIM2_CH3
+#else
+#define LED_DMAMUX_REQUEST_TIM2_CH3 0U
+#endif
 
 static uint32_t s_timer_arr = 0U;
 static uint16_t s_t1_high_ticks = 0U;
@@ -57,12 +65,14 @@ void DMA1_Channel2_IRQHandler(void) {
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
+  /* Add a breakpoint here to verify callback is reached */
   if (htim == &s_tim2_handle) {
     HAL_TIM_PWM_Stop_DMA(&s_tim2_handle, TIM_CHANNEL_3);
     s_button_led_manager.is_transmitting = false;
     s_button_led_manager.needs_update = false;
   }
 }
+
 static void button_led_manager_compute_timing_from_clock(void) {
   /* Get PCLK1 and APB1 prescaler state */
   RCC_ClkInitTypeDef clkcfg;
@@ -77,57 +87,52 @@ static void button_led_manager_compute_timing_from_clock(void) {
     tim_clk = (uint64_t)pclk1 * 2U;
   }
 
-  /* Compute target tick counts for one SK6812 bit period */
-  float target_counts_f = (float)tim_clk * (SK6812_BIT_PERIOD_US * 1e-6f);
+  /* For SK6812: 1.2µs bit period
+   * Strategy: Use PSC=0 for maximum resolution
+   * ARR = (tim_clk * 1.2µs) - 1
+   *
+   * Example: If tim_clk = 80MHz:
+   * ARR = (80,000,000 * 1.2e-6) - 1 = 96 - 1 = 95
+   */
 
-  /* Find PSC and ARR such that (ARR+1) * (PSC+1) ~= target_counts_f */
   uint32_t psc = 0;
-  uint32_t arr = 0;
+  float target_counts = (float)tim_clk * SK6812_BIT_PERIOD_US * 1e-6f;
+  uint32_t arr = (uint32_t)(target_counts + 0.5f);  // Round
 
-  if (target_counts_f <= 1.0f) {
-    psc = 0;
-    arr = 1;
-  } else if (target_counts_f <= 65535.0f) {
-    psc = 0;
-    arr = (uint32_t)(target_counts_f + 0.5f); /* round */
+  if (arr > 0) {
+    arr = arr - 1U;
   } else {
-    /* Compute ceil(target_counts / 65536) - 1 for prescaler */
-    uint32_t needed = (uint32_t)((target_counts_f + 65535.0f) / 65536.0f);
-    if (needed == 0) needed = 1U;
-    psc = (needed > 0) ? (needed - 1U) : 0U;
-    float arr_f = ((float)tim_clk / (float)(psc + 1U)) * (SK6812_BIT_PERIOD_US * 1e-6f);
-    if (arr_f < 1.0f)
-      arr = 1U;
-    else if (arr_f > 65535.0f)
-      arr = 65535U;
-    else
-      arr = (uint32_t)(arr_f + 0.5f);
+    arr = 0;
   }
 
-  /* Ensure ARR fits in 16-bit */
-  if (arr == 0) arr = 1;
-  if (arr > 0xFFFFU) arr = 0xFFFFU;
-
-  uint32_t arr_for_tim = (arr > 0) ? (arr - 1U) : 0U;
+  /* Clamp to 32-bit (TIM2 is 32-bit timer) */
+  if (arr > 0xFFFFFFFFU) {
+    arr = 0xFFFFFFFFU;
+  }
 
   /* Program into TIM handle */
   s_tim2_handle.Init.Prescaler = psc;
-  s_tim2_handle.Init.Period = arr_for_tim;
+  s_tim2_handle.Init.Period = arr;
 
-  /* Set hardware registers directly */
-  __HAL_TIM_SET_PRESCALER(&s_tim2_handle, s_tim2_handle.Init.Prescaler);
-  __HAL_TIM_SET_AUTORELOAD(&s_tim2_handle, s_tim2_handle.Init.Period);
-  __HAL_TIM_SET_COUNTER(&s_tim2_handle, 0);
+  // /* Generate update event to load new values */
+  // s_tim2_handle.Instance->PSC = psc;
+  // s_tim2_handle.Instance->ARR = arr;
+  // s_tim2_handle.Instance->EGR = TIM_EGR_UG;
+  // s_tim2_handle.Instance->CNT = 0;
 
-  s_timer_arr = (uint32_t)s_tim2_handle.Init.Period;
+  s_timer_arr = arr;
 
   /* Compute high-time ticks for logical '1' and '0' */
   float counts_per_bit = (float)(s_timer_arr + 1U);
   s_t1_high_ticks = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
   s_t0_high_ticks = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
 
+  /* Ensure minimum values */
   if (s_t1_high_ticks == 0) s_t1_high_ticks = 1;
-  if (s_t0_high_ticks == 0) s_t0_high_ticks = 0;
+  if (s_t1_high_ticks > s_timer_arr) s_t1_high_ticks = s_timer_arr;
+
+  /* T0 can be 0 for very short low pulse */
+  if (s_t0_high_ticks > s_timer_arr) s_t0_high_ticks = s_timer_arr / 4;
 
   /* Reset slots - number of bit-periods to hold line low (~80µs) */
   s_reset_slots = (uint16_t)((SK6812_RESET_US / SK6812_BIT_PERIOD_US) + 0.5f);
@@ -144,6 +149,9 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   /* Enable clocks */
   __HAL_RCC_TIM2_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
+#ifdef STM32L4P5xx
+  __HAL_RCC_DMAMUX1_CLK_ENABLE();
+#endif
 
   /* Compute timing parameters */
   button_led_manager_compute_timing_from_clock();
@@ -173,14 +181,12 @@ static StatusCode button_led_manager_init_timer_dma(void) {
 
   /* DMA initialization */
   s_dma_tim2_ch3_handle.Instance = LED_DMA_CHANNEL_INSTANCE;
-#if defined(DMA_REQUEST_0) || defined(DMA_REQUEST_1) || defined(DMA_REQUEST_8)
-  s_dma_tim2_ch3_handle.Init.Request = LED_DMA_REQUEST;
-#endif
+  s_dma_tim2_ch3_handle.Init.Request = LED_DMAMUX_REQUEST_TIM2_CH3;
   s_dma_tim2_ch3_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
   s_dma_tim2_ch3_handle.Init.PeriphInc = DMA_PINC_DISABLE;
   s_dma_tim2_ch3_handle.Init.MemInc = DMA_MINC_ENABLE;
-  s_dma_tim2_ch3_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-  s_dma_tim2_ch3_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+  s_dma_tim2_ch3_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+  s_dma_tim2_ch3_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
   s_dma_tim2_ch3_handle.Init.Mode = DMA_NORMAL;
   s_dma_tim2_ch3_handle.Init.Priority = DMA_PRIORITY_HIGH;
 
@@ -236,7 +242,7 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
   s_button_led_manager.needs_update = false;
   s_button_led_manager.is_transmitting = false;
 
-  /* Initialize GPIO pin for PWM output */
+  /* Initialize GPIO pin for PWM output - TIM2_CH3 can be PA2 or PB10 */
   StatusCode status = gpio_init_pin_af(&s_button_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);
   if (status != STATUS_CODE_OK) {
     return status;
@@ -275,7 +281,10 @@ StatusCode button_led_manager_update(void) {
   /* Start DMA transmission */
   steering_storage->button_led_manager->is_transmitting = true;
 
-  if (HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length) != HAL_OK) {
+  /* CRITICAL: Cast to uint32_t* for CCR register (16-bit values but 32-bit register access) */
+  HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
+
+  if (hal_status != HAL_OK) {
     steering_storage->button_led_manager->is_transmitting = false;
     return STATUS_CODE_INTERNAL_ERROR;
   }
