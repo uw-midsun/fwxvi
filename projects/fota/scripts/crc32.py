@@ -20,7 +20,7 @@ class CRC32:
         """
         for i in range(256):
             c = i << 24
-            for j in range(8):
+            for _ in range(8):
                 c = (c << 1) ^ _poly if (c & 0x80000000) else c << 1
             self.crc_table[i] = c & 0xFFFFFFFF
 

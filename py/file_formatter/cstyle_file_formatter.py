@@ -1,4 +1,4 @@
-# @file    cstyle_file_formatter.py
+## @file    cstyle_file_formatter.py
 #  @date    2025-04-20
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   C style file formatter for [.c, .h] files
@@ -96,8 +96,7 @@ class CStyleFileFormatter(TemplateFileFormatter):
                         data["includes"]["categories"][category["name"]].append(line)
                         break
 
-            if match:
-                = re.search(defgroup_pattern, line):
+            if match := re.search(defgroup_pattern, line):
                 data["doxygen_groups"]["defgroup_matches"].append((match.group(1), i))
             if re.search(group_end_pattern, line):
                 data["doxygen_groups"]["end_count"] += 1
@@ -306,7 +305,6 @@ class CStyleFileFormatter(TemplateFileFormatter):
         }
         for line in header_lines:
             for key, pattern in patterns.items():
-                if match:
-                    = re.search(pattern, line):
+                if match := re.search(pattern, line):
                     info[key] = match.group(1).strip()
         return info
