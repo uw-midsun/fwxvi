@@ -13,23 +13,32 @@
 
 /* Intra-component Headers */
 #include "range_estimator.h"
+
 #include "steering_getters.h"
 
 #define MIN_CELL_VOLTAGE 2500.0f
+
+/* Measured from FGSP 2025 */
 #define VOLTAGE_DROP_PER_LAP 24.02f
-#define DISTANCE_PER_LAP_KM 5.07f //track is 3.15miles which is 5.07km
+
+/* Track is 3.15 miles which is 5.07 kilometers */
+#define DISTANCE_PER_LAP_KM 5.07f
 
 float estimate_remaining_range_km(void) {
-    float cell_voltage = get_battery_stats_B_min_cell_voltage();
+  float cell_voltage = get_battery_stats_B_min_cell_voltage();
 
-    if (cell_voltage < MIN_CELL_VOLTAGE) {
-        return 0.0f;
-    }
-    float voltage_remaining = cell_voltage - MIN_CELL_VOLTAGE; //calculate remaining voltage
+  if (cell_voltage < MIN_CELL_VOLTAGE) {
+    return 0.0f;
+  }
 
-    float laps_remaining = voltage_remaining / VOLTAGE_DROP_PER_LAP; //calculate remaining laps
+  /* Calculate remaining voltage */
+  float voltage_remaining = cell_voltage - MIN_CELL_VOLTAGE;
 
-    float km_remaining = laps_remaining * DISTANCE_PER_LAP_KM; //calculate remaining km
+  /* Calculate remaining laps */
+  float laps_remaining = voltage_remaining / VOLTAGE_DROP_PER_LAP;
 
-    return km_remaining;
+  /* Calclulate remaining kilometers */
+  float km_remaining = laps_remaining * DISTANCE_PER_LAP_KM;
+
+  return km_remaining;
 }
