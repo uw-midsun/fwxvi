@@ -1,6 +1,8 @@
 from scons.common import parse_config
 from pathlib import Path
-import os 
+import os
+import subprocess
+import shutil
 
 Import("VARS")
 
@@ -368,6 +370,12 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
     incs += map(ROOT.Dir, config.get("include", []))
     srcs += map(OBJ_DIR.File, config.get("sources", []))
 
+    # include_path relative to where config.json is
+    for p in config.get("include_path", []):
+        base = ROOT.Dir(p)
+        incs += inc(base)
+        srcs += src(base)
+
     lib_deps = get_lib_deps(entry)
 
     build_env = env
@@ -386,7 +394,7 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
         print(f'Project: {entry} is only for ARM devices. Cannot build x86 version.')
     else:
         target = build_env.Program(
-            target=BIN_DIR.File(entry.path),
+            target=BIN_DIR.File(entry.path + '.elf' if PLATFORM == 'arm' else entry.path),
             source=srcs,
             CPPPATH=build_env['CPPPATH'] + incs + lib_incs,
             # link each library twice so that dependency cycles are resolved
@@ -400,9 +408,7 @@ for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
 
     # .bin file only required for arm, not x86
     if PLATFORM == 'arm':
-        target = env.Bin(target=BIN_DIR.File(entry.path + '.bin'),
-                         source=target)
-    
+        target = env.Bin(target=BIN_DIR.File(entry.path + '.bin'), source=target)
 
     # Create an alias for the entry so we can do `scons leds` and it Just Works
     Alias(entry.path, target)
@@ -414,52 +420,72 @@ if PLATFORM == 'x86':
 ###########################################################
 # MPXE GUI BUILD
 ###########################################################
+def check_qt6_installed():
+    try:
+        subprocess.run(
+            ["pkg-config", "--exists", "Qt6Core"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+    except FileNotFoundError:
+        # pkg-config itself not found
+        print("pkg-config not found on this system.")
+        return False
+
 qt6dir = os.environ.get("QT6DIR", "/usr/lib/qt6")
-qtEnv = cxx_env.Clone(QT6DIR=qt6dir, tools=['gui_build_tool'], toolpath=['#scons'])
-qtEnv.EnableQt6Modules(['QtCore', 'QtGui', 'QtWidgets'])
-qtEnv.ParseConfig('pkg-config --cflags --libs Qt6Core Qt6Gui Qt6Widgets')
-qtEnv['QT6_MOCCPPPATH'] = qtEnv['CPPPATH']
+if check_qt6_installed():
+    print("Qt6 detected, proceeding with Qt6 build.")
+    qtEnv = cxx_env.Clone(QT6DIR=qt6dir, tools=['gui_build_tool'], toolpath=['#scons'])
+    qtEnv.EnableQt6Modules(['QtCore', 'QtGui', 'QtWidgets'])
+    qtEnv.ParseConfig('pkg-config --cflags --libs Qt6Core Qt6Gui Qt6Widgets')
+    qtEnv['QT6_MOCCPPPATH'] = qtEnv['CPPPATH']
 
-GUI_SRC = ROOT.Dir('mpxe').Dir('server').Dir('app').Dir('gui')
-GUI_OBJ = OBJ_DIR.Dir('mpxe_gui')
-VariantDir(GUI_OBJ, GUI_SRC, duplicate=0)
+    GUI_SRC = ROOT.Dir('mpxe').Dir('server').Dir('app').Dir('gui')
+    GUI_OBJ = OBJ_DIR.Dir('mpxe_gui')
+    VariantDir(GUI_OBJ, GUI_SRC, duplicate=0)
 
-def collect_variant(src_root, var_root, patterns):
-    """Return VARIANT File nodes for sources under src_root matching patterns."""
-    base = Path(src_root.abspath)
-    out = []
-    for pat in patterns:
-        for p in base.rglob(pat):
-            if not p.is_file():
-                continue
-            sp = str(p)
-            rel = str(Path(sp).relative_to(base))
-            out.append(var_root.File(rel))
-    # de-dup while preserving order
-    return list(dict.fromkeys(out))
+    def collect_variant(src_root, var_root, patterns):
+        """Return VARIANT File nodes for sources under src_root matching patterns."""
+        base = Path(src_root.abspath)
+        out = []
+        for pat in patterns:
+            for p in base.rglob(pat):
+                if not p.is_file():
+                    continue
+                sp = str(p)
+                rel = str(Path(sp).relative_to(base))
+                out.append(var_root.File(rel))
+        # de-dup while preserving order
+        return list(dict.fromkeys(out))
 
-gui_cc = collect_variant(GUI_SRC, GUI_OBJ, ('*.cc', '*.cpp'))
+    gui_cc = collect_variant(GUI_SRC, GUI_OBJ, ('*.cc', '*.cpp'))
 
-# Keep main.cc first if present
-main_src = GUI_OBJ.File('main.cc')
-if main_src in gui_cc:
-    gui_cc = [main_src] + [n for n in gui_cc if n is not main_src]
+    # Keep main.cc first if present
+    main_src = GUI_OBJ.File('main.cc')
+    if main_src in gui_cc:
+        gui_cc = [main_src] + [n for n in gui_cc if n is not main_src]
 
-# Includes: variant (generated) + source (handwritten)
-qtEnv.Append(CPPPATH=[
-    GUI_OBJ.Dir('utils').Dir('inc'),
-    GUI_OBJ.Dir('models').Dir('inc'),
-    GUI_OBJ.Dir('ui').Dir('inc'),
-    GUI_SRC.Dir('utils').Dir('inc'),
-    GUI_SRC.Dir('models').Dir('inc'),
-    GUI_SRC.Dir('ui').Dir('inc'),
-])
+    # Includes: variant (generated) + source (handwritten)
+    qtEnv.Append(CPPPATH=[
+        GUI_OBJ.Dir('utils').Dir('inc'),
+        GUI_OBJ.Dir('models').Dir('inc'),
+        GUI_OBJ.Dir('ui').Dir('inc'),
+        GUI_SRC.Dir('utils').Dir('inc'),
+        GUI_SRC.Dir('models').Dir('inc'),
+        GUI_SRC.Dir('ui').Dir('inc'),
+    ])
 
-mpxe_gui = qtEnv.Program(
-    target=BIN_DIR.Dir('projects').File('mpxe_gui'),
-    source=gui_cc
-)
-Alias('mpxe_gui', mpxe_gui)
+    mpxe_gui = qtEnv.Program(
+        target=BIN_DIR.Dir('projects').File('mpxe_gui'),
+        source=gui_cc
+    )
+    Alias('mpxe_gui', mpxe_gui)
+else:
+    print("Qt6 not found. Skipping Qt6-related build steps.")
 
 ###########################################################
 # Python

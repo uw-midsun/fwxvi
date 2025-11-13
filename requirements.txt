@@ -10,4 +10,3 @@ pyserial
 scons
 sv-ttk
 pandas
-scons_compiledb
