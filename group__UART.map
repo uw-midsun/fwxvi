@@ -1,0 +1,4 @@
+<map id="UART" name="UART">
+<area shape="rect" id="node1" href="$group__FOTA.html" title="Firmware Over the Air (FOTA) Update system." alt="" coords="192,7,248,33"/>
+<area shape="rect" id="node2" title="UART library." alt="" coords="5,7,63,33"/>
+</map>
