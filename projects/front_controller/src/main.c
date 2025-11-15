@@ -16,12 +16,18 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
+#include "power_control_outputs.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller.h"
+#include "power_control_manager.h"
+#include "power_sense.h"
 #include "ws22_motor_can.h"
+
+static uint8_t num_output_group = 0;
+static bool state = true;
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -37,17 +43,30 @@ void run_1000hz_cycle() {
 
   adc_run();
   accel_pedal_run();
-
   run_can_tx_fast();
   ws22_motor_can_transmit_drive_command();
 }
 
 void run_10hz_cycle() {
-  run_can_tx_medium();
+  power_sense_run(OUTPUT_GROUP_ALL);
+
+  power_control_set_output_group(num_output_group, state);
+
+  // cycle through valid output groups
+  if (state == true) {
+    state = false;
+  } else {
+    num_output_group++;
+    if (num_output_group >= NUM_OUTPUT_GROUPS) {
+      num_output_group %= NUM_OUTPUT_GROUPS;
+    }
+    state = true;
+  }
+  // run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-  run_can_tx_slow();
+  // run_can_tx_slow();
 }
 
 #ifdef MS_PLATFORM_X86

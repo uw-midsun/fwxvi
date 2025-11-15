@@ -38,7 +38,7 @@ uint16_t power_sense_high_current_calc(uint16_t sampledvoltage);  // discord pho
 uint8_t channel;
 uint16_t sampled_voltage;
 
-extern uint16_t current_low_readings[NUM_SENSE_CH];
-extern uint16_t current_hi_readings[NUM_SENSE_CH];
+uint16_t current_low_readings[NUM_SENSE_CH];
+uint16_t current_hi_readings[NUM_SENSE_CH];
 
 /** @} */

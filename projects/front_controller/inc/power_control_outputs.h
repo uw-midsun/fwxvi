@@ -27,8 +27,7 @@
 // Enum for the output groups
 
 typedef enum {
-  HEADLIGHT = 0,
-  LEFT_SIG,
+  LEFT_SIG = 0,
   RIGHT_SIG,
   BRAKE_LIGHT,
   BPS_LIGHT,
@@ -38,7 +37,6 @@ typedef enum {
   STEERING,
   HORN,
   SPARE_1,
-  SPARE_2,
   NUM_OUTPUTS,
 } OutputId;
 
