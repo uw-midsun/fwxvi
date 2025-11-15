@@ -32,13 +32,10 @@ void power_sense_init();
 void power_sense_run(OutputGroup group);
 
 // Helper functions to do the calculations
-uint16_t power_sense_lo_cuarrent_calc(uint16_t sampledvoltage);
-uint16_t power_sense_high_current_calc(uint16_t sampledvoltage);  // discord photo sent earlier measuring input current into pcb
+uint16_t power_sense_lo_current_calc(uint16_t sampled_voltage);
+uint16_t power_sense_high_current_calc(uint16_t sampled_voltage);  // discord photo sent earlier measuring input current into pcb
 
-uint8_t channel;
-uint16_t sampled_voltage;
-
-uint16_t current_low_readings[NUM_SENSE_CH];
-uint16_t current_hi_readings[NUM_SENSE_CH];
+static uint16_t current_low_readings[NUM_SENSE_CH];
+static uint16_t current_hi_readings[NUM_SENSE_CH];
 
 /** @} */

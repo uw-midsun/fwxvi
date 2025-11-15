@@ -36,13 +36,13 @@ static const GpioAddress MUX_OUT = FRONT_CONTROLLER_MUX_OUTPUT;
 // use the original array to loop over mux select pins
 
 // Helper functions to do the calculations
-uint16_t power_sense_lo_current_calc(uint16_t sampledvoltage) {
+uint16_t power_sense_lo_current_calc(uint16_t sampled_voltage) {
   uint16_t lo_resistance = 5600;
   sampled_voltage = (uint16_t)(((float)sampled_voltage / (float)lo_resistance) * (float)kcs);
   return sampled_voltage;
 }
 
-uint16_t power_sense_high_current_calc(uint16_t sampledsvoltage) {
+uint16_t power_sense_high_current_calc(uint16_t sampled_voltage) {
   uint16_t hi_resistance = 1210;
   sampled_voltage = (uint16_t)(((float)sampled_voltage / (float)hi_resistance) * (float)kcs);
   return sampled_voltage;
@@ -99,6 +99,9 @@ void power_sense_run(OutputGroup group) {
     }
 
     adc_run();
+
+    uint16_t sampled_voltage;
+
     StatusCode sc = adc_read_converted(&MUX_OUT, &sampled_voltage);
     if (sc != STATUS_CODE_OK) {
       LOG_DEBUG("ADC read failed with exit code: %d", sc);
