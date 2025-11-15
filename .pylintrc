@@ -17,7 +17,8 @@ disable=redefined-outer-name,
         import-error,
         unused-argument,
         wildcard-import,
-        missing-module-docstring
+        missing-module-docstring,
+        too-many-arguments
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

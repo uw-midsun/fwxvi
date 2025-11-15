@@ -31,8 +31,7 @@
 /** @brief  NACK defined as 1 */
 #define NACK 1U
 
-/** @brief  NACK defined as 1 */
-
+/** @brief Max message size of datagram */
 #define DGRAM_MAX_MSG_SIZE 8
 
 /**
@@ -46,7 +45,7 @@ typedef enum {
   BOOTLOADER_CAN_START_ID,                 /**< Start DFU command */
   BOOTLOADER_CAN_JUMP_BOOTLOADER ,         /**< Jump to bootloader command */
   BOOTLOADER_CAN_PING_METADATA_ID,         /**< Incoming ping metadata */
-  BOOTLOADER_CAN_PING_DATA_ID               /**< Incoming ping data */
+  BOOTLOADER_CAN_PING_DATA_ID,             /**< Incoming ping data */
 } BootloaderCanID;
 
 /**

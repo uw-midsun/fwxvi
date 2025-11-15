@@ -17,9 +17,13 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "button_led_manager.h"
 #include "button_manager.h"
+#include "buzzer.h"
+#include "display.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
+#include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
 
@@ -54,11 +58,16 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   steering_storage = storage;
   steering_storage->config = config;
 
-  log_init();
   can_init(&s_can_storage, &s_can_settings);
   drive_state_manager_init();
   lights_signal_manager_init();
-  button_manager_init(&s_button_manager);
+  button_led_manager_init(steering_storage);
+  button_manager_init(steering_storage);
+  buzzer_init();
+  party_mode_init(steering_storage);
+  display_init(steering_storage);
+
+  buzzer_play_startup();
 
   return STATUS_CODE_OK;
 }

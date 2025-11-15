@@ -28,7 +28,7 @@
 %
 % =========================================================================
 
-function H = ssm_output_jacobian(x, ~, params)
+function H = ssm_output_jacobian(x, ~, params) %#codegen
     soc = x(1);
     eps_soc = 1e-5;
 

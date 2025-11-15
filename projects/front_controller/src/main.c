@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "can.h"
 #include "gpio.h"
 #include "log.h"
@@ -18,6 +19,7 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "accel_pedal.h"
 #include "front_controller.h"
 #include "ws22_motor_can.h"
 
@@ -32,6 +34,9 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
+
+  adc_run();
+  accel_pedal_run();
 
   run_can_tx_fast();
   ws22_motor_can_transmit_drive_command();
