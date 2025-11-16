@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the Can Message Handler function
  *
- * @date   2025-10-01
+ * @date   2025-11-16
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -972,17 +972,82 @@ struct slow_one_shot_msg {
   }
 };
 /**
- * @brief   Storage class for steering_state CAN message
+ * @brief   Storage class for steering_buttons CAN message
  */
-struct steering_state {
-  uint32_t target_velocity; /**< CAN signal 'target_velocity' defined in *.yaml */
-  uint8_t drive_state;      /**< CAN signal 'drive_state' defined in *.yaml */
-  uint8_t cruise_control;   /**< CAN signal 'cruise_control' defined in *.yaml */
-  uint8_t regen_braking;    /**< CAN signal 'regen_braking' defined in *.yaml */
-  uint8_t hazard_enabled;   /**< CAN signal 'hazard_enabled' defined in *.yaml */
+struct steering_buttons {
+  uint8_t drive_state;    /**< CAN signal 'drive_state' defined in *.yaml */
+  uint8_t cruise_control; /**< CAN signal 'cruise_control' defined in *.yaml */
+  uint8_t regen_braking;  /**< CAN signal 'regen_braking' defined in *.yaml */
+  uint8_t hazard_enabled; /**< CAN signal 'hazard_enabled' defined in *.yaml */
+  uint8_t horn_enabled;   /**< CAN signal 'horn_enabled' defined in *.yaml */
 
   /**
-   * @brief   Decode new CAN data and update the storage for steering_state
+   * @brief   Decode new CAN data and update the storage for steering_buttons
+   * @param   data Pointer to the CAN message to be decoded
+   */
+  void decode(const uint8_t *data) {
+    uint64_t raw_val = 0U;
+    uint8_t start_byte = 0U;
+    {
+      raw_val = 0U;
+      start_byte = 0;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+
+      drive_state = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 1;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+
+      cruise_control = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 2;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+
+      regen_braking = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 3;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+
+      hazard_enabled = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 4;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+
+      horn_enabled = raw_val;
+    }
+  }
+
+  /**
+   * @brief   Create a JSON object for steering_buttons using the storage
+   */
+  nlohmann::json to_json() const {
+    return { { "drive_state", drive_state }, { "cruise_control", cruise_control }, { "regen_braking", regen_braking }, { "hazard_enabled", hazard_enabled }, { "horn_enabled", horn_enabled } };
+  }
+
+  /**
+   * @brief   Get the message name: steering_buttons
+   * @return  Returns the message name
+   */
+  std::string get_message_name() const {
+    return "steering_buttons";
+  }
+};
+/**
+ * @brief   Storage class for steering_target_velocity CAN message
+ */
+struct steering_target_velocity {
+  uint32_t target_velocity; /**< CAN signal 'target_velocity' defined in *.yaml */
+
+  /**
+   * @brief   Decode new CAN data and update the storage for steering_target_velocity
    * @param   data Pointer to the CAN message to be decoded
    */
   void decode(const uint8_t *data) {
@@ -998,49 +1063,21 @@ struct steering_state {
 
       target_velocity = raw_val;
     }
-    {
-      raw_val = 0U;
-      start_byte = 4;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-
-      drive_state = raw_val;
-    }
-    {
-      raw_val = 0U;
-      start_byte = 5;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-
-      cruise_control = raw_val;
-    }
-    {
-      raw_val = 0U;
-      start_byte = 6;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-
-      regen_braking = raw_val;
-    }
-    {
-      raw_val = 0U;
-      start_byte = 7;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-
-      hazard_enabled = raw_val;
-    }
   }
 
   /**
-   * @brief   Create a JSON object for steering_state using the storage
+   * @brief   Create a JSON object for steering_target_velocity using the storage
    */
   nlohmann::json to_json() const {
-    return { { "target_velocity", target_velocity }, { "drive_state", drive_state }, { "cruise_control", cruise_control }, { "regen_braking", regen_braking }, { "hazard_enabled", hazard_enabled } };
+    return { { "target_velocity", target_velocity } };
   }
 
   /**
-   * @brief   Get the message name: steering_state
+   * @brief   Get the message name: steering_target_velocity
    * @return  Returns the message name
    */
   std::string get_message_name() const {
-    return "steering_state";
+    return "steering_target_velocity";
   }
 };
 
@@ -1149,8 +1186,14 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_STATE: {
-      steering_state *message = new steering_state();
+    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS: {
+      steering_buttons *message = new steering_buttons();
+      message->decode(data);
+      m_canInfo[message->get_message_name()] = message->to_json();
+      break;
+    }
+    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY: {
+      steering_target_velocity *message = new steering_target_velocity();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;

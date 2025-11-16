@@ -6,7 +6,27 @@
 
 ---
 Messages:
-  steering_state: 
+  steering_buttons:
+    id: 6
+    critical: true
+    cycle: "medium"
+    target:
+      telemetry:
+        watchdog: 0
+      rear_controller:
+        watchdog: 0
+    signals:
+      drive_state:
+        length: 8
+      cruise_control:
+        length: 8
+      regen_braking:
+        length: 8
+      hazard_enabled:
+        length: 8
+      horn_enabled:
+        length: 8
+  steering_target_velocity:
     id: 5
     critical: true
     cycle: "medium"
@@ -18,11 +38,3 @@ Messages:
     signals:
       target_velocity:
         length: 32
-      drive_state:
-        length: 8
-      cruise_control:
-        length: 8
-      regen_braking:
-        length: 8
-      hazard_enabled:
-        length: 8
