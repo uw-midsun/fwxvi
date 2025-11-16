@@ -27,9 +27,9 @@
 StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings);
 
 #define DELTA_T 0.1f
-#define PI 3.14159265358
-#define GYRO_MEAN_ERROR PI * (5.0f / 180.0f)
-#define BETA sqrt(3.0f/4.0f) * GYRO_MEAN_ERROR
+#define PI 3.14159265358f
+#define GYRO_MEAN_ERROR (PI * (5.0f / 180.0f))
+#define BETA 0.8660254f * GYRO_MEAN_ERROR
 
 #include <math.h>
 #include <stdio.h>
@@ -84,9 +84,7 @@ static inline void quat_Normalization(struct quaternion * q){
     q -> q4 /= norm;
 }
 
-static inline void printQuaternion (struct quaternion q){
-    printf("%f %f %f %f\n", q.q1, q.q2, q.q3, q.q4);
-}
+
 void imu_filter(float ax, float ay, float az, float gx, float gy, float gz);
 void eulerAngles(struct quaternion q, float* roll, float* pitch, float* yaw);
 

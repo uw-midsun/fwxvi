@@ -54,13 +54,22 @@ void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
   bmi323_update(&bmi323_storage);
-  LOG_DEBUG("BMI323 ACCEL - x: %d%%, y: %d%%, z: %d%%\r\n", (int)(bmi323_storage.accel.x * 100), (int)(bmi323_storage.accel.y * 100), (int)(bmi323_storage.accel.z * 100));
+  // LOG_DEBUG("BMI323 ACCEL - x: %d%%, y: %d%%, z: %d%%\r\n", (int)(bmi323_storage.accel.x * 100), (int)(bmi323_storage.accel.y * 100), (int)(bmi323_storage.accel.z * 100));
+  // delay_ms(10);
+  
   imu_filter(bmi323_storage.accel.x, bmi323_storage.accel.y, bmi323_storage.accel.z, bmi323_storage.gyro.x, bmi323_storage.gyro.y, bmi323_storage.gyro.z);
   eulerAngles(q_est, &roll, &pitch, &yaw);
-  LOG_DEBUG("BMI323 ORIENTATION DEGREES - roll: %d%%, ptich: %d%%, yaw: %d%%\r\n", (int)(roll), (int)(pitch), (int)(yaw));
+  // LOG_DEBUG("BMI323 ORIENTATION DEGREES - roll: %d%%, ptich: %d%%, yaw: %d%%\r\n", (int)(roll), (int)(pitch), (int)(yaw));
 }
 
-void run_1hz_cycle() {}
+void run_1hz_cycle() {
+  LOG_DEBUG("BMI323 ACCEL - x: %d%%, y: %d%%, z: %d%%\r\n", (int)(bmi323_storage.accel.x * 100), (int)(bmi323_storage.accel.y * 100), (int)(bmi323_storage.accel.z * 100));
+  delay_ms(10);
+  LOG_DEBUG("BMI323 GYRO - x: %d%%, y: %d%%, z: %d%%\r\n", (int)(bmi323_storage.gyro.x), (int)(bmi323_storage.gyro.y), (int)(bmi323_storage.gyro.z));
+  delay_ms(10);
+  
+  LOG_DEBUG("BMI323 ORIENTATION DEGREES - roll: %d%%, ptich: %d%%, yaw: %d%%\r\n", (int)(roll), (int)(pitch), (int)(yaw));
+}
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
