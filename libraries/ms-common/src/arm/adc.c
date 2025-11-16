@@ -126,11 +126,11 @@ StatusCode adc_init(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  for (uint8_t i = 0; i < NUM_ADC_CHANNELS; i++) {
-    if (s_check_channel_enabled(i) == STATUS_CODE_OK) {
+  for (uint8_t channel = 0; channel < NUM_ADC_CHANNELS; channel++) {
+    if (s_check_channel_enabled(channel) == STATUS_CODE_OK) {
       ADC_ChannelConfTypeDef channel_conf = { 0 };
-      channel_conf.Channel = i;
-      channel_conf.Rank = i + 1U;
+      channel_conf.Channel = channel;
+      channel_conf.Rank = s_adc_ranks[channel];
       channel_conf.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
       channel_conf.SingleDiff = ADC_SINGLE_ENDED;
       channel_conf.OffsetNumber = ADC_OFFSET_NONE;
@@ -190,8 +190,8 @@ StatusCode adc_add_channel(GpioAddress *address) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
-  if (++s_adc_status.active_channels < NUM_ADC_CHANNELS) {
-    s_adc_ranks[channel] = s_adc_status.active_channels;
+  if (s_adc_status.active_channels < NUM_ADC_CHANNELS) {
+    s_adc_ranks[channel] = ++s_adc_status.active_channels;
   } else {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
