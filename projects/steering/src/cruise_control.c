@@ -20,6 +20,7 @@
 static SteeringStorage *steering_storage;
 bool up_prev_state = false;
 bool down_prev_state = false;
+int counter = 0;
 
 StatusCode cruise_control_init(SteeringStorage *storage) {
     if (storage == NULL) {
@@ -60,8 +61,6 @@ StatusCode cruise_control_up_handler() {
 
 StatusCode cruise_control_run() {
 
-    int counter;
-
     if (steering_storage == NULL) {
         return STATUS_CODE_UNINITIALIZED;
     }
@@ -98,11 +97,11 @@ StatusCode cruise_control_run() {
             if(down_prev_state){
                 counter++;
                 for(int i = 0; i < counter; i++){
-                    cruise_control_up_handler();
+                    cruise_control_down_handler();
                 }
             } else {
                 counter = 0;
-                cruise_control_up_handler();
+                cruise_control_down_handler();
             }
         }
 
