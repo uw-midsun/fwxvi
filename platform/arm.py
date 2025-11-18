@@ -176,7 +176,7 @@ def create_arm_env(hardware, flash_type='default', build_config='debug'):
         LIBS=['m'],
     )
 
-bin_builder = Builder(action='{} -O binary $SOURCE $TARGET'.format(objcopy))
+bin_builder = Builder(action='{} -O binary -R .eh_frame $SOURCE $TARGET'.format(objcopy))
 arm_env = create_arm_env(HARDWARE_TYPE, FLASH_TYPE, BUILD_CONFIG)
 arm_env.Append(BUILDERS={'Bin': bin_builder})
 
