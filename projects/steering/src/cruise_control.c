@@ -35,7 +35,7 @@ StatusCode cruise_control_down_handler() {
         return STATUS_CODE_UNINITIALIZED;
     }
 
-    if (steering_storage->cruise_control_enabled) {
+    if (steering_storage->cruise_control_enabled && steering_storage->cruise_control_target_speed_kmh > steering_storage->config->cruise_min_speed_kmh) {
         steering_storage->cruise_control_target_speed_kmh--;
     } else {
         return STATUS_CODE_RESOURCE_EXHAUSTED;
@@ -49,7 +49,7 @@ StatusCode cruise_control_up_handler() {
         return STATUS_CODE_UNINITIALIZED;
     }
 
-    if (steering_storage->cruise_control_enabled) {
+    if (steering_storage->cruise_control_enabled && steering_storage->cruise_control_target_speed_kmh < steering_storage->config->cruise_max_speed_kmh) {
         steering_storage->cruise_control_target_speed_kmh++;
     } else {
         return STATUS_CODE_RESOURCE_EXHAUSTED;
@@ -59,6 +59,9 @@ StatusCode cruise_control_up_handler() {
 }
 
 StatusCode cruise_control_run() {
+
+    int counter;
+
     if (steering_storage == NULL) {
         return STATUS_CODE_UNINITIALIZED;
     }
@@ -74,13 +77,48 @@ StatusCode cruise_control_run() {
             LOG_DEBUG("Cruise control enabled\r\n");
             steering_storage->cruise_control_enabled = true;
         }
+    
+    
     } else if (steering_storage->cruise_control_enabled) {
+        
+        
+        if(steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED){
+            if(up_prev_state){
+                counter++;
+                for(int i = 0; i < counter; i++){
+                    cruise_control_up_handler();
+                }
+            } else {
+                counter = 0;
+                cruise_control_up_handler();
+            }
+        } 
+
+        else if(steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED){
+            if(down_prev_state){
+                counter++;
+                for(int i = 0; i < counter; i++){
+                    cruise_control_up_handler();
+                }
+            } else {
+                counter = 0;
+                cruise_control_up_handler();
+            }
+        }
+
+        up_prev_state = (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED);
+        down_prev_state = (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED);
+
+        /*
             if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED) {
             cruise_control_up_handler();
         } else if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED) {
             cruise_control_down_handler();
         }
+        */
+
     }
+    
 
     return STATUS_CODE_OK;
 }
