@@ -191,12 +191,17 @@ static void horn_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
+
+set_steering_buttons_horn_enabled(false);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
+
+set_steering_buttons_horn_enabled(true);
 }
 
 /************************************************************************************************
