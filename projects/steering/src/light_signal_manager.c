@@ -48,12 +48,12 @@ void lights_signal_manager_update(void) {
 
   switch (current_request) {
     case LIGHTS_SIGNAL_REQUEST_OFF:
-    if (previous_state != LIGHTS_SIGNAL_STATE_OFF) {
-      current_state = LIGHTS_SIGNAL_STATE_OFF;
-      software_timer_cancel(&s_signal_blink_timer);
-      gpio_set_state(&left_led, GPIO_STATE_LOW);
-      gpio_set_state(&right_led, GPIO_STATE_LOW);
-    }
+      if (previous_state != LIGHTS_SIGNAL_STATE_OFF) {
+        current_state = LIGHTS_SIGNAL_STATE_OFF;
+        software_timer_cancel(&s_signal_blink_timer);
+        gpio_set_state(&left_led, GPIO_STATE_LOW);
+        gpio_set_state(&right_led, GPIO_STATE_LOW);
+      }
       break;
 
     case LIGHTS_SIGNAL_REQUEST_LEFT:
@@ -64,7 +64,7 @@ void lights_signal_manager_update(void) {
         software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
       }
       break;
-      
+
     case LIGHTS_SIGNAL_REQUEST_RIGHT:
       if (previous_state != LIGHTS_SIGNAL_STATE_RIGHT && previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
         current_state = LIGHTS_SIGNAL_STATE_RIGHT;
@@ -75,12 +75,12 @@ void lights_signal_manager_update(void) {
       break;
 
     case LIGHTS_SIGNAL_REQUEST_HAZARD:
-    if (previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
-      current_state = LIGHTS_SIGNAL_STATE_HAZARD;
-      gpio_set_state(&left_led, GPIO_STATE_HIGH);
-      gpio_set_state(&right_led, GPIO_STATE_HIGH);
-      software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
-    }
+      if (previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
+        current_state = LIGHTS_SIGNAL_STATE_HAZARD;
+        gpio_set_state(&left_led, GPIO_STATE_HIGH);
+        gpio_set_state(&right_led, GPIO_STATE_HIGH);
+        software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
+      }
       break;
   }
 }
