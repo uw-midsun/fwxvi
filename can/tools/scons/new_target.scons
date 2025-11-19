@@ -1,0 +1,16 @@
+###########################################################
+# Variables setup
+###########################################################
+
+Import('VARS')
+
+TARGET = VARS.get("TARGET")
+
+if not TARGET:
+    print("Missing target. Expected --project=..., or --library=..., or --python=..., or --smoke=...")
+    raise Exception
+
+command = f"python3 -m autogen new_project -o {TARGET}"
+
+new = Command('new_proj.txt', [], command)
+Alias('new', new)

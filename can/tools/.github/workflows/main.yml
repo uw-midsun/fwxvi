@@ -1,0 +1,103 @@
+name: SCons Format + Lint + CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DEFINES: "LOG_LEVEL=LOG_LEVEL_WARN"
+
+jobs:
+  format-and-lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true 
+
+      - name: Run SCons format and lint
+        run: |
+          scons format
+          scons lint
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git add .
+          git commit -m "[auto-format] SCons Format and Lint via Github Actions"
+          git config pull.rebase true
+          git pull origin ${{ github.head_ref || github.ref_name }}
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+
+  build:
+    needs: format-and-lint 
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Pull latest changes (after auto-format)
+        run: |
+          git fetch origin ${{ github.head_ref || github.ref_name }}
+          git reset --hard FETCH_HEAD
+
+      - name: Get and run setup script
+        run: |
+          chmod +x ./requirements.sh
+          sudo ./requirements.sh
+          pip install -r requirements.txt --upgrade
+
+      - name: Force PATH to update
+        run: hash -r
+
+      - name: Print versions of everything
+        run: |
+          arm-none-eabi-gcc --version
+          arm-none-eabi-objcopy --version
+          arm-none-eabi-objdump --version
+          arm-none-eabi-size --version
+          arm-none-eabi-gcc-ar --version
+          gcc --version
+          make --version
+          clang --version
+          clang-format --version
+          pylint --version
+          python3 --version
+          scons --version
+          sdl2-config --version
+          
+      - name: Build stm32l4x
+        id: build-stm32
+        run: |
+          scons --platform=arm --define="${DEFINES}"
+
+      - name: Build x86
+        id: build-x86
+        run: |
+          scons --platform=x86 --define="${DEFINES}"
+          scons mpxe_server
+          scons mpxe_gui

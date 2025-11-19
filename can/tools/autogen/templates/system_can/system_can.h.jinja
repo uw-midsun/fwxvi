@@ -1,0 +1,40 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   system_can.h
+ *
+ * @brief  Header file for all CAN message IDs
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include <stdbool.h>
+
+/**
+ * @defgroup CAN
+ * @brief    CAN library
+ * @{
+ */
+
+#define SYSTEM_CAN_MESSAGE_ID_OFFSET       4U
+#define SYSTEM_CAN_MESSAGE_PRIORITY_BIT    0x400U
+
+/** @brief CAN Device definitions */
+typedef enum {
+{% for board in boards -%}
+  SYSTEM_CAN_DEVICE_{{ board | upper }} = {{ loop.index0 }},
+{% endfor -%}
+  NUM_SYSTEM_CAN_DEVICES = {{ boards | length }}
+} SystemCanDevice;
+
+{% for message in messages %}
+#define SYSTEM_CAN_MESSAGE_{{ message.sender | upper }}_{{ message.name | upper }} \
+{% if not message.critical %}  SYSTEM_CAN_MESSAGE_PRIORITY_BIT + {% endif %}({{ message.id }} << SYSTEM_CAN_MESSAGE_ID_OFFSET) + SYSTEM_CAN_DEVICE_{{ message.sender | upper }}
+{% endfor %}
+/** @} */

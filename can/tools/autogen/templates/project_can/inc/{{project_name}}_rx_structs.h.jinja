@@ -1,0 +1,47 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   {{ project_name }}_rx_structs.h
+ *
+ * @brief  Project code generation header
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "can_watchdog.h"
+
+/**
+ * @defgroup {{ project_name }}_CAN
+ * @brief    CAN Interface for {{ project_name }}
+ * @{
+ */
+{% set messages = messages | selectattr("receiver", "contains", project_name) | list -%}
+
+typedef struct
+{
+{%- for message in messages %}
+    {%- for signal in message.signals %}
+    uint{{signal.length}}_t {{message.name}}_{{signal.name}};
+    {%- endfor %}
+{%- endfor %}
+{%- for message in messages %}
+    bool received_{{message.name}};
+{%- endfor %}
+} {{project_name}}_rx_struct;
+{% for message in messages %}
+    {%- if message.receiver[project_name].watchdog != 0 %}
+#define check_{{message.name}}_msg_watchdog() \
+    s_{{message.name}}_msg_watchdog.missed
+
+extern CanWatchDog s_{{message.name}}_msg_watchdog;
+    {%- endif %}
+{%- endfor %}
+/** @} */

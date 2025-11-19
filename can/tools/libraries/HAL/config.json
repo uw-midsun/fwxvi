@@ -1,0 +1,10 @@
+{
+    "arm_libs": [
+        "CMSIS"
+    ],
+    "cflags": [
+        "-ffreestanding",
+        "-nostdlib"
+    ],
+    "no_lint": true
+}

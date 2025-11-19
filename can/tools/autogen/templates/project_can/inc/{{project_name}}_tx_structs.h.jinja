@@ -1,0 +1,34 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   {{ project_name }}_tx_structs.h
+ *
+ * @brief  Project code generation header
+ *
+ * @date   {{ current_date }}
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup {{ project_name }}_CAN
+ * @brief    CAN Interface for {{ project_name }}
+ * @{
+ */
+{% set messages = messages | selectattr("sender", "eq", project_name) | list -%}
+
+typedef struct {
+{%- for message in messages -%}
+    {%- for signal in message.signals %}
+    uint{{signal.length}}_t {{message.name}}_{{signal.name}};
+    {%- endfor -%}
+{% endfor %}
+} {{ project_name }}_tx_struct;
+
+/** @} */

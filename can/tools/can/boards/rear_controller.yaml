@@ -1,0 +1,190 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  rear_controller_status:
+    id: 1
+    cycle: "medium"
+    critical: true
+    target:
+      telemetry:
+        watchdog: 0
+      front_controller:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      bps_fault:
+        length: 16
+      relay_state:
+        length: 8
+      power_state:
+        length: 8
+      afe_status:
+        length: 8
+  
+  battery_stats_A:
+    id: 2
+    cycle: "medium"
+    critical: true
+    target:
+      telemetry:
+        watchdog: 0
+      front_controller:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      pack_voltage:
+        length: 16
+      pack_current:
+        length: 16
+      pack_soc:
+        length: 16
+
+  battery_stats_B:
+    id: 3
+    cycle: "medium"
+    critical: true
+    target:
+      telemetry:
+        watchdog: 0
+      front_controller:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      max_cell_voltage:
+        length: 16
+      min_cell_voltage:
+        length: 16
+      max_temperature:
+        length: 16
+      motor_precharge_complete:
+        length: 8
+  
+  power_input_stats:
+    id: 4
+    cycle: "medium"
+    critical: true
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      input_dcdc_voltage:
+        length: 16
+      input_dcdc_current:
+        length: 16
+      input_aux_voltage:
+        length: 16
+      input_aux_current:
+        length: 16
+
+  AFE1_status_A:
+    id: 59
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_0:
+        length: 16
+      voltage_1:
+        length: 16
+      voltage_2:
+        length: 16
+  
+  AFE1_status_B:
+    id: 60
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_0:
+        length: 16
+      voltage_1:
+        length: 16
+      voltage_2:
+        length: 16
+
+  AFE2_status_A:
+    id: 61
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_0:
+        length: 16
+      voltage_1:
+        length: 16
+      voltage_2:
+        length: 16
+
+  AFE2_status_B:
+    id: 62
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_0:
+        length: 16
+      voltage_1:
+        length: 16
+      voltage_2:
+        length: 16
+
+  AFE_temperature:
+    id: 63
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      temperature_0:
+        length: 8
+      temperature_1:
+        length: 8
+      temperature_2:
+        length: 8
+      temperature_3:
+        length: 8
+      temperature_4:
+        length: 8
+      temperature_5:
+        length: 8
+      temperature_6:
+        length: 8

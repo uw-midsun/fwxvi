@@ -1,0 +1,16 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "ms-gui",
+        "master"
+    ],
+    "x86_libs": [
+        "ms-mpxe",
+        "SDL2"
+    ],
+    "mocks": {
+        "test_button_manager": ["gpio_get_state", "lights_signal_manager_request", "drive_state_manager_request"]
+    },
+    "can": true
+}
