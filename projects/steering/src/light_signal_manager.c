@@ -38,6 +38,11 @@ void lights_signal_manager_init(void) {
   software_timer_init(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
 }
 
+void lights_signal_manager_request(LightsSignalRequest req) {
+  current_request = req;
+  software_timer_init(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
+}
+
 void lights_signal_manager_update(void) {
   LightsSignalState previous_state = current_state;
 
