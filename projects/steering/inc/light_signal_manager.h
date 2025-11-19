@@ -13,8 +13,16 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "software_timer.h"
 
 /* Intra-component Headers */
+#include "gpio.h"
+#include "steering_hw_defs.h"
+
+/**
+ * @brief Period in ms for the turn signal/harzard blinking
+ */
+#define LIGHT_SIGNAL_BLINK_PERIOD_MS 600
 
 /**
  * @defgroup steering
@@ -41,6 +49,15 @@ typedef enum {
   LIGHTS_SIGNAL_REQUEST_RIGHT,   /**< Request to turn on right signal */
   LIGHTS_SIGNAL_REQUEST_HAZARD   /**< Request to turn on hazard signal */
 } LightsSignalRequest;
+/**
+ * @brief Function to physically turn on the LEDs on/off on the current state
+ * @param turn_on If true, sets the active signal to high, otherwise, sets to low
+ */
+static void previous_set_signal_lights(bool turn_on);
+/**
+ * @brief Timer callback which runs every 600ms when the timer is active
+ */
+static void previous_timer_callback(SoftTimerId timer_id);
 
 /**
  * @brief Initialize the light signal manager
