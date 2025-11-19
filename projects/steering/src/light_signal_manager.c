@@ -61,7 +61,7 @@ void lights_signal_manager_update(void) {
         current_state = LIGHTS_SIGNAL_STATE_LEFT;
         gpio_set_state(&left_led, GPIO_STATE_HIGH);
         gpio_set_state(&right_led, GPIO_STATE_LOW);
-        software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
+        software_timer_start(&s_signal_blink_timer);
       }
       break;
 
@@ -70,7 +70,7 @@ void lights_signal_manager_update(void) {
         current_state = LIGHTS_SIGNAL_STATE_RIGHT;
         gpio_set_state(&left_led, GPIO_STATE_LOW);
         gpio_set_state(&right_led, GPIO_STATE_HIGH);
-        software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
+        software_timer_start(&s_signal_blink_timer);
       }
       break;
 
@@ -79,7 +79,7 @@ void lights_signal_manager_update(void) {
         current_state = LIGHTS_SIGNAL_STATE_HAZARD;
         gpio_set_state(&left_led, GPIO_STATE_HIGH);
         gpio_set_state(&right_led, GPIO_STATE_HIGH);
-        software_timer_init_and_start(LIGHT_SIGNAL_BLINK_PERIOD_MS, previous_timer_callback, &s_signal_blink_timer);
+        software_timer_start(&s_signal_blink_timer);
       }
       break;
   }
