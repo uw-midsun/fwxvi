@@ -13,8 +13,16 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "software_timer.h"
 
 /* Intra-component Headers */
+#include "gpio.h"
+#include "steering_hw_defs.h"
+
+/**
+ * @brief Period in ms for the turn signal/harzard blinking
+ */
+#define LIGHT_SIGNAL_BLINK_PERIOD_MS 600
 
 /**
  * @defgroup steering
@@ -43,7 +51,7 @@ typedef enum {
 } LightsSignalRequest;
 
 /**
- * @brief Initialize the light signal manager
+ * @brief initialization of state variables and timer
  */
 void lights_signal_manager_init(void);
 
