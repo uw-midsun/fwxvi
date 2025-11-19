@@ -33,12 +33,10 @@ static void previous_set_signal_lights(bool turn_on) {
   if (current_state == LIGHTS_SIGNAL_STATE_LEFT) {
     gpio_set_state(&left_led, state);
     gpio_set_state(&right_led, GPIO_STATE_LOW);
-  }
-  else if (current_state == LIGHTS_SIGNAL_STATE_RIGHT) {
+  } else if (current_state == LIGHTS_SIGNAL_STATE_RIGHT) {
     gpio_set_state(&left_led, GPIO_STATE_LOW);
     gpio_set_state(&right_led, state);
-  }
-  else if (current_state == LIGHTS_SIGNAL_STATE_HAZARD) {
+  } else if (current_state == LIGHTS_SIGNAL_STATE_HAZARD) {
     gpio_set_state(&left_led, state);
     gpio_set_state(&right_led, state);
   } else {
@@ -59,7 +57,6 @@ void lights_signal_manager_init(void) {
 }
 
 void lights_signal_manager_update(void) {
-
   LightsSignalState previous_state = current_state;
 
   switch (current_request) {
