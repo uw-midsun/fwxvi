@@ -17,6 +17,8 @@
 #include "framebuffer.h"
 #include "ltdc.h"
 #include "gui.h"
+#include "font8x8.c"
+
 /* Intra-component Headers */
 #include "status.h"
 
@@ -87,3 +89,35 @@ StatusCode gui_render(void){
     return ltdc_draw();
 }
 
+void gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t percentage, ColorIndex color_index_bg, ColorIndex color_index_fg){
+    uint16_t filled_width = width * percentage / 100;
+    for (uint16_t row = 0;row < height; ++row){
+        gui_draw_line(x, y+row, x+filled_width-1, y+row, color_index_fg);
+        gui_draw_line(x+filled_width, y+row, x+width-1, y+row, color_index_bg);
+    }
+}
+
+
+void gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_index){
+    for (uint8_t row=0; row<8; ++row){
+        uint8_t bits = font8x8[(uint8_t)c][row];
+        for (uint8_t col= 0; col<8; ++col){
+            if(bits & 1<<(7-col)){
+                gui_draw_pixel(x+col, y+row, color_index);
+            }
+        }
+
+    }
+}
+
+void gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex color_index){
+    uint16_t cursor_x = x;
+
+    
+    while(*text){
+        gui_display_char(cursor_x, y, *text, color_index);
+        text++;
+        cursor_x+=8;
+    }
+
+}
