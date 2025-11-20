@@ -29,9 +29,6 @@
 }
 
 void front_lights_signal_process_event(SteeringLightState new_state) {
-    if (current_state == new_state) {
-        return;
-    }
     current_state = new_state;
 
     switch (current_state) {
