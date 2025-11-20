@@ -10,6 +10,8 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "steering_setters.h"
+#include "global_enums.h"
 #include "light_signal_manager.h"
 /* Intra-component Headers */
 
@@ -49,6 +51,7 @@ void lights_signal_manager_update(void) {
   switch (current_request) {
     case LIGHTS_SIGNAL_REQUEST_OFF:
       if (previous_state != LIGHTS_SIGNAL_STATE_OFF) {
+        set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
         current_state = LIGHTS_SIGNAL_STATE_OFF;
         software_timer_cancel(&s_signal_blink_timer);
         gpio_set_state(&left_led, GPIO_STATE_LOW);
@@ -58,6 +61,7 @@ void lights_signal_manager_update(void) {
 
     case LIGHTS_SIGNAL_REQUEST_LEFT:
       if (previous_state != LIGHTS_SIGNAL_STATE_LEFT && previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
+        set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
         current_state = LIGHTS_SIGNAL_STATE_LEFT;
         gpio_set_state(&left_led, GPIO_STATE_HIGH);
         gpio_set_state(&right_led, GPIO_STATE_LOW);
@@ -67,6 +71,7 @@ void lights_signal_manager_update(void) {
 
     case LIGHTS_SIGNAL_REQUEST_RIGHT:
       if (previous_state != LIGHTS_SIGNAL_STATE_RIGHT && previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
+        set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
         current_state = LIGHTS_SIGNAL_STATE_RIGHT;
         gpio_set_state(&left_led, GPIO_STATE_LOW);
         gpio_set_state(&right_led, GPIO_STATE_HIGH);
@@ -76,6 +81,7 @@ void lights_signal_manager_update(void) {
 
     case LIGHTS_SIGNAL_REQUEST_HAZARD:
       if (previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
+        set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
         current_state = LIGHTS_SIGNAL_STATE_HAZARD;
         gpio_set_state(&left_led, GPIO_STATE_HIGH);
         gpio_set_state(&right_led, GPIO_STATE_HIGH);
