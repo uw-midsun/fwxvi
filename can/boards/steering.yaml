@@ -13,6 +13,8 @@ Messages:
     target:
       telemetry:
         watchdog: 0
+      front_controller:
+        watchdog: 0
       rear_controller:
         watchdog: 0
     signals:
@@ -25,6 +27,8 @@ Messages:
       hazard_enabled:
         length: 8
       horn_enabled:
+        length: 8
+      lights:
         length: 8
   steering_target_velocity:
     id: 5
