@@ -26,7 +26,11 @@ Messages:
         length: 8
       horn_enabled:
         length: 8
-  steering_target_velocity:
+      cruise_control_enabled:
+        length: 8
+      regen_braking_enabled:
+        length: 8
+  target_velocity:
     id: 5
     critical: true
     cycle: "medium"
@@ -36,5 +40,7 @@ Messages:
       rear_controller:
         watchdog: 0
     signals:
-      target_velocity:
+      steering_target_velocity:
+        length: 32
+      cruise_control_target_velocity:
         length: 32

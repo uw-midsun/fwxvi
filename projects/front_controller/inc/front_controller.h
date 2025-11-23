@@ -41,6 +41,9 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
 
+/** @brief Max velocito value used for ws22 motor controllers */
+#define WS22_CONTROLLER_MAX_VELOCITY 12000
+
 /**
  * @brief   Front Controller configuration data
  */
@@ -54,19 +57,36 @@ typedef struct {
 } FrontControllerConfig;
 
 /**
+ * @brief Drive states representing the current output
+ */
+typedef enum {
+  DRIVE_STATE_INVALID = 0, /**< Wrong State */
+  DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
+  DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
+  DRIVE_STATE_REVERSE,     /**< Car Drive Reverse*/
+  DRIVE_STATE_CRUISE,      /**< Car Cruise Constant Velocity */
+  DRIVE_STATE_BRAKE,       /**< Car Brake */
+  DRIVE_STATE_REGEN,       /**< Car Brake With Regen */
+} DriveState;
+
+
+/**
  * @brief   Front Controller storage
  */
 typedef struct {
   bool brake_enabled; /**< Horn enabled (set by horn button callback) */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
+  uint32_t cc_target_velocity_kph; /**< Current vehicle speed in km/h */
+
   float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  DriveState currentDriveState;
 
   struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
   struct BrakePedalStorage *brake_pedal_storage;      /**< Brake pedal storage */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
-  struct OpdStorage *opd_storage;
+  struct OpdStorage *opd_storage;                     /**< OPD storage */
 
   FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;
