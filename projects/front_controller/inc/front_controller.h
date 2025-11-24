@@ -53,6 +53,27 @@ typedef struct {
   float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
 } FrontControllerConfig;
 
+typedef enum PowerState{
+  POWER_STATE_IDLE,
+  POWER_STATE_ENGAGED,
+  POWER_STATE_FAULT,
+  POWER_STATE_INVALID
+} PowerState;
+
+/**
+ * @brief Drive states representing the current output
+ */
+typedef enum {
+  DRIVE_STATE_INVALID = 0, /**< Wrong State */
+  DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
+  DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
+  DRIVE_STATE_REVERSE,     /**< Car Drive Reverse*/
+  DRIVE_STATE_CRUISE,      /**< Car Cruise Constant Velocity */
+  DRIVE_STATE_BRAKE,       /**< Car Brake */
+  DRIVE_STATE_REGEN,       /**< Car Brake With Regen */
+} DriveState;
+
+
 /**
  * @brief   Front Controller storage
  */
@@ -61,6 +82,7 @@ typedef struct {
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
   float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  PowerState current_power_state;
 
   struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
