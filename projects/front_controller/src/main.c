@@ -22,6 +22,7 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "ws22_motor_can.h"
+#include "motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -39,6 +40,7 @@ void run_1000hz_cycle() {
   accel_pedal_run();
 
   run_can_tx_fast();
+  motor_can_update_target_current_velocity();
   ws22_motor_can_transmit_drive_command();
 }
 

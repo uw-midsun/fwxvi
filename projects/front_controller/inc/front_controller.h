@@ -77,7 +77,6 @@ typedef struct {
   bool brake_enabled; /**< Horn enabled (set by horn button callback) */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
-  uint32_t cc_target_velocity_kph; /**< Current vehicle speed in km/h */
 
   float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   DriveState currentDriveState;

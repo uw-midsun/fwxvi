@@ -70,6 +70,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   accel_pedal_init(storage);
   ws22_motor_can_init(storage);
   pedal_calib_read(storage);
+  motor_can_init(storage);
 
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
