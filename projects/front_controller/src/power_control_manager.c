@@ -79,7 +79,7 @@ OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [HAZARD_GROUP] = &output_group_hazard_group, [BPS_GROUP] = &output_group_bps_group,   [BRAKE_GROUP] = &output_group_brake_group,
 };
 
-// fix this, not sure if it wil lwork if you want to enable or disable a certain output
+// fix this, not sure if it will work if you want to enable or disable a certain output
 void power_control_set_output_group(OutputGroup group, bool enable) {
   OutputGroupDef *grp = output_group_map[group];
 
