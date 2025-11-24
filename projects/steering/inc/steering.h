@@ -71,9 +71,9 @@ typedef struct {
  * @brief   Steering storage
  */
 typedef struct {
-  bool horn_enabled;          /**< Horn enabled (set by horn button callback)*/
-  bool regen_enabled;         /**< Regen enabled (set by regen button callback)*/
-  bool cruse_control_enabled; /**< Cruise control enabled (set by cruise control button callback)*/
+  bool horn_enabled;           /**< Horn enabled (set by horn button callback)*/
+  bool regen_enabled;          /**< Regen enabled (set by regen button callback)*/
+  bool cruise_control_enabled; /**< Cruise control enabled (set by cruise control button callback)*/
 
   uint16_t cruise_control_target_speed_kmh; /**< Cruise control target speed in kilometers per hour */
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */

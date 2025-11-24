@@ -21,6 +21,7 @@
 #include "button_manager.h"
 #include "party_mode.h"
 #include "steering.h"
+#include "cruise_control.h"
 
 SteeringStorage steering_storage;
 
@@ -37,6 +38,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
+  cruise_control_run();
   party_mode_run();
 }
 
