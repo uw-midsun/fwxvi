@@ -1,6 +1,19 @@
+/************************************************************************************************
+ * @file    motor_can.c
+ *
+ * @brief   Motor Can
+ *
+ * @date    2025-11-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "front_controller_getters.h"
 #include "motor_can.h"
 
-#include "front_controller_getters.h"
+/* Intra-component Headers */
 
 static FrontControllerStorage *frontControllerStorage;
 
