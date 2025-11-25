@@ -20,10 +20,10 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
-#include "opd.h"
 #include "front_controller.h"
-#include "ws22_motor_can.h"
 #include "motor_can.h"
+#include "opd.h"
+#include "ws22_motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
 

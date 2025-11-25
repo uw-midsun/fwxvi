@@ -72,7 +72,6 @@ typedef enum {
   DRIVE_STATE_REGEN,       /**< Car Brake With Regen */
 } DriveState;
 
-
 /**
  * @brief   Front Controller storage
  */
@@ -81,8 +80,8 @@ typedef struct {
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
-  float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
-  DriveState currentDriveState;
+  float accel_percentage;       /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  DriveState currentDriveState; /**< Current drive state of vehicle, determined by motor_can.c */
 
   struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */

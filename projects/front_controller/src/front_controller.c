@@ -22,9 +22,9 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
-#include "opd.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "opd.h"
 #include "pedal_calib_reader.h"
 #include "ws22_motor_can.h"
 

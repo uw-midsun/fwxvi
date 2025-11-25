@@ -43,10 +43,10 @@ void setup_test(void) {
 
   opd_init(&mock_storage);
 
-  mock_storage.opd_storage->calibration_data.lower_value = 1000;
-  mock_storage.opd_storage->calibration_data.upper_value = 2000;
-  mock_storage.opd_storage->prev_accel_percentage = 0.0f;
-  mock_storage.opd_storage->accel_percentage = 0.0f;
+  mock_storage.accel_pedal_storage->calibration_data.lower_value = 1000;
+  mock_storage.accel_pedal_storage->calibration_data.upper_value = 2000;
+  mock_storage.accel_pedal_storage->prev_accel_percentage = 0.0f;
+  mock_storage.accel_pedal_storage->accel_percentage = 0.0f;
 }
 
 void teardown_test(void) {}
@@ -80,12 +80,12 @@ void test_opd_visualize_curve(void) {
 
   fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");
 
-  for (uint16_t adc_val = mock_storage.opd_storage->calibration_data.lower_value; adc_val <= mock_storage.opd_storage->calibration_data.upper_value; adc_val += 10) {
+  for (uint16_t adc_val = mock_storage.accel_pedal_storage->calibration_data.lower_value; adc_val <= mock_storage.accel_pedal_storage->calibration_data.upper_value; adc_val += 10) {
     for (uint32_t speed = 0; speed <= 100; speed += 1) {
       mock_raw_adc_reading = adc_val;
 
-      float normalized_accel_percentage = (((float)adc_val - (float)mock_storage.opd_storage->calibration_data.lower_value) /
-                                           ((float)mock_storage.opd_storage->calibration_data.upper_value - (float)mock_storage.opd_storage->calibration_data.lower_value));
+      float normalized_accel_percentage = (((float)adc_val - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value) /
+                                           ((float)mock_storage.accel_pedal_storage->calibration_data.upper_value - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value));
 
       normalized_accel_percentage = fminf(fmaxf(normalized_accel_percentage, 0.0f), 1.0f);
 
