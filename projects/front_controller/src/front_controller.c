@@ -26,6 +26,8 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 #include "pedal_calib_reader.h"
+#include "power_control_manager.h"
+#include "power_sense.h"
 #include "ws22_motor_can.h"
 
 /************************************************************************************************
@@ -74,12 +76,13 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   pedal_calib_read(storage);
   motor_can_init(storage);
 
+  power_sense_init();
+  power_control_manager_init();
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   /* ADC initialization must happen at the very end, so all channels are registered */
   adc_init();
-
   LOG_DEBUG("Front controller initialized\r\n");
 
   return STATUS_CODE_OK;
