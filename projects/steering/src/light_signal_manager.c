@@ -10,9 +10,10 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "steering_setters.h"
-#include "global_enums.h"
 #include "light_signal_manager.h"
+
+#include "global_enums.h"
+#include "steering_setters.h"
 /* Intra-component Headers */
 
 static LightsSignalState current_state = LIGHTS_SIGNAL_STATE_OFF;
