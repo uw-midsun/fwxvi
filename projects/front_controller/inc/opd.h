@@ -18,27 +18,12 @@
 /* Intra-component Headers */
 #include "front_controller.h"
 
-/**
- * @defgroup Front_Controller
- * @brief    Front Controller Board Firmware
- * @{
- */
-
-typedef struct {
-  uint16_t lower_value; /**< ADC reading when the pedal is considered fully released */
-  uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
-} OpdCalibrationStorage;
-
-typedef enum { ACCEL_STATE_DRIVING, ACCEL_STATE_BRAKING } AccelState;
+typedef enum { STATE_DRIVING, STATE_BRAKING } OnePedalDriveState;
 
 typedef struct OpdStorage {
-  float accel_percentage;
-  float prev_accel_percentage;
-  AccelState accel_state;
+  OnePedalDriveState drive_state;
   float max_braking_percentage;
   uint32_t max_vehicle_speed_kph;
-
-  OpdCalibrationStorage calibration_data;
 } OpdStorage;
 
 typedef enum { PTS_TYPE_LINEAR, PTS_TYPE_EXPONENTIAL, PTS_TYPE_QUADRATIC } PtsRelationType;

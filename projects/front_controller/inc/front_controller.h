@@ -41,8 +41,11 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
 
-/** @brief Max velocito value used for ws22 motor controllers */
+/** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
+
+/** @brief Max speed of vehicle in KPH */
+#define MAX_VEHICLE_SPEED_KPH 50
 
 /**
  * @brief   Front Controller configuration data

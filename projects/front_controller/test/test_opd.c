@@ -29,24 +29,7 @@
 #include "opd.h"
 
 static FrontControllerStorage mock_storage = { 0 };
-static GpioAddress mock_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 static uint16_t mock_raw_adc_reading = 0;
-
-StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
-  if (reading == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  // float normalized_mock_accel_percentage = (((float)mock_raw_adc_reading - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value) /
-  //                                           ((float)mock_storage.accel_pedal_storage->calibration_data.upper_value - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value));
-
-  // normalized_mock_accel_percentage = fminf(fmaxf(normalized_mock_accel_percentage, 0.0f), 1.0f);
-
-  // *reading = normalized_mock_accel_percentage;
-  *reading = mock_raw_adc_reading;
-
-  return STATUS_CODE_OK;
-}
 
 void setup_test(void) {
   static FrontControllerConfig config = {
@@ -117,7 +100,7 @@ void test_opd_visualize_curve(void) {
 
       opd_calculate_handler(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading, CURVE_TYPE_EXPONENTIAL);
 
-      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)normalized_speed);
+      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->drive_state, (double)normalized_speed);
     }
   }
 

@@ -18,9 +18,10 @@
 /* Intra-component Headers */
 #include "front_controller_hw_defs.h"
 #include "opd.h"
+#include "accel_pedal.h"
 
-static GpioAddress s_one_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 static FrontControllerStorage *front_controller_storage;
+static AccelPedalStorage *accel_pedal_storage;
 
 static OpdStorage s_one_pedal_storage = { 0U };
 static bool pts_compare_handler(float p, float s, PtsRelationType relation_type);
@@ -30,23 +31,16 @@ StatusCode opd_run() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  uint16_t adc_reading = s_one_pedal_storage.calibration_data.lower_value;
-
-  adc_read_raw(&s_one_pedal_gpio, &adc_reading);
-
-  float normalized_accel_percentage = (((float)adc_reading - (float)s_one_pedal_storage.calibration_data.lower_value) /
-                                       ((float)s_one_pedal_storage.calibration_data.upper_value - (float)s_one_pedal_storage.calibration_data.lower_value));
-
-  normalized_accel_percentage = fminf(fmaxf(normalized_accel_percentage, 0.0f), 1.0f);
+  float accel_percentage = accel_pedal_storage->accel_percentage;
 
   float calculated_reading;
-  if (normalized_accel_percentage < front_controller_storage->config->accel_input_deadzone) {
+  if (accel_percentage < front_controller_storage->config->accel_input_deadzone) {
     calculated_reading = 0.0f;
   } else {
-    opd_linear_calculate(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+    opd_linear_calculate(accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
   }
 
-  s_one_pedal_storage.accel_percentage = calculated_reading;
+  front_controller_storage->accel_percentage = calculated_reading;
 
   return STATUS_CODE_OK;
 }
@@ -59,9 +53,7 @@ StatusCode opd_init(FrontControllerStorage *storage) {
   front_controller_storage = storage;
   front_controller_storage->opd_storage = &s_one_pedal_storage;
 
-  gpio_init_pin(&s_one_pedal_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
-  adc_add_channel(&s_one_pedal_gpio);
-
+  accel_pedal_storage = storage->accel_pedal_storage;
   return STATUS_CODE_OK;
 }
 
@@ -70,12 +62,12 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
 
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
     front_controller_storage->brake_enabled = false;
-    s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
+    s_one_pedal_storage.drive_state = STATE_DRIVING;
     float m = 1 / (1 - current_speed);
     *calculated_reading = (0.25 * m * (pedal_percentage - 1)) + 1;
   } else {
     front_controller_storage->brake_enabled = true;
-    s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
+    s_one_pedal_storage.drive_state = STATE_BRAKING;
     float m = 1 / current_speed;
     *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
   }
@@ -88,11 +80,11 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
   float m;
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
     front_controller_storage->brake_enabled = false;
-    s_one_pedal_storage.accel_state = ACCEL_STATE_DRIVING;
+    s_one_pedal_storage.drive_state = STATE_DRIVING;
     m = 1 / ((1 - current_speed) * (1 - current_speed));
   } else {
     front_controller_storage->brake_enabled = true;
-    s_one_pedal_storage.accel_state = ACCEL_STATE_BRAKING;
+    s_one_pedal_storage.drive_state = STATE_BRAKING;
     m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
   }
   *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
