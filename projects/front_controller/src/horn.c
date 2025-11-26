@@ -12,13 +12,13 @@
 
 /* Inter-component Headers */
 #include "adc.h"
+#include "front_controller_getters.h"
 #include "gpio.h"
 #include "log.h"
-#include "front_controller_getters.h"
 
 /* Intra-component Headers */
-#include "horn.h"
 #include "front_controller_hw_defs.h"
+#include "horn.h"
 
 static GpioAddress s_horn_gpio = FRONT_CONTROLLER_HORN_LS_ENABLE;
 
