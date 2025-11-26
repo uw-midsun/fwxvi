@@ -30,14 +30,16 @@
  * @brief   Vehicle drive states
  */
 typedef enum {
-  VEHICLE_NEUTRAL, /**< Neutral state */
-  VEHICLE_DRIVE,   /**< Drive state */
-  VEHICLE_REVERSE, /**< Reverse state */
+  VEHICLE_DRIVE_STATE_INVALID = 0, /**< Wrong State */
+  VEHICLE_DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
+  VEHICLE_DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
+  VEHICLE_DRIVE_STATE_REVERSE,     /**< Car Drive Reverse*/
 
   /* Extra drive state types used only by motor */
 
-  VEHICLE_CRUISE, /**< Cruise Control state */
-  VEHICLE_BRAKE,  /**< Brake state */
+  VEHICLE_DRIVE_STATE_CRUISE, /**< Car Cruise Constant Velocity */
+  VEHICLE_DRIVE_STATE_BRAKE,  /**< Car Brake */
+  VEHICLE_DRIVE_STATE_REGEN,  /**< Car Brake With Regen */
 } VehicleDriveState;
 
 /**

@@ -22,6 +22,8 @@
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller.h"
+#include "motor_can.h"
+#include "opd.h"
 #include "power_control_manager.h"
 #include "power_sense.h"
 #include "ws22_motor_can.h"
@@ -43,7 +45,10 @@ void run_1000hz_cycle() {
 
   adc_run();
   accel_pedal_run();
+  opd_run();
+
   run_can_tx_fast();
+  motor_can_update_target_current_velocity();
   ws22_motor_can_transmit_drive_command();
 }
 

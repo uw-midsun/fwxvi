@@ -27,7 +27,7 @@
  * @{
  */
 
-#define FRONT_LIGHTs_BLINK_PERIOD_MS 600
+#define FRONT_LIGHTS_BLINK_PERIOD_MS 600
 #define SYSTEM_CAN_MESSAGE_STEERING_BUTTONS 6
 
 /**
@@ -35,4 +35,10 @@
  * @param state which is the state recieved by the CAN message
  */
 void front_lights_signal_process_event(SteeringLightState new_state);
+
+/**
+ * @brief Initializes the front lights signal module
+ */
+void front_lights_signal_init();
+
 /** @} */
