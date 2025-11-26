@@ -67,6 +67,6 @@ void front_lights_signal_process_event(SteeringLightState new_state) {
 }
 
 void front_lights_signal_init() {
-  software_timer_init(&s_blink_timer, FRONT_LIGHTS_BLINK_PERIOD_MS, previous_blink_timer_callback);
+  software_timer_init(FRONT_LIGHTS_BLINK_PERIOD_MS, previous_blink_timer_callback, &s_blink_timer);
   current_state = STEERING_LIGHTS_OFF_STATE;
 }

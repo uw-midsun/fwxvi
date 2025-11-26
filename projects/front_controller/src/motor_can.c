@@ -69,7 +69,7 @@ StatusCode motor_can_update_target_current_velocity() {
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
       ws22_motor_can_set_current(1.0f);
-      ws22_motor_can_set_velocity(get_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
+      ws22_motor_can_set_velocity(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
       break;
     case VEHICLE_DRIVE_STATE_BRAKE:
       ws22_motor_can_set_current(0.0f);
