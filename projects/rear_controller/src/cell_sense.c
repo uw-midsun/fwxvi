@@ -20,10 +20,10 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "bms_hw_defs.h"
 #include "can.h"
 #include "cell_sense.h"
 #include "rear_controller.h"
+#include "rear_controller_hw_defs.h"
 #include "relays.h"
 #include "system_can.h"
 #include "thermistor.h"
@@ -34,27 +34,38 @@
 
 /** @brief  Number of AFE messages */
 #define NUM_AFE_MSGS 4U
+
 /** @brief  Number of cell voltage readings per AFE message */
 #define READINGS_PER_AFE_MSG 3U
+
 /** @brief  Thermistor resistance value */
 #define TEMP_RESISTANCE 10000
+
 /** @brief  Voltage reference for ADBMS1818 ADCs in 100uV */
 #define VREF2 30000.0f
+
 /** @brief  Voltage gain of ADBMS1818 ADCs in 100uV / sample */
 #define ADC_GAIN (VREF2 / ((1 << 15) - 1))
+
 /** @brief  Thermistor resistance lookup table size */
 #define TABLE_SIZE 125U
+
 /** @brief  Number of communication retries before throwing AFE fault */
 #define AFE_NUM_RETRIES 5U
+
 /** @brief  Temperature threshold for invalid readings */
 #define CELL_TEMP_OUTLIER_THRESHOLD 80
+
 /** @brief  Maximum pack current - 7.0A -> 7000mA */
 #define PACK_OVERCURRENT_CURRENT 7000
+
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE 16
+
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
+
 /** @brief  Max number of retries for reading cell*/
-#define BMS_MAX_RETRIES 5U
+#define CELL_SENSE_MAX_RETRIES 5U
 
 /**
  * @brief   Thermistor mapping for the ADBMS1818 hardware schematic
@@ -78,18 +89,18 @@ typedef enum ThermistorMap { THERMISTOR_2 = 0, THERMISTOR_1, THERMISTOR_0, THERM
 
 /* Forward definition */
 SpiSettings adbms_spi_config = {
-  .baudrate = ADBMS_AFE_SPI_BAUDRATE,
+  .baudrate = REAR_CONTROLLER_ADBMS_AFE_SPI_BAUDRATE,
   .mode = SPI_MODE_3,
-  .sdo = ADBMS_AFE_SPI_SDO_GPIO,
-  .sdi = ADBMS_AFE_SPI_SDI_GPIO,
-  .sclk = ADBMS_AFE_SPI_SCK_GPIO,
-  .cs = ADBMS_AFE_SPI_CS_GPIO,
+  .sdo = REAR_CONTROLLER_ADBMS_AFE_SPI_SDO_GPIO,
+  .sdi = REAR_CONTROLLER_ADBMS_AFE_SPI_SDI_GPIO,
+  .sclk = REAR_CONTROLLER_ADBMS_AFE_SPI_SCK_GPIO,
+  .cs = REAR_CONTROLLER_ADBMS_AFE_SPI_CS_GPIO,
 };
 
 static const AdbmsAfeSettings s_afe_settings = {
   .spi_settings = &adbms_spi_config,
 
-  .spi_port = ADBMS_AFE_SPI_PORT,
+  .spi_port = REAR_CONTROLLER_ADBMS_AFE_SPI_PORT,
 
   .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
@@ -103,11 +114,6 @@ static AdbmsAfeStorage *adbms_afe_storage;
 static bool s_cell_data_updated = false;
 
 uint8_t afe_message_index = 0U;
-
-// is this still needed?
-static uint8_t s_thermistor_map[NUM_THERMISTORS] = {
-  [0] = THERMISTOR_0, [1] = THERMISTOR_1, [2] = THERMISTOR_2, [3] = THERMISTOR_3, [4] = THERMISTOR_4, [5] = THERMISTOR_5, [6] = THERMISTOR_6, [7] = THERMISTOR_7
-};
 
 static RearControllerStorage *rear_controller_storage;
 
@@ -198,7 +204,7 @@ static StatusCode s_cell_sense_conversions() {
   // TODO: Figure out why cell_conv cannot happen without spi timing out (Most likely RTOS
   // implemntation error) Retry Mechanism
   for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    RETRY_OPERATION(BMS_MAX_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
+    RETRY_OPERATION(CELL_SENSE_MAX_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
     if (status == STATUS_CODE_OK) {
       break;
     }
@@ -209,7 +215,7 @@ static StatusCode s_cell_sense_conversions() {
     // If this has failed, try once more after a short delay
     LOG_DEBUG("Cell trigger conv failed, retrying): %d\n", status);
     delay_ms(RETRY_DELAY_MS);
-    RETRY_OPERATION(BMS_MAX_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
+    RETRY_OPERATION(CELL_SENSE_MAX_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
   }
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell conv failed): %d\n", status);
