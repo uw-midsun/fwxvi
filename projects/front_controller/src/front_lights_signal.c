@@ -60,5 +60,13 @@ void front_lights_signal_process_event(SteeringLightState new_state) {
       gpio_set_state(&s_front_left_light, GPIO_STATE_HIGH);
       gpio_set_state(&s_front_right_light, GPIO_STATE_HIGH);
       break;
+    default:
+      // invalid state
+      break;
   }
+}
+
+void front_lights_signal_init() {
+  software_timer_init(&s_blink_timer, FRONT_LIGHTS_BLINK_PERIOD_MS, previous_blink_timer_callback);
+  current_state = STEERING_LIGHTS_OFF_STATE;
 }

@@ -18,31 +18,31 @@
 
 static FrontControllerStorage *frontControllerStorage;
 
-static DriveState prv_resolve_current_state() {
+static VehicleDriveState prv_resolve_current_state() {
   if (frontControllerStorage->brake_enabled) {
     if (get_steering_buttons_regen_braking() == 1) {
-      return DRIVE_STATE_REGEN;
+      return VEHICLE_DRIVE_STATE_REGEN;
     } else {
-      return DRIVE_STATE_BRAKE;
+      return VEHICLE_DRIVE_STATE_BRAKE;
     }
   }
 
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control();
 
-  if (drive_state_from_steering == DRIVE_STATE_NEUTRAL) {
-    return DRIVE_STATE_NEUTRAL;
-  } else if (drive_state_from_steering == DRIVE_STATE_REVERSE) {
-    return DRIVE_STATE_REVERSE;
-  } else if (drive_state_from_steering == DRIVE_STATE_DRIVE) {
+  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
+    return VEHICLE_DRIVE_STATE_NEUTRAL;
+  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
+    return VEHICLE_DRIVE_STATE_REVERSE;
+  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE) {
     if (cc_enabled_from_steering == 0) {
-      return DRIVE_STATE_DRIVE;
+      return VEHICLE_DRIVE_STATE_DRIVE;
     } else {
-      return DRIVE_STATE_CRUISE;
+      return VEHICLE_DRIVE_STATE_CRUISE;
     }
   }
 
-  return DRIVE_STATE_INVALID;
+  return VEHICLE_DRIVE_STATE_INVALID;
 }
 
 StatusCode motor_can_update_target_current_velocity() {
@@ -50,36 +50,36 @@ StatusCode motor_can_update_target_current_velocity() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  DriveState currentState = prv_resolve_current_state();
+  VehicleDriveState currentState = prv_resolve_current_state();
 
-  if (currentState == DRIVE_STATE_INVALID) {
+  if (currentState == VEHICLE_DRIVE_STATE_INVALID) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   frontControllerStorage->currentDriveState = currentState;
 
   switch (currentState) {
-    case DRIVE_STATE_DRIVE:
+    case VEHICLE_DRIVE_STATE_DRIVE:
       ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
       ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
-    case DRIVE_STATE_REVERSE:
+    case VEHICLE_DRIVE_STATE_REVERSE:
       ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
       ws22_motor_can_set_velocity(-WS22_CONTROLLER_MAX_VELOCITY);
       break;
-    case DRIVE_STATE_CRUISE:
+    case VEHICLE_DRIVE_STATE_CRUISE:
       ws22_motor_can_set_current(1.0f);
       ws22_motor_can_set_velocity(get_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
       break;
-    case DRIVE_STATE_BRAKE:
+    case VEHICLE_DRIVE_STATE_BRAKE:
       ws22_motor_can_set_current(0.0f);
       ws22_motor_can_set_velocity(0.0f);
       break;
-    case DRIVE_STATE_REGEN:
+    case VEHICLE_DRIVE_STATE_REGEN:
       ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
       ws22_motor_can_set_velocity(0.0f);
       break;
-    case DRIVE_STATE_NEUTRAL:
+    case VEHICLE_DRIVE_STATE_NEUTRAL:
       ws22_motor_can_set_current(0.0f);
       ws22_motor_can_set_velocity(0.0f);
       break;
