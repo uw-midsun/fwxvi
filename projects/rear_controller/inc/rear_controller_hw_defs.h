@@ -73,8 +73,20 @@
 #define REAR_CONTROLLER_MOTOR_LV_ENABLE_GPIO \
   { .port = GPIO_PORT_C, .pin = 12 }
 
+/** @brief  Rear Controller fan pwm */
+#define REAR_CONTROLLER_MOTOR_FAN_PWM \
+  { .port = GPIO_PORT_B, .pin = 4 }
+
+/** @brief  Rear Controller fan sense 2 */
+#define REAR_CONTROLLER_MOTOR_FAN_SENSE_1 \
+  { .port = GPIO_PORT_B, .pin = 0 }
+
+/** @brief  Rear Controller fan sense 1 */
+#define REAR_CONTROLLER_MOTOR_FAN_SENSE_2 \
+  { .port = GPIO_PORT_B, .pin = 1 }
+
 /************************************************************************************************
- * Current sense I2C definitions
+ * Current sense definitions
  ************************************************************************************************/
 
 /** @brief  Current sense I2C port */
@@ -89,7 +101,7 @@
   { .port = GPIO_PORT_B, .pin = 6 }
 
 /** @brief  Current sense slave address */
-#define REAR_CONTROLLER_CURRENT_SENSE_MAX17261_I2C_ADDR (96)
+#define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
 
 /************************************************************************************************
  * AFEs (LTC6811) SPI definitions

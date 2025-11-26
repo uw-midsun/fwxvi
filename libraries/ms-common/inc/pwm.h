@@ -28,6 +28,8 @@
 typedef enum {
   PWM_TIMER_1 = 0, /**< PWM Advanced control timer */
   PWM_TIMER_2,     /**< PWM General purpose timer */
+  PWM_TIMER_3,     /**< PWM General purpose timer */
+  PWM_TIMER_4,     /**< PWM General purpose timer */
   PWM_TIMER_15,    /**< PWM General purpose timer */
   PWM_TIMER_16,    /**< PWM General purpose timer */
   NUM_PWM_TIMERS,  /**< Number of PWM timers */

@@ -12,8 +12,10 @@
 
 /* Inter-component Headers */
 #include "adc.h"
+#include "dac.h"
 #include "gpio.h"
 #include "log.h"
+#include "opamp.h"
 #include "pedal_calib.h"
 
 /* Intra-component Headers */
@@ -69,10 +71,24 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   front_controller_storage = storage;
   front_controller_storage->accel_pedal_storage = &s_accel_pedal_storage;
 
+  // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
+
   /* Initialize hardware */
   gpio_init_pin(&s_accel_pedal_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
   adc_add_channel(&s_accel_pedal_gpio);
 
-  // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
+  dac_enable_channel(DAC_CHANNEL1);
+  dac_set_voltage(DAC_CHANNEL1, s_accel_pedal_storage.calibration_data.lower_value);
+
+  OpampConfig config = {
+    .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */
+    .vinm_sel = OPAMP_INVERTING_IO0,       /* PA0 - External feedback network */
+    .pga_gain = OPAMP_PROGRAMMABLE_GAIN_2, /* Not used in standalone mode */
+    .output_to_adc = true                  /* Flag for documentation */
+  };
+
+  opamp_configure(OPAMP_1, &config);
+  opamp_start(OPAMP_1);
+
   return STATUS_CODE_OK;
 }

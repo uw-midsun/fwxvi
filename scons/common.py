@@ -14,6 +14,7 @@ def parse_config(entry):
         'arm_libs': [],
         'cflags': [],
         'mocks': {},
+        "include_path" : [],
         'no_lint': False,
         "mpxe": False,
         "can": False,
@@ -31,6 +32,8 @@ def parse_config(entry):
 
 def flash_run(entry, hardware, flash_type):
     '''flash and run file, return a pyserial object which monitors the device serial output'''
+    serialData = None
+
     try:
         output = subprocess.check_output(["ls", "/dev/serial/by-id/"])
         device_path = f"/dev/serial/by-id/{str(output, 'ASCII').strip()}"

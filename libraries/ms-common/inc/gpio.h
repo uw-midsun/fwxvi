@@ -66,6 +66,9 @@ typedef enum {
   GPIO_ALT1_TIM1 = 0x01U, /**< Timer 1 */
   GPIO_ALT1_TIM2 = 0x01U, /**< Timer 2 */
 
+  // GPIO_ALT2 - TIM4
+  GPIO_ALT2_TIM4 = 0x02U, /**< Timer 4 */
+
   // GPIO_ALT4 - I2C
   GPIO_ALT4_I2C1 = 0x04U, /**< I2C Hardware block 1 */
   GPIO_ALT4_I2C2 = 0x04U, /**< I2C Hardware block 2 */
