@@ -24,16 +24,18 @@
  * @{
  */
 
-#define ZERO_OFFSET_MV 30
-#define SENSITIVITY_MV_PER_A 132  // 40 * Vcc
-#define R1 10000
-#define R2 3300
-
-bool check_valid(GpioAddress pin_address);
-
-StatusCode power_path_manager_run(void);
-
+/**
+ * @brief   Initialize the power path manager
+ * @param   storage Pointer to the rear controller storage
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid argument is passed
+ */
 StatusCode power_path_manager_init(RearControllerStorage *storage);
 
+/**
+ * @brief   Run power path manager calculations
+ * @return  STATUS_CODE_OK if manager runs successfully
+ */
+StatusCode power_path_manager_run(void);
 
 /** @} */
