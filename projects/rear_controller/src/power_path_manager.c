@@ -114,6 +114,8 @@ StatusCode power_path_manager_run(void) {
   uint32_t aux_voltage_mV = 0;
   int32_t aux_current_mA = 0;
 
+  adc_run();
+
   s_power_path_voltage_sense(&pcs_vsense_gpio, &pcs_voltage_mV);
   s_power_path_current_sense(&pcs_isense_gpio, &pcs_current_mA);
 
