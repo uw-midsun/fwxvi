@@ -21,6 +21,8 @@ static SoftTimer s_blink_timer;
 static const GpioAddress s_front_left_light;
 static const GpioAddress s_front_right_light;
 
+static void previous_blink_timer_callback(SoftTimerId timer_id);
+
 static void previous_blink_timer_callback(SoftTimerId timer_id) {
   if (current_state == STEERING_LIGHTS_LEFT_STATE) {
     gpio_toggle_state(&s_front_left_light);
@@ -66,7 +68,7 @@ void front_lights_signal_process_event(SteeringLightState new_state) {
   }
 }
 
-void front_lights_signal_init() {
+void front_lights_signal_init(void) {
   software_timer_init(FRONT_LIGHTS_BLINK_PERIOD_MS, previous_blink_timer_callback, &s_blink_timer);
   current_state = STEERING_LIGHTS_OFF_STATE;
 }
