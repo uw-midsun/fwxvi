@@ -45,9 +45,9 @@ typedef struct {
  *          Uses a SoftTimer internally to track timeouts.
  */
 typedef struct {
-  SoftTimer timer;                     // Internal soft timer used for timing
-  uint32_t period_ms;                  // Watchdog timeout period (in milliseconds)
-  SoftTimerCallback fault_callback;    // Called when watchdog expires (not kicked in time)
+  SoftTimer timer;                   // Internal soft timer used for timing
+  uint32_t period_ms;                // Watchdog timeout period (in milliseconds)
+  SoftTimerCallback fault_callback;  // Called when watchdog expires (not kicked in time)
 } SoftwareWatchdog;
 
 /** @brief  Software timer callback function */
@@ -113,8 +113,7 @@ uint32_t software_timer_remaining_time(SoftTimer *timer);
  * @param   fault_callback Function to call if watchdog is not kicked before timeout
  * @return  STATUS_CODE_OK if successfully initialized
  */
-StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms,
-                                  SoftTimerCallback fault_callback);
+StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms, SoftTimerCallback fault_callback);
 
 /**
  * @brief   "Kicks" (resets) the watchdog timer to prevent timeout
@@ -129,6 +128,5 @@ StatusCode software_watchdog_kick(SoftwareWatchdog *watchdog);
  * @return  STATUS_CODE_OK if successfully stopped
  */
 StatusCode software_watchdog_stop(SoftwareWatchdog *watchdog);
-
 
 /** @} */
