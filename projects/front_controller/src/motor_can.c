@@ -10,8 +10,9 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "front_controller_getters.h"
 #include "motor_can.h"
+
+#include "front_controller_getters.h"
 
 /* Intra-component Headers */
 
