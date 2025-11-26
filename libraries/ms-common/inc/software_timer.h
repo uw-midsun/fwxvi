@@ -45,9 +45,9 @@ typedef struct {
  *          Uses a SoftTimer internally to track timeouts.
  */
 typedef struct {
-  SoftTimer timer;                   // Internal soft timer used for timing
-  uint32_t period_ms;                // Watchdog timeout period (in milliseconds)
-  SoftTimerCallback fault_callback;  // Called when watchdog expires (not kicked in time)
+  SoftTimer timer;                  /**< Internal soft timer used for timing */
+  uint32_t period_ms;               /**< Watchdog timeout period (in milliseconds) */
+  SoftTimerCallback fault_callback; /**< Called when watchdog expires (not kicked in time) */
 } SoftwareWatchdog;
 
 /** @brief  Software timer callback function */

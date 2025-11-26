@@ -69,24 +69,30 @@ uint32_t software_timer_remaining_time(SoftTimer *timer) {
   return (xTimerGetExpiryTime(timer->id) - xTaskGetTickCount()) * 1000U / configTICK_RATE_HZ;
 }
 
-/* SOFTWARE WATCHDOG IMPLIMENTATION*/
-
 StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms, SoftTimerCallback fault_callback) {
-  if (!watchdog || !fault_callback) return STATUS_CODE_INVALID_ARGS;
+  if (watchdog == NULL || fault_callback == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
   watchdog->period_ms = period_ms;
   watchdog->fault_callback = fault_callback;
 
-  // Use soft_timer to implement the watchdog
+  /* Use soft_timer to implement the watchdog */
   return software_timer_init_and_start(period_ms, fault_callback, &watchdog->timer);
 }
 
 StatusCode software_watchdog_kick(SoftwareWatchdog *watchdog) {
-  if (!watchdog) return STATUS_CODE_INVALID_ARGS;
+  if (watchdog == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   return software_timer_reset(&watchdog->timer);
 }
 
 StatusCode software_watchdog_stop(SoftwareWatchdog *watchdog) {
-  if (!watchdog) return STATUS_CODE_INVALID_ARGS;
+  if (watchdog == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   return software_timer_cancel(&watchdog->timer);
 }
