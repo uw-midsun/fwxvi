@@ -19,8 +19,8 @@
 
 /* Intra-component Headers */
 #include "rear_controller.h"
-#include "rear_controller_setters.h"
 #include "rear_controller_getters.h"
+#include "rear_controller_setters.h"
 
 /**
  * @defgroup bms_carrier
@@ -35,12 +35,12 @@
 #define CELL_SENSE_CONVERSIONS 0
 
 // Fault thresholds - units of mV*10
-#define CELL_OVERVOLTAGE 42000 
-#define CELL_UNDERVOLTAGE 25000  
+#define CELL_OVERVOLTAGE 42000
+#define CELL_UNDERVOLTAGE 25000
 #define CELL_UNBALANCED 5000
-#define CELL_MAX_TEMPERATURE_DISCHARGE 60 
-#define CELL_MAX_TEMPERATURE_CHARGE 60 
-#define BOARD_MAX_TEMPERATURE 60 
+#define CELL_MAX_TEMPERATURE_DISCHARGE 60
+#define CELL_MAX_TEMPERATURE_CHARGE 60
+#define BOARD_MAX_TEMPERATURE 60
 
 #define SOLAR_VOLTAGE_THRESHOLD 42000
 
