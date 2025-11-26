@@ -26,11 +26,11 @@
 #define kcs 1000
 
 // Defines for MUX select pins
-static const GpioAddress MUX_SEL_0 = FRONT_CONTROLLER_MUX_SEL_0;
-static const GpioAddress MUX_SEL_1 = FRONT_CONTROLLER_MUX_SEL_1;
-static const GpioAddress MUX_SEL_2 = FRONT_CONTROLLER_MUX_SEL_2;
-static const GpioAddress MUX_SEL_3 = FRONT_CONTROLLER_MUX_SEL_3;
-static const GpioAddress MUX_OUT = FRONT_CONTROLLER_MUX_OUTPUT;
+static GpioAddress MUX_SEL_0 = FRONT_CONTROLLER_MUX_SEL_0;
+static GpioAddress MUX_SEL_1 = FRONT_CONTROLLER_MUX_SEL_1;
+static GpioAddress MUX_SEL_2 = FRONT_CONTROLLER_MUX_SEL_2;
+static GpioAddress MUX_SEL_3 = FRONT_CONTROLLER_MUX_SEL_3;
+static GpioAddress MUX_OUT = FRONT_CONTROLLER_MUX_OUTPUT;
 
 // struct to store all the current readings could be an array
 // use the original array to loop over mux select pins

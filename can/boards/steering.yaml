@@ -28,10 +28,6 @@ Messages:
         length: 8
       horn_enabled:
         length: 8
-      cruise_control_enabled:
-        length: 8
-      regen_braking_enabled:
-        length: 8
   target_velocity:
     id: 5
     critical: true

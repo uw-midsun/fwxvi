@@ -6,7 +6,7 @@ static FrontControllerStorage *frontControllerStorage;
 
 static DriveState prv_resolve_current_state() {
   if (frontControllerStorage->brake_enabled) {
-    if (get_steering_buttons_regen_braking_enabled() == 1) {
+    if (get_steering_buttons_regen_braking() == 1) {
       return DRIVE_STATE_REGEN;
     } else {
       return DRIVE_STATE_BRAKE;

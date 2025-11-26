@@ -28,8 +28,8 @@ typedef enum { STATE_DRIVING, STATE_BRAKING } OnePedalDriveState;
 
 typedef struct OpdStorage {
   OnePedalDriveState drive_state;
-  float max_braking_percentage;
-  uint32_t max_vehicle_speed_kph;
+  float max_braking_percentage;   /**< Max OPD regen braking percentage */
+  uint32_t max_vehicle_speed_kph; /**< Max vehicle speed in KPH */
 } OpdStorage;
 
 typedef enum { PTS_TYPE_LINEAR, PTS_TYPE_EXPONENTIAL, PTS_TYPE_QUADRATIC } PtsRelationType;

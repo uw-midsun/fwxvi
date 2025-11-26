@@ -57,5 +57,5 @@ typedef struct OutputGroupDef {
 } OutputGroupDef;
 
 extern const GpioAddress output_pins[NUM_OUTPUTS];
-extern const OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS];
+extern OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS];
 /** @} */

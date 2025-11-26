@@ -24,6 +24,7 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "motor_can.h"
 #include "opd.h"
 #include "pedal_calib_reader.h"
 #include "power_control_manager.h"

@@ -112,11 +112,11 @@ StatusCode opd_run() {
 
   float accel_percentage = accel_pedal_storage->accel_percentage;
 
-  float calculated_reading;
-  if (accel_percentage < front_controller_storage->config->accel_input_deadzone) {
-    calculated_reading = 0.0f;
-  } else {
-    opd_linear_calculate(accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+  float calculated_reading = 0;
+
+  StatusCode ret = opd_linear_calculate(accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+  if (ret != STATUS_CODE_OK) {
+    return ret;
   }
 
   front_controller_storage->accel_percentage = calculated_reading;

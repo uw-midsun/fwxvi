@@ -32,7 +32,7 @@ void power_control_manager_init() {
 }
 
 // Output Group Definitions
-static const OutputGroupDef output_group_all = {
+static OutputGroupDef output_group_all = {
   .num_outputs = 12,
   .outputs = { LEFT_SIG, RIGHT_SIG, BRAKE_LIGHT, BPS_LIGHT, DRIVER_FAN, REV_CAM, TELEM, STEERING, HORN, SPARE_1 },
 };
@@ -73,7 +73,7 @@ static OutputGroupDef output_group_horn_group = {
 };
 
 // Global array definition
-const OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
+OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,  // special case WAS NULL BEFORE !!!!!
   [IDLE_GROUP] = &output_group_idle_group,     [LEFT_GROUP] = &output_group_left_group, [RIGHT_GROUP] = &output_group_right_group,
   [HAZARD_GROUP] = &output_group_hazard_group, [BPS_GROUP] = &output_group_bps_group,   [BRAKE_GROUP] = &output_group_brake_group,
