@@ -25,6 +25,7 @@
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage;
 
