@@ -23,10 +23,7 @@
 static GpioAddress s_horn_gpio = FRONT_CONTROLLER_HORN_LS_ENABLE;
 
 StatusCode horn_run() {
-
-  bool horn_enabled = get_steering_buttons_horn_enabled();
-  
-  if (horn_enabled) {
+  if (get_steering_buttons_horn_enabled()) {
     gpio_set_state(&s_horn_gpio, GPIO_STATE_HIGH);
   } else {
     gpio_set_state(&s_horn_gpio, GPIO_STATE_LOW);
@@ -36,7 +33,6 @@ StatusCode horn_run() {
 }
 
 StatusCode horn_init() {
-  gpio_init_pin(&s_horn_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
-  adc_add_channel(&s_horn_gpio);
+  gpio_init_pin(&s_horn_gpio, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   return STATUS_CODE_OK;
 }
