@@ -51,26 +51,24 @@ typedef enum {
 } LightsSignalRequest;
 
 /**
- * @brief initialization of state variables and timer
+ * @brief   Initialize state variables and timer
  */
 void lights_signal_manager_init(void);
 
 /**
- * @brief Make a request to change the signal state
- *
- * @param req The requested light signal state
+ * @brief   Make a request to change the signal state
+ * @param   req The requested light signal state
  */
 void lights_signal_manager_request(LightsSignalRequest req);
 
 /**
- * @brief Update the signal state based on the current request
+ * @brief   Update the signal state based on the current request
  */
 void lights_signal_manager_update(void);
 
 /**
- * @brief Get the current state of the signal lights
- *
- * @return The current light signal state
+ * @brief   Get the current state of the signal lights
+ * @return  The current light signal state
  */
 LightsSignalState lights_signal_manager_get_state(void);
 
