@@ -7,7 +7,12 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "front_lights_signal.h"
+
+/* Intra-component Headers */
 
 static SteeringLightState current_state = STEERING_LIGHTS_OFF_STATE;
 static SoftTimer s_blink_timer;
