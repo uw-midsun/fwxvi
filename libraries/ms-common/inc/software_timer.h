@@ -29,6 +29,9 @@
 /** @brief  Redefine FreeRTOS TimerHandle_t to SoftTimerId */
 typedef TimerHandle_t SoftTimerId;
 
+/** @brief  Software timer callback function */
+typedef void (*SoftTimerCallback)(SoftTimerId id);
+
 /**
  * @brief   Soft timer storage
  */
@@ -36,6 +39,16 @@ typedef struct {
   StaticTimer_t buffer;
   SoftTimerId id;
 } SoftTimer;
+
+/**
+ * @brief   Software Watchdog Timer structure
+ *          Uses a SoftTimer internally to track timeouts.
+ */
+typedef struct {
+  SoftTimer timer;                  /**< Internal soft timer used for timing */
+  uint32_t period_ms;               /**< Watchdog timeout period (in milliseconds) */
+  SoftTimerCallback fault_callback; /**< Called when watchdog expires (not kicked in time) */
+} SoftwareWatchdog;
 
 /** @brief  Software timer callback function */
 typedef void (*SoftTimerCallback)(SoftTimerId id);
@@ -92,5 +105,28 @@ bool software_timer_inuse(SoftTimer *timer);
  * @return  Remaining time in ticks, or 0 if the timer has expired
  */
 uint32_t software_timer_remaining_time(SoftTimer *timer);
+
+/**
+ * @brief   Initializes the software watchdog timer
+ * @param   watchdog Pointer to the watchdog instance
+ * @param   period_ms Timeout period in milliseconds
+ * @param   fault_callback Function to call if watchdog is not kicked before timeout
+ * @return  STATUS_CODE_OK if successfully initialized
+ */
+StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms, SoftTimerCallback fault_callback);
+
+/**
+ * @brief   "Kicks" (resets) the watchdog timer to prevent timeout
+ * @param   watchdog Pointer to the watchdog instance
+ * @return  STATUS_CODE_OK if successfully kicked
+ */
+StatusCode software_watchdog_kick(SoftwareWatchdog *watchdog);
+
+/**
+ * @brief   Stops and disables the watchdog timer
+ * @param   watchdog Pointer to the watchdog instance
+ * @return  STATUS_CODE_OK if successfully stopped
+ */
+StatusCode software_watchdog_stop(SoftwareWatchdog *watchdog);
 
 /** @} */
