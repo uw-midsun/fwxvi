@@ -102,8 +102,6 @@ void test_opd_driving(void) {
   ret = opd_run();
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
 
-  // 1800,0.71200,0.76,0,0.70000
-
   /**
    * Normalized = (1500-1000)/(2000-1000) = 0.8
    * Deadzone = 0.05 (ignored)
