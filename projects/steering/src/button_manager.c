@@ -408,3 +408,23 @@ StatusCode button_manager_update(void) {
 
   return STATUS_CODE_OK;
 }
+
+StatusCode button_manager_led_enable(SteeringButtons button) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  status_ok_or_return(button_led_manager_set_color(button, rgb_led_colors[button]));
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode button_manager_led_disable(SteeringButtons button) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  status_ok_or_return(button_led_manager_set_color(button, (LEDPixels)BUTTON_LED_MANAGER_COLOR_OFF));
+
+  return STATUS_CODE_OK;
+}
