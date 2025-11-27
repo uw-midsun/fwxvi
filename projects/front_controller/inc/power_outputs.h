@@ -1,9 +1,9 @@
 #pragma once
 
 /************************************************************************************************
- * @file    power_control_ouputs.h
+ * @file    power_ouputs.h
  *
- * @brief   Power Control Ouputs
+ * @brief   Power Ouputs
  *
  * @date    2025-07-27
  * @author  Midnight Sun Team #24 - MSXVI
@@ -19,43 +19,47 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup power_control_ouputs
- * @brief    power_control_ouputs Firmware
+ * @defgroup Front_Controller
+ * @brief    Front Controller Board Firmware
  * @{
  */
 
-// Enum for the output groups
-
+/**
+ * @brief   Power outputs
+ * @details The order of this enum matters. It matches the schematic mux indices
+ */
 typedef enum {
-  LEFT_SIG = 0,
-  RIGHT_SIG,
+  HORN = 0,
+  SPARE_1,
   BRAKE_LIGHT,
   BPS_LIGHT,
-  DRIVER_FAN,
-  REV_CAM,
   TELEM,
+  REV_CAM,
+  DRIVER_FAN,
+  RIGHT_SIG,
   STEERING,
-  HORN,
-  SPARE_1,
+  LEFT_SIG,
   NUM_OUTPUTS,
 } OutputId;
 
+/**
+ * @brief   Power output groups
+ */
 typedef enum {
   OUTPUT_GROUP_ALL = 0,
   IDLE_GROUP,
-  LEFT_GROUP,
-  RIGHT_GROUP,
-  HAZARD_GROUP,
-  BPS_GROUP,
-  BRAKE_GROUP,
+  LEFT_LIGHTS_GROUP,
+  RIGHT_LIGHTS_GROUP,
+  HAZARD_LIGHTS_GROUP,
+  BPS_LIGHTS_GROUP,
+  BRAKE_LIGHTS_GROUP,
+  HORN_GROUP,
   NUM_OUTPUT_GROUPS,
 } OutputGroup;
 
-typedef struct OutputGroupDef {
-  uint8_t num_outputs;   // how many outputs are in each group
-  OutputId outputs[12];  // array for which outputs belong to each group
+typedef struct {
+  uint8_t num_outputs;            /**< How many outputs are in each group */
+  OutputId outputs[NUM_OUTPUTS];  /**< Array for which outputs belong to each group */
 } OutputGroupDef;
 
-extern const GpioAddress output_pins[NUM_OUTPUTS];
-extern OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS];
 /** @} */
