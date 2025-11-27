@@ -30,14 +30,16 @@
  * @brief   Vehicle drive states
  */
 typedef enum {
-  VEHICLE_NEUTRAL, /**< Neutral state */
-  VEHICLE_DRIVE,   /**< Drive state */
-  VEHICLE_REVERSE, /**< Reverse state */
+  VEHICLE_DRIVE_STATE_INVALID = 0, /**< Wrong State */
+  VEHICLE_DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
+  VEHICLE_DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
+  VEHICLE_DRIVE_STATE_REVERSE,     /**< Car Drive Reverse*/
 
   /* Extra drive state types used only by motor */
 
-  VEHICLE_CRUISE, /**< Cruise Control state */
-  VEHICLE_BRAKE,  /**< Brake state */
+  VEHICLE_DRIVE_STATE_CRUISE, /**< Car Cruise Constant Velocity */
+  VEHICLE_DRIVE_STATE_BRAKE,  /**< Car Brake */
+  VEHICLE_DRIVE_STATE_REGEN,  /**< Car Brake With Regen */
 } VehicleDriveState;
 
 /**
@@ -107,10 +109,11 @@ typedef enum {
  * @brief   Steering lights definitions
  */
 typedef enum {
-  STEERING_LIGHTS_OFF_STATE,   /**< Steering lights off turn */
-  STEERING_LIGHTS_LEFT_STATE,  /**< Steering light left turn */
-  STEERING_LIGHTS_RIGHT_STATE, /**< Steering light right turn */
-  NUM_STEERING_LIGHTS,         /**< Number of steering light states */
+  STEERING_LIGHTS_OFF_STATE,    /**< Steering lights off turn */
+  STEERING_LIGHTS_LEFT_STATE,   /**< Steering light left turn */
+  STEERING_LIGHTS_RIGHT_STATE,  /**< Steering light right turn */
+  STEERING_LIGHTS_HAZARD_STATE, /**< Steering light hazard state */
+  NUM_STEERING_LIGHTS,          /**< Number of steering light states */
 } SteeringLightState;
 
 /**

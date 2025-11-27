@@ -25,6 +25,7 @@
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage;
 
@@ -191,11 +192,75 @@ static void horn_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_horn_enabled(false);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
+#endif
+
+  set_steering_buttons_horn_enabled(true);
+}
+
+/************************************************************************************************
+ * Regen button handlers
+ ************************************************************************************************/
+
+static void regen_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+#endif
+}
+
+static void regen_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control up button handlers
+ ************************************************************************************************/
+
+static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_up_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control down button handlers
+ ************************************************************************************************/
+
+static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_down_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
 #endif
 }
 

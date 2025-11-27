@@ -10,7 +10,7 @@ STATE_COL = 3   # 0 = accel, 1 = braking
 SPEED_COL = 4   # speed (0.0 to 1.0 in 0.1 steps)
 
 groups = defaultdict(list)
-with open('test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
+with open('../test/test_results/opd_curve.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     next(reader, None)
     for row in reader:
