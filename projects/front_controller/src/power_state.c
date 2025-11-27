@@ -1,24 +1,39 @@
+/************************************************************************************************
+ * @file   power_state.c
+ *
+ * @brief  Source file for power state manager
+ *
+ * @date   2025-11-26
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 #include "power_state.h"
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 #include "front_controller_getters.h"
 #include "power_control_manager.h"
 
 static FrontControllerStorage *frontControllerStorage;
 static PowerState previous_power_state = POWER_STATE_INVALID;
 
-static void set_load_switches() {
+StatusCode power_state_set_load_switches() {
   uint8_t bps_fault_from_rear = get_rear_controller_status_bps_fault();
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();
+  previous_power_state = frontControllerStorage->current_power_state;
+
   if (bps_fault_from_rear == 1) {
     frontControllerStorage->current_power_state = POWER_STATE_FAULT;
-  } else if (drive_state_from_steering == DRIVE_STATE_DRIVE || drive_state_from_steering == DRIVE_STATE_CRUISE || drive_state_from_steering == DRIVE_STATE_REVERSE) {
+  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
     if (is_precharge_complete_from_rear == 1) {
       frontControllerStorage->current_power_state = POWER_STATE_ENGAGED;
     } else {
       frontControllerStorage->current_power_state = previous_power_state;
     }
-  } else if (drive_state_from_steering == DRIVE_STATE_NEUTRAL) {
+  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
     frontControllerStorage->current_power_state = POWER_STATE_IDLE;
   }
 
@@ -31,6 +46,8 @@ static void set_load_switches() {
     power_control_set_output_group(OUTPUT_GROUP_ALL, false);
     power_control_set_output_group(IDLE_GROUP, true);
   }
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode power_state_init(FrontControllerStorage *storage) {
