@@ -19,11 +19,11 @@
 
 /** @brief  Derived from data sheet */
 #define POWER_MANAGER_HI_SIDE_CURRENT_SENSE_RATIO 3000
-#define POWER_MANAGER_HI_SIDE_RESISTOR_OHMS       1000
+#define POWER_MANAGER_HI_SIDE_RESISTOR_OHMS 1000
 
 /** @brief  Derived from data sheet */
 #define POWER_MANAGER_LO_SIDE_CURRENT_SENSE_RATIO 1000
-#define POWER_MANAGER_LO_SIDE_RESISTOR_OHMS       10000
+#define POWER_MANAGER_LO_SIDE_RESISTOR_OHMS 10000
 
 static PowerManagerStorage s_power_manager_storage = { 0U };
 
@@ -92,8 +92,12 @@ static OutputGroupDef output_group_horn_group = {
 
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
-  [IDLE_GROUP] = &output_group_idle_group,     [LEFT_LIGHTS_GROUP] = &output_group_left_lights_group, [RIGHT_LIGHTS_GROUP] = &output_group_right_lights_group,
-  [HAZARD_LIGHTS_GROUP] = &output_group_hazard_lights_group, [BPS_LIGHTS_GROUP] = &output_group_bps_lights_group,   [BRAKE_LIGHTS_GROUP] = &output_group_brake_lights_group,
+  [IDLE_GROUP] = &output_group_idle_group,
+  [LEFT_LIGHTS_GROUP] = &output_group_left_lights_group,
+  [RIGHT_LIGHTS_GROUP] = &output_group_right_lights_group,
+  [HAZARD_LIGHTS_GROUP] = &output_group_hazard_lights_group,
+  [BPS_LIGHTS_GROUP] = &output_group_bps_lights_group,
+  [BRAKE_LIGHTS_GROUP] = &output_group_brake_lights_group,
   [HORN_GROUP] = &output_group_horn_group,
 };
 

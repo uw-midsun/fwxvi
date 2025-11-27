@@ -13,6 +13,7 @@
 
 /* Intra-component Headers */
 #include "motor_can.h"
+
 #include "front_controller_getters.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;

@@ -58,8 +58,8 @@ typedef enum {
 } OutputGroup;
 
 typedef struct {
-  uint8_t num_outputs;            /**< How many outputs are in each group */
-  OutputId outputs[NUM_OUTPUTS];  /**< Array for which outputs belong to each group */
+  uint8_t num_outputs;           /**< How many outputs are in each group */
+  OutputId outputs[NUM_OUTPUTS]; /**< Array for which outputs belong to each group */
 } OutputGroupDef;
 
 /** @} */

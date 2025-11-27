@@ -26,7 +26,7 @@
  */
 
 typedef struct PowerManagerStorage {
-    uint16_t current_readings[NUM_OUTPUTS];
+  uint16_t current_readings[NUM_OUTPUTS];
 } PowerManagerStorage;
 
 /**

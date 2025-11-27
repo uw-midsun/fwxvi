@@ -26,10 +26,10 @@
  */
 
 typedef enum {
-  FRONT_CONTROLLER_STATE_INIT = 0,  /**< System init, checks and startup */
-  FRONT_CONTROLLER_STATE_IDLE,      /**< Ready but not driving or charging, cars in neutral */
-  FRONT_CONTROLLER_STATE_DRIVE,     /**< Driving: motor relays closed, LV enabled */
-  FRONT_CONTROLLER_STATE_FAULT      /**< Faulted: relays open, latched until reset */
+  FRONT_CONTROLLER_STATE_INIT = 0, /**< System init, checks and startup */
+  FRONT_CONTROLLER_STATE_IDLE,     /**< Ready but not driving or charging, cars in neutral */
+  FRONT_CONTROLLER_STATE_DRIVE,    /**< Driving: motor relays closed, LV enabled */
+  FRONT_CONTROLLER_STATE_FAULT     /**< Faulted: relays open, latched until reset */
 } FrontControllerState;
 
 typedef enum {
