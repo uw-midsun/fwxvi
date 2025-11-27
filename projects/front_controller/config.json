@@ -11,7 +11,8 @@
     "mocks": {
         "test_accel_pedal": ["adc_read_raw"],
         "test_brake_pedal": ["adc_read_raw"],
-        "test_opd": ["adc_read_raw"]
+        "test_opd": ["adc_read_raw"],
+        "test_power_state": ["power_control_set_output_group"]
     },
     "can": true
 }
