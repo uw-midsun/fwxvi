@@ -45,11 +45,9 @@ typedef struct {
   bool initialized;      /**< Initialized flag */
 } UartPortData;
 
-static UartPortData s_port[NUM_UART_PORTS] = {
-  [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
-  [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
-  [UART_PORT_3] = { .rcc_cmd = s_enable_usart3, .irq = USART3_IRQn, .base = USART3, .initialized = false }
-};
+static UartPortData s_port[NUM_UART_PORTS] = { [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
+                                               [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
+                                               [UART_PORT_3] = { .rcc_cmd = s_enable_usart3, .irq = USART3_IRQn, .base = USART3, .initialized = false } };
 
 static const uint16_t s_uart_flow_control_map[] = {
   [UART_FLOW_CONTROL_NONE] = UART_HWCONTROL_NONE,
@@ -113,7 +111,7 @@ static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is
   } else if (huart->Instance == USART2) {
     xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
   } else {
-    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_3], &higher_priority_task); 
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_3], &higher_priority_task);
   }
 
   portYIELD_FROM_ISR(higher_priority_task);
