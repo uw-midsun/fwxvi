@@ -24,6 +24,7 @@
 /* Intra-component Headers */
 #include "cell_sense.h"
 #include "rear_controller.h"
+#include "rear_controller_getters.h"
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_setters.h"
@@ -145,10 +146,20 @@ static StatusCode s_check_thermistors() {
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
     adbms_afe_storage->board_thermistor_voltages[device] = calculate_board_thermistor_temperature(adbms_afe_storage->board_thermistor_voltages[device]);
 
-    if (adbms_afe_storage->thermistor_voltages[device] >= BOARD_MAX_TEMPERATURE) {
-      LOG_DEBUG("BOARD OVERTEMP\n");
-      set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
-      status = STATUS_CODE_INTERNAL_ERROR;
+    if (rear_controller_storage->pack_current < 0) {
+      /* Discharging max temp */
+      if (adbms_afe_storage->thermistor_voltages[device] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
+        LOG_DEBUG("BOARD OVERTEMP\n");
+        set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
+        status = STATUS_CODE_INTERNAL_ERROR;
+      }
+    } else {
+      /* Charging max temp */
+      if (adbms_afe_storage->thermistor_voltages[device] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
+        LOG_DEBUG("BOARD OVERTEMP\n");
+        set_rear_controller_status_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
+        status = STATUS_CODE_INTERNAL_ERROR;
+      }
     }
 
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
@@ -321,7 +332,7 @@ static StatusCode s_cell_sense_run() {
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
-  if (max_voltage - min_voltage >= (CELL_UNBALANCED_LIMIT_mV * 10U)) {
+  if ((max_voltage - min_voltage) >= (CELL_UNBALANCED_LIMIT_mV * 10)) {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
     LOG_DEBUG("UNBALANCED\n");
     set_rear_controller_status_bps_fault(BPS_FAULT_UNBALANCE);

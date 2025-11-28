@@ -16,10 +16,14 @@
 #include "can.h"
 #include "flash.h"
 #include "log.h"
+#include "master_tasks.h"
 #include "status.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "current_sense.h"
+#include "killswitch.h"
+#include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"

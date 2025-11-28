@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"

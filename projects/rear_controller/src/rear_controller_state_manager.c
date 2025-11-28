@@ -19,7 +19,7 @@
 #include "relays.h"
 
 static RearControllerStorage *rear_controller_storage = NULL;
-static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
+static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 
 /**
  * @brief   Asynchronous event handler

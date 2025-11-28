@@ -19,12 +19,10 @@
 
 /* Intra-component Headers */
 #include "rear_controller.h"
-#include "rear_controller_getters.h"
-#include "rear_controller_setters.h"
 
 /**
- * @defgroup bms_carrier
- * @brief    bms_carrier Firmware
+ * @defgroup Rear_Controller
+ * @brief    Rear Controller Board Firmware
  * @{
  */
 
@@ -38,11 +36,12 @@
 #define AFE_BALANCING_UPPER_THRESHOLD 41500
 #define AFE_BALANCING_LOWER_THRESHOLD 40000
 
+/**
+ * @brief   Initializes the cell sense sub-system
+ * @param   storage Pointer to the rear controller storage
+ * @return  STATUS_CODE_OK if initialized succesfully
+ *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
+ */
 StatusCode cell_sense_init(RearControllerStorage *storage);
-
-// Mark cell for discharging (takes effect after config is re-written)
-// |cell| should be [0, settings.num_cells)
-
-StatusCode cell_discharge(AdbmsAfeStorage *afe);
 
 /** @} */
