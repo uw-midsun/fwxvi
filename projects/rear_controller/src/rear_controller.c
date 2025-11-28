@@ -23,8 +23,8 @@
 /* Intra-component Headers */
 #include "current_sense.h"
 #include "killswitch.h"
-#include "precharge.h"
 #include "power_path_manager.h"
+#include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
