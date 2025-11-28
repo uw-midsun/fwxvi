@@ -28,8 +28,13 @@
 static inline void s_enable_usart1(void) {
   __HAL_RCC_USART1_CLK_ENABLE();
 }
+
 static inline void s_enable_usart2(void) {
   __HAL_RCC_USART2_CLK_ENABLE();
+}
+
+static inline void s_enable_usart3(void) {
+  __HAL_RCC_USART3_CLK_ENABLE();
 }
 
 /** @brief  UART Port data */
@@ -43,6 +48,7 @@ typedef struct {
 static UartPortData s_port[NUM_UART_PORTS] = {
   [UART_PORT_1] = { .rcc_cmd = s_enable_usart1, .irq = USART1_IRQn, .base = USART1, .initialized = false },
   [UART_PORT_2] = { .rcc_cmd = s_enable_usart2, .irq = USART2_IRQn, .base = USART2, .initialized = false },
+  [UART_PORT_3] = { .rcc_cmd = s_enable_usart3, .irq = USART3_IRQn, .base = USART3, .initialized = false }
 };
 
 static const uint16_t s_uart_flow_control_map[] = {
@@ -104,9 +110,12 @@ static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is
 
   if (huart->Instance == USART1) {
     xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_1], &higher_priority_task);
-  } else {
+  } else if (huart->Instance == USART2) {
     xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_2], &higher_priority_task);
+  } else {
+    xSemaphoreGiveFromISR(s_uart_cmplt_handle[UART_PORT_3], &higher_priority_task); 
   }
+
   portYIELD_FROM_ISR(higher_priority_task);
 }
 
@@ -116,6 +125,10 @@ void USART1_IRQHandler(void) {
 
 void USART2_IRQHandler(void) {
   HAL_UART_IRQHandler(&s_uart_handles[UART_PORT_2]);
+}
+
+void USART3_IRQHandler(void) {
+  HAL_UART_IRQHandler(&s_uart_handles[UART_PORT_3]);
 }
 
 /* Callback functions for HAL UART TX */
@@ -178,9 +191,12 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   if (uart == UART_PORT_1) {
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART1;
     periph_clk_init.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  } else {
+  } else if (uart == UART_PORT_3) {
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART2;
     periph_clk_init.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  } else {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_USART3;
+    periph_clk_init.Usart2ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
   }
 
   if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK) {

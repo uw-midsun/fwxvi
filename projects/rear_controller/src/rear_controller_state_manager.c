@@ -62,11 +62,15 @@ StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
 
   rear_controller_storage = storage;
 
-  relays_close_pos();
-  relays_close_solar();
-  relays_close_neg();
+  StatusCode status = relays_close_pos();
+  status = relays_close_solar();
+  status = relays_close_neg();
 
-  rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+  if (status == STATUS_CODE_OK) {
+    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+  } else {
+    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+  }
 
   return STATUS_CODE_OK;
 }
@@ -104,11 +108,15 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
     case REAR_CONTROLLER_STATE_FAULT:
       if (event == REAR_CONTROLLER_EVENT_RESET) {
-        relays_close_pos();
-        relays_close_solar();
-        relays_close_neg();
+        StatusCode status = relays_close_pos();
+        status = relays_close_solar();
+        status = relays_close_neg();
 
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+        if (status == STATUS_CODE_OK) {
+          rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+        } else {
+          rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+        }
       }
       break;
 
