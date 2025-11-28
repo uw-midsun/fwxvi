@@ -24,7 +24,6 @@ StatusCode status;
 void setup_test(void) {
   // Initialize the file system if needed
   status = fs_init();
-  printf("%d", status);
 
   // Additional setup can be done here
   printf("Test setup complete.\n");
@@ -39,7 +38,7 @@ void test_superblock_and_first_block_setup(void) {
   TEST_ASSERT_EQUAL(BLOCKS_PER_GROUP, superBlock->blocksPerGroup);
 
   // Test offset is correct
-  TEST_ASSERT_EQUAL_UINT8(*(fs_memory + sizeof(SuperBlock)), ((uint8_t *)blockGroups)[0]);
+  TEST_ASSERT_EQUAL_UINT8(sizeof(SuperBlock), ((uint8_t *)blockGroups)[0]);
 
   FileEntry *root = &superBlock->rootFolderMetadata;
   TEST_ASSERT_EQUAL_STRING("/", root->fileName);
