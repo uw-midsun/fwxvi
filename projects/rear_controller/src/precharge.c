@@ -18,6 +18,7 @@
 /* Intra-component Headers */
 #include "precharge.h"
 #include "rear_controller_hw_defs.h"
+#include "rear_controller_setters.h"
 
 static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
@@ -37,7 +38,7 @@ StatusCode precharge_init(Event event, const Task *task) {
   if (state == GPIO_STATE_HIGH) {
     gpio_register_interrupt(&precharge_address, &precharge_settings, event, task);
   } else {
-    /* TODO: Handle precharge complete */
+    set_battery_stats_B_motor_precharge_complete(true);
   }
 
   return STATUS_CODE_OK;

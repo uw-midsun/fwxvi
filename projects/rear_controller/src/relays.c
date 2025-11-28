@@ -32,6 +32,8 @@ typedef struct {
 
   GpioAddress motor_relay_en;    /**< Motor relay enable */
   GpioAddress motor_relay_sense; /**< Motor relay sense */
+
+  GpioAddress ws22_lv_en; /**< Wavesculptor 22 low-voltage enable */
 } RelayStorage;
 
 static RelayStorage s_relay_storage = {
@@ -46,6 +48,8 @@ static RelayStorage s_relay_storage = {
 
   .motor_relay_en = REAR_CONTROLLER_MOTOR_RELAY_ENABLE_GPIO,   /**< Motor relay enable */
   .motor_relay_sense = REAR_CONTROLLER_MOTOR_RELAY_SENSE_GPIO, /**< Motor relay sense */
+
+  .ws22_lv_en = REAR_CONTROLLER_MOTOR_LV_ENABLE_GPIO, /**< Wavesculptor 22 low-voltage enable */
 };
 
 static RearControllerStorage *rear_controller_storage = NULL;
@@ -88,9 +92,16 @@ StatusCode relays_reset(void) {
   return STATUS_CODE_OK;
 }
 
+StatusCode relays_enable_ws22_lv(void) {
+  return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_HIGH);
+}
+
+StatusCode relays_disable_ws22_lv(void) {
+  return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_HIGH);
+}
+
 StatusCode relays_close_motor(void) {
   gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_HIGH);
-  delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
   if (gpio_get_state(&s_relay_storage.motor_relay_sense) != GPIO_STATE_HIGH) {
     return STATUS_CODE_INTERNAL_ERROR;
