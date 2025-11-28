@@ -106,4 +106,5 @@
 
 /** @brief  Front Controller accelerator pedal input */
 #define FRONT_CONTROLLER_BOARD_LED FRONT_CONTROLLER_GPIO_DEF(B, 10)
+
 /** @} */

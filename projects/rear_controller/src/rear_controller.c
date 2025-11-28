@@ -46,6 +46,8 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
+static GpioAddress s_rear_controller_board_led = REAR_CONTROLLER_BOARD_LED;
+
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -68,8 +70,14 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
 
-  status_ok_or_return(relays_init(rear_controller_storage));
-  status_ok_or_return(rear_controller_state_manager_init(rear_controller_storage));
+  /* Initialize rear controller systems */
+  relays_init(rear_controller_storage);
+  rear_controller_state_manager_init(rear_controller_storage);
+  killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
+  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
+  current_sense_init(rear_controller_storage);
+
+  gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   LOG_DEBUG("Rear controller initialized\r\n");
   return STATUS_CODE_OK;

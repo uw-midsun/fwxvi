@@ -39,7 +39,7 @@
 
 /** @brief  Rear Controller positive relay enable pin */
 #define REAR_CONTROLLER_POS_RELAY_ENABLE_GPIO \
-  { .port = GPIO_PORT_A, .pin = 4 }
+  { .port = GPIO_PORT_A, .pin = 6 }
 
 /** @brief  Rear Controller positive relay sense pin */
 #define REAR_CONTROLLER_POS_RELAY_SENSE_GPIO \
@@ -47,11 +47,11 @@
 
 /** @brief  Rear Controller negative relay enable pin */
 #define REAR_CONTROLLER_NEG_RELAY_ENABLE_GPIO \
-  { .port = GPIO_PORT_B, .pin = 2 }
+  { .port = GPIO_PORT_A, .pin = 4 }
 
 /** @brief  Rear Controller negative relay sense pin */
 #define REAR_CONTROLLER_NEG_RELAY_SENSE_GPIO \
-  { .port = GPIO_PORT_A, .pin = 12 }
+  { .port = GPIO_PORT_A, .pin = 3 }
 
 /** @brief  Rear Controller solar relay enable pin */
 #define REAR_CONTROLLER_SOLAR_RELAY_ENABLE_GPIO \
@@ -67,11 +67,11 @@
 
 /** @brief  Rear Controller motor relay enable pin */
 #define REAR_CONTROLLER_MOTOR_RELAY_ENABLE_GPIO \
-  { .port = GPIO_PORT_A, .pin = 9 }
+  { .port = GPIO_PORT_C, .pin = 4 }
 
 /** @brief  Rear Controller motor relay sense pin */
 #define REAR_CONTROLLER_MOTOR_RELAY_SENSE_GPIO \
-  { .port = GPIO_PORT_A, .pin = 10 }
+  { .port = GPIO_PORT_A, .pin = 7 }
 
 /** @brief  Rear Controller motor low-voltage enable pin */
 #define REAR_CONTROLLER_MOTOR_LV_ENABLE_GPIO \
@@ -102,11 +102,11 @@
 
 /** @brief  Current sense I2C serial data pin */
 #define REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO \
-  { .port = GPIO_PORT_B, .pin = 7 }
+  { .port = GPIO_PORT_B, .pin = 11 }
 
 /** @brief  Current sense I2C clock pin */
 #define REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO \
-  { .port = GPIO_PORT_B, .pin = 6 }
+  { .port = GPIO_PORT_B, .pin = 10 }
 
 /** @brief  Current sense slave address */
 #define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
@@ -183,6 +183,15 @@
 
 /** @brief  Killswitch monitoring pin */
 #define REAR_CONTROLLER_KILLSWITCH_MONITOR_GPIO \
-  { .port = GPIO_PORT_A, .pin = 11 }
+  { .port = GPIO_PORT_C, .pin = 5 }
+
+
+/************************************************************************************************
+ * Board LED definition
+ ************************************************************************************************/
+
+/** @brief  Rear Controller board LED */
+#define REAR_CONTROLLER_BOARD_LED \
+  { .port = GPIO_PORT_A, .pin = 10 }
 
 /** @} */

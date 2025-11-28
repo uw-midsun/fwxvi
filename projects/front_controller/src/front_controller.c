@@ -81,6 +81,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   power_sense_init();
   power_control_manager_init();
+
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
