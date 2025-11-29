@@ -10,17 +10,17 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+
+/* Intra-component Headers */
 #include "motor_can.h"
 
 #include "front_controller_getters.h"
 
-/* Intra-component Headers */
+static FrontControllerStorage *front_controller_storage = NULL;
 
-static FrontControllerStorage *frontControllerStorage;
-
-static VehicleDriveState prv_resolve_current_state() {
-  if (frontControllerStorage->brake_enabled) {
-    if (get_steering_buttons_regen_braking() == 1) {
+static VehicleDriveState s_resolve_current_state() {
+  if (front_controller_storage->brake_enabled) {
+    if (get_steering_buttons_regen_braking()) {
       return VEHICLE_DRIVE_STATE_REGEN;
     } else {
       return VEHICLE_DRIVE_STATE_BRAKE;
@@ -46,25 +46,25 @@ static VehicleDriveState prv_resolve_current_state() {
 }
 
 StatusCode motor_can_update_target_current_velocity() {
-  if (frontControllerStorage == NULL) {
+  if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  VehicleDriveState currentState = prv_resolve_current_state();
+  VehicleDriveState current_state = s_resolve_current_state();
 
-  if (currentState == VEHICLE_DRIVE_STATE_INVALID) {
+  if (current_state == VEHICLE_DRIVE_STATE_INVALID) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  frontControllerStorage->currentDriveState = currentState;
+  front_controller_storage->currentDriveState = current_state;
 
-  switch (currentState) {
+  switch (current_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
-      ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
+      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
       ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_REVERSE:
-      ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
+      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
       ws22_motor_can_set_velocity(-WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
@@ -76,7 +76,7 @@ StatusCode motor_can_update_target_current_velocity() {
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_REGEN:
-      ws22_motor_can_set_current(frontControllerStorage->accel_percentage);
+      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_NEUTRAL:
@@ -84,8 +84,8 @@ StatusCode motor_can_update_target_current_velocity() {
       ws22_motor_can_set_velocity(0.0f);
       break;
     default:
-      // invalid drive state
-      return STATUS_CODE_INVALID_ARGS;
+      /* Invalid drive state */
+      return STATUS_CODE_INTERNAL_ERROR;
   }
 
   return STATUS_CODE_OK;
@@ -96,7 +96,7 @@ StatusCode motor_can_init(FrontControllerStorage *storage) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  frontControllerStorage = storage;
+  front_controller_storage = storage;
 
   return STATUS_CODE_OK;
 }

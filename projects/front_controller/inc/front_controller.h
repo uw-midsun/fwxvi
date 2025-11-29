@@ -71,7 +71,7 @@ typedef struct {
   float accel_percentage;              /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   VehicleDriveState currentDriveState; /**< Current drive state of vehicle, determined by motor_can.c */
 
-  struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
+  struct PowerManagerStorage *power_manager_storage;  /**< Power manager storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
   struct BrakePedalStorage *brake_pedal_storage;      /**< Brake pedal storage */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */

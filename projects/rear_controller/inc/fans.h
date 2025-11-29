@@ -17,8 +17,8 @@
 #include "rear_controller.h"
 
 /**
- * @defgroup fans
- * @brief    fans Firmware
+ * @defgroup Rear_Controller
+ * @brief    Rear Controller Board Firmware
  * @{
  */
 
@@ -28,6 +28,7 @@
  * @brief   Initializes the fan sub-system
  * @param   storage Pointer to the rear controller storage
  * @return  STATUS_CODE_OK if initialized succesfully
+ *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
  */
 StatusCode fans_init(RearControllerStorage *storage);
 

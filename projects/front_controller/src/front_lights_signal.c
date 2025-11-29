@@ -10,65 +10,80 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "front_lights_signal.h"
+#include "global_enums.h"
+#include "gpio.h"
+#include "software_timer.h"
 
 /* Intra-component Headers */
+#include "front_lights_signal.h"
+#include "power_manager.h"
 
-static SteeringLightState current_state = STEERING_LIGHTS_OFF_STATE;
 static SoftTimer s_blink_timer;
+static SteeringLightState current_state = STEERING_LIGHTS_OFF_STATE;
 
-// TODO: Update GPIO pins
-static const GpioAddress s_front_left_light;
-static const GpioAddress s_front_right_light;
+static void s_blink_timer_callback(SoftTimerId timer_id) {
+  switch (current_state) {
+    case STEERING_LIGHTS_LEFT_STATE:
+      power_manager_toggle_output_group(LEFT_LIGHTS_GROUP);
+      break;
 
-static void previous_blink_timer_callback(SoftTimerId timer_id);
+    case STEERING_LIGHTS_RIGHT_STATE:
+      power_manager_toggle_output_group(RIGHT_LIGHTS_GROUP);
+      break;
 
-static void previous_blink_timer_callback(SoftTimerId timer_id) {
-  if (current_state == STEERING_LIGHTS_LEFT_STATE) {
-    gpio_toggle_state(&s_front_left_light);
-  } else if (current_state == STEERING_LIGHTS_RIGHT_STATE) {
-    gpio_toggle_state(&s_front_right_light);
-  } else if (current_state == STEERING_LIGHTS_HAZARD_STATE) {
-    gpio_toggle_state(&s_front_left_light);
-    gpio_toggle_state(&s_front_right_light);
+    case STEERING_LIGHTS_HAZARD_STATE:
+      power_manager_toggle_output_group(LEFT_LIGHTS_GROUP);
+      power_manager_toggle_output_group(RIGHT_LIGHTS_GROUP);
+      break;
+
+    default:
+      break;
   }
+
   software_timer_reset(&s_blink_timer);
 }
 
-void front_lights_signal_process_event(SteeringLightState new_state) {
+StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
   current_state = new_state;
 
   switch (current_state) {
     case STEERING_LIGHTS_OFF_STATE:
       software_timer_cancel(&s_blink_timer);
-      gpio_set_state(&s_front_left_light, GPIO_STATE_LOW);
-      gpio_set_state(&s_front_right_light, GPIO_STATE_LOW);
+      power_manager_set_output_group(LEFT_LIGHTS_GROUP, false);
+      power_manager_set_output_group(RIGHT_LIGHTS_GROUP, false);
       break;
 
     case STEERING_LIGHTS_LEFT_STATE:
       software_timer_start(&s_blink_timer);
-      gpio_set_state(&s_front_left_light, GPIO_STATE_HIGH);
-      gpio_set_state(&s_front_right_light, GPIO_STATE_LOW);
+      power_manager_set_output_group(LEFT_LIGHTS_GROUP, true);
+      power_manager_set_output_group(RIGHT_LIGHTS_GROUP, false);
       break;
 
     case STEERING_LIGHTS_RIGHT_STATE:
       software_timer_start(&s_blink_timer);
-      gpio_set_state(&s_front_left_light, GPIO_STATE_LOW);
-      gpio_set_state(&s_front_right_light, GPIO_STATE_HIGH);
+      power_manager_set_output_group(LEFT_LIGHTS_GROUP, false);
+      power_manager_set_output_group(RIGHT_LIGHTS_GROUP, true);
       break;
 
     case STEERING_LIGHTS_HAZARD_STATE:
       software_timer_start(&s_blink_timer);
-      gpio_set_state(&s_front_left_light, GPIO_STATE_HIGH);
-      gpio_set_state(&s_front_right_light, GPIO_STATE_HIGH);
+      power_manager_set_output_group(LEFT_LIGHTS_GROUP, true);
+      power_manager_set_output_group(RIGHT_LIGHTS_GROUP, true);
       break;
     default:
-      // invalid state
+      /* Invalid state */
+      power_manager_set_output_group(LEFT_LIGHTS_GROUP, false);
+      power_manager_set_output_group(RIGHT_LIGHTS_GROUP, false);
       break;
   }
+
+  return STATUS_CODE_OK;
 }
 
-void front_lights_signal_init(void) {
-  software_timer_init(FRONT_LIGHTS_BLINK_PERIOD_MS, previous_blink_timer_callback, &s_blink_timer);
+StatusCode front_lights_signal_init(void) {
+  status_ok_or_return(software_timer_init(FRONT_LIGHTS_BLINK_PERIOD_MS, s_blink_timer_callback, &s_blink_timer));
+
   current_state = STEERING_LIGHTS_OFF_STATE;
+
+  return STATUS_CODE_OK;
 }
