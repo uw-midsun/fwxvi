@@ -15,7 +15,6 @@
 
 /* Intra-component Headers */
 #include "front_controller_state_manager.h"
-#include "relays.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;
 static FrontControllerState s_current_state = FRONT_CONTROLLER_STATE_INIT;
@@ -77,9 +76,7 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
 
     case FRONT_CONTROLLER_STATE_DRIVE:
       if (event == FRONT_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
-        // Open all relays and return to the safe INIT state.
-        relays_reset();
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_INIT);
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
       }

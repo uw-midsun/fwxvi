@@ -10,7 +10,10 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
+#include "delay.h"
 #include "gpio.h"
+#include "log.h"
 
 /* Intra-component Headers */
 #include "front_controller_hw_defs.h"
@@ -200,6 +203,8 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_LOW);
     }
   }
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode power_manager_toggle_output_group(OutputGroup group) {
@@ -221,4 +226,6 @@ StatusCode power_manager_toggle_output_group(OutputGroup group) {
     OutputId output_id = mapped_group->outputs[i];
     gpio_toggle_state(&output_pins[output_id]);
   }
+
+  return STATUS_CODE_OK;
 }

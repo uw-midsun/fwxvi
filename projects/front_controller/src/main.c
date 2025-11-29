@@ -48,7 +48,6 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
-  power_sense_run(OUTPUT_GROUP_ALL);
   run_can_tx_medium();
 }
 
