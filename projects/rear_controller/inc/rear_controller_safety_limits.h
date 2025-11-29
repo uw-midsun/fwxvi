@@ -24,7 +24,7 @@
 /************************************************************************************************
  * Pack Current Limits [mA]
  ************************************************************************************************/
-#define PACK_MAX_DISCHARGE_CURRENT_A 80.0  /**< Maximum allowed discharge current */
+#define PACK_MAX_DISCHARGE_CURRENT_A -80.0 /**< Maximum allowed discharge current */
 #define PACK_MAX_CHARGE_CURRENT_A 80.0     /**< Maximum allowed charge current */
 #define PACK_SHORT_CIRCUIT_CURRENT_A 60000 /**< Instantaneous short-circuit threshold */
 

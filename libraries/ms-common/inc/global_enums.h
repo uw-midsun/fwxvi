@@ -70,7 +70,8 @@ typedef enum {
   BPS_FAULT_UNDERVOLTAGE,          /**< BPS Undervoltage fault */
   BPS_FAULT_KILLSWITCH,            /**< BPS Killswitch fault */
   BPS_FAULT_RELAY_CLOSE_FAILED,    /**< BPS Relay failed to close fault */
-  BPS_FAULT_DISCONNECTED           /**< BPS Disconnected fault */
+  BPS_FAULT_DISCONNECTED,          /**< BPS Disconnected fault */
+  NUM_BPS_FAULTS
 } BpsFault;
 
 /** @brief  BPS Overvoltage fault mask */

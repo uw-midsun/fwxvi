@@ -18,6 +18,8 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "bps_fault.h"
+#include "cell_sense.h"
 #include "current_sense.h"
 #include "killswitch.h"
 #include "precharge.h"
@@ -49,10 +51,12 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
+  log_cell_sense();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
+  bps_fault_commit();
   run_can_tx_slow();
 }
 

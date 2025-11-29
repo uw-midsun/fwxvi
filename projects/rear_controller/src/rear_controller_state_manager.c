@@ -46,6 +46,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
+      relays_disable_ws22_lv();
       relays_reset();
       /* TODO: Disable everything for safety, open all relays and disable LV motor */
       break;

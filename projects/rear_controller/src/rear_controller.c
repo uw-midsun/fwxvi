@@ -21,6 +21,7 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "bps_fault.h"
 #include "current_sense.h"
 #include "killswitch.h"
 #include "power_path_manager.h"
@@ -82,6 +83,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
   power_path_manager_init(rear_controller_storage);
   current_sense_init(rear_controller_storage);
+  bps_fault_init(rear_controller_storage);
 
   gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 

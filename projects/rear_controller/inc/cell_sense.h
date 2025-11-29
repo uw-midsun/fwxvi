@@ -44,4 +44,11 @@
  */
 StatusCode cell_sense_init(RearControllerStorage *storage);
 
+/**
+ * @brief   Logs the newest cell sense readings
+ * @return  STATUS_CODE_OK if logged succesfully
+ *          STATUS_CODE_UNINITIALIZED if system is not initialized
+ */
+StatusCode log_cell_sense();
+
 /** @} */
