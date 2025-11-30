@@ -133,4 +133,6 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   } else {
     LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");
   }
+
+  return STATUS_CODE_OK;
 }
