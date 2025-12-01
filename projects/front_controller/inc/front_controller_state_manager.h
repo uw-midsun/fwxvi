@@ -62,5 +62,9 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event);
  */
 FrontControllerState front_controller_state_manager_get_state(void);
 
+/**
+ * @brief   Update the state/set load switches based on information recieved from CAN (medium cycle).
+ * @return  STATUS_CODE_OK if udpated successfully
+ */
 StatusCode front_controller_update_state_manager_medium_cycle();
 /** @} */

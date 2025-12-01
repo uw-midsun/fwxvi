@@ -86,7 +86,9 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
       break;
 
     case FRONT_CONTROLLER_STATE_FAULT:
-      if (event == FRONT_CONTROLLER_EVENT_RESET) front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+      if (event == FRONT_CONTROLLER_EVENT_RESET) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+      }
       break;
 
     default:

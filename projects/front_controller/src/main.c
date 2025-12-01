@@ -49,6 +49,7 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   run_can_tx_medium();
+  front_controller_update_state_manager_medium_cycle();
 }
 
 void run_1hz_cycle() {
