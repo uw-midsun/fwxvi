@@ -21,6 +21,7 @@
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller.h"
+#include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
 #include "power_manager.h"
