@@ -20,26 +20,32 @@
 #include "power_manager.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;
-static FrontControllerState s_current_state = FRONT_CONTROLLER_STATE_IDLE;
+static FrontControllerState s_current_state = NUM_FRONT_CONTROLLER_STATES;
+static bool isHornEnabled = 0;
 
 static void front_controller_state_manager_enter_state(FrontControllerState new_state) {
-  uint8_t bps_fault_from_rear = get_rear_controller_status_bps_fault();                      // medium
-  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();                    // medium
-  uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();  // medium
-
   switch (new_state) {
     case FRONT_CONTROLLER_STATE_IDLE:
-      power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
-      power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+      if (s_current_state != FRONT_CONTROLLER_STATE_IDLE) {
+        power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
+        power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+      }
       break;
 
-    case FRONT_CONTROLLER_STATE_DRIVE:
-      power_manager_set_output_group(OUTPUT_GROUP_ALL, true);
+    case FRONT_CONTROLLER_STATE_ENGAGED:
+      if (s_current_state != FRONT_CONTROLLER_STATE_ENGAGED) {
+        power_manager_set_output_group(OUTPUT_GROUP_ALL, true);
+      }
       break;
 
     case FRONT_CONTROLLER_STATE_FAULT:
-      power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
-      power_manager_set_output_group(OUTPUT_GROUP_HAZARD_LIGHTS, false);
+      if (s_current_state != FRONT_CONTROLLER_STATE_FAULT) {
+        power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
+        power_manager_set_output_group(OUTPUT_GROUP_HAZARD_LIGHTS, false);
+      }
+      break;
+
+    default:
       break;
   }
 
@@ -50,11 +56,10 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
   front_controller_storage = storage;
 
   front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
-
+  isHornEnabled = 0;
   return STATUS_CODE_OK;
 }
 
@@ -65,14 +70,15 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
 
   switch (s_current_state) {
     case FRONT_CONTROLLER_STATE_IDLE:
-      if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST)
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
-      else if (event == FRONT_CONTROLLER_EVENT_FAULT)
+      if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_ENGAGED);
+      } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+      }
       break;
 
-    case FRONT_CONTROLLER_STATE_DRIVE:
-      if (event == FRONT_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
+    case FRONT_CONTROLLER_STATE_ENGAGED:
+      if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
@@ -103,7 +109,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t horn_enabled_from_rear = get_steering_buttons_horn_enabled();
 
   if (bps_fault_from_rear == 1) {
-    front_controller_state_manager_step(FRONT_CONTROLLER_STATE_FAULT);
+    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
     LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
     return STATUS_CODE_OK;
   }
@@ -116,10 +122,20 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     }
   }
 
+  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
+    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_IDLE_REQUEST);
+  }
+
   if (horn_enabled_from_rear == 1) {
-    power_manager_set_output_group(OUTPUT_GROUP_HORN, true);
+    if (isHornEnabled != 1) {
+      power_manager_set_output_group(OUTPUT_GROUP_HORN, true);
+      isHornEnabled = 1;
+    }
   } else {
-    power_manager_set_output_group(OUTPUT_GROUP_HORN, false);
+    if (isHornEnabled != 0) {
+      power_manager_set_output_group(OUTPUT_GROUP_HORN, false);
+      isHornEnabled = 0;
+    }
   }
 
   if (lights_from_rear == STEERING_LIGHTS_OFF_STATE) {
