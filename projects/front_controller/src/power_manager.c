@@ -95,13 +95,13 @@ static OutputGroupDef output_group_horn_group = {
 
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
-  [IDLE_GROUP] = &output_group_idle_group,
-  [LEFT_LIGHTS_GROUP] = &output_group_left_lights_group,
-  [RIGHT_LIGHTS_GROUP] = &output_group_right_lights_group,
-  [HAZARD_LIGHTS_GROUP] = &output_group_hazard_lights_group,
-  [BPS_LIGHTS_GROUP] = &output_group_bps_lights_group,
-  [BRAKE_LIGHTS_GROUP] = &output_group_brake_lights_group,
-  [HORN_GROUP] = &output_group_horn_group,
+  [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
+  [OUTPUT_GROUP_LEFT_LIGHTS] = &output_group_left_lights_group,
+  [OUTPUT_GROUP_RIGHT_LIGHTS] = &output_group_right_lights_group,
+  [OUTPUT_GROUP_HAZARD_LIGHTS] = &output_group_hazard_lights_group,
+  [OUTPUT_GROUP_BPS_LIGHTS] = &output_group_bps_lights_group,
+  [OUTPUT_GROUP_BRAKE_LIGHTS] = &output_group_brake_lights_group,
+  [OUTPUT_GROUP_HORN] = &output_group_horn_group,
 };
 
 /************************************************************************************************
