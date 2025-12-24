@@ -41,7 +41,8 @@ static void front_controller_state_manager_enter_state(FrontControllerState new_
     case FRONT_CONTROLLER_STATE_FAULT:
       if (s_current_state != FRONT_CONTROLLER_STATE_FAULT) {
         power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
-        power_manager_set_output_group(OUTPUT_GROUP_HAZARD_LIGHTS, false);
+        power_manager_set_output_group(OUTPUT_GROUP_HAZARD_LIGHTS, true);
+        power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
       }
       break;
 
