@@ -19,7 +19,7 @@
  */
 uint8_t error_buffer[DGRAM_MAX_MSG_SIZE]; 
 
-BootloaderDatagram unpack_datagram(Boot_CanMessage *msg, uint16_t *target_nodes) {
+BootloaderDatagram deserialize_datagram(Boot_CanMessage *msg, uint16_t *target_nodes) {
   BootloaderDatagram ret_datagram;
   do {
     switch (msg->id) {
