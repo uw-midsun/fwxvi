@@ -20,3 +20,85 @@ Messages:
         length: 32
       brake_enabled:
         length:  8
+  fc_power_telemetry_idle_group:
+    id: 31
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      rev_cam_current:
+        length: 16
+      telem_current:
+        length: 16
+      steering_current:
+        length: 16
+  fc_power_telemetry_left_lights_group:
+    id: 32
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      left_sig_current:
+        length: 16
+  fc_power_telemetry_right_lights_group:
+    id: 33
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      right_sig_current:
+        length: 16
+  fc_power_telemetry_hazard_lights_group:
+    id: 34
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      right_sig_current:
+        length: 16
+      left_sig_current:
+        length: 16
+  fc_power_telemetry_bps_lights_group:
+    id: 35
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      bps_light_sig_current:
+        length: 16
+  fc_power_telemetry_brake_lights_group:
+    id: 36
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      brake_light_sig_current:
+        length: 16
+  fc_power_telemetry_horn_group:
+    id: 37
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      horn_current:
+        length: 16
+
+
+      
+ 
+
+
