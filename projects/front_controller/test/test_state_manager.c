@@ -22,7 +22,7 @@
 
 static FrontControllerStorage mock_storage = { 0 };
 static uint8_t power_manager_set_output_group_call_count = 0;
-static OutputGroup current_output_group = OUTPUT_GROUP_IDLE;
+static OutputGroup current_output_group = OUTPUT_GROUP_ACTIVE;
 
 static SteeringLightState current_light_state = NUM_STEERING_LIGHTS;
 static uint8_t front_lights_signal_process_event_call_count = 0;
@@ -51,7 +51,7 @@ void setup_test(void) {
   power_manager_set_output_group_call_count = 0;
   front_lights_signal_process_event_call_count = 0;
   current_light_state = NUM_STEERING_LIGHTS;
-  current_output_group = OUTPUT_GROUP_IDLE;
+  current_output_group = OUTPUT_GROUP_ACTIVE;
 }
 
 void teardown_test(void) {}
@@ -114,7 +114,7 @@ void test_drive_with_valid_params_expect_success(void) {
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
     TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
     TEST_ASSERT_EQUAL(3, power_manager_set_output_group_call_count);
-    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
   }
 }
 
@@ -150,7 +150,7 @@ void test_drive_with_precharge_incomplete_expect_no_change(void) {
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
     TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
     TEST_ASSERT_EQUAL(0, power_manager_set_output_group_call_count);
-    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
   }
 }
 
@@ -174,7 +174,7 @@ void test_idle_with_valid_params_expect_success(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
   TEST_ASSERT_EQUAL(3, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 
 TEST_IN_TASK
@@ -187,7 +187,7 @@ void test_idle_with_already_idle_expect_success(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
   TEST_ASSERT_EQUAL(0, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 
 TEST_IN_TASK
@@ -251,7 +251,7 @@ void test_horns_disabled_with_horns_already_disabled_expect_no_change(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
   TEST_ASSERT_EQUAL(0, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 
 TEST_IN_TASK
@@ -270,7 +270,7 @@ void test_lights_expect_success(void) {
 
     TEST_ASSERT_EQUAL(1, front_lights_signal_process_event_call_count);
     TEST_ASSERT_EQUAL(validStates[i], current_light_state);
-    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_IDLE);
+    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
   }
 }
 

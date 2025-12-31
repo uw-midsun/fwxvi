@@ -58,7 +58,7 @@ static OutputGroupDef output_group_all = {
   .outputs = { LEFT_SIG, RIGHT_SIG, BRAKE_LIGHT, BPS_LIGHT, DRIVER_FAN, REV_CAM, TELEM, STEERING, HORN, SPARE_1 },
 };
 
-static OutputGroupDef output_group_idle_group = {
+static OutputGroupDef output_group_active_group = {
   .num_outputs = 3,
   .outputs = { REV_CAM, TELEM, STEERING },
 };
@@ -95,7 +95,7 @@ static OutputGroupDef output_group_horn_group = {
 
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
-  [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
+  [OUTPUT_GROUP_ACTIVE] = &output_group_active_group,
   [OUTPUT_GROUP_LEFT_LIGHTS] = &output_group_left_lights_group,
   [OUTPUT_GROUP_RIGHT_LIGHTS] = &output_group_right_lights_group,
   [OUTPUT_GROUP_HAZARD_LIGHTS] = &output_group_hazard_lights_group,
