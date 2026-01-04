@@ -1,11 +1,25 @@
-#include "bmi323.h"
-#include "imu.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "log.h"  // For LOG_ERROR
-#include "datagram.h"
+/************************************************************************************************
+ * @file    imu.c
+ *
+ * @brief   Imu
+ *
+ * @date    2026-01-04
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
 #include <string.h>  // For memcpy
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "bmi323.h"
+#include "datagram.h"
+#include "imu.h"
+#include "log.h"  // For LOG_ERROR
+#include "task.h"
 #include "uart.h"
+
+/* Intra-component Headers */
 
 void imu_task(void *pvParameters) {
   Bmi323Storage *storage = (Bmi323Storage *)pvParameters;
