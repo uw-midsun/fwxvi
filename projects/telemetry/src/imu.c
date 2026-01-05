@@ -32,7 +32,7 @@ void imu_task(void *pvParameters) {
 
     StatusCode status = bmi323_update(storage);
     if (status != STATUS_CODE_OK) {
-      LOG_ERROR("status error");
+      LOG_CRITICAL("status error");
       continue;
     }
 
@@ -58,8 +58,14 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
   if (status != STATUS_CODE_OK) {
     return status;
   }
-
+  
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
   xTaskCreate(imu_task, "imu", 1024, storage, 1, NULL);
-
+#else
+  static StaticTask_t imu_task_buffer;
+  static StackType_t imu_stack[1024];
+  xTaskCreateStatic(imu_task, "imu", 1024, storage, 1, imu_stack, &imu_task_buffer);
+#endif
+  
   return STATUS_CODE_OK;
 }
