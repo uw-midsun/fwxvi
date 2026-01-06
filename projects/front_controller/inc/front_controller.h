@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -41,6 +42,12 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
 
+/** @brief Max velocity value used for ws22 motor controllers */
+#define WS22_CONTROLLER_MAX_VELOCITY 12000
+
+/** @brief Max speed of vehicle in KPH */
+#define MAX_VEHICLE_SPEED_KPH 50
+
 /**
  * @brief   Front Controller configuration data
  */
@@ -60,12 +67,15 @@ typedef struct {
   bool brake_enabled; /**< Horn enabled (set by horn button callback) */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
-  float accel_percentage;     /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
 
-  struct PowerSenseStorage *power_sense_storage;      /**< Power sense storage */
+  float accel_percentage;              /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  VehicleDriveState currentDriveState; /**< Current drive state of vehicle, determined by motor_can.c */
+
+  struct PowerManagerStorage *power_manager_storage;  /**< Power manager storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
   struct BrakePedalStorage *brake_pedal_storage;      /**< Brake pedal storage */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
+  struct OpdStorage *opd_storage;                     /**< OPD storage */
 
   FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;

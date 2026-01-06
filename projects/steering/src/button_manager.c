@@ -17,29 +17,56 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "button_led_manager.h"
 #include "button_manager.h"
+#include "buzzer.h"
+#include "cruise_control.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
+#include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage;
 
 static ButtonManager s_button_manager = { 0U };
+
+static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
+  [STEERING_BUTTON_HAZARDS] = BUTTON_LED_MANAGER_COLOR_RED,
+
+  [STEERING_BUTTON_DRIVE] = BUTTON_LED_MANAGER_COLOR_GREEN,
+  [STEERING_BUTTON_NEUTRAL] = BUTTON_LED_MANAGER_COLOR_WHITE,
+  [STEERING_BUTTON_REVERSE] = BUTTON_LED_MANAGER_COLOR_BLUE,
+
+  [STEERING_BUTTON_REGEN] = BUTTON_LED_MANAGER_COLOR_CYAN,
+
+  [STEERING_BUTTON_LEFT_LIGHT] = BUTTON_LED_MANAGER_COLOR_YELLOW,
+  [STEERING_BUTTON_RIGHT_LIGHT] = BUTTON_LED_MANAGER_COLOR_YELLOW,
+
+  [STEERING_BUTTON_HORN] = BUTTON_LED_MANAGER_COLOR_ORANGE,
+
+  [STEERING_BUTTON_CRUISE_CONTROL_UP] = BUTTON_LED_MANAGER_COLOR_PURPLE,
+  [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = BUTTON_LED_MANAGER_COLOR_PINK,
+};
 
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
 #endif
 }
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
-  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Rising edge callback\r\n");
 #endif
@@ -50,14 +77,18 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
 #endif
 }
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
-  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Rising edge callback\r\n");
 #endif
@@ -68,14 +99,17 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
 #endif
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
-  lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");
 #endif
@@ -86,14 +120,18 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  drive_state_manager_request(DRIVE_STATE_DRIVE);
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
 #endif
 }
 
 static void drive_btn_rising_edge_cb(Button *button) {
-  drive_state_manager_request(DRIVE_STATE_DRIVE);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Rising edge callback\r\n");
 #endif
@@ -104,14 +142,18 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  drive_state_manager_request(DRIVE_STATE_REVERSE);
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
 #endif
 }
 
 static void reverse_btn_rising_edge_cb(Button *button) {
-  drive_state_manager_request(DRIVE_STATE_REVERSE);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Rising edge callback\r\n");
 #endif
@@ -122,14 +164,18 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  drive_state_manager_request(DRIVE_STATE_NEUTRAL);
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
 #endif
 }
 
 static void neutral_btn_rising_edge_cb(Button *button) {
-  drive_state_manager_request(DRIVE_STATE_NEUTRAL);
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
 #endif
@@ -140,14 +186,86 @@ static void neutral_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void horn_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_horn_enabled(false);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
+#endif
+
+  set_steering_buttons_horn_enabled(true);
+}
+
+/************************************************************************************************
+ * Regen button handlers
+ ************************************************************************************************/
+
+static void regen_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+#endif
+}
+
+static void regen_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control up button handlers
+ ************************************************************************************************/
+
+static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  cruise_control_up_handler();
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_up_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control down button handlers
+ ************************************************************************************************/
+
+static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  cruise_control_down_handler();
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_down_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
 #endif
 }
 
@@ -157,7 +275,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
 
 static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     [STEERING_BUTTON_LEFT_LIGHT] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = left_turn_btn_falling_edge_cb,
@@ -167,7 +285,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_RIGHT_LIGHT] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = right_turn_btn_falling_edge_cb,
@@ -177,7 +295,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_HAZARDS] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = hazards_btn_falling_edge_cb,
@@ -187,7 +305,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_DRIVE] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = drive_btn_falling_edge_cb,
@@ -197,7 +315,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_REVERSE] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = reverse_btn_falling_edge_cb,
@@ -207,7 +325,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_NEUTRAL] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = neutral_btn_falling_edge_cb,
@@ -217,13 +335,43 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
     },
 
     [STEERING_BUTTON_HORN] = {
-        .active_low = false,
+        .active_low = true,
         .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
         .callbacks = {
             .falling_edge_cb = horn_btn_falling_edge_cb,
             .rising_edge_cb  = horn_btn_rising_edge_cb,
         },
         .gpio = STEERING_HORN_BUTTON
+    },
+
+    [STEERING_BUTTON_REGEN] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = regen_btn_falling_edge_cb,
+          .rising_edge_cb  = regen_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_REGEN_BUTTON
+    },
+
+    [STEERING_BUTTON_CRUISE_CONTROL_UP] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = cruise_control_up_btn_falling_edge_cb,
+          .rising_edge_cb  = cruise_control_up_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_CC_UP_BUTTON
+    },
+
+    [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = {
+      .active_low = true,
+      .debounce_ms = STEERING_BUTTON_DEBOUNCE_PERIOD_MS,
+      .callbacks = {
+          .falling_edge_cb = cruise_control_down_btn_falling_edge_cb,
+          .rising_edge_cb  = cruise_control_down_btn_rising_edge_cb,
+      },
+      .gpio = STEERING_CC_DOWN_BUTTON
     },
 };
 
@@ -241,6 +389,19 @@ StatusCode button_manager_init(SteeringStorage *storage) {
 
   for (uint8_t i = 0U; i < NUM_STEERING_BUTTONS; i++) {
     status_ok_or_return(button_init(&steering_storage->button_manager->buttons[i], &s_button_configs[i]));
+    status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode button_manager_reset(void) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
+    status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
   }
 
   return STATUS_CODE_OK;

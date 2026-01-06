@@ -20,19 +20,22 @@
 
 /* Intra-component Headers */
 
+#define TEST_PWM_TIMER PWM_TIMER_4
+#define TEST_PWM_TIMER_CH PWM_CHANNEL_1
+#define TEST_PWM_ALTFN GPIO_ALT2_TIM4
 #define TEST_PWM_PERIOD_US 1000U
 
-GpioAddress pwm_test_pin = { .port = GPIO_PORT_A, .pin = 5U };
+GpioAddress pwm_test_pin = { .port = GPIO_PORT_D, .pin = 12U };
 uint32_t pwm_test_duty_cycle = 0U;
 bool increasing_duty_cycle = true;
 
 TASK(pwm_api, TASK_STACK_1024) {
-  gpio_init_pin_af(&pwm_test_pin, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);
-  pwm_init(PWM_TIMER_2, TEST_PWM_PERIOD_US);
+  gpio_init_pin_af(&pwm_test_pin, GPIO_ALTFN_PUSH_PULL, TEST_PWM_ALTFN);
+  pwm_init(TEST_PWM_TIMER, TEST_PWM_PERIOD_US);
 
   while (true) {
-    pwm_set_dc(PWM_TIMER_2, pwm_test_duty_cycle, PWM_CHANNEL_1, false);
-    LOG_DEBUG("Test DC: %lu, Received DC: %u\n", pwm_test_duty_cycle, pwm_get_dc(PWM_TIMER_2, PWM_CHANNEL_1));
+    pwm_set_dc(TEST_PWM_TIMER, pwm_test_duty_cycle, TEST_PWM_TIMER_CH, false);
+    LOG_DEBUG("Test DC: %lu, Received DC: %u\n", pwm_test_duty_cycle, pwm_get_dc(TEST_PWM_TIMER, TEST_PWM_TIMER_CH));
 
     if (increasing_duty_cycle) {
       if (pwm_test_duty_cycle < 95U) {

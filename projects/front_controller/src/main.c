@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "can.h"
 #include "gpio.h"
 #include "log.h"
@@ -18,7 +19,11 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "accel_pedal.h"
 #include "front_controller.h"
+#include "motor_can.h"
+#include "opd.h"
+#include "power_manager.h"
 #include "ws22_motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
@@ -32,6 +37,11 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
+
+  adc_run();
+  accel_pedal_run();
+  opd_run();
+  motor_can_update_target_current_velocity();
 
   run_can_tx_fast();
   ws22_motor_can_transmit_drive_command();
