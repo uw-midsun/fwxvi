@@ -47,13 +47,19 @@ static volatile uint16_t s_adc_readings[MAX_ADC_READINGS];
 /* Store of ranks for each channel, at their channel index */
 static uint8_t s_adc_ranks[NUM_ADC_CHANNELS];
 
-static const uint32_t s_hal_rank_nums[] = { ADC_INVALID_RANK,    ADC_REGULAR_RANK_1,  ADC_REGULAR_RANK_2,  ADC_REGULAR_RANK_3,  ADC_REGULAR_RANK_4,  ADC_REGULAR_RANK_5,
-                                            ADC_REGULAR_RANK_6,  ADC_REGULAR_RANK_7,  ADC_REGULAR_RANK_8,  ADC_REGULAR_RANK_9,  ADC_REGULAR_RANK_10, ADC_REGULAR_RANK_11,
-                                            ADC_REGULAR_RANK_12, ADC_REGULAR_RANK_13, ADC_REGULAR_RANK_14, ADC_REGULAR_RANK_15, ADC_REGULAR_RANK_16 };
+/* Lookup table for adc ranks (+ 1 for ADC_INVALID_RANK) */
+static const uint32_t s_hal_rank_nums[NUM_ADC_RANKS + 1] = { 
+  ADC_INVALID_RANK,    ADC_REGULAR_RANK_1,  ADC_REGULAR_RANK_2,  ADC_REGULAR_RANK_3,  ADC_REGULAR_RANK_4,  ADC_REGULAR_RANK_5,
+  ADC_REGULAR_RANK_6,  ADC_REGULAR_RANK_7,  ADC_REGULAR_RANK_8,  ADC_REGULAR_RANK_9,  ADC_REGULAR_RANK_10, ADC_REGULAR_RANK_11,
+  ADC_REGULAR_RANK_12, ADC_REGULAR_RANK_13, ADC_REGULAR_RANK_14, ADC_REGULAR_RANK_15, ADC_REGULAR_RANK_16 
+};
 
-static const uint32_t s_hal_channel_nums[] = { ADC_INVALID_CHANNEL, ADC_CHANNEL_1,  ADC_CHANNEL_2,  ADC_CHANNEL_3,  ADC_CHANNEL_4,  ADC_CHANNEL_5,  ADC_CHANNEL_6,
-                                               ADC_CHANNEL_7,       ADC_CHANNEL_8,  ADC_CHANNEL_9,  ADC_CHANNEL_10, ADC_CHANNEL_11, ADC_CHANNEL_12, ADC_CHANNEL_13,
-                                               ADC_CHANNEL_14,      ADC_CHANNEL_15, ADC_CHANNEL_16, ADC_CHANNEL_17, ADC_CHANNEL_18 };
+/* Lookup table for adc channels */
+static const uint32_t s_hal_channel_nums[NUM_ADC_CHANNELS] = { 
+  ADC_CHANNEL_0,  ADC_CHANNEL_1,  ADC_CHANNEL_2,  ADC_CHANNEL_3,  ADC_CHANNEL_4,  ADC_CHANNEL_5,  ADC_CHANNEL_6,
+  ADC_CHANNEL_7,  ADC_CHANNEL_8,  ADC_CHANNEL_9,  ADC_CHANNEL_10, ADC_CHANNEL_11, ADC_CHANNEL_12, ADC_CHANNEL_13,
+  ADC_CHANNEL_14, ADC_CHANNEL_15, ADC_CHANNEL_16, ADC_CHANNEL_17, ADC_CHANNEL_18 
+};
 
 /* Convert GPIO address to one of the 16 ADC channels */
 /* Channels 1-4 are occupied by pins C0-C3 */
