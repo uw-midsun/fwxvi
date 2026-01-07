@@ -24,13 +24,13 @@
 #include "accel_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
+#include "front_controller_state_manager.h"
 #include "front_lights_signal.h"
 #include "motor_can.h"
 #include "opd.h"
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
 #include "ws22_motor_can.h"
-
 /************************************************************************************************
  * Storage definitions
  ************************************************************************************************/
@@ -71,6 +71,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   dac_init();
 
   /* Initialize front controller systems */
+  front_controller_state_manager_init(front_controller_storage);
   power_manager_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
   opd_init(front_controller_storage);

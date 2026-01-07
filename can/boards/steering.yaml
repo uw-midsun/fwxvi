@@ -17,8 +17,6 @@ Messages:
         watchdog: 0
       rear_controller:
         watchdog: 0
-      front_controller:
-        watchdog: 0
     signals:
       drive_state:
         length: 8

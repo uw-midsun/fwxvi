@@ -25,13 +25,6 @@
  */
 
 /**
- * @brief   Reads the horn CAN status and sets the enable pin
- * @return  STATUS_CODE_OK if pin is set successfully
- *          STATUS_CODE_INTERNAL_ERROR if CAN message is not received
- */
-StatusCode horn_run();
-
-/**
  * @brief   Initializes the horn pin
  * @return  STATUS_CODE_OK if horn is initialized successfully
  */

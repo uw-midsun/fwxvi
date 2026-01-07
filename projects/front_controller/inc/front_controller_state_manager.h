@@ -26,17 +26,16 @@
  */
 
 typedef enum {
-  FRONT_CONTROLLER_STATE_INIT = 0, /**< System init, checks and startup */
-  FRONT_CONTROLLER_STATE_IDLE,     /**< Ready but not driving or charging, cars in neutral */
-  FRONT_CONTROLLER_STATE_DRIVE,    /**< Driving: motor relays closed, LV enabled */
-  FRONT_CONTROLLER_STATE_FAULT     /**< Faulted: relays open, latched until reset */
+  FRONT_CONTROLLER_STATE_IDLE = 0, /**< Ready but not driving or charging, cars in neutral */
+  FRONT_CONTROLLER_STATE_ENGAGED,  /**< Driving: motor relays closed, LV enabled */
+  FRONT_CONTROLLER_STATE_FAULT,    /**< Faulted: relays open, latched until reset */
+  NUM_FRONT_CONTROLLER_STATES
 } FrontControllerState;
 
 typedef enum {
   FRONT_CONTROLLER_EVENT_NONE = 0,
-  FRONT_CONTROLLER_EVENT_INIT_COMPLETE,
+  FRONT_CONTROLLER_EVENT_IDLE_REQUEST,
   FRONT_CONTROLLER_EVENT_DRIVE_REQUEST,
-  FRONT_CONTROLLER_EVENT_NEUTRAL_REQUEST,
   FRONT_CONTROLLER_EVENT_FAULT,
   FRONT_CONTROLLER_EVENT_RESET
 } FrontControllerEvent;
@@ -63,4 +62,9 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event);
  */
 FrontControllerState front_controller_state_manager_get_state(void);
 
+/**
+ * @brief   Update the state/set load switches based on information recieved from CAN (medium cycle).
+ * @return  STATUS_CODE_OK if udpated successfully
+ */
+StatusCode front_controller_update_state_manager_medium_cycle();
 /** @} */
