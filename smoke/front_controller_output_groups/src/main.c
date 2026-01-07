@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for front_controller - output_groups
+ * @brief  Smoke test for front_controller_output_groups
  *
  * @date   2026-01-06
  * @author Midnight Sun Team #24 - MSXVI
@@ -21,17 +21,28 @@
 
 /* Intra-component Headers */
 
-#define OUTPUT_GRP_TO_STR(x)                            \
-  ((x) == OUTPUT_GROUP_ALL      ? "OUTPUT_GROUP_ALL"    \
-   : (x) == IDLE_GROUP          ? "IDLE_GROUP"          \
-   : (x) == LEFT_LIGHTS_GROUP   ? "LEFT_LIGHTS_GROUP"   \
-   : (x) == RIGHT_LIGHTS_GROUP  ? "RIGHT_LIGHTS_GROUP"  \
-   : (x) == HAZARD_LIGHTS_GROUP ? "HAZARD_LIGHTS_GROUP" \
-   : (x) == BPS_LIGHTS_GROUP    ? "BPS_LIGHTS_GROUP"    \
-   : (x) == BRAKE_LIGHTS_GROUP  ? "BRAKE_LIGHTS_GROUP"  \
-   : (x) == HORN_GROUP          ? "HORN_GROUP"          \
-                                : "UNKNOWN")
-
+static inline const char *output_grp_to_str(OutputGroup x) {
+  switch (x) {
+    case OUTPUT_GROUP_ALL:
+      return "OUTPUT_GROUP_ALL";
+    case OUTPUT_GROUP_ACTIVE:
+      return "OUTPUT_GROUP_ACTIVE";
+    case OUTPUT_GROUP_LEFT_LIGHTS:
+      return "OUTPUT_GROUP_LEFT_LIGHTS";
+    case OUTPUT_GROUP_RIGHT_LIGHTS:
+      return "OUTPUT_GROUP_RIGHT_LIGHTS";
+    case OUTPUT_GROUP_HAZARD_LIGHTS:
+      return "OUTPUT_GROUP_HAZARD_LIGHTS";
+    case OUTPUT_GROUP_BPS_LIGHTS:
+      return "OUTPUT_GROUP_BPS_LIGHTS";
+    case OUTPUT_GROUP_BRAKE_LIGHTS:
+      return "OUTPUT_GROUP_BRAKE_LIGHTS";
+    case OUTPUT_GROUP_HORN:
+      return "OUTPUT_GROUP_HORN";
+    default:
+      return "UNKNOWN";
+  }
+}
 FrontControllerStorage front_controller_storage = { 0 };
 
 FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
@@ -53,12 +64,12 @@ TASK(current_sense, TASK_STACK_1024) {
 
   // Step 2: Cycle through valid output groups
 
-  uint8_t num_output_group = OUTPUT_GROUP_ALL;
+  OutputGroup num_output_group = OUTPUT_GROUP_ALL;
   bool state = false;
 
   while (true) {
-    power_control_set_output_group(num_output_group, state);
-    printf("Setting output group %s to state %d", OUTPUT_GRP_TO_STR(num_output_group), state);
+    power_manager_set_output_group(num_output_group, state);
+    printf("Setting output group %s to state %d\r\n", output_grp_to_str(num_output_group), state);
 
     if (state == true) {
       state = false;
@@ -70,7 +81,7 @@ TASK(current_sense, TASK_STACK_1024) {
       state = true;
     }
 
-    delay_ms(100);
+    delay_ms(500);
   }
 }
 
