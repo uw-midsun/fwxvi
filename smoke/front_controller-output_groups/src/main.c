@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for front_controller - current_sense
+ * @brief  Smoke test for front_controller - output_groups
  *
  * @date   2026-01-06
  * @author Midnight Sun Team #24 - MSXVI
@@ -21,7 +21,16 @@
 
 /* Intra-component Headers */
 
-#define TBL_WIDTH 5
+#define OUTPUT_GRP_TO_STR(x)                            \
+  ((x) == OUTPUT_GROUP_ALL      ? "OUTPUT_GROUP_ALL"    \
+   : (x) == IDLE_GROUP          ? "IDLE_GROUP"          \
+   : (x) == LEFT_LIGHTS_GROUP   ? "LEFT_LIGHTS_GROUP"   \
+   : (x) == RIGHT_LIGHTS_GROUP  ? "RIGHT_LIGHTS_GROUP"  \
+   : (x) == HAZARD_LIGHTS_GROUP ? "HAZARD_LIGHTS_GROUP" \
+   : (x) == BPS_LIGHTS_GROUP    ? "BPS_LIGHTS_GROUP"    \
+   : (x) == BRAKE_LIGHTS_GROUP  ? "BRAKE_LIGHTS_GROUP"  \
+   : (x) == HORN_GROUP          ? "HORN_GROUP"          \
+                                : "UNKNOWN")
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -42,17 +51,26 @@ TASK(current_sense, TASK_STACK_1024) {
   }
   delay_ms(500);
 
-  // Step 2: Run current sense
-  while (true) {
-    status = power_manager_run_current_sense(OUTPUT_GROUP_ALL);
+  // Step 2: Cycle through valid output groups
 
-    for (uint8_t i = 0; i < NUM_OUTPUTS; i++) {
-      if (i % TBL_WIDTH == 0) {
-        printf("\r\n");
+  uint8_t num_output_group = OUTPUT_GROUP_ALL;
+  bool state = false;
+
+  while (true) {
+    power_control_set_output_group(num_output_group, state);
+    printf("Setting output group %s to state %d", OUTPUT_GRP_TO_STR(num_output_group), state);
+
+    if (state == true) {
+      state = false;
+    } else {
+      num_output_group++;
+      if (num_output_group >= NUM_OUTPUT_GROUPS) {
+        num_output_group %= NUM_OUTPUT_GROUPS;
       }
-      printf("G%u: %u", i, front_controller_storage.power_manager_storage->current_readings[i]);
+      state = true;
     }
-    delay_ms(50);
+
+    delay_ms(100);
   }
 }
 
