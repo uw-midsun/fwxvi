@@ -43,7 +43,6 @@ static void front_controller_state_manager_enter_state(FrontControllerState new_
       if (s_current_state != FRONT_CONTROLLER_STATE_FAULT) {
         power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
         power_manager_set_output_group(OUTPUT_GROUP_ACTIVE, true);
-        power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
       }
       break;
 
@@ -113,9 +112,12 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
 
   if (bps_fault_from_rear) {
+    front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
     LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
     return STATUS_CODE_OK;
+  } else {
+    front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
   }
 
   if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
@@ -148,7 +150,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     front_lights_signal_process_event(STEERING_LIGHTS_LEFT_STATE);
   } else if (lights_from_rear == STEERING_LIGHTS_RIGHT_STATE) {
     front_lights_signal_process_event(STEERING_LIGHTS_RIGHT_STATE);
-  } else if (STEERING_LIGHTS_HAZARD_STATE) {
+  } else if (lights_from_rear == STEERING_LIGHTS_HAZARD_STATE) {
     front_lights_signal_process_event(STEERING_LIGHTS_HAZARD_STATE);
   } else {
     LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");

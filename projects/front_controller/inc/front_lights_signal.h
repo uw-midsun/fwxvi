@@ -35,8 +35,20 @@ StatusCode front_lights_signal_init();
 
 /**
  * @brief Process recieved signal state
- * @param state which is the state recieved by the CAN message
+ * @param new_state which is the state recieved by the CAN message
  */
 StatusCode front_lights_signal_process_event(SteeringLightState new_state);
+
+/**
+ * @brief Set the bps light
+ * @param new_state which is the state recieved by the CAN message
+ */
+StatusCode front_lights_signal_set_bps_light(BpsLightState new_state);
+
+/**
+ * @brief Toggle the bps light
+ * @param new_state which is the state recieved by the CAN message
+ */
+StatusCode front_lights_signal_toggle_bps_light();
 
 /** @} */
