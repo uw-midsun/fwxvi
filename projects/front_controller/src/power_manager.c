@@ -175,7 +175,7 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
       front_controller_storage->power_manager_storage->current_readings[i] = power_sense_lo_current_calc(sampled_voltage);
     }
 
-    LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
+    // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
 
     delay_ms(10);
   }

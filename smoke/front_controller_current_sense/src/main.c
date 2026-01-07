@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for front_controller - current_sense
+ * @brief  Smoke test for front_controller_current_sense
  *
  * @date   2026-01-06
  * @author Midnight Sun Team #24 - MSXVI
@@ -36,23 +36,25 @@ TASK(current_sense, TASK_STACK_1024) {
   // Step 1: Check if the front controller can be initialized
   status = front_controller_init(&front_controller_storage, &front_controller_config);
   if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("front controller initialized\n");
+    LOG_DEBUG("front controller initialized\r\n");
   } else {
-    LOG_DEBUG("front controller cannot be initialized\n");
+    LOG_DEBUG("front controller cannot be initialized\r\n");
   }
   delay_ms(500);
+  power_manager_set_output_group(OUTPUT_GROUP_ALL, true);
 
   // Step 2: Run current sense
   while (true) {
     status = power_manager_run_current_sense(OUTPUT_GROUP_ALL);
 
     for (uint8_t i = 0; i < NUM_OUTPUTS; i++) {
-      if (i % TBL_WIDTH == 0) {
+      printf("G%02d: %3dmA | ", i, front_controller_storage.power_manager_storage->current_readings[i]);
+      if ((i + 1) % TBL_WIDTH == 0) {
         printf("\r\n");
       }
-      printf("G%u: %u", i, front_controller_storage.power_manager_storage->current_readings[i]);
     }
-    delay_ms(50);
+    delay_ms(1000);
+    printf("\r\r\n\n");
   }
 }
 
