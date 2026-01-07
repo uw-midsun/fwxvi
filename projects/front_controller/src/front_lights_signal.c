@@ -91,23 +91,12 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
   return STATUS_CODE_OK;
 }
 
-StatusCode front_lights_signal_toggle_bps_light() {
-  if (current_bps_light_state == BPS_LIGHT_OFF_STATE) {
-    front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
-  } else if (current_bps_light_state == BPS_LIGHT_ON_STATE) {
-    front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
-  } else {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-  return STATUS_CODE_OK;
-}
-
 StatusCode front_lights_signal_set_bps_light(BpsLightState new_state) {
-  if ((new_state == BPS_LIGHT_OFF_STATE) && (current_bps_light_state != BPS_LIGHT_OFF_STATE)) {
+  if ((new_state == BPS_LIGHT_OFF_STATE) && (current_bps_light_state == BPS_LIGHT_ON_STATE)) {
     software_timer_start(&s_blink_bps_timer);
     power_manager_set_output_group(OUTPUT_GROUP_BPS_LIGHTS, true);
     current_bps_light_state = BPS_LIGHT_OFF_STATE;
-  } else if ((new_state == BPS_LIGHT_ON_STATE) && (current_bps_light_state != BPS_LIGHT_ON_STATE)) {
+  } else if ((new_state == BPS_LIGHT_ON_STATE) && (current_bps_light_state == BPS_LIGHT_OFF_STATE)) {
     software_timer_cancel(&s_blink_bps_timer);
     power_manager_set_output_group(OUTPUT_GROUP_BPS_LIGHTS, false);
     current_bps_light_state = BPS_LIGHT_ON_STATE;
