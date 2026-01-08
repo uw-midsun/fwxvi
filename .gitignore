@@ -40,3 +40,13 @@ mpxe/Simulation_JSON/*
 **/test_results/*
 
 **/**compile_commands**.json
+
+
+# Matlab/Simulink
+**/slprj/
+**/_ert_rtw/
+**/*_ert_rtw/
+**/*_slprj/
+
+**/**.slxc
+**/**.slx.autosave

@@ -18,40 +18,44 @@
 
 /* Intra-component Headers */
 #include "button.h"
+#include "steering.h"
 
 /**
- * @defgroup BUTTON_MANAGER
- * @brief High-level manager for polling and updating multiple button instances on the steering board.
+ * @defgroup steering
+ * @brief    steering Firmware
  * @{
  */
 
-#define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
-
-#define BUTTON_MANAGER_MAX_BUTTONS 10 /**< Maximum number of buttons supported */
+#define BUTTON_MANAGER_DEBUG 1 /**< Set to 1 to enable debug prints */
 
 /**
  * @brief Button Manager structure
  */
-typedef struct {
-  Button buttons[BUTTON_MANAGER_MAX_BUTTONS]; /**< Array of buttons */
-  uint8_t num_buttons;                        /**< Number of buttons in the array */
+typedef struct ButtonManager {
+  Button buttons[NUM_STEERING_BUTTONS]; /**< Array of buttons */
 } ButtonManager;
 
 /**
  * @brief   Initialize the button manager
- * @param   manager Pointer to the ButtonManager instance
+ * @param   storage Pointer to the SteeringStorage instance
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
+StatusCode button_manager_init(SteeringStorage *storage);
 
-StatusCode button_manager_init(ButtonManager *manager);
+/**
+ * @brief   Reset the button manager state
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
+ */
+StatusCode button_manager_reset(void);
 
 /**
  * @brief   Update the button manager
  * @param   manager Pointer to the ButtonManager instance
- * @return  STATUS_CODE_OK if initialized successfully
- *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
+ * @return  STATUS_CODE_OK if updated successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
  */
-StatusCode button_manager_update(ButtonManager *manager);
+StatusCode button_manager_update(void);
 
 /** @} */

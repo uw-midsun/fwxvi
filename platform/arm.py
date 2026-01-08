@@ -158,7 +158,7 @@ def create_arm_env(hardware, flash_type='default', build_config='debug'):
     else:
         build_config_flags = release_flags
     return Environment(
-        ENV = { 'PATH': os.environ['PATH'] },
+        ENV = os.environ,
 
         CC=compiler,
         CCFLAGS=common_flags + build_config_flags + arch_cflags + get_defines(hardware),
@@ -176,7 +176,7 @@ def create_arm_env(hardware, flash_type='default', build_config='debug'):
         LIBS=['m'],
     )
 
-bin_builder = Builder(action='{} -O binary $SOURCE $TARGET'.format(objcopy))
+bin_builder = Builder(action='{} -O binary -R .eh_frame $SOURCE $TARGET'.format(objcopy))
 arm_env = create_arm_env(HARDWARE_TYPE, FLASH_TYPE, BUILD_CONFIG)
 arm_env.Append(BUILDERS={'Bin': bin_builder})
 
