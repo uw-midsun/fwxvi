@@ -26,7 +26,7 @@ commonflags = [
 cflags = [
     '-std=gnu11',
     '-Wno-discarded-qualifiers',
-    # '-Werror',
+    '-Werror',
 ] + commonflags
 
 cxxflags = [

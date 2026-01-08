@@ -25,6 +25,5 @@
  * @brief   Initialze the UART interface for hard fault register dumping
  */
 void retarget_init();
-void test_print();
 
 /** @} */
