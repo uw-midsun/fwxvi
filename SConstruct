@@ -210,8 +210,16 @@ elif COMMAND == "new":
 # HIL command
 ###########################################################
 elif COMMAND == "hil":
-    if not TEST_FILE:
+    if not TESTFILE:
         pass
+        firmware = SConscript("scons/build.scons", exports="VARS")
+
+        def run_hil_test():
+            #Copy and run HIL Firmware on PI
+            subprocess.run(["scp", firmware[0].path, "pi@test-rig:~/firmware.bin"])
+            subprocess.run(["ssh", "pi@test-rig", "python3 -m pytest tests/hil/"])
+    AlwaysBuild(Command("#/run_hil", firmware, run_hil_test))
+
     SConscript("scons/pytest.scons", exports="VARS")
 
 ###########################################################
