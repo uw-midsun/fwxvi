@@ -25,7 +25,7 @@ static bool s_close_pos_called = false;
 static bool s_close_neg_called = false;
 static bool s_close_motor_called = false;
 static bool s_close_solar_called = false;
-static RearControllerConfig s_test_config ={0};
+static RearControllerConfig s_test_config = { 0 };
 StatusCode TEST_MOCK(relays_reset)(void) {
   s_reset_called = true;
   return STATUS_CODE_OK;
@@ -55,7 +55,6 @@ static void reset_mock_flags(void) {
   s_close_solar_called = false;
 }
 
-
 void setup_test(void) {
   reset_mock_flags();
   s_reset_called = false;
@@ -69,8 +68,6 @@ void setup_test(void) {
 }
 
 void teardown_test(void) {}
-
-
 
 TEST_IN_TASK
 void test_initialization_starts_in_init_state(void) {
@@ -87,8 +84,6 @@ void test_init_to_precharge_transition(void) {
 
 TEST_IN_TASK
 void test_precharge_to_idle_transition(void) {
-
-
   rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_CHARGER_REMOVED);
   TEST_ASSERT_EQUAL(REAR_CONTROLLER_STATE_IDLE, rear_controller_state_manager_get_state());
   TEST_ASSERT_TRUE(s_close_neg_called);
