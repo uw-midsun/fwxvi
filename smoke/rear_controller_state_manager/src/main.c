@@ -1,15 +1,16 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for rear_controller_api
+ * @brief  Smoke test for rear_controller_state_manager
  *
- * @date   2025-09-15
- * @author Midnight Sun Team #24 - MSXVI
+ * @date   2026-01-09
+ * @author Midnight Sun Team #26 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 #include <stdbool.h>
 #include <string.h>
+
 /* Inter-component Headers */
 #include "delay.h"
 #include "flash.h"
@@ -19,6 +20,7 @@
 #include "persist.h"
 #include "status.h"
 #include "tasks.h"
+
 /* Intra-component Headers */
 #include "rear_controller.h"
 #include "rear_controller_state_manager.h"
@@ -48,6 +50,7 @@ static void log_status(void) {
 
   LOG_DEBUG("State: %s | Relays: [POS: %d] [NEG: %d] [SOLAR: %d] [MOTOR: %d]\n", print_state_str(current_state), s_rear_storage.pos_relay_closed, s_rear_storage.neg_relay_closed,
             s_rear_storage.solar_relay_closed, s_rear_storage.motor_relay_closed);
+  delay_ms(10U);
 }
 
 TASK(rear_controller_smoke, TASK_STACK_1024) {
@@ -59,6 +62,7 @@ TASK(rear_controller_smoke, TASK_STACK_1024) {
 
   while (true) {
     LOG_DEBUG("\n--- REAR CONTROLLER SMOKE TEST ---\n");
+    delay_ms(10U);
     LOG_DEBUG(">> Step 1: Simulating Initialization Complete... \n");
     log_status();
     delay_ms(1000);
