@@ -22,6 +22,26 @@
     _a < _b ? _a : _b;      \
   })
 
+#define LAST_PAGE (NUM_FLASH_PAGES - 1)
+
+static PersistStorage storage = { 0U };
+
+FsStatus fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size) {
+  StatusCode ret = flash_init();
+  if (ret != STATUS_CODE_OK) {
+    printf("flash_init() failed with exit code %u\r\n", ret);
+    return FS_STATUS_INCOMPLETE;
+  }
+
+  ret = persist_init(&storage, LAST_PAGE, fs_memory, fs_memory_size, true);
+  if (ret != STATUS_CODE_OK) {
+    printf("persist_init() failed with exit code %u\r\n", ret);
+    return FS_STATUS_INCOMPLETE;
+  }
+
+  return FS_STATUS_OK;
+}
+
 FsStatus fs_hal_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return FS_STATUS_INVALID_ARGS;
@@ -32,24 +52,11 @@ FsStatus fs_hal_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
 }
 
 FsStatus fs_hal_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
-  if (buffer == NULL) {
+  if (buffer == NULL || buffer_len == 0) {
     return FS_STATUS_INVALID_ARGS;
   }
 
-  HAL_FLASH_Unlock();
-  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
-
-  /* Program the flash double word by double word (64-bits) */
-  for (size_t i = 0U; i < buffer_len; i += 8U) {
-    uint64_t data = 0U;
-    memcpy(&data, &buffer[i], MIN(8U, buffer_len - i));
-
-    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, address + i, data) != HAL_OK) {
-      HAL_FLASH_Lock();
-      return FS_STATUS_INCOMPLETE;
-    }
-  }
-  HAL_FLASH_Lock();
+  persist_commit(&storage);
 
   return FS_STATUS_OK;
 }

@@ -20,53 +20,69 @@
 
 /* Intra-component Headers */
 
-// TASK(filesystem_api, TASK_STACK_1024) {
-//   fs_init();
-//   LOG_DEBUG("File system init\n");
-//   fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
-//   fs_list("/");
-//   fs_commit();
+#define FILESYSTEM_WRITER_MODE 0U
+#define FILESYSTEM_READER_MODE 1U
 
-//   fs_pull();
-//   fs_list("/");
+#define FILESYSTEM_MODE FILESYSTEM_READER_MODE
 
-//   uint8_t crc_poly[8] = {0};
+TASK(filesystem_api, TASK_STACK_1024) {
+  FsStatus fs_status = FS_STATUS_OK;
 
-//   fs_read_file("/crc.txt", crc_poly);
+#if (FILESYSTEM_MODE == FILESYSTEM_WRITER_MODE)
+  LOG_DEBUG("\r\nFile system init\r\n");
+  fs_status = fs_init();
+  if (fs_status != FS_STATUS_OK) {
+    LOG_DEBUG("fs_init() failed with exit code %u\r\n", fs_status);
+  }
+  LOG_DEBUG("filesystem_api test - writer mode\r\n");
+  fs_status = fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
+  if (fs_status != FS_STATUS_OK) {
+    LOG_DEBUG("fs_add_file() failed with exit code %u\r\n", fs_status);
+  }
 
-//   LOG_DEBUG("%s\n", crc_poly);
-
-//   while (true) {}
-// }
-
-int main() {
-  mcu_init();
-  fs_init();
-  // LOG_DEBUG("File system init\n");
-  fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
   fs_list("/");
-  fs_commit();
+  fs_status = fs_commit();
+  if (fs_status != FS_STATUS_OK) {
+    LOG_DEBUG("fs_commit() failed with exit code %u\r\n", fs_status);
+  } else {
+    LOG_DEBUG("fs_commited() successfully\r\n");
+  }
 
-  fs_pull();
+#else
+  LOG_DEBUG("filesystem_api test - reader mode\r\n");
+
+  fs_status = fs_pull();
+  if (fs_status != FS_STATUS_OK) {
+    LOG_DEBUG("fs_pull() failed with exit code %u\r\n", fs_status);
+  }
+
   fs_list("/");
 
   uint8_t crc_poly[8] = { 0 };
 
-  fs_read_file("/crc.txt", crc_poly);
+  fs_status = fs_read_file("/crc.txt", crc_poly);
+  if (fs_status != FS_STATUS_OK) {
+    LOG_DEBUG("fs_read_file() failed with exit code %u\r\n", fs_status);
+  }
 
-  printf("%s\n", crc_poly);
-  // tasks_init();
-  // log_init();
+  LOG_DEBUG("Read data: %s\n", crc_poly);
 
-  // tasks_init_task(filesystem_api, TASK_PRIORITY(3), NULL);
-
-  // tasks_start();
-
-  // LOG_DEBUG("exiting main?");
+#endif
 
   while (true) {
-    printf("FS_init");
   }
+}
+
+int main() {
+  mcu_init();
+  tasks_init();
+  log_init();
+
+  tasks_init_task(filesystem_api, TASK_PRIORITY(3), NULL);
+
+  tasks_start();
+
+  LOG_DEBUG("exiting main?");
 
   return 0;
 }

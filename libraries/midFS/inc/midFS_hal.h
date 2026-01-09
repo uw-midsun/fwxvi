@@ -10,7 +10,9 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /* Inter-component Headers */
 #include "midFS_types.h"
@@ -20,11 +22,20 @@
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_flash.h"
 
+/* Other library Headers */
+#include "persist.h"
+
 /**
  * @defgroup midFS_hal
  * @brief    midFS_hal Firmware
  * @{
  */
+
+/**
+ * Initializes fs_hal
+ *
+ */
+FsStatus fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size);
 
 /**
  * Reads memory from HAL of size buffer_len at a specific address to an array buffer

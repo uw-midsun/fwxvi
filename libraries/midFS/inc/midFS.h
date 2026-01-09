@@ -37,7 +37,6 @@
 
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
-// extern uint8_t fs_memory[FS_TOTAL_SIZE];
 
 // max size: 206KB
 // 512B per block, we can have 412 blocks
