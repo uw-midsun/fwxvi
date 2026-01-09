@@ -14,6 +14,7 @@
 #include "midFS_hal.h"
 
 /* Intra-component Headers */
+#ifdef ARCH_ARM
 
 #define MIN(a, b)           \
   ({                        \
@@ -60,3 +61,5 @@ FsStatus fs_hal_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
 
   return FS_STATUS_OK;
 }
+
+#endif

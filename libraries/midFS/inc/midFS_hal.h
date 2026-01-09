@@ -17,11 +17,20 @@
 /* Inter-component Headers */
 #include "midFS_types.h"
 
+#if defined(__arm__) || defined(__aarch64__)
+#define ARCH_ARM 1
+#endif
+
+#if defined(__i386__) || defined(__x86_64__)
+#define ARCH_X86 1
+#endif
+
 /* Intra-component Headers */
 #include "status.h"
+#ifdef ARCH_ARM
 #include "stm32l433xx.h"
 #include "stm32l4xx_hal_flash.h"
-
+#endif
 /* Other library Headers */
 #include "persist.h"
 

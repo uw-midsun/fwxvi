@@ -14,8 +14,18 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(__arm__) || defined(__aarch64__)
+#define ARCH_ARM 1
+#endif
+
+#if defined(__i386__) || defined(__x86_64__)
+#define ARCH_X86 1
+#endif
+
 /* Inter-component Headers */
+#ifdef ARCH_ARM
 #include "midFS_hal.h"
+#endif
 #include "midFS_types.h"
 
 /* Intra-component Headers */
@@ -54,13 +64,13 @@ FsStatus fs_init();
  * Copies FS memory from HAL
  *
  */
-StatusCode fs_pull();
+FsStatus fs_pull();
 
 /**
  * Writes local copy of fs_memory back to actual one using HAL_write
  *
  */
-StatusCode fs_commit();
+FsStatus fs_commit();
 
 /**
  * Helper function that creates a block group at the next available index

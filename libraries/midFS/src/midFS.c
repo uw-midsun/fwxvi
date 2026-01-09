@@ -23,10 +23,9 @@ SuperBlock *superBlock = NULL;
 BlockGroup *blockGroups = NULL;
 
 FsStatus fs_init() {
-  fs_hal_init(fs_memory, FS_TOTAL_SIZE);
-
-  // pull memory from HAL
-  // fs_hal_read(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+#ifdef ARCH_ARM
+  fs_hal_init(fs_memory, FS_TOTAL_SIZE);  // pulls memory from HAL
+#endif
 
   // setup superBlock and the first block group in memory
   superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
@@ -34,7 +33,8 @@ FsStatus fs_init() {
 
   // super block declaration
   superBlock->magic = 0xC1D1921D;
-  printf("Magic number from init: %#lx\n\r", superBlock->magic);
+  // printf("Magic number from init: %#lx\n\r", superBlock->magic);
+  printf("Magic number from init: %#x\n\r", superBlock->magic);
 
   superBlock->blockSize = BLOCK_SIZE;
   superBlock->blocksPerGroup = BLOCKS_PER_GROUP;
@@ -54,12 +54,14 @@ FsStatus fs_init() {
   superBlock->rootFolderMetadata.startBlockIndex = 0;
   superBlock->rootFolderMetadata.size = 0;
   // printf("End of file system init\n\r");
-  return STATUS_CODE_OK;
+  return FS_STATUS_OK;
 }
 
-StatusCode fs_pull() {
-  // pull memory from HAL
+FsStatus fs_pull() {
+// pull memory from HAL
+#ifdef ARCH_ARM
   fs_hal_init(fs_memory, FS_TOTAL_SIZE);
+#endif
 
   // setup superblock and block groups
   superBlock = (SuperBlock *)&fs_memory[SUPERBLOCK_OFFSET];
@@ -67,31 +69,27 @@ StatusCode fs_pull() {
 
   // check if magic number matches
   if (superBlock->magic != 0xC1D1921D) {
-    printf("FS magic number: %lu does not match\n\r", superBlock->magic);
-    return STATUS_CODE_INTERNAL_ERROR;
+    // printf("FS magic number: %lu does not match\n\r", superBlock->magic);
+    printf("FS magic number: %u does not match\n\r", superBlock->magic);
+    return FS_STATUS_INTERNAL_ERROR;
   } else {
     printf("FS magic number matches\n\r");
   }
-  printf("Magic number from pull: %#lx\n\r", superBlock->magic);
+  // printf("Magic number from pull: %#lx\n\r", superBlock->magic);
   // printf("Data from pull: %c\n\r", blockGroups->dataBlocks[0][0]);
 
-  return STATUS_CODE_OK;
+  return FS_STATUS_OK;
 }
 
-StatusCode fs_commit() {
-  printf("Magic number from commit pre-wipe: %#lx\n\r", superBlock->magic);
-  // for (uint32_t i = 0; i < sizeof(fs_memory); i++) {
-  //   printf("%u", fs_memory[i]);
-  // }
-
-  // printf("Data: %c\n\r", blockGroups->dataBlocks[0][0]);
+FsStatus fs_commit() {
+#ifdef ARCH_ARM
   fs_hal_write(FS_HAL_ADDRESS, fs_memory, FS_TOTAL_SIZE);
+#else
+  printf("fs_commit is not supported on x86\r\n");
+#endif
 
-  // Wipe everything for testing
-  // memset(fs_memory, 0, sizeof(fs_memory));
-  // printf("Data POST WIPE: %c\n\r", blockGroups->dataBlocks[0][0]);
-  // printf("Magic number from commit post-wipe: %#lx\n\r", superBlock->magic);
-
+  // printf("Magic number from commit pre-wipe: %#lx\n\r", superBlock->magic);
+  printf("Magic number from commit pre-wipe: %#x\n\r", superBlock->magic);
   return FS_STATUS_OK;
 }
 
@@ -301,8 +299,8 @@ FsStatus fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_t 
 
   fs_locate_memory(blocksNeeded, &incomingBlockAddress);
 
-  printf("Blocks needed: %ld\n\r", blocksNeeded);
-  printf("Located sufficient memory at address: %ld\n\r", incomingBlockAddress);
+  // printf("Blocks needed: %ld\n\r", blocksNeeded);
+  // printf("Located sufficient memory at address: %ld\n\r", incomingBlockAddress);
 
   // get the block group that our incoming block address is in
   BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
@@ -587,7 +585,7 @@ FsStatus fs_create_block_group(uint32_t *index) {
 
 FsStatus fs_read_block_group(uint32_t blockIndex, BlockGroup *dest) {
   if (blockIndex >= NUM_BLOCK_GROUPS) {
-    return STATUS_CODE_OUT_OF_RANGE;  // block index is too high
+    return FS_STATUS_OUT_OF_RANGE;  // block index is too high
   }
   memcpy(dest, &blockGroups[blockIndex], sizeof(BlockGroup));
   return FS_STATUS_OK;
@@ -595,7 +593,7 @@ FsStatus fs_read_block_group(uint32_t blockIndex, BlockGroup *dest) {
 
 FsStatus fs_write_block_group(uint32_t blockIndex, BlockGroup *src) {
   if (blockIndex >= NUM_BLOCK_GROUPS) {
-    return STATUS_CODE_OUT_OF_RANGE;  // block index is too high
+    return FS_STATUS_OUT_OF_RANGE;  // block index is too high
   }
   memcpy(&blockGroups[blockIndex], src, sizeof(BlockGroup));
   return FS_STATUS_OK;
@@ -624,7 +622,7 @@ FsStatus fs_resolve_path(const char *folderPath, uint32_t *path) {
   if (strcmp(folderPath, "/") == 0) {
     *path = 0;
     // printf("resolved root path: %ld\n\r", *path);
-    return STATUS_CODE_OK;
+    return FS_STATUS_OK;
   }  // return the root directory
 
   char copy[MAX_PATH_LENGTH];
