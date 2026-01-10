@@ -17,6 +17,7 @@
 
 /* Intra-component Headers */
 #include "front_controller_hw_defs.h"
+#include "front_controller_setters.h"
 #include "power_manager.h"
 #include "power_outputs.h"
 
@@ -117,6 +118,21 @@ static uint16_t power_sense_hi_current_calc(uint16_t sampled_voltage) {
   return result;
 }
 
+static void power_manager_set_telemetry() {
+  set_fc_power_group_A_rev_cam_current(s_power_manager_storage.current_readings[REV_CAM]);
+  set_fc_power_group_A_telem_current(s_power_manager_storage.current_readings[TELEM]);
+  set_fc_power_group_A_steering_current(s_power_manager_storage.current_readings[STEERING]);
+  set_fc_power_group_A_driver_fan_current(s_power_manager_storage.current_readings[DRIVER_FAN]);
+
+  set_fc_power_group_B_horn_current(s_power_manager_storage.current_readings[HORN]);
+  set_fc_power_group_B_spare_current(s_power_manager_storage.current_readings[SPARE_1]);
+
+  set_fc_power_lights_group_brake_light_sig_current(s_power_manager_storage.current_readings[BRAKE_LIGHT]);
+  set_fc_power_lights_group_bps_light_sig_current(s_power_manager_storage.current_readings[BPS_LIGHT]);
+  set_fc_power_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
+  set_fc_power_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
+}
+
 /************************************************************************************************
  * Public functions
  ************************************************************************************************/
@@ -144,19 +160,6 @@ StatusCode power_manager_init(FrontControllerStorage *storage) {
   adc_init();
 
   return STATUS_CODE_OK;
-}
-
-static void set_power_manager_telemetry() {
-  set_fc_power_telemetry_idle_group_rev_cam_current(s_power_manager_storage.current_readings[REV_CAM]);
-  set_fc_power_telemetry_idle_group_telem_current(s_power_manager_storage.current_readings[TELEM]);
-  set_fc_power_telemetry_idle_group_steering_current(s_power_manager_storage.current_readings[STEERING]);
-  set_fc_power_telemetry_left_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
-  set_fc_power_telemetry_right_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
-  set_fc_power_telemetry_hazard_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
-  set_fc_power_telemetry_hazard_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
-  set_fc_power_telemetry_bps_lights_group_bps_light_sig_current(s_power_manager_storage.current_readings[BPS_LIGHT]);
-  set_fc_power_telemetry_brake_lights_group_brake_light_sig_current(s_power_manager_storage.current_readings[BRAKE_LIGHT]);
-  set_fc_power_telemetry_horn_group_horn_current(s_power_manager_storage.current_readings[HORN]);
 }
 
 StatusCode power_manager_run_current_sense(OutputGroup group) {
@@ -193,7 +196,7 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
     delay_ms(10);
   }
 
-  set_power_manager_telemetry();
+  power_manager_set_telemetry();
 
   return STATUS_CODE_OK;
 }
