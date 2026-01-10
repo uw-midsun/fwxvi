@@ -44,19 +44,19 @@
  * Initializes fs_hal
  *
  */
-FsStatus fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size);
+StatusCode fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size);
 
 /**
  * Reads memory from HAL of size buffer_len at a specific address to an array buffer
  *
  * @return FS_STATUS_INVALID_ARGS if buffer is null
  */
-FsStatus fs_hal_read(uint32_t address, uint8_t *buffer, size_t buffer_len);
+StatusCode fs_hal_read(uint32_t address, uint8_t *buffer, size_t buffer_len);
 
 /**
  * Writes memory from array buffer of size buffer_len to a specific address in HAL
  *
  * @return FS_STATUS_INVALID_ARGS if buffer is null
  */
-FsStatus fs_hal_write(uint32_t address, uint8_t *buffer, size_t buffer_len);
+StatusCode fs_hal_write(uint32_t address, uint8_t *buffer, size_t buffer_len);
 /** @} */

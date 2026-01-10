@@ -31,6 +31,7 @@ void setup_test(void) {
 
 void teardown_test(void) {}
 
+TEST_IN_TASK
 void test_superblock_and_first_block_setup(void) {
   TEST_ASSERT_NOT_NULL(superBlock);
   TEST_ASSERT_EQUAL_HEX32(0xC1D1921D, superBlock->magic);
