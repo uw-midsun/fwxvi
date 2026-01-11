@@ -41,7 +41,7 @@ StatusCode fs_init() {
   // super block declaration
   superBlock->magic = 0xC1D1921D;
   // printf("Magic number from init: %#lx\n\r", superBlock->magic);
-  printf("Magic number from init: %#x\n\r", superBlock->magic);
+  // printf("Magic number from init: %#x\n\r", superBlock->magic);
 
   superBlock->blockSize = BLOCK_SIZE;
   superBlock->blocksPerGroup = BLOCKS_PER_GROUP;
@@ -60,13 +60,21 @@ StatusCode fs_init() {
   superBlock->rootFolderMetadata.startBlockIndex = 0;
   superBlock->rootFolderMetadata.size = 0;
   // printf("End of file system init\n\r");
+  printf("File system initialized with BLOCKS_PER_GROUP: %d BLOCK_SIZE: %d NUM_BLOCK_GROUPS: %d\r\n", BLOCKS_PER_GROUP, BLOCK_SIZE, NUM_BLOCK_GROUPS);
+  printf("Stats: sizeof(SuperBlock): %d, sizeof(BlockGroup): %d, sizeof(FileEntry): %d\r\n", sizeof(superBlock), sizeof(BlockGroup), sizeof(FileEntry));
+  printf("Total size: %d\r\n", FS_TOTAL_SIZE);
   return STATUS_CODE_OK;
 }
 
 StatusCode fs_pull() {
 // pull memory from HAL
 #ifdef ARCH_ARM
+  printf("ARM fs_hal_init\n");
   fs_hal_init(fs_memory, FS_TOTAL_SIZE);
+#endif
+
+#ifdef ARCH_X86
+  printf("x86 fs_pull\n");
 #endif
 
   // setup superblock and block groups
@@ -76,7 +84,6 @@ StatusCode fs_pull() {
   // check if magic number matches
   if (superBlock->magic != 0xC1D1921D) {
     // printf("FS magic number: %lu does not match\n\r", superBlock->magic);
-    printf("FS magic number: %u does not match\n\r", superBlock->magic);
     return STATUS_CODE_INTERNAL_ERROR;
   } else {
     printf("FS magic number matches\n\r");
@@ -95,7 +102,7 @@ StatusCode fs_commit() {
 #endif
 
   // printf("Magic number from commit pre-wipe: %#lx\n\r", superBlock->magic);
-  printf("Magic number from commit pre-wipe: %#x\n\r", superBlock->magic);
+  // printf("Magic number from commit pre-wipe: %#x\n\r", superBlock->magic);
   return STATUS_CODE_OK;
 }
 
@@ -238,6 +245,7 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
   // search for the first empty spot and copy in file data
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
     if (i == DIRECTORY_BLOCK_LAST_INDEX) {
+      printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n");
       // we have reached the end of the block, meaning this file will be a folder that points to the next block
       if (!File[i].valid) {
         // printf("empty last index, expanding file\n\r");
@@ -274,16 +282,18 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
       // reset the loop, it will run one more time and the file will be added to the new block group
       i = 0;
     } else if (!File[i].valid) {  // look for an empty spot
+      // printf("checking address %lu file %lu\r\n", parentBlockLocation, i);
       // copy in the data
       fileLocation = i;
       File[i] = newFile;
-      // printf("%s NEW LOCATION: %u\n", File[i].fileName, i);
+      // printf("%s NEW LOCATION: %lu\n", File[i].fileName, i);
       break;
     }
   }
 
   // we couldn't find a spot
   if (fileLocation == UINT32_MAX) {
+    printf("fs_add_file could not find a location\r\n");
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
@@ -303,10 +313,12 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
 
   uint32_t incomingBlockAddress = UINT32_MAX;  // invalid marker
 
+  // printf("attempting to locate memory\n\r");
+  // printf("Blocks needed: %ld\n\r", blocksNeeded);
+
   fs_locate_memory(blocksNeeded, &incomingBlockAddress);
 
-  // printf("Blocks needed: %ld\n\r", blocksNeeded);
-  printf("Located sufficient memory at address: %d\n\r", incomingBlockAddress);
+  // printf("Located sufficient memory at address: %ld\n\r", incomingBlockAddress);
 
   // get the block group that our incoming block address is in
   BlockGroup *current = &blockGroups[(uint32_t)(incomingBlockAddress / BLOCKS_PER_GROUP)];
@@ -800,15 +812,15 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
     // FileEntry *File = (FileEntry *)&current.dataBlocks[currentBlockGroupIndex % BLOCKS_PER_GROUP];
 
     // for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    //   if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
-    //     if (File[i].valid) {
-    //       BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-    //       File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-    //       i = 0;
-    //     } else {
-    //       break;
-    //     }
-    //   }
+    //   // if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    //   //   if (File[i].valid) {
+    //   //     BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+    //   //     File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+    //   //     i = 0;
+    //   //   } else {
+    //   //     break;
+    //   //   }
+    //   // }
     //   printf("|--");
     //   if (File[i].valid) {
     //     printf("\t%s", File[i].fileName);

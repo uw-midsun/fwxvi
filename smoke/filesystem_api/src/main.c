@@ -30,30 +30,38 @@ TASK(filesystem_api, TASK_STACK_1024) {
 
 #if (FILESYSTEM_MODE == FILESYSTEM_WRITER_MODE)
   LOG_DEBUG("\r\nFile system init\r\n");
+  delay_ms(10U);
   fs_status = fs_init();
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_init() failed with exit code %u\r\n", fs_status);
+    delay_ms(10U);
   }
   LOG_DEBUG("filesystem_api test - writer mode\r\n");
+  delay_ms(10U);
   fs_status = fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_add_file() failed with exit code %u\r\n", fs_status);
+    delay_ms(10U);
   }
 
   fs_list("/");
   fs_status = fs_commit();
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_commit() failed with exit code %u\r\n", fs_status);
+    delay_ms(10U);
   } else {
     LOG_DEBUG("fs_commited() successfully\r\n");
+    delay_ms(10U);
   }
 
 #else
   LOG_DEBUG("filesystem_api test - reader mode\r\n");
+  delay_ms(10U);
 
   fs_status = fs_pull();
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_pull() failed with exit code %u\r\n", fs_status);
+    delay_ms(10U);
   }
 
   fs_list("/");
@@ -63,9 +71,11 @@ TASK(filesystem_api, TASK_STACK_1024) {
   fs_status = fs_read_file("/crc.txt", crc_poly);
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_read_file() failed with exit code %u\r\n", fs_status);
+    delay_ms(10U);
   }
 
   LOG_DEBUG("Read data: %s\n", crc_poly);
+  delay_ms(10U);
 
 #endif
 
