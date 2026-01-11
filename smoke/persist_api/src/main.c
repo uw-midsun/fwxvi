@@ -8,8 +8,13 @@
  ************************************************************************************************/
 
 /**
- * !NOTE: there is a bug where if flash memory is full, all future persist_commit()
- * calls will fail with exit code 10. Can be resolved by running flash_api smoke test
+ * !NOTE: Reported bugs:
+ * - There is a bug where if flash memory is full, all future persist_commit()
+ *   calls will fail with exit code 10. Can be resolved by running flash_api smoke test
+ *
+ * - Multiple calls of this test in PERSIST_WRITER_MODE will cause PERSIST_READER_MODE
+ *   to fail. However multiple calls of PERSIST_READER_MODE after one call of PERSIST_WRITER_MODE
+ *   will still work.
  */
 
 /* Standard library Headers */
