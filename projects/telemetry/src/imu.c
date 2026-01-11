@@ -1,0 +1,71 @@
+/************************************************************************************************
+ * @file    imu.c
+ *
+ * @brief   Imu
+ *
+ * @date    2026-01-04
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>  // For memcpy
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "bmi323.h"
+#include "datagram.h"
+#include "imu.h"
+#include "log.h"  // For LOG_ERROR
+#include "task.h"
+#include "uart.h"
+
+/* Intra-component Headers */
+
+void imu_task(void *pvParameters) {
+  Bmi323Storage *storage = (Bmi323Storage *)pvParameters;
+
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+  const TickType_t xPeriod = pdMS_TO_TICKS(100);
+
+  while (1) {
+    vTaskDelayUntil(&xLastWakeTime, xPeriod);
+
+    StatusCode status = bmi323_update(storage);
+    if (status != STATUS_CODE_OK) {
+      LOG_CRITICAL("status error");
+      continue;
+    }
+
+    // Create buffer and send over UART
+    uint8_t buffer[26];
+    buffer[0] = DATAGRAM_START_FRAME;
+    memcpy(&buffer[1], &storage->gyro.x, sizeof(float));
+    memcpy(&buffer[5], &storage->gyro.y, sizeof(float));
+    memcpy(&buffer[9], &storage->gyro.z, sizeof(float));
+    memcpy(&buffer[13], &storage->accel.x, sizeof(float));
+    memcpy(&buffer[17], &storage->accel.y, sizeof(float));
+    memcpy(&buffer[21], &storage->accel.z, sizeof(float));
+    buffer[25] = DATAGRAM_END_FRAME;
+
+    uart_tx(UART_PORT_1, buffer, sizeof(buffer));
+  }
+}
+
+StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+  storage->settings = settings;
+
+  StatusCode status = bmi323_init(storage);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+  xTaskCreate(imu_task, "imu", 1024, storage, 1, NULL);
+#else
+  static StaticTask_t imu_task_buffer;
+  static StackType_t imu_stack[1024];
+  xTaskCreateStatic(imu_task, "imu", 1024, storage, 1, imu_stack, &imu_task_buffer);
+#endif
+
+  return STATUS_CODE_OK;
+}
