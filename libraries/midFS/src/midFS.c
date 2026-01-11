@@ -141,18 +141,18 @@ StatusCode fs_read_file(const char *path, uint8_t *content) {
 
     if (File[i].valid && (strcmp(File[i].fileName, folderName) == 0)) {
       currentFile = File[i];
-      printf("Found file:\n\r");
-      printf("\tFile size: %d\n\r", currentFile.size);
-      printf("\tFile name: %s\n\r", currentFile.fileName);
-      printf("\tFile start block index: %d\n\r", currentFile.startBlockIndex);
-      printf("\tFile valid: %d\n\r", currentFile.valid);
+      // printf("Found file:\n\r");
+      // printf("\tFile size: %d\n\r", currentFile.size);
+      // printf("\tFile name: %s\n\r", currentFile.fileName);
+      // printf("\tFile start block index: %d\n\r", currentFile.startBlockIndex);
+      // printf("\tFile valid: %d\n\r", currentFile.valid);
       break;
     }
   }
 
   if (currentFile.valid == 0) {
     printf("Could not find file\n\r");
-    return STATUS_CODE_UNREACHABLE;
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   BlockGroup fileGroup = blockGroups[currentFile.startBlockIndex / BLOCKS_PER_GROUP];
@@ -238,7 +238,6 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
   // search for the first empty spot and copy in file data
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
     if (i == DIRECTORY_BLOCK_LAST_INDEX) {
-      printf("END OF THE DIRECTORY: %u\n", i);
       // we have reached the end of the block, meaning this file will be a folder that points to the next block
       if (!File[i].valid) {
         // printf("empty last index, expanding file\n\r");
@@ -278,7 +277,7 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
       // copy in the data
       fileLocation = i;
       File[i] = newFile;
-      printf("%s NEW LOCATION: %u\n", File[i].fileName, i);
+      // printf("%s NEW LOCATION: %u\n", File[i].fileName, i);
       break;
     }
   }
@@ -345,13 +344,13 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
 
   BlockGroup fileGroup = blockGroups[newFile.startBlockIndex / BLOCKS_PER_GROUP];
 
-  printf("End of fs_add_file function\n\r");
+  // printf("End of fs_add_file function\n\r");
 
   return STATUS_CODE_OK;
 }
 
 StatusCode fs_delete_file(const char *path) {
-  // printf("fs_delete_file command\n\r");
+  // printf("fs_delete_file command, DELETING: %s\n\r", path);
 
   char folderPath[MAX_PATH_LENGTH];
   char folderName[MAX_FILENAME_LENGTH];
@@ -382,6 +381,7 @@ StatusCode fs_delete_file(const char *path) {
   // initialize them to invalid markers
   uint16_t fileStartBlockIndex = UINT16_MAX;
   uint32_t fileSize = UINT32_MAX;
+  FileType fileType = FILETYPE_FILE;
 
   // search for the first empty spot
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
@@ -399,6 +399,34 @@ StatusCode fs_delete_file(const char *path) {
       fileStartBlockIndex = File[i].startBlockIndex;
       fileSize = File[i].size;
 
+      if (File[i].type == FILETYPE_FOLDER) {
+        fileType = FILETYPE_FOLDER;
+        uint32_t folder_location = File[i].startBlockIndex;
+        BlockGroup *folderGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+        FileEntry *files = (FileEntry *)&folderGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+
+        uint32_t j = 0;
+
+        while (j <= DIRECTORY_BLOCK_LAST_INDEX) {
+          if (j == DIRECTORY_BLOCK_LAST_INDEX && files[DIRECTORY_BLOCK_LAST_INDEX].valid) {
+            folderGroup = &blockGroups[files[j].startBlockIndex / BLOCKS_PER_GROUP];
+            files = (FileEntry *)&folderGroup->dataBlocks[files[j].startBlockIndex % BLOCKS_PER_GROUP];
+          }
+
+          if (!files[j].valid) {
+            j++;
+            continue;
+          }
+          char filePath[MAX_PATH_LENGTH];
+          snprintf(filePath, sizeof(filePath), "%s/%s", path, files[j].fileName);
+
+          StatusCode s = fs_delete_file(filePath);
+          if (s != STATUS_CODE_OK) {
+            return s;
+          }
+        }
+      }
+
       // printf("Found file:\n\r");
       // printf("\tFile size: %ld\n\r", File[i].size);
       // printf("\tFile name: %s\n\r", File[i].fileName);
@@ -410,6 +438,7 @@ StatusCode fs_delete_file(const char *path) {
       memset(&File[i].fileName, 0, MAX_FILENAME_LENGTH);
       File[i].size = 0;
       File[i].startBlockIndex = 0;
+
       break;
     }
   }
@@ -420,15 +449,26 @@ StatusCode fs_delete_file(const char *path) {
 
   BlockGroup *fileContentGroup = &blockGroups[fileStartBlockIndex / BLOCKS_PER_GROUP];
 
-  // determine how many blocks this file takes up
-  uint32_t blocksNeeded = (fileSize + BLOCK_SIZE - 1) / BLOCK_SIZE;  // ceiling division
-
-  for (uint32_t i = 0; i < blocksNeeded; i++) {
+  if (fileType == FILETYPE_FOLDER) {
     // clear the blocks
-    memset(fileContentGroup->dataBlocks[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);
+    memset(fileContentGroup->dataBlocks[(fileStartBlockIndex % BLOCKS_PER_GROUP)], 0, BLOCK_SIZE);
     // update the bitmap
-    fileContentGroup->blockBitmap[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i] = 0;
+    fileContentGroup->blockBitmap[(fileStartBlockIndex % BLOCKS_PER_GROUP)] = 0;
+  } else {
+    // determine how many blocks this file takes up
+    uint32_t blocksNeeded = (uint32_t)((fileSize + BLOCK_SIZE - 1) / BLOCK_SIZE);  // ceiling division
+    // printf("clearing bitmap %u blocks, starting from %u\n", blocksNeeded, (fileStartBlockIndex % BLOCKS_PER_GROUP));
+
+    for (uint32_t i = 0; i < blocksNeeded; i++) {
+      // clear the blocks
+      memset(fileContentGroup->dataBlocks[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);
+      // update the bitmap
+      fileContentGroup->blockBitmap[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i] = 0;
+    }
   }
+
+  fs_write_block_group(parentBlockLocation / BLOCKS_PER_GROUP, parentGroup);
+
   return STATUS_CODE_OK;
 }
 
@@ -499,7 +539,9 @@ StatusCode fs_write_file(const char *path, uint8_t *content, uint32_t contentSiz
 
   // i starts at the last block of the old file
   // i ends at the index of (start of file + newBlocksNeeded)
-  for (uint32_t i = (parentBlockLocation % BLOCKS_PER_GROUP) + oldBlocksNeeded; i < (parentBlockLocation % BLOCKS_PER_GROUP) + newBlocksNeeded; i++) {
+  // printf("SCANNING FOR CONTIGUOUS MEMORY... from %u to %u\n", (parentBlockLocation % BLOCKS_PER_GROUP) + oldBlocksNeeded + 1, (parentBlockLocation % BLOCKS_PER_GROUP) + newBlocksNeeded);
+  for (uint32_t i = (parentBlockLocation % BLOCKS_PER_GROUP) + oldBlocksNeeded + 1; i < (parentBlockLocation % BLOCKS_PER_GROUP) + newBlocksNeeded + 1; i++) {
+    // printf("index: %u, bitmap: %u", i, parentGroup->blockBitmap[i]);
     if (parentGroup->blockBitmap[i] == 1) {
       canWriteInPlace = 0;
     }
@@ -512,9 +554,22 @@ StatusCode fs_write_file(const char *path, uint8_t *content, uint32_t contentSiz
     BlockGroup *oldFileGroup = &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP];
     memcpy(&oldFileGroup->dataBlocks[oldFile.startBlockIndex % BLOCKS_PER_GROUP][oldFile.size], content, contentSize);  // copy in new content after old content
     File[fileLocation].size = oldFile.size + contentSize;                                                               // update size of file entry
-    fs_write_block_group(parentBlockLocation / BLOCKS_PER_GROUP, parentGroup);                                          // update the current block
+
+    uint32_t addedBlocks = newBlocksNeeded - oldBlocksNeeded;
+
+    if (addedBlocks > 0) {
+      for (uint32_t k = 0; k < addedBlocks; k++) {
+        uint32_t blk = oldFile.startBlockIndex + oldBlocksNeeded + k;
+        BlockGroup *g = &blockGroups[blk / BLOCKS_PER_GROUP];
+        uint32_t idx = blk % BLOCKS_PER_GROUP;
+        g->blockBitmap[idx] = 1;
+      }
+    }
+
+    fs_write_block_group(parentBlockLocation / BLOCKS_PER_GROUP, parentGroup);  // update the current block
 
   } else {
+    // printf("NON_CONTIGUOUS WRITE\n");
     // if we cannot write in place we must find more space (search for contiguous space of length newBlocksNeeded)
     uint32_t incomingBlockAddress = UINT32_MAX;
 
@@ -525,34 +580,51 @@ StatusCode fs_write_file(const char *path, uint8_t *content, uint32_t contentSiz
 
     BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
 
-    // create a new array to store old content + new content
-    uint8_t fullContent[MAX_FILE_CONTENT_POST_WRITE];
-
-    uint32_t copied = 0;
-
-    // copy old content in
-    for (uint32_t i = 0; i < oldBlocksNeeded; i++) {
-      uint32_t blockOffset = (oldFile.startBlockIndex % BLOCKS_PER_GROUP) + i;
-      uint32_t copySize = (oldFile.size - copied > BLOCK_SIZE) ? BLOCK_SIZE : oldFile.size - copied;
-      memcpy(&fullContent[copied], &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].dataBlocks[blockOffset][0], copySize);
-      copied += copySize;
-    }
-
-    // copy new content in
-    memcpy(&fullContent[copied], content, contentSize);
-
     // update bitmap
     for (uint32_t i = 0; i < newBlocksNeeded; i++) {
       current->blockBitmap[(incomingBlockAddress % BLOCKS_PER_GROUP) + i] = 1;
     }
 
-    copied = 0;
+    uint32_t dst_copied = 0;
 
-    // copy data in
-    for (uint32_t i = 0; i < newBlocksNeeded; i++) {
-      uint32_t chunk = (oldFile.size + contentSize - copied > BLOCK_SIZE) ? BLOCK_SIZE : (oldFile.size + contentSize - copied);
-      memcpy(&current->dataBlocks[(incomingBlockAddress % BLOCKS_PER_GROUP) + i], &fullContent[copied], chunk);
-      copied += chunk;
+    uint32_t old_remaining = oldFile.size;
+    uint32_t old_src_copied = 0;
+    for (uint32_t i = 0; i < oldBlocksNeeded && old_remaining > 0; i++) {
+      uint32_t old_blk_off = (oldFile.startBlockIndex % BLOCKS_PER_GROUP) + i;
+      uint32_t chunk = (old_remaining > BLOCK_SIZE) ? BLOCK_SIZE : old_remaining;
+
+      uint32_t chunk_off = 0;
+      while (chunk_off < chunk) {
+        uint32_t dst_blk = (incomingBlockAddress % BLOCKS_PER_GROUP) + (dst_copied / BLOCK_SIZE);
+        uint32_t dst_off = dst_copied % BLOCK_SIZE;
+
+        uint32_t to_copy = BLOCK_SIZE - dst_off;
+        if (to_copy > (chunk - chunk_off)) to_copy = (chunk - chunk_off);
+
+        memcpy(&current->dataBlocks[dst_blk][dst_off], &blockGroups[oldFile.startBlockIndex / BLOCKS_PER_GROUP].dataBlocks[old_blk_off][chunk_off], to_copy);
+
+        dst_copied += to_copy;
+        chunk_off += to_copy;
+      }
+
+      old_remaining -= chunk;
+      old_src_copied += chunk;
+    }
+
+    uint32_t new_remaining = contentSize;
+    uint32_t new_src_off = 0;
+    while (new_remaining > 0) {
+      uint32_t dst_blk = (incomingBlockAddress % BLOCKS_PER_GROUP) + (dst_copied / BLOCK_SIZE);
+      uint32_t dst_off = dst_copied % BLOCK_SIZE;
+
+      uint32_t to_copy = BLOCK_SIZE - dst_off;
+      if (to_copy > new_remaining) to_copy = new_remaining;
+
+      memcpy(&current->dataBlocks[dst_blk][dst_off], &content[new_src_off], to_copy);
+
+      dst_copied += to_copy;
+      new_src_off += to_copy;
+      new_remaining -= to_copy;
     }
 
     // clear the old blocks and set old bitmap values to 0
@@ -656,7 +728,7 @@ StatusCode fs_resolve_path(const char *folderPath, uint32_t *path) {
     if (!found) {
       *path = FS_INVALID_BLOCK;
       // printf("could not resolve path. exiting... \n\r");
-      return STATUS_CODE_UNREACHABLE;
+      return STATUS_CODE_INVALID_ARGS;
     }
     currentFile = strtok_r(NULL, "/", &saveptr);
   }
