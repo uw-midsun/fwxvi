@@ -20,6 +20,13 @@
 #include "rear_controller_hw_defs.h"
 #include "relays.h"
 
+/**
+ * For testing purposes, to see pin behavior without plugging in relays, set this to 0U
+ * Otherwise, keep this set to 1U. Note that LED behavior, especially ws22 may be inconsistent
+ * if nothing is plugged in
+ */
+#define RELAYS_RESPECT_CURRENT_SENSE 1U
+
 typedef struct {
   GpioAddress pos_relay_en;    /**< Positive relay enable */
   GpioAddress pos_relay_sense; /**< Positive relay sense */
@@ -97,15 +104,17 @@ StatusCode relays_enable_ws22_lv(void) {
 }
 
 StatusCode relays_disable_ws22_lv(void) {
-  return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_HIGH);
+  return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_LOW);
 }
 
 StatusCode relays_close_motor(void) {
   gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_HIGH);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.motor_relay_sense) != GPIO_STATE_HIGH) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->motor_relay_closed = true;
 
@@ -115,9 +124,11 @@ StatusCode relays_close_motor(void) {
 StatusCode relays_open_motor(void) {
   gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_LOW);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.motor_relay_sense) != GPIO_STATE_LOW) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->motor_relay_closed = false;
 
@@ -128,9 +139,11 @@ StatusCode relays_close_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_HIGH);
   delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.solar_relay_sense) != GPIO_STATE_HIGH) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->solar_relay_closed = true;
 
@@ -140,9 +153,11 @@ StatusCode relays_close_solar(void) {
 StatusCode relays_open_solar(void) {
   gpio_set_state(&s_relay_storage.solar_relay_en, GPIO_STATE_LOW);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.solar_relay_sense) != GPIO_STATE_LOW) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->solar_relay_closed = false;
 
@@ -153,9 +168,11 @@ StatusCode relays_close_pos(void) {
   gpio_set_state(&s_relay_storage.pos_relay_en, GPIO_STATE_HIGH);
   delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.pos_relay_sense) != GPIO_STATE_HIGH) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->pos_relay_closed = true;
 
@@ -165,9 +182,11 @@ StatusCode relays_close_pos(void) {
 StatusCode relays_open_pos(void) {
   gpio_set_state(&s_relay_storage.pos_relay_en, GPIO_STATE_LOW);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.pos_relay_sense) != GPIO_STATE_LOW) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->pos_relay_closed = false;
 
@@ -178,9 +197,11 @@ StatusCode relays_close_neg(void) {
   gpio_set_state(&s_relay_storage.neg_relay_en, GPIO_STATE_HIGH);
   delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.neg_relay_sense) != GPIO_STATE_HIGH) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->neg_relay_closed = true;
 
@@ -190,9 +211,11 @@ StatusCode relays_close_neg(void) {
 StatusCode relays_open_neg(void) {
   gpio_set_state(&s_relay_storage.neg_relay_en, GPIO_STATE_LOW);
 
+#if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.neg_relay_sense) != GPIO_STATE_LOW) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+#endif
 
   rear_controller_storage->neg_relay_closed = false;
 
