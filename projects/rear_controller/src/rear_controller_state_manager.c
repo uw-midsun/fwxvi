@@ -35,25 +35,19 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       if (rear_controller_storage->precharge_complete) {
         relays_enable_ws22_lv();
         relays_close_motor();
+      } else {
+        rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
       }
-
-      rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
-      break;
-
-    case REAR_CONTROLLER_STATE_CHARGE:
-      relays_close_motor();
-      /* TODO: Make any changes required for charging. Previous car required us to close motor relay */
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
       relays_disable_ws22_lv();
       relays_reset();
-      /* TODO: Disable everything for safety, open all relays and disable LV motor */
       break;
   }
 
   s_current_state = new_state;
-  LOG_DEBUG("RearController State Manager entered state: %d\r\n", new_state);
+  // LOG_DEBUG("RearController State Manager entered state: %d\r\n", new_state);
 }
 
 StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
@@ -70,6 +64,7 @@ StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
   if (status == STATUS_CODE_OK) {
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
   } else {
+    LOG_DEBUG("Close relays was unsuccessful, entering fault from initialization\n");
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
   }
 
@@ -85,22 +80,12 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
     case REAR_CONTROLLER_STATE_IDLE:
       if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
-      else if (event == REAR_CONTROLLER_EVENT_CHARGE_REQUEST)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_CHARGE);
       else if (event == REAR_CONTROLLER_EVENT_FAULT)
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
       if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-      } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
-      }
-      break;
-
-    case REAR_CONTROLLER_STATE_CHARGE:
-      if (event == REAR_CONTROLLER_EVENT_CHARGER_REMOVED) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
@@ -116,6 +101,7 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
         if (status == STATUS_CODE_OK) {
           rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
         } else {
+          LOG_DEBUG("Reset was unsuccessful\n");
           rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
         }
       }
