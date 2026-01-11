@@ -19,6 +19,16 @@ uint8_t fs_memory[FS_TOTAL_SIZE] = { 0 };
 SuperBlock *superBlock = NULL;
 BlockGroup *blockGroups = NULL;
 
+#define DIRECTORY_BLOCK_LAST_INDEX ((BLOCK_SIZE / sizeof(FileEntry)) - 1)
+
+#define FS_DIR_JUMP_TO_NESTED(File, blockIdx, i)                          \
+  do {                                                                    \
+    BlockGroup *_g = &blockGroups[(blockIdx) / BLOCKS_PER_GROUP];         \
+    (File) = (FileEntry *)&_g->dataBlocks[(blockIdx) % BLOCKS_PER_GROUP]; \
+    (i) = 0;                                                              \
+    continue;                                                             \
+  } while (0)
+
 StatusCode fs_init() {
 #ifdef ARCH_ARM
   fs_hal_init(fs_memory, FS_TOTAL_SIZE);  // pulls memory from HAL
@@ -118,11 +128,10 @@ StatusCode fs_read_file(const char *path, uint8_t *content) {
   // printf("Finding file...\n\r");
 
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {
       if (File[i].valid) {
-        BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-        File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-        i = 0;
+        printf("reading into nested directory: %u\n", File[i].startBlockIndex);
+        FS_DIR_JUMP_TO_NESTED(File, File[i].startBlockIndex, i);
       } else {
         break;
       }
@@ -132,10 +141,11 @@ StatusCode fs_read_file(const char *path, uint8_t *content) {
 
     if (File[i].valid && (strcmp(File[i].fileName, folderName) == 0)) {
       currentFile = File[i];
-      // printf("Found file:\n\r");
-      // printf("\tFile size: %ld\n\r", File[i].size);
-      // printf("\tFile name: %s\n\r", File[i].fileName);
-      // printf("\tFile start block index: %d\n\r", File[i].startBlockIndex);
+      printf("Found file:\n\r");
+      printf("\tFile size: %d\n\r", currentFile.size);
+      printf("\tFile name: %s\n\r", currentFile.fileName);
+      printf("\tFile start block index: %d\n\r", currentFile.startBlockIndex);
+      printf("\tFile valid: %d\n\r", currentFile.valid);
       break;
     }
   }
@@ -227,7 +237,8 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
 
   // search for the first empty spot and copy in file data
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {
+      printf("END OF THE DIRECTORY: %u\n", i);
       // we have reached the end of the block, meaning this file will be a folder that points to the next block
       if (!File[i].valid) {
         // printf("empty last index, expanding file\n\r");
@@ -249,25 +260,25 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
           File[i].fileName[MAX_FILENAME_LENGTH - 1] = '\0';  // null-terminate
         }
       }
+
       // the block group of our new file
       BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
       // set the bitmap
       nestedFileGroup->blockBitmap[File[i].startBlockIndex % BLOCKS_PER_GROUP] = 1;
-      File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
       fs_write_block_group(File[i].startBlockIndex / BLOCKS_PER_GROUP, nestedFileGroup);
+
+      File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
       // for(uint32_t j = 0; j < BLOCK_SIZE / sizeof(FileEntry); j++){
       //     File[j].valid = 0;
       // }
 
       // reset the loop, it will run one more time and the file will be added to the new block group
       i = 0;
-    }
-
-    // look for an empty spot
-    if (!File[i].valid) {
+    } else if (!File[i].valid) {  // look for an empty spot
       // copy in the data
       fileLocation = i;
       File[i] = newFile;
+      printf("%s NEW LOCATION: %u\n", File[i].fileName, i);
       break;
     }
   }
@@ -283,7 +294,7 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
     File[fileLocation].startBlockIndex = incomingFolderBlockAddress;
     // get the block group that our incoming block address is in
     BlockGroup *current = &blockGroups[incomingFolderBlockAddress / BLOCKS_PER_GROUP];
-    current->blockBitmap[incomingFolderBlockAddress] = 1;  // update the block bitmap
+    current->blockBitmap[incomingFolderBlockAddress % BLOCKS_PER_GROUP] = 1;  // update the block bitmap
     // printf("Added folder at with block address: %ld\n\r", incomingFolderBlockAddress);
     return STATUS_CODE_OK;
   }
@@ -374,12 +385,10 @@ StatusCode fs_delete_file(const char *path) {
 
   // search for the first empty spot
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {  // if we reach the end of a block group
-      if (File[i].valid) {                            // nested folder exists
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {  // if we reach the end of a block group
+      if (File[i].valid) {                  // nested folder exists
         // relocate to nested folder
-        BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-        File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-        i = 0;  // reset to 0 and keep looking
+        FS_DIR_JUMP_TO_NESTED(File, File[i].startBlockIndex, i);
       } else {  // nested folder doesnt exist
         break;
       }
@@ -418,7 +427,7 @@ StatusCode fs_delete_file(const char *path) {
     // clear the blocks
     memset(fileContentGroup->dataBlocks[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i], 0, BLOCK_SIZE);
     // update the bitmap
-    fileContentGroup->blockBitmap[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i] = 1;
+    fileContentGroup->blockBitmap[(fileStartBlockIndex % BLOCKS_PER_GROUP) + i] = 0;
   }
   return STATUS_CODE_OK;
 }
@@ -456,11 +465,9 @@ StatusCode fs_write_file(const char *path, uint8_t *content, uint32_t contentSiz
 
   // search for the first empty spot
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {
       if (File[i].valid) {
-        BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-        File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-        i = 0;
+        FS_DIR_JUMP_TO_NESTED(File, File[i].startBlockIndex, i);
       } else {
         break;
       }
@@ -686,20 +693,18 @@ StatusCode fs_list(const char *path) {
   // loop through files
   printf("Files in %s: \n\r", path);
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
-      if (File[i].valid) {
-        BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-        File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-        i = 0;
-      } else {
-        break;
-      }
-    }
     printf("|--");
     if (File[i].valid) {
       printf("\t%s", File[i].fileName);
     }
     printf("\n\r");
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {
+      if (File[i].valid) {
+        FS_DIR_JUMP_TO_NESTED(File, File[i].startBlockIndex, i);
+      } else {
+        break;
+      }
+    }
   }
 
   return STATUS_CODE_OK;
@@ -717,29 +722,27 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
   int iter = 0;
 
   while (1) {
-    printf("start of loop: %u\n", iter);
     memoryFound = 0;
     fs_read_block_group(currentBlockGroupIndex, &current);
 
-    FileEntry *File = (FileEntry *)&current.dataBlocks[currentBlockGroupIndex % BLOCKS_PER_GROUP];
+    // FileEntry *File = (FileEntry *)&current.dataBlocks[currentBlockGroupIndex % BLOCKS_PER_GROUP];
 
-    // loop through files
-    for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-      if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
-        if (File[i].valid) {
-          BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-          File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-          i = 0;
-        } else {
-          break;
-        }
-      }
-      printf("|--");
-      if (File[i].valid) {
-        printf("\t%s", File[i].fileName);
-      }
-      printf("\n\r");
-    }
+    // for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
+    //   if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    //     if (File[i].valid) {
+    //       BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+    //       File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+    //       i = 0;
+    //     } else {
+    //       break;
+    //     }
+    //   }
+    //   printf("|--");
+    //   if (File[i].valid) {
+    //     printf("\t%s", File[i].fileName);
+    //   }
+    //   printf("\n\r");
+    // }
 
     for (uint32_t i = 0; i < BLOCKS_PER_GROUP; i++) {
       if (current.blockBitmap[i] == 0) {
@@ -747,7 +750,6 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
           space++;
           if (space == blocksNeeded) {
             *incomingBlockAddress += i;
-            printf("mem found in loop 3 %u\n", iter);
             memoryFound = 1;
             break;
           }
@@ -756,21 +758,18 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
       }
       space = 0;
       if (memoryFound) {
-        printf("mem found in loop 1 %u\n", iter);
         break;
       }
     }
     // if there is no space and we havent found free space, go to the next block
 
     if (memoryFound) {
-      printf("mem found in loop 2 %u\n", iter);
       break;  // we found an address, break
     }
 
     // if we still have not found an address, we need to go to the next block group
 
     // increment incomingBlockAddress by BLOCKS_PER_GROUP to keep with our global indexing
-    printf("increment\n");
     *incomingBlockAddress += BLOCKS_PER_GROUP;
 
     if (current.nextBlockGroup == FS_NULL_BLOCK_GROUP) {  // next block does not exist
@@ -820,11 +819,9 @@ StatusCode fs_does_file_exist(const char *path, uint8_t *doesFileExist) {
   FileEntry *File = (FileEntry *)&parentGroup->dataBlocks[parentBlockLocation % BLOCKS_PER_GROUP];
 
   for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
-    if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+    if (i == DIRECTORY_BLOCK_LAST_INDEX) {
       if (File[i].valid) {
-        BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
-        File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
-        i = 0;
+        FS_DIR_JUMP_TO_NESTED(File, File[i].startBlockIndex, i);
       } else {
         break;
       }

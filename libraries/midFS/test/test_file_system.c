@@ -19,11 +19,24 @@
 
 /* Intra-component Headers */
 
-StatusCode status;
+#define TEST_ASSERT_BITMAP_PREFIX_1S_THEN_0S(bitmap, ones, total) \
+  do {                                                            \
+    for (int _i = 0; _i < (total); _i++) {                        \
+      uint8_t expected = (_i < (ones)) ? 1 : 0;                   \
+      TEST_ASSERT_EQUAL_UINT8(expected, (bitmap)[_i]);            \
+    }                                                             \
+  } while (0)
+
+#define TEST_ASSERT_BITMAP_ALL_1S(bitmap)                                             \
+  do {                                                                                \
+    TEST_ASSERT_BITMAP_PREFIX_1S_THEN_0S(bitmap, BLOCKS_PER_GROUP, BLOCKS_PER_GROUP); \
+  } while (0)
 
 void setup_test(void) {
   // Initialize the file system if needed
+  StatusCode status;
   status = fs_init();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, status);
 
   // Additional setup can be done here
   printf("Test setup complete.\n");
@@ -159,7 +172,6 @@ void test_add_multi_file_with_valid_args_expect_return_success(void) {
   }
 
   // read everything back and check
-
   for (uint8_t i = 0; i < BLOCKS_PER_GROUP + 1U; i++) {
     uint8_t message_rc[sizeof(messages[i])] = { 0U };
     ret = fs_read_file(filenames[i], message_rc);
@@ -184,4 +196,79 @@ void test_read_file_with_nonexistent_name_expect_return_unreachable(void) {
   uint8_t crc_poly[8] = { 0 };
   ret = fs_read_file("/crc.txt", crc_poly);
   TEST_ASSERT_EQUAL(STATUS_CODE_UNREACHABLE, ret);
+}
+
+TEST_IN_TASK
+void test_add_multi_file_past_block_limit_with_valid_args_expect_return_success(void) {
+  /**
+   * This test should demonstrate that adding more than (BLOCK_SIZE / sizeof(FileEntry)) files
+   * to a directory should expand the folder into a new block
+   */
+  StatusCode ret = STATUS_CODE_OK;
+
+  // Currently, BLOCK_SIZE = 512 and sizeof(FileEntry) = 44, so we can fit 11 files
+  printf("BLOCK_SIZE: %u, sizeof(FileEntry): %lu", BLOCK_SIZE, sizeof(FileEntry));
+
+  const uint8_t messages[][13U] = {
+    "CRCPOLY01", "CRCPOLY02", "CRCPOLY03", "CRCPOLY04", "CRCPOLY05", "CRCPOLY06", "CRCPOLY07", "CRCPOLY08", "CRCPOLY09", "CRCPOLY10", "CRCPOLY11", "CRCPOLY12", "CRCPOLY13",
+  };
+  const char filenames[][13U] = {
+    "/a.txt", "/b.txt", "/c.txt", "/d.txt", "/e.txt", "/f.txt", "/g.txt", "/h.txt", "/i.txt", "/j.txt", "/k.txt", "/l.txt", "/m.txt",
+  };
+
+  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup *group_1 = &blockGroups[1];
+
+  for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
+    TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
+  }
+
+  for (uint8_t i = 0; i < 10U; i++) {
+    ret = fs_add_file(filenames[i], messages[i], sizeof(messages[i]), 0);
+    TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+  }
+
+  fs_list("/");
+
+  /**
+   * At this point we have added 10 files, meaning that we have taken up 11 blocks:
+   *  1 block for the root directory + 10 blocks for data
+   *  Since we have 8 blocks per group, we expect block group 0 to be full and the
+   *  first 3 blocks of block group 0 to be full
+   */
+
+  TEST_ASSERT_BITMAP_ALL_1S(group_0->blockBitmap);
+
+  TEST_ASSERT_BITMAP_PREFIX_1S_THEN_0S(group_1->blockBitmap, 3, BLOCKS_PER_GROUP);
+
+  ret = fs_add_file(filenames[10], messages[10], sizeof(messages[10]), 0);
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  fs_list("/");
+  /**
+   * Since we have added another file past the files per block limit (9), the root directory should
+   * now take up 2 blocks, we should expect 12 blocks to be taken up now, 8 + 4
+   */
+
+  TEST_ASSERT_BITMAP_PREFIX_1S_THEN_0S(group_1->blockBitmap, 5, BLOCKS_PER_GROUP);
+
+  ret = fs_add_file(filenames[11], messages[11], sizeof(messages[11]), 0);
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Now there is enough space in the root directory, so this operation should only consume 1 block
+   */
+
+  TEST_ASSERT_BITMAP_PREFIX_1S_THEN_0S(group_1->blockBitmap, 6, BLOCKS_PER_GROUP);
+
+  // read everything back and check
+  for (uint8_t i = 0; i < 12U; i++) {
+    uint8_t message_rc[sizeof(messages[i])] = { 0U };
+    ret = fs_read_file(filenames[i], message_rc);
+    if (ret != STATUS_CODE_OK) {
+      printf("%u\n", i);
+    }
+    // TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+    TEST_ASSERT_EQUAL_CHAR_ARRAY(messages[i], message_rc, sizeof(messages[i]));
+  }
 }
