@@ -4,7 +4,7 @@
  * @brief   Rear controller main source file
  *
  * @date    2025-10-08
- * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2/@copilot)
+ * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2)
  ************************************************************************************************/
 
 /* Standard library Headers */
