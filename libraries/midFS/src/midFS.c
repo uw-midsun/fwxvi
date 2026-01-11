@@ -14,9 +14,6 @@
 
 /* Intra-component Headers */
 
-#define SUPERBLOCK_OFFSET 0
-#define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
-
 uint8_t fs_memory[FS_TOTAL_SIZE] = { 0 };
 
 SuperBlock *superBlock = NULL;
@@ -40,11 +37,10 @@ StatusCode fs_init() {
   superBlock->blocksPerGroup = BLOCKS_PER_GROUP;
   superBlock->nextBlockGroup = 0;
 
-  blockGroups->nextBlockGroup = FS_NULL_BLOCK_GROUP;
-
   // init the first block group
   memset(&blockGroups[0], 0, sizeof(BlockGroup));
 
+  blockGroups[0].nextBlockGroup = FS_NULL_BLOCK_GROUP;
   blockGroups[0].blockBitmap[0] = 1;  // block 0 in group 0 is used for the root folder
 
   // root folder declaration
@@ -146,7 +142,7 @@ StatusCode fs_read_file(const char *path, uint8_t *content) {
 
   if (currentFile.valid == 0) {
     printf("Could not find file\n\r");
-    return STATUS_CODE_INVALID_ARGS;
+    return STATUS_CODE_UNREACHABLE;
   }
 
   BlockGroup fileGroup = blockGroups[currentFile.startBlockIndex / BLOCKS_PER_GROUP];
@@ -300,15 +296,18 @@ StatusCode fs_add_file(const char *path, uint8_t *content, uint32_t size, uint8_
   fs_locate_memory(blocksNeeded, &incomingBlockAddress);
 
   // printf("Blocks needed: %ld\n\r", blocksNeeded);
-  // printf("Located sufficient memory at address: %ld\n\r", incomingBlockAddress);
+  printf("Located sufficient memory at address: %d\n\r", incomingBlockAddress);
 
   // get the block group that our incoming block address is in
-  BlockGroup *current = &blockGroups[incomingBlockAddress / BLOCKS_PER_GROUP];
+  BlockGroup *current = &blockGroups[(uint32_t)(incomingBlockAddress / BLOCKS_PER_GROUP)];
 
-  for (uint32_t i = 0; i < blocksNeeded; i++) current->blockBitmap[(incomingBlockAddress % BLOCKS_PER_GROUP) + i] = 1;  // update the block bitmap
+  for (uint32_t i = 0; i < blocksNeeded; i++) {
+    current->blockBitmap[(uint32_t)((incomingBlockAddress % BLOCKS_PER_GROUP) + i)] = 1;
+  }  // update the block bitmap
 
   File[fileLocation].startBlockIndex = incomingBlockAddress;
 
+  fs_write_block_group((uint32_t)(incomingBlockAddress / BLOCKS_PER_GROUP), current);
   fs_write_block_group(parentBlockLocation, parentGroup);
 
   if (blocksNeeded == 1) {
@@ -571,10 +570,10 @@ StatusCode fs_write_file(const char *path, uint8_t *content, uint32_t contentSiz
 StatusCode fs_create_block_group(uint32_t *index) {
   static const BlockGroup EmptyBlockGroup = { 0 };
   for (uint32_t i = 0; i < NUM_BLOCK_GROUPS; i++) {
-    if ((blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP) && (memcmp(&blockGroups[i], &EmptyBlockGroup, sizeof(BlockGroup)) == 0)) {
+    if (blockGroups[i].nextBlockGroup == FS_NULL_BLOCK_GROUP) {
       // block group is empty
-      memset(&blockGroups[i], 0, sizeof(BlockGroup));  // clear it just to be safe
-      *index = i;
+      memset(&blockGroups[i + 1], 0, sizeof(BlockGroup));  // clear it just to be safe
+      *index = i + 1;
       return STATUS_CODE_OK;
     }
   }
@@ -715,14 +714,40 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
   uint8_t memoryFound = 0;
   *incomingBlockAddress = 0;
 
+  int iter = 0;
+
   while (1) {
+    printf("start of loop: %u\n", iter);
+    memoryFound = 0;
     fs_read_block_group(currentBlockGroupIndex, &current);
+
+    FileEntry *File = (FileEntry *)&current.dataBlocks[currentBlockGroupIndex % BLOCKS_PER_GROUP];
+
+    // loop through files
+    for (uint32_t i = 0; i < BLOCK_SIZE / sizeof(FileEntry); i++) {
+      if (i == (BLOCK_SIZE / sizeof(FileEntry)) - 1) {
+        if (File[i].valid) {
+          BlockGroup *nestedFileGroup = &blockGroups[File[i].startBlockIndex / BLOCKS_PER_GROUP];
+          File = (FileEntry *)&nestedFileGroup->dataBlocks[File[i].startBlockIndex % BLOCKS_PER_GROUP];
+          i = 0;
+        } else {
+          break;
+        }
+      }
+      printf("|--");
+      if (File[i].valid) {
+        printf("\t%s", File[i].fileName);
+      }
+      printf("\n\r");
+    }
+
     for (uint32_t i = 0; i < BLOCKS_PER_GROUP; i++) {
       if (current.blockBitmap[i] == 0) {
         while (i + space < BLOCKS_PER_GROUP && current.blockBitmap[i + space] == 0) {
           space++;
           if (space == blocksNeeded) {
             *incomingBlockAddress += i;
+            printf("mem found in loop 3 %u\n", iter);
             memoryFound = 1;
             break;
           }
@@ -731,32 +756,40 @@ StatusCode fs_locate_memory(const uint32_t blocksNeeded, uint32_t *incomingBlock
       }
       space = 0;
       if (memoryFound) {
+        printf("mem found in loop 1 %u\n", iter);
         break;
       }
     }
     // if there is no space and we havent found free space, go to the next block
 
     if (memoryFound) {
+      printf("mem found in loop 2 %u\n", iter);
       break;  // we found an address, break
     }
 
     // if we still have not found an address, we need to go to the next block group
 
     // increment incomingBlockAddress by BLOCKS_PER_GROUP to keep with our global indexing
+    printf("increment\n");
     *incomingBlockAddress += BLOCKS_PER_GROUP;
 
     if (current.nextBlockGroup == FS_NULL_BLOCK_GROUP) {  // next block does not exist
+      // printf("Creating new block group...\n");
       uint32_t newBlockGroupIndex;
       StatusCode status = fs_create_block_group(&newBlockGroupIndex);
       if (status != STATUS_CODE_OK) {
+        printf("create block group failed\n");
         return status;
       }
       current.nextBlockGroup = newBlockGroupIndex;
       fs_write_block_group(currentBlockGroupIndex, &current);  // write new data to actual block group
       currentBlockGroupIndex = current.nextBlockGroup;
     } else {  // next block exists, go to it
+      // printf("Checking next block group...\n");
       currentBlockGroupIndex = current.nextBlockGroup;
     }
+
+    iter++;
   }
 
   return STATUS_CODE_OK;

@@ -22,9 +22,9 @@
  * @{
  */
 
-#define BLOCKS_PER_GROUP 4
-#define BLOCK_SIZE 64
-#define NUM_BLOCK_GROUPS 2
+#define BLOCKS_PER_GROUP 8
+#define BLOCK_SIZE 512
+#define NUM_BLOCK_GROUPS 16
 #define FS_TOTAL_SIZE (BLOCKS_PER_GROUP * BLOCK_SIZE * NUM_BLOCK_GROUPS) + sizeof(SuperBlock)
 #define FILE_ENTRY_SIZE 40
 #define FOLDER_CAPACITY 512
@@ -40,7 +40,7 @@ typedef struct {
   uint16_t startBlockIndex;
   uint8_t valid;  // 1 -> in use, 0 -> not in use
   FileType type;  // if type == folder, startBlockIndex is the index of an array of files
-} FileEntry;      // size: 40 bytes
+} FileEntry;      // size: 40 bits
 
 typedef struct {
   uint8_t blockBitmap[BLOCKS_PER_GROUP];
@@ -55,5 +55,5 @@ typedef struct {
   uint16_t numBlocks;
   uint32_t nextBlockGroup;  // address of the next (first) block group
   FileEntry rootFolderMetadata;
-} SuperBlock;  // size: 54 bytes
+} SuperBlock;  // size: 54 bits
 /** @} */

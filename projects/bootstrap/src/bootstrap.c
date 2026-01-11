@@ -50,7 +50,7 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest) {
   *crc_dest = ~crc;
 }
 
-FsStatus read_crc32(const char *file_path, size_t length, uint8_t *crc_dest) {
+StatusCode read_crc32(const char *file_path, size_t length, uint8_t *crc_dest) {
   return fs_read_file(file_path, crc_dest);
 }
 

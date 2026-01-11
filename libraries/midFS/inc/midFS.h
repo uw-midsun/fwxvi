@@ -46,6 +46,9 @@
 // #define FS_HAL_ADDRESS 0x8000000 + 0x10000 //8 million + 64KB to hex
 #define FS_HAL_ADDRESS 0x0803C000
 
+#define SUPERBLOCK_OFFSET 0
+#define BLOCKGROUP_OFFSET (SUPERBLOCK_OFFSET + sizeof(SuperBlock))
+
 extern SuperBlock *superBlock;
 extern BlockGroup *blockGroups;
 
