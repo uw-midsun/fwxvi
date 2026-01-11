@@ -118,8 +118,9 @@ typedef enum {
 } SteeringLightState;
 
 typedef enum {
-  BPS_LIGHT_ON_STATE,  /**< BPS light on state */
-  BPS_LIGHT_OFF_STATE, /**< BPS light off state */
+  BPS_LIGHT_ON_STATE,   /**< BPS light on state */
+  BPS_LIGHT_OFF_STATE,  /**< BPS light off state */
+  NUM_BPS_LIGHT_STATES, /**< Number of BPS light states */
 } BpsLightState;
 
 /**

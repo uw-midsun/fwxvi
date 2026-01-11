@@ -26,7 +26,7 @@
 static void print_bytes(const char *label, const uint8_t *data, size_t len) {
   LOG_DEBUG("%s:\n", label);
   for (size_t i = 0; i < len; i++) {
-    LOG_DEBUG("Byte[%zu] = 0x%02X\n", i, data[i]);
+    LOG_DEBUG("Byte[%zu] = 0x%02X\r\n", i, data[i]);
   }
 }
 
@@ -51,7 +51,7 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
   uint8_t packet[4];
   uint32_t rx_packet;
   while (true) {
-    LOG_DEBUG("--- ACS37800 SMOKE TEST ---\n\n");
+    printf("--- ACS37800 SMOKE TEST ---\r\r\n\n");
     build_packet(packet, 12000, 13000);
     print_bytes("PACKET: ", (uint8_t *)(&packet), 4);
 #ifdef MS_PLATFORM_X86
@@ -60,7 +60,7 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     float current;
     acs37800_get_current(&storage, &current);
 
-    LOG_DEBUG("CURRENT_DATA: %f\n", current);
+    printf("CURRENT_DATA: %f\r\n", (double)current);
 
 #ifdef MS_PLATFORM_X86
     i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
@@ -69,7 +69,7 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     float voltage;
 
     acs37800_get_voltage(&storage, &voltage);
-    LOG_DEBUG("VOLTAGE DATA: %f\n", voltage);
+    printf("VOLTAGE DATA: %f\r\n", (double)voltage);
 
     delay_ms(500);
   }
@@ -85,6 +85,7 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+  printf("Starting smoke test...\r\n");
 
   tasks_init_task(acs37800_smoke, TASK_PRIORITY(3), NULL);
 

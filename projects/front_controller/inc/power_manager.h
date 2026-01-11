@@ -47,4 +47,9 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable);
  */
 StatusCode power_manager_toggle_output_group(OutputGroup group);
 
+/**
+ * @brief   Run current sensing
+ */
+StatusCode power_manager_run_current_sense(OutputGroup group);
+
 /** @} */

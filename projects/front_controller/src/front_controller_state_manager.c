@@ -27,21 +27,18 @@ static void front_controller_state_manager_enter_state(FrontControllerState new_
   switch (new_state) {
     case FRONT_CONTROLLER_STATE_IDLE:
       if (s_current_state != FRONT_CONTROLLER_STATE_IDLE) {
-        power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
         power_manager_set_output_group(OUTPUT_GROUP_ACTIVE, true);
       }
       break;
 
     case FRONT_CONTROLLER_STATE_ENGAGED:
       if (s_current_state != FRONT_CONTROLLER_STATE_ENGAGED) {
-        power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
         power_manager_set_output_group(OUTPUT_GROUP_ACTIVE, true);
       }
       break;
 
     case FRONT_CONTROLLER_STATE_FAULT:
       if (s_current_state != FRONT_CONTROLLER_STATE_FAULT) {
-        power_manager_set_output_group(OUTPUT_GROUP_ALL, false);
         power_manager_set_output_group(OUTPUT_GROUP_ACTIVE, true);
       }
       break;
