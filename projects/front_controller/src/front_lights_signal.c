@@ -57,11 +57,10 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
     case STEERING_LIGHTS_OFF_STATE:
       if (current_steering_light_state != STEERING_LIGHTS_OFF_STATE) {
         software_timer_cancel(&s_blink_signal_timer);
+        power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
+        power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
       }
-      current_steering_light_state = STEERING_LIGHTS_OFF_STATE;
-
-      power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
-      power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
+      current_steering_light_state = new_state;
       break;
 
     case STEERING_LIGHTS_LEFT_STATE:
@@ -72,7 +71,7 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
       if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
         software_timer_start(&s_blink_signal_timer);
       }
-      current_steering_light_state = STEERING_LIGHTS_LEFT_STATE;
+      current_steering_light_state = new_state;
       break;
 
     case STEERING_LIGHTS_RIGHT_STATE:
@@ -83,7 +82,7 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
       if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
         software_timer_start(&s_blink_signal_timer);
       }
-      current_steering_light_state = STEERING_LIGHTS_RIGHT_STATE;
+      current_steering_light_state = new_state;
       break;
 
     case STEERING_LIGHTS_HAZARD_STATE:
@@ -93,7 +92,7 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
       if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
         software_timer_start(&s_blink_signal_timer);
       }
-      current_steering_light_state = STEERING_LIGHTS_HAZARD_STATE;
+      current_steering_light_state = new_state;
       break;
     default:
       /* Invalid state */

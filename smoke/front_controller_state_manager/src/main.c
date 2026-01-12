@@ -8,25 +8,29 @@
  ************************************************************************************************/
 
 /**
- * !Note: In order for this test to work, either the relays should be plugged in or
- *        RELAYS_RESPECT_CURRENT_SENSE may be set to 0U in relays.c
+ * !Note: This test stubs out CAN communication and can be run on the front_controller board on its own
  *
  * Expected behavior from this test:
- * rear_controller_state_manager.c should cycle through the valid states in rear controller
+ * front_controller_state_manager.c should cycle through the valid states in front controller
  * following this sequence:
  *
  * 1. Initialization                            expected state: IDLE
- * 2. Drive request                             expected state: DRIVE (we must mock precharge_complete = true)
- * 3. Neutral request                           expected state: IDLE
- * 4. Drive request with incomplete precharge   expected state: IDLE (we must mock precharge_complete = false)
- * 4. Simulate a fault                          expected state: FAULT
+ * 2. Drive request with incomplete precharge   expected state: IDLE (we must mock precharge_complete = false)
+ * 3. Drive request with complete precharge     expected state: DRIVE (we must mock precharge_complete = true)
+ * 4. Steering lights left                      expected state: DRIVE with blinking LEFT
+ * 4. Steering lights right                     expected state: DRIVE with blinking RIGHT
+ * 4. Steering lights hazard                    expected state: DRIVE with blinking LEFT and RIGHT
+ * 4. Steering lights off                       expected state: DRIVE with LEFT and RIGHT off
+ * 4. Horn on                                   expected state: DRIVE with HORN on
+ * 4. Horn off                                  expected state: DRIVE with HORN off
+ * 4. Simulate a fault                          expected state: FAULT with BPS blinking
  * 5. Reset from fault                          expect state, IDLE
  *
  * The expected LED sequence in each state:
  *
- * IDLE:  solar: 1, pos: 1, neg: 1, motor: 0, ws22: 0
- * DRIVE: solar: 1, pos: 1, neg: 1, motor: 1, ws22: 1
- * FAULT: solar: 0, pos: 0, neg: 0, motor: 0, ws22: 0
+ * IDLE:  REV_CAM : 1, TELEM : 1, STEERING : 1
+ * DRIVE: REV_CAM : 1, TELEM : 1, STEERING : 1
+ * FAULT: REV_CAM : 1, TELEM : 1, STEERING : 1
  */
 
 /* Standard library Headers */
@@ -95,8 +99,8 @@ TASK(front_controller_run_med_cycle, TASK_STACK_1024) {
 }
 
 TASK(front_controller_simulate_can, TASK_STACK_1024) {
-  LOG_DEBUG("Initializing the CAN simulation task...\n");
-  delay_ms(10U);
+  delay_ms(1000U);
+  LOG_DEBUG("Starting CAN simulation...\n");
 
   while (true) {
     LOG_DEBUG("\n--- FRONT CONTROLLER SMOKE TEST ---\n");
