@@ -27,6 +27,9 @@ static OutputGroup current_output_group = OUTPUT_GROUP_ACTIVE;
 static SteeringLightState current_light_state = STEERING_LIGHTS_NUM_STATES;
 static uint8_t front_lights_signal_process_event_call_count = 0;
 
+static BpsLightState current_bps_light_state = NUM_BPS_LIGHT_STATES;
+static uint8_t front_lights_signal_set_bps_light_call_count = 0;
+
 StatusCode TEST_MOCK(power_manager_set_output_group)(OutputGroup group, bool enable) {
   (void)enable;
   power_manager_set_output_group_call_count++;
@@ -37,6 +40,12 @@ StatusCode TEST_MOCK(power_manager_set_output_group)(OutputGroup group, bool ena
 StatusCode TEST_MOCK(front_lights_signal_process_event)(SteeringLightState new_state) {
   front_lights_signal_process_event_call_count++;
   current_light_state = new_state;
+  return STATUS_CODE_OK;
+}
+
+StatusCode TEST_MOCK(front_lights_signal_set_bps_light)(BpsLightState new_state) {
+  front_lights_signal_set_bps_light_call_count++;
+  current_bps_light_state = new_state;
   return STATUS_CODE_OK;
 }
 
@@ -51,6 +60,7 @@ void setup_test(void) {
   power_manager_set_output_group_call_count = 0;
   front_lights_signal_process_event_call_count = 0;
   current_light_state = STEERING_LIGHTS_NUM_STATES;
+  front_lights_signal_set_bps_light_call_count = 0;
   current_output_group = OUTPUT_GROUP_ACTIVE;
 }
 
@@ -65,8 +75,8 @@ void test_bps_fault_with_valid_params_expect_success(void) {
 
   FrontControllerState curr_state = front_controller_state_manager_get_state();
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_FAULT, curr_state);
-  TEST_ASSERT_EQUAL(2, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_HAZARD_LIGHTS);
+  TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 
 TEST_IN_TASK
@@ -76,17 +86,19 @@ void test_bps_fault_with_already_fault_expect_success(void) {
   FrontControllerState curr_state = front_controller_state_manager_get_state();
 
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+  TEST_ASSERT_EQUAL(BPS_LIGHT_ON_STATE, current_bps_light_state);
+  TEST_ASSERT_EQUAL(1, front_lights_signal_set_bps_light_call_count);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_FAULT, curr_state);
-  TEST_ASSERT_EQUAL(2, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_HAZARD_LIGHTS);
+  TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 
   ret = front_controller_update_state_manager_medium_cycle();
   curr_state = front_controller_state_manager_get_state();
 
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_FAULT, curr_state);
-  TEST_ASSERT_EQUAL(2, power_manager_set_output_group_call_count);  // should not increase from second call
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_HAZARD_LIGHTS);
+  TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);  // should not increase from second call
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 
 TEST_IN_TASK
@@ -105,7 +117,7 @@ void test_drive_with_valid_params_expect_success(void) {
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
     TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_ENGAGED, curr_state);
     TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);
-    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ALL);
+    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 
     g_rx_struct.steering_buttons_drive_state = VEHICLE_DRIVE_STATE_NEUTRAL;
     ret = front_controller_update_state_manager_medium_cycle();
@@ -113,7 +125,7 @@ void test_drive_with_valid_params_expect_success(void) {
 
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
     TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
-    TEST_ASSERT_EQUAL(3, power_manager_set_output_group_call_count);
+    TEST_ASSERT_EQUAL(2, power_manager_set_output_group_call_count);
     TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
   }
 }
@@ -132,7 +144,7 @@ void test_drive_with_already_driving_expect_success(void) {
     TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
     TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_ENGAGED, curr_state);
     TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);
-    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ALL);
+    TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
   }
 }
 
@@ -165,7 +177,7 @@ void test_idle_with_valid_params_expect_success(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_ENGAGED, curr_state);
   TEST_ASSERT_EQUAL(1, power_manager_set_output_group_call_count);
-  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ALL);
+  TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 
   g_rx_struct.steering_buttons_drive_state = VEHICLE_DRIVE_STATE_NEUTRAL;
   ret = front_controller_update_state_manager_medium_cycle();
@@ -173,7 +185,7 @@ void test_idle_with_valid_params_expect_success(void) {
 
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   TEST_ASSERT_EQUAL(FRONT_CONTROLLER_STATE_IDLE, curr_state);
-  TEST_ASSERT_EQUAL(3, power_manager_set_output_group_call_count);
+  TEST_ASSERT_EQUAL(2, power_manager_set_output_group_call_count);
   TEST_ASSERT_EQUAL(current_output_group, OUTPUT_GROUP_ACTIVE);
 }
 

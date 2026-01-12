@@ -7,6 +7,16 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/**
+ * !NOTE: Reported bugs:
+ * - There is a bug where if flash memory is full, all future persist_commit()
+ *   calls will fail with exit code 10. Can be resolved by running flash_api smoke test
+ *
+ * - Multiple calls of this test in PERSIST_WRITER_MODE will cause PERSIST_READER_MODE
+ *   to fail. However multiple calls of PERSIST_READER_MODE after one call of PERSIST_WRITER_MODE
+ *   will still work.
+ */
+
 /* Standard library Headers */
 #include <stdio.h>
 
@@ -26,32 +36,64 @@
 #define PERSIST_READER_MODE 1U
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
-#define PERSIST_MODE PERSIST_WRITER_MODE
+#define PERSIST_MODE PERSIST_READER_MODE
 
-typedef struct TestStruct {
+// Test struct must be 4 byte aligned
+typedef struct __attribute__((aligned(4))) TestStruct {
   uint16_t x;
   uint16_t y;
   char z;
+  uint8_t _pad[3];
 } TestStruct;
 
 TestStruct test_struct = { 0U };
 PersistStorage storage = { 0U };
 
 TASK(persist_api, TASK_STACK_1024) {
+  StatusCode status = STATUS_CODE_OK;
+
   flash_init();
 #if (PERSIST_MODE == PERSIST_WRITER_MODE)
-  persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), true);
+  LOG_DEBUG("Starting persist smoke test - writer mode\r\n");
+  delay_ms(10U);
+  if (sizeof(test_struct) % FLASH_MEMORY_ALIGNMENT != 0) {
+    LOG_DEBUG("Warning: size of test struct: %u is not %u-byte aligned!!\r\n", sizeof(test_struct), FLASH_MEMORY_ALIGNMENT);
+    delay_ms(10U);
+  }
+
+  status = persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), true);
+
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);
+    delay_ms(10U);
+  }
 
   test_struct.x = 32;
   test_struct.y = 2;
   test_struct.z = 't';
 
-  persist_commit(&storage);
-  LOG_DEBUG("Writter commited.");
+  status = persist_commit(&storage);
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("persist_commit() failed with exit code %u\r\n", status);
+    delay_ms(10U);
+    LOG_DEBUG("persist memory may be corrupted... run flash_api smoke test to clear memory\r\n");
+    delay_ms(10U);
+  }
+
+  LOG_DEBUG("Writer commited.\r\n");
+  delay_ms(10U);
+  LOG_DEBUG("Wrote test struct X: %u, Y: %u, Z: %c\r\n", test_struct.x, test_struct.y, test_struct.z);
+  delay_ms(10U);
 
 #else
-  persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
-  LOG_DEBUG("Test struct X: %u, Y: %u, Z: %c", test_struct.x, test_struct.y, test_struct.z);
+  LOG_DEBUG("Starting persist smoke test - reader mode\r\n");
+  delay_ms(10U);
+  status = persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);
+    delay_ms(10U);
+  }
+  LOG_DEBUG("Read test struct X: %u, Y: %u, Z: %c\r\n", test_struct.x, test_struct.y, test_struct.z);
 
 #endif
 
