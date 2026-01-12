@@ -25,7 +25,7 @@
  * Otherwise, keep this set to 1U. Note that LED behavior, especially ws22 may be inconsistent
  * if nothing is plugged in
  */
-#define RELAYS_RESPECT_CURRENT_SENSE 1U
+#define RELAYS_RESPECT_CURRENT_SENSE 0U
 
 typedef struct {
   GpioAddress pos_relay_en;    /**< Positive relay enable */
@@ -72,6 +72,7 @@ StatusCode relays_init(RearControllerStorage *storage) {
   gpio_init_pin(&s_relay_storage.neg_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&s_relay_storage.solar_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   gpio_init_pin(&s_relay_storage.motor_relay_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin(&s_relay_storage.ws22_lv_en, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
   gpio_init_pin(&s_relay_storage.pos_relay_sense, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
   gpio_init_pin(&s_relay_storage.neg_relay_sense, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
