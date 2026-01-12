@@ -84,7 +84,7 @@ TASK(rear_controller_smoke, TASK_STACK_1024) {
 
   while (true) {
     LOG_DEBUG("\n--- REAR CONTROLLER SMOKE TEST ---\n");
-    delay_ms(10U);
+    delay_ms(LOG_DB_DELAY);
     LOG_DEBUG(">> Step 1: Simulating Initialization Complete... \n");
     delay_ms(LOG_DB_DELAY);
     log_status();

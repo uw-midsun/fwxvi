@@ -34,8 +34,7 @@ static void s_blink_signal_timer_callback(SoftTimerId timer_id) {
       break;
 
     case STEERING_LIGHTS_HAZARD_STATE:
-      power_manager_toggle_output_group(OUTPUT_GROUP_LEFT_LIGHTS);
-      power_manager_toggle_output_group(OUTPUT_GROUP_RIGHT_LIGHTS);
+      power_manager_toggle_output_group(OUTPUT_GROUP_HAZARD_LIGHTS);
       break;
 
     default:
@@ -54,37 +53,52 @@ static void s_blink_bps_timer_callback(SoftTimerId timer_id) {
 }
 
 StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
-  current_steering_light_state = new_state;
-
-  switch (current_steering_light_state) {
+  switch (new_state) {
     case STEERING_LIGHTS_OFF_STATE:
-      software_timer_cancel(&s_blink_signal_timer);
+      if (current_steering_light_state != STEERING_LIGHTS_OFF_STATE) {
+        software_timer_cancel(&s_blink_signal_timer);
+      }
+      current_steering_light_state = STEERING_LIGHTS_OFF_STATE;
+
       power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
       power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
       break;
 
     case STEERING_LIGHTS_LEFT_STATE:
-      software_timer_start(&s_blink_signal_timer);
-      power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, true);
-      power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
+      if (current_steering_light_state != STEERING_LIGHTS_LEFT_STATE) {
+        power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
+      }
+
+      if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
+        software_timer_start(&s_blink_signal_timer);
+      }
+      current_steering_light_state = STEERING_LIGHTS_LEFT_STATE;
       break;
 
     case STEERING_LIGHTS_RIGHT_STATE:
-      software_timer_start(&s_blink_signal_timer);
-      power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
-      power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, true);
+      if (current_steering_light_state != STEERING_LIGHTS_RIGHT_STATE) {
+        power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
+      }
+
+      if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
+        software_timer_start(&s_blink_signal_timer);
+      }
+      current_steering_light_state = STEERING_LIGHTS_RIGHT_STATE;
       break;
 
     case STEERING_LIGHTS_HAZARD_STATE:
-      software_timer_start(&s_blink_signal_timer);
-      power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, true);
-      power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, true);
+      if (current_steering_light_state != STEERING_LIGHTS_HAZARD_STATE) {
+        power_manager_set_output_group(OUTPUT_GROUP_HAZARD_LIGHTS, false);
+      }
+      if (current_steering_light_state == STEERING_LIGHTS_OFF_STATE) {
+        software_timer_start(&s_blink_signal_timer);
+      }
+      current_steering_light_state = STEERING_LIGHTS_HAZARD_STATE;
       break;
     default:
       /* Invalid state */
       power_manager_set_output_group(OUTPUT_GROUP_LEFT_LIGHTS, false);
       power_manager_set_output_group(OUTPUT_GROUP_RIGHT_LIGHTS, false);
-      power_manager_set_output_group(OUTPUT_GROUP_BPS_LIGHTS, true);
       break;
   }
 
@@ -93,12 +107,11 @@ StatusCode front_lights_signal_process_event(SteeringLightState new_state) {
 
 StatusCode front_lights_signal_set_bps_light(BpsLightState new_state) {
   if ((new_state == BPS_LIGHT_OFF_STATE) && (current_bps_light_state == BPS_LIGHT_ON_STATE)) {
-    software_timer_start(&s_blink_bps_timer);
-    power_manager_set_output_group(OUTPUT_GROUP_BPS_LIGHTS, true);
-    current_bps_light_state = BPS_LIGHT_OFF_STATE;
-  } else if ((new_state == BPS_LIGHT_ON_STATE) && (current_bps_light_state == BPS_LIGHT_OFF_STATE)) {
     software_timer_cancel(&s_blink_bps_timer);
     power_manager_set_output_group(OUTPUT_GROUP_BPS_LIGHTS, false);
+    current_bps_light_state = BPS_LIGHT_OFF_STATE;
+  } else if ((new_state == BPS_LIGHT_ON_STATE) && (current_bps_light_state == BPS_LIGHT_OFF_STATE)) {
+    software_timer_start(&s_blink_bps_timer);
     current_bps_light_state = BPS_LIGHT_ON_STATE;
   } else {
     return STATUS_CODE_INVALID_ARGS;
