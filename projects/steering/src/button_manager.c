@@ -22,6 +22,7 @@
 #include "buzzer.h"
 #include "cruise_control.h"
 #include "drive_state_manager.h"
+#include "global_enums.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
@@ -64,12 +65,16 @@ static void left_turn_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
 }
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
 }
 
 /************************************************************************************************
@@ -86,12 +91,16 @@ static void right_turn_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
 }
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
 }
 
 /************************************************************************************************
@@ -107,12 +116,16 @@ static void hazards_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
 }
 
 /************************************************************************************************
@@ -135,6 +148,8 @@ static void drive_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
 }
 
 /************************************************************************************************
@@ -157,6 +172,8 @@ static void reverse_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
 }
 
 /************************************************************************************************
@@ -179,6 +196,8 @@ static void neutral_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_NEUTRAL);
 }
 
 /************************************************************************************************
