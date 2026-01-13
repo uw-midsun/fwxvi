@@ -105,23 +105,25 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_from_rear = get_rear_controller_status_bps_fault();
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();
-  uint8_t lights_from_rear = get_steering_buttons_lights();
+  uint8_t lights_from_steering = get_steering_buttons_lights();
   uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
 
   if (bps_fault_from_rear) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
-    LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
+    // LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
     return STATUS_CODE_OK;
-  } else {
+  } else if (!bps_fault_from_rear && s_current_state == FRONT_CONTROLLER_STATE_FAULT) {
     front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
+    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);
+  } else {
   }
 
   if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
     if (is_precharge_complete_from_rear) {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_DRIVE_REQUEST);
     } else {
-      LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
+      // LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
     }
   }
 
@@ -141,14 +143,8 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     }
   }
 
-  if (lights_from_rear == STEERING_LIGHTS_OFF_STATE) {
-    front_lights_signal_process_event(STEERING_LIGHTS_OFF_STATE);
-  } else if (lights_from_rear == STEERING_LIGHTS_LEFT_STATE) {
-    front_lights_signal_process_event(STEERING_LIGHTS_LEFT_STATE);
-  } else if (lights_from_rear == STEERING_LIGHTS_RIGHT_STATE) {
-    front_lights_signal_process_event(STEERING_LIGHTS_RIGHT_STATE);
-  } else if (lights_from_rear == STEERING_LIGHTS_HAZARD_STATE) {
-    front_lights_signal_process_event(STEERING_LIGHTS_HAZARD_STATE);
+  if (lights_from_steering < STEERING_LIGHTS_NUM_STATES) {
+    front_lights_signal_process_event(lights_from_steering);
   } else {
     LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");
   }
