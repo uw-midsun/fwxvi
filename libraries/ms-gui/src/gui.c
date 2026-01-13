@@ -17,8 +17,8 @@
 #include "ltdc.h"
 
 /* Intra-component Headers */
-#include "status.h"
 #include "log.h"
+#include "status.h"
 
 /* Standard Library Headers */
 
