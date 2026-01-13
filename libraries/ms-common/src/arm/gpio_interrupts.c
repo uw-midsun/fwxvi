@@ -20,7 +20,7 @@ static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0U };
 static IRQn_Type s_pin_to_interrupt_handler[GPIO_PINS_PER_PORT] = { EXTI0_IRQn,   EXTI1_IRQn,   EXTI2_IRQn,     EXTI3_IRQn,     EXTI4_IRQn,     EXTI9_5_IRQn,   EXTI9_5_IRQn,   EXTI9_5_IRQn,
                                                                     EXTI9_5_IRQn, EXTI9_5_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn };
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task) {
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || event >= INVALID_EVENT) {
     return STATUS_CODE_INVALID_ARGS;
   } else if (s_gpio_it_interrupts[address->pin].task != NULL) {
@@ -57,7 +57,7 @@ InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
   return NUM_INTERRUPT_PRIORITIES;
 }
 
-InterruptType gpio_it_get_class(const GpioAddress *address) {
+InterruptType gpio_it_get_type(const GpioAddress *address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.type;
   }

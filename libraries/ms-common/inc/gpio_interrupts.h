@@ -46,7 +46,7 @@ typedef struct GpioInterrupt {
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the pin is already being used
  */
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task);
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task);
 
 /**
  * @brief   Gets the GPIO interrupt edge

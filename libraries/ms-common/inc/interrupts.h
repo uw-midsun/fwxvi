@@ -20,6 +20,9 @@
 #include "gpio.h"
 #include "status.h"
 
+/* Forward declarations to avoid circular includes */
+typedef struct GpioAddress GpioAddress;
+
 /**
  * @defgroup  Interrupts
  * @brief     Interrupts library
@@ -83,6 +86,10 @@ typedef struct InterruptSettings {
  *          resulting in needing to re-initialize all interrupts
  */
 void interrupt_init(void);
+
+
+StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings); 
+
 
 /**
  * @brief   Enables the nested interrupt vector controller for a given channel

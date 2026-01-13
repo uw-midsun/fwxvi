@@ -30,26 +30,33 @@
 #define KILLSWITCH_DEBOUNCE_MS 10U
 
 static GpioAddress s_killswitch_address = { .port = GPIO_PORT_C, .pin = 5 };
+uint32_t notification = 0;
 
 static InterruptSettings s_killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,
   INTERRUPT_PRIORITY_NORMAL,
-  INTERRUPT_EDGE_RISING,
+  INTERRUPT_EDGE_FALLING,
 };
 
-static StatusCode killswitch_api_test_init(Event event, const Task *task) {
+static StatusCode killswitch_api_test_init(Event event, Task *task) {
   StatusCode status = STATUS_CODE_OK;
 
   /* Initialize GPIO pin as input with pull-down */
   LOG_DEBUG("Initializing killswitch GPIO pin\r\n");
   delay_ms(10U);
-  status = gpio_init_pin(&s_killswitch_address, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
+  status = gpio_init_pin(&s_killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Error: Failed to initialize GPIO pin\r\n");
     delay_ms(10U);
     return status;
   }
-
+  /* Configure GPIO for interrupt mode */
+  status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings);
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("Error: Failed to configure GPIO for interrupt\r\n");
+    delay_ms(10U);
+    return status;
+  }
   /* Debounce delay */
   delay_ms(KILLSWITCH_DEBOUNCE_MS);
   delay_ms(10U);
@@ -60,7 +67,7 @@ static StatusCode killswitch_api_test_init(Event event, const Task *task) {
   delay_ms(10U);
 
   /* Register interrupt if pin is in expected state */
-  if (current_state == GPIO_STATE_LOW) {
+  if (current_state == GPIO_STATE_HIGH) {
     LOG_DEBUG("Registering interrupt handler\r\n");
     delay_ms(10U);
     status = gpio_register_interrupt(&s_killswitch_address, &s_killswitch_settings, event, task);
@@ -72,7 +79,7 @@ static StatusCode killswitch_api_test_init(Event event, const Task *task) {
     LOG_DEBUG("Interrupt registered successfully\r\n");
     delay_ms(10U);
   } else {
-    LOG_DEBUG("Warning: Killswitch pin is HIGH (may be already triggered)\r\n");
+    LOG_DEBUG("Warning: Killswitch pin is LOW (may be already triggered)\r\n");
     delay_ms(10U);
   }
 
@@ -81,10 +88,9 @@ static StatusCode killswitch_api_test_init(Event event, const Task *task) {
 
 /* Interrupt handler task that receives killswitch events */
 TASK(interrupt_handler, TASK_STACK_1024) {
-  uint32_t notification = 0;
-
   while (true) {
-    notify_get(&notification);
+    notification = 0;
+    notify_wait(&notification, BLOCK_INDEFINITELY);
     if (notification & (1 << KILLSWITCH_EVENT)) {
       LOG_DEBUG("KILLSWITCH PRESSED\r\n");
       delay_ms(500U);
@@ -97,7 +103,7 @@ TASK(killswitch, TASK_STACK_1024) {
 
   /* Initialize the killswitch API once */
   /* The interrupt_handler task will be notified when GPIO interrupt fires */
-  StatusCode status = killswitch_api_test_init(KILLSWITCH_EVENT, (const Task *)&interrupt_handler);
+  StatusCode status = killswitch_api_test_init(KILLSWITCH_EVENT, interrupt_handler);
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Killswitch initialization failed with status: %d\r\n", status);
@@ -110,9 +116,11 @@ TASK(killswitch, TASK_STACK_1024) {
   }
 
   /* Keep task alive - GPIO interrupt will notify the interrupt_handler task */
+  GpioState current_state = gpio_get_state(&s_killswitch_address);
   while (true) {
+    current_state = gpio_get_state(&s_killswitch_address);
     delay_ms(1000U);
-    LOG_DEBUG("Killswitch smoke test running...\r\n");
+    LOG_DEBUG("Killswitch smoke test running... %s\r\n", (current_state == GPIO_STATE_LOW) ? "LOW" : "HIGH");
   }
 }
 
@@ -124,13 +132,12 @@ int main(int argc, char *argv[]) {
 int main() {
 #endif
   mcu_init();
+  interrupt_init();
   tasks_init();
   log_init();
 
-  LOG_DEBUG("Starting killswitch API smoke test\r\n");
-
-  tasks_init_task(killswitch, TASK_PRIORITY(3), NULL);
-  tasks_init_task(interrupt_handler, TASK_PRIORITY(2), NULL);
+  tasks_init_task(interrupt_handler, TASK_PRIORITY(3), NULL);
+  tasks_init_task(killswitch, TASK_PRIORITY(2), NULL);
 
   tasks_start();
 
