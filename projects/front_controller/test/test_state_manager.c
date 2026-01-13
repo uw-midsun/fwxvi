@@ -24,7 +24,7 @@ static FrontControllerStorage mock_storage = { 0 };
 static uint8_t power_manager_set_output_group_call_count = 0;
 static OutputGroup current_output_group = OUTPUT_GROUP_ACTIVE;
 
-static SteeringLightState current_light_state = NUM_STEERING_LIGHTS;
+static SteeringLightState current_light_state = STEERING_LIGHTS_NUM_STATES;
 static uint8_t front_lights_signal_process_event_call_count = 0;
 
 static BpsLightState current_bps_light_state = NUM_BPS_LIGHT_STATES;
@@ -59,8 +59,8 @@ void setup_test(void) {
 
   power_manager_set_output_group_call_count = 0;
   front_lights_signal_process_event_call_count = 0;
+  current_light_state = STEERING_LIGHTS_NUM_STATES;
   front_lights_signal_set_bps_light_call_count = 0;
-  current_light_state = NUM_STEERING_LIGHTS;
   current_output_group = OUTPUT_GROUP_ACTIVE;
 }
 
@@ -268,9 +268,9 @@ void test_horns_disabled_with_horns_already_disabled_expect_no_change(void) {
 
 TEST_IN_TASK
 void test_lights_expect_success(void) {
-  SteeringLightState validStates[NUM_STEERING_LIGHTS] = { STEERING_LIGHTS_OFF_STATE, STEERING_LIGHTS_LEFT_STATE, STEERING_LIGHTS_RIGHT_STATE, STEERING_LIGHTS_HAZARD_STATE };
+  SteeringLightState validStates[STEERING_LIGHTS_NUM_STATES] = { STEERING_LIGHTS_OFF_STATE, STEERING_LIGHTS_LEFT_STATE, STEERING_LIGHTS_RIGHT_STATE, STEERING_LIGHTS_HAZARD_STATE };
 
-  for (uint8_t i = 0; i < NUM_STEERING_LIGHTS; i++) {
+  for (uint8_t i = 0; i < STEERING_LIGHTS_NUM_STATES; i++) {
     front_lights_signal_process_event_call_count = 0;
     g_rx_struct.steering_buttons_lights = validStates[i];
     StatusCode ret = front_controller_update_state_manager_medium_cycle();
