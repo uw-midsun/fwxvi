@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stddef.h>
 
 /* Inter-component Headers */
 

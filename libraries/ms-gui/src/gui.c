@@ -18,6 +18,7 @@
 
 /* Intra-component Headers */
 #include "status.h"
+#include "log.h"
 
 /* Standard Library Headers */
 
