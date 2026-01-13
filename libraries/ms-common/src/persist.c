@@ -44,7 +44,7 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
   persist->blob = blob;
   persist->blob_size = blob_size;
   persist->prev_flash_addr = PERSIST_INVALID_ADDR;
-  persist->page = page - 1U;
+  persist->page = page;
 
   /* Load stored data */
   PersistHeader header = { .marker = PERSIST_VALID_MARKER, .size_bytes = 0 };
@@ -96,9 +96,6 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
     /* Load the blob data from flash memory*/
     status_ok_or_return(flash_read(persist->flash_addr + sizeof(header), (uint8_t *)persist->blob, persist->blob_size));
 
-    // Calculate valid section's hash
-    // persist->prev_hash = crc32_arr((const uint8_t *)persist->blob, persist->blob_size);
-
     /* Increment flash_addr to the next new section */
     persist->prev_flash_addr = persist->flash_addr;
     persist->flash_addr += sizeof(header) + header.size_bytes;
@@ -126,8 +123,8 @@ StatusCode persist_commit(PersistStorage *persist) {
     persist->flash_addr = PERSIST_BASE_ADDR;
   }
 
+  /* Write header */
   PersistHeader header = { .marker = PERSIST_VALID_MARKER, .size_bytes = persist->blob_size };
-
   status_ok_or_return(flash_write(persist->flash_addr, (uint8_t *)&header, sizeof(header)));
 
   /* Write persist blob */

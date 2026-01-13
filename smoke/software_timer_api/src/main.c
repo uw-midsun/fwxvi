@@ -12,66 +12,56 @@
 /* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
-#include "mcu.h"
-#include "software_timer.h"
+#include "mpxe.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "software_timer.h"
 
-static SoftTimer s_timer1;
-static SoftTimer s_timer2;
+static SoftTimer s_timer;
+static SoftwareWatchdog s_watchdog;
 
 // Simple callback functions to verify timers work
-static void prv_timer_callback1(SoftTimerId id) {
-  LOG_DEBUG("TIMER 1 callback triggered!\n");
+
+// Soft timer callback
+static void timer_callback(SoftTimerId id) {
+  LOG_DEBUG("Soft Timer callback triggered!\n");
 }
 
-static void prv_timer_callback2(SoftTimerId id) {
-  LOG_DEBUG("TIMER 2 callback triggered!\n");
+// Watchdog fault callback
+static void watchdog_fault_callback(SoftTimerId id) {
+  LOG_DEBUG("WATCHDOG FAULT triggered!\n");
 }
 
 TASK(software_timer_api, TASK_STACK_1024) {
-  LOG_DEBUG("-------- SOFTWARE TIMER SMOKE TEST --------\n\n");
+  LOG_DEBUG("-------- WATCHDOG SMOKE TEST START --------\n");
 
-  // Initialize and start timer 1 (1 second)
-  LOG_DEBUG("Initializing and starting Timer 1 (1000 ms)\n");
-  software_timer_init_and_start(1000, prv_timer_callback1, &s_timer1);
-
-  // Initialize and start timer 2 (2 seconds)
-  LOG_DEBUG("Initializing and starting Timer 2 (2000 ms)\n");
-  software_timer_init_and_start(2000, prv_timer_callback2, &s_timer2);
+  // 1️⃣ Test soft timer normally
+  LOG_DEBUG("Starting soft timer (1000 ms)\n");
+  software_timer_init_and_start(1000, timer_callback, &s_timer);
 
   delay_ms(500);
-  LOG_DEBUG("Timer 1 in use? %d\n", software_timer_inuse(&s_timer1));
-  LOG_DEBUG("Timer 2 in use? %d\n", software_timer_inuse(&s_timer2));
+  LOG_DEBUG("Soft timer in use? %d\n", software_timer_inuse(&s_timer));
 
-  LOG_DEBUG("Remaining time for Timer 1: %u ms\n", software_timer_remaining_time(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", software_timer_remaining_time(&s_timer2));
+  delay_ms(600);  // let the timer expire
+  LOG_DEBUG("Soft timer in use after expiry? %d\n", software_timer_inuse(&s_timer));
 
-  delay_ms(1200);
-  LOG_DEBUG("After 1.2s delay -> Timer 1 in use? %d\n", software_timer_inuse(&s_timer1));
-  LOG_DEBUG("Remaining time for Timer 2: %u ms\n", software_timer_remaining_time(&s_timer2));
+  // 2️⃣ Test watchdog timer
+  LOG_DEBUG("Initializing watchdog (2000 ms period)\n");
+  software_watchdog_init(&s_watchdog, 2000, watchdog_fault_callback);
 
-  // Reset timer 2 (should restart it)
-  LOG_DEBUG("Resetting Timer 2\n");
-  software_timer_reset(&s_timer2);
+  LOG_DEBUG("Kicking watchdog after 1 second\n");
+  delay_ms(1000);
+  software_watchdog_kick(&s_watchdog);  // reset timer before it expires
 
-  delay_ms(500);
-  LOG_DEBUG("Timer 2 remaining time after reset: %u ms\n", software_timer_remaining_time(&s_timer2));
+  LOG_DEBUG("Kicking watchdog again after 1 second\n");
+  delay_ms(1000);
+  software_watchdog_kick(&s_watchdog);  // reset timer again
 
-  // Cancel timer 2 before it expires
-  LOG_DEBUG("Canceling Timer 2\n");
-  software_timer_cancel(&s_timer2);
-  LOG_DEBUG("Timer 2 in use after cancel? %d\n", software_timer_inuse(&s_timer2));
+  LOG_DEBUG("Now NOT kicking watchdog and letting it expire\n");
+  delay_ms(2500);  // exceed watchdog period → should trigger fault
 
-  // Reuse timer 1 (should clean up correctly)
-  LOG_DEBUG("Re-initializing Timer 1 for 1500 ms\n");
-  software_timer_init_and_start(1500, prv_timer_callback1, &s_timer1);
-
-  delay_ms(2000);
-  LOG_DEBUG("Timer 1 done? %d\n", !software_timer_inuse(&s_timer1));
-
-  LOG_DEBUG("-------- SOFTWARE TIMER SMOKE TEST COMPLETE --------\n\n");
+  LOG_DEBUG("-------- WATCHDOG SMOKE TEST COMPLETE --------\n");
 
   while (true) {
     delay_ms(1000);
@@ -79,7 +69,6 @@ TASK(software_timer_api, TASK_STACK_1024) {
 }
 
 #ifdef MS_PLATFORM_X86
-#include "mpxe.h"
 int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
 #else

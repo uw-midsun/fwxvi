@@ -19,6 +19,7 @@
 /* Intra-component Headers */
 #include "button_led_manager.h"
 #include "button_manager.h"
+#include "cruise_control.h"
 #include "party_mode.h"
 #include "steering.h"
 
@@ -37,6 +38,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
+  cruise_control_run();
   party_mode_run();
 }
 

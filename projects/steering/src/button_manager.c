@@ -20,11 +20,13 @@
 #include "button_led_manager.h"
 #include "button_manager.h"
 #include "buzzer.h"
+#include "cruise_control.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage;
 
@@ -191,12 +193,16 @@ static void horn_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_horn_enabled(false);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
+
+  set_steering_buttons_horn_enabled(true);
 }
 
 /************************************************************************************************
@@ -228,6 +234,8 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
     buzzer_play_success();
   }
 
+  cruise_control_up_handler();
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 #endif
@@ -247,6 +255,8 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
   if (party_mode_active() == false) {
     buzzer_play_success();
   }
+
+  cruise_control_down_handler();
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");

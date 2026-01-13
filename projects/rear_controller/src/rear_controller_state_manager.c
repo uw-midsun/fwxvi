@@ -19,30 +19,25 @@
 #include "relays.h"
 
 static RearControllerStorage *rear_controller_storage = NULL;
-static RearControllerState s_current_state = REAR_CONTROLLER_STATE_INIT;
+static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 
+/**
+ * @brief   Asynchronous event handler
+ */
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
   switch (new_state) {
-    case REAR_CONTROLLER_STATE_INIT:
-      relays_reset();
-
-      /* TODO: Open all relays, reset internal flags */
-      break;
-
-    case REAR_CONTROLLER_STATE_PRECHARGE:
-      relays_close_pos();
-      /* TODO: Close positive relay and allow it to precharge */
-      break;
-
     case REAR_CONTROLLER_STATE_IDLE:
-      relays_close_neg();
-      /* TODO: Check if precharging the neg relay is done, then close negative relay */
+      relays_disable_ws22_lv();
+      relays_open_motor();
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
-      relays_close_motor();
-      relays_close_solar();
-      /* TODO: Check if motor precharge is done. If yes then close motor relay and enable LV motor supply. If not then do not engage, remain in idle */
+      if (rear_controller_storage->precharge_complete) {
+        relays_enable_ws22_lv();
+        relays_close_motor();
+      }
+
+      rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
       break;
 
     case REAR_CONTROLLER_STATE_CHARGE:
@@ -51,6 +46,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
+      relays_disable_ws22_lv();
       relays_reset();
       /* TODO: Disable everything for safety, open all relays and disable LV motor */
       break;
@@ -67,7 +63,15 @@ StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
 
   rear_controller_storage = storage;
 
-  rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+  StatusCode status = relays_close_pos();
+  status = relays_close_solar();
+  status = relays_close_neg();
+
+  if (status == STATUS_CODE_OK) {
+    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+  } else {
+    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+  }
 
   return STATUS_CODE_OK;
 }
@@ -78,20 +82,6 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
   }
 
   switch (s_current_state) {
-    case REAR_CONTROLLER_STATE_INIT:
-      if (event == REAR_CONTROLLER_EVENT_INIT_COMPLETE)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_PRECHARGE);
-      else if (event == REAR_CONTROLLER_EVENT_FAULT)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
-      break;
-
-    case REAR_CONTROLLER_STATE_PRECHARGE:
-      if (event == REAR_CONTROLLER_EVENT_PRECHARGE_SUCCESS)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-      else if (event == REAR_CONTROLLER_EVENT_PRECHARGE_FAIL || event == REAR_CONTROLLER_EVENT_FAULT)
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
-      break;
-
     case REAR_CONTROLLER_STATE_IDLE:
       if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
@@ -103,9 +93,7 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
     case REAR_CONTROLLER_STATE_DRIVE:
       if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
-        // Open all relays and return to the safe INIT state.
-        relays_reset();
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       }
@@ -113,15 +101,24 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
     case REAR_CONTROLLER_STATE_CHARGE:
       if (event == REAR_CONTROLLER_EVENT_CHARGER_REMOVED) {
-        relays_reset();
-        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       }
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
-      if (event == REAR_CONTROLLER_EVENT_RESET) rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_INIT);
+      if (event == REAR_CONTROLLER_EVENT_RESET) {
+        StatusCode status = relays_close_pos();
+        status = relays_close_solar();
+        status = relays_close_neg();
+
+        if (status == STATUS_CODE_OK) {
+          rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+        } else {
+          rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+        }
+      }
       break;
 
     default:

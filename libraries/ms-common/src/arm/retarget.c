@@ -81,7 +81,6 @@ void HardFault_HandlerC(uint32_t *hardfault_args) {
   /* Disable all interrupts and initialize UART */
   __disable_irq();
   retarget_init();
-
   /* When an ARM device hardfaults, the registers are automatically pushed onto the stack in the following order */
   volatile uint32_t stacked_r0 = hardfault_args[0];
   volatile uint32_t stacked_r1 = hardfault_args[1];

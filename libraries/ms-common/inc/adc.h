@@ -27,8 +27,15 @@
 
 /** @brief  Total Number of ADC channels (16 external, 3 internal) */
 #define NUM_ADC_CHANNELS 19U
+/** @brief  Total Number of ADC ranks */
+#define NUM_ADC_RANKS 16U
 /** @brief  Maximum time permitted for an ADC transaction */
 #define ADC_TIMEOUT_MS 100U
+
+/** @brief  Placeholder for invalid channel */
+#define ADC_INVALID_CHANNEL 0U
+/** @brief  Placeholder for invalid rank */
+#define ADC_INVALID_RANK 0U
 
 /**
  * @brief   Available ADC modes
