@@ -21,7 +21,7 @@
 #include "gpio.h"
 #include "ltdc.h"
 
-#ifdef STM32L4P5xx
+// #ifdef STM32L4P5xx
 
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
@@ -34,8 +34,8 @@ static StatusCode s_configure_gpio(LtdcGpioConfig *config) {
     return STATUS_CODE_OK; /* Skip if no GPIO config provided */
   }
 
-  /* Note: GPIO alternate function for LTDC is typically AF14 on STM32L4R5 */
-  const GpioAlternateFunctions ltdc_af = 0x0EU; /* AF14 */
+  /* Note: GPIO alternate function for LTDC is typically AF11 on STM32L4P5 */
+  const GpioAlternateFunctions ltdc_af = 0x0BU; /* AF11 */
 
   /* Configure control signals */
   status_ok_or_return(gpio_init_pin_af(&config->clk, GPIO_ALTFN_PUSH_PULL, ltdc_af));
@@ -43,17 +43,23 @@ static StatusCode s_configure_gpio(LtdcGpioConfig *config) {
   status_ok_or_return(gpio_init_pin_af(&config->vsync, GPIO_ALTFN_PUSH_PULL, ltdc_af));
   status_ok_or_return(gpio_init_pin_af(&config->de, GPIO_ALTFN_PUSH_PULL, ltdc_af));
 
-  /* Configure data pins */
+  /* Configure data pins with AF11 - skip empty entries (port=0, pin=0) */
   for (uint8_t i = 0; i < config->num_red_bits; i++) {
-    status_ok_or_return(gpio_init_pin_af(&config->r[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    if (config->r[i].port != 0 || config->r[i].pin != 0) {
+      status_ok_or_return(gpio_init_pin_af(&config->r[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    }
   }
 
   for (uint8_t i = 0; i < config->num_green_bits; i++) {
-    status_ok_or_return(gpio_init_pin_af(&config->g[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    if (config->g[i].port != 0 || config->g[i].pin != 0) {
+      status_ok_or_return(gpio_init_pin_af(&config->g[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    }
   }
 
   for (uint8_t i = 0; i < config->num_blue_bits; i++) {
-    status_ok_or_return(gpio_init_pin_af(&config->b[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    if (config->b[i].port != 0 || config->b[i].pin != 0) {
+      status_ok_or_return(gpio_init_pin_af(&config->b[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
+    }
   }
 
   return STATUS_CODE_OK;
@@ -88,10 +94,11 @@ static StatusCode s_init_ltdc_peripheral(void) {
   s_ltdc_handle.Init.TotalWidth = s_ltdc_settings->timing.hsync + s_ltdc_settings->timing.hbp + s_ltdc_settings->width + s_ltdc_settings->timing.hfp - 1;
   s_ltdc_handle.Init.TotalHeigh = s_ltdc_settings->timing.vsync + s_ltdc_settings->timing.vbp + s_ltdc_settings->height + s_ltdc_settings->timing.vfp - 1;
 
-  /* Background color (black) */
+  /* Background color (bright red for debugging) */
+  //TODO Revert back
   s_ltdc_handle.Init.Backcolor.Blue = 0;
   s_ltdc_handle.Init.Backcolor.Green = 0;
-  s_ltdc_handle.Init.Backcolor.Red = 0;
+  s_ltdc_handle.Init.Backcolor.Red = 255;
 
   /* Initialize LTDC peripheral */
   if (HAL_LTDC_Init(&s_ltdc_handle) != HAL_OK) {
@@ -157,6 +164,34 @@ static StatusCode s_load_clut(void) {
   return STATUS_CODE_OK;
 }
 
+static StatusCode s_configure_ltdc_pixel_clock(void) {
+  RCC_PeriphCLKInitTypeDef clk = {0};
+
+  clk.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
+
+  /* Configure PLLSAI2 for LTDC pixel clock
+   * Target: ~9 MHz for 480x272 TFT display
+   * HSE = 16 MHz:
+   * VCO = (HSE / M) * N = (16 / 4) * 72 = 288 MHz
+   * PLLSAI2R = VCO / R = 288 / 8 = 36 MHz
+   * LTDC clock = PLLSAI2R / DIV4 = 36 / 4 = 9 MHz
+   */
+  clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_HSE;
+  clk.PLLSAI2.PLLSAI2M = 4;                              /* Division factor: 1-16 */
+  clk.PLLSAI2.PLLSAI2N = 72;                             /* Multiplication factor: 8-127 */
+  clk.PLLSAI2.PLLSAI2R = 8;                              /* Division factor: 2, 4, 6, or 8 */
+  clk.PLLSAI2.PLLSAI2ClockOut = RCC_PLLSAI2_LTDCCLK;     /* Enable LTDC clock output */
+
+  /* Select LTDC clock divider (PLLSAI2R divided by 4) */
+  clk.LtdcClockSelection = RCC_LTDCCLKSOURCE_PLLSAI2_DIV4;
+
+  if (HAL_RCCEx_PeriphCLKConfig(&clk) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  return STATUS_CODE_OK;
+}
+
 StatusCode ltdc_init(LtdcSettings *settings) {
   if (settings == NULL || settings->framebuffer == NULL || settings->clut == NULL || settings->clut_size == 0) {
     return STATUS_CODE_INVALID_ARGS;
@@ -171,6 +206,9 @@ StatusCode ltdc_init(LtdcSettings *settings) {
   /* Configure GPIO pins */
   status_ok_or_return(s_configure_gpio(&settings->gpio_config));
 
+  /* Configure pixel clock */
+  status_ok_or_return(s_configure_ltdc_pixel_clock()); 
+
   /* Initialize LTDC peripheral */
   status_ok_or_return(s_init_ltdc_peripheral());
 
@@ -184,7 +222,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
 }
 
 StatusCode ltdc_draw(void) {
-  if (HAL_LTDC_Reload(&s_ltdc_handle, LTDC_RELOAD_VERTICAL_BLANKING) != HAL_OK) {
+  if (HAL_LTDC_Reload(&s_ltdc_handle, LTDC_RELOAD_IMMEDIATE) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -206,18 +244,18 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
   return STATUS_CODE_OK;
 }
 
-#else
+// #else
 
-StatusCode ltdc_init(LtdcSettings *settings) {
-  return STATUS_CODE_UNIMPLEMENTED;
-}
+// StatusCode ltdc_init(LtdcSettings *settings) {
+//   return STATUS_CODE_UNIMPLEMENTED;
+// }
 
-StatusCode ltdc_draw(void) {
-  return STATUS_CODE_UNIMPLEMENTED;
-}
+// StatusCode ltdc_draw(void) {
+//   return STATUS_CODE_UNIMPLEMENTED;
+// }
 
-StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
-  return STATUS_CODE_UNIMPLEMENTED;
-}
+// StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
+//   return STATUS_CODE_UNIMPLEMENTED;
+// }
 
-#endif
+// #endif

@@ -59,12 +59,12 @@ StatusCode ltdc_display_init() {
     .g = {
       {},
       {},
-      {.port = GPIO_PORT_E, .pin = 0},  /* G2 */ 
-      {.port = GPIO_PORT_E, .pin = 2},  /* G3 */ 
-      {.port = GPIO_PORT_E, .pin = 4},  /* G4 */ 
-      {.port = GPIO_PORT_E, .pin = 6},  /* G5 */ 
-      {.port = GPIO_PORT_E, .pin = 8},  /* G6 */ 
-      {.port = GPIO_PORT_E, .pin = 10}, /* G7 */ 
+      {.port = GPIO_PORT_E, .pin = 9},  /* G2 */ 
+      {.port = GPIO_PORT_E, .pin = 10}, /* G3 */ 
+      {.port = GPIO_PORT_E, .pin = 11}, /* G4 */ 
+      {.port = GPIO_PORT_E, .pin = 12}, /* G5 */ 
+      {.port = GPIO_PORT_E, .pin = 13}, /* G6 */ 
+      {.port = GPIO_PORT_E, .pin = 14}, /* G7 */ 
     },
     .b = {
       {},
@@ -74,11 +74,11 @@ StatusCode ltdc_display_init() {
       {.port = GPIO_PORT_D, .pin = 0},  /* B4 */ 
       {.port = GPIO_PORT_D, .pin = 1},  /* B5 */ 
       {.port = GPIO_PORT_B, .pin = 0}, /* B6 */ 
-      {.port = GPIO_PORT_E, .pin = 7}, /* B7 */ 
+      {.port = GPIO_PORT_E, .pin = 4}, /* B7 */ 
     },
-    .num_red_bits = 6,
-    .num_green_bits = 6,
-    .num_blue_bits = 6
+    .num_red_bits = 8,
+    .num_green_bits = 8,
+    .num_blue_bits = 8
   }; 
   settings.width = DISPLAY_WIDTH; 
   settings.height = DISPLAY_HEIGHT; 
@@ -114,17 +114,15 @@ TASK(sc_display, TASK_STACK_1024) {
     delay_ms(1000U); 
     return;
   }
-  
   status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Draw failed: %d", status);
-    delay_ms(1000U); 
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("Draw failed: %d", status);
+      delay_ms(10000U); 
   }
-  
-  LOG_DEBUG("Checkerboard drawn successfully!");
-  
+
   while (true) {
     delay_ms(1000); 
+    LOG_DEBUG("I'm alive");
   }
 }
 
