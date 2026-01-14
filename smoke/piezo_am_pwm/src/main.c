@@ -31,7 +31,6 @@
 
 #define CARRIER_FREQUENCY 4 //in kHz
 
-// static SoftTimer s_timer = { 0U };
 static TIM_HandleTypeDef h_timer = { 0U };
 
 StatusCode toggle_carrier() { // turns the carrier signal on or off 
@@ -45,12 +44,6 @@ StatusCode toggle_carrier() { // turns the carrier signal on or off
   }
   return STATUS_CODE_OK;
 }
-
-// static void s_timer_callback(SoftTimerId id) {
-//   LOG_DEBUG("Inside timer callback\n");
-//   toggle_carrier();
-//   software_timer_reset(&s_timer);
-// }
 
 int get_arr(int modulation_frequency) {
   int timer_frequency = 2 * modulation_frequency;
@@ -100,10 +93,6 @@ TASK(play_notes, TASK_STACK_1024) {
       const int modulation_frequency = modulation_frequencies[j];
 
       LOG_DEBUG("Starting to play note of frequency: %d\n", modulation_frequency);
-      // const int modulation_half_period = 1000 / (2 * modulation_frequency);
-      // LOG_DEBUG("Modulation period: %d\n", modulation_half_period);
-      // software_timer_init(modulation_half_period, s_timer_callback, &s_timer);
-      // software_timer_start(&s_timer);
       int arr = get_arr(modulation_frequency);
       __HAL_TIM_SET_AUTORELOAD(&h_timer, arr);
       delay_ms(note_duration);
