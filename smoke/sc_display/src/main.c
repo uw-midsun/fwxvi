@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for sc_display
+ * @brief  Smoke test for sc_display (Draws a checkerboard)
  *
  * @date   2026-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -23,13 +23,13 @@
 #define DISPLAY_WIDTH  480
 #define DISPLAY_HEIGHT 272
 
-static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT]; 
+static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 static GpioAddress s_display_ctrl =  { .port = GPIO_PORT_A, .pin = 0 };
 static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 }; 
+static LtdcSettings settings = { 0 };
 
 
 StatusCode ltdc_display_init() {
-  LtdcSettings settings = { 0 };
   /* From: https://www.buydisplay.com/download/ic/ST7282.pdf */
   //TODO move values to macros 
   LtdcTimingConfig timing_config = { 
@@ -114,7 +114,7 @@ TASK(sc_display, TASK_STACK_1024) {
     delay_ms(1000U); 
     return;
   }
-  status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
+  status = draw_checkerboard(COLOR_INDEX_YELLOW, COLOR_INDEX_BLUE, 16);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Draw failed: %d", status);
       delay_ms(10000U); 

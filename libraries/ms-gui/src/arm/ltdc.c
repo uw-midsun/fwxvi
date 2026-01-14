@@ -44,22 +44,16 @@ static StatusCode s_configure_gpio(LtdcGpioConfig *config) {
   status_ok_or_return(gpio_init_pin_af(&config->de, GPIO_ALTFN_PUSH_PULL, ltdc_af));
 
   /* Configure data pins with AF11 - skip empty entries (port=0, pin=0) */
-  for (uint8_t i = 0; i < config->num_red_bits; i++) {
-    if (config->r[i].port != 0 || config->r[i].pin != 0) {
-      status_ok_or_return(gpio_init_pin_af(&config->r[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
-    }
+  for (uint8_t i = 2; i < config->num_red_bits; i++) {
+    status_ok_or_return(gpio_init_pin_af(&config->r[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
   }
 
-  for (uint8_t i = 0; i < config->num_green_bits; i++) {
-    if (config->g[i].port != 0 || config->g[i].pin != 0) {
-      status_ok_or_return(gpio_init_pin_af(&config->g[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
-    }
+  for (uint8_t i = 2; i < config->num_green_bits; i++) {
+    status_ok_or_return(gpio_init_pin_af(&config->g[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
   }
 
-  for (uint8_t i = 0; i < config->num_blue_bits; i++) {
-    if (config->b[i].port != 0 || config->b[i].pin != 0) {
-      status_ok_or_return(gpio_init_pin_af(&config->b[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
-    }
+  for (uint8_t i = 2; i < config->num_blue_bits; i++) {
+    status_ok_or_return(gpio_init_pin_af(&config->b[i], GPIO_ALTFN_PUSH_PULL, ltdc_af));
   }
 
   return STATUS_CODE_OK;
@@ -171,13 +165,13 @@ static StatusCode s_configure_ltdc_pixel_clock(void) {
 
   /* Configure PLLSAI2 for LTDC pixel clock
    * Target: ~9 MHz for 480x272 TFT display
-   * HSE = 16 MHz:
-   * VCO = (HSE / M) * N = (16 / 4) * 72 = 288 MHz
+   * MSI = 4 MHz (RCC_MSIRANGE_6):
+   * VCO = (MSI / M) * N = (4 / 1) * 72 = 288 MHz
    * PLLSAI2R = VCO / R = 288 / 8 = 36 MHz
    * LTDC clock = PLLSAI2R / DIV4 = 36 / 4 = 9 MHz
    */
-  clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_HSE;
-  clk.PLLSAI2.PLLSAI2M = 4;                              /* Division factor: 1-16 */
+  clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_MSI;
+  clk.PLLSAI2.PLLSAI2M = 1;                              /* Division factor: 1-16 */
   clk.PLLSAI2.PLLSAI2N = 72;                             /* Multiplication factor: 8-127 */
   clk.PLLSAI2.PLLSAI2R = 8;                              /* Division factor: 2, 4, 6, or 8 */
   clk.PLLSAI2.PLLSAI2ClockOut = RCC_PLLSAI2_LTDCCLK;     /* Enable LTDC clock output */
