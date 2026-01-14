@@ -24,6 +24,21 @@
  * @{
  */
 
+/** 
+ * @brief LTDC Timing config 
+ * From: https://www.buydisplay.com/download/ic/ST7282.pdf 
+ * Specifically 10.1.1 Parallel 24-bit RGB Timing Table
+ */
+#define HORIZONTAL_SYNC_WIDTH   4
+#define VERTICAL_SYNC_WIDTH     4
+#define HORIZONTAL_BACK_PORCH   43
+#define VERTICAL_BACK_PORCH     12
+#define HORIZONTAL_FRONT_PORCH  8
+#define VERTICAL_FRONT_PORCH    8
+
+#define DISPLAY_WIDTH  480  /**< Width of the display */
+#define DISPLAY_HEIGHT 272  /**< Height of the display */
+
 /**
  * @brief   Initialize the display
  * @param   storage Pointer to the SteeringStorage instance

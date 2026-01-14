@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for sc_display (Draws a checkerboard)
+ * @brief  Smoke test for sc_display (Cycles through different checkerboard colors)
  *
  * @date   2026-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -27,7 +27,6 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligne
 static GpioAddress s_display_ctrl =  { .port = GPIO_PORT_A, .pin = 0 };
 static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 }; 
 static LtdcSettings settings = { 0 };
-
 
 StatusCode ltdc_display_init() {
   /* From: https://www.buydisplay.com/download/ic/ST7282.pdf */
@@ -106,7 +105,6 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
   return ltdc_draw();
 }
 
-
 TASK(sc_display, TASK_STACK_1024) {
   StatusCode status = ltdc_display_init();
   if (status != STATUS_CODE_OK) {
@@ -117,12 +115,27 @@ TASK(sc_display, TASK_STACK_1024) {
   status = draw_checkerboard(COLOR_INDEX_YELLOW, COLOR_INDEX_BLUE, 16);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Draw failed: %d", status);
-      delay_ms(10000U); 
+      delay_ms(1000U); 
   }
 
   while (true) {
     delay_ms(1000); 
     LOG_DEBUG("I'm alive");
+    status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("Draw failed: %d", status);
+      delay_ms(1000U); 
+  }
+  status = draw_checkerboard(COLOR_INDEX_YELLOW, COLOR_INDEX_BLUE, 16);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("Draw failed: %d", status);
+      delay_ms(1000U); 
+  }
+  status = draw_checkerboard(COLOR_INDEX_WHITE, COLOR_INDEX_RED, 16);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("Draw failed: %d", status);
+      delay_ms(1000U); 
+  }
   }
 }
 
