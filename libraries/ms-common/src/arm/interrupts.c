@@ -71,9 +71,6 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  // /* Unmask the interrupt */
-  // status_ok_or_return(interrupt_exti_set_mask(address->pin, false));
-
   return STATUS_CODE_OK;
 }
 
