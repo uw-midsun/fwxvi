@@ -70,6 +70,6 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   cruise_control_init(steering_storage);
 
   buzzer_play_startup();
-
+  button_led_manager_clear_all();
   return STATUS_CODE_OK;
 }

@@ -41,8 +41,10 @@ static StatusCode drive_state_manager_neutral(void) {
 }
 
 static StatusCode drive_state_manager_reverse(void) {
-  if (current_state == DRIVE_STATE_DRIVE) {
+  if (current_state == DRIVE_STATE_DRIVE && current_request == DRIVE_STATE_REQUEST_R) {
     LOG_DEBUG("Cannot change state to REVERSE from DRIVE\n");
+
+    current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -76,8 +78,10 @@ static StatusCode drive_state_manager_reverse(void) {
 }
 
 static StatusCode drive_state_manager_drive(void) {
-  if (current_state == DRIVE_STATE_REVERSE) {
+  if (current_state == DRIVE_STATE_REVERSE && current_request == DRIVE_STATE_REQUEST_D) {
     LOG_DEBUG("Cannot change state to DRIVE from REVERSE\n");
+
+    current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -129,7 +133,7 @@ StatusCode drive_state_manager_update(void) {
   switch (current_request) {
     case DRIVE_STATE_REQUEST_D:
 
-      if (drive_state_manager_drive() == STATUS_CODE_OK) {
+      if (current_state != DRIVE_STATE_DRIVE && drive_state_manager_drive() == STATUS_CODE_OK) {
         LOG_DEBUG("Drive state set to DRIVE\n");
         current_state = DRIVE_STATE_DRIVE;
       }
@@ -138,19 +142,22 @@ StatusCode drive_state_manager_update(void) {
 
     case DRIVE_STATE_REQUEST_N:
 
-      drive_state_manager_neutral();
-
-      LOG_DEBUG("Drive state set to NEUTRAL\n");
-      current_state = DRIVE_STATE_NEUTRAL;
+    if (drive_state_manager_neutral() == STATUS_CODE_OK && current_state != DRIVE_STATE_NEUTRAL) {
+        LOG_DEBUG("Drive state set to NEUTRAL\n");
+        current_state = DRIVE_STATE_NEUTRAL;
+      }
       break;
 
     case DRIVE_STATE_REQUEST_R:
 
-      if (drive_state_manager_reverse() == STATUS_CODE_OK) {
+      if (current_state != DRIVE_STATE_REVERSE && drive_state_manager_reverse() == STATUS_CODE_OK) {
         LOG_DEBUG("Drive state set to REVERSE\n");
         current_state = DRIVE_STATE_REVERSE;
       }
 
+      break;
+
+    case DRIVE_STATE_REQUEST_NONE:
       break;
 
     default:
@@ -158,8 +165,6 @@ StatusCode drive_state_manager_update(void) {
       return STATUS_CODE_INVALID_ARGS;
       break;
   }
-
-  LOG_DEBUG("Drive State Manager is in the state: %d\n", current_state);
 
   return STATUS_CODE_OK;
 }

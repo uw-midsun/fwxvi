@@ -157,7 +157,7 @@ static void drive_btn_falling_edge_cb(Button *button) {
     buzzer_play_success();
   }
 
-  drive_state_manager_request(DRIVE_STATE_DRIVE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -179,7 +179,7 @@ static void reverse_btn_falling_edge_cb(Button *button) {
     buzzer_play_success();
   }
 
-  drive_state_manager_request(DRIVE_STATE_REVERSE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -201,7 +201,7 @@ static void neutral_btn_falling_edge_cb(Button *button) {
     buzzer_play_success();
   }
 
-  drive_state_manager_request(DRIVE_STATE_NEUTRAL);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
