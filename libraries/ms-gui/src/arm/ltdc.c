@@ -18,10 +18,9 @@
 
 /* Intra-component Headers */
 #include "clut.h"
+#include "delay.h"
 #include "gpio.h"
 #include "ltdc.h"
-
-// #ifdef STM32L4P5xx
 
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
@@ -88,11 +87,10 @@ static StatusCode s_init_ltdc_peripheral(void) {
   s_ltdc_handle.Init.TotalWidth = s_ltdc_settings->timing.hsync + s_ltdc_settings->timing.hbp + s_ltdc_settings->width + s_ltdc_settings->timing.hfp - 1;
   s_ltdc_handle.Init.TotalHeigh = s_ltdc_settings->timing.vsync + s_ltdc_settings->timing.vbp + s_ltdc_settings->height + s_ltdc_settings->timing.vfp - 1;
 
-  /* Background color (bright red for debugging) */
-  //TODO Revert back
+  /* Background color */
   s_ltdc_handle.Init.Backcolor.Blue = 0;
   s_ltdc_handle.Init.Backcolor.Green = 0;
-  s_ltdc_handle.Init.Backcolor.Red = 255;
+  s_ltdc_handle.Init.Backcolor.Red = 0;
 
   /* Initialize LTDC peripheral */
   if (HAL_LTDC_Init(&s_ltdc_handle) != HAL_OK) {
@@ -158,6 +156,9 @@ static StatusCode s_load_clut(void) {
   return STATUS_CODE_OK;
 }
 
+/**
+ * @brief Configure the ltdc pixel clock. Uses MSI as source
+ */
 static StatusCode s_configure_ltdc_pixel_clock(void) {
   RCC_PeriphCLKInitTypeDef clk = {0};
 
@@ -216,9 +217,22 @@ StatusCode ltdc_init(LtdcSettings *settings) {
 }
 
 StatusCode ltdc_draw(void) {
-  if (HAL_LTDC_Reload(&s_ltdc_handle, LTDC_RELOAD_IMMEDIATE) != HAL_OK) {
+  if (HAL_LTDC_Reload(&s_ltdc_handle, LTDC_RELOAD_VERTICAL_BLANKING) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
+
+  /* Wait for reload to complete - prevents tearing when drawing next frame */
+  uint32_t timeout = 100; /* ~2 frames at 60Hz */
+  while (__HAL_LTDC_GET_FLAG(&s_ltdc_handle, LTDC_FLAG_RR) == RESET) {
+    if (--timeout == 0) {
+      return STATUS_CODE_TIMEOUT;
+    }
+    /* Small delay to avoid busy-wait */
+    delay_ms(1);
+  }
+
+  /* Clear the reload flag */
+  __HAL_LTDC_CLEAR_FLAG(&s_ltdc_handle, LTDC_FLAG_RR);
 
   return STATUS_CODE_OK;
 }
@@ -238,18 +252,3 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
   return STATUS_CODE_OK;
 }
 
-// #else
-
-// StatusCode ltdc_init(LtdcSettings *settings) {
-//   return STATUS_CODE_UNIMPLEMENTED;
-// }
-
-// StatusCode ltdc_draw(void) {
-//   return STATUS_CODE_UNIMPLEMENTED;
-// }
-
-// StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
-//   return STATUS_CODE_UNIMPLEMENTED;
-// }
-
-// #endif

@@ -93,12 +93,13 @@ StatusCode ltdc_display_init() {
 }
 
 StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t square_size) {
+  /* Direct framebuffer access is much faster than calling ltdc_set_pixel 130k times */
   for (uint16_t y = 0; y < DISPLAY_HEIGHT; y++) {
     for (uint16_t x = 0; x < DISPLAY_WIDTH; x++) {
       uint16_t square_x = x / square_size;
       uint16_t square_y = y / square_size;
       ColorIndex color = ((square_x + square_y) % 2 == 0) ? color1 : color2;
-      status_ok_or_return(ltdc_set_pixel(x, y, color));
+      framebuffer[y * DISPLAY_WIDTH + x] = (uint8_t)color;
     }
   }
   /* Apply changes */
