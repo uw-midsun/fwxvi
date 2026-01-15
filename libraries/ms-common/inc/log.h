@@ -32,24 +32,29 @@
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
 
-#define LOG_UART_PORT UART_PORT_1
-
 #ifdef STM32L433xx
+#define LOG_UART_PORT UART_PORT_1
 #define LOG_GPIO_PORT GPIO_PORT_B
 #define LOG_TX_PIN 6
 #define LOG_RX_PIN 7
 #endif
 
 #ifdef STM32L4P5xx
+#define LOG_UART_PORT UART_PORT_1
 #define LOG_GPIO_PORT GPIO_PORT_A
 #define LOG_TX_PIN 9
 #define LOG_RX_PIN 10
 #endif
 
 #ifdef STM32L496xx
+#define LOG_UART_PORT UART_PORT_3
 #define LOG_GPIO_PORT GPIO_PORT_C
 #define LOG_TX_PIN 10
 #define LOG_RX_PIN 11
+#endif
+
+#ifndef LOG_UART_PORT
+#define LOG_UART_PORT UART_PORT_1
 #endif
 
 #ifndef LOG_GPIO_PORT

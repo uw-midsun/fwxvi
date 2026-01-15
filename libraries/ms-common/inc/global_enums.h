@@ -70,7 +70,8 @@ typedef enum {
   BPS_FAULT_UNDERVOLTAGE,          /**< BPS Undervoltage fault */
   BPS_FAULT_KILLSWITCH,            /**< BPS Killswitch fault */
   BPS_FAULT_RELAY_CLOSE_FAILED,    /**< BPS Relay failed to close fault */
-  BPS_FAULT_DISCONNECTED           /**< BPS Disconnected fault */
+  BPS_FAULT_DISCONNECTED,          /**< BPS Disconnected fault */
+  NUM_BPS_FAULTS
 } BpsFault;
 
 /** @brief  BPS Overvoltage fault mask */
@@ -109,12 +110,18 @@ typedef enum {
  * @brief   Steering lights definitions
  */
 typedef enum {
-  STEERING_LIGHTS_OFF_STATE,    /**< Steering lights off turn */
+  STEERING_LIGHTS_OFF_STATE,    /**< Steering lights off */
   STEERING_LIGHTS_LEFT_STATE,   /**< Steering light left turn */
   STEERING_LIGHTS_RIGHT_STATE,  /**< Steering light right turn */
   STEERING_LIGHTS_HAZARD_STATE, /**< Steering light hazard state */
-  NUM_STEERING_LIGHTS,          /**< Number of steering light states */
+  STEERING_LIGHTS_NUM_STATES,   /**< Number of steering light states */
 } SteeringLightState;
+
+typedef enum {
+  BPS_LIGHT_ON_STATE,   /**< BPS light on state */
+  BPS_LIGHT_OFF_STATE,  /**< BPS light off state */
+  NUM_BPS_LIGHT_STATES, /**< Number of BPS light states */
+} BpsLightState;
 
 /**
  * @brief   Steering cruise control definitions

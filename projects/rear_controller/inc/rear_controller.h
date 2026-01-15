@@ -34,8 +34,6 @@ typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
   uint8_t parallel_count; /**< Number of cells in parallel */
   float cell_capacity_Ah; /**< Nominal cell capacity [Ah] */
-
-  uint32_t precharge_timeout_ms; /**< Timeout for precharge sequence */
 } RearControllerConfig;
 
 typedef struct {

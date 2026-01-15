@@ -13,13 +13,10 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
-#include "front_controller_hw_defs.h"
-#include "global_enums.h"
-#include "gpio.h"
+#include "status.h"
 
 /* Intra-component Headers */
-#include "software_timer.h"
-#include "status.h"
+#include "front_controller_hw_defs.h"
 
 /**
  * @defgroup front_lights_signal
@@ -27,18 +24,25 @@
  * @{
  */
 
-#define FRONT_LIGHTS_BLINK_PERIOD_MS 600
+#define FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS 300
+#define FRONT_BPS_LIGHTS_BLINK_PERIOD_MS 200
 #define SYSTEM_CAN_MESSAGE_STEERING_BUTTONS 6
-
-/**
- * @brief Process recieved signal state
- * @param state which is the state recieved by the CAN message
- */
-void front_lights_signal_process_event(SteeringLightState new_state);
 
 /**
  * @brief Initializes the front lights signal module
  */
-void front_lights_signal_init();
+StatusCode front_lights_signal_init();
+
+/**
+ * @brief Process recieved signal state
+ * @param new_state which is the state recieved by the CAN message
+ */
+StatusCode front_lights_signal_process_event(SteeringLightState new_state);
+
+/**
+ * @brief Set the bps light
+ * @param new_state which is the state recieved by the CAN message
+ */
+StatusCode front_lights_signal_set_bps_light(BpsLightState new_state);
 
 /** @} */

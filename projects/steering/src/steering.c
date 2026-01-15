@@ -20,6 +20,7 @@
 #include "button_led_manager.h"
 #include "button_manager.h"
 #include "buzzer.h"
+#include "cruise_control.h"
 #include "display.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
@@ -66,6 +67,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   buzzer_init();
   party_mode_init(steering_storage);
   display_init(steering_storage);
+  cruise_control_init(steering_storage);
 
   buzzer_play_startup();
 

@@ -44,6 +44,18 @@ StatusCode relays_init(RearControllerStorage *storage);
 StatusCode relays_reset();
 
 /**
+ * @brief   Enable the low voltage for the Wavesculptor 22
+ * @return  STATUS_CODE_OK if enabled successfully
+ */
+StatusCode relays_enable_ws22_lv(void);
+
+/**
+ * @brief   Disable the low voltage for the Wavesculptor 22
+ * @return  STATUS_CODE_OK if disabled successfully
+ */
+StatusCode relays_disable_ws22_lv(void);
+
+/**
  * @brief   Close the high-side (POS) relay
  * @return  STATUS_CODE_OK if relay closed successfully
  */

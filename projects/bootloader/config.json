@@ -1,7 +1,8 @@
 {
     "arm_libs": [
         "CMSIS",
-        "HAL"
+        "HAL", 
+        "core"
     ],
     "no_lint": true,
     "can": false,

@@ -24,17 +24,18 @@
 /************************************************************************************************
  * Pack Current Limits [mA]
  ************************************************************************************************/
-#define PACK_MAX_DISCHARGE_CURRENT_A 80.0  /**< Maximum allowed discharge current */
+#define PACK_MAX_DISCHARGE_CURRENT_A -80.0 /**< Maximum allowed discharge current */
 #define PACK_MAX_CHARGE_CURRENT_A 80.0     /**< Maximum allowed charge current */
 #define PACK_SHORT_CIRCUIT_CURRENT_A 60000 /**< Instantaneous short-circuit threshold */
 
 /************************************************************************************************
  * Voltage Limits [mV]
  ************************************************************************************************/
-#define CELL_OVERVOLTAGE_LIMIT_V 4.2  /**< Over-voltage cutoff */
-#define CELL_UNDERVOLTAGE_LIMIT_V 2.5 /**< Under-voltage cutoff */
-#define PACK_OVERVOLTAGE_LIMIT_V 151.2
-#define PACK_UNDERVOLTAGE_LIMIT_V 90.0
+#define CELL_OVERVOLTAGE_LIMIT_mV 4200  /**< Over-voltage cutoff */
+#define CELL_UNDERVOLTAGE_LIMIT_mV 2500 /**< Under-voltage cutoff */
+#define CELL_UNBALANCED_LIMIT_mV 500    /**< Cell imbalance cutoff */
+#define PACK_OVERVOLTAGE_LIMIT_mV 151200
+#define PACK_UNDERVOLTAGE_LIMIT_mV 90000
 
 /************************************************************************************************
  * Temperature Limits [°C]
