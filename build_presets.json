@@ -12,6 +12,7 @@
             "flash": "bootloader",
             "build_config": "release"
         },
+
         "STM32L433CCU6_application_debug": {
             "hardware": "STM32L433CCU6",
             "flash": "application",

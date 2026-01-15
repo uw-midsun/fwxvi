@@ -17,6 +17,7 @@
 
 /* Intra-component Headers */
 #include "interrupts.h"
+#include "status.h"
 
 static EXTI_HandleTypeDef s_exti_handles[GPIO_PINS_PER_PORT];
 
@@ -47,7 +48,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
   /* The line will correspond to the pin. This means A2 and B2
    * will have the same interrupt line
    */
-  init.Line = 1U << (address->pin);
+  init.Line = EXTI_GPIO | EXTI_REG1 | EXTI_EVENT | (address->pin);
   init.Mode = EXTI_MODE_INTERRUPT;
 
   switch (settings->edge) {
@@ -94,7 +95,7 @@ StatusCode interrupt_exti_clear_pending(uint8_t line) {
   if (line >= NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  HAL_EXTI_ClearPending(&s_exti_handles[line], (EXTI_GPIO | EXTI_REG1 | EXTI_EVENT | line));
+  HAL_EXTI_ClearPending(&s_exti_handles[line], EXTI_TRIGGER_RISING_FALLING);
   return STATUS_CODE_OK;
 }
 
