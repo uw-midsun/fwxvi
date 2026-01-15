@@ -26,9 +26,9 @@
 
 /**
  * @brief   Initializes t
- * @param   event 
- * @param   task 
- * @return  StatusCode 
+ * @param   event
+ * @param   task
+ * @return  StatusCode
  */
 StatusCode killswitch_init(Event event, const Task *task);
 
