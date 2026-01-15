@@ -20,9 +20,6 @@
 #include "gpio.h"
 #include "status.h"
 
-/* Forward declarations to avoid circular includes */
-typedef struct GpioAddress GpioAddress;
-
 /**
  * @defgroup  Interrupts
  * @brief     Interrupts library
