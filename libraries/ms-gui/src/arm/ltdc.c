@@ -162,7 +162,7 @@ static StatusCode s_load_clut(void) {
  * @brief Configure the ltdc pixel clock. Uses MSI as source
  */
 static StatusCode s_configure_ltdc_pixel_clock(void) {
-  RCC_PeriphCLKInitTypeDef clk = {0};
+  RCC_PeriphCLKInitTypeDef clk = { 0 };
 
   clk.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
 
@@ -174,10 +174,10 @@ static StatusCode s_configure_ltdc_pixel_clock(void) {
    * LTDC clock = PLLSAI2R / DIV4 = 36 / 4 = 9 MHz
    */
   clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_MSI;
-  clk.PLLSAI2.PLLSAI2M = 1;                              /* Division factor: 1-16 */
-  clk.PLLSAI2.PLLSAI2N = 72;                             /* Multiplication factor: 8-127 */
-  clk.PLLSAI2.PLLSAI2R = 8;                              /* Division factor: 2, 4, 6, or 8 */
-  clk.PLLSAI2.PLLSAI2ClockOut = RCC_PLLSAI2_LTDCCLK;     /* Enable LTDC clock output */
+  clk.PLLSAI2.PLLSAI2M = 1;                          /* Division factor: 1-16 */
+  clk.PLLSAI2.PLLSAI2N = 72;                         /* Multiplication factor: 8-127 */
+  clk.PLLSAI2.PLLSAI2R = 8;                          /* Division factor: 2, 4, 6, or 8 */
+  clk.PLLSAI2.PLLSAI2ClockOut = RCC_PLLSAI2_LTDCCLK; /* Enable LTDC clock output */
 
   /* Select LTDC clock divider (PLLSAI2R divided by 4) */
   clk.LtdcClockSelection = RCC_LTDCCLKSOURCE_PLLSAI2_DIV4;
@@ -204,7 +204,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
   status_ok_or_return(s_configure_gpio(&settings->gpio_config));
 
   /* Configure pixel clock */
-  status_ok_or_return(s_configure_ltdc_pixel_clock()); 
+  status_ok_or_return(s_configure_ltdc_pixel_clock());
 
   /* Initialize LTDC peripheral */
   status_ok_or_return(s_init_ltdc_peripheral());
