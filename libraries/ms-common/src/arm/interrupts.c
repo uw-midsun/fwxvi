@@ -18,47 +18,8 @@
 /* Intra-component Headers */
 #include "interrupts.h"
 #include "status.h"
-#include "stm32l4xx_hal_gpio.h"
 
 static EXTI_HandleTypeDef s_exti_handles[GPIO_PINS_PER_PORT];
-
-StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings) {
-  if (address == NULL || settings == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-  // taskENTER_CRITICAL();
-  GPIO_InitTypeDef init = { 0 };
-  init.Pin = 1U << (address->pin);
-
-  switch (settings->edge) {
-    case INTERRUPT_EDGE_RISING:
-      init.Mode = GPIO_MODE_IT_RISING;
-      break;
-    case INTERRUPT_EDGE_FALLING:
-      init.Mode = GPIO_MODE_IT_FALLING;
-      break;
-    case INTERRUPT_EDGE_TRANSITION:
-      init.Mode = GPIO_MODE_IT_RISING_FALLING;
-      break;
-    default:
-      return STATUS_CODE_INVALID_ARGS;
-  }
-
-  //TODO Pass in, hardcoded for now
-  init.Pull = GPIO_PULLUP;
-  init.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
-
-  /* Initialize the GPIO pin for interrupts */
-  HAL_GPIO_Init(gpio_port, &init);
-
-  /* Initialize the EXTI line to handle interrupts */
-  interrupt_exti_enable(address, settings);
-
-  // taskEXIT_CRITICAL();
-
-  return STATUS_CODE_OK;
-}
 
 void interrupt_init(void) {
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);

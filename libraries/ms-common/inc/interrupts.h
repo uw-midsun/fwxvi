@@ -87,10 +87,6 @@ typedef struct InterruptSettings {
  */
 void interrupt_init(void);
 
-
-StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings); 
-
-
 /**
  * @brief   Enables the nested interrupt vector controller for a given channel
  * @param   irq_channel Numeric ID of the interrupt channel from the NVIC

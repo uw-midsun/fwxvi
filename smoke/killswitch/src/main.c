@@ -44,14 +44,9 @@ static StatusCode killswitch_api_test_init(Event event, Task *task) {
   /* Initialize GPIO pin as input with pull-down */
   LOG_DEBUG("Initializing killswitch GPIO pin\r\n");
   delay_ms(10U);
-  status = gpio_init_pin(&s_killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Error: Failed to initialize GPIO pin\r\n");
-    delay_ms(10U);
-    return status;
-  }
+
   /* Configure GPIO for interrupt mode */
-  status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings);
+  status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Error: Failed to configure GPIO for interrupt\r\n");
     delay_ms(10U);
@@ -71,6 +66,7 @@ static StatusCode killswitch_api_test_init(Event event, Task *task) {
     LOG_DEBUG("Registering interrupt handler\r\n");
     delay_ms(10U);
     status = gpio_register_interrupt(&s_killswitch_address, &s_killswitch_settings, event, task);
+
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Error: Failed to register interrupt\r\n");
       delay_ms(10U);
@@ -110,9 +106,6 @@ TASK(killswitch, TASK_STACK_1024) {
     while (true) {
       delay_ms(1000U);
     }
-  } else {
-    LOG_DEBUG("Killswitch initialization successful\r\n");
-    LOG_DEBUG("Waiting for GPIO interrupt on killswitch pin...\r\n");
   }
 
   /* Keep task alive - GPIO interrupt will notify the interrupt_handler task */
