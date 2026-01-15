@@ -16,18 +16,21 @@
 #include "mcu.h"
 #include "status.h"
 #include "tasks.h"
+#include "gpio_interrupts.h"
+
+// port + pin
 
 /* Intra-component Headers */
 
 TASK(gpio_interrupts_api, TASK_STACK_1024) {
-  while (true) {
-  }
+// to do
 }
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
+}
 #else
 int main() {
 #endif
