@@ -87,6 +87,7 @@ TASK(interrupt_handler, TASK_STACK_1024) {
   while (true) {
     notification = 0;
     notify_wait(&notification, BLOCK_INDEFINITELY);
+    /* Clear notification */
     if (notification & (1 << KILLSWITCH_EVENT)) {
       LOG_DEBUG("KILLSWITCH PRESSED\r\n");
       delay_ms(500U);

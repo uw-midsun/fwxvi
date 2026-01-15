@@ -29,7 +29,7 @@ static InterruptSettings killswitch_settings = {
 };
 
 StatusCode killswitch_init(Event event, const Task *task) {
-  gpio_init_pin(&killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
+  gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
   /* 10ms Debounce */
   delay_ms(10U);
