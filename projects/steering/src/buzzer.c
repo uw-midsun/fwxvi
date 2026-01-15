@@ -27,6 +27,7 @@
 #define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
 #define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
+#define BUZZER_SIGNAL_DURATION_MS 400U
 
 /* Upbeat ascending startup jingle */
 static Note MELODY_STARTUP[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 120 }, { NOTE_C6, 150 }, { NOTE_E6, 250 }, { NOTE_REST, 0 } };
@@ -37,10 +38,19 @@ static Note MELODY_ERROR[] = { { NOTE_A5, 150 }, { NOTE_F5, 150 }, { NOTE_D5, 15
 /* Triumphant success fanfare */
 static Note MELODY_SUCCESS[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 100 }, { NOTE_C6, 250 }, { NOTE_REST, 0 } };
 
+/* Turn signal click high*/
+static Note TURN_SIGNAL_CLICK_HIGH[] = { { NOTE_C8, 50 }, { NOTE_REST, 0 } };
+
+/* Turn signal click low*/
+static Note TURN_SIGNAL_CLICK_LOW[] = { { NOTE_C7, 50 }, { NOTE_REST, 0 } };
+
+static bool turn_sig_state = true;
+
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
+static SoftTimer s_signal_timer = { 0U };
 
 /* Melody playback state */
 static const Note *s_current_melody = NULL;
@@ -103,10 +113,23 @@ static void s_beep_callback(SoftTimerId id) {
   pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
 }
 
+static void s_blink_signal_timer_callback(SoftTimerId timer_id) {
+  if (turn_sig_state) {
+    buzzer_play_melody(TURN_SIGNAL_CLICK_LOW);
+    turn_sig_state = false;
+  } else {
+    buzzer_play_melody(TURN_SIGNAL_CLICK_HIGH);
+    turn_sig_state = true;
+  }
+
+  software_timer_reset(&s_signal_timer);
+}
+
 StatusCode buzzer_init(void) {
   status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
   status_ok_or_return(pwm_init(BUZZER_TIMER, s_freq_to_period_us(NOTE_A4)));
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
+  status_ok_or_return(software_timer_init(BUZZER_SIGNAL_DURATION_MS, s_blink_signal_timer_callback, &s_signal_timer));
 
   return STATUS_CODE_OK;
 }
@@ -173,6 +196,22 @@ StatusCode buzzer_play_error(void) {
 
 StatusCode buzzer_play_success(void) {
   return buzzer_play_melody(MELODY_SUCCESS);
+}
+
+StatusCode buzzer_start_turn_signal(void) {
+  if (!software_timer_inuse(&s_signal_timer)) {
+    software_timer_start(&s_signal_timer);
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode buzzer_stop_turn_signal(void) {
+  if (software_timer_inuse(&s_signal_timer)) {
+    software_timer_cancel(&s_signal_timer);
+    turn_sig_state = true;
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode buzzer_stop(void) {

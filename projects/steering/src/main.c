@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -35,6 +36,7 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   button_led_manager_update();
+  run_can_tx_medium();
 }
 
 void run_1hz_cycle() {

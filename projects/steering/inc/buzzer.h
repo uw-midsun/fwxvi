@@ -146,6 +146,18 @@ StatusCode buzzer_play_error(void);
 StatusCode buzzer_play_success(void);
 
 /**
+ * @brief   Play turn signal click
+ * @return  STATUS_CODE_OK on success
+ */
+StatusCode buzzer_start_turn_signal(void);
+
+/**
+ * @brief   Stop turn signal click
+ * @return  STATUS_CODE_OK on success
+ */
+StatusCode buzzer_stop_turn_signal(void);
+
+/**
  * @brief   Stop any currently playing sound
  * @return  STATUS_CODE_OK on success
  */

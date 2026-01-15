@@ -45,13 +45,13 @@ StatusCode display_init(SteeringStorage *storage) {
     .vbp = VERTICAL_BACK_PORCH, 
     .hfp = HORIZONTAL_FRONT_PORCH, 
     .vfp = VERTICAL_FRONT_PORCH 
-  }
+  };
 
   LtdcGpioConfig gpio_config = { 
     .clk = STEERING_DISPLAY_LTDC_CLOCK, 
     .hsync = STEERING_DISPLAY_LTDC_HSYNC, 
     .vsync = STEERING_DISPLAY_LTDC_VSYNC, 
-    .de = STEERING_DISPLAY_LTDC_DE, 
+    .de = STEERING_DISPLAY_LTDC_DE,
     .r = STEERING_DISPLAY_LTDC_RED_PINS, 
     .g = STEERING_DISPLAY_LTDC_GREEN_PINS, 
     .b = STEERING_DISPLAY_LTDC_BLUE_PINS, 

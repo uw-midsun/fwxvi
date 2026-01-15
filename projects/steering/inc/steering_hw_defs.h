@@ -121,8 +121,8 @@
 /** @brief  LTDC red channel pins (bits 2-7) */
 #define STEERING_DISPLAY_LTDC_RED_PINS \
   { \
-    {}                                /* R0 */ \
-    {}                                /* R1 */ \
+    {},                               /* R0 */ \
+    {},                               /* R1 */ \
     {.port = GPIO_PORT_E, .pin = 15}, /* R2 */ \
     {.port = GPIO_PORT_D, .pin = 8},  /* R3 */ \
     {.port = GPIO_PORT_D, .pin = 9},  /* R4 */ \
@@ -134,8 +134,8 @@
 /** @brief  LTDC green channel pins (bits 2-7) */
 #define STEERING_DISPLAY_LTDC_GREEN_PINS \
   { \
-    {}                                /* G0 */ \
-    {}                                /* G1 */ \
+    {},                               /* G0 */ \
+    {},                               /* G1 */ \
     {.port = GPIO_PORT_E, .pin = 0},  /* G2 */ \
     {.port = GPIO_PORT_E, .pin = 2},  /* G3 */ \
     {.port = GPIO_PORT_E, .pin = 4},  /* G4 */ \
@@ -147,8 +147,8 @@
 /** @brief  LTDC blue channel pins (bits 2-7) */
 #define STEERING_DISPLAY_LTDC_BLUE_PINS \
   { \
-    {}                                /* B0 */ \
-    {}                                /* B1 */ \
+    {},                               /* B0 */ \
+    {},                               /* B1 */ \
     {.port = GPIO_PORT_D, .pin = 14}, /* B2 */ \
     {.port = GPIO_PORT_D, .pin = 15}, /* B3 */ \
     {.port = GPIO_PORT_D, .pin = 0},  /* B4 */ \
