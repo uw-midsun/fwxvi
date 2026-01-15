@@ -99,7 +99,7 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
       uint16_t square_x = x / square_size;
       uint16_t square_y = y / square_size;
       ColorIndex color = ((square_x + square_y) % 2 == 0) ? color1 : color2;
-      framebuffer[y * DISPLAY_WIDTH + x] = (uint8_t)color;
+      status_ok_or_return(ltdc_set_pixel(x, y, color));
     }
   }
   /* Apply changes */
