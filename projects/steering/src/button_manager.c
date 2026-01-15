@@ -22,6 +22,7 @@
 #include "buzzer.h"
 #include "cruise_control.h"
 #include "drive_state_manager.h"
+#include "global_enums.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
@@ -54,16 +55,28 @@ static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
  * Left turn button handlers
  ************************************************************************************************/
 
+static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
+
 static void left_turn_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
+  // if (party_mode_active() == false) {
+  //   buzzer_play_success();
+  // }
 
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_LEFT_STATE && light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
+    light_state = STEERING_LIGHTS_LEFT_STATE;
+  } else if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_stop_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
@@ -77,15 +90,25 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
+  // if (party_mode_active() == false) {
+  //   buzzer_play_success();
+  // }
 
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_RIGHT_STATE && light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
+    light_state = STEERING_LIGHTS_RIGHT_STATE;
+  } else if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_stop_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
@@ -99,14 +122,24 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
+  // if (party_mode_active() == false) {
+  //   buzzer_play_success();
+  // }
 
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
+    light_state = STEERING_LIGHTS_HAZARD_STATE;
+  } else {
+    buzzer_stop_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
@@ -129,6 +162,7 @@ static void drive_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
 #endif
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
 }
 
 static void drive_btn_rising_edge_cb(Button *button) {
@@ -151,6 +185,8 @@ static void reverse_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
 }
 
 static void reverse_btn_rising_edge_cb(Button *button) {
@@ -173,6 +209,8 @@ static void neutral_btn_falling_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
 #endif
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_NEUTRAL);
 }
 
 static void neutral_btn_rising_edge_cb(Button *button) {
@@ -194,7 +232,7 @@ static void horn_btn_falling_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(false);
+  set_steering_buttons_horn_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
@@ -202,7 +240,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(true);
+  set_steering_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
