@@ -39,10 +39,10 @@ static Note MELODY_ERROR[] = { { NOTE_A5, 150 }, { NOTE_F5, 150 }, { NOTE_D5, 15
 static Note MELODY_SUCCESS[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 100 }, { NOTE_C6, 250 }, { NOTE_REST, 0 } };
 
 /* Turn signal click high*/
-static Note TURN_SIGNAL_CLICK_HIGH[] = { { NOTE_C7, 12 }, { NOTE_REST, 0 } };
+static Note TURN_SIGNAL_CLICK_HIGH[] = { { NOTE_C8, 50 }, { NOTE_REST, 0 } };
 
 /* Turn signal click low*/
-static Note TURN_SIGNAL_CLICK_LOW[] = { { NOTE_C6, 10 }, { NOTE_REST, 0 } };
+static Note TURN_SIGNAL_CLICK_LOW[] = { { NOTE_C7, 50 }, { NOTE_REST, 0 } };
 
 static bool turn_sig_state = true;
 

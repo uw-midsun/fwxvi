@@ -19,7 +19,6 @@
         "projects/front_controller/src/front_lights_signal.o",
         "projects/front_controller/src/power_manager.o",
         "projects/front_controller/src/front_controller_state_manager.o"
-
     ],
     "can": true
 }
