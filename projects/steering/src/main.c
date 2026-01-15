@@ -21,6 +21,7 @@
 #include "button_led_manager.h"
 #include "button_manager.h"
 #include "cruise_control.h"
+#include "drive_state_manager.h"
 #include "party_mode.h"
 #include "steering.h"
 
@@ -36,6 +37,7 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   button_led_manager_update();
+  drive_state_manager_update();
   run_can_tx_medium();
 }
 

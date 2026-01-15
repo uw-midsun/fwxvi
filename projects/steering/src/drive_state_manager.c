@@ -19,18 +19,24 @@
 /* Intra-component Headers */
 #include "drive_state_manager.h"
 
+/**
+ * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
+ * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
+ */
+#define IS_REAR_CONNECTED 0U
+
 static DriveState current_state = DRIVE_STATE_NEUTRAL;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == DRIVE_STATE_DRIVE) {
-    button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
+    button_manager_led_disable(STEERING_BUTTON_DRIVE);
   } else if (current_state == DRIVE_STATE_REVERSE) {
     button_manager_led_disable(STEERING_BUTTON_REVERSE);
   }
 
   button_manager_led_enable(STEERING_BUTTON_NEUTRAL);
-  set_steering_buttons_drive_state(VEHICLE_NEUTRAL);
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_NEUTRAL);
   return STATUS_CODE_OK;
 }
 
@@ -43,6 +49,7 @@ static StatusCode drive_state_manager_reverse(void) {
   button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
   button_manager_led_enable(STEERING_BUTTON_REVERSE);
 
+#if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
@@ -61,8 +68,9 @@ static StatusCode drive_state_manager_reverse(void) {
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
+#endif
 
-  set_steering_buttons_drive_state(VEHICLE_REVERSE);
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
   LOG_DEBUG("Setting drive state to REVERSE\n");
   return STATUS_CODE_OK;
 }
@@ -76,6 +84,7 @@ static StatusCode drive_state_manager_drive(void) {
   button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
   button_manager_led_enable(STEERING_BUTTON_DRIVE);
 
+#if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
@@ -94,22 +103,29 @@ static StatusCode drive_state_manager_drive(void) {
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
+#endif
 
-  set_steering_buttons_drive_state(VEHICLE_DRIVE);
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
   LOG_DEBUG("Setting drive state to DRIVE\n");
   return STATUS_CODE_OK;
 }
 
-void drive_state_manager_init(void) {
+StatusCode drive_state_manager_init(void) {
   current_state = DRIVE_STATE_NEUTRAL;
   current_request = DRIVE_STATE_REQUEST_NONE;
+  return STATUS_CODE_OK;
 }
 
-void drive_state_manager_request(DriveStateRequest req) {
+StatusCode drive_state_manager_request(DriveStateRequest req) {
+  if (req >= NUM_DRIVE_STATE_REQUESTS || req < DRIVE_STATE_REQUEST_NONE) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   current_request = req;
+  return STATUS_CODE_OK;
 }
 
-void drive_state_manager_update(void) {
+StatusCode drive_state_manager_update(void) {
   switch (current_request) {
     case DRIVE_STATE_REQUEST_D:
 
@@ -139,10 +155,13 @@ void drive_state_manager_update(void) {
 
     default:
       current_state = DRIVE_STATE_INVALID;
+      return STATUS_CODE_INVALID_ARGS;
       break;
   }
 
   LOG_DEBUG("Drive State Manager is in the state: %d\n", current_state);
+
+  return STATUS_CODE_OK;
 }
 
 DriveState drive_state_manager_get_state(void) {
