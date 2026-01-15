@@ -22,6 +22,8 @@
 #include "gpio.h"
 #include "ltdc.h"
 
+#ifdef STM32L4P5xx
+
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
 
@@ -252,3 +254,18 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
   return STATUS_CODE_OK;
 }
 
+#else
+
+StatusCode ltdc_init(LtdcSettings *settings) {
+  return STATUS_CODE_UNIMPLEMENTED;
+}
+
+StatusCode ltdc_draw(void) {
+  return STATUS_CODE_UNIMPLEMENTED;
+}
+
+StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
+  return STATUS_CODE_UNIMPLEMENTED;
+}
+
+#endif
