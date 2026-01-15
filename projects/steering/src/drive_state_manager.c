@@ -117,7 +117,7 @@ StatusCode drive_state_manager_init(void) {
 }
 
 StatusCode drive_state_manager_request(DriveStateRequest req) {
-  if (req >= NUM_DRIVE_STATE_REQUESTS || req < DRIVE_STATE_REQUEST_NONE) {
+  if (req >= NUM_DRIVE_STATE_REQUESTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
