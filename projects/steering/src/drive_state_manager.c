@@ -47,28 +47,28 @@ static StatusCode drive_state_manager_reverse(void) {
     current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
-  
-  #if (IS_REAR_CONNECTED != 0U)
+
+#if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-    
+
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-    
+
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
-  #endif
-  
+#endif
+
   button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
   button_manager_led_enable(STEERING_BUTTON_REVERSE);
 
@@ -84,28 +84,28 @@ static StatusCode drive_state_manager_drive(void) {
     current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
-  
-  #if (IS_REAR_CONNECTED != 0U)
+
+#if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-    
+
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-    
+
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
-    
+
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
-  #endif
-  
+#endif
+
   button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
   button_manager_led_enable(STEERING_BUTTON_DRIVE);
 
