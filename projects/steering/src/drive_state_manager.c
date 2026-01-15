@@ -25,7 +25,7 @@
  */
 #define IS_REAR_CONNECTED 0U
 
-static DriveState current_state = DRIVE_STATE_NEUTRAL;
+static DriveState current_state = DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 
 static StatusCode drive_state_manager_neutral(void) {
@@ -47,30 +47,30 @@ static StatusCode drive_state_manager_reverse(void) {
     current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
-  button_manager_led_enable(STEERING_BUTTON_REVERSE);
-
-#if (IS_REAR_CONNECTED != 0U)
+  
+  #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-
+    
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-
+    
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
-#endif
+  #endif
+  
+  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
+  button_manager_led_enable(STEERING_BUTTON_REVERSE);
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
   LOG_DEBUG("Setting drive state to REVERSE\n");
@@ -84,30 +84,30 @@ static StatusCode drive_state_manager_drive(void) {
     current_request = DRIVE_STATE_REQUEST_NONE;
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
-  button_manager_led_enable(STEERING_BUTTON_DRIVE);
-
-#if (IS_REAR_CONNECTED != 0U)
+  
+  #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-
+    
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-
+    
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
-
+    
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
-#endif
+  #endif
+  
+  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
+  button_manager_led_enable(STEERING_BUTTON_DRIVE);
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
   LOG_DEBUG("Setting drive state to DRIVE\n");
@@ -136,15 +136,17 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != DRIVE_STATE_DRIVE && drive_state_manager_drive() == STATUS_CODE_OK) {
         LOG_DEBUG("Drive state set to DRIVE\n");
         current_state = DRIVE_STATE_DRIVE;
+        current_request = DRIVE_STATE_REQUEST_NONE;
       }
 
       break;
 
     case DRIVE_STATE_REQUEST_N:
 
-    if (drive_state_manager_neutral() == STATUS_CODE_OK && current_state != DRIVE_STATE_NEUTRAL) {
+      if (current_state != DRIVE_STATE_NEUTRAL && drive_state_manager_neutral() == STATUS_CODE_OK) {
         LOG_DEBUG("Drive state set to NEUTRAL\n");
         current_state = DRIVE_STATE_NEUTRAL;
+        current_request = DRIVE_STATE_REQUEST_NONE;
       }
       break;
 
@@ -153,6 +155,7 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != DRIVE_STATE_REVERSE && drive_state_manager_reverse() == STATUS_CODE_OK) {
         LOG_DEBUG("Drive state set to REVERSE\n");
         current_state = DRIVE_STATE_REVERSE;
+        current_request = DRIVE_STATE_REQUEST_NONE;
       }
 
       break;
