@@ -28,7 +28,7 @@
 /* Intra-component Headers */
 #include "status.h"
 #ifdef ARCH_ARM
-#include "stm32l433xx.h"
+#include "stm32l4xx.h"
 #include "stm32l4xx_hal_flash.h"
 #endif
 /* Other library Headers */
