@@ -18,8 +18,8 @@
 /* Intra-component Headers */
 
 /**
- * @defgroup imu
- * @brief    imu Firmware
+ * @defgroup IMU
+ * @brief    IMU Firmware
  * @{
  */
 
@@ -61,21 +61,21 @@ this might be 13 or 14 idk
 
 /** @brief  IMU Accel range, in units of gravity acceleration (9.81m/s^2) */
 typedef enum {
-  IMU_ACCEL_RANGE_2G,  /**< +- 2Gs */
-  IMU_ACCEL_RANGE_4G,  /**< +- 4Gs */
-  IMU_ACCEL_RANGE_8G,  /**< +- 8Gs */
-  IMU_ACCEL_RANGE_16G, /**< +- 16Gs */
+  IMU_ACCEL_RANGE_2G,  /**< +/- 2Gs */
+  IMU_ACCEL_RANGE_4G,  /**< +/- 4Gs */
+  IMU_ACCEL_RANGE_8G,  /**< +/- 8Gs */
+  IMU_ACCEL_RANGE_16G, /**< +/- 16Gs */
   NUM_IMU_ACCEL_RANGES /**< Number of IMU Accelerometer ranges */
 } IMUAccelRange;
 
 /** @brief  IMU Gyro range in units of degrees */
 typedef enum {
-  IMU_GYRO_RANGE_125_DEG /**< +- 125deg */,
-  IMU_GYRO_RANGE_250_DEG /**< +- 250deg */,
-  IMU_GYRO_RANGE_500_DEG /**< +- 500deg */,
-  IMU_GYRO_RANGE_1000_DEG /**< +- 1000deg */,
-  IMU_GYRO_RANGE_2000_DEG /**< +- 2000deg */,
-  NUM_IMU_GYRO_RANGES
+  IMU_GYRO_RANGE_125_DEG /**< +/- 125deg */,
+  IMU_GYRO_RANGE_250_DEG /**< +/- 250deg */,
+  IMU_GYRO_RANGE_500_DEG /**< +/- 500deg */,
+  IMU_GYRO_RANGE_1000_DEG /**< +/- 1000deg */,
+  IMU_GYRO_RANGE_2000_DEG /**< +/- 2000deg */,
+  NUM_IMU_GYRO_RANGES /**< Number of IMU Gyro ranges */
 } IMUGyroRange;
 
 /** @brief  BMI323 Registers */
@@ -197,6 +197,6 @@ typedef struct {
 
 StatusCode bmi323_init(Bmi323Storage *storage);
 
-StatusCode bmi323_update();
+StatusCode bmi323_update(Bmi323Storage *storage);
 
 /** @} */
