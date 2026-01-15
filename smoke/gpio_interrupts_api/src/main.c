@@ -46,13 +46,15 @@ TASK(gpio_interrupts_api, TASK_STACK_1024) {
   status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("gpio_it_init failed: %d\r\n", status);
+    // debugging error message
+    // LOG_DEBUG("addr port=%d pin=%d\r\n", s_killswitch_address.port, s_killswitch_address.pin);
     while(true) {
       delay_ms(1000U);
     }
   }
   status = gpio_register_interrupt(&s_killswitch_address, &s_killswitch_settings, KILLSWITCH_EVENT, gpio_interrupts_api);
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("gpio_register_init failed: %d\r\n", status);
+    LOG_DEBUG("gpio_register_interrupt failed: %d\r\n", status);
     while(true) {
       delay_ms(1000U);
     }
@@ -60,10 +62,21 @@ TASK(gpio_interrupts_api, TASK_STACK_1024) {
 
   // software trigger
   status = gpio_trigger_interrupt(&s_killswitch_address);
-  LOG_DEBUG("gpio_trigger_interrupt returned: $d\r\n", status);
+  LOG_DEBUG("gpio_trigger_interrupt returned: %d\r\n", status);
 
   while (true) {
+    notification = 0;
 
+    status = notify_wait(&notification, 100U);
+
+    if (status == STATUS_CODE_OK) {
+      if (notify_check_event(&notification, KILLSWITCH_EVENT)) {
+        LOG_DEBUG("Pass\r\n");
+        delay_ms(KILLSWITCH_DEBOUNCE_MS);
+      } else {
+        LOG_DEBUG("got notif: 0x%08lx\r\n", (unsigned long)notification);
+      }
+    }
   }
 
 }
@@ -72,7 +85,6 @@ TASK(gpio_interrupts_api, TASK_STACK_1024) {
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
-}
 #else
 int main(void) {
 #endif
@@ -83,5 +95,6 @@ int main(void) {
   tasks_init_task(gpio_interrupts_api, TASK_PRIORITY(3), NULL);
   tasks_start();
 
+  LOG_DEBUG("exiting main?");
   return 0;
 }
