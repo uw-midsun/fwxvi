@@ -10,16 +10,16 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
-#include "gpio.h"
-#include "log.h" 
-#include "tasks.h"
-#include "status.h"
 #include "delay.h"
-#include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_tim.h"
+#include "gpio.h"
+#include "log.h"
+#include "mcu.h"
 #include "pwm.h"
 #include "software_timer.h"
+#include "status.h"
+#include "stm32l4xx_hal.h"
+#include "stm32l4xx_hal_tim.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -29,11 +29,11 @@
 #define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
 
-#define CARRIER_FREQUENCY 4 //in kHz
+#define CARRIER_FREQUENCY 4  // in kHz
 
 static TIM_HandleTypeDef h_timer = { 0U };
 
-StatusCode toggle_carrier() { // turns the carrier signal on or off 
+StatusCode toggle_carrier() {  // turns the carrier signal on or off
   const uint16_t dutyCycle = pwm_get_dc(BUZZER_TIMER, BUZZER_CHANNEL);
   if (dutyCycle == BUZZER_DUTY) {
     pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
@@ -47,7 +47,7 @@ StatusCode toggle_carrier() { // turns the carrier signal on or off
 
 int get_arr(int modulation_frequency) {
   int timer_frequency = 2 * modulation_frequency;
-  int timer_clock = 48000000; // 48MHz
+  int timer_clock = 48000000;  // 48MHz
   int prescaler = 47;
   int arr = (timer_clock / (prescaler + 1) / timer_frequency) - 1;
 
@@ -64,12 +64,12 @@ void Timer_Frequency_Init(int modulation_frequency) {
   h_timer.Instance->CR1 |= TIM_CR1_ARPE;
   h_timer.Init.Prescaler = prescaler;
   h_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-  h_timer.Init.Period = arr; // This sets the frequency
+  h_timer.Init.Period = arr;  // This sets the frequency
   h_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   h_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 
   if (HAL_TIM_Base_Init(&h_timer) != HAL_OK) {
-      LOG_DEBUG("Error initalizing HAL timer!");
+    LOG_DEBUG("Error initalizing HAL timer!");
   }
   HAL_TIM_Base_Start_IT(&h_timer);
 }
@@ -79,10 +79,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
 }
 
 TASK(play_notes, TASK_STACK_1024) {
-
-  const int modulation_frequencies[] = {100, 350, 1391, 2000}; 
+  const int modulation_frequencies[] = { 100, 350, 1391, 2000 };
   const int note_duration = 20;
-  
+
   const uint16_t carrier_period = 1000 / CARRIER_FREQUENCY;
   pwm_init_hz(BUZZER_TIMER, carrier_period * 1000);
   Timer_Frequency_Init(modulation_frequencies[0]);
