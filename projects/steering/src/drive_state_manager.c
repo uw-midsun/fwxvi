@@ -142,7 +142,7 @@ StatusCode drive_state_manager_update(void) {
 
     case DRIVE_STATE_REQUEST_N:
 
-    if (drive_state_manager_neutral() == STATUS_CODE_OK && current_state != DRIVE_STATE_NEUTRAL) {
+      if (drive_state_manager_neutral() == STATUS_CODE_OK && current_state != DRIVE_STATE_NEUTRAL) {
         LOG_DEBUG("Drive state set to NEUTRAL\n");
         current_state = DRIVE_STATE_NEUTRAL;
       }
