@@ -25,7 +25,7 @@
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
 #define IS_REAR_CONNECTED 0U
-#define LOG_PRINTS 1U
+#define DRIVE_STATE_MANAGER_DEBUG 1U
 
 static DriveState current_state = DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
@@ -46,7 +46,7 @@ static StatusCode drive_state_manager_neutral(void) {
 
 static StatusCode drive_state_manager_reverse(void) {
   if (current_state == DRIVE_STATE_DRIVE && current_request == DRIVE_STATE_REQUEST_R) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state to REVERSE from DRIVE\n");
 #endif
     buzzer_play_invalid();
@@ -58,7 +58,7 @@ static StatusCode drive_state_manager_reverse(void) {
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
     buzzer_play_invalid();
@@ -67,7 +67,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
     buzzer_play_invalid();
@@ -76,7 +76,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
     buzzer_play_invalid();
@@ -90,7 +90,7 @@ static StatusCode drive_state_manager_reverse(void) {
   buzzer_play_reverse();
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
   LOG_DEBUG("Setting drive state to REVERSE\n");
 #endif
   return STATUS_CODE_OK;
@@ -98,7 +98,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
 static StatusCode drive_state_manager_drive(void) {
   if (current_state == DRIVE_STATE_REVERSE && current_request == DRIVE_STATE_REQUEST_D) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state to DRIVE from REVERSE\n");
 #endif
     buzzer_play_invalid();
@@ -110,7 +110,7 @@ static StatusCode drive_state_manager_drive(void) {
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
   if (get_rear_controller_status_bps_fault() != 0) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
     buzzer_play_invalid();
@@ -119,7 +119,7 @@ static StatusCode drive_state_manager_drive(void) {
 
     // If the vehicle is not ready
   } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
     buzzer_play_invalid();
@@ -128,7 +128,7 @@ static StatusCode drive_state_manager_drive(void) {
 
     // If the precharge is incomplete
   } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
     buzzer_play_invalid();
@@ -142,7 +142,7 @@ static StatusCode drive_state_manager_drive(void) {
   buzzer_play_drive();
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
   LOG_DEBUG("Setting drive state to DRIVE\n");
 #endif
   return STATUS_CODE_OK;
@@ -174,7 +174,7 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != DRIVE_STATE_DRIVE) {
         StatusCode ret = drive_state_manager_drive();
         if (ret == STATUS_CODE_OK) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to DRIVE\n");
 #endif
           current_state = DRIVE_STATE_DRIVE;
@@ -189,7 +189,7 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != DRIVE_STATE_NEUTRAL) {
         StatusCode ret = drive_state_manager_neutral();
         if (ret == STATUS_CODE_OK) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to NEUTRAL\n");
 #endif
           current_state = DRIVE_STATE_NEUTRAL;
@@ -203,7 +203,7 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != DRIVE_STATE_REVERSE) {
         StatusCode ret = drive_state_manager_reverse();
         if (ret == STATUS_CODE_OK) {
-#if (LOG_PRINT == 1)
+#if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to REVERSE\n");
 #endif
           current_state = DRIVE_STATE_REVERSE;
