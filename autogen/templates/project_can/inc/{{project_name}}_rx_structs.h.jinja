@@ -29,7 +29,21 @@ typedef struct
 {
 {%- for message in messages %}
     {%- for signal in message.signals %}
-    uint{{signal.length}}_t {{message.name}}_{{signal.name}};
+        {%- if signal.name == "bitfield"}
+            union{
+                uint{{signal.length}}_t {{signal.name}}_raw;
+                struct {
+                    {%- for flag_name in signal.flags %}
+                        uint{{signal.length}}_t {{flag_name}}:1;
+                    {%- endfor %}
+                    {%- if signal.flags|length < signal.length %}
+                        uint{{signal.length}}_t : {{signal.length - signal.flags|length}};
+                    {%- endif %}
+                };
+            } {{message.name}}_{{signal.name}};
+        {%- else %}
+            uint{{signal.length}}_t {{message.name}}_{{signal.name}};
+        {%- endif %}
     {%- endfor %}
 {%- endfor %}
 {%- for message in messages %}

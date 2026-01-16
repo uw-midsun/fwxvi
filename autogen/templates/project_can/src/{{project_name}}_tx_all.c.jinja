@@ -33,8 +33,13 @@ void can_tx_all() {
     prv_tx_can_message(
         SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
         {{- (message.signals | sum(attribute='length') / 8) | int }},
+    
     {%- for signal in message.signals %}
-        (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+        {%- if signal.type == "bitfield" %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}}.{{signal_name}}_raw << {{signal.start_bit}}{{ " |" if not loop.last }}
+        {%- else %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+        {%- endif %}
     {%- endfor -%}
     );
 {%- endfor %}
