@@ -44,6 +44,15 @@ typedef enum {
 } DriveStateRequest;
 
 /**
+ * @brief Regen braking state
+ */
+typedef enum {
+  REGEN_STATE_DISABLED, /**< Regen braking state DISABLED */
+  REGEN_STATE_ENABLED,  /**< Regen braking state ENABLED */
+  INVALID_REGEN_STATE,  /**< Invalid regen state */
+} RegenState;
+
+/**
  * @brief Initialize the drive state manager
  */
 StatusCode drive_state_manager_init(void);
@@ -64,5 +73,15 @@ StatusCode drive_state_manager_update(void);
  * @return Current drive state
  */
 DriveState drive_state_manager_get_state(void);
+
+/**
+ * @brief Enter regen state for drive state manager
+ */
+StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state);
+
+/**
+ * @brief Toggle regen state for drive state manager
+ */
+StatusCode drive_state_manager_toggle_regen();
 
 /** @} */

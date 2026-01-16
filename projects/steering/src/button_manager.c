@@ -15,6 +15,7 @@
 /* Inter-component Headers */
 #include "gpio.h"
 #include "log.h"
+#include "software_timer.h"
 
 /* Intra-component Headers */
 #include "button_led_manager.h"
@@ -28,6 +29,8 @@
 #include "steering.h"
 #include "steering_hw_defs.h"
 #include "steering_setters.h"
+
+#define FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS 400U
 
 static SteeringStorage *steering_storage;
 
@@ -51,6 +54,9 @@ static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
   [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = BUTTON_LED_MANAGER_COLOR_PINK,
 };
 
+static SoftTimer s_hazard_blink_timer;
+static bool hazard_light_state = false;
+
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
@@ -58,10 +64,6 @@ static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
 static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
-  // if (party_mode_active() == false) {
-  //   buzzer_play_success();
-  // }
-
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -90,10 +92,6 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-  // if (party_mode_active() == false) {
-  //   buzzer_play_success();
-  // }
-
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -122,10 +120,6 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-  // if (party_mode_active() == false) {
-  //   buzzer_play_success();
-  // }
-
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
@@ -133,10 +127,14 @@ static void hazards_btn_falling_edge_cb(Button *button) {
 
   if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
     buzzer_start_turn_signal();
+    software_timer_start(&s_hazard_blink_timer);
     set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
     light_state = STEERING_LIGHTS_HAZARD_STATE;
   } else {
     buzzer_stop_turn_signal();
+    software_timer_cancel(&s_hazard_blink_timer);
+    button_manager_led_disable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = false;
     set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
     light_state = STEERING_LIGHTS_OFF_STATE;
   }
@@ -153,10 +151,6 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -175,10 +169,6 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -197,10 +187,6 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -243,13 +229,10 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 #endif
+  drive_state_manager_toggle_regen();
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {
@@ -409,6 +392,22 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
 };
 
 /************************************************************************************************
+ * SW timer callback
+ ************************************************************************************************/
+
+static void s_hazard_blink_timer_callback(SoftTimerId timer_id) {
+  if (hazard_light_state == false) {
+    button_manager_led_enable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = true;
+  } else {
+    button_manager_led_disable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = false;
+  }
+
+  software_timer_reset(&s_hazard_blink_timer);
+}
+
+/************************************************************************************************
  * Public functions
  ************************************************************************************************/
 
@@ -424,6 +423,8 @@ StatusCode button_manager_init(SteeringStorage *storage) {
     status_ok_or_return(button_init(&steering_storage->button_manager->buttons[i], &s_button_configs[i]));
     status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
   }
+
+  status_ok_or_return(software_timer_init(FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
 
   return STATUS_CODE_OK;
 }
