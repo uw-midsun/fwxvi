@@ -119,7 +119,6 @@ StatusCode drive_state_manager_init(void) {
   current_request = DRIVE_STATE_REQUEST_NONE;
 
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
-  drive_state_manager_update();
 
   return STATUS_CODE_OK;
 }
