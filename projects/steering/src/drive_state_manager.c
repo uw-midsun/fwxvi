@@ -115,8 +115,12 @@ static StatusCode drive_state_manager_drive(void) {
 }
 
 StatusCode drive_state_manager_init(void) {
-  current_state = DRIVE_STATE_NEUTRAL;
+  current_state = DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
+
+  drive_state_manager_request(DRIVE_STATE_REQUEST_N);
+  drive_state_manager_update();
+  
   return STATUS_CODE_OK;
 }
 
