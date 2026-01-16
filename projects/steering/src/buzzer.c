@@ -44,6 +44,20 @@ static Note TURN_SIGNAL_CLICK_HIGH[] = { { NOTE_C8, 50 }, { NOTE_REST, 0 } };
 /* Turn signal click low*/
 static Note TURN_SIGNAL_CLICK_LOW[] = { { NOTE_C7, 50 }, { NOTE_REST, 0 } };
 
+static Note MELODY_DRIVE_STATE[] = { { NOTE_C6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_NEUTRAL_STATE[] = { { NOTE_E6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REVERSE_STATE[] = { { NOTE_G6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_INVALID_STATE[] = { { NOTE_C5, 100 }, { NOTE_REST, 50 }, { NOTE_C5, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REGEN_ON[] = { { NOTE_C4, 30 }, { NOTE_D4, 30 }, { NOTE_E4, 30 }, { NOTE_F4, 30 }, { NOTE_G4, 30 }, { NOTE_A4, 30 },
+                                  { NOTE_B4, 30 }, { NOTE_C5, 40 }, { NOTE_D5, 50 }, { NOTE_E5, 70 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REGEN_OFF[] = { { NOTE_E5, 70 }, { NOTE_D5, 50 }, { NOTE_C5, 40 }, { NOTE_B4, 30 }, { NOTE_A4, 30 }, { NOTE_G4, 30 },
+                                   { NOTE_F4, 30 }, { NOTE_E4, 30 }, { NOTE_D4, 30 }, { NOTE_C4, 30 }, { NOTE_REST, 0 } };
+
 static bool turn_sig_state = true;
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
@@ -196,6 +210,30 @@ StatusCode buzzer_play_error(void) {
 
 StatusCode buzzer_play_success(void) {
   return buzzer_play_melody(MELODY_SUCCESS);
+}
+
+StatusCode buzzer_play_drive(void) {
+  return buzzer_play_melody(MELODY_DRIVE_STATE);
+}
+
+StatusCode buzzer_play_neutral(void) {
+  return buzzer_play_melody(MELODY_NEUTRAL_STATE);
+}
+
+StatusCode buzzer_play_reverse(void) {
+  return buzzer_play_melody(MELODY_REVERSE_STATE);
+}
+
+StatusCode buzzer_play_invalid(void) {
+  return buzzer_play_melody(MELODY_INVALID_STATE);
+}
+
+StatusCode buzzer_play_regen_on(void) {
+  return buzzer_play_melody(MELODY_REGEN_ON);
+}
+
+StatusCode buzzer_play_regen_off(void) {
+  return buzzer_play_melody(MELODY_REGEN_OFF);
 }
 
 StatusCode buzzer_start_turn_signal(void) {

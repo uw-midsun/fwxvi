@@ -127,25 +127,25 @@
         { .port = GPIO_PORT_D, .pin = 8 },  /* R3 */ \
         { .port = GPIO_PORT_D, .pin = 9 },  /* R4 */ \
         { .port = GPIO_PORT_D, .pin = 10 }, /* R5 */ \
-        { .port = GPIO_PORT_D, .pin = 11 }, /* R6 */ \
+        { .port = GPIO_PORT_E, .pin = 3 },  /* R6 */ \
     {                                                \
-      .port = GPIO_PORT_D, .pin = 12                 \
+      .port = GPIO_PORT_E, .pin = 2                  \
     } /* R7 */                                       \
   }
 
 /** @brief  LTDC green channel pins (bits 2-7) */
-#define STEERING_DISPLAY_LTDC_GREEN_PINS            \
-  {                                                 \
-    {},                                    /* G0 */ \
-        {},                                /* G1 */ \
-        { .port = GPIO_PORT_E, .pin = 0 }, /* G2 */ \
-        { .port = GPIO_PORT_E, .pin = 2 }, /* G3 */ \
-        { .port = GPIO_PORT_E, .pin = 4 }, /* G4 */ \
-        { .port = GPIO_PORT_E, .pin = 6 }, /* G5 */ \
-        { .port = GPIO_PORT_E, .pin = 8 }, /* G6 */ \
-    {                                               \
-      .port = GPIO_PORT_E, .pin = 10                \
-    } /* G7 */                                      \
+#define STEERING_DISPLAY_LTDC_GREEN_PINS             \
+  {                                                  \
+    {},                                     /* G0 */ \
+        {},                                 /* G1 */ \
+        { .port = GPIO_PORT_E, .pin = 9 },  /* G2 */ \
+        { .port = GPIO_PORT_E, .pin = 10 }, /* G3 */ \
+        { .port = GPIO_PORT_E, .pin = 11 }, /* G4 */ \
+        { .port = GPIO_PORT_E, .pin = 12 }, /* G5 */ \
+        { .port = GPIO_PORT_E, .pin = 6 },  /* G6 */ \
+    {                                                \
+      .port = GPIO_PORT_E, .pin = 5                  \
+    } /* G7 */                                       \
   }
 
 /** @brief  LTDC blue channel pins (bits 2-7) */
@@ -159,7 +159,7 @@
         { .port = GPIO_PORT_D, .pin = 1 },  /* B5 */ \
         { .port = GPIO_PORT_B, .pin = 0 },  /* B6 */ \
     {                                                \
-      .port = GPIO_PORT_E, .pin = 7                  \
+      .port = GPIO_PORT_E, .pin = 4                  \
     } /* B7 */                                       \
   }
 

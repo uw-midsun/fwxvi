@@ -169,4 +169,34 @@ StatusCode buzzer_stop(void);
  */
 bool buzzer_is_playing(void);
 
+/**
+ * @brief Play predefined drive melody
+ */
+StatusCode buzzer_play_drive(void);
+
+/**
+ * @brief Play predefined neutral melody
+ */
+StatusCode buzzer_play_neutral(void);
+
+/**
+ * @brief Play predefined reverse melody
+ */
+StatusCode buzzer_play_reverse(void);
+
+/**
+ * @brief Play predefined invalid melody
+ */
+StatusCode buzzer_play_invalid(void);
+
+/**
+ * @brief Play predefined regen on melody
+ */
+StatusCode buzzer_play_regen_on(void);
+
+/**
+ * @brief Play predefined regen off melody
+ */
+StatusCode buzzer_play_regen_off(void);
+
 /** @} */
