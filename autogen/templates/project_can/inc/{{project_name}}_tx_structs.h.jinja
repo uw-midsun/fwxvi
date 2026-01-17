@@ -26,7 +26,7 @@
 typedef struct {
 {%- for message in messages -%}
     {%- for signal in message.signals %}
-    uint{{signal.length}}_t {{message.name}}_{{signal.name}};
+         uint{{signal.length}}_t {{message.name}}_{{signal.name}};  
     {%- endfor -%}
 {% endfor %}
 } {{ project_name }}_tx_struct;
