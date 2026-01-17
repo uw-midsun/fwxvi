@@ -31,6 +31,10 @@
 
 #define CARRIER_FREQUENCY 4  // in kHz
 
+#define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_D, .pin = 12 }
+
+static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
+
 static TIM_HandleTypeDef h_timer = { 0U };
 
 StatusCode toggle_carrier() {  // turns the carrier signal on or off
@@ -55,6 +59,8 @@ int get_arr(int modulation_frequency) {
 }
 
 void Timer_Frequency_Init(int modulation_frequency) {
+  gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN);
+
   int prescaler = 79;
   int arr = get_arr(modulation_frequency);
 
@@ -80,7 +86,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
 
 TASK(play_notes, TASK_STACK_1024) {
   const int modulation_frequencies[] = { 100, 350, 1391, 2000 };
-  const int note_duration = 20;
+  const int note_duration = 100;
 
   const uint16_t carrier_period = 1000 / CARRIER_FREQUENCY;
   pwm_init_hz(BUZZER_TIMER, carrier_period * 1000);
@@ -100,14 +106,14 @@ TASK(play_notes, TASK_STACK_1024) {
   }
 }
 
-TASK(debug_statements, TASK_STACK_1024) {
-  while (true) {
-    const int delay = 1;
-    delay_ms(delay);
-    uint16_t dutyCycle = pwm_get_dc(BUZZER_TIMER, BUZZER_CHANNEL);
-    LOG_DEBUG("Duty cycle (sampled every %d milliseconds): %d\n", delay, dutyCycle);
-  }
-}
+// TASK(debug_statements, TASK_STACK_1024) {
+//   while (true) {
+//     const int delay = 1;
+//     delay_ms(delay);
+//     uint16_t dutyCycle = pwm_get_dc(BUZZER_TIMER, BUZZER_CHANNEL);
+//     LOG_DEBUG("Duty cycle (sampled every %d milliseconds): %d\n", delay, dutyCycle);
+//   }
+// }
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
@@ -120,7 +126,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(debug_statements, TASK_PRIORITY(3), NULL);
+  // tasks_init_task(debug_statements, TASK_PRIORITY(3), NULL);
   tasks_init_task(play_notes, TASK_PRIORITY(3), NULL);
 
   tasks_start();
