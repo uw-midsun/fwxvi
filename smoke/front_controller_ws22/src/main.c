@@ -1,9 +1,9 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for front_controller_output_groups
+ * @brief  Smoke test for front_controller_ws22
  *
- * @date   2026-01-06
+ * @date   2026-01-18
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -21,28 +21,6 @@
 
 /* Intra-component Headers */
 
-static inline const char *output_grp_to_str(OutputGroup x) {
-  switch (x) {
-    case OUTPUT_GROUP_ALL:
-      return "OUTPUT_GROUP_ALL";
-    case OUTPUT_GROUP_ACTIVE:
-      return "OUTPUT_GROUP_ACTIVE";
-    case OUTPUT_GROUP_LEFT_LIGHTS:
-      return "OUTPUT_GROUP_LEFT_LIGHTS";
-    case OUTPUT_GROUP_RIGHT_LIGHTS:
-      return "OUTPUT_GROUP_RIGHT_LIGHTS";
-    case OUTPUT_GROUP_HAZARD_LIGHTS:
-      return "OUTPUT_GROUP_HAZARD_LIGHTS";
-    case OUTPUT_GROUP_BPS_LIGHTS:
-      return "OUTPUT_GROUP_BPS_LIGHTS";
-    case OUTPUT_GROUP_BRAKE_LIGHTS:
-      return "OUTPUT_GROUP_BRAKE_LIGHTS";
-    case OUTPUT_GROUP_HORN:
-      return "OUTPUT_GROUP_HORN";
-    default:
-      return "UNKNOWN";
-  }
-}
 FrontControllerStorage front_controller_storage = { 0 };
 
 FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
@@ -50,7 +28,7 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
-TASK(cycle_output_groups, TASK_STACK_1024) {
+TASK(main_cycle, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
@@ -62,25 +40,27 @@ TASK(cycle_output_groups, TASK_STACK_1024) {
   }
   delay_ms(500);
 
-  // Step 2: Cycle through valid output groups
+  while (true) {
+    run_can_rx_all();
+    adc_run();
+    accel_pedal_run();
+    opd_run();
+    motor_can_update_target_current_velocity();
+    run_can_tx_fast();
+    ws22_motor_can_transmit_drive_command();
+    delay_ms(1U);
+  }
+}
+
+TASK(cycle_ws22, TASK_STACK_1024) {
+  delay_ms(2000U);
+
+  LOG_DEBUG("Starting to mock pedal values");
 
   OutputGroup num_output_group = OUTPUT_GROUP_ALL;
   bool state = false;
 
   while (true) {
-    power_manager_set_output_group(num_output_group, state);
-    printf("Setting output group %s to state %d\r\n", output_grp_to_str(num_output_group), state);
-
-    if (state == true) {
-      state = false;
-    } else {
-      num_output_group++;
-      if (num_output_group >= NUM_OUTPUT_GROUPS) {
-        num_output_group %= NUM_OUTPUT_GROUPS;
-      }
-      state = true;
-    }
-
     delay_ms(500);
   }
 }
@@ -96,7 +76,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(cycle_output_groups, TASK_PRIORITY(3), NULL);
+  tasks_init_task(cycle_ws22, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
