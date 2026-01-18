@@ -37,7 +37,7 @@ static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
 static TIM_HandleTypeDef h_timer = { 0U };
 
-StatusCode toggle_carrier() {  // turns the carrier signal on or off
+static StatusCode toggle_carrier() {  // turns the carrier signal on or off
   const uint16_t dutyCycle = pwm_get_dc(BUZZER_TIMER, BUZZER_CHANNEL);
   if (dutyCycle == BUZZER_DUTY) {
     pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
@@ -49,11 +49,11 @@ StatusCode toggle_carrier() {  // turns the carrier signal on or off
   return STATUS_CODE_OK;
 }
 
-int get_arr(int modulation_frequency) {
-  int timer_frequency = 2 * modulation_frequency;
-  int timer_clock = 48000000;  // 48MHz
-  int prescaler = 47;
-  int arr = (timer_clock / (prescaler + 1) / timer_frequency) - 1;
+static uint16_t get_arr(uint16_t modulation_frequency) {
+  uint16_t timer_frequency = 2 * modulation_frequency;
+  uint16_t timer_clock = 48000000;  // 48MHz
+  uint16_t prescaler = 47;
+  uint16_t arr = (timer_clock / (prescaler + 1) / timer_frequency) - 1;
 
   return arr;
 }
@@ -65,9 +65,9 @@ StatusCode buzzer_init(void) {
   return STATUS_CODE_OK;
 }
 
-void hal_timer_init(int modulation_frequency) {
-  int prescaler = 79;
-  int arr = get_arr(modulation_frequency);
+static void hal_timer_init(uint16_t modulation_frequency) {
+  uint16_t prescaler = 79;
+  uint16_t arr = get_arr(modulation_frequency);
 
   h_timer.Instance = TIM6;
   h_timer.Init.Prescaler = prescaler;
@@ -97,7 +97,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
 }
 
 TASK(play_notes, TASK_STACK_1024) {
-  const int modulation_frequencies[] = { 100, 350, 1391, 2000 };
+  const uint16_t modulation_frequencies[] = { 100, 350, 1391, 2000 };
   const int note_duration = 1000;
 
   StatusCode buzzer_init_success = buzzer_init();
@@ -106,12 +106,12 @@ TASK(play_notes, TASK_STACK_1024) {
   hal_timer_init(modulation_frequencies[0]);
 
   while (true) {
-    const int size_test = sizeof(modulation_frequencies) / sizeof(modulation_frequencies[0]);
-    for (int j = 0; j < size_test; ++j) {
-      const int modulation_frequency = modulation_frequencies[j];
+    const uint16_t size_test = sizeof(modulation_frequencies) / sizeof(modulation_frequencies[0]);
+    for (uint16_t j = 0; j < size_test; ++j) {
+      const uint16_t modulation_frequency = modulation_frequencies[j];
 
       LOG_DEBUG("Starting to play note of frequency: %d\n", modulation_frequency);
-      int arr = get_arr(modulation_frequency);
+      uint16_t arr = get_arr(modulation_frequency);
       __HAL_TIM_SET_AUTORELOAD(&h_timer, arr);
       delay_ms(note_duration);
     }
