@@ -17,6 +17,7 @@
 
 /* Intra-component Headers */
 #include "front_controller_hw_defs.h"
+#include "front_controller_setters.h"
 #include "power_manager.h"
 #include "power_outputs.h"
 
@@ -58,7 +59,7 @@ static OutputGroupDef output_group_all = {
   .outputs = { LEFT_SIG, RIGHT_SIG, BRAKE_LIGHT, BPS_LIGHT, DRIVER_FAN, REV_CAM, TELEM, STEERING, HORN, SPARE_1 },
 };
 
-static OutputGroupDef output_group_idle_group = {
+static OutputGroupDef output_group_active_group = {
   .num_outputs = 3,
   .outputs = { REV_CAM, TELEM, STEERING },
 };
@@ -95,13 +96,13 @@ static OutputGroupDef output_group_horn_group = {
 
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
-  [IDLE_GROUP] = &output_group_idle_group,
-  [LEFT_LIGHTS_GROUP] = &output_group_left_lights_group,
-  [RIGHT_LIGHTS_GROUP] = &output_group_right_lights_group,
-  [HAZARD_LIGHTS_GROUP] = &output_group_hazard_lights_group,
-  [BPS_LIGHTS_GROUP] = &output_group_bps_lights_group,
-  [BRAKE_LIGHTS_GROUP] = &output_group_brake_lights_group,
-  [HORN_GROUP] = &output_group_horn_group,
+  [OUTPUT_GROUP_ACTIVE] = &output_group_active_group,
+  [OUTPUT_GROUP_LEFT_LIGHTS] = &output_group_left_lights_group,
+  [OUTPUT_GROUP_RIGHT_LIGHTS] = &output_group_right_lights_group,
+  [OUTPUT_GROUP_HAZARD_LIGHTS] = &output_group_hazard_lights_group,
+  [OUTPUT_GROUP_BPS_LIGHTS] = &output_group_bps_lights_group,
+  [OUTPUT_GROUP_BRAKE_LIGHTS] = &output_group_brake_lights_group,
+  [OUTPUT_GROUP_HORN] = &output_group_horn_group,
 };
 
 /************************************************************************************************
@@ -115,6 +116,21 @@ static uint16_t power_sense_lo_current_calc(uint16_t sampled_voltage) {
 static uint16_t power_sense_hi_current_calc(uint16_t sampled_voltage) {
   uint16_t result = (uint16_t)(((float)sampled_voltage / (float)POWER_MANAGER_HI_SIDE_RESISTOR_OHMS) * (float)POWER_MANAGER_HI_SIDE_CURRENT_SENSE_RATIO);
   return result;
+}
+
+static void power_manager_set_telemetry() {
+  set_fc_power_group_A_rev_cam_current(s_power_manager_storage.current_readings[REV_CAM]);
+  set_fc_power_group_A_telem_current(s_power_manager_storage.current_readings[TELEM]);
+  set_fc_power_group_A_steering_current(s_power_manager_storage.current_readings[STEERING]);
+  set_fc_power_group_A_driver_fan_current(s_power_manager_storage.current_readings[DRIVER_FAN]);
+
+  set_fc_power_group_B_horn_current(s_power_manager_storage.current_readings[HORN]);
+  set_fc_power_group_B_spare_current(s_power_manager_storage.current_readings[SPARE_1]);
+
+  set_fc_power_lights_group_brake_light_sig_current(s_power_manager_storage.current_readings[BRAKE_LIGHT]);
+  set_fc_power_lights_group_bps_light_sig_current(s_power_manager_storage.current_readings[BPS_LIGHT]);
+  set_fc_power_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
+  set_fc_power_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
 }
 
 /************************************************************************************************
@@ -175,10 +191,12 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
       front_controller_storage->power_manager_storage->current_readings[i] = power_sense_lo_current_calc(sampled_voltage);
     }
 
-    LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
+    // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
 
     delay_ms(10);
   }
+
+  power_manager_set_telemetry();
 
   return STATUS_CODE_OK;
 }

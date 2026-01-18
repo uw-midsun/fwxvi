@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stddef.h>
 
 /* Inter-component Headers */
 
@@ -15,33 +16,36 @@
 #include "framebuffer.h"
 
 StatusCode framebuffer_init(Framebuffer *fb, uint16_t width, uint16_t height, uint8_t *buffer) {
-  // TODO: Validate parameters (check for NULL pointers, zero dimensions)
-  // TODO: Initialize fb->width, fb->height, fb->data
-  // TODO: Return STATUS_CODE_OK on success, STATUS_CODE_INVALID_ARGS on invalid arguments
+  if (fb == NULL || buffer == NULL || width == 0 || height == 0) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  fb->width = width;
+  fb->height = height;
+  fb->data = buffer;
+
   return STATUS_CODE_OK;
 }
 
 StatusCode framebuffer_set_pixel(Framebuffer *fb, uint16_t x, uint16_t y, ColorIndex color_index) {
-  // TODO: Calculate linear index from (x, y) coordinates
-  // TODO: Write color_index to fb->data[index]
-  // index = (y * fb->width) + x
+  uint32_t index = (y * fb->width) + x;
+  fb->data[index] = color_index;
   return STATUS_CODE_OK;
 }
 
 ColorIndex framebuffer_get_pixel(Framebuffer *fb, uint16_t x, uint16_t y) {
-  // TODO: Calculate linear index from (x, y) coordinates
-  // TODO: Return fb->data[index]
-  // index = (y * fb->width) + x
-  return 0;
+  uint32_t index = (y * fb->width) + x;
+  return (fb->data[index]);
 }
 
 StatusCode framebuffer_clear(Framebuffer *fb, ColorIndex color_index) {
-  // TODO: Fill entire framebuffer with color_index
-  // Size = fb->width * fb->height
+  uint32_t size = fb->width * fb->height;
+  for (uint32_t i = 0; i < size; ++i) {
+    fb->data[i] = color_index;
+  }
   return STATUS_CODE_OK;
 }
 
 uint8_t *framebuffer_data(Framebuffer *fb) {
-  // TODO: Return fb->data pointer
-  return 0;
+  return fb->data;
 }

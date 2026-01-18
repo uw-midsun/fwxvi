@@ -1,5 +1,5 @@
 {
-    "selected_preset": "STM32L4P5VET6_legacy_debug",
+    "selected_preset": "STM32L433CCU6_legacy_debug",
 
     "presets": {
         "STM32L433CCU6_bootloader_debug": {
@@ -12,6 +12,7 @@
             "flash": "bootloader",
             "build_config": "release"
         },
+
         "STM32L433CCU6_application_debug": {
             "hardware": "STM32L433CCU6",
             "flash": "application",
