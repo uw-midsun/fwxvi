@@ -15,10 +15,10 @@
 #include "log.h"
 #include "mcu.h"
 #include "pwm.h"
-#include "software_timer.h"
 #include "status.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_tim.h"
+#include "stm32l4xx_hal_cortex.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -27,7 +27,6 @@
 #define BUZZER_CHANNEL PWM_CHANNEL_1
 #define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
 #define BUZZER_DUTY 50U
-#define BUZZER_BEEP_DURATION_MS 250U
 
 #define CARRIER_FREQUENCY 4  // in kHz
 
@@ -58,16 +57,18 @@ int get_arr(int modulation_frequency) {
   return arr;
 }
 
-void Timer_Frequency_Init(int modulation_frequency) {
-  gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN);
+StatusCode buzzer_init(void) {
+  status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
+  status_ok_or_return(pwm_init_hz(BUZZER_TIMER, CARRIER_FREQUENCY * 1000));
+  status_ok_or_return(pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false));
+  return STATUS_CODE_OK;
+}
 
+void hal_timer_init(int modulation_frequency) {
   int prescaler = 79;
   int arr = get_arr(modulation_frequency);
 
-  __HAL_RCC_TIM2_CLK_ENABLE();
-
-  h_timer.Instance = TIM_CHANNEL_1;
-  h_timer.Instance->CR1 |= TIM_CR1_ARPE;
+  h_timer.Instance = TIM6;
   h_timer.Init.Prescaler = prescaler;
   h_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
   h_timer.Init.Period = arr;  // This sets the frequency
@@ -80,17 +81,28 @@ void Timer_Frequency_Init(int modulation_frequency) {
   HAL_TIM_Base_Start_IT(&h_timer);
 }
 
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *h_timer) {
+  if(h_timer->Instance==TIM6) {
+    /* TIM6 clock enable */
+    __HAL_RCC_TIM6_CLK_ENABLE();
+    /* TIM6 interrupt Init */
+    HAL_NVIC_SetPriority(TIM6_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(TIM6_IRQn);
+  }
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
   toggle_carrier();
 }
 
 TASK(play_notes, TASK_STACK_1024) {
   const int modulation_frequencies[] = { 100, 350, 1391, 2000 };
-  const int note_duration = 100;
+  const int note_duration = 1000;
 
-  const uint16_t carrier_period = 1000 / CARRIER_FREQUENCY;
-  pwm_init_hz(BUZZER_TIMER, carrier_period * 1000);
-  Timer_Frequency_Init(modulation_frequencies[0]);
+  StatusCode buzzer_init_success = buzzer_init();
+  if (!buzzer_init_success) LOG_DEBUG("Error when initializing buzzer");
+
+  hal_timer_init(modulation_frequencies[0]);
 
   while (true) {
     const int size_test = sizeof(modulation_frequencies) / sizeof(modulation_frequencies[0]);
