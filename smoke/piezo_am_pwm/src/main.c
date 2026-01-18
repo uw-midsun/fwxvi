@@ -17,8 +17,8 @@
 #include "pwm.h"
 #include "status.h"
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_tim.h"
 #include "stm32l4xx_hal_cortex.h"
+#include "stm32l4xx_hal_tim.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -30,7 +30,8 @@
 
 #define CARRIER_FREQUENCY 4  // in kHz
 
-#define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_D, .pin = 12 }
+#define STEERING_BUZZER_PWM_PIN \
+  { .port = GPIO_PORT_D, .pin = 12 }
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
@@ -82,7 +83,7 @@ void hal_timer_init(int modulation_frequency) {
 }
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *h_timer) {
-  if(h_timer->Instance==TIM6) {
+  if (h_timer->Instance == TIM6) {
     /* TIM6 clock enable */
     __HAL_RCC_TIM6_CLK_ENABLE();
     /* TIM6 interrupt Init */
