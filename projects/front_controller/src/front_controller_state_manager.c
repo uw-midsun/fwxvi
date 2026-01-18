@@ -109,6 +109,7 @@ FrontControllerState front_controller_state_manager_get_state(void) {
 
 StatusCode front_controller_update_state_manager_medium_cycle() {
   /* Rear getters */
+
 #if (IS_REAR_CONNECTED == 0U)
   uint8_t bps_fault_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
@@ -122,6 +123,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t lights_from_steering = get_steering_buttons_lights();
   uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
 
+  // LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u LIGHTS %u HORN %u\r\n", drive_state_from_steering, lights_from_steering, horn_enabled_from_steering);
   if (bps_fault_from_rear) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);

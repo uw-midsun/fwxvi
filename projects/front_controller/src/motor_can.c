@@ -16,8 +16,10 @@
 
 #include "front_controller_getters.h"
 
-#define MOTOR_CAN_DEBUG 1U
+#define MOTOR_CAN_DEBUG 0U
+#define IS_BRAKE_CONNECTED 0U
 
+#if (MOTOR_CAN_DEBUG == 1)
 static const char *print_state_str(VehicleDriveState state) {
   switch (state) {
     case VEHICLE_DRIVE_STATE_NEUTRAL:
@@ -32,14 +34,20 @@ static const char *print_state_str(VehicleDriveState state) {
       return "VEHICLE_DRIVE_STATE_BRAKE";
     case VEHICLE_DRIVE_STATE_REGEN:
       return "VEHICLE_DRIVE_STATE_REGEN";
+    case VEHICLE_DRIVE_STATE_INVALID:
+      return "VEHICLE_DRIVE_STATE_INVALID";
     default:
       return "UNKNOWN";
   }
 }
+#endif
 
 static FrontControllerStorage *front_controller_storage = NULL;
 
+static VehicleDriveState current_drive_state;
+
 static VehicleDriveState s_resolve_current_state() {
+#if (IS_BRAKE_CONNECTED != 0U)
   if (front_controller_storage->brake_enabled) {
     if (get_steering_buttons_regen_braking()) {
       return VEHICLE_DRIVE_STATE_REGEN;
@@ -47,8 +55,9 @@ static VehicleDriveState s_resolve_current_state() {
       return VEHICLE_DRIVE_STATE_BRAKE;
     }
   }
+#endif
 
-  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
+  VehicleDriveState drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control();
 
   if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
@@ -71,35 +80,35 @@ StatusCode motor_can_update_target_current_velocity() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  VehicleDriveState current_state = s_resolve_current_state();
+  current_drive_state = s_resolve_current_state();
 
 #if (MOTOR_CAN_DEBUG == 1)
-  LOG_DEBUG("resolve_current_state returned %s\n", print_state_str(current_state));
+  LOG_DEBUG("resolve_current_state returned %s\n", print_state_str(current_drive_state));
 #endif
 
-  if (current_state == VEHICLE_DRIVE_STATE_INVALID) {
+  if (current_drive_state == VEHICLE_DRIVE_STATE_INVALID) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  front_controller_storage->currentDriveState = current_state;
+  front_controller_storage->currentDriveState = current_drive_state;
 
-  switch (current_state) {
+  switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
-#if (MOTOR_CAN_DEBUG == 1)
+#if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
 #endif
       ws22_motor_can_set_current(front_controller_storage->accel_percentage);
       ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_REVERSE:
-#if (MOTOR_CAN_DEBUG == 1)
+#if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
 #endif
       ws22_motor_can_set_current(front_controller_storage->accel_percentage);
       ws22_motor_can_set_velocity(-WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
-#if (MOTOR_CAN_DEBUG == 1)
+#if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("CC velocity: %f\n", (double)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
 #endif
       ws22_motor_can_set_current(1.0f);
@@ -110,7 +119,7 @@ StatusCode motor_can_update_target_current_velocity() {
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_REGEN:
-#if (MOTOR_CAN_DEBUG == 1)
+#if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
 #endif
       ws22_motor_can_set_current(front_controller_storage->accel_percentage);
@@ -135,5 +144,10 @@ StatusCode motor_can_init(FrontControllerStorage *storage) {
 
   front_controller_storage = storage;
 
+  return STATUS_CODE_OK;
+}
+
+StatusCode motor_can_get_current_state(VehicleDriveState *current_state) {
+  *current_state = current_drive_state;
   return STATUS_CODE_OK;
 }

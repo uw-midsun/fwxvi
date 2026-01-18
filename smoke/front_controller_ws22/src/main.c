@@ -10,6 +10,8 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
+#include "can.h"
 #include "delay.h"
 #include "front_controller.h"
 #include "gpio.h"
@@ -20,11 +22,15 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "accel_pedal.h"
+#include "front_controller_state_manager.h"
 #include "motor_can.h"
+#include "opd.h"
 #include "ws22_motor_can.h"
 
-#define PRINT_TX_STATS 1U
-#define MOCK_PEDAL_VALUES 1U
+#define PRINT_RX_STATS 1U
+#define PRINT_CONTROL_DATA 0U
+#define MOCK_PEDAL_VALUES 0U
 
 static FrontControllerStorage front_controller_storage = { 0 };
 
@@ -34,18 +40,20 @@ static FrontControllerConfig front_controller_config = { .accel_input_deadzone =
                                                          .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
 static const float test_current_min = 0.0f;
-static const float test_current_max = 0.1f;
+static const float test_current_max = 1.0f;
 static const float step_size = (test_current_max - test_current_min) / 5;
 
-TASK(main_cycle, TASK_STACK_1024) {
+TASK(main_1000hz_cycle, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
   status = front_controller_init(&front_controller_storage, &front_controller_config);
+  front_controller_storage.brake_enabled = false;
+
   if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("front controller initialized\n");
+    LOG_DEBUG("front controller initialized\n\r");
   } else {
-    LOG_DEBUG("front controller cannot be initialized\n");
+    LOG_DEBUG("front controller cannot be initialized\n\r");
   }
   delay_ms(500);
 
@@ -63,23 +71,33 @@ TASK(main_cycle, TASK_STACK_1024) {
   }
 }
 
+TASK(main_10hz_cycle, TASK_STACK_1024) {
+  delay_ms(2000U);
+  LOG_DEBUG("Starting 10hz cycle\n\r");
+  while (true) {
+    run_can_tx_medium();
+    front_controller_update_state_manager_medium_cycle();
+    delay_ms(100U);
+  }
+}
+
 #if (MOCK_PEDAL_VALUES == 1)
 TASK(cycle_ws22, TASK_STACK_1024) {
   delay_ms(2000U);
 
-  LOG_DEBUG("Starting to mock pedal values\n");
+  LOG_DEBUG("Starting to mock pedal values\n\r");
 
   while (true) {
     for (float i = test_current_min; i <= test_current_max; i += step_size) {
       front_controller_storage.brake_enabled = false;
       front_controller_storage.accel_percentage = i;
 
-      LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %f\n", (double)front_controller_storage.accel_percentage);
+      LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %ld\n\r", (long)(front_controller_storage.accel_percentage * 100));
       delay_ms(1000U);
     }
 
     front_controller_storage.brake_enabled = true;
-    LOG_DEBUG("MOCKING BRAKES\n");
+    LOG_DEBUG("MOCKING BRAKES\n\r");
     delay_ms(1000U);
 
     front_controller_storage.brake_enabled = false;
@@ -87,43 +105,91 @@ TASK(cycle_ws22, TASK_STACK_1024) {
 }
 #endif
 
-#if (PRINT_TX_STATS == 1)
+#if (PRINT_RX_STATS == 1)
 TASK(display_ws22_tx_data, TASK_STACK_1024) {
   delay_ms(2000U);
-  LOG_DEBUG("Displaying TX data\n");
+  LOG_DEBUG("Displaying TX data\n\r");
+
+  float current;
+  uint32_t velocity;
+  float back_emf_d;
+  float back_emf_q;
+  float bus_current;
+  float bus_voltage;
+  float current_d;
+  float current_q;
+  float heat_sink_temp;
+  float motor_temp;
+  uint16_t error_flags;
+  uint16_t limit_flags;
+  float motor_velocity;
+  float phase_b_current;
+  float phase_c_current;
+  float rail_15v_supply;
+  float vehicle_velocity;
+  float voltage_d;
+  float voltage_q;
 
   while (true) {
-    float current = front_controller_storage.ws22_motor_can_storage->control.current;
-    uint32_t velocity = front_controller_storage.ws22_motor_can_storage->control.velocity;
-    float back_emf_d = front_controller_storage.ws22_motor_can_storage->telemetry.back_emf_d;
-    float back_emf_q = front_controller_storage.ws22_motor_can_storage->telemetry.back_emf_q;
-    float bus_current = front_controller_storage.ws22_motor_can_storage->telemetry.bus_current;
-    float bus_voltage = front_controller_storage.ws22_motor_can_storage->telemetry.bus_voltage;
-    float current_d = front_controller_storage.ws22_motor_can_storage->telemetry.current_d;
-    float current_q = front_controller_storage.ws22_motor_can_storage->telemetry.current_q;
-    float heat_sink_temp = front_controller_storage.ws22_motor_can_storage->telemetry.heat_sink_temp;
-    float motor_temp = front_controller_storage.ws22_motor_can_storage->telemetry.motor_temp;
-    uint16_t error_flags = front_controller_storage.ws22_motor_can_storage->telemetry.error_flags;
-    uint16_t limit_flags = front_controller_storage.ws22_motor_can_storage->telemetry.limit_flags;
-    float motor_velocity = front_controller_storage.ws22_motor_can_storage->telemetry.motor_velocity;
-    float phase_b_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_b_current;
-    float phase_c_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_c_current;
-    float rail_15v_supply = front_controller_storage.ws22_motor_can_storage->telemetry.rail_15v_supply;
-    float vehicle_velocity = front_controller_storage.ws22_motor_can_storage->telemetry.vehicle_velocity;
-    float voltage_d = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_d;
-    float voltage_q = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_q;
+    current = front_controller_storage.ws22_motor_can_storage->control.current;
+    velocity = front_controller_storage.ws22_motor_can_storage->control.velocity;
+    back_emf_d = front_controller_storage.ws22_motor_can_storage->telemetry.back_emf_d;
+    back_emf_q = front_controller_storage.ws22_motor_can_storage->telemetry.back_emf_q;
+    bus_current = front_controller_storage.ws22_motor_can_storage->telemetry.bus_current;
+    bus_voltage = front_controller_storage.ws22_motor_can_storage->telemetry.bus_voltage;
+    current_d = front_controller_storage.ws22_motor_can_storage->telemetry.current_d;
+    current_q = front_controller_storage.ws22_motor_can_storage->telemetry.current_q;
+    heat_sink_temp = front_controller_storage.ws22_motor_can_storage->telemetry.heat_sink_temp;
+    motor_temp = front_controller_storage.ws22_motor_can_storage->telemetry.motor_temp;
+    error_flags = front_controller_storage.ws22_motor_can_storage->telemetry.error_flags;
+    limit_flags = front_controller_storage.ws22_motor_can_storage->telemetry.limit_flags;
+    motor_velocity = front_controller_storage.ws22_motor_can_storage->telemetry.motor_velocity;
+    phase_b_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_b_current;
+    phase_c_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_c_current;
+    rail_15v_supply = front_controller_storage.ws22_motor_can_storage->telemetry.rail_15v_supply;
+    vehicle_velocity = front_controller_storage.ws22_motor_can_storage->telemetry.vehicle_velocity;
+    voltage_d = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_d;
+    voltage_q = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_q;
 
-    LOG_DEBUG(
-        "WS22 Motor TX:\n"
-        "CTRL: I=%.3fA Vel=%lu\n"
-        "ELEC: Vbus=%.3fV Ibus=%.3fA Id=%.3fA Iq=%.3fA Vd=%.3fV Vq=%.3fV\n"
-        "EMFd=%.3fV EMFq=%.3fV Ib=%.3fA Ic=%.3fA Rail15=%.3fV \n"
-        "THERM: Hs=%.2fC Mot=%.2fC\n"
-        "MOTION: MotVel=%.3f VehVel=%.3f\n"
-        "FLAGS: Err=0x%04X Lim=0x%04X\n",
-        (double)current, velocity, (double)bus_voltage, (double)bus_current, (double)current_d, (double)current_q, (double)voltage_d, (double)voltage_q, (double)back_emf_d, (double)back_emf_q,
-        (double)phase_b_current, (double)phase_c_current, (double)rail_15v_supply, (double)heat_sink_temp, (double)motor_temp, (double)motor_velocity, (double)vehicle_velocity, error_flags,
-        limit_flags);
+    LOG_DEBUG("WS22 Motor TX:\n\r");
+    delay_ms(20U);
+
+    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (long)(current * 1000), velocity);
+    delay_ms(20U);
+
+    LOG_DEBUG("ELEC: Vbus=%ldV Ibus=%ldA Id=%ldA Iq=%ldA Vd=%ldV Vq=%ldV\n\r", (long)bus_voltage, (long)(bus_current * 1000), (long)(current_d * 1000), (long)(current_q * 1000), (long)voltage_d,
+              (long)voltage_q);
+    delay_ms(20U);
+
+    LOG_DEBUG("EMFd=%ldV EMFq=%ldV Ib=%ldA Ic=%ldA Rail15=%ldV \n\r", (long)back_emf_d, (long)back_emf_q, (long)(phase_b_current * 1000), (long)(phase_c_current * 1000), (long)rail_15v_supply);
+    delay_ms(20U);
+
+    LOG_DEBUG("THERM: Hs=%ldC Mot=%ldC\n\r", (long)(heat_sink_temp * 10), (long)(motor_temp * 10));
+    delay_ms(20U);
+
+    LOG_DEBUG("MOTION: MotVel=%ld VehVel=%ld\n\r", (long)motor_velocity, (long)vehicle_velocity);
+    delay_ms(20U);
+
+    LOG_DEBUG("FLAGS: Err=0x%04X Lim=0x%04X\n\r", error_flags, limit_flags);
+    delay_ms(20U);
+
+    delay_ms(1000U);
+  }
+}
+#endif
+
+#if (PRINT_CONTROL_DATA == 1)
+TASK(display_ws22_control_data, TASK_STACK_1024) {
+  delay_ms(2100U);
+  LOG_DEBUG("Displaying control data\n\r");
+
+  float current;
+  uint32_t velocity;
+  while (true) {
+    current = front_controller_storage.ws22_motor_can_storage->control.current;
+    velocity = front_controller_storage.ws22_motor_can_storage->control.velocity;
+
+    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (long)(current * 1000), velocity);
     delay_ms(1000U);
   }
 }
@@ -140,12 +206,17 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(main_cycle, TASK_PRIORITY(4), NULL);
+  tasks_init_task(main_1000hz_cycle, TASK_PRIORITY(4), NULL);
 #if (MOCK_PEDAL_VALUES == 1)
   tasks_init_task(cycle_ws22, TASK_PRIORITY(3), NULL);
 #endif
-#if (PRINT_TX_STATS == 1)
+#if (PRINT_RX_STATS == 1)
   tasks_init_task(display_ws22_tx_data, TASK_PRIORITY(2), NULL);
+#endif
+  tasks_init_task(main_10hz_cycle, TASK_PRIORITY(3), NULL);
+
+#if (PRINT_CONTROL_DATA == 1)
+  tasks_init_task(display_ws22_control_data, TASK_PRIORITY(2), NULL);
 #endif
 
   tasks_start();

@@ -43,4 +43,9 @@ StatusCode motor_can_update_target_current_velocity();
  */
 StatusCode motor_can_init(FrontControllerStorage *storage);
 
+/**
+ * @brief retrieve current vehicle drive state
+ */
+StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
+
 /** @} */
