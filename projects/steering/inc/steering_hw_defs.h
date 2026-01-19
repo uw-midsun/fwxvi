@@ -90,78 +90,16 @@
   { .port = GPIO_PORT_B, .pin = 7 }
 
 /************************************************************************************************
- * Display Control config
+ * Display control
  ************************************************************************************************/
 
 /** @brief  Display control (Push-pull to control display state) */
 #define STEERING_DISPLAY_CTRL \
   { .port = GPIO_PORT_A, .pin = 0 }
-//! On actual board this is PC6 for some reason
 
-/************************************************************************************************
- * Display LTDC Config
- ************************************************************************************************/
-
-/** @brief  LTDC pixel clock pin */
-#define STEERING_DISPLAY_LTDC_CLOCK \
-  { .port = GPIO_PORT_A, .pin = 4 }
-
-/** @brief  LTDC horizontal sync pin */
-#define STEERING_DISPLAY_LTDC_HSYNC \
-  { .port = GPIO_PORT_C, .pin = 2 }
-
-/** @brief  LTDC vertical sync pin */
-#define STEERING_DISPLAY_LTDC_VSYNC \
-  { .port = GPIO_PORT_B, .pin = 11 }
-
-/** @brief  LTDC data enable pin */
-#define STEERING_DISPLAY_LTDC_DE \
-  { .port = GPIO_PORT_C, .pin = 0 }
-
-/** @brief  LTDC red channel pins (bits 2-7) */
-#define STEERING_DISPLAY_LTDC_RED_PINS               \
-  {                                                  \
-    {},                                     /* R0 */ \
-        {},                                 /* R1 */ \
-        { .port = GPIO_PORT_E, .pin = 15 }, /* R2 */ \
-        { .port = GPIO_PORT_D, .pin = 8 },  /* R3 */ \
-        { .port = GPIO_PORT_D, .pin = 9 },  /* R4 */ \
-        { .port = GPIO_PORT_D, .pin = 10 }, /* R5 */ \
-        { .port = GPIO_PORT_E, .pin = 3 },  /* R6 */ \
-    {                                                \
-      .port = GPIO_PORT_E, .pin = 2                  \
-    } /* R7 */                                       \
-  }
-
-/** @brief  LTDC green channel pins (bits 2-7) */
-#define STEERING_DISPLAY_LTDC_GREEN_PINS             \
-  {                                                  \
-    {},                                     /* G0 */ \
-        {},                                 /* G1 */ \
-        { .port = GPIO_PORT_E, .pin = 9 },  /* G2 */ \
-        { .port = GPIO_PORT_E, .pin = 10 }, /* G3 */ \
-        { .port = GPIO_PORT_E, .pin = 11 }, /* G4 */ \
-        { .port = GPIO_PORT_E, .pin = 12 }, /* G5 */ \
-        { .port = GPIO_PORT_E, .pin = 6 },  /* G6 */ \
-    {                                                \
-      .port = GPIO_PORT_E, .pin = 5                  \
-    } /* G7 */                                       \
-  }
-
-/** @brief  LTDC blue channel pins (bits 2-7) */
-#define STEERING_DISPLAY_LTDC_BLUE_PINS              \
-  {                                                  \
-    {},                                     /* B0 */ \
-        {},                                 /* B1 */ \
-        { .port = GPIO_PORT_D, .pin = 14 }, /* B2 */ \
-        { .port = GPIO_PORT_D, .pin = 15 }, /* B3 */ \
-        { .port = GPIO_PORT_D, .pin = 0 },  /* B4 */ \
-        { .port = GPIO_PORT_D, .pin = 1 },  /* B5 */ \
-        { .port = GPIO_PORT_B, .pin = 0 },  /* B6 */ \
-    {                                                \
-      .port = GPIO_PORT_E, .pin = 4                  \
-    } /* B7 */                                       \
-  }
+/** @brief  Display current control (PWM to control % of current) */
+#define STEERING_DISPLAY_CURRENT_CTRL \
+  { .port = GPIO_PORT_A, .pin = 1 }
 
 /************************************************************************************************
  * RGB buttons
