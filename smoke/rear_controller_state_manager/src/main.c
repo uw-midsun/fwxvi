@@ -71,7 +71,7 @@ static const char *print_state_str(RearControllerState state) {
 static void log_status(void) {
   RearControllerState current_state = rear_controller_state_manager_get_state();
 
-  LOG_DEBUG("State: %s\nRelays: [POS: %d] [NEG: %d] [SOLAR: %d] [MOTOR: %d]\n", print_state_str(current_state), s_rear_storage.pos_relay_closed, s_rear_storage.neg_relay_closed,
+  LOG_DEBUG("State: %s | Relays: [POS: %d] [NEG: %d] [SOLAR: %d] [MOTOR: %d]\n", print_state_str(current_state), s_rear_storage.pos_relay_closed, s_rear_storage.neg_relay_closed,
             s_rear_storage.solar_relay_closed, s_rear_storage.motor_relay_closed);
   delay_ms(20U);
 }

@@ -215,8 +215,7 @@ StatusCode party_mode_run(void) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED &&
-      steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED) {
+  if (steering_storage->button_manager->buttons[STEERING_BUTTON_RIGHT_LIGHT].state == BUTTON_PRESSED && steering_storage->button_manager->buttons[STEERING_BUTTON_LEFT_LIGHT].state == BUTTON_PRESSED) {
     if (party_mode) {
       party_mode = false;
 

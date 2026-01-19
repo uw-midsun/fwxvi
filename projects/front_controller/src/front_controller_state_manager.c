@@ -19,12 +19,6 @@
 #include "front_lights_signal.h"
 #include "power_manager.h"
 
-/**
- * To test CAN without rear controller connected, BPS_fault and precharge_complete
- * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
- */
-#define IS_REAR_CONNECTED 0U
-
 static FrontControllerStorage *front_controller_storage = NULL;
 static FrontControllerState s_current_state = NUM_FRONT_CONTROLLER_STATES;
 static bool is_horn_enabled = 0;
@@ -108,17 +102,9 @@ FrontControllerState front_controller_state_manager_get_state(void) {
 }
 
 StatusCode front_controller_update_state_manager_medium_cycle() {
-  /* Rear getters */
-#if (IS_REAR_CONNECTED == 0U)
-  uint8_t bps_fault_from_rear = 0U;
-  uint8_t is_precharge_complete_from_rear = 1U;
-#else
   uint8_t bps_fault_from_rear = get_rear_controller_status_bps_fault();
-  uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();
-#endif
-
-  /* Steering getters */
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
+  uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();
   uint8_t lights_from_steering = get_steering_buttons_lights();
   uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
 
