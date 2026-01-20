@@ -39,10 +39,6 @@ static FrontControllerConfig front_controller_config = { .accel_input_deadzone =
                                                          .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                          .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
-static const float test_current_min = 0.0f;
-static const float test_current_max = 1.0f;
-static const float step_size = (test_current_max - test_current_min) / 5;
-
 TASK(main_1000hz_cycle, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
@@ -59,11 +55,9 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
 
   while (true) {
     run_can_rx_all();
-#if (MOCK_PEDAL_VALUES == 0)
     adc_run();
     accel_pedal_run();
     opd_run();
-#endif
     motor_can_update_target_current_velocity();
     run_can_tx_fast();
     ws22_motor_can_transmit_drive_command();
@@ -80,30 +74,6 @@ TASK(main_10hz_cycle, TASK_STACK_1024) {
     delay_ms(100U);
   }
 }
-
-#if (MOCK_PEDAL_VALUES == 1)
-TASK(cycle_ws22, TASK_STACK_1024) {
-  delay_ms(2000U);
-
-  LOG_DEBUG("Starting to mock pedal values\n\r");
-
-  while (true) {
-    for (float i = test_current_min; i <= test_current_max; i += step_size) {
-      front_controller_storage.brake_enabled = false;
-      front_controller_storage.accel_percentage = i;
-
-      LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %ld\n\r", (long)(front_controller_storage.accel_percentage * 100));
-      delay_ms(1000U);
-    }
-
-    front_controller_storage.brake_enabled = true;
-    LOG_DEBUG("MOCKING BRAKES\n\r");
-    delay_ms(1000U);
-
-    front_controller_storage.brake_enabled = false;
-  }
-}
-#endif
 
 #if (PRINT_RX_STATS == 1)
 TASK(display_ws22_tx_data, TASK_STACK_1024) {
@@ -207,9 +177,6 @@ int main() {
   log_init();
 
   tasks_init_task(main_1000hz_cycle, TASK_PRIORITY(4), NULL);
-#if (MOCK_PEDAL_VALUES == 1)
-  tasks_init_task(cycle_ws22, TASK_PRIORITY(3), NULL);
-#endif
 #if (PRINT_RX_STATS == 1)
   tasks_init_task(display_ws22_tx_data, TASK_PRIORITY(2), NULL);
 #endif
