@@ -121,7 +121,7 @@ TASK(cycle_ws22, TASK_STACK_1024) {
         motor_can_get_current_state(&current_state);
         LOG_DEBUG("TARGET STATE: %s | CURRENT STATE: %s\n\r", print_state_str(state), print_state_str(current_state));
         delay_ms(10U);
-        LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %ld\n\r", (long)(front_controller_storage.accel_percentage * 100));
+        LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %ld\n\r", (uint32_t)(front_controller_storage.accel_percentage * 100));
         delay_ms(1000U);
       }
     }
@@ -147,7 +147,7 @@ TASK(display_ws22_control_data, TASK_STACK_1024) {
     current = front_controller_storage.ws22_motor_can_storage->control.current;
     velocity = front_controller_storage.ws22_motor_can_storage->control.velocity;
 
-    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (long)(current * 1000), velocity);
+    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (uint32_t)(current * 1000), velocity);
     delay_ms(1000U);
   }
 }
