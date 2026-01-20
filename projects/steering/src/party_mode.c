@@ -33,7 +33,7 @@
 
 /* Rest (gap) after each note for separation (staccato feel) */
 #define GAP_MS 30U
-#define PLAY_TIME(duration) ((duration) - GAP_MS)
+#define PLAY_TIME(duration) ((duration)-GAP_MS)
 
 static bool party_mode = false;
 static uint8_t party_hue = 0;
@@ -41,7 +41,7 @@ static bool toggle_triggered = false;
 
 static SteeringStorage *steering_storage = NULL;
 static LEDPixels saved_colors[NUM_STEERING_BUTTONS];
-static bool saved_valid = false; 
+static bool saved_valid = false;
 
 static Note MELODY_MARIO[] = {
   // Phrase 1 (Loop 1)
