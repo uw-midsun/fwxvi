@@ -37,8 +37,11 @@
 
 static bool party_mode = false;
 static uint8_t party_hue = 0;
+static bool toggle_triggered = false;
 
 static SteeringStorage *steering_storage = NULL;
+static LEDPixels saved_colors[NUM_STEERING_BUTTONS];
+static bool saved_valid = false; 
 
 static Note MELODY_MARIO[] = {
   // Phrase 1 (Loop 1)
@@ -176,6 +179,24 @@ static Note MELODY_MARIO[] = {
   { NOTE_REST, 0 }
 };
 
+static void party_mode_save_colors(void) {
+  for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
+    saved_colors[i] = steering_storage->button_led_manager->led_pixels[i];
+  }
+  saved_valid = true;
+}
+
+static void party_mode_restore_colors(void) {
+  if (!saved_valid) {
+    return;
+  }
+  for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
+    button_led_manager_set_color(i, saved_colors[i]);
+  }
+  button_led_manager_update();
+  saved_valid = false;
+}
+
 static LEDPixels hsv_to_rgb(uint8_t hue) {
   uint8_t region = hue / 43;
   uint8_t remainder = (hue - (region * 43)) * 6;
@@ -215,19 +236,22 @@ StatusCode party_mode_run(void) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED &&
-      steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED) {
+  bool both_pressed = (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED &&
+                       steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED);
+
+  if (both_pressed && !toggle_triggered) {
+    toggle_triggered = true;
     if (party_mode) {
       party_mode = false;
-
-      button_manager_reset();
-
+      party_mode_restore_colors();
       buzzer_stop();
     } else {
+      party_mode_save_colors();
       party_mode = true;
-
       buzzer_stop();
     }
+  } else if (!both_pressed) {
+    toggle_triggered = false;
   }
 
   if (party_mode) {
