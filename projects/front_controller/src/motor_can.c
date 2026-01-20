@@ -17,7 +17,7 @@
 #include "front_controller_getters.h"
 
 #define MOTOR_CAN_DEBUG 0U
-#define IS_BRAKE_CONNECTED 0U
+#define IS_BRAKE_CONNECTED 1U
 
 #if (MOTOR_CAN_DEBUG == 1)
 static const char *print_state_str(VehicleDriveState state) {

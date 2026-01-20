@@ -124,20 +124,21 @@ TASK(display_ws22_tx_data, TASK_STACK_1024) {
     LOG_DEBUG("WS22 Motor TX:\n\r");
     delay_ms(20U);
 
-    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (long)(current * 1000), velocity);
+    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (int32_t)(current * 1000), velocity);
     delay_ms(20U);
 
-    LOG_DEBUG("ELEC: Vbus=%ldV Ibus=%ldA Id=%ldA Iq=%ldA Vd=%ldV Vq=%ldV\n\r", (long)bus_voltage, (long)(bus_current * 1000), (long)(current_d * 1000), (long)(current_q * 1000), (long)voltage_d,
-              (long)voltage_q);
+    LOG_DEBUG("ELEC: Vbus=%ldV Ibus=%ldA Id=%ldA Iq=%ldA Vd=%ldV Vq=%ldV\n\r", (int32_t)bus_voltage, (int32_t)(bus_current * 1000), (int32_t)(current_d * 1000), (int32_t)(current_q * 1000),
+              (int32_t)voltage_d, (int32_t)voltage_q);
     delay_ms(20U);
 
-    LOG_DEBUG("EMFd=%ldV EMFq=%ldV Ib=%ldA Ic=%ldA Rail15=%ldV \n\r", (long)back_emf_d, (long)back_emf_q, (long)(phase_b_current * 1000), (long)(phase_c_current * 1000), (long)rail_15v_supply);
+    LOG_DEBUG("EMFd=%ldV EMFq=%ldV Ib=%ldA Ic=%ldA Rail15=%ldV \n\r", (int32_t)back_emf_d, (int32_t)back_emf_q, (int32_t)(phase_b_current * 1000), (int32_t)(phase_c_current * 1000),
+              (int32_t)rail_15v_supply);
     delay_ms(20U);
 
-    LOG_DEBUG("THERM: Hs=%ldC Mot=%ldC\n\r", (long)(heat_sink_temp * 10), (long)(motor_temp * 10));
+    LOG_DEBUG("THERM: Hs=%ldC Mot=%ldC\n\r", (int32_t)(heat_sink_temp * 10), (int32_t)(motor_temp * 10));
     delay_ms(20U);
 
-    LOG_DEBUG("MOTION: MotVel=%ld VehVel=%ld\n\r", (long)motor_velocity, (long)vehicle_velocity);
+    LOG_DEBUG("MOTION: MotVel=%ld VehVel=%ld\n\r", (int32_t)motor_velocity, (int32_t)vehicle_velocity);
     delay_ms(20U);
 
     LOG_DEBUG("FLAGS: Err=0x%04X Lim=0x%04X\n\r", error_flags, limit_flags);
@@ -159,7 +160,7 @@ TASK(display_ws22_control_data, TASK_STACK_1024) {
     current = front_controller_storage.ws22_motor_can_storage->control.current;
     velocity = front_controller_storage.ws22_motor_can_storage->control.velocity;
 
-    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (long)(current * 1000), velocity);
+    LOG_DEBUG("CTRL: I=%ldA Vel=%lu\n\r", (int32_t)(current * 1000), velocity);
     delay_ms(1000U);
   }
 }

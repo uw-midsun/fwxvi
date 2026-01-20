@@ -23,6 +23,7 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
+#include "front_controller_getters.h"
 #include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
@@ -111,12 +112,18 @@ TASK(cycle_ws22, TASK_STACK_1024) {
   VehicleDriveState current_state;
 
   while (true) {
-    for (float i = test_current_min; i <= test_current_max; i += step_size) {
+    for (VehicleDriveState state = VEHICLE_DRIVE_STATE_NEUTRAL; state <= VEHICLE_DRIVE_STATE_REVERSE; state++) {
       front_controller_storage.brake_enabled = false;
-      front_controller_storage.accel_percentage = i;
-      motor_can_get_current_state(&current_state);
-      LOG_DEBUG("CURRENT STATE: %s | MOCKING ACCEL PERCENTAGE TO: %ld\n\r", print_state_str(current_state), (long)(front_controller_storage.accel_percentage * 100));
-      delay_ms(1000U);
+      g_rx_struct.steering_buttons_drive_state = state;  // Mock drive state from steering
+
+      for (float i = test_current_min; i <= test_current_max; i += step_size) {
+        front_controller_storage.accel_percentage = i;
+        motor_can_get_current_state(&current_state);
+        LOG_DEBUG("TARGET STATE: %s | CURRENT STATE: %s\n\r", print_state_str(state), print_state_str(current_state));
+        delay_ms(10U);
+        LOG_DEBUG("MOCKING ACCEL PERCENTAGE TO: %ld\n\r", (long)(front_controller_storage.accel_percentage * 100));
+        delay_ms(1000U);
+      }
     }
 
     front_controller_storage.brake_enabled = true;
