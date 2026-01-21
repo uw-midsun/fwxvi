@@ -60,7 +60,6 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   steering_storage->config = config;
 
   can_init(&s_can_storage, &s_can_settings);
-  drive_state_manager_init();
   lights_signal_manager_init();
   button_led_manager_init(steering_storage);
   button_manager_init(steering_storage);
@@ -69,7 +68,9 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   display_init(steering_storage);
   cruise_control_init(steering_storage);
 
-  buzzer_play_startup();
+  drive_state_manager_init();
 
+  buzzer_play_startup();
+  button_led_manager_clear_all();
   return STATUS_CODE_OK;
 }
