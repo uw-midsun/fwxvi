@@ -48,4 +48,9 @@ StatusCode motor_can_init(FrontControllerStorage *storage);
  */
 StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
 
+/**
+ * @brief print a state as a string
+ */
+char *motor_can_get_current_state_str();
+
 /** @} */

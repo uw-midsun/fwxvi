@@ -22,6 +22,7 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
+#include "brake_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
 #include "front_controller_state_manager.h"
@@ -73,10 +74,11 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   /* Initialize front controller systems */
   front_controller_state_manager_init(front_controller_storage);
   power_manager_init(front_controller_storage);
+  brake_pedal_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
   opd_init(front_controller_storage);
   ws22_motor_can_init(front_controller_storage);
-  pedal_calib_read(front_controller_storage);
+  // pedal_calib_read(front_controller_storage);
   motor_can_init(front_controller_storage);
   front_lights_signal_init();
 

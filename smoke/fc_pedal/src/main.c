@@ -1,32 +1,28 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for front_controller
+ * @brief  Smoke test for front_controller_pedal
  *
- * @date   2025-07-19
+ * @date   2026-01-21
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "adc.h"
-#include "can.h"
+#include "delay.h"
+#include "front_controller.h"
 #include "gpio.h"
 #include "log.h"
-#include "master_tasks.h"
 #include "mcu.h"
+#include "power_manager.h"
+#include "status.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+
 #include "accel_pedal.h"
 #include "brake_pedal.h"
-#include "front_controller.h"
-#include "front_controller_state_manager.h"
-#include "motor_can.h"
-#include "opd.h"
-#include "power_manager.h"
-#include "ws22_motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -37,31 +33,33 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
                                                   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA };
 
-VehicleDriveState drive_state;
+TASK(run_pedal, TASK_STACK_1024) {
+  StatusCode status = STATUS_CODE_OK;
 
-void pre_loop_init() {}
+  // Step 1: Check if the front controller can be initialized
+  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  if (status == STATUS_CODE_OK) {
+    LOG_DEBUG("front controller initialized\r\n");
+  } else {
+    LOG_DEBUG("front controller cannot be initialized\r\n");
+  }
+  delay_ms(500);
 
-void run_1000hz_cycle() {
-  run_can_rx_all();
-
-  adc_run();
-  accel_pedal_run();
-  brake_pedal_run();
-  // opd_run();
-  motor_can_update_target_current_velocity();
-
-  run_can_tx_fast();
-  ws22_motor_can_transmit_drive_command();
+  // Step 2: Run pedals
+  while (true) {
+    adc_run();
+    accel_pedal_run();
+    brake_pedal_run();
+  }
 }
 
-void run_10hz_cycle() {
-  run_can_tx_medium();
-  front_controller_update_state_manager_medium_cycle();
-  printf("CURRENT STATE: %s\r\n", motor_can_get_current_state_str());
-}
+TASK(display_pedal_stats, TASK_STACK_1024) {
+  delay_ms(1000U);
 
-void run_1hz_cycle() {
-  run_can_tx_slow();
+  while (true) {
+    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage), front_controller_storage.brake_enabled);
+    delay_ms(100U);
+  }
 }
 
 #ifdef MS_PLATFORM_X86
@@ -75,9 +73,8 @@ int main() {
   tasks_init();
   log_init();
 
-  front_controller_init(&front_controller_storage, &front_controller_config);
-
-  init_master_tasks();
+  tasks_init_task(run_pedal, TASK_PRIORITY(3), NULL);
+  tasks_init_task(display_pedal_stats, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

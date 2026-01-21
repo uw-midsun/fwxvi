@@ -151,3 +151,24 @@ StatusCode motor_can_get_current_state(VehicleDriveState *current_state) {
   *current_state = current_drive_state;
   return STATUS_CODE_OK;
 }
+
+char *motor_can_get_current_state_str() {
+  switch (current_drive_state) {
+    case VEHICLE_DRIVE_STATE_NEUTRAL:
+      return "VEHICLE_DRIVE_STATE_NEUTRAL";
+    case VEHICLE_DRIVE_STATE_DRIVE:
+      return "VEHICLE_DRIVE_STATE_DRIVE";
+    case VEHICLE_DRIVE_STATE_REVERSE:
+      return "VEHICLE_DRIVE_STATE_REVERSE";
+    case VEHICLE_DRIVE_STATE_CRUISE:
+      return "VEHICLE_DRIVE_STATE_CRUISE";
+    case VEHICLE_DRIVE_STATE_BRAKE:
+      return "VEHICLE_DRIVE_STATE_BRAKE";
+    case VEHICLE_DRIVE_STATE_REGEN:
+      return "VEHICLE_DRIVE_STATE_REGEN";
+    case VEHICLE_DRIVE_STATE_INVALID:
+      return "VEHICLE_DRIVE_STATE_INVALID";
+    default:
+      return "UNKNOWN";
+  }
+}
