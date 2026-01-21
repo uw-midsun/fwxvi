@@ -17,8 +17,12 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
+#include "front_controller_getters.h"
 #include "front_controller_hw_defs.h"
 #include "opd.h"
+
+#define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET 500.0f
+#define MAX_CELL_VOLTAGE 4200.0f
 
 static FrontControllerStorage *front_controller_storage;
 static AccelPedalStorage *accel_pedal_storage;
@@ -54,6 +58,21 @@ static bool pts_compare_handler(float p, float s, PtsRelationType relation_type)
   return false;
 }
 
+// Linearly reduce regenerative braking when it's within a certain delta of the max cell voltage
+void opd_limit_regen_when_charged(float *calculated_reading) {
+  if (!front_controller_storage->brake_enabled) return;
+
+  float cell_voltage = get_battery_stats_B_min_cell_voltage();
+  float scaler = 1.0;
+  if (cell_voltage >= MAX_CELL_VOLTAGE) {
+    scaler = 0.0;
+  } else if (cell_voltage >= MAX_CELL_VOLTAGE - REGEN_BRAKING_VOLTAGE_RAMP_OFFSET) {
+    scaler = (1.0 / REGEN_BRAKING_VOLTAGE_RAMP_OFFSET) * (MAX_CELL_VOLTAGE - cell_voltage);
+  }
+
+  *calculated_reading *= scaler;
+}
+
 StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading) {
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
@@ -68,6 +87,7 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
     float m = 1 / current_speed;
     *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
   }
+  opd_limit_regen_when_charged(calculated_reading);
 
   return STATUS_CODE_OK;
 }
@@ -85,6 +105,7 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
     m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
   }
   *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
+  opd_limit_regen_when_charged(calculated_reading);
 
   return STATUS_CODE_OK;
 }
@@ -97,6 +118,7 @@ StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relatio
       return opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
     case CURVE_TYPE_EXPONENTIAL: {
       StatusCode ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+      // TODO: Is it fine if we scale the reading linearly for regen braking before we apply powf?
       *calculated_reading = powf(*calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
       return ret;
     }
