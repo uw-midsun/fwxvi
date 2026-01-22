@@ -68,7 +68,7 @@ void opd_limit_regen_when_charged(float *calculated_reading) {
   if (cell_voltage >= MAX_CELL_VOLTAGE) {
     scaler = 0.0;
   } else if (cell_voltage >= MAX_CELL_VOLTAGE - REGEN_BRAKING_VOLTAGE_RAMP_OFFSET) {
-    scaler = (1.0 / REGEN_BRAKING_VOLTAGE_RAMP_OFFSET) * (MAX_CELL_VOLTAGE - cell_voltage);
+    scaler = (MAX_CELL_VOLTAGE - cell_voltage) / REGEN_BRAKING_VOLTAGE_RAMP_OFFSET;
   }
 
   *calculated_reading *= scaler;
