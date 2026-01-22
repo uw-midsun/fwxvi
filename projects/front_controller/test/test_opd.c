@@ -25,6 +25,7 @@
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller.h"
+#include "front_controller_getters.h"
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
@@ -90,6 +91,40 @@ void test_opd_braking(void) {
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
   TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
+void test_opd_regen_limit(void) {
+  // Simulate braking with no regen limiting
+  mock_raw_adc_reading = 1500;
+  mock_storage.vehicle_speed_kph = 50;
+  // TODO: is it fine to mock the cell voltage like this?
+  g_rx_struct.battery_stats_B_min_cell_voltage = 3700;
+
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.5
+   * Deadzone = 0.05 (ignored)
+   * pow(0.5, 2.0) = 0.25
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
+   *
+   * Current speed = 50 / 100 = 0.5
+   * Since 0.4 < 5, it should be braking
+   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+
+  // TODO: Add two other tests that checks the acceleration when we're braking & between 3.7 to 4.2V,
+  // and when we're braking & at 4.2V
 }
 
 TEST_IN_TASK
