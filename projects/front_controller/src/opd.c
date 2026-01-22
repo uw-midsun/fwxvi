@@ -21,6 +21,7 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
+// TODO: Should this be 500mV or 50mV? Since the provided example in the ticket is 4.15 to 4.2
 #define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET 500.0f
 #define MAX_CELL_VOLTAGE 4200.0f
 
