@@ -14,9 +14,10 @@
 /* Intra-component Headers */
 #include "motor_can.h"
 
+#include "accel_pedal.h"
 #include "front_controller_getters.h"
 
-#define MOTOR_CAN_DEBUG 0U
+#define MOTOR_CAN_DEBUG 2U
 #define IS_BRAKE_CONNECTED 1U
 
 #if (MOTOR_CAN_DEBUG == 1)
@@ -95,37 +96,39 @@ StatusCode motor_can_update_target_current_velocity() {
   switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
+      LOG_DEBUG("DRIVE, Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
 #endif
-      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
+      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
       ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_REVERSE:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
+      LOG_DEBUG("REVERSE Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
 #endif
-      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
-      ws22_motor_can_set_velocity(-WS22_CONTROLLER_MAX_VELOCITY);
+      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
+      ws22_motor_can_set_velocity((-1) * WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("CC velocity: %f\n", (double)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
+      LOG_DEBUG("CRUISE, CC velocity: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
 #endif
       ws22_motor_can_set_current(1.0f);
       ws22_motor_can_set_velocity(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
       break;
     case VEHICLE_DRIVE_STATE_BRAKE:
+      LOG_DEBUG("Braking:\r\n");
       ws22_motor_can_set_current(0.0f);
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_REGEN:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("Accel percentage: %f\n", (double)front_controller_storage->accel_percentage);
+      LOG_DEBUG("Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
 #endif
-      ws22_motor_can_set_current(front_controller_storage->accel_percentage);
+      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_NEUTRAL:
+      LOG_DEBUG("Neutral:\r\n");
       ws22_motor_can_set_current(0.0f);
       ws22_motor_can_set_velocity(0.0f);
       break;

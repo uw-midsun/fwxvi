@@ -63,7 +63,7 @@ StatusCode accel_pedal_run() {
   s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
 
 #if (DEBUG_ACCEL_PEDAL == 1)
-  LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(calculated_reading * 100));
+  LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
 #endif
   return STATUS_CODE_OK;
 }

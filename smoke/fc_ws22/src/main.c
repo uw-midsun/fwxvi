@@ -23,6 +23,7 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
+#include "brake_pedal.h"
 #include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
@@ -57,7 +58,7 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
     run_can_rx_all();
     adc_run();
     accel_pedal_run();
-    opd_run();
+    // opd_run();
     motor_can_update_target_current_velocity();
     run_can_tx_fast();
     ws22_motor_can_transmit_drive_command();

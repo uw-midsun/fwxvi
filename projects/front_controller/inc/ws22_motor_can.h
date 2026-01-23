@@ -28,7 +28,7 @@
 
 /* CAN Message Base Addresses */
 #define WS22_CAN_BASE_CONTROL 0x500U /**< Base address for control messages */
-#define WS22_CAN_BASE_STATUS 0x400U  /**< Base address for status messages */
+#define WS22_CAN_BASE_STATUS 0x80U   /**< Base address for status messages */
 
 /* CAN Message IDs */
 #define WS22_CAN_ID_DRIVE_CMD (WS22_CAN_BASE_CONTROL + 0x01U)
@@ -46,8 +46,8 @@
  * @brief Motor control command data structure
  */
 typedef struct {
-  float current;     /**< Motor current command (0.0 to 1.0) */
-  uint32_t velocity; /**< Motor velocity command (0 to 12000 rpm) */
+  float current;    /**< Motor current command (0.0 to 1.0) */
+  int32_t velocity; /**< Motor velocity command (0 to 12000 rpm) */
 } Ws22MotorControlData;
 
 /**
@@ -117,7 +117,7 @@ StatusCode ws22_motor_can_set_current(float current);
  * @param   velocity Motor velocity command (rpm)
  * @return  STATUS_CODE_OK on success, STATUS_CODE_INVALID_ARGS if out of range
  */
-StatusCode ws22_motor_can_set_velocity(uint32_t velocity);
+StatusCode ws22_motor_can_set_velocity(int32_t velocity);
 
 /**
  * @brief   Build and transmit motor drive command

@@ -171,8 +171,8 @@ StatusCode ws22_motor_can_set_current(float current) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_set_velocity(uint32_t velocity) {
-  if (velocity > 12000U) {
+StatusCode ws22_motor_can_set_velocity(int32_t velocity) {
+  if (velocity > 12000 || velocity < -12000) {
     return STATUS_CODE_INVALID_ARGS;
   }
 

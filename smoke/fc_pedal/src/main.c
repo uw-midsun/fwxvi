@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "delay.h"
 #include "front_controller.h"
 #include "gpio.h"
@@ -50,6 +51,7 @@ TASK(run_pedal, TASK_STACK_1024) {
     adc_run();
     accel_pedal_run();
     brake_pedal_run();
+    delay_ms(1U);
   }
 }
 
@@ -57,7 +59,7 @@ TASK(display_pedal_stats, TASK_STACK_1024) {
   delay_ms(1000U);
 
   while (true) {
-    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage), front_controller_storage.brake_enabled);
+    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_enabled);
     delay_ms(100U);
   }
 }
