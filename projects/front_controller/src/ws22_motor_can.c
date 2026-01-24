@@ -29,11 +29,16 @@ static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanM
   msg->extended = false;
   msg->dlc = 8U;
 
-  /* Pack velocity (little-endian) */
-  msg->data_u8[0] = (uint8_t)(control_data->velocity & 0xFFU);
-  msg->data_u8[1] = (uint8_t)((control_data->velocity >> 8U) & 0xFFU);
-  msg->data_u8[2] = (uint8_t)((control_data->velocity >> 16U) & 0xFFU);
-  msg->data_u8[3] = (uint8_t)((control_data->velocity >> 24U) & 0xFFU);
+  /* Pack velocity as float */
+  union {
+    float f;
+    uint8_t bytes[4];
+  } velocity_union;
+  velocity_union.f = control_data->velocity;
+  msg->data_u8[0] = velocity_union.bytes[0];
+  msg->data_u8[1] = velocity_union.bytes[1];
+  msg->data_u8[2] = velocity_union.bytes[2];
+  msg->data_u8[3] = velocity_union.bytes[3];
 
   /* Pack current as float */
   union {
@@ -171,7 +176,7 @@ StatusCode ws22_motor_can_set_current(float current) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_set_velocity(int32_t velocity) {
+StatusCode ws22_motor_can_set_velocity(float velocity) {
   if (velocity > 12000 || velocity < -12000) {
     return STATUS_CODE_INVALID_ARGS;
   }
