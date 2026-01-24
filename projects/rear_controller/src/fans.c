@@ -21,7 +21,7 @@
 
 #define REAR_CONTROLLER_FAN_PERIOD_US 40000U
 
-static GpioAddress fans_address = REAR_CONTROLLER_MOTOR_FAN_PWM;
+static GpioAddress fans_address = GPIO_REAR_CONTROLLER_MOTOR_FAN_PWM;
 
 static RearControllerStorage *rear_controller_storage;
 

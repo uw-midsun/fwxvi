@@ -27,14 +27,14 @@
 #define IS_REAR_CONNECTED 0U
 #define DRIVE_STATE_MANAGER_DEBUG 1U
 
-static DriveState current_state = DRIVE_STATE_INVALID;
+static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 static RegenState current_regen_state = INVALID_REGEN_STATE;
 
 static StatusCode drive_state_manager_neutral(void) {
-  if (current_state == DRIVE_STATE_DRIVE) {
+  if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
     button_manager_led_disable(STEERING_BUTTON_DRIVE);
-  } else if (current_state == DRIVE_STATE_REVERSE) {
+  } else if (current_state == VEHICLE_DRIVE_STATE_REVERSE) {
     button_manager_led_disable(STEERING_BUTTON_REVERSE);
   }
 
@@ -45,7 +45,7 @@ static StatusCode drive_state_manager_neutral(void) {
 }
 
 static StatusCode drive_state_manager_reverse(void) {
-  if (current_state == DRIVE_STATE_DRIVE && current_request == DRIVE_STATE_REQUEST_R) {
+  if (current_state == VEHICLE_DRIVE_STATE_DRIVE && current_request == DRIVE_STATE_REQUEST_R) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state to REVERSE from DRIVE\n");
 #endif
@@ -97,7 +97,7 @@ static StatusCode drive_state_manager_reverse(void) {
 }
 
 static StatusCode drive_state_manager_drive(void) {
-  if (current_state == DRIVE_STATE_REVERSE && current_request == DRIVE_STATE_REQUEST_D) {
+  if (current_state == VEHICLE_DRIVE_STATE_REVERSE && current_request == DRIVE_STATE_REQUEST_D) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state to DRIVE from REVERSE\n");
 #endif
@@ -171,13 +171,13 @@ StatusCode drive_state_manager_update(void) {
   switch (current_request) {
     case DRIVE_STATE_REQUEST_D:
 
-      if (current_state != DRIVE_STATE_DRIVE) {
+      if (current_state != VEHICLE_DRIVE_STATE_DRIVE) {
         StatusCode ret = drive_state_manager_drive();
         if (ret == STATUS_CODE_OK) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to DRIVE\n");
 #endif
-          current_state = DRIVE_STATE_DRIVE;
+          current_state = VEHICLE_DRIVE_STATE_DRIVE;
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -186,13 +186,13 @@ StatusCode drive_state_manager_update(void) {
 
     case DRIVE_STATE_REQUEST_N:
 
-      if (current_state != DRIVE_STATE_NEUTRAL) {
+      if (current_state != VEHICLE_DRIVE_STATE_NEUTRAL) {
         StatusCode ret = drive_state_manager_neutral();
         if (ret == STATUS_CODE_OK) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to NEUTRAL\n");
 #endif
-          current_state = DRIVE_STATE_NEUTRAL;
+          current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -200,13 +200,13 @@ StatusCode drive_state_manager_update(void) {
 
     case DRIVE_STATE_REQUEST_R:
 
-      if (current_state != DRIVE_STATE_REVERSE) {
+      if (current_state != VEHICLE_DRIVE_STATE_REVERSE) {
         StatusCode ret = drive_state_manager_reverse();
         if (ret == STATUS_CODE_OK) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
           LOG_DEBUG("Drive state set to REVERSE\n");
 #endif
-          current_state = DRIVE_STATE_REVERSE;
+          current_state = VEHICLE_DRIVE_STATE_REVERSE;
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }

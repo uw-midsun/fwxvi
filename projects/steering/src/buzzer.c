@@ -60,7 +60,7 @@ static Note MELODY_REGEN_OFF[] = { { NOTE_E5, 70 }, { NOTE_D5, 50 }, { NOTE_C5, 
 
 static bool turn_sig_state = true;
 
-static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
+static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
 
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
