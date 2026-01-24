@@ -31,17 +31,38 @@ static GpioAddress s_display_ctrl = { .port = GPIO_PORT_A, .pin = 0 };
 static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 };
 static LtdcSettings settings = { 0 };
 
-StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t square_size) {
-  for (uint16_t y = 0; y < HEIGHT; y++) {
-    for (uint16_t x = 0; x < WIDTH; x++) {
-      uint16_t square_x = x / square_size;
-      uint16_t square_y = y / square_size;
-      ColorIndex color = ((square_x + square_y) % 2 == 0) ? color1 : color2;
-      status_ok_or_return(ltdc_set_pixel(x, y, color));
-    }
+
+void draw_grid(void) {
+  // 1) Border frame
+  gui_draw_line(0, 0, WIDTH - 1, 0, COLOR_INDEX_BLACK);
+  gui_draw_line(0, 0, 0, HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(0, HEIGHT - 1, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
+
+  // 2) Diagonals (easy visual correctness check)
+  gui_draw_line(0, 0, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(0, HEIGHT - 1, WIDTH - 1, 0, COLOR_INDEX_BLACK);
+
+  // 3) Grid lines
+  const uint16_t step = 8; // try 6, 8, 10, 16 depending on resolution
+
+  for (uint16_t x = 0; x < WIDTH; x += step) {
+    gui_draw_line(x, 0, x, HEIGHT - 1, COLOR_INDEX_BLACK);
   }
-  /* Apply changes */
-  return ltdc_draw();
+  for (uint16_t y = 0; y < HEIGHT; y += step) {
+    gui_draw_line(0, y, WIDTH - 1, y, COLOR_INDEX_BLACK);
+  }
+
+  // 4) A little “X” box in the center (extra sanity check)
+  uint16_t cx0 = WIDTH / 4,  cy0 = HEIGHT / 4;
+  uint16_t cx1 = (3 * WIDTH) / 4, cy1 = (3 * HEIGHT) / 4;
+
+  gui_draw_line(cx0, cy0, cx1, cy0, COLOR_INDEX_BLACK);
+  gui_draw_line(cx1, cy0, cx1, cy1, COLOR_INDEX_BLACK);
+  gui_draw_line(cx1, cy1, cx0, cy1, COLOR_INDEX_BLACK);
+  gui_draw_line(cx0, cy1, cx0, cy0, COLOR_INDEX_BLACK);
+  gui_draw_line(cx0, cy0, cx1, cy1, COLOR_INDEX_BLACK);
+  gui_draw_line(cx0, cy1, cx1, cy0, COLOR_INDEX_BLACK);
 }
 
 TASK(framebuffer_api, TASK_STACK_1024) {
@@ -133,66 +154,36 @@ TASK(framebuffer_api, TASK_STACK_1024) {
 
   while (true) {
 
-    printf("Testing framebuffer_clear to white"); 
-    status = framebuffer_clear(&framebuffer_cfg, COLOR_INDEX_WHITE); 
+    printf("testing if gui_fill_rect works");
 
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("framebuffer_clear to white failed \r\n");
+    gui_fill_rect(50, 50, 100, 100, COLOR_INDEX_BLUE );
+    delay_ms(1000);
+
+    printf("testing if gui_render works"); 
+    StatusCode status; 
+
+    if (gui_render() != STATUS_CODE_OK){
+      LOG_DEBUG("gui render failed");
     } else {
-      printf("framebuffer_clear succeeded \n");
+      printf("gui_render suceeded");
     }
 
-    printf("Testing framebuffer_get_pixels of current framebuffer\n"); 
+    printf("testing if percentage bar works"); 
 
-    uint16_t i, j; 
-
-    for (i = 0; i < WIDTH; i++) {
-      for (i = 0; i < HEIGHT; i++) {
-        status = framebuffer_get_pixel(&framebuffer_cfg,  i, j); 
-
-        if (status != STATUS_CODE_OK){
-          LOG_DEBUG("Getting frame pixel at %d, %d failed \n", i, j);
-        } else {
-          printf("Getting frame pixel at %d, %d, suceeded \n", i, j);
-        }
-      }
+    int i; 
+    for (i = 0; i < 100; i++){
+      gui_progress_bar(50, 50, 200, 30, i, COLOR_INDEX_WHITE, COLOR_INDEX_BLUE);
+      delay_ms(10); 
     }
 
-    printf("Testing framebuffer_get_pixels of current framebuffer\n"); 
+    printf("testing if gui_draw_line works"); 
+    draw_grid(); 
+    delay_ms(1000);
 
-    uint16_t i, j; 
+    printf("Testing whether gui_display_text with hello world works"); 
 
-    for (i = 0; i < WIDTH; i++) {
-      for (i = 0; i < HEIGHT; i++) {
-        status = framebuffer_get_pixel(&framebuffer_cfg,  i, j); 
-
-        if (status != STATUS_CODE_OK){
-          LOG_DEBUG("Getting frame pixel at %d, %d failed \n", i, j);
-        } else {
-          printf("Getting frame pixel at %d, %d, suceeded \n", i, j);
-        }
-      }
-    }
-
-    printf("Testing gui_render");
-    
-    status = gui_render(); 
-
-    if (status != STATUS_CODE_OK){
-          LOG_DEBUG("Gui render failed");
-        } else {
-          printf("Gui render succeeded");
-    }
-
-    printf("Testing gui_drawpixel with drawing checkboard");
-    //! draw pixel is literally an api call to ltdc_set_pixel anyways 
-
-    status = draw_checkboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
-    if (status != STATUS_CODE_OK){
-          LOG_DEBUG("drawing checkboard failed");
-        } else {
-          printf("drawing checkboard failed");
-    }
+    const char *text = "hello world";
+    gui_display_text(50, 50, &text, COLOR_INDEX_BLACK); 
 
     delay_ms(1000);
   }
