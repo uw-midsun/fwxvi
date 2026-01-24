@@ -20,7 +20,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-static GpioAddress killswitch_address = REAR_CONTROLLER_KILLSWITCH_MONITOR_GPIO;
+static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 
 static InterruptSettings killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,

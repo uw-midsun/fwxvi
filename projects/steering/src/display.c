@@ -23,7 +23,7 @@
 static SteeringStorage *steering_storage = NULL;
 
 /* Enable display when high */
-static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static LtdcSettings settings = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 
@@ -42,13 +42,13 @@ StatusCode display_init(SteeringStorage *storage) {
     .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
   };
 
-  LtdcGpioConfig gpio_config = { .clk = STEERING_DISPLAY_LTDC_CLOCK,
-                                 .hsync = STEERING_DISPLAY_LTDC_HSYNC,
-                                 .vsync = STEERING_DISPLAY_LTDC_VSYNC,
-                                 .de = STEERING_DISPLAY_LTDC_DE,
-                                 .r = STEERING_DISPLAY_LTDC_RED_PINS,
-                                 .g = STEERING_DISPLAY_LTDC_GREEN_PINS,
-                                 .b = STEERING_DISPLAY_LTDC_BLUE_PINS,
+  LtdcGpioConfig gpio_config = { .clk = GPIO_STEERING_DISPLAY_LTDC_CLOCK,
+                                 .hsync = GPIO_STEERING_DISPLAY_LTDC_HSYNC,
+                                 .vsync = GPIO_STEERING_DISPLAY_LTDC_VSYNC,
+                                 .de = GPIO_STEERING_DISPLAY_LTDC_DE,
+                                 .r = GPIO_STEERING_DISPLAY_LTDC_RED_PINS,
+                                 .g = GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS,
+                                 .b = GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS,
                                  .num_red_bits = NUMBER_OF_RED_BITS,
                                  .num_green_bits = NUMBER_OF_GREEN_BITS,
                                  .num_blue_bits = NUMBER_OF_BLUE_BITS };

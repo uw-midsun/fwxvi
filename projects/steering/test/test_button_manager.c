@@ -73,7 +73,7 @@ void teardown_test(void) {
 }
 
 void test_left_turn_button_triggers_signal(void) {
-  GpioAddress button_under_test = STEERING_LEFT_TURN_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_LEFT_TURN_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -85,7 +85,7 @@ void test_left_turn_button_triggers_signal(void) {
 }
 
 void test_right_turn_button_triggers_signal(void) {
-  GpioAddress button_under_test = STEERING_RIGHT_TURN_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_RIGHT_TURN_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -97,7 +97,7 @@ void test_right_turn_button_triggers_signal(void) {
 }
 
 void test_hazards_button_triggers_signal(void) {
-  GpioAddress button_under_test = STEERING_HAZARDS_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_HAZARDS_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -109,7 +109,7 @@ void test_hazards_button_triggers_signal(void) {
 }
 
 void test_drive_button_triggers_drive_state(void) {
-  GpioAddress button_under_test = STEERING_DRIVE_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_DRIVE_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -121,7 +121,7 @@ void test_drive_button_triggers_drive_state(void) {
 }
 
 void test_reverse_button_triggers_drive_state(void) {
-  GpioAddress button_under_test = STEERING_REVERSE_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_REVERSE_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -133,7 +133,7 @@ void test_reverse_button_triggers_drive_state(void) {
 }
 
 void test_neutral_button_triggers_drive_state(void) {
-  GpioAddress button_under_test = STEERING_NEUTRAL_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_NEUTRAL_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(DEBOUNCE_CYCLES);
@@ -145,7 +145,7 @@ void test_neutral_button_triggers_drive_state(void) {
 }
 
 void test_short_bounce_on_button_does_not_trigger(void) {
-  GpioAddress button_under_test = STEERING_DRIVE_BUTTON;
+  GpioAddress button_under_test = GPIO_STEERING_DRIVE_BUTTON;
 
   mock_gpio_states[button_under_test.pin] = GPIO_STATE_LOW;
   simulate_updates(STEERING_BUTTON_DEBOUNCE_PERIOD_MS - 2);

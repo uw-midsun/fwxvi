@@ -20,8 +20,8 @@ static SoftTimer s_signal_blink_timer;
 static LightsSignalState current_state = LIGHTS_SIGNAL_STATE_OFF;
 static LightsSignalRequest current_request = LIGHTS_SIGNAL_REQUEST_OFF;
 
-const GpioAddress left_led = STEERING_LEFT_TURN_LED;
-const GpioAddress right_led = STEERING_RIGHT_TURN_LED;
+const GpioAddress left_led = GPIO_STEERING_LEFT_TURN_LED;
+const GpioAddress right_led = GPIO_STEERING_RIGHT_TURN_LED;
 
 static void s_blink_timer_callback(SoftTimerId timer_id) {
   if (current_state == LIGHTS_SIGNAL_STATE_LEFT) {
