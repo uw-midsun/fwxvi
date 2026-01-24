@@ -157,8 +157,6 @@ StatusCode power_manager_init(FrontControllerStorage *storage) {
   /* Initialize mux out as ADC pin */
   gpio_init_pin(&MUX_OUT, GPIO_ANALOG, GPIO_STATE_LOW);
   adc_add_channel(&MUX_OUT);
-  adc_init();
-
   return STATUS_CODE_OK;
 }
 
