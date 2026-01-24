@@ -20,6 +20,7 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "software_timer.h"
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
@@ -87,6 +88,8 @@ StatusCode display_init(SteeringStorage *storage) {
     return ret;
   }
 
+  setup_brightness_pwm();
+
   return ret;
 }
 
@@ -138,4 +141,27 @@ StatusCode display_rx_medium() {
 
 StatusCode display_rx_fast() {
   return STATUS_CODE_OK;
+}
+/* control the PA1 pin to supply a current via PWM to dim/brighten the display */
+/* current should not exceed 0.4A --> therefore 100% == 0.4A, and 0% == 0A */
+/* create smoke test that dims and brightens display periodically */
+
+static GpioAddress ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS;
+#define BRIGHTNESS_TIMER GPIO_ALT1_TIM2
+#define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
+
+static void setup_brightness_pwm() {
+  /* configure GPIO pin */
+  status_ok_or_return(gpio_init_pin_af(&ltdc_pwm_pin, GPIO_ALTFN_PUSH_PULL, BRIGHTNESS_TIMER));
+
+  /* initialize PWM timer with a period */
+  /* 25kHz from datasheet, 1/25000 = 40 microseconds*/
+  pwm_init(BRIGHTNESS_TIMER, 10);
+
+  /* set initial brightnes to 50% */
+  pwm_set_dc(BRIGHTNESS_TIMER, 50, BRIGHTNESS_CHANNEL, false);
+}
+
+static void display_set_brightness(uint8_t percentage) {
+  pwm_set_dc(BRIGHTNESS_TIMER, percentage, BRIGHTNESS_CHANNEL, false);
 }
