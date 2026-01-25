@@ -149,7 +149,7 @@ static StatusCode drive_state_manager_drive(void) {
 }
 
 StatusCode drive_state_manager_init(void) {
-  current_state = DRIVE_STATE_INVALID;
+  current_state = VEHICLE_DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
   current_regen_state = REGEN_STATE_DISABLED;
 
@@ -217,7 +217,7 @@ StatusCode drive_state_manager_update(void) {
       break;
 
     default:
-      current_state = DRIVE_STATE_INVALID;
+      current_state = VEHICLE_DRIVE_STATE_INVALID;
       return STATUS_CODE_INVALID_ARGS;
       break;
   }
@@ -225,7 +225,7 @@ StatusCode drive_state_manager_update(void) {
   return STATUS_CODE_OK;
 }
 
-DriveState drive_state_manager_get_state(void) {
+VehicleDriveState drive_state_manager_get_state(void) {
   return current_state;
 }
 

@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <math.h>
 
 /* Inter-component Headers */
 #include "log.h"
@@ -16,12 +17,20 @@
 #include "button.h"
 #include "button_manager.h"
 #include "steering.h"
+#include "steering_setters.h"
+
+#define CC_DEBUG 1U
 
 static SteeringStorage *steering_storage;
 
 /* Hold state */
 static uint8_t hold_ticks = 0;
 static int8_t hold_direction = 0; /* +1 = up, -1 = down */
+
+/* CC up/down button state */
+static bool up_button_pressed;
+static bool down_button_pressed;
+static bool cruise_control_enabled_released;
 
 static uint8_t s_step_from_hold(uint8_t ticks) {
   if (ticks == 1) {
@@ -36,8 +45,8 @@ static uint8_t s_step_from_hold(uint8_t ticks) {
   } else if (ticks <= 20) {
     /* For hold time of 1s - 2s we increase speed by 5km/h */
     return 5;
-  } else if (ticks <= 40) {
-    /* For hold time of 2s - 4s we increase speed by 10km/h */
+  } else {
+    /* For hold time of 2s+ we increase speed by 10km/h */
     return 10;
   }
 }
@@ -50,6 +59,13 @@ StatusCode cruise_control_init(SteeringStorage *storage) {
   steering_storage = storage;
   hold_ticks = 0;
   hold_direction = 0;
+  up_button_pressed = false;
+  down_button_pressed = false;
+  cruise_control_enabled_released = true;
+
+  // CC target speed should be bouned between min and max speed
+  steering_storage->cruise_control_target_speed_kmh =
+      fminf(steering_storage->config->cruise_max_speed_kmh, fmaxf(steering_storage->config->cruise_min_speed_kmh, steering_storage->cruise_control_target_speed_kmh));
 
   return STATUS_CODE_OK;
 }
@@ -61,10 +77,9 @@ StatusCode cruise_control_down_handler() {
 
   if (steering_storage->cruise_control_enabled && steering_storage->cruise_control_target_speed_kmh > steering_storage->config->cruise_min_speed_kmh) {
     steering_storage->cruise_control_target_speed_kmh--;
-    return STATUS_CODE_OK;
   }
 
-  return STATUS_CODE_RESOURCE_EXHAUSTED;
+  return STATUS_CODE_OK;
 }
 
 StatusCode cruise_control_up_handler() {
@@ -74,25 +89,39 @@ StatusCode cruise_control_up_handler() {
 
   if (steering_storage->cruise_control_enabled && steering_storage->cruise_control_target_speed_kmh < steering_storage->config->cruise_max_speed_kmh) {
     steering_storage->cruise_control_target_speed_kmh++;
-    return STATUS_CODE_OK;
   }
 
-  return STATUS_CODE_RESOURCE_EXHAUSTED;
+  return STATUS_CODE_OK;
 }
 
-StatusCode cruise_control_run() {
+StatusCode cruise_control_run_medium_cycle() {
   if (steering_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  LOG_DEBUG("Cruise control target speed: %u\r\n", steering_storage->cruise_control_target_speed_kmh);
+#if (CC_DEBUG == 1)
+  if (steering_storage->cruise_control_enabled == true) {
+    LOG_DEBUG("Cruise control target speed: %u\r\n", steering_storage->cruise_control_target_speed_kmh);
+  } else {
+    LOG_DEBUG("Cruise control disabled\r\n");
+  }
+#endif
 
   ButtonState up = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state;
   ButtonState down = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state;
 
   /* Enable / Disable */
-  if (up == BUTTON_PRESSED && down == BUTTON_PRESSED) {
+
+  if (!cruise_control_enabled_released && !up && !down) {
+    cruise_control_enabled_released = true;
+    return STATUS_CODE_OK;
+  } else if (cruise_control_enabled_released && up && down) {
+    cruise_control_enabled_released = false;
     steering_storage->cruise_control_enabled = !steering_storage->cruise_control_enabled;
+
+    // CAN TX
+    set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
+
     hold_ticks = 0;
     hold_direction = 0;
     LOG_DEBUG("Cruise control %s\r\n", steering_storage->cruise_control_enabled ? "enabled" : "disabled");
@@ -130,6 +159,9 @@ StatusCode cruise_control_run() {
       cruise_control_down_handler();
     }
   }
+
+  // CAN TX
+  set_steering_target_velocity_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
 
   return STATUS_CODE_OK;
 }
