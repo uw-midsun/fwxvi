@@ -21,6 +21,8 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
+#define IS_OPD_ENABLED 0U
+
 #define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET_MV 50.0f
 #define MAX_CELL_VOLTAGE 4200.0f
 
@@ -58,8 +60,10 @@ static bool pts_compare_handler(float p, float s, PtsRelationType relation_type)
   return false;
 }
 
-// Linearly reduce regenerative braking when it's within a certain delta of the max cell voltage
-void opd_limit_regen_when_charged(float *calculated_reading) {
+/**
+ * Linearly reduce regenerative braking when it's within a certain delta of the max cell voltage
+ */
+static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
   if (!front_controller_storage->brake_enabled) return;
 
   float cell_voltage = get_battery_stats_B_min_cell_voltage();
@@ -71,6 +75,7 @@ void opd_limit_regen_when_charged(float *calculated_reading) {
   }
 
   *calculated_reading *= scaler;
+  return STATUS_CODE_OK;
 }
 
 StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading) {
@@ -129,6 +134,10 @@ StatusCode opd_run() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
+#if (IS_OPD_ENABLED != 1U)
+  return STATUS_CODE_OK;
+#else
+
   float accel_percentage = accel_pedal_storage->accel_percentage;
 
   float calculated_reading = 0;
@@ -137,11 +146,13 @@ StatusCode opd_run() {
   if (ret != STATUS_CODE_OK) {
     return ret;
   }
+
   opd_limit_regen_when_charged(&calculated_reading);
 
   front_controller_storage->accel_percentage = calculated_reading;
 
   return STATUS_CODE_OK;
+#endif
 }
 
 StatusCode opd_init(FrontControllerStorage *storage) {
