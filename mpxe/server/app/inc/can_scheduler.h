@@ -36,7 +36,7 @@
  */
 
 #define NUM_FAST_CYCLE_MESSAGES 1U    /**< Number of fast cycle messages */
-#define NUM_MEDIUM_CYCLE_MESSAGES 14U /**< Number of medium cycle messages */
+#define NUM_MEDIUM_CYCLE_MESSAGES 15U /**< Number of medium cycle messages */
 #define NUM_SLOW_CYCLE_MESSAGES 2U    /**< Number of slow cycle messages */
 
 /**
@@ -82,7 +82,7 @@ class CanScheduler {
   static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U; /**< Linux Broadcast Manager Id for tracking medium cycle messages */
   static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;   /**< Linux Broadcast Manager Id for tracking slow cycle messages */
 
-  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 17U; /**< Total number of messages */
+  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 18U; /**< Total number of messages */
   static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U;  /**< Max message length in bytes */
 
   static const constexpr unsigned int FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager fast_one_shot_msg to Frame index mapping */
@@ -100,7 +100,8 @@ class CanScheduler {
   static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 10U;                               /**< Broadcast Manager gyro_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 11U;                              /**< Broadcast Manager accel_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 12U;       /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_STEERING_STEERING_STATE_FRAME_INDEX = 13U;                     /**< Broadcast Manager steering_state to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX = 13U;                   /**< Broadcast Manager steering_buttons to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX = 14U;           /**< Broadcast Manager steering_target_velocity to Frame index mapping */
 
   static const constexpr unsigned int SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX = 0U;                 /**< Broadcast Manager telemetry to Frame index mapping */
   static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 1U; /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
@@ -399,30 +400,35 @@ class CanScheduler {
    */
   void update_slow_one_shot_msg_sig2(uint16_t sig2_value);
   /**
-   * @brief   Update the CAN value for steering_state target_velocity
-   * @param   target_velocity_value New value for the signal
-   */
-  void update_steering_state_target_velocity(uint32_t target_velocity_value);
-  /**
-   * @brief   Update the CAN value for steering_state drive_state
+   * @brief   Update the CAN value for steering_buttons drive_state
    * @param   drive_state_value New value for the signal
    */
-  void update_steering_state_drive_state(uint8_t drive_state_value);
+  void update_steering_buttons_drive_state(uint8_t drive_state_value);
   /**
-   * @brief   Update the CAN value for steering_state cruise_control
+   * @brief   Update the CAN value for steering_buttons cruise_control
    * @param   cruise_control_value New value for the signal
    */
-  void update_steering_state_cruise_control(uint8_t cruise_control_value);
+  void update_steering_buttons_cruise_control(uint8_t cruise_control_value);
   /**
-   * @brief   Update the CAN value for steering_state regen_braking
+   * @brief   Update the CAN value for steering_buttons regen_braking
    * @param   regen_braking_value New value for the signal
    */
-  void update_steering_state_regen_braking(uint8_t regen_braking_value);
+  void update_steering_buttons_regen_braking(uint8_t regen_braking_value);
   /**
-   * @brief   Update the CAN value for steering_state hazard_enabled
+   * @brief   Update the CAN value for steering_buttons hazard_enabled
    * @param   hazard_enabled_value New value for the signal
    */
-  void update_steering_state_hazard_enabled(uint8_t hazard_enabled_value);
+  void update_steering_buttons_hazard_enabled(uint8_t hazard_enabled_value);
+  /**
+   * @brief   Update the CAN value for steering_buttons horn_enabled
+   * @param   horn_enabled_value New value for the signal
+   */
+  void update_steering_buttons_horn_enabled(uint8_t horn_enabled_value);
+  /**
+   * @brief   Update the CAN value for steering_target_velocity target_velocity
+   * @param   target_velocity_value New value for the signal
+   */
+  void update_steering_target_velocity_target_velocity(uint32_t target_velocity_value);
 };
 
 /** @} */

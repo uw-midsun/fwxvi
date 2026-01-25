@@ -37,12 +37,6 @@ StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  // float normalized_mock_accel_percentage = (((float)mock_raw_adc_reading - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value) /
-  //                                           ((float)mock_storage.accel_pedal_storage->calibration_data.upper_value - (float)mock_storage.accel_pedal_storage->calibration_data.lower_value));
-
-  // normalized_mock_accel_percentage = fminf(fmaxf(normalized_mock_accel_percentage, 0.0f), 1.0f);
-
-  // *reading = normalized_mock_accel_percentage;
   *reading = mock_raw_adc_reading;
 
   return STATUS_CODE_OK;
@@ -50,7 +44,7 @@ StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
 
 void setup_test(void) {
   static FrontControllerConfig config = {
-    .accel_input_deadzone = 0.1f,
+    .accel_input_deadzone = 0.05f,
     .accel_input_curve_exponent = 2.0f,
     .accel_input_remap_min = 0.2f,
     .accel_low_pass_filter_alpha = 1.0f,
@@ -58,16 +52,96 @@ void setup_test(void) {
 
   mock_storage.config = &config;
 
+  accel_pedal_init(&mock_storage);
   opd_init(&mock_storage);
 
-  mock_storage.opd_storage->calibration_data.lower_value = 1000;
-  mock_storage.opd_storage->calibration_data.upper_value = 2000;
-  mock_storage.opd_storage->prev_accel_percentage = 0.0f;
-  mock_storage.opd_storage->accel_percentage = 0.0f;
+  mock_storage.accel_pedal_storage->calibration_data.lower_value = 1000;
+  mock_storage.accel_pedal_storage->calibration_data.upper_value = 2000;
+  mock_storage.accel_pedal_storage->prev_accel_percentage = 0.0f;
+  mock_storage.accel_pedal_storage->accel_percentage = 0.0f;
+  mock_storage.opd_storage->max_vehicle_speed_kph = 100;
+  mock_storage.opd_storage->max_braking_percentage = 0.75;
 }
 
 void teardown_test(void) {}
 
+TEST_IN_TASK
+void test_opd_braking(void) {
+  mock_raw_adc_reading = 1500;
+  mock_storage.vehicle_speed_kph = 50;
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.5
+   * Deadzone = 0.05 (ignored)
+   * pow(0.5, 2.0) = 0.25
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
+   *
+   * Current speed = 50 / 100 = 0.5
+   * Since 0.4 < 5, it should be braking
+   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
+void test_opd_driving(void) {
+  mock_raw_adc_reading = 1800;
+  mock_storage.vehicle_speed_kph = 70;
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.8
+   * Deadzone = 0.05 (ignored)
+   * pow(0.8, 2.0) = 0.64
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
+   *
+   * Current speed = 70 / 100 = 0.7
+   * Since 0.712 > 0.7, it should be driving
+   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
+void test_opd_deadzone(void) {
+  /* Normalized = (1040-1000)/1000 = 0.04 < deadzone 0.05 */
+  mock_raw_adc_reading = 1040;
+  mock_storage.vehicle_speed_kph = 60;
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Current speed = 70 / 100 = 0.6
+   * Since 0.0 < 0.7, it should be braking
+   * 0.75 * (1 - (1/0.6 * 0.0)) = 0.75
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.75f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
 void test_opd_visualize_curve(void) {
   char out_dir[512];
   char out_file[512];
@@ -97,27 +171,16 @@ void test_opd_visualize_curve(void) {
 
   fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");
 
-  for (uint16_t adc_val = mock_storage.opd_storage->calibration_data.lower_value; adc_val <= mock_storage.opd_storage->calibration_data.upper_value; adc_val += 10) {
+  for (uint16_t adc_val = mock_storage.accel_pedal_storage->calibration_data.lower_value; adc_val <= mock_storage.accel_pedal_storage->calibration_data.upper_value; adc_val += 10) {
     for (uint32_t speed = 0; speed <= 100; speed += 1) {
       mock_raw_adc_reading = adc_val;
-
-      float normalized_accel_percentage = (((float)adc_val - (float)mock_storage.opd_storage->calibration_data.lower_value) /
-                                           ((float)mock_storage.opd_storage->calibration_data.upper_value - (float)mock_storage.opd_storage->calibration_data.lower_value));
-
-      normalized_accel_percentage = fminf(fmaxf(normalized_accel_percentage, 0.0f), 1.0f);
-
-      float calculated_reading;
-
       mock_storage.vehicle_speed_kph = speed;
-      mock_storage.opd_storage->max_vehicle_speed_kph = 100;
-      mock_storage.opd_storage->max_braking_percentage = 0.75;
-      mock_storage.config->accel_input_curve_exponent = 2;
-
       float normalized_speed = ((float)mock_storage.vehicle_speed_kph / (float)mock_storage.opd_storage->max_vehicle_speed_kph);
 
-      opd_calculate_handler(normalized_accel_percentage, PTS_TYPE_LINEAR, &calculated_reading, CURVE_TYPE_EXPONENTIAL);
+      accel_pedal_run();
+      opd_run();
 
-      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, (double)normalized_accel_percentage, (double)calculated_reading, mock_storage.opd_storage->accel_state, (double)normalized_speed);
+      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, mock_storage.accel_pedal_storage->accel_percentage, mock_storage.accel_percentage, mock_storage.opd_storage->drive_state, (double)normalized_speed);
     }
   }
 

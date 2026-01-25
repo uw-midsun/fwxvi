@@ -4,7 +4,7 @@
  * @brief   Rear controller main source file
  *
  * @date    2025-10-08
- * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2/@copilot)
+ * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2)
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -16,10 +16,16 @@
 #include "can.h"
 #include "flash.h"
 #include "log.h"
+#include "master_tasks.h"
 #include "status.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "bps_fault.h"
+#include "current_sense.h"
+#include "killswitch.h"
+#include "power_path_manager.h"
+#include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
@@ -46,6 +52,8 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
+static GpioAddress s_rear_controller_board_led = REAR_CONTROLLER_BOARD_LED;
+
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -68,9 +76,18 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
 
-  status_ok_or_return(relays_init(rear_controller_storage));
-  status_ok_or_return(rear_controller_state_manager_init(rear_controller_storage));
+  /* Initialize rear controller systems */
+  relays_init(rear_controller_storage);
+  rear_controller_state_manager_init(rear_controller_storage);
+  killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
+  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
+  power_path_manager_init(rear_controller_storage);
+  current_sense_init(rear_controller_storage);
+  bps_fault_init(rear_controller_storage);
+
+  gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   LOG_DEBUG("Rear controller initialized\r\n");
+
   return STATUS_CODE_OK;
 }

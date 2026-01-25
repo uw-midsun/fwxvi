@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -17,26 +18,47 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "bps_fault.h"
+#include "cell_sense.h"
 #include "current_sense.h"
 #include "killswitch.h"
 #include "precharge.h"
 #include "rear_controller.h"
+#include "rear_controller_config.h"
 
-static RearControllerStorage state;
+uint32_t notification = 0;
+RearControllerStorage rear_controller_storage = { 0U };
+
+RearControllerConfig rear_controller_config = {
+  .series_count = REAR_CONTROLLER_SERIES_COUNT,
+  .parallel_count = REAR_CONTROLLER_PARALLEL_COUNT,
+  .cell_capacity_Ah = REAR_CONTROLLER_CELL_CAPACITY_AH,
+};
 
 void pre_loop_init() {
-  killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
-  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
-  current_sense_init(&state);
+  rear_controller_init(&rear_controller_storage, &rear_controller_config);
 }
 
-void run_1000hz_cycle() {}
+void run_1000hz_cycle() {
+  notify_get(&notification);
+  if (notification & (1 << REAR_CONTROLLER_KILLSWITCH_EVENT)) {
+    LOG_DEBUG("KILLSWITCH PRESSED\r\n");
+  }
+
+  run_can_rx_all();
+
+  run_can_tx_fast();
+}
 
 void run_10hz_cycle() {
-  current_sense_run();
+  log_cell_sense();
+  run_can_tx_medium();
 }
 
-void run_1hz_cycle() {}
+void run_1hz_cycle() {
+  bps_fault_commit();
+  run_can_tx_slow();
+}
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"

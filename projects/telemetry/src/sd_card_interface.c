@@ -169,12 +169,10 @@ static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdRespon
 
   sd_spi_cs_set_state(s_spi_port, GPIO_STATE_LOW);
 
-  if (s_is_initialized) {
-      if (!s_wait_for_ready()) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-      return ((SdResponse){ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF });
-    }
+  if (!s_wait_for_ready()) {
+    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
+    s_read_byte();
+    return ((SdResponse){ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF });
   }
 
   sd_spi_tx(s_spi_port, frame, SD_SEND_SIZE);

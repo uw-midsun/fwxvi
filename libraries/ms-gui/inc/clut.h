@@ -10,7 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-
+#include <stdint.h>
 /* Inter-component Headers */
 
 /* Intra-component Headers */
@@ -22,12 +22,14 @@
  */
 
 /**
- * @brief   CLUT color entry (RGB888 format)
+ * @brief   CLUT color entry (ARGB8888 format for LTDC hardware)
+ *          Memory layout must match LTDC expectation: 0x00RRGGBB
  */
 typedef struct {
-  uint8_t blue;  /**< Blue component   [7:0] */
-  uint8_t green; /**< Green component  [15:8] */
-  uint8_t red;   /**< Red component    [23:16] */
+  uint8_t blue;     /**< Blue component   [7:0]   */
+  uint8_t green;    /**< Green component  [15:8]  */
+  uint8_t red;      /**< Red component    [23:16] */
+  uint8_t reserved; /**< Reserved/Alpha   [31:24] */
 } ClutEntry;
 
 /**

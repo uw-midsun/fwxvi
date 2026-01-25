@@ -1,7 +1,9 @@
+#pragma once
+
 /************************************************************************************************
- * @file   test_rear_controller.c
+ * @file   rear_controller.h
  *
- * @brief  Test file for rear_controller
+ * @brief  Header file for rear_controller
  *
  * @date   2025-05-28
  * @author Midnight Sun Team #24 - MSXVI
@@ -9,18 +11,20 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
-#include <stdio.h>
+#include <stdint.h>
 
 /* Inter-component Headers */
-#include "test_helpers.h"
-#include "unity.h"
 
 /* Intra-component Headers */
 
-void setup_test(void) {}
+/**
+ * @defgroup Rear_Controller
+ * @brief    Rear Controller Board Firmware
+ * @{
+ */
 
-void teardown_test(void) {}
+#define REAR_CONTROLLER_SERIES_COUNT 36U
+#define REAR_CONTROLLER_PARALLEL_COUNT 9U
+#define REAR_CONTROLLER_CELL_CAPACITY_AH 4.5
 
-void test_example(void) {
-  TEST_ASSERT_TRUE(true);
-}
+/** @} */
