@@ -62,7 +62,7 @@ void setup_test(void) {
   mock_storage.accel_pedal_storage->accel_percentage = 0.0f;
   mock_storage.opd_storage->max_vehicle_speed_kph = 100;
   mock_storage.opd_storage->max_braking_percentage = 0.75;
-  // Disable regen limiter by placing voltage under 4150mV to avoid interfering with other tests
+  // Disable regen limiter by setting cell voltage under 4150mV to avoid interfering with other tests
   g_rx_struct.battery_stats_B_min_cell_voltage = 4000;
 }
 
@@ -117,6 +117,7 @@ void test_opd_regen_no_limiting(void) {
    * Current speed = 50 / 100 = 0.5
    * Since 0.4 < 5, it should be braking
    * 0.75 * (1 - (0.4 / 0.5)) = 0.15
+   * Cell voltage below 4150mV, so regen limiter shouldn't touch anything
    *
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
@@ -148,7 +149,8 @@ void test_opd_regen_partial_limiting(void) {
    * Current speed = 50 / 100 = 0.5
    * Since 0.4 < 5, it should be braking
    * 0.75 * (1 - (0.4 / 0.5)) = 0.15
-   * Since cell voltage (in mV) in range [4150, 4200], should be half of initial value
+   * Cell voltage in range [4150, 4200], so determine multplier to dampen regen
+   * (4200 - 4175) / 50 = 0.5
    * 0.15 * 0.5 = 0.075
    *
    */
@@ -160,7 +162,7 @@ void test_opd_regen_partial_limiting(void) {
 
 TEST_IN_TASK
 void test_opd_regen_full_limiting(void) {
-  // Simulate braking with cell voltage that should completely limit regen (max cell voltage)
+  // Simulate braking with cell voltage where regen should be fully limited (max cell voltage)
   mock_raw_adc_reading = 1500;
   mock_storage.vehicle_speed_kph = 50;
   g_rx_struct.battery_stats_B_min_cell_voltage = 4200;
