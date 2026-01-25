@@ -31,6 +31,9 @@ static AccelPedalStorage *accel_pedal_storage;
 
 static OpdStorage s_one_pedal_storage = { 0U };
 static bool pts_compare_handler(float p, float s, PtsRelationType relation_type);
+#if (IS_OPD_ENABLED == 1)
+static StatusCode opd_limit_regen_when_charged(float *calculated_reading);
+#endif
 
 static bool pts_compare_handler(float p, float s, PtsRelationType relation_type) {
   switch (relation_type) {
@@ -63,8 +66,11 @@ static bool pts_compare_handler(float p, float s, PtsRelationType relation_type)
 /**
  * Linearly reduce regenerative braking when it's within a certain delta of the max cell voltage
  */
+#if (IS_OPD_ENABLED == 1)
 static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
-  if (!front_controller_storage->brake_enabled) return;
+  if (!front_controller_storage->brake_enabled) {
+    return STATUS_CODE_OK;
+  }
 
   float cell_voltage = get_battery_stats_B_min_cell_voltage();
   float scaler = 1.0;
@@ -77,6 +83,7 @@ static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
   *calculated_reading *= scaler;
   return STATUS_CODE_OK;
 }
+#endif
 
 StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading) {
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
