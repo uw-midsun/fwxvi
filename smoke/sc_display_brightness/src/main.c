@@ -23,7 +23,6 @@ bool increasing_duty_cycle = true;
 uint8_t percent = 0;
 
 TASK(display_brightness, TASK_STACK_1024) {
-
   StatusCode ret = setup_brightness_pwm();
 
   if (ret == STATUS_CODE_OK) {

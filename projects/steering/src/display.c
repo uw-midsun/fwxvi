@@ -23,7 +23,6 @@
 
 
 static SteeringStorage *steering_storage = NULL;
-
 /* Enable display when high */
 static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;
 static LtdcSettings settings = { 0 };
@@ -73,7 +72,7 @@ StatusCode display_init(SteeringStorage *storage) {
 /* current should not exceed 0.4A --> therefore 100% == 0.4A, and 0% == 0A */
 /* create smoke test that dims and brightens display periodically */
 
-static GpioAddress ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS; 
+static GpioAddress ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS;
 #define BRIGHTNESS_TIMER GPIO_ALT1_TIM2
 #define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
 
@@ -83,7 +82,7 @@ StatusCode setup_brightness_pwm() {
 
   /* initialize PWM timer with a period */
   /* 25kHz from datasheet, 1/25000 = 40 microseconds*/
-  pwm_init(BRIGHTNESS_TIMER, 10); 
+  pwm_init(BRIGHTNESS_TIMER, 10);
 
   /* set initial brightnes to 50% */
   pwm_set_dc(BRIGHTNESS_TIMER, 50, BRIGHTNESS_CHANNEL, false);
