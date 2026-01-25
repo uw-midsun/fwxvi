@@ -62,6 +62,8 @@ void setup_test(void) {
   mock_storage.accel_pedal_storage->accel_percentage = 0.0f;
   mock_storage.opd_storage->max_vehicle_speed_kph = 100;
   mock_storage.opd_storage->max_braking_percentage = 0.75;
+  // Disable regen limiter by placing voltage under 4150mV to avoid interfering with other tests
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4000;
 }
 
 void teardown_test(void) {}
@@ -94,12 +96,11 @@ void test_opd_braking(void) {
 }
 
 TEST_IN_TASK
-void test_opd_regen_limit(void) {
+void test_opd_regen_no_limiting(void) {
   // Simulate braking with no regen limiting
   mock_raw_adc_reading = 1500;
   mock_storage.vehicle_speed_kph = 50;
-  // TODO: is it fine to mock the cell voltage like this?
-  g_rx_struct.battery_stats_B_min_cell_voltage = 3700;
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4100;  // Below the range of 4.15 to 4.2V
 
   StatusCode ret = accel_pedal_run();
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
@@ -122,9 +123,127 @@ void test_opd_regen_limit(void) {
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
   TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
 
-  // TODO: Add two other tests that checks the acceleration when we're braking & between 3.7 to 4.2V,
-  // and when we're braking & at 4.2V
+TEST_IN_TASK
+void test_opd_regen_partial_limiting(void) {
+  // Simulate braking with cell voltage that should require partial
+  // regen limiting (between 4.15 to 4.2V)
+  mock_raw_adc_reading = 1500;
+  mock_storage.vehicle_speed_kph = 50;
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4175;
+
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.5
+   * Deadzone = 0.05 (ignored)
+   * pow(0.5, 2.0) = 0.25
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
+   *
+   * Current speed = 50 / 100 = 0.5
+   * Since 0.4 < 5, it should be braking
+   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
+   * Since cell voltage (in mV) in range [4150, 4200], should be half of initial value
+   * 0.15 * 0.5 = 0.075
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.075f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
+void test_opd_regen_full_limiting(void) {
+  // Simulate braking with cell voltage that should completely limit regen (max cell voltage)
+  mock_raw_adc_reading = 1500;
+  mock_storage.vehicle_speed_kph = 50;
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4200;
+
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.5
+   * Deadzone = 0.05 (ignored)
+   * pow(0.5, 2.0) = 0.25
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
+   *
+   * Current speed = 50 / 100 = 0.5
+   * Since 0.4 < 5, it should be braking
+   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
+   * Since cell voltage is at max, should be 0
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+}
+
+TEST_IN_TASK
+void test_opd_regen_no_expected_limiting(void) {
+  // Simulate accelerating with cell voltage (mV) in [4150, 4200]
+  mock_raw_adc_reading = 1800;
+  mock_storage.vehicle_speed_kph = 70;
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4175;
+
+  StatusCode ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.8
+   * Deadzone = 0.05 (ignored)
+   * pow(0.8, 2.0) = 0.64
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
+   *
+   * Current speed = 70 / 100 = 0.7
+   * Since 0.712 > 0.7, it should be driving
+   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
+   * This shouldn't be touched by the regen limiter since it's driving
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
+
+  // Simulate accelerating with max cell voltage
+  g_rx_struct.battery_stats_B_min_cell_voltage = 4200;
+
+  ret = accel_pedal_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  ret = opd_run();
+  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+
+  /**
+   * Normalized = (1500-1000)/(2000-1000) = 0.8
+   * Deadzone = 0.05 (ignored)
+   * pow(0.8, 2.0) = 0.64
+   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
+   *
+   * Current speed = 70 / 100 = 0.7
+   * Since 0.712 > 0.7, it should be driving
+   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
+   * This shouldn't be touched by the regen limiter since it's driving
+   *
+   */
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
 }
 
 TEST_IN_TASK
