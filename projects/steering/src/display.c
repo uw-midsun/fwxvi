@@ -150,7 +150,7 @@ static GpioAddress ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS;
 #define BRIGHTNESS_TIMER GPIO_ALT1_TIM2
 #define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
 
-static void setup_brightness_pwm() {
+StatusCode setup_brightness_pwm() {
   /* configure GPIO pin */
   status_ok_or_return(gpio_init_pin_af(&ltdc_pwm_pin, GPIO_ALTFN_PUSH_PULL, BRIGHTNESS_TIMER));
 
@@ -160,8 +160,9 @@ static void setup_brightness_pwm() {
 
   /* set initial brightnes to 50% */
   pwm_set_dc(BRIGHTNESS_TIMER, 50, BRIGHTNESS_CHANNEL, false);
+  return STATUS_CODE_OK;
 }
 
-static void display_set_brightness(uint8_t percentage) {
+void display_set_brightness(uint8_t percentage) {
   pwm_set_dc(BRIGHTNESS_TIMER, percentage, BRIGHTNESS_CHANNEL, false);
 }

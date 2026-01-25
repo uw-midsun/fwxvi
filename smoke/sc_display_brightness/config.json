@@ -6,5 +6,11 @@
     "x86_libs": [
         "ms-mpxe"
     ],
+    "include": [
+        "projects/steering/inc"
+    ],
+    "sources": [
+        "projects/steering/src/display.o"
+    ],
     "can": false
 }
