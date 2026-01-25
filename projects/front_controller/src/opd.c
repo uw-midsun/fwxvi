@@ -109,23 +109,19 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
 }
 
 StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, CurveType curve_type) {
-  StatusCode ret;
   switch (curve_type) {
     case CURVE_TYPE_LINEAR:
-      ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+      return opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
     case CURVE_TYPE_QUADRATIC:
-      ret = opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
+      return opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
     case CURVE_TYPE_EXPONENTIAL: {
-      ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+      StatusCode ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
       *calculated_reading = powf(*calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
-    }
-    default: {
-      return STATUS_CODE_OK;
+      return ret;
     }
   }
 
-  opd_limit_regen_when_charged(calculated_reading);
-  return ret;
+  return STATUS_CODE_OK;
 }
 
 StatusCode opd_run() {
@@ -137,10 +133,11 @@ StatusCode opd_run() {
 
   float calculated_reading = 0;
 
-  StatusCode ret = opd_linear_calculate(accel_percentage, PTS_TYPE_LINEAR, &calculated_reading);
+  StatusCode ret = opd_calculate_handler(accel_percentage, PTS_TYPE_LINEAR, &calculated_reading, CURVE_TYPE_LINEAR);
   if (ret != STATUS_CODE_OK) {
     return ret;
   }
+  opd_limit_regen_when_charged(&calculated_reading);
 
   front_controller_storage->accel_percentage = calculated_reading;
 
