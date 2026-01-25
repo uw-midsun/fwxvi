@@ -24,17 +24,20 @@ static uint8_t hold_ticks = 0;
 static int8_t hold_direction = 0; /* +1 = up, -1 = down */
 
 static uint8_t s_step_from_hold(uint8_t ticks) {
-  if (ticks <= 1) {
-    /* For hold time of 0s - 1s we increase speed by 1km/h */
+  if (ticks == 1) {
+    /* For initial press, we increase speed by 1km/h */
     return 1;
-  } else if (ticks <= 2) {
-    /* For hold time of 1s - 2s we increase speed by 2km/h */
-    return 2;
-  } else if (ticks <= 4) {
-    /* For hold time of 2s - 4s we increase speed by 5km/h */
+  } else if (ticks <= 5) {
+    /* After increasing by 1, we should wait 0.5s before ramping up speed */
+    return 0;
+  } else if (ticks <= 10) {
+    /* Between 0.5 - 1.5s, we increase speed by 1km/h*/
+    return 1;
+  } else if (ticks <= 20) {
+    /* For hold time of 1s - 2s we increase speed by 5km/h */
     return 5;
-  } else {
-    /* For hold time of 4s+ we increase speed by 10km/h */
+  } else if (ticks <= 40) {
+    /* For hold time of 2s - 4s we increase speed by 10km/h */
     return 10;
   }
 }

@@ -38,11 +38,11 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   button_led_manager_update();
   drive_state_manager_update();
+  cruise_control_run();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-  cruise_control_run();
   party_mode_run();
 }
 
