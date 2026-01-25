@@ -51,5 +51,8 @@
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
 StatusCode display_init(SteeringStorage *storage);
+StatusCode setup_brightness_pwm();
+void display_set_brightness(uint8_t percentage);
+
 
 /** @} */
