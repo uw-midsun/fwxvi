@@ -21,7 +21,7 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
-#define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET 50.0f
+#define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET_MV 50.0f
 #define MAX_CELL_VOLTAGE 4200.0f
 
 static FrontControllerStorage *front_controller_storage;
@@ -66,8 +66,8 @@ void opd_limit_regen_when_charged(float *calculated_reading) {
   float scaler = 1.0;
   if (cell_voltage >= MAX_CELL_VOLTAGE) {
     scaler = 0.0;
-  } else if (cell_voltage >= MAX_CELL_VOLTAGE - REGEN_BRAKING_VOLTAGE_RAMP_OFFSET) {
-    scaler = (MAX_CELL_VOLTAGE - cell_voltage) / REGEN_BRAKING_VOLTAGE_RAMP_OFFSET;
+  } else if (cell_voltage >= MAX_CELL_VOLTAGE - REGEN_BRAKING_VOLTAGE_RAMP_OFFSET_MV) {
+    scaler = (MAX_CELL_VOLTAGE - cell_voltage) / REGEN_BRAKING_VOLTAGE_RAMP_OFFSET_MV;
   }
 
   *calculated_reading *= scaler;
