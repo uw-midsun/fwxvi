@@ -21,8 +21,7 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
-// TODO: Should this be 500mV or 50mV? Since the provided example in the ticket is 4.15 to 4.2
-#define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET 500.0f
+#define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET 50.0f
 #define MAX_CELL_VOLTAGE 4200.0f
 
 static FrontControllerStorage *front_controller_storage;
@@ -88,7 +87,6 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
     float m = 1 / current_speed;
     *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
   }
-  opd_limit_regen_when_charged(calculated_reading);
 
   return STATUS_CODE_OK;
 }
@@ -106,26 +104,28 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
     m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
   }
   *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
-  opd_limit_regen_when_charged(calculated_reading);
 
   return STATUS_CODE_OK;
 }
 
 StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, CurveType curve_type) {
+  StatusCode ret;
   switch (curve_type) {
     case CURVE_TYPE_LINEAR:
-      return opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
+      ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
     case CURVE_TYPE_QUADRATIC:
-      return opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
+      ret = opd_quadratic_calculate(pedal_percentage, relation_type, calculated_reading);
     case CURVE_TYPE_EXPONENTIAL: {
-      StatusCode ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
-      // TODO: Is it fine if we scale the reading linearly for regen braking before we apply powf?
+      ret = opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
       *calculated_reading = powf(*calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
-      return ret;
+    }
+    default: {
+      return STATUS_CODE_OK;
     }
   }
 
-  return STATUS_CODE_OK;
+  opd_limit_regen_when_charged(calculated_reading);
+  return ret;
 }
 
 StatusCode opd_run() {
