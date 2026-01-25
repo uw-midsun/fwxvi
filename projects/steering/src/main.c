@@ -38,7 +38,7 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   button_led_manager_update();
   drive_state_manager_update();
-  cruise_control_run();
+  cruise_control_run_medium_cycle();
   run_can_tx_medium();
 }
 
