@@ -30,6 +30,7 @@ static DisplayData *display_data = NULL;
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
+static GpioAddress s_ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS; /* Current control for brightness ctrl */
 static LtdcSettings settings = { 0 };
 static Framebuffer framebuffer_cfg = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
@@ -44,6 +45,23 @@ static StatusCode status;
 #define NUMBER_OF_RED_BITS 8
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
+
+#define BRIGHTNESS_TIMER GPIO_ALT1_TIM2
+#define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
+
+/** @brief Initialize PWM */
+static StatusCode s_current_pwm_init() {
+  /* configure GPIO pin */
+  status_ok_or_return(gpio_init_pin_af(&s_ltdc_pwm_pin, GPIO_ALTFN_PUSH_PULL, BRIGHTNESS_TIMER));
+
+  /* initialize PWM timer with a period */
+  /* 25kHz from datasheet, 1/25000 = 40 microseconds*/
+  pwm_init(BRIGHTNESS_TIMER, 10);
+
+  /* set initial brightnes to 50% */
+  pwm_set_dc(BRIGHTNESS_TIMER, 50, BRIGHTNESS_CHANNEL, false);
+  return STATUS_CODE_OK;
+}
 
 StatusCode display_init(SteeringStorage *storage) {
   StatusCode ret = STATUS_CODE_OK;
@@ -69,13 +87,13 @@ StatusCode display_init(SteeringStorage *storage) {
                                  .num_red_bits = NUMBER_OF_RED_BITS,
                                  .num_green_bits = NUMBER_OF_GREEN_BITS,
                                  .num_blue_bits = NUMBER_OF_BLUE_BITS };
-  settings.width = DISPLAY_WIDTH;
-  settings.height = DISPLAY_HEIGHT;
-  settings.framebuffer = framebuffer;
-  settings.clut = clut_get_table();
-  settings.clut_size = NUM_COLOR_INDICES;
-  settings.timing = timing_config;
-  settings.gpio_config = gpio_config;
+  s_settings.width = DISPLAY_WIDTH;
+  s_settings.height = DISPLAY_HEIGHT;
+  s_settings.framebuffer = s_framebuffer;
+  s_settings.clut = clut_get_table();
+  s_settings.clut_size = NUM_COLOR_INDICES;
+  s_settings.timing = timing_config;
+  s_settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
@@ -89,6 +107,7 @@ StatusCode display_init(SteeringStorage *storage) {
   }
 
   setup_brightness_pwm();
+  s_current_pwm_init();
 
   return ret;
 }
@@ -163,5 +182,5 @@ static void setup_brightness_pwm() {
 }
 
 static void display_set_brightness(uint8_t percentage) {
-  pwm_set_dc(BRIGHTNESS_TIMER, percentage, BRIGHTNESS_CHANNEL, false);
+  return pwm_set_dc(BRIGHTNESS_TIMER, percentage, BRIGHTNESS_CHANNEL, false);
 }
