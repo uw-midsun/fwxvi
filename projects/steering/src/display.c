@@ -32,13 +32,14 @@ static GpioAddress s_ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS; /* Current cont
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
-#define BRIGHTNESS_TIMER GPIO_ALT1_TIM2
+#define BRIGHTNESS_TIMER PWM_TIMER_2
 #define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
+#define BRIGHTNESS_GPIO_ALTFN GPIO_ALT1_TIM2
 
 /** @brief Initialize PWM */
 static StatusCode s_current_pwm_init() {
   /* configure GPIO pin */
-  status_ok_or_return(gpio_init_pin_af(&s_ltdc_pwm_pin, GPIO_ALTFN_PUSH_PULL, BRIGHTNESS_TIMER));
+  status_ok_or_return(gpio_init_pin_af(&s_ltdc_pwm_pin, BRIGHTNESS_GPIO_ALTFN, BRIGHTNESS_TIMER));
 
   /* initialize PWM timer with a period */
   /* 25kHz from datasheet, 1/25000 = 40 microseconds*/
