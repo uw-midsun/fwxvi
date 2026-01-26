@@ -34,7 +34,7 @@ static char font8x8[128][8] = {
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+0007 */
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+0008 */
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+0009 */
- 
+
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+000A */
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+000B */
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* U+000C */
@@ -160,7 +160,7 @@ StatusCode gui_init(GuiSettings *settings) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  StatusCode ret; 
+  StatusCode ret;
 
   ret = framebuffer_init(&settings->framebuffer, settings->ltdc.width, settings->ltdc.height, settings->ltdc.framebuffer);
   if (ret != STATUS_CODE_OK) {
@@ -195,7 +195,7 @@ StatusCode gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height
       status_ok_or_return(ltdc_set_pixel(x + i, y + j, color_index));
     }
   }
-  return STATUS_CODE_OK; 
+  return STATUS_CODE_OK;
 }
 
 StatusCode gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ColorIndex color_index) {
@@ -226,8 +226,8 @@ StatusCode gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, Col
       y0 += sy;
     }
   }
-  
-  return STATUS_CODE_OK; 
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode gui_render() {

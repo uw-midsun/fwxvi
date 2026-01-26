@@ -72,12 +72,7 @@ static void draw_grid(void) {
 }
 
 TASK(framebuffer_api, TASK_STACK_1024) {
-  const LtdcTimingConfig timing_config = { .hsync = 4,
-                                          .vsync = 4,
-                                          .hbp = 43,
-                                          .vbp = 12,
-                                          .hfp = 8,
-                                          .vfp = 8 };
+  const LtdcTimingConfig timing_config = { .hsync = 4, .vsync = 4, .hbp = 43, .vbp = 12, .hfp = 8, .vfp = 8 };
 
   const LtdcGpioConfig gpio_config = {
     .clk = { .port = GPIO_PORT_A, .pin = 4 },
