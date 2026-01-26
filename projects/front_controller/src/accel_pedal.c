@@ -26,7 +26,9 @@ static GpioAddress s_accel_pedal_gpio = FRONT_CONTROLLER_ACCEL_PEDAL;
 
 static FrontControllerStorage *front_controller_storage;
 
-static AccelPedalStorage s_accel_pedal_storage = { 0U };
+static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.lower_value = 0, .calibration_data.upper_value = 4096 };
+
+#define DEBUG_ACCEL_PEDAL 0U
 
 StatusCode accel_pedal_run() {
   if (front_controller_storage == NULL) {
@@ -60,6 +62,9 @@ StatusCode accel_pedal_run() {
                                            (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
   s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
 
+#if (DEBUG_ACCEL_PEDAL == 1)
+  LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
+#endif
   return STATUS_CODE_OK;
 }
 
