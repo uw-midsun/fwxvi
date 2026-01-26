@@ -102,6 +102,10 @@
  * Display LTDC Config
  ************************************************************************************************/
 
+/** @brief PWM pin for LTDC */
+#define STEERING_DISPLAY_BRIGHTNESS \
+  { .port = GPIO_PORT_A, .pin = 1 }
+
 /** @brief  LTDC pixel clock pin */
 #define STEERING_DISPLAY_LTDC_CLOCK \
   { .port = GPIO_PORT_A, .pin = 4 }

@@ -18,18 +18,37 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "software_timer.h"
 #include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage = NULL;
+static LtdcSettings s_settings = { 0 };
+static uint8_t s_framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32))) = { 0 };
 
-/* Enable display when high */
-static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;
-static LtdcSettings settings = { 0 };
-static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;       /* Enable display when high */
+static GpioAddress s_ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS; /* Current control for brightness ctrl */
 
 #define NUMBER_OF_RED_BITS 8
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
+
+#define BRIGHTNESS_TIMER PWM_TIMER_2
+#define BRIGHTNESS_CHANNEL PWM_CHANNEL_2
+#define BRIGHTNESS_GPIO_ALTFN GPIO_ALT1_TIM2
+
+/** @brief Initialize PWM */
+static StatusCode s_current_pwm_init() {
+  /* configure GPIO pin */
+  status_ok_or_return(gpio_init_pin_af(&s_ltdc_pwm_pin, BRIGHTNESS_GPIO_ALTFN, BRIGHTNESS_TIMER));
+
+  /* initialize PWM timer with a period */
+  /* 25kHz from datasheet, 1/25000 = 40 microseconds*/
+  pwm_init(BRIGHTNESS_TIMER, 10);
+
+  /* set initial brightnes to 50% */
+  pwm_set_dc(BRIGHTNESS_TIMER, 50, BRIGHTNESS_CHANNEL, false);
+  return STATUS_CODE_OK;
+}
 
 StatusCode display_init(SteeringStorage *storage) {
   if (storage == NULL) {
@@ -52,15 +71,21 @@ StatusCode display_init(SteeringStorage *storage) {
                                  .num_red_bits = NUMBER_OF_RED_BITS,
                                  .num_green_bits = NUMBER_OF_GREEN_BITS,
                                  .num_blue_bits = NUMBER_OF_BLUE_BITS };
-  settings.width = DISPLAY_WIDTH;
-  settings.height = DISPLAY_HEIGHT;
-  settings.framebuffer = framebuffer;
-  settings.clut = clut_get_table();
-  settings.clut_size = NUM_COLOR_INDICES;
-  settings.timing = timing_config;
-  settings.gpio_config = gpio_config;
+  s_settings.width = DISPLAY_WIDTH;
+  s_settings.height = DISPLAY_HEIGHT;
+  s_settings.framebuffer = s_framebuffer;
+  s_settings.clut = clut_get_table();
+  s_settings.clut_size = NUM_COLOR_INDICES;
+  s_settings.timing = timing_config;
+  s_settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  return ltdc_init(&settings);
+  s_current_pwm_init();
+
+  return ltdc_init(&s_settings);
+}
+
+StatusCode display_set_brightness(uint8_t percentage) {
+  return pwm_set_dc(BRIGHTNESS_TIMER, percentage, BRIGHTNESS_CHANNEL, false);
 }
