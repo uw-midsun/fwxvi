@@ -31,37 +31,37 @@
 #define DISPLAY_HEIGHT 1 /**< Height of the display */
 #endif
 
-static uint8_t framebuffer[WIDTH * HEIGHT] __attribute__((aligned(32)));
+static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 static GpioAddress s_display_ctrl = { .port = GPIO_PORT_A, .pin = 0 };
 static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 };
 static LtdcSettings settings = { 0 };
 
 static void draw_grid(void) {
   // 1) Border frame
-  gui_draw_line(0, 0, WIDTH - 1, 0, COLOR_INDEX_BLACK);
-  gui_draw_line(0, 0, 0, HEIGHT - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(0, HEIGHT - 1, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(0, 0, DISPLAY_WIDTH - 1, 0, COLOR_INDEX_BLACK);
+  gui_draw_line(0, 0, 0, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(DISPLAY_WIDTH - 1, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
 
   // 2) Diagonals (easy visual correctness check)
-  gui_draw_line(0, 0, WIDTH - 1, HEIGHT - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(0, HEIGHT - 1, WIDTH - 1, 0, COLOR_INDEX_BLACK);
+  gui_draw_line(0, 0, DISPLAY_WIDTH - 1, DISPLAY_WIDTH - 1, COLOR_INDEX_BLACK);
+  gui_draw_line(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH - 1, 0, COLOR_INDEX_BLACK);
 
   // 3) Grid lines
   const uint16_t step = 8;  // try 6, 8, 10, 16 depending on resolution
 
-  for (uint16_t x = 0; x < WIDTH; x += step) {
-    gui_draw_line(x, 0, x, HEIGHT - 1, COLOR_INDEX_BLACK);
+  for (uint16_t x = 0; x < DISPLAY_WIDTH; x += step) {
+    gui_draw_line(x, 0, x, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
   }
-  for (uint16_t y = 0; y < HEIGHT; y += step) {
-    gui_draw_line(0, y, WIDTH - 1, y, COLOR_INDEX_BLACK);
+  for (uint16_t y = 0; y < DISPLAY_HEIGHT; y += step) {
+    gui_draw_line(0, y, DISPLAY_WIDTH - 1, y, COLOR_INDEX_BLACK);
   }
 
   // 4) A little “X” box in the center (extra sanity check)
-  const uint16_t cx0 = WIDTH / 4;
-  const uint16_t cy0 = HEIGHT / 4;
-  const uint16_t cx1 = (3 * WIDTH) / 4;
-  const uint16_t cy1 = (3 * HEIGHT) / 4;
+  const uint16_t cx0 = DISPLAY_WIDTH / 4;
+  const uint16_t cy0 = DISPLAY_HEIGHT / 4;
+  const uint16_t cx1 = (3 * DISPLAY_WIDTH) / 4;
+  const uint16_t cy1 = (3 * DISPLAY_HEIGHT) / 4;
 
   gui_draw_line(cx0, cy0, cx1, cy0, COLOR_INDEX_BLACK);
   gui_draw_line(cx1, cy0, cx1, cy1, COLOR_INDEX_BLACK);
@@ -114,8 +114,8 @@ TASK(framebuffer_api, TASK_STACK_1024) {
     .num_blue_bits = 8,
   };
 
-  settings.width = WIDTH;
-  settings.height = HEIGHT;
+  settings.width = DISPLAY_WIDTH;
+  settings.height = DISPLAY_HEIGHT;
   settings.framebuffer = framebuffer;
   settings.clut = clut_get_table();
   settings.clut_size = NUM_COLOR_INDICES;
@@ -135,7 +135,7 @@ TASK(framebuffer_api, TASK_STACK_1024) {
   }
 
   Framebuffer framebuffer_cfg = { 0 };
-  status = framebuffer_init(&framebuffer_cfg, WIDTH, HEIGHT, framebuffer);
+  status = framebuffer_init(&framebuffer_cfg, DISPLAY_WIDTH, DISPLAY_HEIGHT, framebuffer);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("framebuffer initialized\r\n");
   } else {
