@@ -45,41 +45,17 @@ def pack(num, size):
 
 can_data_cache = CanSimulatorDataCache()
 
-system_can_message_can_communication_fast_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig2"), 16)))
+system_can_message_telemetry_telemetry = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY_ID,
+data = bytearray(pack(can_data_cache.get("telemetry_telemetry", "telemetry_data"), 64)))
 
-messages_fast.append(system_can_message_can_communication_fast_one_shot_msg)
-
-system_can_message_can_communication_medium_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig2"), 16)))
-
-messages_medium.append(system_can_message_can_communication_medium_one_shot_msg)
-
-system_can_message_can_communication_slow_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig2"), 16)))
-
-messages_slow.append(system_can_message_can_communication_slow_one_shot_msg)
+messages_slow.append(system_can_message_telemetry_telemetry)
 
 system_can_message_front_controller_front_controller_pedal_data = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_ID,
 data = bytearray(pack(can_data_cache.get("front_controller_front_controller_pedal_data", "percentage"), 32) + pack(can_data_cache.get("front_controller_front_controller_pedal_data", "brake_enabled"), 8)))
 
 messages_medium.append(system_can_message_front_controller_front_controller_pedal_data)
-
-system_can_message_imu_gyro_data = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA_ID,
-data = bytearray(pack(can_data_cache.get("imu_gyro_data", "x_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "y_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "z_axis"), 16)))
-
-messages_medium.append(system_can_message_imu_gyro_data)
-
-system_can_message_imu_accel_data = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_ACCEL_DATA_ID,
-data = bytearray(pack(can_data_cache.get("imu_accel_data", "x_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "y_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "z_axis"), 16)))
-
-messages_medium.append(system_can_message_imu_accel_data)
 
 system_can_message_rear_controller_rear_controller_status = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_ID,
@@ -135,17 +111,47 @@ data = bytearray(pack(can_data_cache.get("rear_controller_afe_temperature", "id"
 
 messages_medium.append(system_can_message_rear_controller_afe_temperature)
 
-system_can_message_steering_steering_state = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_STEERING_STATE_ID,
-data = bytearray(pack(can_data_cache.get("steering_steering_state", "target_velocity"), 32) + pack(can_data_cache.get("steering_steering_state", "drive_state"), 8) + pack(can_data_cache.get("steering_steering_state", "cruise_control"), 8) + pack(can_data_cache.get("steering_steering_state", "regen_braking"), 8) + pack(can_data_cache.get("steering_steering_state", "hazard_enabled"), 8)))
+system_can_message_imu_gyro_data = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA_ID,
+data = bytearray(pack(can_data_cache.get("imu_gyro_data", "x_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "y_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "z_axis"), 16)))
 
-messages_medium.append(system_can_message_steering_steering_state)
+messages_medium.append(system_can_message_imu_gyro_data)
 
-system_can_message_telemetry_telemetry = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY_ID,
-data = bytearray(pack(can_data_cache.get("telemetry_telemetry", "telemetry_data"), 64)))
+system_can_message_imu_accel_data = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_ACCEL_DATA_ID,
+data = bytearray(pack(can_data_cache.get("imu_accel_data", "x_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "y_axis"), 16) + pack(can_data_cache.get("imu_accel_data", "z_axis"), 16)))
 
-messages_slow.append(system_can_message_telemetry_telemetry)
+messages_medium.append(system_can_message_imu_accel_data)
+
+system_can_message_can_communication_fast_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig2"), 16)))
+
+messages_fast.append(system_can_message_can_communication_fast_one_shot_msg)
+
+system_can_message_can_communication_medium_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig2"), 16)))
+
+messages_medium.append(system_can_message_can_communication_medium_one_shot_msg)
+
+system_can_message_can_communication_slow_one_shot_msg = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID,
+data = bytearray(pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig2"), 16)))
+
+messages_slow.append(system_can_message_can_communication_slow_one_shot_msg)
+
+system_can_message_steering_steering_buttons = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS_ID,
+data = bytearray(pack(can_data_cache.get("steering_steering_buttons", "drive_state"), 8) + pack(can_data_cache.get("steering_steering_buttons", "cruise_control"), 8) + pack(can_data_cache.get("steering_steering_buttons", "regen_braking"), 8) + pack(can_data_cache.get("steering_steering_buttons", "hazard_enabled"), 8) + pack(can_data_cache.get("steering_steering_buttons", "horn_enabled"), 8)))
+
+messages_medium.append(system_can_message_steering_steering_buttons)
+
+system_can_message_steering_steering_target_velocity = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY_ID,
+data = bytearray(pack(can_data_cache.get("steering_steering_target_velocity", "target_velocity"), 32)))
+
+messages_medium.append(system_can_message_steering_steering_target_velocity)
 def periodic_sender(bus, messages, period, stop_event):
     # Send messages with small delays between each one to avoid buffer overflow
     while not stop_event.is_set():

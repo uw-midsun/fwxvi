@@ -286,6 +286,67 @@ static void cruise_control_down_btn_rising_edge_cb(Button *button) {
 }
 
 /************************************************************************************************
+ * Regen button handlers
+ ************************************************************************************************/
+
+static void regen_btn_falling_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+#endif
+  drive_state_manager_toggle_regen();
+}
+
+static void regen_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Regen Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control up button handlers
+ ************************************************************************************************/
+
+static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  cruise_control_up_handler();
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_up_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC up Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
+ * Cruise control down button handlers
+ ************************************************************************************************/
+
+static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+  if (party_mode_active() == false) {
+    buzzer_play_success();
+  }
+
+  cruise_control_down_handler();
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+#endif
+}
+
+static void cruise_control_down_btn_rising_edge_cb(Button *button) {
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
+#endif
+}
+
+/************************************************************************************************
  * Button configs
  ************************************************************************************************/
 

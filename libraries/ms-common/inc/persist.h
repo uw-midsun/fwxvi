@@ -29,12 +29,11 @@
 #define PERSIST_COMMIT_TIMEOUT_MS 1000
 
 typedef struct {
-  void *blob;
-  size_t blob_size;
-  uintptr_t flash_addr;
-  uintptr_t prev_flash_addr;
-  uint32_t prev_hash;
-  uint8_t page;
+  void *blob;                /**< Pointer to the RAM buffer/struct being persisted */
+  size_t blob_size;          /**< Size of the buffer/struct being persisted*/
+  uintptr_t flash_addr;      /**< Current write pointer within a reserved page */
+  uintptr_t prev_flash_addr; /**< Address of the most recent valid record (for invalidation) */
+  uint8_t page;              /**< Page index reserved for this blob */
 } PersistStorage;
 
 /**

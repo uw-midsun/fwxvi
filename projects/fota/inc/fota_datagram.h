@@ -45,16 +45,20 @@ typedef enum FotaDatagramType {
 } FotaDatagramType;
 
 /**
- * Datagram Header Payload Format (10 bytes total):
+ * Datagram Header Payload Format (20 bytes total):
  *
  *  +-------------------+----------------+---------------------------------------------------------------+
  *  | Field             | Size (bytes)   | Description                                                  |
  *  +-------------------+----------------+---------------------------------------------------------------+
- *  | total_length      | 4              | Total length of datagram                                     |
- *  | num_packets       | 2              | Number of data packets                                       |
- *  | node ID           | 2              | Target node ID (0 = RF Board, 1,2... = CAN Bootloader board) |
- *  | datagram_crc32    | 4              | CRC32 of datagram data                                       |
+ *  | target_node_id    | 1              | Target node ID (0 = RF Board, 1,2... = CAN Bootloader board) |
+ *  | type              | 1              | Type of datagram (enum FotaDatagramType)                     |
+ *  | num_packets       | 2              | Number of data packets in this datagram (excluding header)   |
+ *  | datagram_id       | 4              | Unique identifier for this datagram                          |
+ *  | total_length      | 4              | Total length of the datagram data                            |
+ *  | datagram_crc32    | 4              | CRC32 of the entire datagram data                            |
+ *  | packet_crc32      | 4              | CRC32 of this header packet payload                          |
  *  +-------------------+----------------+---------------------------------------------------------------+
+ *
  *
  * All fields are encoded in little-endian format.
  */

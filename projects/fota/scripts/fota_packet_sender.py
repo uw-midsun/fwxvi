@@ -34,7 +34,7 @@ class FotaPacketSender():
         """
         return FotaPacket(packet_type, datagram_id, sequence_num, payload)
 
-    def send(self, fota_packet: FotaPacket) -> None:
+    def send(self, fota_packet: FotaPacket) -> bool:
         """
         @brief Transmit FotaPacket to XBee
         """
@@ -44,12 +44,15 @@ class FotaPacketSender():
             self.ser.flush()  # Ensure immediate transmission
 
             print(f"Sent FOTA packet: {fota_packet}")
+            return True
 
         except serial.SerialException as error:
             print(f"Serial error during transmission: {error}")
+            return False
 
         except Exception as error:
             print(f"Unexpected error during transmission: {error}")
+            return False
 
     def close(self) -> None:
         """
