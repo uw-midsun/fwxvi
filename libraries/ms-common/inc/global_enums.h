@@ -52,6 +52,12 @@ typedef enum {
   VEHICLE_POWER_STATE_FAULT   /**< Faulted: relays open, latched until reset */
 } VehiclePowerStates;
 
+/**
+ * @brief   Signal and BPS light blink period in milliseconds
+ */
+#define GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS 400U
+#define GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS 200U
+
 /************************************************************************************************
  * Rear Controller Global Definitions
  ************************************************************************************************/
