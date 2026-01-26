@@ -38,7 +38,7 @@ static void s_blink_timer_callback(SoftTimerId timer_id) {
 void lights_signal_manager_init(void) {
   current_state = LIGHTS_SIGNAL_STATE_OFF;
   current_request = LIGHTS_SIGNAL_REQUEST_OFF;
-  software_timer_init(LIGHT_SIGNAL_BLINK_PERIOD_MS, s_blink_timer_callback, &s_signal_blink_timer);
+  software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_timer_callback, &s_signal_blink_timer);
 }
 
 void lights_signal_manager_request(LightsSignalRequest req) {

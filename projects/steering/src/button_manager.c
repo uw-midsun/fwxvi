@@ -30,8 +30,6 @@
 #include "steering_hw_defs.h"
 #include "steering_setters.h"
 
-#define FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS 400U
-
 static SteeringStorage *steering_storage;
 
 static ButtonManager s_button_manager = { 0U };
@@ -412,7 +410,7 @@ StatusCode button_manager_init(SteeringStorage *storage) {
     status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
   }
 
-  status_ok_or_return(software_timer_init(FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
 
   return STATUS_CODE_OK;
 }

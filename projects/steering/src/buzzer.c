@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "delay.h"
+#include "global_enums.h"
 #include "gpio.h"
 #include "log.h"
 #include "pwm.h"
@@ -27,7 +28,6 @@
 #define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
 #define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
-#define BUZZER_SIGNAL_DURATION_MS 400U
 
 /* Upbeat ascending startup jingle */
 static Note MELODY_STARTUP[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 120 }, { NOTE_C6, 150 }, { NOTE_E6, 250 }, { NOTE_REST, 0 } };
@@ -143,7 +143,7 @@ StatusCode buzzer_init(void) {
   status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
   status_ok_or_return(pwm_init(BUZZER_TIMER, s_freq_to_period_us(NOTE_A4)));
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
-  status_ok_or_return(software_timer_init(BUZZER_SIGNAL_DURATION_MS, s_blink_signal_timer_callback, &s_signal_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_signal_timer));
 
   return STATUS_CODE_OK;
 }
