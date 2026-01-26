@@ -14,9 +14,9 @@
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
+#include "pwm.h"
 #include "status.h"
 #include "tasks.h"
-#include "pwm.h"
 
 /* Intra-component Headers */
 

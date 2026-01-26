@@ -95,7 +95,7 @@
 #define GPIO_STEERING_BACKLIGHT STEERING_GPIO_DEF(A, 1)
 
 /** @brief PWM pin for LTDC */
-# define STEERING_DISPLAY_BRIGHTNESS \
+#define STEERING_DISPLAY_BRIGHTNESS \
   { .port = GPIO_PORT_A, .pin = 1 }
 
 /** @brief  LTDC pixel clock pin */
