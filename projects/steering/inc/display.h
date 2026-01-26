@@ -54,7 +54,7 @@ StatusCode display_init(SteeringStorage *storage);
 
 /**
  * @brief   Set the display backlight brightness
- * @details This function sets the duty cycle of the PWM signal driving the AP3032 backlight driver's PWM/CTRL pin. 
+ * @details This function sets the duty cycle of the PWM signal driving the AP3032 backlight driver's PWM/CTRL pin.
  *          The duty cycle modulates the average current, and therefore the perceived brightness of the display backlight.
  *          This function does not change the peak current, only its duty cycle.
  * @param   percentage  Brightness level as a percentage (0–100)
