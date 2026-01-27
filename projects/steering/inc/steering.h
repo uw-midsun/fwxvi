@@ -93,7 +93,6 @@ typedef struct {
 
   uint32_t pack_voltage; /**< Pack voltage reading (mV) */
   int32_t pack_current;  /**< Pack current reading (mA) */
-
 } DisplayData;
 
 /**
