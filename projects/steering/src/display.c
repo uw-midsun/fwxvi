@@ -22,6 +22,7 @@
 #include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage = NULL;
+static DisplayData *display_data = NULL;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -38,6 +39,7 @@ StatusCode display_init(SteeringStorage *storage) {
   }
 
   steering_storage = storage;
+  display_data = steering_storage->display_data;
 
   LtdcTimingConfig timing_config = {
     .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
@@ -66,15 +68,34 @@ StatusCode display_init(SteeringStorage *storage) {
   return ltdc_init(&settings);
 }
 
-StatusCode display_rx_slow() {}
-
-StatusCode display_rx_medium() {
-  steering_storage->display_data->brake_enabled = get_pedal_data_brake_enabled();
-  steering_storage->display_data->regen_enabled = get_pedal_data_regen_enabled();
-  steering_storage->display_data->pedal_percentage = get_pedal_data_percentage();
-
-  steering_storage->display_data->motor_heatsink_temp = get_motor_temperature_heat_sink_temp();
-  steering_storage->display_data->motor_temp = get_motor_temperature_motor_temp();
+StatusCode display_rx_slow() {
+  return STATUS_CODE_OK;
 }
 
-StatusCode display_rx_fast() {}
+StatusCode display_rx_medium() {
+  display_data->brake_enabled = get_pedal_data_brake_enabled();
+  display_data->regen_enabled = get_pedal_data_regen_enabled();
+  display_data->pedal_percentage = get_pedal_data_percentage();
+  display_data->drive_state = get_pedal_data_drive_state();
+
+  display_data->bps_fault = get_rear_controller_status_bps_fault();
+
+  display_data->motor_heatsink_temp = get_motor_temperature_heat_sink_temp();
+  display_data->motor_temp = get_motor_temperature_motor_temp();
+
+  display_data->vehicle_velocity = get_motor_velocity_vehicle_velocity();
+  display_data->motor_velocity = get_motor_velocity_vehicle_velocity();
+
+  display_data->aux_voltage = get_power_input_stats_input_aux_voltage();
+  display_data->aux_current = get_power_input_stats_input_aux_current();
+
+  display_data->pack_voltage = get_battery_stats_A_pack_voltage();
+  display_data->pack_current = get_battery_stats_A_pack_current();
+  display_data->state_of_charge = get_battery_stats_A_pack_soc();
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_rx_fast() {
+  return STATUS_CODE_OK;
+}

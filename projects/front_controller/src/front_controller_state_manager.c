@@ -169,7 +169,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   if (is_brake_enabled == true && (front_controller_storage->brake_enabled == false) && (front_controller_storage->regen_enabled == false)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
     is_brake_enabled = false;
-  } else if (is_brake_enabled == false && (front_controller_storage->brake_enabled == true) || (front_controller_storage->regen_enabled == true)) {
+  } else if (is_brake_enabled == false && ((front_controller_storage->brake_enabled == true) || (front_controller_storage->regen_enabled == true))) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
     is_brake_enabled = true;
   }
