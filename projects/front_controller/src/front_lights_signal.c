@@ -120,8 +120,8 @@ StatusCode front_lights_signal_set_bps_light(BpsLightState new_state) {
 }
 
 StatusCode front_lights_signal_init(void) {
-  status_ok_or_return(software_timer_init(FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_blink_signal_timer));
-  status_ok_or_return(software_timer_init(FRONT_BPS_LIGHTS_BLINK_PERIOD_MS, s_blink_bps_timer_callback, &s_blink_bps_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_blink_signal_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS, s_blink_bps_timer_callback, &s_blink_bps_timer));
 
   current_steering_light_state = STEERING_LIGHTS_OFF_STATE;
 

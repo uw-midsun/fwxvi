@@ -27,14 +27,14 @@
 
 static RearControllerStorage *rear_controller_storage = NULL;
 
-static GpioAddress pcs_vsense_gpio = REAR_CONTROLLER_PCS_VSENSE;
-static GpioAddress pcs_isense_gpio = REAR_CONTROLLER_PCS_ISENSE;
-static GpioAddress aux_vsense_gpio = REAR_CONTROLLER_AUX_VSENSE;
-static GpioAddress aux_isense_gpio = REAR_CONTROLLER_AUX_ISENSE;
-static GpioAddress pcs_valid1 = REAR_CONTROLLER_PCS_VALID1;
-static GpioAddress pcs_valid2 = REAR_CONTROLLER_PCS_VALID2;
-static GpioAddress aux_valid1 = REAR_CONTROLLER_AUX_VALID1;
-static GpioAddress aux_valid2 = REAR_CONTROLLER_AUX_VALID2;
+static GpioAddress pcs_vsense_gpio = GPIO_REAR_CONTROLLER_PCS_VSENSE;
+static GpioAddress pcs_isense_gpio = GPIO_REAR_CONTROLLER_PCS_ISENSE;
+static GpioAddress aux_vsense_gpio = GPIO_REAR_CONTROLLER_AUX_VSENSE;
+static GpioAddress aux_isense_gpio = GPIO_REAR_CONTROLLER_AUX_ISENSE;
+static GpioAddress pcs_valid1 = GPIO_REAR_CONTROLLER_PCS_VALID1;
+static GpioAddress pcs_valid2 = GPIO_REAR_CONTROLLER_PCS_VALID2;
+static GpioAddress aux_valid1 = GPIO_REAR_CONTROLLER_AUX_VALID1;
+static GpioAddress aux_valid2 = GPIO_REAR_CONTROLLER_AUX_VALID2;
 
 /* V sense */
 static StatusCode s_power_path_voltage_sense(GpioAddress *voltage_address, uint32_t *vin_mV) {

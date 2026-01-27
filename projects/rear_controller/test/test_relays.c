@@ -22,14 +22,14 @@
 
 static RearControllerStorage s_test_rear_storage;
 
-static GpioAddress pos_relay_en = REAR_CONTROLLER_POS_RELAY_ENABLE_GPIO;
-static GpioAddress pos_relay_sense = REAR_CONTROLLER_POS_RELAY_SENSE_GPIO;
-static GpioAddress neg_relay_en = REAR_CONTROLLER_NEG_RELAY_ENABLE_GPIO;
-static GpioAddress neg_relay_sense = REAR_CONTROLLER_NEG_RELAY_SENSE_GPIO;
-static GpioAddress solar_relay_en = REAR_CONTROLLER_SOLAR_RELAY_ENABLE_GPIO;
-static GpioAddress solar_relay_sense = REAR_CONTROLLER_SOLAR_RELAY_SENSE_GPIO;
-static GpioAddress motor_relay_en = REAR_CONTROLLER_MOTOR_RELAY_ENABLE_GPIO;
-static GpioAddress motor_relay_sense = REAR_CONTROLLER_MOTOR_RELAY_SENSE_GPIO;
+static GpioAddress pos_relay_en = GPIO_REAR_CONTROLLER_POS_RELAY_ENABLE;
+static GpioAddress pos_relay_sense = GPIO_REAR_CONTROLLER_POS_RELAY_SENSE;
+static GpioAddress neg_relay_en = GPIO_REAR_CONTROLLER_NEG_RELAY_ENABLE;
+static GpioAddress neg_relay_sense = GPIO_REAR_CONTROLLER_NEG_RELAY_SENSE;
+static GpioAddress solar_relay_en = GPIO_REAR_CONTROLLER_SOLAR_RELAY_ENABLE;
+static GpioAddress solar_relay_sense = GPIO_REAR_CONTROLLER_SOLAR_RELAY_SENSE;
+static GpioAddress motor_relay_en = GPIO_REAR_CONTROLLER_MOTOR_RELAY_ENABLE;
+static GpioAddress motor_relay_sense = GPIO_REAR_CONTROLLER_MOTOR_RELAY_SENSE;
 
 void setup_test(void) {
   gpio_init();
