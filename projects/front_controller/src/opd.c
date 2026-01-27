@@ -19,6 +19,7 @@
 #include "accel_pedal.h"
 #include "front_controller_getters.h"
 #include "front_controller_hw_defs.h"
+#include "front_controller_setters.h"
 #include "opd.h"
 
 #define IS_OPD_ENABLED 0U
@@ -68,7 +69,7 @@ static bool pts_compare_handler(float p, float s, PtsRelationType relation_type)
  */
 #if (IS_OPD_ENABLED == 1)
 static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
-  if (!front_controller_storage->brake_enabled) {
+  if (!front_controller_storage->regen_enabled) {
     return STATUS_CODE_OK;
   }
 
@@ -89,13 +90,11 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
-    front_controller_storage->brake_enabled = false;
-    s_one_pedal_storage.drive_state = STATE_DRIVING;
+    front_controller_storage->regen_enabled = false;
     float m = 1 / (1 - current_speed);
     *calculated_reading = (0.25 * m * (pedal_percentage - 1)) + 1;
   } else {
-    front_controller_storage->brake_enabled = true;
-    s_one_pedal_storage.drive_state = STATE_BRAKING;
+    front_controller_storage->regen_enabled = true;
     float m = 1 / current_speed;
     *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
   }
@@ -107,12 +106,10 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
   float m;
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
-    front_controller_storage->brake_enabled = false;
-    s_one_pedal_storage.drive_state = STATE_DRIVING;
+    front_controller_storage->regen_enabled = false;
     m = 1 / ((1 - current_speed) * (1 - current_speed));
   } else {
-    front_controller_storage->brake_enabled = true;
-    s_one_pedal_storage.drive_state = STATE_BRAKING;
+    front_controller_storage->regen_enabled = true;
     m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
   }
   *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
@@ -141,10 +138,11 @@ StatusCode opd_run() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-#if (IS_OPD_ENABLED != 1U)
-  return STATUS_CODE_OK;
-#else
+  if (front_controller_storage->brake_enabled) {
+    return STATUS_CODE_OK;
+  }
 
+#if (IS_OPD_ENABLED == 1U)
   float accel_percentage = accel_pedal_storage->accel_percentage;
 
   float calculated_reading = 0;
@@ -157,9 +155,10 @@ StatusCode opd_run() {
   opd_limit_regen_when_charged(&calculated_reading);
 
   front_controller_storage->accel_percentage = calculated_reading;
-
-  return STATUS_CODE_OK;
 #endif
+  set_pedal_data_percentage(front_controller_storage->accel_percentage);
+  set_pedal_data_regen_enabled(front_controller_storage->regen_enabled);
+  return STATUS_CODE_OK;
 }
 
 StatusCode opd_init(FrontControllerStorage *storage) {

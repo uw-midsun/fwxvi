@@ -68,6 +68,18 @@ typedef struct {
 } SteeringConfig;
 
 /**
+ * @brief   Data for the display, CAN RX or internal
+ */
+typedef struct {
+  float pedal_percentage;
+  bool brake_enabled;
+  bool regen_enabled;
+
+  float motor_heatsink_temp;
+  float motor_temp;
+} DisplayData;
+
+/**
  * @brief   Steering storage
  */
 typedef struct {
@@ -81,7 +93,9 @@ typedef struct {
 
   struct ButtonManager *button_manager;        /**< Button manager */
   struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
-  SteeringConfig *config;                      /**< Pointer to the steering configuration data */
+  DisplayData *display_data;                   /**< Pointer to data for the display */
+
+  SteeringConfig *config; /**< Pointer to the steering configuration data */
 } SteeringStorage;
 
 /**

@@ -18,6 +18,7 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "steering_getters.h"
 #include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage = NULL;
@@ -64,3 +65,16 @@ StatusCode display_init(SteeringStorage *storage) {
 
   return ltdc_init(&settings);
 }
+
+StatusCode display_rx_slow() {}
+
+StatusCode display_rx_medium() {
+  steering_storage->display_data->brake_enabled = get_pedal_data_brake_enabled();
+  steering_storage->display_data->regen_enabled = get_pedal_data_regen_enabled();
+  steering_storage->display_data->pedal_percentage = get_pedal_data_percentage();
+
+  steering_storage->display_data->motor_heatsink_temp = get_motor_temperature_heat_sink_temp();
+  steering_storage->display_data->motor_temp = get_motor_temperature_motor_temp();
+}
+
+StatusCode display_rx_fast() {}
