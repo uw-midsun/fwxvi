@@ -70,7 +70,8 @@ typedef struct {
  * @brief   Front Controller storage
  */
 typedef struct {
-  bool brake_enabled; /**< Horn enabled (set by horn button callback) */
+  bool brake_enabled; /**< Brake enabled */
+  bool regen_enabled; /**< Regen enabled */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 

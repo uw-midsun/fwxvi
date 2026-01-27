@@ -33,17 +33,20 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   button_manager_update();
+  display_rx_fast();
 }
 
 void run_10hz_cycle() {
   button_led_manager_update();
   drive_state_manager_update();
   cruise_control_run_medium_cycle();
+  display_rx_medium();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
   party_mode_run();
+  display_rx_slow();
 }
 
 #ifdef MS_PLATFORM_X86

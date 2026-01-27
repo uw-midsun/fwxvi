@@ -14,6 +14,7 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "front_controller_setters.h"
 #include "ws22_motor_can.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;
@@ -88,6 +89,8 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   /* Read vehicle velocity is in units of m/s */
   front_controller_storage->vehicle_speed_kph = telemetry->motor_velocity * 3.6f;
 
+  //   telemetry->motor_velocity
+  // front_controller_storage->vehicle_speed_kph
   return STATUS_CODE_OK;
 }
 
