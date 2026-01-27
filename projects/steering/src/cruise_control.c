@@ -11,12 +11,14 @@
 #include <math.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 #include "log.h"
 
 /* Intra-component Headers */
 #include "button.h"
 #include "button_manager.h"
 #include "steering.h"
+#include "steering_getters.h"
 #include "steering_setters.h"
 
 #define CC_DEBUG 1U
@@ -117,6 +119,23 @@ StatusCode cruise_control_run_medium_cycle() {
     return STATUS_CODE_OK;
   } else if (cruise_control_enabled_released && up && down) {
     cruise_control_enabled_released = false;
+
+    // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
+    VehicleDriveState drive_state_from_front = get_pedal_data_drive_state();
+
+    if (drive_state_from_front != VEHICLE_DRIVE_STATE_DRIVE) {
+      return STATUS_CODE_INVALID_ARGS;
+    }
+
+    // Cruise control should start from our current speed
+    uint16_t current_speed_kmh_from_front = (uint16_t)get_motor_velocity_vehicle_velocity();
+
+    if (current_speed_kmh_from_front > steering_storage->config->cruise_min_speed_kmh && current_speed_kmh_from_front < steering_storage->config->cruise_max_speed_kmh) {
+      steering_storage->cruise_control_target_speed_kmh = current_speed_kmh_from_front;
+    } else {
+      return STATUS_CODE_INVALID_ARGS;
+    }
+
     steering_storage->cruise_control_enabled = !steering_storage->cruise_control_enabled;
 
     // CAN TX
@@ -125,6 +144,7 @@ StatusCode cruise_control_run_medium_cycle() {
     hold_ticks = 0;
     hold_direction = 0;
     LOG_DEBUG("Cruise control %s\r\n", steering_storage->cruise_control_enabled ? "enabled" : "disabled");
+
     return STATUS_CODE_OK;
   }
 
