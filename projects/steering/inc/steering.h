@@ -73,10 +73,9 @@ typedef struct {
  */
 typedef struct {
   float pedal_percentage;
+  VehicleDriveState drive_state;
   bool brake_enabled;
   bool regen_enabled;
-
-  VehicleDriveState drive_state;
 
   uint16_t bps_fault;
 
@@ -86,13 +85,12 @@ typedef struct {
   float vehicle_velocity;
   float motor_velocity;
 
-  float state_of_charge;
-
   uint32_t aux_voltage; /**< Auxiliary bus voltage (mV) */
   int32_t aux_current;  /**< Auxiliary bus current (mA) */
 
   uint32_t pack_voltage; /**< Pack voltage reading (mV) */
   int32_t pack_current;  /**< Pack current reading (mA) */
+  float state_of_charge;
 } DisplayData;
 
 /**
