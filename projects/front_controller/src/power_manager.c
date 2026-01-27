@@ -190,8 +190,7 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
     }
 
     // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
-
-    delay_ms(10);
+    // delay_ms(10);
   }
 
   power_manager_set_telemetry();

@@ -75,8 +75,8 @@ typedef struct {
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
-  float accel_percentage;              /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
-  VehicleDriveState currentDriveState; /**< Current drive state of vehicle, determined by motor_can.c */
+  float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 
   struct PowerManagerStorage *power_manager_storage;  /**< Power manager storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */

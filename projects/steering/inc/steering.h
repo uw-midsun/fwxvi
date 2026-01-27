@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 
 /* Intra-component Headers */
 #include "status.h"
@@ -75,8 +76,24 @@ typedef struct {
   bool brake_enabled;
   bool regen_enabled;
 
+  VehicleDriveState drive_state;
+
+  uint16_t bps_fault;
+
   float motor_heatsink_temp;
   float motor_temp;
+
+  float vehicle_velocity;
+  float motor_velocity;
+
+  float state_of_charge;
+
+  uint32_t aux_voltage; /**< Auxiliary bus voltage (mV) */
+  int32_t aux_current;  /**< Auxiliary bus current (mA) */
+
+  uint32_t pack_voltage; /**< Pack voltage reading (mV) */
+  int32_t pack_current;  /**< Pack current reading (mA) */
+
 } DisplayData;
 
 /**
@@ -84,7 +101,6 @@ typedef struct {
  */
 typedef struct {
   bool horn_enabled;           /**< Horn enabled (set by horn button callback)*/
-  bool regen_enabled;          /**< Regen enabled (set by regen button callback)*/
   bool cruise_control_enabled; /**< Cruise control enabled (set by cruise control button callback)*/
 
   uint16_t cruise_control_target_speed_kmh; /**< Cruise control target speed in kilometers per hour */
