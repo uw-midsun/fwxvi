@@ -20,7 +20,7 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_setters.h"
 
-static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
+static GpioAddress precharge_address = GPIO_REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
 static uint32_t notification;
 

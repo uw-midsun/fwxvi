@@ -99,18 +99,18 @@ StatusCode motor_can_update_target_current_velocity() {
       LOG_DEBUG("DRIVE, Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
 #endif
       ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
-      ws22_motor_can_set_velocity((-1) * WS22_CONTROLLER_MAX_VELOCITY);
+      ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_REVERSE:
 #if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("REVERSE Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
 #endif
       ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
-      ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
+      ws22_motor_can_set_velocity((-1) * WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("CRUISE, CC velocity: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
+      LOG_DEBUG("CRUISE, CC RPM: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
 #endif
       ws22_motor_can_set_current(1.0f);
       ws22_motor_can_set_velocity(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);

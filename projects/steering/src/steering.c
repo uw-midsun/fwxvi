@@ -45,8 +45,8 @@ static CanStorage s_can_storage = { 0 };
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_STEERING,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = STEERING_CAN_TX,
-  .rx = STEERING_CAN_RX,
+  .tx = GPIO_STEERING_CAN_TX,
+  .rx = GPIO_STEERING_CAN_RX,
   .loopback = false,
   .can_rx_all_cb = NULL,
 };
