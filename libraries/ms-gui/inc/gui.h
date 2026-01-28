@@ -49,8 +49,9 @@ StatusCode gui_init(GuiSettings *settings);
  * @param   x X coordinate
  * @param   y Y coordinate
  * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
  */
-void gui_draw_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
+StatusCode gui_draw_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
 
 /**
  * @brief   Draw a filled rectangle
@@ -59,8 +60,9 @@ void gui_draw_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
  * @param   width Width in pixels
  * @param   height Height in pixels
  * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
  */
-void gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ColorIndex color_index);
+StatusCode gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ColorIndex color_index);
 
 /**
  * @brief   Draw a line
@@ -69,18 +71,47 @@ void gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Colo
  * @param   x1 X coordinate end location
  * @param   y1 Y coordinate end location
  * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
  */
-void gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ColorIndex color_index);
+StatusCode gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ColorIndex color_index);
 
 /**
- * @brief   Update display with current framebuffer
+ * @brief   Render image (Refresh framebuffer)
+ * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_render(void);
+StatusCode gui_render();
 
-void gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t percentage, ColorIndex color_index_bg, ColorIndex color_index_fg);
+/**
+ * @brief   Draw a progress bar
+ * @param   x X coordinate of the top left corner of the progress bar
+ * @param   y Y coordinate of the top left corner of the progress bar
+ * @param   width Width in pixels
+ * @param   height Height in pixels
+ * @param   percentage Fill percentage (0-100)
+ * @param   color_index_bg CLUT color index for background
+ * @param   color_index_fg CLUT color index for foreground
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t percentage, ColorIndex color_index_bg, ColorIndex color_index_fg);
 
-void gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_index);
+/**
+ * @brief   Display a single character at (x, y)
+ * @param   x X coordinate
+ * @param   y Y coordinate
+ * @param   c Character to display
+ * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_index);
 
-void gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex color_index);
+/**
+ * @brief   Display a text string at (x, y)
+ * @param   x X coordinate
+ * @param   y Y coordinate
+ * @param   text Pointer to null-terminated string to display
+ * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex color_index);
 
 /** @} */
