@@ -256,7 +256,7 @@ StatusCode gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_ind
     uint8_t bits = font8x8[(uint8_t)c][row];
     for (uint8_t col = 0; col < 8; ++col) {
       if (bits & 1 << (7 - col)) {
-        status_ok_or_return(gui_draw_pixel(x + col, y + row, color_index));
+        status_ok_or_return(gui_draw_pixel(x + (7 - col), y + row, color_index));
       }
     }
   }

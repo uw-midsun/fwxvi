@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for framebuffer_api
+ * @brief  Smoke test for the gui library (Draws a blue box, a progress bar and writes all text) 
  *
  * @date   2026-01-22
  * @author Midnight Sun Team #24 - MSXVI
@@ -38,40 +38,23 @@ static LtdcSettings settings = { 0 };
 
 static void draw_grid(void) {
   // 1) Border frame
-  gui_draw_line(0, 0, DISPLAY_WIDTH - 1, 0, COLOR_INDEX_BLACK);
-  gui_draw_line(0, 0, 0, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(DISPLAY_WIDTH - 1, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
-
-  // 2) Diagonals (easy visual correctness check)
-  gui_draw_line(0, 0, DISPLAY_WIDTH - 1, DISPLAY_WIDTH - 1, COLOR_INDEX_BLACK);
-  gui_draw_line(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH - 1, 0, COLOR_INDEX_BLACK);
+  gui_draw_line(0, 0, DISPLAY_WIDTH - 1, 0, COLOR_INDEX_WHITE);
+  gui_draw_line(0, 0, 0, DISPLAY_HEIGHT - 1, COLOR_INDEX_WHITE);
+  gui_draw_line(DISPLAY_WIDTH - 1, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_WHITE);
+  gui_draw_line(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, COLOR_INDEX_WHITE);
 
   // 3) Grid lines
   const uint16_t step = 8;  // try 6, 8, 10, 16 depending on resolution
 
   for (uint16_t x = 0; x < DISPLAY_WIDTH; x += step) {
-    gui_draw_line(x, 0, x, DISPLAY_HEIGHT - 1, COLOR_INDEX_BLACK);
+    gui_draw_line(x, 0, x, DISPLAY_HEIGHT - 1, COLOR_INDEX_WHITE);
   }
   for (uint16_t y = 0; y < DISPLAY_HEIGHT; y += step) {
-    gui_draw_line(0, y, DISPLAY_WIDTH - 1, y, COLOR_INDEX_BLACK);
+    gui_draw_line(0, y, DISPLAY_WIDTH - 1, y, COLOR_INDEX_WHITE);
   }
-
-  // 4) A little “X” box in the center (extra sanity check)
-  const uint16_t cx0 = DISPLAY_WIDTH / 4;
-  const uint16_t cy0 = DISPLAY_HEIGHT / 4;
-  const uint16_t cx1 = (3 * DISPLAY_WIDTH) / 4;
-  const uint16_t cy1 = (3 * DISPLAY_HEIGHT) / 4;
-
-  gui_draw_line(cx0, cy0, cx1, cy0, COLOR_INDEX_BLACK);
-  gui_draw_line(cx1, cy0, cx1, cy1, COLOR_INDEX_BLACK);
-  gui_draw_line(cx1, cy1, cx0, cy1, COLOR_INDEX_BLACK);
-  gui_draw_line(cx0, cy1, cx0, cy0, COLOR_INDEX_BLACK);
-  gui_draw_line(cx0, cy0, cx1, cy1, COLOR_INDEX_BLACK);
-  gui_draw_line(cx0, cy1, cx1, cy0, COLOR_INDEX_BLACK);
 }
 
-TASK(framebuffer_api, TASK_STACK_1024) {
+TASK(sc_gui_api, TASK_STACK_1024) {
   const LtdcTimingConfig timing_config = { .hsync = 4, .vsync = 4, .hbp = 43, .vbp = 12, .hfp = 8, .vfp = 8 };
 
   const LtdcGpioConfig gpio_config = {
@@ -155,10 +138,33 @@ TASK(framebuffer_api, TASK_STACK_1024) {
   }
 
   while (true) {
-    LOG_DEBUG("testing if gui_fill_rect works\r\n");
-    status = gui_fill_rect(50, 50, 100, 100, COLOR_INDEX_BLUE);
+    LOG_DEBUG("testing if gui_draw_line works\r\n");
+    draw_grid();
+    status = gui_render();
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+    }
+    delay_ms(3000);
+
+    /* Clear grid lines */
+    LOG_DEBUG("Clearing grid lines\r\n");
+    status = gui_fill_rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, COLOR_INDEX_BLACK);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("gui_fill_rect failed: %d\r\n", status);
+      delay_ms(10);
+    }
+
+    status = gui_render();
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+    }
+    delay_ms(1000);
+
+    LOG_DEBUG("testing if gui_fill_rect works\r\n");
+    status = gui_fill_rect(50, 150, 100, 100, COLOR_INDEX_BLUE);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui_fill_rect failed: %d\r\n", status);
+      delay_ms(10);
     }
     delay_ms(1000);
 
@@ -166,13 +172,15 @@ TASK(framebuffer_api, TASK_STACK_1024) {
     status = gui_render();
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("gui_render failed: %d\r\n", status);
+      delay_ms(10);
     } else {
       LOG_DEBUG("gui_render succeeded\r\n");
+      delay_ms(10);
     }
 
     LOG_DEBUG("testing if percentage bar works\r\n");
     for (uint16_t i = 0; i <= 100; i++) {
-      status = gui_progress_bar(50, 50, 200, 30, i, COLOR_INDEX_WHITE, COLOR_INDEX_BLUE);
+      status = gui_progress_bar(50, 50, 200, 30, i, COLOR_INDEX_WHITE, COLOR_INDEX_GREEN);
       if (status != STATUS_CODE_OK) {
         LOG_DEBUG("gui_progress_bar failed: %d\r\n", status);
         break;
@@ -180,23 +188,29 @@ TASK(framebuffer_api, TASK_STACK_1024) {
       delay_ms(10);
     }
 
-    LOG_DEBUG("testing if gui_draw_line works\r\n");
-    draw_grid();
-    status = gui_render();
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
-    }
-    delay_ms(1000);
-
     LOG_DEBUG("Testing whether gui_display_text with hello world works\r\n");
-    status = gui_display_text(50, 50, "hello world", COLOR_INDEX_BLACK);
+    status = gui_display_text(250, 250, "abcdefghijklmnopqrstuvwxyz", COLOR_INDEX_RED);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("gui_display_text failed: %d\r\n", status);
+      delay_ms(10);
+    }
+
+    status = gui_display_text(250, 200, "ABCDEFGHIJKLMNOPQRSTUVWXTZ", COLOR_INDEX_RED);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
+      delay_ms(10);
+    }
+
+    status = gui_display_text(250, 150, "1234567890!@#$^&*()", COLOR_INDEX_RED);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
+      delay_ms(10);
     }
 
     status = gui_render();
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("gui_render after gui_display_text failed: %d\r\n", status);
+      delay_ms(10);
     }
 
     delay_ms(1000);
@@ -214,7 +228,7 @@ int main(void) {
   tasks_init();
   log_init();
 
-  tasks_init_task(framebuffer_api, TASK_PRIORITY(3), NULL);
+  tasks_init_task(sc_gui_api, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
