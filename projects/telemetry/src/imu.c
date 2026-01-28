@@ -16,19 +16,17 @@
 #include "datagram.h"
 #include "imu.h"
 #include "log.h"  // For LOG_ERROR
-#include "task.h"
-#include "uart.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
-void imu_task(void *pvParameters) {
-  Bmi323Storage *storage = (Bmi323Storage *)pvParameters;
+TASK(imu_task, TASK_STACK_1024) {
+  Bmi323Storage *storage = (Bmi323Storage *)context;
 
-  TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(100);
 
   while (1) {
-    vTaskDelayUntil(&xLastWakeTime, xPeriod);
+    vTaskDelay(xPeriod);
 
     StatusCode status = bmi323_update(storage);
     if (status != STATUS_CODE_OK) {
@@ -36,7 +34,7 @@ void imu_task(void *pvParameters) {
       continue;
     }
 
-    // Create buffer and send over UART
+    // Create buffer and log IMU values
     uint8_t buffer[26];
     buffer[0] = DATAGRAM_START_FRAME;
     memcpy(&buffer[1], &storage->gyro.x, sizeof(float));
@@ -47,7 +45,7 @@ void imu_task(void *pvParameters) {
     memcpy(&buffer[21], &storage->accel.z, sizeof(float));
     buffer[25] = DATAGRAM_END_FRAME;
 
-    uart_tx(UART_PORT_1, buffer, sizeof(buffer));
+    LOG_DEBUG("IMU gx=%.3f gy=%.3f gz=%.3f ax=%.3f ay=%.3f az=%.3f\n", storage->gyro.x, storage->gyro.y, storage->gyro.z, storage->accel.x, storage->accel.y, storage->accel.z);
   }
 }
 
@@ -59,13 +57,7 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
     return status;
   }
 
-#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-  xTaskCreate(imu_task, "imu", 1024, storage, 1, NULL);
-#else
-  static StaticTask_t imu_task_buffer;
-  static StackType_t imu_stack[1024];
-  xTaskCreateStatic(imu_task, "imu", 1024, storage, 1, imu_stack, &imu_task_buffer);
-#endif
+  tasks_init_task(imu_task, TASK_PRIORITY(1), storage);
 
   return STATUS_CODE_OK;
 }
