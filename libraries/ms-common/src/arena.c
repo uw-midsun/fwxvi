@@ -8,7 +8,6 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdlib.h>
 #include <string.h>
 
 /* Inter-component Headers */
@@ -16,46 +15,45 @@
 /* Intra-component Headers */
 #include "arena.h"
 
-void arena_init(arena *a, void *buffer, ptrdiff_t cap) {
+StatusCode arena_init(Arena *a, void *buffer, ptrdiff_t cap) {
+  if (a == NULL || buffer == NULL || cap <= 0) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   a->base = (uint8_t *)buffer;
-  if (cap <= 0) {
-    abort();
-  }
-  if (a->base != NULL) {
-    a->end = a->base + cap;
-  } else {
-    a->end = NULL;
+  a->end = a->base + cap;
+  a->current = a->end;
+  return STATUS_CODE_OK;
+}
+
+StatusCode arena_reset(Arena *a) {
+  if (a == NULL || a->base == NULL || a->end == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
   a->current = a->end;
+  return STATUS_CODE_OK;
 }
 
-// note: if arena is dynamically allocated, the caller must free(buffer) before calling arena_free
-void arena_free(arena *a) {
-  a->base = NULL;
-  a->end = NULL;
-  a->current = NULL;
-}
-
-void arena_reset(arena *a) {
-  a->current = a->end;
-}
-
-void *arena_alloc(arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
-  if (!a || !a->base || !a->end || !a->current) {
-    abort();
+StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count, void **out) {
+  if (out == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  *out = NULL;
+  if (a == NULL || a->base == NULL || a->end == NULL || a->current == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
   if (size <= 0 || count < 0 || align <= 0) {
-    abort();
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   // align must be a power of two
-  if (!((align & (align - 1)) == 0)) {
-    abort();
+  if ((align & (align - 1)) != 0) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   // overflow check
   if (count != 0 && size > PTRDIFF_MAX / count) {
-    abort();
+    return STATUS_CODE_OUT_OF_RANGE;
   }
 
   ptrdiff_t total = size * count;
@@ -67,8 +65,9 @@ void *arena_alloc(arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
 
   uint8_t *start_ptr = (uint8_t *)start;
   if (start_ptr < a->base) {
-    abort();
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
   a->current = start_ptr;
-  return memset(start_ptr, 0, (size_t)total);
+  *out = memset(start_ptr, 0, (size_t)total);
+  return STATUS_CODE_OK;
 }
