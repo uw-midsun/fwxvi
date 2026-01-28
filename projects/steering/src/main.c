@@ -25,14 +25,16 @@
 #include "drive_state_manager.h"
 #include "party_mode.h"
 #include "steering.h"
+#include "steering_getters.h"
 
-SteeringStorage steering_storage;
+SteeringStorage steering_storage = { 0 };
 
 SteeringConfig steering_config = { .cruise_max_speed_kmh = STEERING_CRUISE_MAX_SPEED_KMH, .cruise_min_speed_kmh = STEERING_CRUISE_MIN_SPEED_KMH };
 
 void pre_loop_init() {}
 
 void run_1000hz_cycle() {
+  run_can_rx_all();
   button_manager_update();
   display_rx_fast();
 }
@@ -43,6 +45,9 @@ void run_10hz_cycle() {
   cruise_control_run_medium_cycle();
   display_rx_medium();
   run_can_tx_medium();
+
+  // printf("PEDAL PERCENTAGE: %u DRIVE_STATE: %d | MOTOR_VEL: %d | MOTOR TEMP %d\r\n", steering_storage.display_data.pedal_percentage, steering_storage.display_data.drive_state ,
+  // steering_storage.display_data.motor_velocity, steering_storage.display_data.motor_temp);
 }
 
 void run_1hz_cycle() {
