@@ -35,13 +35,13 @@ TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   } else {
     LOG_DEBUG("Power path manager cannot be initialized\r\n");
   }
-  
+
   while (true) {
     StatusCode status = power_path_manager_run();
     if (status == STATUS_CODE_OK) {
       LOG_DEBUG("Power path manager running\r\n");
     } else {
-      LOG_DEBUG("Power path manager failing to run\r\n"); 
+      LOG_DEBUG("Power path manager failing to run\r\n");
     }
 
     delay_ms(LOG_DB_DELAY);
