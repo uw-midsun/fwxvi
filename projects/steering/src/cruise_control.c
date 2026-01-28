@@ -121,18 +121,30 @@ StatusCode cruise_control_run_medium_cycle() {
     cruise_control_enabled_released = false;
 
     // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
-    VehicleDriveState drive_state_from_front = get_pedal_data_drive_state();
+    VehicleDriveState drive_state_from_front = (VehicleDriveState)get_pedal_data_drive_state();
 
     if (drive_state_from_front != VEHICLE_DRIVE_STATE_DRIVE) {
+#if (CC_DEBUG == 1)
+      LOG_DEBUG("not in drive\r\n");
+#endif
       return STATUS_CODE_INVALID_ARGS;
     }
 
     // Cruise control should start from our current speed
-    uint16_t current_speed_kmh_from_front = (uint16_t)get_motor_velocity_vehicle_velocity();
+    int16_t current_speed_kmh_from_front_signed = (int16_t)get_motor_velocity_vehicle_velocity();
+
+    if (current_speed_kmh_from_front_signed < 0) {
+      return STATUS_CODE_INVALID_ARGS;
+    }
+
+    uint16_t current_speed_kmh_from_front = current_speed_kmh_from_front_signed;
 
     if (current_speed_kmh_from_front > steering_storage->config->cruise_min_speed_kmh && current_speed_kmh_from_front < steering_storage->config->cruise_max_speed_kmh) {
       steering_storage->cruise_control_target_speed_kmh = current_speed_kmh_from_front;
     } else {
+#if (CC_DEBUG == 1)
+      LOG_DEBUG("current speed is %u\r\n", current_speed_kmh_from_front_signed);
+#endif
       return STATUS_CODE_INVALID_ARGS;
     }
 

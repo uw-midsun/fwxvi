@@ -72,25 +72,26 @@ typedef struct {
  * @brief   Data for the display, CAN RX or internal
  */
 typedef struct {
-  float pedal_percentage;
-  VehicleDriveState drive_state;
-  bool brake_enabled;
-  bool regen_enabled;
+  uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */
+
+  int16_t motor_heatsink_temp;
+  int16_t motor_temp;
+
+  int16_t vehicle_velocity;
+  int16_t motor_velocity;
 
   uint16_t bps_fault;
+  uint16_t state_of_charge;
 
-  float motor_heatsink_temp;
-  float motor_temp;
+  uint16_t aux_voltage; /**< Auxiliary bus voltage (mV) */
+  uint16_t aux_current; /**< Auxiliary bus current (mA) */
 
-  float vehicle_velocity;
-  float motor_velocity;
+  uint16_t pack_voltage; /**< Pack voltage reading (mV) */
+  uint16_t pack_current; /**< Pack current reading (mA) */
 
-  uint32_t aux_voltage; /**< Auxiliary bus voltage (mV) */
-  int32_t aux_current;  /**< Auxiliary bus current (mA) */
-
-  uint32_t pack_voltage; /**< Pack voltage reading (mV) */
-  int32_t pack_current;  /**< Pack current reading (mA) */
-  float state_of_charge;
+  uint8_t drive_state;
+  uint8_t brake_enabled;
+  uint8_t regen_enabled;
 } DisplayData;
 
 /**
@@ -106,7 +107,7 @@ typedef struct {
 
   struct ButtonManager *button_manager;        /**< Button manager */
   struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
-  DisplayData *display_data;                   /**< Pointer to data for the display */
+  DisplayData display_data;                    /**< Data for the display */
 
   SteeringConfig *config; /**< Pointer to the steering configuration data */
 } SteeringStorage;
