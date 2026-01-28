@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for the gui library (Draws a blue box, a progress bar and writes all text) 
+ * @brief  Smoke test for the gui library (Draws a blue box, a progress bar and writes all text)
  *
  * @date   2026-01-22
  * @author Midnight Sun Team #24 - MSXVI
