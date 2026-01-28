@@ -45,7 +45,8 @@ TASK(imu_task, TASK_STACK_1024) {
     memcpy(&buffer[21], &storage->accel.z, sizeof(float));
     buffer[25] = DATAGRAM_END_FRAME;
 
-    LOG_DEBUG("IMU gx=%.3f gy=%.3f gz=%.3f ax=%.3f ay=%.3f az=%.3f\n", storage->gyro.x, storage->gyro.y, storage->gyro.z, storage->accel.x, storage->accel.y, storage->accel.z);
+    LOG_DEBUG("IMU gx=%.3f gy=%.3f gz=%.3f ax=%.3f ay=%.3f az=%.3f\n", (double)storage->gyro.x, (double)storage->gyro.y, (double)storage->gyro.z,
+              (double)storage->accel.x, (double)storage->accel.y, (double)storage->accel.z);
   }
 }
 
