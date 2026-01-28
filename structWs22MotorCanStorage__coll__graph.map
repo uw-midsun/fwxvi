@@ -1,0 +1,5 @@
+<map id="Ws22MotorCanStorage" name="Ws22MotorCanStorage">
+<area shape="rect" id="node1" title="WS22 motor CAN interface storage structure." alt="" coords="111,93,282,119"/>
+<area shape="rect" id="node2" href="$structWs22MotorControlData.html" title="Motor control command data structure." alt="" coords="5,5,180,31"/>
+<area shape="rect" id="node3" href="$structWs22MotorTelemetryData.html" title="Motor status and telemetry data structure." alt="" coords="205,5,397,31"/>
+</map>

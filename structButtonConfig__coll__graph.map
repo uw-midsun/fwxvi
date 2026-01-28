@@ -1,0 +1,5 @@
+<map id="ButtonConfig" name="ButtonConfig">
+<area shape="rect" id="node1" title="Button configuration structure." alt="" coords="40,93,147,119"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,64,31"/>
+<area shape="rect" id="node3" href="$structButtonCallbacks.html" title="Button Callbacks." alt="" coords="88,5,216,31"/>
+</map>
