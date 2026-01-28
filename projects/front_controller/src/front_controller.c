@@ -47,13 +47,13 @@ static CanStorage s_can_storage = { 0 };
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_FRONT_CONTROLLER,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = FRONT_CONTROLLER_CAN_TX,
-  .rx = FRONT_CONTROLLER_CAN_RX,
+  .tx = GPIO_FRONT_CONTROLLER_CAN_TX,
+  .rx = GPIO_FRONT_CONTROLLER_CAN_RX,
   .loopback = false,
   .can_rx_all_cb = ws22_motor_can_process_rx,
 };
 
-static GpioAddress s_front_controller_board_led = FRONT_CONTROLLER_BOARD_LED;
+static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
 
 StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
   if (storage == NULL || config == NULL) {

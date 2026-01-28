@@ -37,12 +37,15 @@ StatusCode cruise_control_init(SteeringStorage *steering_storage);
 StatusCode cruise_control_down_handler();
 
 /**
- * @brief   Cruise control traget speed increase event handler
+ * @brief   Cruise control target speed increase event handler
  * @return  STATUS_CODE_OK if handled successfully
  *          STATUS_CODE_UNINITIALIZED if cruise control is not initialized
  */
 StatusCode cruise_control_up_handler();
 
-StatusCode cruise_control_run();
+/**
+ *
+ */
+StatusCode cruise_control_run_medium_cycle();
 
 /** @} */

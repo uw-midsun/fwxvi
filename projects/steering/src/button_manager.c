@@ -30,8 +30,6 @@
 #include "steering_hw_defs.h"
 #include "steering_setters.h"
 
-#define FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS 400U
-
 static SteeringStorage *steering_storage;
 
 static ButtonManager s_button_manager = { 0U };
@@ -246,12 +244,6 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  cruise_control_up_handler();
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 #endif
@@ -268,12 +260,6 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  cruise_control_down_handler();
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
 #endif
@@ -297,7 +283,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = left_turn_btn_falling_edge_cb,
             .rising_edge_cb  = left_turn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_LEFT_TURN_BUTTON
+        .gpio = GPIO_STEERING_LEFT_TURN_BUTTON
     },
 
     [STEERING_BUTTON_RIGHT_LIGHT] = {
@@ -307,7 +293,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = right_turn_btn_falling_edge_cb,
             .rising_edge_cb  = right_turn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_RIGHT_TURN_BUTTON
+        .gpio = GPIO_STEERING_RIGHT_TURN_BUTTON
     },
 
     [STEERING_BUTTON_HAZARDS] = {
@@ -317,7 +303,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = hazards_btn_falling_edge_cb,
             .rising_edge_cb  = hazards_btn_rising_edge_cb,
         },
-        .gpio = STEERING_HAZARDS_BUTTON
+        .gpio = GPIO_STEERING_HAZARDS_BUTTON
     },
 
     [STEERING_BUTTON_DRIVE] = {
@@ -327,7 +313,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = drive_btn_falling_edge_cb,
             .rising_edge_cb  = drive_btn_rising_edge_cb,
         },
-        .gpio = STEERING_DRIVE_BUTTON
+        .gpio = GPIO_STEERING_DRIVE_BUTTON
     },
 
     [STEERING_BUTTON_REVERSE] = {
@@ -337,7 +323,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = reverse_btn_falling_edge_cb,
             .rising_edge_cb  = reverse_btn_rising_edge_cb,
         },
-        .gpio = STEERING_REVERSE_BUTTON
+        .gpio = GPIO_STEERING_REVERSE_BUTTON
     },
 
     [STEERING_BUTTON_NEUTRAL] = {
@@ -347,7 +333,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = neutral_btn_falling_edge_cb,
             .rising_edge_cb  = neutral_btn_rising_edge_cb,
         },
-        .gpio = STEERING_NEUTRAL_BUTTON
+        .gpio = GPIO_STEERING_NEUTRAL_BUTTON
     },
 
     [STEERING_BUTTON_HORN] = {
@@ -357,7 +343,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = horn_btn_falling_edge_cb,
             .rising_edge_cb  = horn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_HORN_BUTTON
+        .gpio = GPIO_STEERING_HORN_BUTTON
     },
 
     [STEERING_BUTTON_REGEN] = {
@@ -367,7 +353,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = regen_btn_falling_edge_cb,
           .rising_edge_cb  = regen_btn_rising_edge_cb,
       },
-      .gpio = STEERING_REGEN_BUTTON
+      .gpio = GPIO_STEERING_REGEN_BUTTON
     },
 
     [STEERING_BUTTON_CRUISE_CONTROL_UP] = {
@@ -377,7 +363,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = cruise_control_up_btn_falling_edge_cb,
           .rising_edge_cb  = cruise_control_up_btn_rising_edge_cb,
       },
-      .gpio = STEERING_CC_UP_BUTTON
+      .gpio = GPIO_STEERING_CC_UP_BUTTON
     },
 
     [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = {
@@ -387,7 +373,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = cruise_control_down_btn_falling_edge_cb,
           .rising_edge_cb  = cruise_control_down_btn_rising_edge_cb,
       },
-      .gpio = STEERING_CC_DOWN_BUTTON
+      .gpio = GPIO_STEERING_CC_DOWN_BUTTON
     },
 };
 
@@ -424,7 +410,7 @@ StatusCode button_manager_init(SteeringStorage *storage) {
     status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
   }
 
-  status_ok_or_return(software_timer_init(FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
 
   return STATUS_CODE_OK;
 }
