@@ -26,7 +26,7 @@
 static RearControllerStorage rear_storage;
 static RearControllerConfig rear_config = { 0 };
 
-TASK(power_path_manager_smoke, TASK_STACK_1024) {
+TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   LOG_DEBUG("Initializing power path manager...\r\n");
   rear_storage.config = &rear_config;
   StatusCode status = power_path_manager_init(&rear_storage);
@@ -35,16 +35,15 @@ TASK(power_path_manager_smoke, TASK_STACK_1024) {
   } else {
     LOG_DEBUG("Power path manager cannot be initialized\r\n");
   }
-}
-
-TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
+  
   while (true) {
     StatusCode status = power_path_manager_run();
     if (status == STATUS_CODE_OK) {
       LOG_DEBUG("Power path manager running\r\n");
     } else {
-      LOG_DEBUG("Power path manager failing to run\r\n");
+      LOG_DEBUG("Power path manager failing to run\r\n"); 
     }
+
     delay_ms(LOG_DB_DELAY);
     LOG_DEBUG("PCS Valid: %d\r\n", rear_storage.pcs_valid);
     LOG_DEBUG("AUX Valid: %d\r\n", rear_storage.aux_valid);
@@ -69,7 +68,6 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(power_path_manager_smoke, TASK_PRIORITY(3), NULL);
   tasks_init_task(power_path_manager_run_cycle, TASK_PRIORITY(3), NULL);
   tasks_start();
 
