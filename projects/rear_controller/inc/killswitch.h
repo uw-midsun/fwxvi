@@ -18,6 +18,8 @@
 
 /* Intra-component Headers */
 
+#define REAR_CONTROLLER_KILLSWITCH_EVENT 1U
+
 /**
  * @defgroup Rear_Controller
  * @brief    Rear Controller Board Firmware
@@ -31,5 +33,10 @@
  * @return  StatusCode indicating success or failure of initialization
  */
 StatusCode killswitch_init(Event event, const Task *task);
+
+/**
+ * @brief   Run the program that checks killswitch
+ */
+StatusCode killswitch_run();
 
 /** @} */

@@ -16,6 +16,7 @@
 
 #include "accel_pedal.h"
 #include "front_controller_getters.h"
+#include "front_controller_setters.h"
 
 #define MOTOR_CAN_DEBUG 0U
 #define IS_BRAKE_CONNECTED 1U
@@ -91,7 +92,8 @@ StatusCode motor_can_update_target_current_velocity() {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  front_controller_storage->currentDriveState = current_drive_state;
+  front_controller_storage->current_drive_state = current_drive_state;
+  set_pedal_data_drive_state(front_controller_storage->current_drive_state);
 
   switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:

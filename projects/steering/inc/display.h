@@ -52,4 +52,8 @@
  */
 StatusCode display_init(SteeringStorage *storage);
 
+StatusCode display_rx_slow();
+StatusCode display_rx_medium();
+StatusCode display_rx_fast();
+
 /** @} */

@@ -15,6 +15,7 @@
 
 /* Intra-component Headers */
 #include "power_path_manager.h"
+#include "rear_controller_setters.h"
 
 /** @brief  VCC/2 for 3.3V supply */
 #define ZERO_OFFSET_MV (1650)
@@ -134,6 +135,9 @@ StatusCode power_path_manager_run(void) {
 
   rear_controller_storage->pcs_valid = pcs_valid_1 && pcs_valid_2;
   rear_controller_storage->aux_valid = aux_valid_1 && aux_valid_2;
+
+  set_power_input_stats_input_aux_voltage(rear_controller_storage->aux_voltage);
+  set_power_input_stats_input_aux_current(rear_controller_storage->aux_current);
 
   return STATUS_CODE_OK;
 }
