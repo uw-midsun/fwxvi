@@ -26,6 +26,7 @@
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_getters.h"
+#include "light_signal_manager.h"
 
 SteeringStorage steering_storage = { 0 };
 
@@ -42,6 +43,7 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   button_led_manager_update();
   drive_state_manager_update();
+  lights_signal_manager_update();
   cruise_control_run_medium_cycle();
   display_rx_medium();
   run_can_tx_medium();
