@@ -20,7 +20,7 @@
 #define ACS37800_NUM_REGISTERS 0x30
 
 static ACS37800Storage *s_storage = NULL;
-static uint32_t s_registers[ACS37800_NUM_REGISTERS] = {0};
+static uint32_t s_registers[ACS37800_NUM_REGISTERS] = { 0 };
 
 StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
   if (storage == NULL || i2c_address > 127) {
@@ -66,7 +66,7 @@ StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amp
 
   // 16 bits upper
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
-  *out_current_amps = (float)(current_raw) * CURRENT_SCALE;
+  *out_current_amps = (float)(current_raw)*CURRENT_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -85,7 +85,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
 
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
-  *out_voltage_mV = (float)(voltage_raw) * VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*VOLTAGE_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -104,7 +104,7 @@ StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_
 
   // active power signed 16bit lower
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
-  *out_power_mW = (float)(power_raw) * POWER_SCALE;
+  *out_power_mW = (float)(power_raw)*POWER_SCALE;
 
   return STATUS_CODE_OK;
 }

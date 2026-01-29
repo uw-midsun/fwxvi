@@ -8,8 +8,8 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdbool.h>
 #include <math.h>
+#include <stdbool.h>
 
 /* Inter-component Headers */
 #include "log.h"
@@ -77,13 +77,13 @@ void test_voltage_round_trip(void) {
 
 void test_current_voltage_independent(void) {
   float current, voltage;
-  
+
   acs37800_set_current(0.1f);
   acs37800_set_voltage(0.2f);
-  
+
   acs37800_get_current(&s_storage, &current);
   acs37800_get_voltage(&s_storage, &voltage);
-  
+
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.1f, current);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.2f, voltage);
 }
