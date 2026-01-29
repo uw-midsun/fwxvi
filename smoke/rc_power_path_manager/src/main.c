@@ -28,6 +28,7 @@ static RearControllerConfig rear_config = { 0 };
 
 TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   LOG_DEBUG("Initializing power path manager...\r\n");
+  delay_ms(1000U);
   rear_storage.config = &rear_config;
   StatusCode status = power_path_manager_init(&rear_storage);
   if (status == STATUS_CODE_OK) {
@@ -35,6 +36,7 @@ TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   } else {
     LOG_DEBUG("Power path manager cannot be initialized\r\n");
   }
+  delay_ms(500U);
 
   while (true) {
     StatusCode status = power_path_manager_run();
