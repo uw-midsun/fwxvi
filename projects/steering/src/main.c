@@ -46,8 +46,8 @@ void run_10hz_cycle() {
   display_rx_medium();
   run_can_tx_medium();
 
-  printf("KLS: %u | PEDAL PERCENTAGE: %u DRIVE_STATE: %d | MOTOR_VEL: %d | MOTOR TEMP %d\r\n", steering_storage.display_data.killswitch_state, steering_storage.display_data.pedal_percentage, steering_storage.display_data.drive_state ,
-  steering_storage.display_data.motor_velocity, steering_storage.display_data.motor_temp);
+  printf("KLS: %u | PEDAL PERCENTAGE: %u DRIVE_STATE: %d | MOTOR_VEL: %d | MOTOR TEMP %d\r\n", steering_storage.display_data.killswitch_state, steering_storage.display_data.pedal_percentage,
+         steering_storage.display_data.drive_state, steering_storage.display_data.motor_velocity, steering_storage.display_data.motor_temp);
 }
 
 void run_1hz_cycle() {
