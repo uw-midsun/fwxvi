@@ -89,6 +89,9 @@ static void s_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) 
   HAL_CAN_ConfigFilter(&s_can_handle, &filter_cfg);
 }
 
+  static uint32_t ok_counter = 0;
+  static uint32_t err_counter = 0;
+
 StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   if (rx_queue == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -213,6 +216,8 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
     status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, data, &tx_mailbox);
     
     if (status == HAL_OK) {
+      // LOG_CRITICAL("CAN TX OK: %d", status);
+      ok_counter++;
       return STATUS_CODE_OK;
     }
     else if (status == HAL_BUSY) {
@@ -223,11 +228,14 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
       }
     }
     else {
-      LOG_CRITICAL("CAN TX error: %d", status);
+      // LOG_CRITICAL("CAN TX error: %d", status);
+      err_counter++;
+      LOG_CRITICAL("CAN OK: %ld CAN TX error: %ld", ok_counter, err_counter);
       return STATUS_CODE_INTERNAL_ERROR;
     }
   }
   
+
   return STATUS_CODE_RESOURCE_EXHAUSTED;
 }
 

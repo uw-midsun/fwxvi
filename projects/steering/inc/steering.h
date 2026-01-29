@@ -92,6 +92,7 @@ typedef struct {
   uint8_t drive_state;
   uint8_t brake_enabled;
   uint8_t regen_enabled;
+  uint8_t killswitch_state;
 } DisplayData;
 
 /**
