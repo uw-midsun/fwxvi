@@ -74,6 +74,7 @@ StatusCode display_rx_slow() {
 }
 
 StatusCode display_rx_medium() {
+  display_data->killswitch_state = get_rear_controller_status_killswitch_state();
   display_data->brake_enabled = get_pedal_data_brake_enabled();
   display_data->regen_enabled = get_pedal_data_regen_enabled();
   display_data->pedal_percentage = (uint8_t)get_pedal_data_percentage();

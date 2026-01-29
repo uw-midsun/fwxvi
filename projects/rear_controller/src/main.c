@@ -26,7 +26,6 @@
 #include "rear_controller.h"
 #include "rear_controller_config.h"
 
-uint32_t notification = 0;
 RearControllerStorage rear_controller_storage = { 0U };
 
 RearControllerConfig rear_controller_config = {
@@ -40,13 +39,8 @@ void pre_loop_init() {
 }
 
 void run_1000hz_cycle() {
-  notify_get(&notification);
-  if (notification & (1 << REAR_CONTROLLER_KILLSWITCH_EVENT)) {
-    LOG_DEBUG("KILLSWITCH PRESSED\r\n");
-  }
-
   run_can_rx_all();
-
+  killswitch_run();
   run_can_tx_fast();
 }
 

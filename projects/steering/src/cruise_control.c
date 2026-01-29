@@ -21,7 +21,7 @@
 #include "steering_getters.h"
 #include "steering_setters.h"
 
-#define CC_DEBUG 1U
+#define CC_DEBUG 0U
 
 static SteeringStorage *steering_storage;
 
