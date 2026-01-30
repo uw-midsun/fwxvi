@@ -18,7 +18,7 @@
 
 // initialize the storage object
 StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
-  if (storage == NULL || i2c_address < 127) {
+  if (storage == NULL || i2c_address > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
   // i2c peripherals
@@ -119,9 +119,9 @@ StatusCode acs37800_get_overcurrent_flag(ACS37800Storage *storage, bool *overcur
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000003;
+  uint32_t converted_data = raw_data & ACS37800_MASK_FAULTOUT;
 
-  if (converted_data == 1) {
+  if (converted_data) {
     *overcurrent_flag = true;
   } else {
     *overcurrent_flag = false;
@@ -166,9 +166,9 @@ StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvol
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000004;
+  uint32_t converted_data = raw_data & ACS37800_MASK_OVERVOLTAGE;
 
-  if (converted_data == 1) {
+  if (converted_data) {
     *overvoltage_flag = true;
   } else {
     *overvoltage_flag = false;
@@ -189,9 +189,9 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *underv
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000005;
+  uint32_t converted_data = raw_data & ACS37800_MASK_UNDERVOLTAGE;
 
-  if (converted_data == 1) {
+  if (converted_data) {
     *undervoltage_flag = true;
   } else {
     *undervoltage_flag = false;

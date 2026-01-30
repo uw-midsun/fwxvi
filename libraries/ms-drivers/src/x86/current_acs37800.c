@@ -36,8 +36,6 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
     s_registers[i] = 0;
   }
 
-  LOG_DEBUG("ACS37800 x86 init on I2C port %d, address 0x%02X\n", i2c_port, i2c_address);
-
   return STATUS_CODE_OK;
 }
 
@@ -47,8 +45,6 @@ StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers re
   }
 
   *out_raw = s_registers[reg];
-  LOG_DEBUG("ACS37800 x86 read register 0x%02X: 0x%08X\n", reg, *out_raw);
-
   return STATUS_CODE_OK;
 }
 
@@ -121,9 +117,9 @@ StatusCode acs37800_get_overcurrent_flag(ACS37800Storage *storage, bool *overcur
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000002;
+  uint32_t converted_data = raw_data & ACS37800_MASK_FAULTOUT;
 
-  if (converted_data != 0) {
+  if (converted_data) {
     *overcurrent_flag = true;
   } else {
     *overcurrent_flag = false;
@@ -138,10 +134,7 @@ StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage *storage) {
   }
 
   // In ARM writes to I2C, instead just clear the flag bits
-  s_registers[ACS37800_REG_STATUS] &= ~0x00000002;
-
-  LOG_DEBUG("ACS37800 x86 overcurrent flag reset\n");
-
+  s_registers[ACS37800_REG_STATUS] &= ~ACS37800_MASK_FAULTOUT;
   return STATUS_CODE_OK;
 }
 
@@ -157,9 +150,9 @@ StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvol
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000008;
+  uint32_t converted_data = raw_data & ACS37800_MASK_OVERVOLTAGE;
 
-  if (converted_data != 0) {
+  if (converted_data) {
     *overvoltage_flag = true;
   } else {
     *overvoltage_flag = false;
@@ -180,9 +173,9 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *underv
     return status;
   }
 
-  uint32_t converted_data = raw_data & 0x00000010;
+  uint32_t converted_data = raw_data & ACS37800_MASK_UNDERVOLTAGE;
 
-  if (converted_data != 0) {
+  if (converted_data) {
     *undervoltage_flag = true;
   } else {
     *undervoltage_flag = false;
@@ -227,24 +220,24 @@ void acs37800_set_power(float power_mW) {
 
 void acs37800_set_overcurrent_flag(bool flag) {
   if (flag) {
-    s_registers[ACS37800_REG_STATUS] |= 0x00000002;
+    s_registers[ACS37800_REG_STATUS] |= ACS37800_MASK_FAULTOUT;
   } else {
-    s_registers[ACS37800_REG_STATUS] &= ~0x00000002;
+    s_registers[ACS37800_REG_STATUS] &= ~ACS37800_MASK_FAULTOUT;
   }
 }
 
 void acs37800_set_overvoltage_flag(bool flag) {
   if (flag) {
-    s_registers[ACS37800_REG_STATUS] |= 0x00000008;
+    s_registers[ACS37800_REG_STATUS] |= ACS37800_MASK_OVERVOLTAGE;
   } else {
-    s_registers[ACS37800_REG_STATUS] &= ~0x00000008;
+    s_registers[ACS37800_REG_STATUS] &= ~ACS37800_MASK_OVERVOLTAGE;
   }
 }
 
 void acs37800_set_undervoltage_flag(bool flag) {
   if (flag) {
-    s_registers[ACS37800_REG_STATUS] |= 0x00000010;
+    s_registers[ACS37800_REG_STATUS] |= ACS37800_MASK_UNDERVOLTAGE;
   } else {
-    s_registers[ACS37800_REG_STATUS] &= ~0x00000010;
+    s_registers[ACS37800_REG_STATUS] &= ~ACS37800_MASK_UNDERVOLTAGE;
   }
 }
