@@ -23,10 +23,10 @@
 #include "cruise_control.h"
 #include "display.h"
 #include "drive_state_manager.h"
+#include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
 #include "steering_getters.h"
-#include "light_signal_manager.h"
 
 SteeringStorage steering_storage = { 0 };
 

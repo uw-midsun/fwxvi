@@ -8,9 +8,11 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include "button_led.h"
 
 /* Inter-component Headers */
+#include "button_led.h"
+
+/* Intra-component Headers */
 
 static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
   [STEERING_BUTTON_HAZARDS] = BUTTON_LED_MANAGER_COLOR_RED,

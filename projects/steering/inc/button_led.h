@@ -19,6 +19,12 @@
 #include "button_led_manager.h"
 
 /**
+ * @defgroup button_led
+ * @brief    button_led Firmware
+ * @{
+ */
+
+/**
  * @brief   Set an LED to its assigned color
  */
 StatusCode button_led_enable(SteeringButtons button);
@@ -32,3 +38,5 @@ StatusCode button_led_disable(SteeringButtons button);
  * @brief   Toggle a given LED between it's assigned color and off
  */
 StatusCode button_led_toggle(SteeringButtons button);
+
+/** @} */
