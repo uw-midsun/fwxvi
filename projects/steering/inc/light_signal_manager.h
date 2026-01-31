@@ -39,11 +39,11 @@ typedef enum {
  * @brief Requests made to control the light signals
  */
 typedef enum {
-  LIGHTS_SIGNAL_REQUEST_OFF = 0, /**< Request to turn off signals */
-  LIGHTS_SIGNAL_REQUEST_LEFT,    /**< Request to turn on left signal */
-  LIGHTS_SIGNAL_REQUEST_RIGHT,   /**< Request to turn on right signal */
-  LIGHTS_SIGNAL_REQUEST_HAZARD   /**< Request to turn on hazard signal */
-} LightsSignalRequest;
+  LIGHTS_SIGNAL_COMMAND_NONE = 0,  /**< No light signal command */
+  LIGHTS_SIGNAL_COMMAND_LEFT = 1,  /**< Request to turn on left signal */
+  LIGHTS_SIGNAL_COMMAND_RIGHT = 2, /**< Request to turn on right signal */
+  LIGHTS_SIGNAL_COMMAND_HAZARD = 3 /**< Request to turn on hazard signal */
+} LightsSignalCommand;
 
 /**
  * @brief   Initialize state variables and timer
@@ -54,12 +54,12 @@ void lights_signal_manager_init(void);
  * @brief   Make a request to change the signal state
  * @param   req The requested light signal state
  */
-void lights_signal_manager_request(LightsSignalRequest req);
+StatusCode lights_signal_manager_register(LightsSignalCommand req);
 
 /**
  * @brief   Update the signal state based on the current request
  */
-void lights_signal_manager_update(void);
+StatusCode lights_signal_manager_update(void);
 
 /**
  * @brief   Get the current state of the signal lights

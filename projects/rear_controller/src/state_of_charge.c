@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "rear_controller_setters.h"
 #include "soc_ekf_matlab.h"
 #include "state_of_charge.h"
 #include "state_of_charge_lut.h"
@@ -208,6 +209,7 @@ StatusCode state_of_charge_run() {
   soc_ekf_matlab_step();
 
   rear_controller_storage->estimated_state_of_charge = rtY.x_new[0U];
+  set_battery_stats_A_pack_soc(rear_controller_storage->estimated_state_of_charge);
 
   memcpy(rtU.x_prev, rtY.x_new, sizeof(rtY.x_new));
   memcpy(rtU.P_prev, rtY.P_new, sizeof(rtU.P_prev));

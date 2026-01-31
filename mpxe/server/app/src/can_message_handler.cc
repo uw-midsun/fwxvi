@@ -1096,7 +1096,7 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA: {
+    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_DATA: {
       front_controller_pedal_data *message = new front_controller_pedal_data();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();

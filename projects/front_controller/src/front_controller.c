@@ -63,8 +63,6 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   front_controller_storage = storage;
   front_controller_storage->config = config;
 
-  log_init();
-
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
