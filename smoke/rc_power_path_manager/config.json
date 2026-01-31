@@ -1,0 +1,25 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "master",
+        "ms-common",
+        "ms-drivers"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/rear_controller/inc"
+    ],
+    "sources": [
+        "projects/rear_controller/src/bps_fault.o",
+        "projects/rear_controller/src/current_sense.o",
+        "projects/rear_controller/src/killswitch.o",
+        "projects/rear_controller/src/power_path_manager.o",
+        "projects/rear_controller/src/precharge.o",
+        "projects/rear_controller/src/rear_controller.o",
+        "projects/rear_controller/src/rear_controller_state_manager.o",
+        "projects/rear_controller/src/relays.o"
+    ],
+    "can": true
+}
