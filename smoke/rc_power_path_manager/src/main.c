@@ -28,7 +28,7 @@ static RearControllerConfig rear_config = { 0 };
 
 TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   LOG_DEBUG("Initializing power path manager...\r\n");
-  delay_ms(1000U);
+  delay_ms(LOG_DB_DELAY);
   rear_storage.config = &rear_config;
   StatusCode status = power_path_manager_init(&rear_storage);
   if (status == STATUS_CODE_OK) {
@@ -36,7 +36,7 @@ TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
   } else {
     LOG_DEBUG("Power path manager cannot be initialized\r\n");
   }
-  delay_ms(500U);
+  delay_ms(LOG_DB_DELAY);
 
   while (true) {
     StatusCode status = power_path_manager_run();
@@ -47,14 +47,11 @@ TASK(power_path_manager_run_cycle, TASK_STACK_1024) {
     }
 
     delay_ms(LOG_DB_DELAY);
-    LOG_DEBUG("PCS Valid: %d\r\n", rear_storage.pcs_valid);
-    LOG_DEBUG("AUX Valid: %d\r\n", rear_storage.aux_valid);
+    LOG_DEBUG("PCS Valid: %d | AUX Valid: %d\r\n", rear_storage.pcs_valid, rear_storage.aux_valid);
 
     delay_ms(LOG_DB_DELAY);
-    LOG_DEBUG("PCS Voltage: %ld mV\n", rear_storage.pcs_voltage);
-    LOG_DEBUG("AUX Voltage: %ld mV\n", rear_storage.aux_voltage);
-    LOG_DEBUG("PCS Current: %ld mA\n", rear_storage.pcs_current);
-    LOG_DEBUG("AUX Current: %ld mA\n", rear_storage.aux_current);
+    LOG_DEBUG("PCS Voltage: %ldmV | AUX Voltage: %ldmV | PCS Current: %ldmA | AUX Current: %ldmA", rear_storage.pcs_voltage, rear_storage.aux_voltage, rear_storage.pcs_current,
+              rear_storage.aux_current);
     delay_ms(CYCLE_PERIOD_MS);
   }
 }
