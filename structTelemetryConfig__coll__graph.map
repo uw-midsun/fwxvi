@@ -1,0 +1,5 @@
+<map id="TelemetryConfig" name="TelemetryConfig">
+<area shape="rect" id="node1" title="Telemetry configuration data." alt="" coords="5,196,133,221"/>
+<area shape="rect" id="node2" href="$structUartSettings.html" title="UART Settings." alt="" coords="18,108,121,133"/>
+<area shape="rect" id="node3" title=" " alt="" coords="40,5,99,31"/>
+</map>
