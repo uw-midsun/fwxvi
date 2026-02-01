@@ -97,6 +97,9 @@ StatusCode current_sense_run() {
   rear_controller_storage->pack_current = (int32_t)(current_A * 1000.0f);
   rear_controller_storage->pack_voltage = (uint32_t)(voltage_reading_mV);
 
+  set_battery_stats_A_pack_current((int16_t)rear_controller_storage->pack_current);
+  set_battery_stats_A_pack_voltage((int16_t)rear_controller_storage->pack_voltage);
+
   csense_prev_current_A = current_A;
   csense_prev_voltage_mV = voltage_mV;
 

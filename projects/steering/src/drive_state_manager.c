@@ -17,6 +17,7 @@
 #include "steering_setters.h"
 
 /* Intra-component Headers */
+#include "button_led.h"
 #include "buzzer.h"
 #include "drive_state_manager.h"
 
@@ -33,12 +34,12 @@ static RegenState current_regen_state = INVALID_REGEN_STATE;
 
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
-    button_manager_led_disable(STEERING_BUTTON_DRIVE);
+    button_led_disable(STEERING_BUTTON_DRIVE);
   } else if (current_state == VEHICLE_DRIVE_STATE_REVERSE) {
-    button_manager_led_disable(STEERING_BUTTON_REVERSE);
+    button_led_disable(STEERING_BUTTON_REVERSE);
   }
 
-  button_manager_led_enable(STEERING_BUTTON_NEUTRAL);
+  button_led_enable(STEERING_BUTTON_NEUTRAL);
   buzzer_play_neutral();
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_NEUTRAL);
   return STATUS_CODE_OK;
@@ -84,9 +85,8 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 #endif
-
-  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
-  button_manager_led_enable(STEERING_BUTTON_REVERSE);
+  button_led_disable(STEERING_BUTTON_NEUTRAL);
+  button_led_enable(STEERING_BUTTON_REVERSE);
   buzzer_play_reverse();
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
@@ -137,8 +137,8 @@ static StatusCode drive_state_manager_drive(void) {
   }
 #endif
 
-  button_manager_led_disable(STEERING_BUTTON_NEUTRAL);
-  button_manager_led_enable(STEERING_BUTTON_DRIVE);
+  button_led_disable(STEERING_BUTTON_NEUTRAL);
+  button_led_enable(STEERING_BUTTON_DRIVE);
   buzzer_play_drive();
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
@@ -236,11 +236,11 @@ StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state) {
 
   if ((current_regen_state != REGEN_STATE_ENABLED) && (new_regen_state == REGEN_STATE_ENABLED)) {
     set_steering_buttons_regen_braking(REGEN_STATE_ENABLED);
-    button_manager_led_enable(STEERING_BUTTON_REGEN);
+    button_led_enable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_on();
   } else if ((current_regen_state != REGEN_STATE_DISABLED) && (new_regen_state == REGEN_STATE_DISABLED)) {
     set_steering_buttons_regen_braking(REGEN_STATE_DISABLED);
-    button_manager_led_disable(STEERING_BUTTON_REGEN);
+    button_led_disable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_off();
   }
 
