@@ -96,4 +96,49 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *underv
  */
 StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers reg, uint32_t *out_raw);
 
+#ifdef MS_PLATFORM_X86
+
+/** @brief Get the initialized ACS37800 storage
+ *  @return Pointer to the ACS37800 storage
+ */
+ACS37800Storage *acs37800_get_storage(void);
+
+/** @brief Sets a register value for testing
+ *  @param reg Register address
+ *  @param value 32-bit value to set
+ */
+void acs37800_set_register(ACS37800_Registers reg, uint32_t value);
+
+/** @brief Sets the current value for testing
+ *  @param current_amps Current in amps
+ */
+void acs37800_set_current(float current_amps);
+
+/** @brief Sets the voltage value for testing
+ *  @param voltage_mV Voltage in millivolts
+ */
+void acs37800_set_voltage(float voltage_mV);
+
+/** @brief Sets the power value for testing
+ *  @param power_mW Power in milliwatts
+ */
+void acs37800_set_power(float power_mW);
+
+/** @brief Sets the overcurrent flag for testing
+ *  @param flag Overcurrent flag state
+ */
+void acs37800_set_overcurrent_flag(bool flag);
+
+/** @brief Sets the overvoltage flag for testing
+ *  @param flag Overvoltage flag state
+ */
+void acs37800_set_overvoltage_flag(bool flag);
+
+/** @brief Sets the undervoltage flag for testing
+ *  @param flag Undervoltage flag state
+ */
+void acs37800_set_undervoltage_flag(bool flag);
+
+#endif
+
 /** @} */
