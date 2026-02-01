@@ -136,10 +136,10 @@ StatusCode power_path_manager_run(void) {
   rear_controller_storage->pcs_valid = pcs_valid_1 && pcs_valid_2;
   rear_controller_storage->aux_valid = aux_valid_1 && aux_valid_2;
 
-  set_power_input_stats_input_dcdc_voltage(rear_controller_storage->pcs_voltage);
-  set_power_input_stats_input_dcdc_current(rear_controller_storage->pcs_current);
-  set_power_input_stats_input_aux_voltage(rear_controller_storage->aux_voltage);
-  set_power_input_stats_input_aux_current(rear_controller_storage->aux_current);
+  set_power_input_stats_input_dcdc_voltage((int16_t)rear_controller_storage->pcs_voltage);
+  set_power_input_stats_input_dcdc_current((int16_t)rear_controller_storage->pcs_current);
+  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->aux_voltage);
+  set_power_input_stats_input_aux_current((int16_t)rear_controller_storage->aux_current);
 
   return STATUS_CODE_OK;
 }

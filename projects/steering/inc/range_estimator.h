@@ -22,10 +22,10 @@
  */
 
 /**
- * @brief   Estimate remaining kilometres based on cell voltage
- * @param   min_cell_voltage Minimum cell voltage from the battery telemetry
- * @return  Estimated remaining range (in kilometers)
+ * @brief   Run the range estimator which estimates remaining kilometres based on cell voltage
  */
-float estimate_remaining_range_km(void);
+StatusCode range_estimator_run();
+
+StatusCode range_estimator_init();
 
 /** @} */

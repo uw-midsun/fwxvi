@@ -83,8 +83,10 @@ typedef struct {
   uint16_t bps_fault;
   uint16_t state_of_charge;
 
-  uint16_t aux_voltage; /**< Auxiliary bus voltage (mV) */
-  uint16_t aux_current; /**< Auxiliary bus current (mA) */
+  int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
+  int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */
+  int16_t aux_voltage;  /**< Auxiliary bus voltage (mV) */
+  int16_t aux_current;  /**< Auxiliary bus current (mA) */
 
   uint16_t pack_voltage; /**< Pack voltage reading (mV) */
   uint16_t pack_current; /**< Pack current reading (mA) */
@@ -93,6 +95,7 @@ typedef struct {
   uint8_t brake_enabled;
   uint8_t regen_enabled;
   uint8_t killswitch_state;
+  uint8_t precharge_complete;
 } DisplayData;
 
 /**
@@ -109,6 +112,8 @@ typedef struct {
   struct ButtonManager *button_manager;        /**< Button manager */
   struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
   DisplayData display_data;                    /**< Data for the display */
+
+  float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
   SteeringConfig *config; /**< Pointer to the steering configuration data */
 } SteeringStorage;

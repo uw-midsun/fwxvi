@@ -25,6 +25,7 @@
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
+#include "range_estimator.h"
 #include "steering.h"
 #include "steering_getters.h"
 
@@ -47,13 +48,11 @@ void run_10hz_cycle() {
   cruise_control_run_medium_cycle();
   display_rx_medium();
   run_can_tx_medium();
-
-  printf("KLS: %u | PEDAL PERCENTAGE: %u DRIVE_STATE: %d | MOTOR_VEL: %d | MOTOR TEMP %d\r\n", steering_storage.display_data.killswitch_state, steering_storage.display_data.pedal_percentage,
-         steering_storage.display_data.drive_state, steering_storage.display_data.motor_velocity, steering_storage.display_data.motor_temp);
 }
 
 void run_1hz_cycle() {
   party_mode_run();
+  range_estimator_run();
   display_rx_slow();
 }
 

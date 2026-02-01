@@ -75,6 +75,7 @@ StatusCode display_rx_slow() {
 
 StatusCode display_rx_medium() {
   display_data->killswitch_state = get_rear_controller_status_killswitch_state();
+  display_data->precharge_complete = get_battery_stats_B_motor_precharge_complete();
   display_data->brake_enabled = get_pedal_data_brake_enabled();
   display_data->regen_enabled = get_pedal_data_regen_enabled();
   display_data->pedal_percentage = (uint8_t)get_pedal_data_percentage();
@@ -88,12 +89,12 @@ StatusCode display_rx_medium() {
   display_data->vehicle_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
   display_data->motor_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
 
-  display_data->aux_voltage = get_power_input_stats_input_aux_voltage();
-  display_data->aux_current = get_power_input_stats_input_aux_current();
+  display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
+  display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
 
-  display_data->pack_voltage = get_battery_stats_A_pack_voltage();
-  display_data->pack_current = get_battery_stats_A_pack_current();
-  display_data->state_of_charge = get_battery_stats_A_pack_soc();
+  display_data->pack_voltage = (int16_t)get_battery_stats_A_pack_voltage();
+  display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
+  display_data->state_of_charge = (uint16_t)get_battery_stats_A_pack_soc();
 
   return STATUS_CODE_OK;
 }
