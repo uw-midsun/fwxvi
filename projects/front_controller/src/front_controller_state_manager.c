@@ -67,7 +67,7 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
 
   front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
   is_horn_enabled = get_steering_buttons_horn_enabled();
-  is_brake_enabled = front_controller_storage->brake_enabled;
+  is_brake_enabled = front_controller_storage->brake_enabled || front_controller_storage->regen_enabled;
 
   if (is_horn_enabled) {
     power_manager_set_output_group(OUTPUT_GROUP_HORN, true);
@@ -166,10 +166,10 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_IDLE_REQUEST);
   }
 
-  if (is_brake_enabled == true && front_controller_storage->brake_enabled == false) {
+  if (is_brake_enabled == true && (front_controller_storage->brake_enabled == false) && (front_controller_storage->regen_enabled == false)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
     is_brake_enabled = false;
-  } else if (is_brake_enabled == false && front_controller_storage->brake_enabled == true) {
+  } else if (is_brake_enabled == false && ((front_controller_storage->brake_enabled == true) || (front_controller_storage->regen_enabled == true))) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
     is_brake_enabled = true;
   }

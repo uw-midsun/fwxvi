@@ -44,7 +44,8 @@ StatusCode cruise_control_down_handler();
 StatusCode cruise_control_up_handler();
 
 /**
- *
+ * @brief   Listen for cruise control buttons and update state appropriately
+ * @return  STATUS_CODE_INVALID_ARGS if the car is not in drive or is not driving within the defined cruise control range
  */
 StatusCode cruise_control_run_medium_cycle();
 

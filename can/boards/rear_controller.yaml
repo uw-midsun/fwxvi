@@ -26,6 +26,8 @@ Messages:
         length: 8
       afe_status:
         length: 8
+      killswitch_state:
+        length: 8
   
   battery_stats_A:
     id: 2
