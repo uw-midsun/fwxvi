@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file    cruise_control.c
  *
- * @brief   Cruise Control
+ * @brief   Cruise Control button handler class
  *
  * @date    2025-11-12
  * @author  Midnight Sun Team #24 - MSXVI
