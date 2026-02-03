@@ -34,7 +34,6 @@ typedef struct CruiseControlStorage {
   float current_motor_velocity;
   float target_motor_velocity;
   float set_motor_velocity;
-
 } CruiseControlStorage;
 
 /**
