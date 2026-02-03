@@ -24,16 +24,31 @@
  * @{
  */
 
-typedef struct AccelPedalStorage {
+#define CC_MIN_THRESHOLD 1
+#define CC_KP 0.001
+#define ACCELERATION_LIMIT_M_S2 1
+#define ACCELERATION_LIMIT_KM_HS ACCELERATION_LIMIT_M_S2 * 3.6
+#define ACCELERATION_LIMIT_PER_1000HZ_CYCLE ACCELERATION_LIMIT_KM_HS / 1000
+
+typedef struct CruiseControlStorage {
   float current_motor_velocity;
   float target_motor_velocity;
   float set_motor_velocity;
 
 } CruiseControlStorage;
 
-
+/**
+ * @brief   Runs one cruise control calculation cycle. Called within motor_can.c when cruise control mode is on
+ * @returns STATUS_CODE_OK if successful
+ *          STATUS_CODE_INVALID_ARGS if cruise control is not initialized
+ */
 StatusCode cruise_control_run();
 
+/**
+ * @brief   Initializes the cruise control module
+ * @returns STATUS_CODE_OK if initialization is successful
+ *          STATUS_CODE_INVALID_ARGS if storage is null
+ */
 StatusCode cruise_control_init(FrontControllerStorage *storage);
 
 /** @} */

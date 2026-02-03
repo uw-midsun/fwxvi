@@ -15,6 +15,7 @@
 #include "motor_can.h"
 
 #include "accel_pedal.h"
+#include "cruise_control.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
 
@@ -87,8 +88,12 @@ StatusCode motor_can_update_target_current_velocity() {
 #if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("CRUISE, CC RPM: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
 #endif
+      if (front_controller_storage->cruise_control_storage->target_motor_velocity != get_steering_target_velocity_cruise_control_target_velocity()) {
+        front_controller_storage->cruise_control_storage->target_motor_velocity = get_steering_target_velocity_cruise_control_target_velocity();
+      }
+      cruise_control_run();
       ws22_motor_can_set_current(1.0f);
-      ws22_motor_can_set_velocity(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
+      ws22_motor_can_set_velocity(front_controller_storage->cruise_control_storage->set_motor_velocity * VEL_TO_RPM_RATIO);
       break;
     case VEHICLE_DRIVE_STATE_BRAKE:
 #if (MOTOR_CAN_DEBUG == 2)
