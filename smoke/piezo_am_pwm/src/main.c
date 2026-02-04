@@ -28,7 +28,7 @@
 #define BUZZER_GPIO_ALTFN GPIO_ALT14_TIM16
 #define BUZZER_DUTY 50U
 
-#define CARRIER_FREQUENCY 4  // in kHz
+#define CARRIER_FREQUENCY_KHZ 4  // This is the resonant frequency
 
 #define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_A, .pin = 6 }
 
@@ -36,12 +36,18 @@ static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
 static TIM_HandleTypeDef h_timer = { 0U };
 
-static volatile bool s_toggle_pending = false;
+static volatile bool s_is_buzzer_on = false;
 
 static uint16_t prescaler = 79;
 
 static StatusCode toggle_carrier() {  // turns the carrier signal on or off
-  s_toggle_pending = true;
+  if (s_is_buzzer_on) {
+    pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
+    s_is_buzzer_on = false;
+  } else {
+    pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
+    s_is_buzzer_on = true;
+  }
   return STATUS_CODE_OK;
 }
 
@@ -61,7 +67,7 @@ StatusCode buzzer_init(void) {
     LOG_DEBUG("Error when calling gpio_init_pin_af: %d\r\n", ret);
     delay_ms(10U);
   }
-  ret = pwm_init_hz(BUZZER_TIMER, CARRIER_FREQUENCY * 1000);
+  ret = pwm_init_hz(BUZZER_TIMER, CARRIER_FREQUENCY_KHZ * 1000);
   if (ret != STATUS_CODE_OK) {
     LOG_DEBUG("Error when calling pwm_init_hz: %d\r\n", ret);
     delay_ms(10U);
@@ -147,21 +153,6 @@ TASK(play_notes, TASK_STACK_1024) {
   }
 }
 
-TASK(toggle_carrier_freq_task, TASK_STACK_1024) {
-  while (true) {
-    if (s_toggle_pending == true) {
-      const uint16_t dutyCycle = pwm_get_dc(BUZZER_TIMER, BUZZER_CHANNEL);
-      if (dutyCycle == BUZZER_DUTY) {
-        pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
-      } else if (dutyCycle == 0U) {
-        pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
-      }
-      s_toggle_pending = false;
-    }
-    delay_ms(1U);
-  }
-}
-
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
@@ -174,7 +165,6 @@ int main() {
   log_init();
 
   tasks_init_task(play_notes, TASK_PRIORITY(3), NULL);
-  tasks_init_task(toggle_carrier_freq_task, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
