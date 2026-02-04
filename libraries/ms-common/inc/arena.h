@@ -54,9 +54,8 @@ StatusCode arena_reset(Arena *a);
  * @param   size  Size of each element in bytes
  * @param   align Alignment in bytes (power of two)
  * @param   count Number of elements to allocate
- * @param   out   Output pointer for the allocated memory
- * @return  STATUS_CODE_OK on success, or an error code on failure
+ * @return  pointer to the address data is stored in, NULL on failure
  */
-StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count, void **out);
+void *arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count);
 
 /** @} */

@@ -45,16 +45,19 @@ TASK(arena_api, TASK_STACK_1024) {
   }
 
   while (true) {
-    MyStruct *obj = NULL;
+    MyStruct *obj = (MyStruct *) arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
+    MyStruct *obj_2 = (MyStruct *) arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
 
-    ret = arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1, (void**)&obj);
-    if (ret != STATUS_CODE_OK) {
+    if (obj == NULL || obj_2 == NULL) {
       LOG_DEBUG("ERROR arena_alloc");
       continue;
     }
 
     obj->x = 10;
     obj->y = 3.14f;
+
+    obj_2->x = 20;
+    obj_2->y = 2.78f;
 
     ret = arena_reset(&arena_obj);
     if (ret != STATUS_CODE_OK) {

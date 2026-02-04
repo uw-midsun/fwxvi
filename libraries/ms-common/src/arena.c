@@ -34,32 +34,29 @@ StatusCode arena_reset(Arena *a) {
   return STATUS_CODE_OK;
 }
 
-StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count, void **out) {
-  if (out == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  *out = NULL;
+void *arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
+  void *out = NULL;
 
   if (a == NULL || a->base == NULL || a->end == NULL || a->current == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
+    return NULL;
   }
 
-  if (size <= 0 || count < 0 || align <= 0) {
-    return STATUS_CODE_INVALID_ARGS;
+  if (size <= 0 || count <= 0 || align <= 0) {
+    return NULL;
   }
 
   // align must be a power of two
   if ((align & (align - 1)) != 0) {
-    return STATUS_CODE_INVALID_ARGS;
+    return NULL;
   }
 
   // overflow check
   if (count != 0 && size > PTRDIFF_MAX / count) {
-    return STATUS_CODE_OUT_OF_RANGE;
+    return NULL;
   }
 
   ptrdiff_t total = size * count;
+
   uintptr_t start = (uintptr_t)a->current - (uintptr_t)total;
 
   // logic to align down if needed
@@ -68,11 +65,11 @@ StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t coun
 
   uint8_t *start_ptr = (uint8_t *)start;
   if (start_ptr < a->base) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
+    return NULL;
   }
 
   a->current = start_ptr;
-  *out = memset(start_ptr, 0, (size_t)total);
+  out = memset(start_ptr, 0, (size_t)total);
 
-  return STATUS_CODE_OK;
+  return out;
 }
