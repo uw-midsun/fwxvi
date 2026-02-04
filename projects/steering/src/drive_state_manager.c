@@ -26,7 +26,7 @@
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
 #define IS_REAR_CONNECTED 0U
-#define DRIVE_STATE_MANAGER_DEBUG 1U
+#define DRIVE_STATE_MANAGER_DEBUG 0U
 
 static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
