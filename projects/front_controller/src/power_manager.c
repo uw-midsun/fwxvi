@@ -33,21 +33,21 @@ static PowerManagerStorage s_power_manager_storage = { 0U };
 
 static FrontControllerStorage *front_controller_storage = NULL;
 
-static GpioAddress MUX_SEL_0 = FRONT_CONTROLLER_MUX_SEL_0;
-static GpioAddress MUX_SEL_1 = FRONT_CONTROLLER_MUX_SEL_1;
-static GpioAddress MUX_SEL_2 = FRONT_CONTROLLER_MUX_SEL_2;
-static GpioAddress MUX_SEL_3 = FRONT_CONTROLLER_MUX_SEL_3;
-static GpioAddress MUX_OUT = FRONT_CONTROLLER_MUX_OUTPUT;
+static GpioAddress MUX_SEL_0 = GPIO_FRONT_CONTROLLER_MUX_SEL_0;
+static GpioAddress MUX_SEL_1 = GPIO_FRONT_CONTROLLER_MUX_SEL_1;
+static GpioAddress MUX_SEL_2 = GPIO_FRONT_CONTROLLER_MUX_SEL_2;
+static GpioAddress MUX_SEL_3 = GPIO_FRONT_CONTROLLER_MUX_SEL_3;
+static GpioAddress MUX_OUT = GPIO_FRONT_CONTROLLER_MUX_OUTPUT;
 
 /************************************************************************************************
  * Mapping table to connect output enum ID to its hardware pin
  ************************************************************************************************/
 
 const GpioAddress output_pins[NUM_OUTPUTS] = {
-  [LEFT_SIG] = FRONT_CONTROLLER_LEFT_SIG_LS_ENABLE,   [RIGHT_SIG] = FRONT_CONTROLLER_RIGHT_SIG_LS_ENABLE,   [BRAKE_LIGHT] = FRONT_CONTROLLER_BRAKE_LIGHT_LS_ENABLE,
-  [BPS_LIGHT] = FRONT_CONTROLLER_BPS_LIGHT_LS_ENABLE, [DRIVER_FAN] = FRONT_CONTROLLER_DRIVER_FAN_LS_ENABLE, [REV_CAM] = FRONT_CONTROLLER_REV_CAM_LS_ENABLE,
-  [TELEM] = FRONT_CONTROLLER_TELEM_LS_ENABLE,         [STEERING] = FRONT_CONTROLLER_STEERING_LS_ENABLE,     [HORN] = FRONT_CONTROLLER_HORN_LS_ENABLE,
-  [SPARE_1] = FRONT_CONTROLLER_SPARE_1_LS_ENABLE
+  [LEFT_SIG] = GPIO_FRONT_CONTROLLER_LEFT_SIG_LS_ENABLE,   [RIGHT_SIG] = GPIO_FRONT_CONTROLLER_RIGHT_SIG_LS_ENABLE,   [BRAKE_LIGHT] = GPIO_FRONT_CONTROLLER_BRAKE_LIGHT_LS_ENABLE,
+  [BPS_LIGHT] = GPIO_FRONT_CONTROLLER_BPS_LIGHT_LS_ENABLE, [DRIVER_FAN] = GPIO_FRONT_CONTROLLER_DRIVER_FAN_LS_ENABLE, [REV_CAM] = GPIO_FRONT_CONTROLLER_REV_CAM_LS_ENABLE,
+  [TELEM] = GPIO_FRONT_CONTROLLER_TELEM_LS_ENABLE,         [STEERING] = GPIO_FRONT_CONTROLLER_STEERING_LS_ENABLE,     [HORN] = GPIO_FRONT_CONTROLLER_HORN_LS_ENABLE,
+  [SPARE_1] = GPIO_FRONT_CONTROLLER_SPARE_1_LS_ENABLE
 };
 
 /************************************************************************************************
@@ -157,8 +157,6 @@ StatusCode power_manager_init(FrontControllerStorage *storage) {
   /* Initialize mux out as ADC pin */
   gpio_init_pin(&MUX_OUT, GPIO_ANALOG, GPIO_STATE_LOW);
   adc_add_channel(&MUX_OUT);
-  adc_init();
-
   return STATUS_CODE_OK;
 }
 
@@ -191,7 +189,7 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
       front_controller_storage->power_manager_storage->current_readings[i] = power_sense_lo_current_calc(sampled_voltage);
     }
 
-    LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
+    // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
 
     delay_ms(10);
   }

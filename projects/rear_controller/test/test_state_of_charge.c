@@ -35,7 +35,6 @@ static RearControllerConfig s_config = {
   .series_count = TEST_SERIES_COUNT,
   .parallel_count = TEST_PARALLEL_COUNT,
   .cell_capacity_Ah = TEST_CELL_CAPACITY_AH,
-  .precharge_timeout_ms = 5000,
 };
 
 static RearControllerStorage s_storage;

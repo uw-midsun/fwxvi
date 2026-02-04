@@ -15,6 +15,7 @@
 /* Inter-component Headers */
 #include "gpio.h"
 #include "log.h"
+#include "software_timer.h"
 
 /* Intra-component Headers */
 #include "button_led_manager.h"
@@ -22,6 +23,7 @@
 #include "buzzer.h"
 #include "cruise_control.h"
 #include "drive_state_manager.h"
+#include "global_enums.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
@@ -50,20 +52,31 @@ static LEDPixels rgb_led_colors[NUM_STEERING_BUTTONS] = {
   [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = BUTTON_LED_MANAGER_COLOR_PINK,
 };
 
+static SoftTimer s_hazard_blink_timer;
+static bool hazard_light_state = false;
+
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
 
-static void left_turn_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
+static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
+static void left_turn_btn_falling_edge_cb(Button *button) {
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_LEFT);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_LEFT_STATE && light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
+    light_state = STEERING_LIGHTS_LEFT_STATE;
+  } else if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_stop_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
@@ -77,15 +90,21 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_RIGHT);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_RIGHT_STATE && light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
+    light_state = STEERING_LIGHTS_RIGHT_STATE;
+  } else if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_stop_turn_signal();
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
@@ -99,14 +118,24 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
   lights_signal_manager_request(LIGHTS_SIGNAL_STATE_HAZARD);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
 #endif
+
+  if (light_state != STEERING_LIGHTS_HAZARD_STATE) {
+    buzzer_start_turn_signal();
+    software_timer_start(&s_hazard_blink_timer);
+    set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
+    light_state = STEERING_LIGHTS_HAZARD_STATE;
+  } else {
+    buzzer_stop_turn_signal();
+    software_timer_cancel(&s_hazard_blink_timer);
+    button_manager_led_disable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = false;
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+    light_state = STEERING_LIGHTS_OFF_STATE;
+  }
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
@@ -120,11 +149,7 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_DRIVE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -142,11 +167,7 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_REVERSE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -164,11 +185,7 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_NEUTRAL);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
@@ -194,7 +211,7 @@ static void horn_btn_falling_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(false);
+  set_steering_buttons_horn_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
@@ -202,7 +219,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(true);
+  set_steering_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
@@ -210,13 +227,10 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 #endif
+  drive_state_manager_toggle_regen();
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {
@@ -230,12 +244,6 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  cruise_control_up_handler();
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 #endif
@@ -252,12 +260,6 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  cruise_control_down_handler();
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
 #endif
@@ -281,7 +283,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = left_turn_btn_falling_edge_cb,
             .rising_edge_cb  = left_turn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_LEFT_TURN_BUTTON
+        .gpio = GPIO_STEERING_LEFT_TURN_BUTTON
     },
 
     [STEERING_BUTTON_RIGHT_LIGHT] = {
@@ -291,7 +293,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = right_turn_btn_falling_edge_cb,
             .rising_edge_cb  = right_turn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_RIGHT_TURN_BUTTON
+        .gpio = GPIO_STEERING_RIGHT_TURN_BUTTON
     },
 
     [STEERING_BUTTON_HAZARDS] = {
@@ -301,7 +303,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = hazards_btn_falling_edge_cb,
             .rising_edge_cb  = hazards_btn_rising_edge_cb,
         },
-        .gpio = STEERING_HAZARDS_BUTTON
+        .gpio = GPIO_STEERING_HAZARDS_BUTTON
     },
 
     [STEERING_BUTTON_DRIVE] = {
@@ -311,7 +313,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = drive_btn_falling_edge_cb,
             .rising_edge_cb  = drive_btn_rising_edge_cb,
         },
-        .gpio = STEERING_DRIVE_BUTTON
+        .gpio = GPIO_STEERING_DRIVE_BUTTON
     },
 
     [STEERING_BUTTON_REVERSE] = {
@@ -321,7 +323,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = reverse_btn_falling_edge_cb,
             .rising_edge_cb  = reverse_btn_rising_edge_cb,
         },
-        .gpio = STEERING_REVERSE_BUTTON
+        .gpio = GPIO_STEERING_REVERSE_BUTTON
     },
 
     [STEERING_BUTTON_NEUTRAL] = {
@@ -331,7 +333,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = neutral_btn_falling_edge_cb,
             .rising_edge_cb  = neutral_btn_rising_edge_cb,
         },
-        .gpio = STEERING_NEUTRAL_BUTTON
+        .gpio = GPIO_STEERING_NEUTRAL_BUTTON
     },
 
     [STEERING_BUTTON_HORN] = {
@@ -341,7 +343,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
             .falling_edge_cb = horn_btn_falling_edge_cb,
             .rising_edge_cb  = horn_btn_rising_edge_cb,
         },
-        .gpio = STEERING_HORN_BUTTON
+        .gpio = GPIO_STEERING_HORN_BUTTON
     },
 
     [STEERING_BUTTON_REGEN] = {
@@ -351,7 +353,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = regen_btn_falling_edge_cb,
           .rising_edge_cb  = regen_btn_rising_edge_cb,
       },
-      .gpio = STEERING_REGEN_BUTTON
+      .gpio = GPIO_STEERING_REGEN_BUTTON
     },
 
     [STEERING_BUTTON_CRUISE_CONTROL_UP] = {
@@ -361,7 +363,7 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = cruise_control_up_btn_falling_edge_cb,
           .rising_edge_cb  = cruise_control_up_btn_rising_edge_cb,
       },
-      .gpio = STEERING_CC_UP_BUTTON
+      .gpio = GPIO_STEERING_CC_UP_BUTTON
     },
 
     [STEERING_BUTTON_CRUISE_CONTROL_DOWN] = {
@@ -371,9 +373,25 @@ static ButtonConfig s_button_configs[NUM_STEERING_BUTTONS] = {
           .falling_edge_cb = cruise_control_down_btn_falling_edge_cb,
           .rising_edge_cb  = cruise_control_down_btn_rising_edge_cb,
       },
-      .gpio = STEERING_CC_DOWN_BUTTON
+      .gpio = GPIO_STEERING_CC_DOWN_BUTTON
     },
 };
+
+/************************************************************************************************
+ * SW timer callback
+ ************************************************************************************************/
+
+static void s_hazard_blink_timer_callback(SoftTimerId timer_id) {
+  if (hazard_light_state == false) {
+    button_manager_led_enable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = true;
+  } else {
+    button_manager_led_disable(STEERING_BUTTON_HAZARDS);
+    hazard_light_state = false;
+  }
+
+  software_timer_reset(&s_hazard_blink_timer);
+}
 
 /************************************************************************************************
  * Public functions
@@ -391,6 +409,8 @@ StatusCode button_manager_init(SteeringStorage *storage) {
     status_ok_or_return(button_init(&steering_storage->button_manager->buttons[i], &s_button_configs[i]));
     status_ok_or_return(button_led_manager_set_color(i, rgb_led_colors[i]));
   }
+
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_hazard_blink_timer_callback, &s_hazard_blink_timer));
 
   return STATUS_CODE_OK;
 }
@@ -415,6 +435,26 @@ StatusCode button_manager_update(void) {
   for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
     status_ok_or_return(button_update(&steering_storage->button_manager->buttons[i]));
   }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode button_manager_led_enable(SteeringButtons button) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  status_ok_or_return(button_led_manager_set_color(button, rgb_led_colors[button]));
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode button_manager_led_disable(SteeringButtons button) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  status_ok_or_return(button_led_manager_set_color(button, (LEDPixels)BUTTON_LED_MANAGER_COLOR_OFF));
 
   return STATUS_CODE_OK;
 }

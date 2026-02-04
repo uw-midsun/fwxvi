@@ -4,7 +4,7 @@
  * @brief   Rear controller main source file
  *
  * @date    2025-10-08
- * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2/@copilot)
+ * @author  Midnight Sun Team #24 - MSXVI (revised by hungwn2)
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -46,13 +46,13 @@ static CanStorage s_can_storage = { 0 };
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_REAR_CONTROLLER,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = REAR_CONTROLLER_CAN_TX,
-  .rx = REAR_CONTROLLER_CAN_RX,
+  .tx = GPIO_REAR_CONTROLLER_CAN_TX,
+  .rx = GPIO_REAR_CONTROLLER_CAN_RX,
   .loopback = false,
   .can_rx_all_cb = NULL,
 };
 
-static GpioAddress s_rear_controller_board_led = REAR_CONTROLLER_BOARD_LED;
+static GpioAddress s_rear_controller_board_led = GPIO_REAR_CONTROLLER_BOARD_LED;
 
 StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
   if (storage == NULL || config == NULL) {

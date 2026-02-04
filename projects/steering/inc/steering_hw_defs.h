@@ -22,99 +22,141 @@
  */
 
 /************************************************************************************************
+ * File-scope definitions
+ ************************************************************************************************/
+
+#define STEERING_GPIO_DEF(PORT, PIN) \
+  { .port = GPIO_PORT_##PORT, .pin = PIN }
+
+/************************************************************************************************
  * Steering CAN definitions
  ************************************************************************************************/
 
 /** @brief  Steering CAN RX Port */
-#define STEERING_CAN_RX \
-  { .port = GPIO_PORT_B, .pin = 8 }
+#define GPIO_STEERING_CAN_RX STEERING_GPIO_DEF(B, 8)
 
 /** @brief  Steering CAN TX Port */
-#define STEERING_CAN_TX \
-  { .port = GPIO_PORT_B, .pin = 9 }
+#define GPIO_STEERING_CAN_TX STEERING_GPIO_DEF(B, 9)
 
 /************************************************************************************************
  * Button definitions
  ************************************************************************************************/
 
 /** @brief  Steering left turn button */
-#define STEERING_LEFT_TURN_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 12 }
+#define GPIO_STEERING_LEFT_TURN_BUTTON STEERING_GPIO_DEF(B, 12)
 
 /** @brief  Steering right turn button */
-#define STEERING_RIGHT_TURN_BUTTON \
-  { .port = GPIO_PORT_A, .pin = 6 }
+#define GPIO_STEERING_RIGHT_TURN_BUTTON STEERING_GPIO_DEF(A, 6)
 
 /** @brief  Steering hazards button */
-#define STEERING_HAZARDS_BUTTON \
-  { .port = GPIO_PORT_C, .pin = 5 }
+#define GPIO_STEERING_HAZARDS_BUTTON STEERING_GPIO_DEF(C, 5)
 
 /** @brief  Steering neutral button */
-#define STEERING_NEUTRAL_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 2 }
+#define GPIO_STEERING_NEUTRAL_BUTTON STEERING_GPIO_DEF(B, 2)
 
 /** @brief  Steering drive button */
-#define STEERING_DRIVE_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 1 }
+#define GPIO_STEERING_DRIVE_BUTTON STEERING_GPIO_DEF(B, 1)
 
 /** @brief  Steering reverse button */
-#define STEERING_REVERSE_BUTTON \
-  { .port = GPIO_PORT_E, .pin = 7 }
+#define GPIO_STEERING_REVERSE_BUTTON STEERING_GPIO_DEF(E, 7)
 
 /** @brief  Steering horn button */
-#define STEERING_HORN_BUTTON \
-  { .port = GPIO_PORT_A, .pin = 7 }
+#define GPIO_STEERING_HORN_BUTTON STEERING_GPIO_DEF(A, 7)
 
 /** @brief  Steering horn button */
-#define STEERING_REGEN_BUTTON \
-  { .port = GPIO_PORT_E, .pin = 8 }
+#define GPIO_STEERING_REGEN_BUTTON STEERING_GPIO_DEF(E, 8)
 
 /** @brief  Steering cruise control up button */
-#define STEERING_CC_UP_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 13 }
+#define GPIO_STEERING_CC_UP_BUTTON STEERING_GPIO_DEF(B, 13)
 
 /** @brief  Steering cruise control down button */
-#define STEERING_CC_DOWN_BUTTON \
-  { .port = GPIO_PORT_B, .pin = 14 }
+#define GPIO_STEERING_CC_DOWN_BUTTON STEERING_GPIO_DEF(B, 14)
 
 /************************************************************************************************
  * LED turn signals
  ************************************************************************************************/
 
 /** @brief  Left turn LED */
-#define STEERING_LEFT_TURN_LED \
-  { .port = GPIO_PORT_B, .pin = 6 }
+#define GPIO_STEERING_LEFT_TURN_LED STEERING_GPIO_DEF(B, 6)
 
 /** @brief  Right turn LED */
-#define STEERING_RIGHT_TURN_LED \
-  { .port = GPIO_PORT_B, .pin = 7 }
+#define GPIO_STEERING_RIGHT_TURN_LED STEERING_GPIO_DEF(B, 7)
 
 /************************************************************************************************
- * Display control
+ * Display Control config
  ************************************************************************************************/
 
 /** @brief  Display control (Push-pull to control display state) */
-#define STEERING_DISPLAY_CTRL \
-  { .port = GPIO_PORT_A, .pin = 0 }
+#define GPIO_STEERING_DISPLAY_CTRL STEERING_GPIO_DEF(A, 0)
+//! On actual board this is PC6 for some reason
 
-/** @brief  Display current control (PWM to control % of current) */
-#define STEERING_DISPLAY_CURRENT_CTRL \
-  { .port = GPIO_PORT_A, .pin = 1 }
+/************************************************************************************************
+ * Display LTDC Config
+ ************************************************************************************************/
+
+/** @brief  LTDC pixel clock pin */
+#define GPIO_STEERING_DISPLAY_LTDC_CLOCK STEERING_GPIO_DEF(A, 4)
+
+/** @brief  LTDC horizontal sync pin */
+#define GPIO_STEERING_DISPLAY_LTDC_HSYNC STEERING_GPIO_DEF(C, 2)
+
+/** @brief  LTDC vertical sync pin */
+#define GPIO_STEERING_DISPLAY_LTDC_VSYNC STEERING_GPIO_DEF(B, 11)
+
+/** @brief  LTDC data enable pin */
+#define GPIO_STEERING_DISPLAY_LTDC_DE STEERING_GPIO_DEF(C, 0)
+
+/** @brief  LTDC red channel pins (bits 2-7) */
+#define GPIO_STEERING_DISPLAY_LTDC_RED_PINS \
+  {                                         \
+    {},                           /* R0 */  \
+        {},                       /* R1 */  \
+        STEERING_GPIO_DEF(E, 15), /* R2 */  \
+        STEERING_GPIO_DEF(D, 8),  /* R3 */  \
+        STEERING_GPIO_DEF(D, 9),  /* R4 */  \
+        STEERING_GPIO_DEF(D, 10), /* R5 */  \
+        STEERING_GPIO_DEF(E, 3),  /* R6 */  \
+        STEERING_GPIO_DEF(E, 2)   /* R7 */  \
+  }
+
+/** @brief  LTDC green channel pins (bits 2-7) */
+#define GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS \
+  {                                           \
+    {},                           /* G0 */    \
+        {},                       /* G1 */    \
+        STEERING_GPIO_DEF(E, 9),  /* G2 */    \
+        STEERING_GPIO_DEF(E, 10), /* G3 */    \
+        STEERING_GPIO_DEF(E, 11), /* G4 */    \
+        STEERING_GPIO_DEF(E, 12), /* G5 */    \
+        STEERING_GPIO_DEF(E, 6),  /* G6 */    \
+        STEERING_GPIO_DEF(E, 5)   /* G7 */    \
+  }
+
+/** @brief  LTDC blue channel pins (bits 2-7) */
+#define GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS \
+  {                                          \
+    {},                           /* B0 */   \
+        {},                       /* B1 */   \
+        STEERING_GPIO_DEF(D, 14), /* B2 */   \
+        STEERING_GPIO_DEF(D, 15), /* B3 */   \
+        STEERING_GPIO_DEF(D, 0),  /* B4 */   \
+        STEERING_GPIO_DEF(D, 1),  /* B5 */   \
+        STEERING_GPIO_DEF(B, 0),  /* B6 */   \
+        STEERING_GPIO_DEF(E, 4)   /* B7 */   \
+  }
 
 /************************************************************************************************
  * RGB buttons
  ************************************************************************************************/
 
 /** @brief  PWM pin for RGB LED control */
-#define STEERING_RGB_LIGHTS_PWM_PIN \
-  { .port = GPIO_PORT_A, .pin = 2 }
+#define GPIO_STEERING_RGB_LIGHTS_PWM_PIN STEERING_GPIO_DEF(A, 2)
 
 /************************************************************************************************
  * Buzzer
  ************************************************************************************************/
 
 /** @brief  PWM pin for the buzzer */
-#define STEERING_BUZZER_PWM_PIN \
-  { .port = GPIO_PORT_D, .pin = 12 }
+#define GPIO_STEERING_BUZZER_PWM_PIN STEERING_GPIO_DEF(D, 12)
 
 /** @} */

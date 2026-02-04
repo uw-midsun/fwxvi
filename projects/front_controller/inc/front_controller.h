@@ -39,8 +39,14 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller pedal exponent for non-linear feel */
 #define FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT 2.0f
 
-/** @brief  Front controller pedal alpha value for low-pass filtering */
+/** @brief  Front controller accel pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
+
+/** @brief  Front controller brake pedal alpha value for low-pass filtering */
+#define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
+
+/** @brief  Front controller brake pedal set to 1% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.01f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000

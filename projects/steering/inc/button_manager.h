@@ -58,4 +58,20 @@ StatusCode button_manager_reset(void);
  */
 StatusCode button_manager_update(void);
 
+/**
+ * @brief   Turns on LED of the button
+ * @param   button Button selector for modification
+ * @return  STATUS_CODE_OK if updated successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
+ */
+StatusCode button_manager_led_enable(SteeringButtons button);
+
+/**
+ * @brief   Turns off LED of the button
+ * @param   button Button selector for modification
+ * @return  STATUS_CODE_OK if updated successfully
+ *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
+ */
+StatusCode button_manager_led_disable(SteeringButtons button);
+
 /** @} */

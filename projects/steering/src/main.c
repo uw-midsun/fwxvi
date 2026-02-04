@@ -10,6 +10,7 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "can.h"
 #include "gpio.h"
 #include "log.h"
 #include "master_tasks.h"
@@ -20,6 +21,7 @@
 #include "button_led_manager.h"
 #include "button_manager.h"
 #include "cruise_control.h"
+#include "drive_state_manager.h"
 #include "party_mode.h"
 #include "steering.h"
 
@@ -35,10 +37,12 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   button_led_manager_update();
+  drive_state_manager_update();
+  cruise_control_run_medium_cycle();
+  run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-  cruise_control_run();
   party_mode_run();
 }
 

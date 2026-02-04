@@ -283,6 +283,7 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   }
 
   LOG_DEBUG("Resetted SD card\n");
+  s_is_initialized = true;
 
   /* Step 3: Check SD version with CMD8 */
   r1 = s_send_sd_cmd(SD_CMD_SEND_IF_COND, 0x1AAU, 0x87U, SD_RESPONSE_R7);

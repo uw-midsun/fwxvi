@@ -20,11 +20,6 @@
 #include "steering_hw_defs.h"
 
 /**
- * @brief Period in ms for the turn signal/harzard blinking
- */
-#define LIGHT_SIGNAL_BLINK_PERIOD_MS 600
-
-/**
  * @defgroup steering
  * @brief    steering Firmware
  * @{
