@@ -11,13 +11,13 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "arena.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
+#include "mcu.h"
 #include "status.h"
-#include "delay.h"
-#include "arena.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
@@ -45,8 +45,8 @@ TASK(arena_api, TASK_STACK_1024) {
   }
 
   while (true) {
-    MyStruct *obj = (MyStruct *) arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
-    MyStruct *obj_2 = (MyStruct *) arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
+    MyStruct *obj = (MyStruct *)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
+    MyStruct *obj_2 = (MyStruct *)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
 
     if (obj == NULL || obj_2 == NULL) {
       LOG_DEBUG("ERROR arena_alloc");

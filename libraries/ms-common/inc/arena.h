@@ -40,7 +40,6 @@ typedef struct {
  */
 StatusCode arena_init(Arena *a, void *buffer, ptrdiff_t cap);
 
-
 /**
  * @brief   Reset the arena to reuse all capacity
  * @param   a  Arena instance to reset
