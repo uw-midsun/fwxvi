@@ -21,17 +21,17 @@
 
 namespace Datagram {
 std::string Gpio::serialize(const CommandCode &commandCode) const {
-  std::string serializedData;
-
-  serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_gpioDatagram.gpioPort));
-  serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_gpioDatagram.gpioPin));
+  std::string serializedData; //byte buffer, but as a string
+  // returns a string
+  serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_gpioDatagram.gpioPort)); // appends byte to serialized data
+  serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_gpioDatagram.gpioPin)); // at this pount [gpioPort | gpioPin ]
 
   if (m_gpioDatagram.bufferLength > GPIO_MAX_BUFFER_SIZE) {
     throw std::runtime_error("Serialized Gpio buffer length exceeds maximum allowed size");
-  }
+  } // just says it does too much
 
-  serializeInteger<uint8_t>(serializedData, m_gpioDatagram.bufferLength);
-  serializedData.append(reinterpret_cast<const char *>(m_gpioDatagram.buffer), m_gpioDatagram.bufferLength);
+  serializeInteger<uint8_t>(serializedData, m_gpioDatagram.bufferLength); // adds the bugger neght on top
+  serializedData.append(reinterpret_cast<const char *>(m_gpioDatagram.buffer), m_gpioDatagram.bufferLength); // adds buffer data
   return encodeCommand(commandCode, serializedData);
 }
 

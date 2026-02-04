@@ -40,6 +40,8 @@ enum class CommandCode {
   GPIO_GET_ALL_ALT_FUNCTIONS, /**< Get all Gpio Pin alternate functions */
 
   /* I2C Commands */
+  I2C_SET_DATA,
+  I2C_READ_DATA,
 
   /* SPI Commands */
 
