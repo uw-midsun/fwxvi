@@ -25,6 +25,7 @@
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
+#include "range_estimator.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
 
@@ -67,7 +68,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   party_mode_init(steering_storage);
   display_init(steering_storage);
   cruise_control_init(steering_storage);
-
+  range_estimator_init(steering_storage);
   drive_state_manager_init();
 
   buzzer_play_startup();
