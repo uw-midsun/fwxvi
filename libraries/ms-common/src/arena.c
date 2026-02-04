@@ -38,10 +38,13 @@ StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t coun
   if (out == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
+
   *out = NULL;
+
   if (a == NULL || a->base == NULL || a->end == NULL || a->current == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
+
   if (size <= 0 || count < 0 || align <= 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -67,7 +70,9 @@ StatusCode arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t coun
   if (start_ptr < a->base) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
+
   a->current = start_ptr;
   *out = memset(start_ptr, 0, (size_t)total);
+
   return STATUS_CODE_OK;
 }
