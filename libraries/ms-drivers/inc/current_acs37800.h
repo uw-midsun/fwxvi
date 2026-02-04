@@ -32,7 +32,8 @@ typedef struct {
   I2CAddress i2c_address;
 } ACS37800Storage;
 
-/** @brief Initialize the ACS37800 driver
+/**
+ * @brief Initialize the ACS37800 driver
  * @param storage - a pointer to the ACS37800 struct, to be initialized
  * @param i2c_port - I2C port peripheral
  * @param i2c_address - I2C address peripheral
@@ -40,55 +41,63 @@ typedef struct {
  */
 StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address);
 
-/** @brief Gets the instantaneous current in amps
+/**
+ * @brief Gets the instantaneous current in amps
  * @param storage - pointer to already initialized ACS37800 struct
  * @param out_current_amps - current in amps
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amps);
 
-/** @brief Gets the instantaneous voltage in volts
+/**
+ * @brief Gets the instantaneous voltage in volts
  * @param storage - pointer to already initialized ACS37800 struct
  * @param out_voltage_mV - voltage in milivolts
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV);
 
-/** @brief Gets the instantaneous power in milliwatts
+/**
+ * @brief Gets the instantaneous power in milliwatts
  * @param storage - pointer to already initialized ACS37800 struct
  * @param out_power - power in milliwatts
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_mW);
 
-/** @brief Gets if the ACS37800 unit detects over-current (latched)
+/**
+ * @brief Gets if the ACS37800 unit detects over-current (latched)
  * @param storage - pointer to already initialized ACS37800 struct
  * @param overcurrent_flag - boolean to state if over-current happened (true -> over-current active)
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_overcurrent_flag(ACS37800Storage *storage, bool *overcurrent_flag);
 
-/** @brief Resets the latched overcurrent fault, needs to write 1 to 0x2D register
+/**
+ * @brief Resets the latched overcurrent fault, needs to write 1 to 0x2D register
  * @param storage - pointer to already initialized ACS37800 struct
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage *storage);
 
-/** @brief Gets if the ACS37800 unit detects over-voltage
+/**
+ * @brief Gets if the ACS37800 unit detects over-voltage
  * @param storage - pointer to already initialized ACS37800 struct
  * @param overcurrent_flag - boolean to state if over-voltage happened (true -> over-voltage active)
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvoltage_flag);
 
-/** @brief Gets if the ACS37800 unit detects under-voltage
+/**
+ * @brief Gets if the ACS37800 unit detects under-voltage
  * @param storage - pointer to already initialized ACS37800 struct
  * @param overcurrent_flag - boolean to state if under-voltage happened (true -> under-voltage active)
  * @return STATUS_CODE_OK on success
  */
 StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *undervoltage_flag);
 
-/** @brief Gets the 16 bit value from the ACS37800 volatile register
+/**
+ * @brief Gets the 16 bit value from the ACS37800 volatile register
  * @param storage - pointer to already initialized ACS37800 struct
  * @param reg - register address
  * @param out - 32 bit value at that register
@@ -98,44 +107,52 @@ StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers re
 
 #ifdef MS_PLATFORM_X86
 
-/** @brief Get the initialized ACS37800 storage
- *  @return Pointer to the ACS37800 storage
+/**
+ * @brief Get the initialized ACS37800 storage
+ * @return Pointer to the ACS37800 storage
  */
 ACS37800Storage *acs37800_get_storage(void);
 
-/** @brief Sets a register value for testing
- *  @param reg Register address
- *  @param value 32-bit value to set
+/**
+ * @brief Sets a register value for testing
+ * @param reg Register address
+ * @param value 32-bit value to set
  */
 void acs37800_set_register(ACS37800_Registers reg, uint32_t value);
 
-/** @brief Sets the current value for testing
- *  @param current_amps Current in amps
+/**
+ * @brief Sets the current value for testing
+ * @param current_amps Current in amps
  */
 void acs37800_set_current(float current_amps);
 
-/** @brief Sets the voltage value for testing
- *  @param voltage_mV Voltage in millivolts
+/**
+ * @brief Sets the voltage value for testing
+ * @param voltage_mV Voltage in millivolts
  */
 void acs37800_set_voltage(float voltage_mV);
 
-/** @brief Sets the power value for testing
- *  @param power_mW Power in milliwatts
+/**
+ * @brief Sets the power value for testing
+ * @param power_mW Power in milliwatts
  */
 void acs37800_set_power(float power_mW);
 
-/** @brief Sets the overcurrent flag for testing
- *  @param flag Overcurrent flag state
+/**
+ * @brief Sets the overcurrent flag for testing
+ * @param flag Overcurrent flag state
  */
 void acs37800_set_overcurrent_flag(bool flag);
 
-/** @brief Sets the overvoltage flag for testing
- *  @param flag Overvoltage flag state
+/**
+ * @brief Sets the overvoltage flag for testing
+ * @param flag Overvoltage flag state
  */
 void acs37800_set_overvoltage_flag(bool flag);
 
-/** @brief Sets the undervoltage flag for testing
- *  @param flag Undervoltage flag state
+/**
+ * @brief Sets the undervoltage flag for testing
+ * @param flag Undervoltage flag state
  */
 void acs37800_set_undervoltage_flag(bool flag);
 

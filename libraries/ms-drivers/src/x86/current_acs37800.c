@@ -184,11 +184,11 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *underv
   return STATUS_CODE_OK;
 }
 
-/* Setters */
-
 ACS37800Storage *acs37800_get_storage(void) {
   return s_storage;
 }
+
+/* Setters */
 
 void acs37800_set_register(ACS37800_Registers reg, uint32_t value) {
   s_registers[reg] = value;
