@@ -30,6 +30,12 @@
 
 #define CARRIER_FREQUENCY_KHZ 4  // This is the resonant frequency
 
+/* Amount of PWM divisions in one clock cycle - we will be able to support PWM in increments of (100 / PWM_DIV) */
+#define PWM_DIV 5
+/* Amount of PWM divs in one high phase, so the duty cycle will be equal to (100 / PWM_DIV) * PWM_HIGH_DIV_AMT */
+#define PWM_HIGH_DIV_AMT 4
+#define PWM_LOW_DIV_AMT PWM_DIV - PWM_HIGH_DIV_AMT
+
 #define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_A, .pin = 6 }
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
@@ -37,24 +43,33 @@ static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 static TIM_HandleTypeDef h_timer = { 0U };
 
 static volatile bool s_is_buzzer_on = false;
+static volatile int pwm_counter = 0;
 
 static uint16_t prescaler = 79;
 
 static StatusCode toggle_carrier() {  // turns the carrier signal on or off
   if (s_is_buzzer_on) {
-    pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
-    s_is_buzzer_on = false;
+    if (pwm_counter == PWM_LOW_DIV_AMT){
+      pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
+      s_is_buzzer_on = false;
+      pwm_counter = 0;
+    }
   } else {
-    pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
-    s_is_buzzer_on = true;
+    if (pwm_counter == PWM_HIGH_DIV_AMT){
+      pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
+      s_is_buzzer_on = true;
+      pwm_counter = 0;
+    }
   }
+
+  pwm_counter++;
   return STATUS_CODE_OK;
 }
 
 static uint16_t get_arr(uint16_t modulation_frequency) {
   uint16_t timer_frequency = 2 * modulation_frequency;
   uint32_t timer_clock = 80000000;  // 80MHz
-  uint16_t arr = (uint16_t)(timer_clock / ((prescaler + 1) * timer_frequency)) - 1;
+  uint16_t arr = (uint16_t)((timer_clock / ((prescaler + 1) * timer_frequency)) - 1) / PWM_DIV;
 
   return arr;
 }
