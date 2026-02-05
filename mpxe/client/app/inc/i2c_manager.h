@@ -46,7 +46,7 @@ class I2CManager {
    *  
    * @param payload message data 
    */
-  void I2CTransmit(std::string &payload);
+  std::string I2CManager::I2C_get_data(std::string &payload);
 
   /**
    * @brief erre
@@ -54,7 +54,7 @@ class I2CManager {
    * 
    * @param payload message d
    */
-  void I2CReceive(std::string &payload);
+  std::string I2CManager::I2C_set_data(std::string &payload);
 };
 
 /** @} */
