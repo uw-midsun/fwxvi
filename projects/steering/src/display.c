@@ -12,7 +12,9 @@
 #include <string.h>
 
 /* Inter-component Headers */
+#include "clut.h"
 #include "gpio.h"
+#include "ltdc.h"
 #include "pwm.h"
 
 /* Intra-component Headers */
@@ -63,9 +65,8 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_current_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  return STATUS_CODE_OK;
+  return ltdc_init(&settings);
 }
 
 StatusCode display_rx_slow() {

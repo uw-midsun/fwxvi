@@ -28,7 +28,7 @@ static uint32_t notification;
 static InterruptSettings killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,
   INTERRUPT_PRIORITY_NORMAL,
-  INTERRUPT_EDGE_RISING,
+  INTERRUPT_EDGE_FALLING,
 };
 
 StatusCode killswitch_init(Event event, const Task *task) {
@@ -40,7 +40,7 @@ StatusCode killswitch_init(Event event, const Task *task) {
   delay_ms(10U);
   GpioState state = gpio_get_state(&killswitch_address);
 
-  if (state == GPIO_STATE_LOW) {
+  if (state == GPIO_STATE_HIGH) {
     gpio_register_interrupt(&killswitch_address, &killswitch_settings, event, task);
   } else {
     LOG_DEBUG("KILLSWITCH PRESSED\r\n");

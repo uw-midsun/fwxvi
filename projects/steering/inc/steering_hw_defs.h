@@ -83,7 +83,7 @@
 #define GPIO_STEERING_RIGHT_TURN_LED STEERING_GPIO_DEF(B, 7)
 
 /************************************************************************************************
- * Display control
+ * Display Control config
  ************************************************************************************************/
 
 /** @brief  Display control (Push-pull to control display state) */

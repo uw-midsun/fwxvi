@@ -64,6 +64,7 @@ static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
 
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
+static SoftTimer s_signal_timer = { 0U };
 
 /* Melody playback state */
 static const Note *s_current_melody = NULL;
@@ -124,6 +125,18 @@ static void s_melody_callback(SoftTimerId id) {
 static void s_beep_callback(SoftTimerId id) {
   (void)id;
   pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
+}
+
+static void s_blink_signal_timer_callback(SoftTimerId timer_id) {
+  if (turn_sig_state) {
+    buzzer_play_melody(TURN_SIGNAL_CLICK_LOW);
+    turn_sig_state = false;
+  } else {
+    buzzer_play_melody(TURN_SIGNAL_CLICK_HIGH);
+    turn_sig_state = true;
+  }
+
+  software_timer_reset(&s_signal_timer);
 }
 
 StatusCode buzzer_init(void) {
@@ -197,6 +210,46 @@ StatusCode buzzer_play_error(void) {
 
 StatusCode buzzer_play_success(void) {
   return buzzer_play_melody(MELODY_SUCCESS);
+}
+
+StatusCode buzzer_play_drive(void) {
+  return buzzer_play_melody(MELODY_DRIVE_STATE);
+}
+
+StatusCode buzzer_play_neutral(void) {
+  return buzzer_play_melody(MELODY_NEUTRAL_STATE);
+}
+
+StatusCode buzzer_play_reverse(void) {
+  return buzzer_play_melody(MELODY_REVERSE_STATE);
+}
+
+StatusCode buzzer_play_invalid(void) {
+  return buzzer_play_melody(MELODY_INVALID_STATE);
+}
+
+StatusCode buzzer_play_regen_on(void) {
+  return buzzer_play_melody(MELODY_REGEN_ON);
+}
+
+StatusCode buzzer_play_regen_off(void) {
+  return buzzer_play_melody(MELODY_REGEN_OFF);
+}
+
+StatusCode buzzer_start_turn_signal(void) {
+  if (!software_timer_inuse(&s_signal_timer)) {
+    software_timer_start(&s_signal_timer);
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode buzzer_stop_turn_signal(void) {
+  if (software_timer_inuse(&s_signal_timer)) {
+    software_timer_cancel(&s_signal_timer);
+    turn_sig_state = true;
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode buzzer_stop(void) {

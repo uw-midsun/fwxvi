@@ -11,6 +11,10 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "button_manager.h"
+#include "global_enums.h"
+#include "steering_getters.h"
+#include "steering_setters.h"
 
 /* Intra-component Headers */
 #include "button_led.h"
@@ -26,6 +30,7 @@
 
 static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
+static RegenState current_regen_state = INVALID_REGEN_STATE;
 
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
@@ -146,13 +151,23 @@ static StatusCode drive_state_manager_drive(void) {
 StatusCode drive_state_manager_init(void) {
   current_state = VEHICLE_DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
+  current_regen_state = REGEN_STATE_DISABLED;
+
+  drive_state_manager_request(DRIVE_STATE_REQUEST_N);
+  drive_state_manager_enter_regen_state(REGEN_STATE_DISABLED);
+  return STATUS_CODE_OK;
 }
 
-void drive_state_manager_request(DriveStateRequest req) {
+StatusCode drive_state_manager_request(DriveStateRequest req) {
+  if (req >= NUM_DRIVE_STATE_REQUESTS) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   current_request = req;
+  return STATUS_CODE_OK;
 }
 
-void drive_state_manager_update(void) {
+StatusCode drive_state_manager_update(void) {
   switch (current_request) {
     case DRIVE_STATE_REQUEST_D:
 
@@ -168,6 +183,7 @@ void drive_state_manager_update(void) {
       }
 
       break;
+
     case DRIVE_STATE_REQUEST_N:
 
       if (current_state != VEHICLE_DRIVE_STATE_NEUTRAL) {
@@ -181,6 +197,7 @@ void drive_state_manager_update(void) {
         }
       }
       break;
+
     case DRIVE_STATE_REQUEST_R:
 
       if (current_state != VEHICLE_DRIVE_STATE_REVERSE) {
@@ -195,11 +212,17 @@ void drive_state_manager_update(void) {
       }
 
       break;
+
+    case DRIVE_STATE_REQUEST_NONE:
+      break;
+
     default:
       current_state = VEHICLE_DRIVE_STATE_INVALID;
       return STATUS_CODE_INVALID_ARGS;
       break;
   }
+
+  return STATUS_CODE_OK;
 }
 
 VehicleDriveState drive_state_manager_get_state(void) {

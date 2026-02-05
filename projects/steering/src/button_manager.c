@@ -15,6 +15,7 @@
 /* Inter-component Headers */
 #include "gpio.h"
 #include "log.h"
+#include "software_timer.h"
 
 /* Intra-component Headers */
 #include "button_led.h"
@@ -23,6 +24,7 @@
 #include "buzzer.h"
 #include "cruise_control.h"
 #include "drive_state_manager.h"
+#include "global_enums.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
@@ -39,6 +41,8 @@ static bool hazard_light_state = false;
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
+
+static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
   lights_signal_manager_register(LIGHTS_SIGNAL_STATE_LEFT);
@@ -94,11 +98,7 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_DRIVE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -116,11 +116,7 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_REVERSE);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -138,11 +134,7 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
-  drive_state_manager_request(DRIVE_STATE_NEUTRAL);
+  drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
@@ -168,7 +160,7 @@ static void horn_btn_falling_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(false);
+  set_steering_buttons_horn_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
@@ -176,7 +168,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
 
-  set_steering_buttons_horn_enabled(true);
+  set_steering_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
@@ -184,13 +176,10 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  if (party_mode_active() == false) {
-    buzzer_play_success();
-  }
-
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 #endif
+  drive_state_manager_toggle_regen();
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {

@@ -1,0 +1,14 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "ms-gui"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/steering/inc"
+    ],
+    "can": false
+}

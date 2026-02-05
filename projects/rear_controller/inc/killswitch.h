@@ -26,6 +26,12 @@
  * @{
  */
 
+/**
+ * @brief   Initializes the killswitch with interrupt handling
+ * @param   event  Event to raise when killswitch is triggered
+ * @param   task   Task to notify when event is raised
+ * @return  StatusCode indicating success or failure of initialization
+ */
 StatusCode killswitch_init(Event event, const Task *task);
 
 /**
