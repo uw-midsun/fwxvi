@@ -3,7 +3,28 @@ import subprocess
 import serial  # pip install pyserial
 import glob
 import os
+import time
 from sys import platform
+
+# OpenOCD configuration constants
+OPENOCD = 'openocd'
+OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
+PROBE = 'cmsis-dap'
+PLATFORM_DIR = 'platform'
+
+
+def get_device_params_mode(flash_type):
+    """Get the device params directory based on flash type."""
+    return 'default' if flash_type != 'legacy' else 'legacy'
+
+
+def get_hardware_paths(hardware, flash_type):
+    """Get paths for hardware-specific configuration files."""
+    device_params_mode = get_device_params_mode(flash_type)
+    return {
+        'device_params': os.path.join(PLATFORM_DIR, 'hardware', hardware, device_params_mode, 'device_params.cfg'),
+        'flash_procs': os.path.join(PLATFORM_DIR, 'hardware', 'templates', 'stm32_flash_procs.tcl'),
+    }
 
 def parse_config(entry):
     # Default config to empty for fields that don't exist
@@ -31,7 +52,7 @@ def parse_config(entry):
 
 
 def flash_run(entry, hardware, flash_type):
-    '''flash and run file, return a pyserial object which monitors the device serial output'''
+    '''Flash and run file, return a pyserial object which monitors the device serial output'''
     serialData = None
 
     try:
@@ -42,18 +63,7 @@ def flash_run(entry, hardware, flash_type):
         print()
         print("Flashing requires a controller board to be connected, use --platform=x86 for x86 targets")
 
-    OPENOCD = 'openocd'
-    OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
-    PROBE = 'cmsis-dap'
-    PLATFORM_DIR = 'platform'
-
-    device_params_mode = 'default' if flash_type != 'legacy' else 'legacy'
-
-    # Path to Tcl procedures (e.g., stm32_flash_procs.tcl)
-    FLASHING_PROCS_TCL = os.path.join(PLATFORM_DIR, 'hardware', 'templates', 'stm32_flash_procs.tcl')
-
-    # Path to hardware-specific parameters (e.g., platform/hardware/STM32L433CCU6/legacy/device_params.cfg)
-    HARDWARE_PARAMS_TCL = os.path.join(PLATFORM_DIR, 'hardware', hardware, device_params_mode, 'device_params.cfg')
+    paths = get_hardware_paths(hardware, flash_type)
 
     # Mapping of flash_type to the Tcl procedure name
     flash_proc_map = {
@@ -70,8 +80,8 @@ def flash_run(entry, hardware, flash_type):
         raise ValueError(f"Invalid or unsupported flash_type: '{flash_type}' for flashing.")
 
     tcl_commands_string = (
-        f'source "{HARDWARE_PARAMS_TCL}"; '  # This sets the memory sizes/locations for the openOCD scripts
-        f'source "{FLASHING_PROCS_TCL}"; '   # This defines the flashing procedures
+        f'source "{paths["device_params"]}"; '
+        f'source "{paths["flash_procs"]}"; '
         f'{tcl_flash_proc} "{entry}"; '
         'shutdown'
     )
@@ -101,3 +111,45 @@ def flash_run(entry, hardware, flash_type):
         raise
 
     return serialData
+
+
+def gdb_run(elf_path, hardware, flash_type):
+    """Start OpenOCD and GDB for ARM debugging.
+    
+    Args:
+        elf_path: Path to the ELF file to debug
+        hardware: Hardware type (e.g., 'STM32L433CCU6')
+        flash_type: Flash type (e.g., 'legacy')
+    """
+    paths = get_hardware_paths(hardware, flash_type)
+    
+    openocd_cmd = [
+        "sudo", OPENOCD,
+        "-s", OPENOCD_SCRIPT_DIR,
+        "-f", f"interface/{PROBE}.cfg",
+        "-f", "target/stm32l4x.cfg",
+        "-f", paths['device_params'],
+        "-f", paths['flash_procs'],
+    ]
+    
+    print(f"Starting OpenOCD: {' '.join(openocd_cmd)}")
+    openocd_proc = subprocess.Popen(openocd_cmd)
+    
+    try:
+        # Give OpenOCD time to start
+        time.sleep(2)
+        
+        gdb_cmd = [
+            "arm-none-eabi-gdb",
+            "-tui",
+            str(elf_path),
+            "-ex", "target extended-remote localhost:3333",
+            "-ex", "monitor reset halt",
+        ]
+        
+        print(f"Starting GDB: {' '.join(gdb_cmd)}")
+        subprocess.run(gdb_cmd)
+    finally:
+        # Clean up OpenOCD when GDB exits
+        print("Terminating OpenOCD...")
+        subprocess.run(["sudo", "kill", str(openocd_proc.pid)])
