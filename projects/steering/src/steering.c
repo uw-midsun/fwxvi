@@ -69,7 +69,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   display_init(steering_storage);
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
-  drive_state_manager_init();
+  drive_state_manager_init(steering_storage);
 
   buzzer_play_startup();
   button_led_manager_clear_all();

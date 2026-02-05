@@ -24,16 +24,17 @@
  * @{
  */
 
-#define CC_MIN_THRESHOLD 1
-#define CC_KP 0.001
+#define CC_MIN_THRESHOLD 0.5f
+#define CC_KP 0.00000005
 #define ACCELERATION_LIMIT_M_S2 1
 #define ACCELERATION_LIMIT_KM_HS ACCELERATION_LIMIT_M_S2 * 3.6
 #define ACCELERATION_LIMIT_PER_1000HZ_CYCLE ACCELERATION_LIMIT_KM_HS / 1000
+#define CURRENT_STEP_LIMIT 0.0001
 
 typedef struct CruiseControlStorage {
   float current_motor_velocity;
   float target_motor_velocity;
-  float set_motor_velocity;
+  float set_current;
 } CruiseControlStorage;
 
 /**

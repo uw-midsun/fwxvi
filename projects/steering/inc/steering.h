@@ -33,10 +33,10 @@ struct ButtonLEDManager;
 #define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
 
 /** @brief  Maximum cruise control spesed in kilometers per hour*/
-#define STEERING_CRUISE_MAX_SPEED_KMH 80U
+#define STEERING_CRUISE_MAX_SPEED_KMH 1000U  // 80
 
 /** @brief  Minimum cruise control speed in kilometers per hour */
-#define STEERING_CRUISE_MIN_SPEED_KMH 40U
+#define STEERING_CRUISE_MIN_SPEED_KMH 0U  // 40
 
 /**
  * @brief   Steering buttons

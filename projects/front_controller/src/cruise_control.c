@@ -24,6 +24,8 @@
 static FrontControllerStorage *front_controller_storage;
 static CruiseControlStorage s_cruise_control_storage = { 0 };
 
+#define DT 0.001  // cruise_control_run() is a 1000Hz task
+
 StatusCode cruise_control_run() {
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
@@ -36,7 +38,7 @@ StatusCode cruise_control_run() {
    *
    *
    * 1. calculate eP
-   * 1.1. if eP < min_treshold, set velocity directly
+   * 1.1. if eP < min_threshold, set current directly
    * 2. calculate eI, eD
    * 2.1. bound eI if needed
    * 3. calculate result kP * eP + ...
@@ -45,21 +47,25 @@ StatusCode cruise_control_run() {
    * Notes: eI must be reset on any pedal action
    */
 
-  float e_p = s_cruise_control_storage.current_motor_velocity - s_cruise_control_storage.target_motor_velocity;
+  float e_p = s_cruise_control_storage.target_motor_velocity - s_cruise_control_storage.current_motor_velocity;
 
-  // If we are within a minimum threshold, write the target velocity directly and let the WS22 take over
+  // If we are within a minimum threshold, stop increasing the set current
   if (fabsf(e_p) < CC_MIN_THRESHOLD) {
-    s_cruise_control_storage.set_motor_velocity = s_cruise_control_storage.target_motor_velocity;
+    LOG_DEBUG("e_p within CC min threshold\r\n");
+    // Set current should not change
     return STATUS_CODE_OK;
   }
 
   float res = CC_KP * e_p;
 
-  // Clamp under acceleration limit
-  res = fminf(res, ACCELERATION_LIMIT_PER_1000HZ_CYCLE);
+  // Clamp under current step limit
+  res = fminf(res, CURRENT_STEP_LIMIT);
 
   // Store set velocity in cruise control storage
-  s_cruise_control_storage.set_motor_velocity = s_cruise_control_storage.current_motor_velocity + res;
+  s_cruise_control_storage.set_current += res;
+
+  LOG_DEBUG("MotVel: %d | TarVel: %d | res: %dx10^-6 | curr: %dmA\r\n", (int16_t)s_cruise_control_storage.current_motor_velocity, (int16_t)s_cruise_control_storage.target_motor_velocity,
+            (int16_t)(res * 1000000), (int16_t)(front_controller_storage->ws22_motor_can_storage->control.current * 1000));
 
   return STATUS_CODE_OK;
 }

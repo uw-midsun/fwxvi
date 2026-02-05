@@ -20,6 +20,7 @@
 #include "button_led.h"
 #include "buzzer.h"
 #include "drive_state_manager.h"
+#include "steering.h"
 
 /**
  * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
@@ -31,6 +32,8 @@
 static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 static RegenState current_regen_state = INVALID_REGEN_STATE;
+
+static SteeringStorage *steering_storage = NULL;
 
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
@@ -148,7 +151,12 @@ static StatusCode drive_state_manager_drive(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode drive_state_manager_init(void) {
+StatusCode drive_state_manager_init(SteeringStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  steering_storage = storage;
+
   current_state = VEHICLE_DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
   current_regen_state = REGEN_STATE_DISABLED;
@@ -193,6 +201,8 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to NEUTRAL\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -207,6 +217,8 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to REVERSE\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
