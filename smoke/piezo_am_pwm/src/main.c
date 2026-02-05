@@ -36,7 +36,8 @@
 #define PWM_HIGH_DIV_AMT 4
 #define PWM_LOW_DIV_AMT PWM_DIV - PWM_HIGH_DIV_AMT
 
-#define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_A, .pin = 6 }
+#define STEERING_BUZZER_PWM_PIN \
+  { .port = GPIO_PORT_A, .pin = 6 }
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
@@ -49,13 +50,13 @@ static uint16_t prescaler = 79;
 
 static StatusCode toggle_carrier() {  // turns the carrier signal on or off
   if (s_is_buzzer_on) {
-    if (pwm_counter == PWM_LOW_DIV_AMT){
+    if (pwm_counter == PWM_LOW_DIV_AMT) {
       pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
       s_is_buzzer_on = false;
       pwm_counter = 0;
     }
   } else {
-    if (pwm_counter == PWM_HIGH_DIV_AMT){
+    if (pwm_counter == PWM_HIGH_DIV_AMT) {
       pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
       s_is_buzzer_on = true;
       pwm_counter = 0;
