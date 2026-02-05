@@ -12,87 +12,117 @@
 /* Inter-component Headers */
 #include "light_signal_manager.h"
 
+#include "button_led.h"
+#include "button_led_manager.h"
+#include "buzzer.h"
 #include "global_enums.h"
+#include "steering.h"
 #include "steering_setters.h"
 /* Intra-component Headers */
 
 static SoftTimer s_signal_blink_timer;
 static LightsSignalState current_state = LIGHTS_SIGNAL_STATE_OFF;
-static LightsSignalRequest current_request = LIGHTS_SIGNAL_REQUEST_OFF;
+static LightsSignalCommand current_request = LIGHTS_SIGNAL_COMMAND_NONE;
 
-const GpioAddress left_led = STEERING_LEFT_TURN_LED;
-const GpioAddress right_led = STEERING_RIGHT_TURN_LED;
+static bool left_led_state = false;
+static bool right_led_state = false;
+static bool hazard_led_state = false;
+
+static bool led_states[NUM_STEERING_BUTTONS] = { [STEERING_BUTTON_HAZARDS] = false, [STEERING_BUTTON_RIGHT_LIGHT] = false, [STEERING_BUTTON_LEFT_LIGHT] = false };
 
 static void s_blink_timer_callback(SoftTimerId timer_id) {
   if (current_state == LIGHTS_SIGNAL_STATE_LEFT) {
-    gpio_toggle_state(&left_led);
+    button_led_toggle(STEERING_BUTTON_LEFT_LIGHT);
   } else if (current_state == LIGHTS_SIGNAL_STATE_RIGHT) {
-    gpio_toggle_state(&right_led);
+    button_led_toggle(STEERING_BUTTON_RIGHT_LIGHT);
   } else if (current_state == LIGHTS_SIGNAL_STATE_HAZARD) {
-    gpio_toggle_state(&left_led);
-    gpio_toggle_state(&right_led);
+    button_led_toggle(STEERING_BUTTON_HAZARDS);
   }
   software_timer_reset(&s_signal_blink_timer);
 }
 
 void lights_signal_manager_init(void) {
   current_state = LIGHTS_SIGNAL_STATE_OFF;
-  current_request = LIGHTS_SIGNAL_REQUEST_OFF;
-  software_timer_init(LIGHT_SIGNAL_BLINK_PERIOD_MS, s_blink_timer_callback, &s_signal_blink_timer);
+  current_request = LIGHTS_SIGNAL_COMMAND_NONE;
+  software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_timer_callback, &s_signal_blink_timer);
 }
 
-void lights_signal_manager_request(LightsSignalRequest req) {
+StatusCode lights_signal_manager_register(LightsSignalCommand req) {
   current_request = req;
+  return STATUS_CODE_OK;
 }
 
-void lights_signal_manager_update(void) {
+StatusCode lights_signal_manager_update(void) {
   LightsSignalState previous_state = current_state;
 
   switch (current_request) {
-    case LIGHTS_SIGNAL_REQUEST_OFF:
-      if (previous_state != LIGHTS_SIGNAL_STATE_OFF) {
-        set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
-        gpio_set_state(&left_led, GPIO_STATE_LOW);
-        gpio_set_state(&right_led, GPIO_STATE_LOW);
-
-        current_state = LIGHTS_SIGNAL_STATE_OFF;
-        software_timer_cancel(&s_signal_blink_timer);
-      }
+    case LIGHTS_SIGNAL_COMMAND_NONE:
       break;
-
-    case LIGHTS_SIGNAL_REQUEST_LEFT:
+    case LIGHTS_SIGNAL_COMMAND_LEFT:
       if (previous_state != LIGHTS_SIGNAL_STATE_LEFT && previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
         set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
-        gpio_set_state(&left_led, GPIO_STATE_HIGH);
-        gpio_set_state(&right_led, GPIO_STATE_LOW);
+        button_led_disable(STEERING_BUTTON_RIGHT_LIGHT);
+        software_timer_start(&s_signal_blink_timer);
+        buzzer_start_turn_signal();
 
         current_state = LIGHTS_SIGNAL_STATE_LEFT;
-        software_timer_start(&s_signal_blink_timer);
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
+      } else if (previous_state == LIGHTS_SIGNAL_STATE_LEFT) {
+        set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+        software_timer_cancel(&s_signal_blink_timer);
+        button_led_disable(STEERING_BUTTON_LEFT_LIGHT);
+        button_led_disable(STEERING_BUTTON_RIGHT_LIGHT);
+        buzzer_stop_turn_signal();
+
+        current_state = LIGHTS_SIGNAL_STATE_OFF;
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
       }
       break;
 
-    case LIGHTS_SIGNAL_REQUEST_RIGHT:
+    case LIGHTS_SIGNAL_COMMAND_RIGHT:
       if (previous_state != LIGHTS_SIGNAL_STATE_RIGHT && previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
         set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
-        gpio_set_state(&left_led, GPIO_STATE_LOW);
-        gpio_set_state(&right_led, GPIO_STATE_HIGH);
+        button_led_disable(STEERING_BUTTON_LEFT_LIGHT);
+        software_timer_start(&s_signal_blink_timer);
+        buzzer_start_turn_signal();
 
         current_state = LIGHTS_SIGNAL_STATE_RIGHT;
-        software_timer_start(&s_signal_blink_timer);
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
+      } else if (previous_state == LIGHTS_SIGNAL_STATE_RIGHT) {
+        set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+        software_timer_cancel(&s_signal_blink_timer);
+        button_led_disable(STEERING_BUTTON_LEFT_LIGHT);
+        button_led_disable(STEERING_BUTTON_RIGHT_LIGHT);
+        buzzer_stop_turn_signal();
+
+        current_state = LIGHTS_SIGNAL_STATE_OFF;
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
       }
       break;
 
-    case LIGHTS_SIGNAL_REQUEST_HAZARD:
+    case LIGHTS_SIGNAL_COMMAND_HAZARD:
       if (previous_state != LIGHTS_SIGNAL_STATE_HAZARD) {
         set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
-        gpio_set_state(&left_led, GPIO_STATE_HIGH);
-        gpio_set_state(&right_led, GPIO_STATE_HIGH);
+        button_led_disable(STEERING_BUTTON_LEFT_LIGHT);
+        button_led_disable(STEERING_BUTTON_RIGHT_LIGHT);
+        software_timer_start(&s_signal_blink_timer);
+        buzzer_start_turn_signal();
 
         current_state = LIGHTS_SIGNAL_STATE_HAZARD;
-        software_timer_start(&s_signal_blink_timer);
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
+      } else if (previous_state == LIGHTS_SIGNAL_STATE_HAZARD) {
+        set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+        software_timer_cancel(&s_signal_blink_timer);
+        button_led_disable(STEERING_BUTTON_HAZARDS);
+        buzzer_stop_turn_signal();
+
+        current_state = LIGHTS_SIGNAL_STATE_OFF;
+        current_request = LIGHTS_SIGNAL_COMMAND_NONE;
       }
       break;
   }
+
+  return STATUS_CODE_OK;
 }
 
 LightsSignalState lights_signal_manager_get_state(void) {

@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "delay.h"
+#include "global_enums.h"
 #include "gpio.h"
 #include "log.h"
 #include "pwm.h"
@@ -37,7 +38,29 @@ static Note MELODY_ERROR[] = { { NOTE_A5, 150 }, { NOTE_F5, 150 }, { NOTE_D5, 15
 /* Triumphant success fanfare */
 static Note MELODY_SUCCESS[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 100 }, { NOTE_C6, 250 }, { NOTE_REST, 0 } };
 
-static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
+/* Turn signal click high*/
+static Note TURN_SIGNAL_CLICK_HIGH[] = { { NOTE_C8, 50 }, { NOTE_REST, 0 } };
+
+/* Turn signal click low*/
+static Note TURN_SIGNAL_CLICK_LOW[] = { { NOTE_C7, 50 }, { NOTE_REST, 0 } };
+
+static Note MELODY_DRIVE_STATE[] = { { NOTE_C6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_NEUTRAL_STATE[] = { { NOTE_E6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REVERSE_STATE[] = { { NOTE_G6, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_INVALID_STATE[] = { { NOTE_C5, 100 }, { NOTE_REST, 50 }, { NOTE_C5, 100 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REGEN_ON[] = { { NOTE_C4, 30 }, { NOTE_D4, 30 }, { NOTE_E4, 30 }, { NOTE_F4, 30 }, { NOTE_G4, 30 }, { NOTE_A4, 30 },
+                                  { NOTE_B4, 30 }, { NOTE_C5, 40 }, { NOTE_D5, 50 }, { NOTE_E5, 70 }, { NOTE_REST, 0 } };
+
+static Note MELODY_REGEN_OFF[] = { { NOTE_E5, 70 }, { NOTE_D5, 50 }, { NOTE_C5, 40 }, { NOTE_B4, 30 }, { NOTE_A4, 30 }, { NOTE_G4, 30 },
+                                   { NOTE_F4, 30 }, { NOTE_E4, 30 }, { NOTE_D4, 30 }, { NOTE_C4, 30 }, { NOTE_REST, 0 } };
+
+static bool turn_sig_state = true;
+
+static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
 
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
@@ -107,6 +130,7 @@ StatusCode buzzer_init(void) {
   status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
   status_ok_or_return(pwm_init(BUZZER_TIMER, s_freq_to_period_us(NOTE_A4)));
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_signal_timer));
 
   return STATUS_CODE_OK;
 }

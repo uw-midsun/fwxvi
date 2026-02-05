@@ -15,6 +15,7 @@
 
 /* Intra-component Headers */
 #include "power_path_manager.h"
+#include "rear_controller_setters.h"
 
 /** @brief  VCC/2 for 3.3V supply */
 #define ZERO_OFFSET_MV (1650)
@@ -27,14 +28,14 @@
 
 static RearControllerStorage *rear_controller_storage = NULL;
 
-static GpioAddress pcs_vsense_gpio = REAR_CONTROLLER_PCS_VSENSE;
-static GpioAddress pcs_isense_gpio = REAR_CONTROLLER_PCS_ISENSE;
-static GpioAddress aux_vsense_gpio = REAR_CONTROLLER_AUX_VSENSE;
-static GpioAddress aux_isense_gpio = REAR_CONTROLLER_AUX_ISENSE;
-static GpioAddress pcs_valid1 = REAR_CONTROLLER_PCS_VALID1;
-static GpioAddress pcs_valid2 = REAR_CONTROLLER_PCS_VALID2;
-static GpioAddress aux_valid1 = REAR_CONTROLLER_AUX_VALID1;
-static GpioAddress aux_valid2 = REAR_CONTROLLER_AUX_VALID2;
+static GpioAddress pcs_vsense_gpio = GPIO_REAR_CONTROLLER_PCS_VSENSE;
+static GpioAddress pcs_isense_gpio = GPIO_REAR_CONTROLLER_PCS_ISENSE;
+static GpioAddress aux_vsense_gpio = GPIO_REAR_CONTROLLER_AUX_VSENSE;
+static GpioAddress aux_isense_gpio = GPIO_REAR_CONTROLLER_AUX_ISENSE;
+static GpioAddress pcs_valid1 = GPIO_REAR_CONTROLLER_PCS_VALID1;
+static GpioAddress pcs_valid2 = GPIO_REAR_CONTROLLER_PCS_VALID2;
+static GpioAddress aux_valid1 = GPIO_REAR_CONTROLLER_AUX_VALID1;
+static GpioAddress aux_valid2 = GPIO_REAR_CONTROLLER_AUX_VALID2;
 
 /* V sense */
 static StatusCode s_power_path_voltage_sense(GpioAddress *voltage_address, uint32_t *vin_mV) {
@@ -134,6 +135,11 @@ StatusCode power_path_manager_run(void) {
 
   rear_controller_storage->pcs_valid = pcs_valid_1 && pcs_valid_2;
   rear_controller_storage->aux_valid = aux_valid_1 && aux_valid_2;
+
+  set_power_input_stats_input_dcdc_voltage((int16_t)rear_controller_storage->pcs_voltage);
+  set_power_input_stats_input_dcdc_current((int16_t)rear_controller_storage->pcs_current);
+  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->aux_voltage);
+  set_power_input_stats_input_aux_current((int16_t)rear_controller_storage->aux_current);
 
   return STATUS_CODE_OK;
 }

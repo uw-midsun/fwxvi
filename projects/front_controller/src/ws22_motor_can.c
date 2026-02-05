@@ -14,6 +14,7 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "front_controller_setters.h"
 #include "ws22_motor_can.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;
@@ -29,11 +30,16 @@ static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanM
   msg->extended = false;
   msg->dlc = 8U;
 
-  /* Pack velocity (little-endian) */
-  msg->data_u8[0] = (uint8_t)(control_data->velocity & 0xFFU);
-  msg->data_u8[1] = (uint8_t)((control_data->velocity >> 8U) & 0xFFU);
-  msg->data_u8[2] = (uint8_t)((control_data->velocity >> 16U) & 0xFFU);
-  msg->data_u8[3] = (uint8_t)((control_data->velocity >> 24U) & 0xFFU);
+  /* Pack velocity as float */
+  union {
+    float f;
+    uint8_t bytes[4];
+  } velocity_union;
+  velocity_union.f = control_data->velocity;
+  msg->data_u8[0] = velocity_union.bytes[0];
+  msg->data_u8[1] = velocity_union.bytes[1];
+  msg->data_u8[2] = velocity_union.bytes[2];
+  msg->data_u8[3] = velocity_union.bytes[3];
 
   /* Pack current as float */
   union {
@@ -82,6 +88,9 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
 
   /* Read vehicle velocity is in units of m/s */
   front_controller_storage->vehicle_speed_kph = telemetry->motor_velocity * 3.6f;
+
+  set_motor_velocity_vehicle_velocity((int16_t)(front_controller_storage->vehicle_speed_kph));
+  set_motor_velocity_motor_velocity((int16_t)(telemetry->motor_velocity));
 
   return STATUS_CODE_OK;
 }
@@ -148,6 +157,9 @@ static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, CanMe
   memcpy(&telemetry->motor_temp, &msg->data_u8[0], sizeof(float));
   memcpy(&telemetry->heat_sink_temp, &msg->data_u8[4], sizeof(float));
 
+  set_motor_temperature_motor_temp((int16_t)telemetry->motor_temp);
+  set_motor_temperature_heat_sink_temp((int16_t)telemetry->heat_sink_temp);
+
   return STATUS_CODE_OK;
 }
 
@@ -171,8 +183,8 @@ StatusCode ws22_motor_can_set_current(float current) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_set_velocity(uint32_t velocity) {
-  if (velocity > 12000U) {
+StatusCode ws22_motor_can_set_velocity(float velocity) {
+  if (velocity > 12000 || velocity < -12000) {
     return STATUS_CODE_INVALID_ARGS;
   }
 

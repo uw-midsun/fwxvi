@@ -19,10 +19,13 @@
 /* Intra-component Headers */
 #include "brake_pedal.h"
 #include "front_controller_hw_defs.h"
+#include "front_controller_setters.h"
 
-static GpioAddress s_brake_gpio = FRONT_CONTROLLER_BRAKE_PEDAL;
+#define DEBUG_BRAKE_PEDAL 0U
+
+static GpioAddress s_brake_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
 static FrontControllerStorage *front_controller_storage = NULL;
-static BrakePedalStorage s_brake_pedal_storage = { 0U };
+static BrakePedalStorage s_brake_pedal_storage = { .calibration_data.lower_value = 24, .calibration_data.upper_value = 4092 };
 
 StatusCode brake_pedal_run() {
   if (front_controller_storage == NULL) {
@@ -44,7 +47,10 @@ StatusCode brake_pedal_run() {
   } else {
     front_controller_storage->brake_enabled = false;
   }
-
+#if (DEBUG_BRAKE_PEDAL == 1)
+  LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | ENABLED %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
+#endif
+  set_pedal_data_brake_enabled(front_controller_storage->brake_enabled);
   return STATUS_CODE_OK;
 }
 

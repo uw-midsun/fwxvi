@@ -24,17 +24,14 @@
  * @{
  */
 
-typedef enum { STATE_DRIVING, STATE_BRAKING } OnePedalDriveState;
-
 typedef struct OpdStorage {
-  OnePedalDriveState drive_state;
   float max_braking_percentage;   /**< Max OPD regen braking percentage */
   uint32_t max_vehicle_speed_kph; /**< Max vehicle speed in KPH */
 } OpdStorage;
 
-typedef enum { PTS_TYPE_LINEAR, PTS_TYPE_EXPONENTIAL, PTS_TYPE_QUADRATIC } PtsRelationType;
+typedef enum PtsRelationType { PTS_TYPE_LINEAR, PTS_TYPE_EXPONENTIAL, PTS_TYPE_QUADRATIC } PtsRelationType;
 
-typedef enum { CURVE_TYPE_LINEAR, CURVE_TYPE_EXPONENTIAL, CURVE_TYPE_QUADRATIC } CurveType;
+typedef enum CurveType { CURVE_TYPE_LINEAR, CURVE_TYPE_EXPONENTIAL, CURVE_TYPE_QUADRATIC } CurveType;
 
 /**
  * @brief handler for opd_calculate command, runs either linear or quadratic calculation based on CurveType enum

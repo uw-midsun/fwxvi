@@ -25,6 +25,7 @@
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
+#include "range_estimator.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
 
@@ -45,8 +46,8 @@ static CanStorage s_can_storage = { 0 };
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_STEERING,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = STEERING_CAN_TX,
-  .rx = STEERING_CAN_RX,
+  .tx = GPIO_STEERING_CAN_TX,
+  .rx = GPIO_STEERING_CAN_RX,
   .loopback = false,
   .can_rx_all_cb = NULL,
 };
@@ -68,6 +69,8 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   party_mode_init(steering_storage);
   display_init(steering_storage);
   cruise_control_init(steering_storage);
+  range_estimator_init(steering_storage);
+  drive_state_manager_init();
 
   buzzer_play_startup();
 

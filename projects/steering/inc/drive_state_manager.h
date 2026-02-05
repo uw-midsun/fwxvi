@@ -13,6 +13,7 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 
 /* Intra-component Headers */
 
@@ -21,16 +22,6 @@
  * @brief    steering Firmware
  * @{
  */
-
-/**
- * @brief Drive states representing the current output
- */
-typedef enum {
-  DRIVE_STATE_INVALID = 0, /**< Wrong State */
-  DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
-  DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
-  DRIVE_STATE_REVERSE      /**< Car Drive Reverse*/
-} DriveState;
 
 /**
  * @brief Requests made to control the drive state
@@ -62,6 +53,6 @@ void drive_state_manager_update(void);
  * @brief Get the current state of the drive controller
  * @return Current drive state
  */
-DriveState drive_state_manager_get_state(void);
+VehicleDriveState drive_state_manager_get_state(void);
 
 /** @} */

@@ -44,19 +44,19 @@ typedef struct {
 } RelayStorage;
 
 static RelayStorage s_relay_storage = {
-  .pos_relay_en = REAR_CONTROLLER_POS_RELAY_ENABLE_GPIO,   /**< Positive relay enable */
-  .pos_relay_sense = REAR_CONTROLLER_POS_RELAY_SENSE_GPIO, /**< Positive relay sense */
+  .pos_relay_en = GPIO_REAR_CONTROLLER_POS_RELAY_ENABLE,   /**< Positive relay enable */
+  .pos_relay_sense = GPIO_REAR_CONTROLLER_POS_RELAY_SENSE, /**< Positive relay sense */
 
-  .neg_relay_en = REAR_CONTROLLER_NEG_RELAY_ENABLE_GPIO,   /**< Negative relay enable */
-  .neg_relay_sense = REAR_CONTROLLER_NEG_RELAY_SENSE_GPIO, /**< Negative relay sense */
+  .neg_relay_en = GPIO_REAR_CONTROLLER_NEG_RELAY_ENABLE,   /**< Negative relay enable */
+  .neg_relay_sense = GPIO_REAR_CONTROLLER_NEG_RELAY_SENSE, /**< Negative relay sense */
 
-  .solar_relay_en = REAR_CONTROLLER_SOLAR_RELAY_ENABLE_GPIO,   /**< Solar relay enable */
-  .solar_relay_sense = REAR_CONTROLLER_SOLAR_RELAY_SENSE_GPIO, /**< Solar relay sense */
+  .solar_relay_en = GPIO_REAR_CONTROLLER_SOLAR_RELAY_ENABLE,   /**< Solar relay enable */
+  .solar_relay_sense = GPIO_REAR_CONTROLLER_SOLAR_RELAY_SENSE, /**< Solar relay sense */
 
-  .motor_relay_en = REAR_CONTROLLER_MOTOR_RELAY_ENABLE_GPIO,   /**< Motor relay enable */
-  .motor_relay_sense = REAR_CONTROLLER_MOTOR_RELAY_SENSE_GPIO, /**< Motor relay sense */
+  .motor_relay_en = GPIO_REAR_CONTROLLER_MOTOR_RELAY_ENABLE,   /**< Motor relay enable */
+  .motor_relay_sense = GPIO_REAR_CONTROLLER_MOTOR_RELAY_SENSE, /**< Motor relay sense */
 
-  .ws22_lv_en = REAR_CONTROLLER_MOTOR_LV_ENABLE_GPIO, /**< Wavesculptor 22 low-voltage enable */
+  .ws22_lv_en = GPIO_REAR_CONTROLLER_MOTOR_LV_ENABLE, /**< Wavesculptor 22 low-voltage enable */
 };
 
 static RearControllerStorage *rear_controller_storage = NULL;

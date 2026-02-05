@@ -22,6 +22,7 @@
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
+#include "brake_pedal.h"
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
 #include "front_controller_state_manager.h"
@@ -46,13 +47,13 @@ static CanStorage s_can_storage = { 0 };
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_FRONT_CONTROLLER,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = FRONT_CONTROLLER_CAN_TX,
-  .rx = FRONT_CONTROLLER_CAN_RX,
+  .tx = GPIO_FRONT_CONTROLLER_CAN_TX,
+  .rx = GPIO_FRONT_CONTROLLER_CAN_RX,
   .loopback = false,
   .can_rx_all_cb = ws22_motor_can_process_rx,
 };
 
-static GpioAddress s_front_controller_board_led = FRONT_CONTROLLER_BOARD_LED;
+static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
 
 StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
   if (storage == NULL || config == NULL) {
@@ -62,8 +63,6 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   front_controller_storage = storage;
   front_controller_storage->config = config;
 
-  log_init();
-
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
@@ -71,14 +70,16 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   dac_init();
 
   /* Initialize front controller systems */
-  front_controller_state_manager_init(front_controller_storage);
+  // pedal_calib_read(front_controller_storage);
   power_manager_init(front_controller_storage);
+  brake_pedal_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
   opd_init(front_controller_storage);
   ws22_motor_can_init(front_controller_storage);
-  pedal_calib_read(front_controller_storage);
   motor_can_init(front_controller_storage);
   front_lights_signal_init();
+
+  front_controller_state_manager_init(front_controller_storage);
 
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);

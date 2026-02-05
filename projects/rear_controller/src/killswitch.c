@@ -16,11 +16,14 @@
 #include "gpio.h"
 #include "interrupts.h"
 #include "rear_controller_hw_defs.h"
+#include "rear_controller_setters.h"
 
 /* Intra-component Headers */
 #include "status.h"
 
-static GpioAddress killswitch_address = REAR_CONTROLLER_KILLSWITCH_MONITOR_GPIO;
+static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
+
+static uint32_t notification;
 
 static InterruptSettings killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,
@@ -29,7 +32,9 @@ static InterruptSettings killswitch_settings = {
 };
 
 StatusCode killswitch_init(Event event, const Task *task) {
-  gpio_init_pin(&killswitch_address, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
+  set_rear_controller_status_killswitch_state(false);
+
+  gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
   /* 10ms Debounce */
   delay_ms(10U);
@@ -38,8 +43,18 @@ StatusCode killswitch_init(Event event, const Task *task) {
   if (state == GPIO_STATE_LOW) {
     gpio_register_interrupt(&killswitch_address, &killswitch_settings, event, task);
   } else {
-    /* TODO: Trigger Killswitch pressed events */
+    LOG_DEBUG("KILLSWITCH PRESSED\r\n");
+    set_rear_controller_status_killswitch_state(true);
   }
 
+  return STATUS_CODE_OK;
+}
+
+StatusCode killswitch_run() {
+  notify_get(&notification);
+  if (notification & (1 << REAR_CONTROLLER_KILLSWITCH_EVENT)) {
+    LOG_DEBUG("KILLSWITCH PRESSED\r\n");
+    set_rear_controller_status_killswitch_state(true);
+  }
   return STATUS_CODE_OK;
 }

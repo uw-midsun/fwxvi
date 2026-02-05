@@ -39,8 +39,14 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller pedal exponent for non-linear feel */
 #define FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT 2.0f
 
-/** @brief  Front controller pedal alpha value for low-pass filtering */
+/** @brief  Front controller accel pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
+
+/** @brief  Front controller brake pedal alpha value for low-pass filtering */
+#define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
+
+/** @brief  Front controller brake pedal set to 1% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.01f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
@@ -64,12 +70,13 @@ typedef struct {
  * @brief   Front Controller storage
  */
 typedef struct {
-  bool brake_enabled; /**< Horn enabled (set by horn button callback) */
+  bool brake_enabled; /**< Brake enabled */
+  bool regen_enabled; /**< Regen enabled */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
-  float accel_percentage;              /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
-  VehicleDriveState currentDriveState; /**< Current drive state of vehicle, determined by motor_can.c */
+  float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
+  VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 
   struct PowerManagerStorage *power_manager_storage;  /**< Power manager storage */
   struct AccelPedalStorage *accel_pedal_storage;      /**< Acceleration pedal storage */
