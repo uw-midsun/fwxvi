@@ -26,6 +26,7 @@
 #include "can_listener.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
+#include "spi_manager.h"
 
 JSONManager serverJSONManager;
 GpioManager serverGpioManager;
@@ -33,6 +34,7 @@ AdcManager serverAdcManager;
 AfeManager serverAfeManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;
+SPIManager serverSPIManager;
 
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
