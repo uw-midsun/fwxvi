@@ -44,7 +44,7 @@ class I2C {
     I2C_PORT_1,   /**< I2C Port 1 */
     I2C_PORT_2,   /**< I2C Port 2 */
     NUM_I2C_PORTS /**< Number of I2C ports */
-  };
+  }; 
 
   /**
    * @brief   I2C Datagram payload storage
