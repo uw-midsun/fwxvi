@@ -119,7 +119,7 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       break;
     }
     case CommandCode::SPI_READ_DATA:
-    case CommandCode::SPI_TRANSFER_DATA:{
+    case CommandCode::SPI_TRANSFER_DATA: {
       serverSPIManager.updateSpiReadBuffer(clientName, payload);
       break;
     }

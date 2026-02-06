@@ -12,12 +12,13 @@
 /* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
+
 #include <unordered_map>
 #include <vector>
 
 /* Inter-component Headers */
-#include "spi_datagram.h"
 #include "command_code.h"
+#include "spi_datagram.h"
 
 /* Intra-component Headers */
 
@@ -42,16 +43,11 @@ class SPIManager {
 
   void loadSPIInfo(std::string &projectName);
 
-
   void saveSPIInfo(std::string &projectName);
 
-  
   std::vector<uint8_t> parseHexData(const std::string &dataStr);
 
-  
   std::string stringifySpiBuffer(const uint8_t *buffer, size_t length);
-
-
 
  public:
   /**
@@ -60,12 +56,9 @@ class SPIManager {
    */
   SPIManager() = default;
 
-
   void updateSpiReadBuffer(std::string &projectName, std::string &payload);
 
-
   std::string createSpiCommand(CommandCode commandCode, std::string &spiPort, std::string data);
- 
 };
 
 /** @} */

@@ -62,8 +62,6 @@ class Terminal {
    */
   void handleAdcCommands(const std::string &action, std::vector<std::string> &tokens);
 
-
-
   void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
 
   /**

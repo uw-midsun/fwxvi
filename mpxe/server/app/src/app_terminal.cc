@@ -140,7 +140,7 @@ void Terminal::handleAdcCommands(const std::string &action, std::vector<std::str
 
 void Terminal::handleSpiCommands(const std::string &action, std::vector<std::string> &tokens) {
   std::string message;
-  
+
   std::string dataStr = "";
   if (tokens.size() >= 4) {
     for (size_t i = 3; i < tokens.size(); ++i) {
