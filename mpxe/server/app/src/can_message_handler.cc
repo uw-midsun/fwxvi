@@ -1186,18 +1186,6 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS: {
-      steering_buttons *message = new steering_buttons();
-      message->decode(data);
-      m_canInfo[message->get_message_name()] = message->to_json();
-      break;
-    }
-    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY: {
-      steering_target_velocity *message = new steering_target_velocity();
-      message->decode(data);
-      m_canInfo[message->get_message_name()] = message->to_json();
-      break;
-    }
     default: {
       std::cout << "Unknown message ID: " << static_cast<int>(id) << std::endl;
     }
