@@ -36,11 +36,10 @@
 class I2CManager {
  private:
   /** @brief  Hash-map to store I2C port specific data such as RX/TX buffers */
-  using PortInfo = std::unordered_map<std::string, std::vector<uint8_t>>;
+  using PortInfo = std::unordered_map<std::string, std::string>;
 
   std::unordered_map<std::string, PortInfo> m_i2cInfo; /**< Hash-map to cache all I2C data */
   Datagram::I2C m_I2CDatagram;                         /**< Datagram class to serialize/deserialize commands */
-
 
   /**
    * @brief   Converts data buffer to a formatted string representation
@@ -48,7 +47,7 @@ class I2CManager {
    * @return  String representation of the data in hex format
    */
   std::string stringifyData(const std::vector<uint8_t> &data);
-  
+
   /**
    * @brief   Loads the Hash-map cache with a projects I2C data
    * @param   projectName Selector for which project shall be loaded into the cache
@@ -81,7 +80,7 @@ class I2CManager {
    * @brief   Create an I2C command given a CommandCode and if required, specific port and data
    * @details This function shall support all I2C CommandCodes
    * @param   commandCode Command reference to be transmitted to the client
-   * @param   i2cPort I2C port identifier (e.g., "I2C1", "I2C2", "I2C3")
+   * @param   i2cPort I2C port identifier (e.g., "I2C1", "I2C2")
    * @param   data Data payload to be transmitted
    * @return  Fully serialized data payload to be transmitted to the client
    */
