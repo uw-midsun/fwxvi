@@ -25,6 +25,7 @@ static FrontControllerStorage *front_controller_storage;
 static CruiseControlStorage s_cruise_control_storage = { 0 };
 
 #define DT 0.001  // cruise_control_run() is a 1000Hz task
+#define CC_DEBUG 0U
 
 StatusCode cruise_control_run() {
   if (front_controller_storage == NULL) {
@@ -51,8 +52,10 @@ StatusCode cruise_control_run() {
 
   // If we are within a minimum threshold, stop increasing the set current
   if (fabsf(e_p) < CC_MIN_THRESHOLD) {
+#if (CC_DEBUG == 1)
     LOG_DEBUG("e_p within CC min threshold\r\n");
-    // Set current should not change
+#endif
+    // Set current should not change, so do nothing and return
     return STATUS_CODE_OK;
   }
 
@@ -64,9 +67,10 @@ StatusCode cruise_control_run() {
   // Store set velocity in cruise control storage
   s_cruise_control_storage.set_current += res;
 
+#if (CC_DEBUG == 1)
   LOG_DEBUG("MotVel: %d | TarVel: %d | res: %dx10^-6 | curr: %dmA\r\n", (int16_t)s_cruise_control_storage.current_motor_velocity, (int16_t)s_cruise_control_storage.target_motor_velocity,
             (int16_t)(res * 1000000), (int16_t)(front_controller_storage->ws22_motor_can_storage->control.current * 1000));
-
+#endif
   return STATUS_CODE_OK;
 }
 
