@@ -23,9 +23,9 @@
 #include "buzzer.h"
 #include "steering_hw_defs.h"
 
-#define BUZZER_TIMER PWM_TIMER_4
+#define BUZZER_TIMER PWM_TIMER_16
 #define BUZZER_CHANNEL PWM_CHANNEL_1
-#define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
+#define BUZZER_GPIO_ALTFN GPIO_ALT14_TIM16
 #define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
 

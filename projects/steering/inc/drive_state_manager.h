@@ -46,7 +46,7 @@ typedef enum {
 /**
  * @brief Initialize the drive state manager
  */
-StatusCode drive_state_manager_init(void);
+StatusCode drive_state_manager_init(SteeringStorage *storage);
 
 /**
  * @brief Make a request to change the drive state
