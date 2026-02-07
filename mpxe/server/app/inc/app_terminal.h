@@ -62,6 +62,8 @@ class Terminal {
    */
   void handleAdcCommands(const std::string &action, std::vector<std::string> &tokens);
 
+  void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
+
   /**
    * @brief   Parse the tokens and branch to the appropiate handler function
    * @details This shall branch to handleGpioCommands, handleI2CCommands, handleSPICommands and handleInterruptCommands
