@@ -203,6 +203,8 @@ StatusCode drive_state_manager_update(void) {
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
+          set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -219,6 +221,7 @@ StatusCode drive_state_manager_update(void) {
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
+          set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -247,11 +250,13 @@ StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state) {
   }
 
   if ((current_regen_state != REGEN_STATE_ENABLED) && (new_regen_state == REGEN_STATE_ENABLED)) {
-    set_steering_buttons_regen_braking(REGEN_STATE_ENABLED);
+    set_steering_buttons_regen_enabled(REGEN_STATE_ENABLED);
+    set_steering_buttons_buttons_regen_enabled(REGEN_STATE_ENABLED);
     button_led_enable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_on();
   } else if ((current_regen_state != REGEN_STATE_DISABLED) && (new_regen_state == REGEN_STATE_DISABLED)) {
-    set_steering_buttons_regen_braking(REGEN_STATE_DISABLED);
+    set_steering_buttons_regen_enabled(REGEN_STATE_DISABLED);
+    set_steering_buttons_buttons_regen_enabled(REGEN_STATE_DISABLED);
     button_led_disable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_off();
   }

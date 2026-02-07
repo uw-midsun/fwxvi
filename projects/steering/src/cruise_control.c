@@ -116,6 +116,7 @@ StatusCode cruise_control_run_medium_cycle() {
     LOG_DEBUG("BRAKE from front\r\n");
     steering_storage->cruise_control_enabled = false;
     set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -159,6 +160,7 @@ StatusCode cruise_control_run_medium_cycle() {
 
     // CAN TX
     set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
 
     hold_ticks = 0;
     hold_direction = 0;

@@ -29,7 +29,7 @@ static VehicleDriveState current_drive_state;
 static VehicleDriveState s_resolve_current_state() {
 #if (IS_BRAKE_CONNECTED != 0U)
   if (front_controller_storage->brake_enabled) {
-    if (get_steering_buttons_regen_braking()) {
+    if (get_steering_buttons_regen_enabled()) {
       return VEHICLE_DRIVE_STATE_REGEN;
     } else {
       return VEHICLE_DRIVE_STATE_BRAKE;

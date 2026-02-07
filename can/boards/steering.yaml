@@ -22,7 +22,7 @@ Messages:
         length: 8
       cruise_control:
         length: 8
-      regen_braking:
+      regen_enabled:
         length: 8
       hazard_enabled:
         length: 8
@@ -30,6 +30,14 @@ Messages:
         length: 8
       lights:
         length: 8
+      buttons:
+        type: "bitfield"
+        flags: ["cruise_control", "hazard_enabled", "horn_enabled", "regen_enabled"]
+        length: 8
+      # bitfield_test:
+      #   type: "bitfield"
+      #   flags: [{"drive_state", 2}, {"lights", 2}, "cruise_control", "hazard_enabled", "horn_enabled", "regen_enabled"]
+      #   length: 8
   steering_target_velocity:
     id: 5
     critical: true

@@ -116,11 +116,11 @@ typedef enum {
  * @brief   Steering lights definitions
  */
 typedef enum {
-  STEERING_LIGHTS_OFF_STATE,    /**< Steering lights off */
-  STEERING_LIGHTS_LEFT_STATE,   /**< Steering light left turn */
-  STEERING_LIGHTS_RIGHT_STATE,  /**< Steering light right turn */
-  STEERING_LIGHTS_HAZARD_STATE, /**< Steering light hazard state */
-  STEERING_LIGHTS_NUM_STATES,   /**< Number of steering light states */
+  STEERING_LIGHTS_OFF_STATE = 0,    /**< Steering lights off */
+  STEERING_LIGHTS_LEFT_STATE = 1,   /**< Steering light left turn */
+  STEERING_LIGHTS_RIGHT_STATE = 2,  /**< Steering light right turn */
+  STEERING_LIGHTS_HAZARD_STATE = 3, /**< Steering light hazard state */
+  STEERING_LIGHTS_NUM_STATES,       /**< Number of steering light states */
 } SteeringLightState;
 
 typedef enum {

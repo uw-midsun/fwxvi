@@ -161,6 +161,7 @@ static void horn_btn_falling_edge_cb(Button *button) {
 #endif
 
   set_steering_buttons_horn_enabled(true);
+  set_steering_buttons_buttons_horn_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
@@ -169,6 +170,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
 #endif
 
   set_steering_buttons_horn_enabled(false);
+  set_steering_buttons_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
