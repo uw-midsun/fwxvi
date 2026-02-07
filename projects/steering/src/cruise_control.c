@@ -115,8 +115,7 @@ StatusCode cruise_control_run_medium_cycle() {
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
     LOG_DEBUG("BRAKE from front\r\n");
     steering_storage->cruise_control_enabled = false;
-    set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -159,8 +158,7 @@ StatusCode cruise_control_run_medium_cycle() {
     steering_storage->cruise_control_enabled = !steering_storage->cruise_control_enabled;
 
     // CAN TX
-    set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
 
     hold_ticks = 0;
     hold_direction = 0;
@@ -202,7 +200,7 @@ StatusCode cruise_control_run_medium_cycle() {
   }
 
   // CAN TX
-  set_steering_target_velocity_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
+  set_steering_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
 
   return STATUS_CODE_OK;
 }
