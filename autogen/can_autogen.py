@@ -60,6 +60,19 @@ def check_yaml_file(data):
             # No illegal characters in signal names
             if (illegal_chars_regex.search(signal_name) != None):
                 raise Exception("Illegal character in signal name")
+            
+            if signal.get("type") == "bitfield":
+                if "flags" not in signal:
+                    raise Exception("Bitfield signal must have flags defined")
+                if len(signal["flags"]) == 0:
+                    raise Exception("Bitfield signal must have at least one flag defined")
+                if len(signal["flags"]) > signal["length"]:
+                    raise Exception("The number of flags is larger than the size of the bitfield")
+                for flag in signal["flags"]:
+                    if (illegal_chars_regex.search(flag) != None):
+                        raise Exception("Illegal character in bitfield flag")
+                
+                
             # All signals within a message are the same length
             if signal["length"] % 8 != 0:
                 raise Exception("Signal length must be a multiple of 8")
@@ -114,17 +127,29 @@ def get_data(args):
             signals = []
             start_bit = 0
             for signal_name, signal in message["signals"].items():
-                signals.append({
+                
+                signal_data ={
                     "name": signal_name,
                     "start_bit": start_bit,
-                    "length": signal["length"],
                     "scale": 1,
                     "offset": 0,
-                    "min": 0,
-                    "max": (2 ** signal["length"]) - 1,
                     "receiver": message["target"],
-                })
-                start_bit += signal["length"]
+                }
+
+                if signal.get("type") == "bitfield":
+                    
+                    num_flags = len(signal["flags"])
+                    signal_data["type"] = "bitfield"
+                    signal_data["length"] = ((num_flags + 7) // 8) * 8
+                    signal_data["flags"] = signal["flags"]
+                else:
+                    signal_data["type"] = "standard"
+                    signal_data["length"] = signal["length"]
+                    signal_data["min"] = 0
+                    signal_data["max"] = (2 ** signal["length"]) - 1
+                        
+                signals.append(signal_data)
+                start_bit += signal_data["length"]
 
             # Determine the message Id
             # Packet structure:
