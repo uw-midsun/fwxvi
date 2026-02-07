@@ -17,7 +17,7 @@
 #include "app.h"
 #include "gpio_manager.h"
 
-#define GPIO_KEY "gpio"
+#define GPIO_KEY "gpio" // I2C --> this is the value / left part that gets saved to the json
 #define PIN_STATE_KEY "state"
 #define PIN_MODE_KEY "mode"
 #define PIN_ALT_FUNC_KEY "alternate_function"
@@ -73,7 +73,8 @@ std::string GpioManager::stringifyPinMode(Datagram::Gpio::Mode mode) {
 }
 
 std::string GpioManager::stringifyPinAltFunction(Datagram::Gpio::AltFunction altFunction) {
-  std::string result = "";
+  std::string result = ""; //stringified result, do something similar
+  // need this in i^2c manager
 
   switch (altFunction) {
     /* Duplicate value is SWCLK/SWDIO */
@@ -123,23 +124,29 @@ std::string GpioManager::stringifyPinAltFunction(Datagram::Gpio::AltFunction alt
 
 void GpioManager::loadGpioInfo(std::string &projectName) {
   m_gpioInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, GpioManager::PinInfo>>(projectName, GPIO_KEY);
+  // exists in class, set the data tot his
+  // do same thing in i2c pre much, w/ different key, using the same projectname var
+
+  // one field: buffer, port1, port2 -- keys, each key has data, 
 }
 
 void GpioManager::saveGpioInfo(std::string &projectName) {
   serverJSONManager.setProjectValue(projectName, GPIO_KEY, m_gpioInfo);
 
   /* Upon save, clear the memory */
-  m_gpioInfo.clear();
+  m_gpioInfo.clear(); // class value / variable
 }
 
 void GpioManager::updateGpioPinState(std::string &projectName, std::string &payload) {
-  loadGpioInfo(projectName);
+  loadGpioInfo(projectName); // puts in into m_gpioinfo
 
-  m_gpioDatagram.deserialize(payload);
+  m_gpioDatagram.deserialize(payload); // sent by the client, which is packaged in a datagram, we then deserialize it
 
   std::string key = gpioPortNames[static_cast<uint8_t>(m_gpioDatagram.getGpioPort())];
   key += std::to_string(m_gpioDatagram.getGpioPin());
   const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+
+  //m_gpioInfo is a hashmap
 
   if (static_cast<Datagram::Gpio::State>(receivedData[0U]) == Datagram::Gpio::State::GPIO_STATE_HIGH) {
     m_gpioInfo[key][PIN_STATE_KEY] = "HIGH";
@@ -186,8 +193,9 @@ void GpioManager::updateGpioPinMode(std::string &projectName, std::string &paylo
 
   const uint8_t *receivedData = m_gpioDatagram.getBuffer();
 
-  m_gpioInfo[key][PIN_MODE_KEY] = stringifyPinMode(static_cast<Datagram::Gpio::Mode>(receivedData[0U]));
+  m_gpioInfo[key][PIN_MODE_KEY] = stringifyPinMode(static_cast<Datagram::Gpio::Mode>(receivedData[0U])); // need stringify because we need to, the stirng is written to the json file
 
+  //point of stringfiy is to have something to write to json file
   saveGpioInfo(projectName);
 }
 
