@@ -22,6 +22,7 @@
 #include "uart.h"
 
 /* Intra-component Headers */
+#include "bmi323.h"
 #include "telemetry.h"
 
 static TelemetryStorage *telemetry_storage;
@@ -60,13 +61,14 @@ TASK(can_message_processor, TASK_STACK_512) {
   }
 }
 
-StatusCode telemetry_init(TelemetryStorage *storage, TelemetryConfig *config) {
-  if (storage == NULL || config == NULL) {
+StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage) {
+  if (telemetry_storage == NULL || config == NULL || bmi323_storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  telemetry_storage = storage;
+  telemetry_storage = telemetry_storage;
   telemetry_storage->config = config;
+  telemetry_storage->bmi323_storage = bmi323_storage;
 
   telemetry_storage->datagram_queue.item_size = sizeof(Datagram);
   telemetry_storage->datagram_queue.num_items = DATAGRAM_BUFFER_SIZE;
@@ -76,6 +78,7 @@ StatusCode telemetry_init(TelemetryStorage *storage, TelemetryConfig *config) {
   uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
   can_init(&s_can_storage, &s_can_settings);
   queue_init(&telemetry_storage->datagram_queue);
+  bmi323_init(bmi323_storage);
 
   tasks_init_task(can_message_processor, TASK_PRIORITY(2), NULL);
 

@@ -15,6 +15,7 @@
 #include "queue.h"
 
 /* Intra-component Headers */
+#include "bmi323.h"
 #include "datagram.h"
 
 /**
@@ -38,16 +39,18 @@ typedef struct {
 typedef struct {
   Datagram datagram_buffer[DATAGRAM_BUFFER_SIZE]; /**< Buffer to store the datagram */
   Queue datagram_queue;                           /**< Queue handle for the datagram buffer */
+  Bmi323Storage *bmi323_storage;                  /**< Pointer to BMI323 storage struct */
   TelemetryConfig *config;                        /**< Pointer to the telemetry configuration data */
 } TelemetryStorage;
 
 /**
  * @brief   Initialize the telemetry interface
- * @param   storage Pointer to the telemetry storage
+ * @param   telemetry_storage Pointer to the telemetry storage struct
  * @param   config Pointer to the telemetry config
+ * @param   bmi323_storage pointer to bmi323_storage struct
  * @return  STATUS_CODE_OK if telemetry initialization succeeded
- *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are NULL/incorrect
  */
-StatusCode telemetry_init(TelemetryStorage *storage, TelemetryConfig *config);
+StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage);
 
 /** @} */
