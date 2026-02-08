@@ -29,9 +29,9 @@
 #define set_{{message.name}}_{{signal.name}}_raw(val) \
     g_tx_struct.{{message.name}}_{{signal.name}} = val
             {%- for flag in signal.flags %}
-#define set_{{message.name}}_{{signal.name}}_{{flag}}(val) \
+#define set_{{message.name}}_{{signal.name}}_{{flag["name"]}}(val) \
     g_tx_struct.{{message.name}}_{{signal.name}} = \
-    (g_tx_struct.{{message.name}}_{{signal.name}} & ~(1U << {{loop.index0}})) | (val << {{loop.index0}})
+    (g_tx_struct.{{message.name}}_{{signal.name}} & ~(0b{{"1" * flag["length"]}} << {{flag["offset"]}})) | ((val & 0b{{"1" * flag["length"]}}) << {{flag["offset"]}})
             {%- endfor %}
         {%- else %}
 #define set_{{message.name}}_{{signal.name}}(val) \

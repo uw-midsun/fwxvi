@@ -40,7 +40,7 @@ StatusCode bps_fault_commit() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  set_rear_controller_status_bps_fault(rear_controller_storage->bps_fault);
+  set_rear_controller_status_triggers_bps_fault(rear_controller_storage->bps_fault);
   persist_commit(&persist_storage);
 
   return STATUS_CODE_OK;
@@ -56,7 +56,7 @@ StatusCode trigger_bps_fault(BpsFault fault) {
   }
 
   rear_controller_storage->bps_fault |= (1U << fault);
-  set_rear_controller_status_bps_fault(rear_controller_storage->bps_fault);
+  set_rear_controller_status_triggers_bps_fault(rear_controller_storage->bps_fault);
   rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
 
   return STATUS_CODE_OK;

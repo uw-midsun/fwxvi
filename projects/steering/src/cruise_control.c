@@ -17,6 +17,7 @@
 /* Intra-component Headers */
 #include "button.h"
 #include "button_manager.h"
+#include "buzzer.h"
 #include "steering.h"
 #include "steering_getters.h"
 #include "steering_setters.h"
@@ -115,8 +116,8 @@ StatusCode cruise_control_run_medium_cycle() {
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
     LOG_DEBUG("BRAKE from front\r\n");
     steering_storage->cruise_control_enabled = false;
-    set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    buzzer_play_cruise_control_disable();
+    set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -133,7 +134,7 @@ StatusCode cruise_control_run_medium_cycle() {
 
     if (drive_state_from_front != VEHICLE_DRIVE_STATE_DRIVE && drive_state_from_front != VEHICLE_DRIVE_STATE_CRUISE) {
 #if (CC_DEBUG == 1)
-      LOG_DEBUG("not in drive\r\n");
+      LOG_DEBUG("not in drive/cruise\r\n");
 #endif
       return STATUS_CODE_INVALID_ARGS;
     }
@@ -156,11 +157,18 @@ StatusCode cruise_control_run_medium_cycle() {
       return STATUS_CODE_INVALID_ARGS;
     }
 
-    steering_storage->cruise_control_enabled = !steering_storage->cruise_control_enabled;
+    if (steering_storage->cruise_control_enabled) {
+      buzzer_play_cruise_control_disable();
+      steering_storage->cruise_control_enabled = false;
+      return STATUS_CODE_OK;
+    } else {
+      buzzer_play_cruise_control_enable();
+      steering_storage->cruise_control_enabled = true;
+      return STATUS_CODE_OK;
+    }
 
     // CAN TX
-    set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-    set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+    set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
 
     hold_ticks = 0;
     hold_direction = 0;
@@ -193,6 +201,11 @@ StatusCode cruise_control_run_medium_cycle() {
   hold_ticks++;
 
   uint8_t step = s_step_from_hold(hold_ticks);
+  if (step > 0 && direction == 1) {
+    buzzer_play_cruise_control_up();
+  } else if (step > 0 && direction == -1) {
+    buzzer_play_cruise_control_down();
+  }
   while (step--) {
     if (direction > 0) {
       cruise_control_up_handler();
@@ -202,7 +215,7 @@ StatusCode cruise_control_run_medium_cycle() {
   }
 
   // CAN TX
-  set_steering_target_velocity_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
+  set_steering_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
 
   return STATUS_CODE_OK;
 }

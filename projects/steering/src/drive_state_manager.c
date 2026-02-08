@@ -61,7 +61,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -70,7 +70,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -79,7 +79,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
@@ -112,7 +112,7 @@ static StatusCode drive_state_manager_drive(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -121,7 +121,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -130,7 +130,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
@@ -202,8 +202,7 @@ StatusCode drive_state_manager_update(void) {
 #endif
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
           steering_storage->cruise_control_enabled = false;
-          set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-          set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
 
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
@@ -220,8 +219,7 @@ StatusCode drive_state_manager_update(void) {
 #endif
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
           steering_storage->cruise_control_enabled = false;
-          set_steering_buttons_cruise_control(steering_storage->cruise_control_enabled);
-          set_steering_buttons_buttons_cruise_control(steering_storage->cruise_control_enabled);
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -251,12 +249,10 @@ StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state) {
 
   if ((current_regen_state != REGEN_STATE_ENABLED) && (new_regen_state == REGEN_STATE_ENABLED)) {
     set_steering_buttons_regen_enabled(REGEN_STATE_ENABLED);
-    set_steering_buttons_buttons_regen_enabled(REGEN_STATE_ENABLED);
     button_led_enable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_on();
   } else if ((current_regen_state != REGEN_STATE_DISABLED) && (new_regen_state == REGEN_STATE_DISABLED)) {
     set_steering_buttons_regen_enabled(REGEN_STATE_DISABLED);
-    set_steering_buttons_buttons_regen_enabled(REGEN_STATE_DISABLED);
     button_led_disable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_off();
   }
