@@ -38,7 +38,7 @@ static VehicleDriveState s_resolve_current_state() {
 #endif
 
   VehicleDriveState drive_state_from_steering = get_steering_buttons_drive_state();
-  uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control();
+  uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control_enabled();
 
   if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
     return VEHICLE_DRIVE_STATE_NEUTRAL;
@@ -88,8 +88,8 @@ StatusCode motor_can_update_target_current_velocity() {
 #if (MOTOR_CAN_DEBUG == 2)
       LOG_DEBUG("CRUISE, CC RPM: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity()));
 #endif
-      if (front_controller_storage->cruise_control_storage->target_motor_velocity != get_steering_target_velocity_cruise_control_target_velocity()) {
-        front_controller_storage->cruise_control_storage->target_motor_velocity = get_steering_target_velocity_cruise_control_target_velocity();
+      if (front_controller_storage->cruise_control_storage->target_motor_velocity != get_steering_cruise_control_target_velocity()) {
+        front_controller_storage->cruise_control_storage->target_motor_velocity = get_steering_cruise_control_target_velocity();
         front_controller_storage->cruise_control_storage->set_current = front_controller_storage->ws22_motor_can_storage->control.current;
       }
       cruise_control_run();

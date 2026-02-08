@@ -29,8 +29,8 @@
 #define get_{{message.name}}_{{signal.name}}_raw() \
     g_rx_struct.{{message.name}}_{{signal.name}}
             {%- for flag in signal.flags %}
-#define get_{{message.name}}_{{signal.name}}_{{flag}}() \
-    (g_rx_struct.{{message.name}}_{{signal.name}} >> {{loop.index0}}) & 1U
+#define get_{{message.name}}_{{signal.name}}_{{flag["name"]}}() \
+    (g_rx_struct.{{message.name}}_{{signal.name}} >> {{flag["offset"]}}) & 0b{{"1" * flag["length"]}}
             {%- endfor %}
         {%- else %}
 #define get_{{message.name}}_{{signal.name}}() \

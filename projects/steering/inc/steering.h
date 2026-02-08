@@ -91,7 +91,7 @@ typedef struct {
   uint16_t pack_voltage; /**< Pack voltage reading (mV) */
   uint16_t pack_current; /**< Pack current reading (mA) */
 
-  uint8_t drive_state;
+  VehicleDriveState drive_state;
   uint8_t brake_enabled;
   uint8_t regen_enabled;
   uint8_t killswitch_state;

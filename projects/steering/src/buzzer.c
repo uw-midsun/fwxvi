@@ -58,6 +58,12 @@ static Note MELODY_REGEN_ON[] = { { NOTE_C4, 30 }, { NOTE_D4, 30 }, { NOTE_E4, 3
 static Note MELODY_REGEN_OFF[] = { { NOTE_E5, 70 }, { NOTE_D5, 50 }, { NOTE_C5, 40 }, { NOTE_B4, 30 }, { NOTE_A4, 30 }, { NOTE_G4, 30 },
                                    { NOTE_F4, 30 }, { NOTE_E4, 30 }, { NOTE_D4, 30 }, { NOTE_C4, 30 }, { NOTE_REST, 0 } };
 
+static Note MELODY_CC_ENABLE[] = { { NOTE_C5, 200 }, { NOTE_REST, 100 }, { NOTE_G5, 200 }, { NOTE_REST, 0 } };
+static Note MELODY_CC_DISABLE[] = { { NOTE_G5, 200 }, { NOTE_REST, 100 }, { NOTE_C5, 200 }, { NOTE_REST, 0 } };
+
+static Note MELODY_CC_UP[] = { { NOTE_A4, 50 }, { NOTE_REST, 0 } };
+static Note MELODY_CC_DOWN[] = { { NOTE_G3, 50 }, { NOTE_REST, 0 } };
+
 static bool turn_sig_state = true;
 
 static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
@@ -234,6 +240,18 @@ StatusCode buzzer_play_regen_on(void) {
 
 StatusCode buzzer_play_regen_off(void) {
   return buzzer_play_melody(MELODY_REGEN_OFF);
+}
+StatusCode buzzer_play_cruise_control_enable(void) {
+  return buzzer_play_melody(MELODY_CC_ENABLE);
+}
+StatusCode buzzer_play_cruise_control_disable(void) {
+  return buzzer_play_melody(MELODY_CC_DISABLE);
+}
+StatusCode buzzer_play_cruise_control_up(void) {
+  return buzzer_play_melody(MELODY_CC_UP);
+}
+StatusCode buzzer_play_cruise_control_down(void) {
+  return buzzer_play_melody(MELODY_CC_DOWN);
 }
 
 StatusCode buzzer_start_turn_signal(void) {

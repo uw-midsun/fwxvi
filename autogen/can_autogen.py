@@ -69,9 +69,12 @@ def check_yaml_file(data):
                 if len(signal["flags"]) > signal["length"]:
                     raise Exception("The number of flags is larger than the size of the bitfield")
                 for flag in signal["flags"]:
-                    if (illegal_chars_regex.search(flag) != None):
-                        raise Exception("Illegal character in bitfield flag")
-                
+                    if isinstance(flag, dict):
+                        if (illegal_chars_regex.search(flag["name"]) != None):
+                            raise Exception("Illegal character in bitfield flag")
+                    else:
+                        if (illegal_chars_regex.search(flag) != None):
+                            raise Exception("Illegal character in bitfield flag")
                 
             # All signals within a message are the same length
             if signal["length"] % 8 != 0:
@@ -141,7 +144,27 @@ def get_data(args):
                     num_flags = len(signal["flags"])
                     signal_data["type"] = "bitfield"
                     signal_data["length"] = ((num_flags + 7) // 8) * 8
-                    signal_data["flags"] = signal["flags"]
+                    
+                    index = 0
+                    flags = []
+                    prev_offset = 0
+                    prev_length = 0
+                    for flag in signal["flags"]:
+                        if isinstance(flag, dict):
+                            curr_length = flag["length"]
+                            curr_name = flag["name"]
+                        elif isinstance(flag, str):
+                            curr_length = 1
+                            curr_name = flag
+                        else:
+                            raise Exception("Invalid type for flag")
+                        
+                        offset = prev_offset + prev_length
+                        flags.append({"name": curr_name, "length": curr_length, "offset": offset})
+                        prev_length = curr_length
+                        prev_offset = offset
+                    
+                    signal_data["flags"] = flags
                 else:
                     signal_data["type"] = "standard"
                     signal_data["length"] = signal["length"]

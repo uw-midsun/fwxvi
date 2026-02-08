@@ -1096,12 +1096,12 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_DATA: {
-      front_controller_pedal_data *message = new front_controller_pedal_data();
-      message->decode(data);
-      m_canInfo[message->get_message_name()] = message->to_json();
-      break;
-    }
+    // case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_DATA: {
+    //   front_controller_pedal_data *message = new front_controller_pedal_data();
+    //   message->decode(data);
+    //   m_canInfo[message->get_message_name()] = message->to_json();
+    //   break;
+    // }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_REAR_CONTROLLER_STATUS: {
       rear_controller_status *message = new rear_controller_status();
       message->decode(data);
@@ -1186,18 +1186,18 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS: {
-      steering_buttons *message = new steering_buttons();
-      message->decode(data);
-      m_canInfo[message->get_message_name()] = message->to_json();
-      break;
-    }
-    case SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY: {
-      steering_target_velocity *message = new steering_target_velocity();
-      message->decode(data);
-      m_canInfo[message->get_message_name()] = message->to_json();
-      break;
-    }
+    // case SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS: {
+    //   steering_buttons *message = new steering_buttons();
+    //   message->decode(data);
+    //   m_canInfo[message->get_message_name()] = message->to_json();
+    //   break;
+    // }
+    // case SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY: {
+    //   steering_target_velocity *message = new steering_target_velocity();
+    //   message->decode(data);
+    //   m_canInfo[message->get_message_name()] = message->to_json();
+    //   break;
+    // }
     default: {
       std::cout << "Unknown message ID: " << static_cast<int>(id) << std::endl;
     }
