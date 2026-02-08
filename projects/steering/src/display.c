@@ -74,14 +74,13 @@ StatusCode display_rx_slow() {
 }
 
 StatusCode display_rx_medium() {
-  display_data->killswitch_state = get_rear_controller_status_killswitch_state();
-  display_data->precharge_complete = get_battery_stats_B_motor_precharge_complete();
+  display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
   display_data->brake_enabled = get_pedal_data_brake_enabled();
   display_data->regen_enabled = get_pedal_data_regen_enabled();
   display_data->pedal_percentage = (uint8_t)get_pedal_percentage();
   display_data->drive_state = (VehicleDriveState)get_pedal_data_drive_state();
 
-  display_data->bps_fault = get_rear_controller_status_bps_fault();
+  display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
 
   display_data->motor_heatsink_temp = (int16_t)get_motor_temperature_heat_sink_temp();
   display_data->motor_temp = (int16_t)get_motor_temperature_motor_temp();
@@ -94,7 +93,7 @@ StatusCode display_rx_medium() {
 
   display_data->pack_voltage = (int16_t)get_battery_stats_A_pack_voltage();
   display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
-  display_data->state_of_charge = (uint16_t)get_battery_stats_A_pack_soc();
+  display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
 
   return STATUS_CODE_OK;
 }

@@ -74,14 +74,14 @@ typedef struct {
 typedef struct {
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */
 
-  int16_t motor_heatsink_temp;
-  int16_t motor_temp;
+  int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
+  int16_t motor_temp;          /**< Temperature of the motor */
 
-  int16_t vehicle_velocity;
-  int16_t motor_velocity;
+  int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
+  int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
 
-  uint16_t bps_fault;
-  uint16_t state_of_charge;
+  BpsFault bps_fault;    /**< BPS fault bitfield */
+  float state_of_charge; /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
   int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */
@@ -94,7 +94,6 @@ typedef struct {
   VehicleDriveState drive_state;
   uint8_t brake_enabled;
   uint8_t regen_enabled;
-  uint8_t killswitch_state;
   uint8_t precharge_complete;
 } DisplayData;
 

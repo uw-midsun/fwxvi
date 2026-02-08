@@ -61,7 +61,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -70,7 +70,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -79,7 +79,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
@@ -112,7 +112,7 @@ static StatusCode drive_state_manager_drive(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -121,7 +121,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -130,7 +130,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
