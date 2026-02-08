@@ -5,7 +5,7 @@
  *
  * @brief  Header file for BMI323 Driver
  *
- * @date   2025-03-06
+ * @date   2026-02-08
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -39,11 +39,6 @@
 #define BMI323_CHIP_ID 0x43U
 #define BMI323_MAX_NUM_DATA 16U
 
-/*
-this might be 13 or 14 idk
-#define BMI3_ACC_DP_OFF_XYZ_13_BIT_MASK              UINT16_C(0x1FFF)
-#define BMI3_ACC_DP_OFF_XYZ_14_BIT_MASK              UINT16_C(0x3FFF)
-*/
 #define BMI3_ACC_DP_DOFFSET_X_MASK UINT16_C(0x3FFF)
 #define BMI3_ACC_DP_DOFFSET_Y_MASK UINT16_C(0x3FFF)
 #define BMI3_ACC_DP_DOFFSET_Z_MASK UINT16_C(0x3FFF)
@@ -137,9 +132,7 @@ typedef enum {
   BMI323_REG_CALIBRATION_REG = 0x24, /**< Calibration Register */
   BMI323_REG_ERROR_REG = 0x2B,       /**< Error Register */
 
-  /* Other Registers */
-  BMI323_REG_CMD = 0x7E, /**< Command Register (often used for resets and other operations) */
-
+  /* Offset & Gain Registers*/
   ACC_DP_OFF_X = 0x60,
   ACC_DP_DGAIN_X = 0x61,
   ACC_DP_OFF_Y = 0x62,
@@ -151,9 +144,13 @@ typedef enum {
   GYR_DP_OFF_Y = 0x68,
   GYR_DP_DGAIN_Y = 0x69,
   GYR_DP_OFF_Z = 0x6A,
-  GYR_DP_DGAIN_Z = 0x6B
+  GYR_DP_DGAIN_Z = 0x6B,
+
+  /* Other Registers */
+  BMI323_REG_CMD = 0x7E, /**< Command Register (often used for resets and other operations) */
 } Bmi323Registers;
 
+/** @brief  Struct to store offset and gain values for accelerometer */
 typedef struct {
   uint16_t accel_offset_x;
   uint16_t accel_offset_y;
@@ -163,6 +160,7 @@ typedef struct {
   uint8_t accel_gain_z;
 } AccelGainOffsetValues;
 
+/** @brief  Struct to store offset and gain values for gyroscope */
 typedef struct {
   uint16_t gyro_offset_x;
   uint16_t gyro_offset_y;
@@ -187,6 +185,7 @@ typedef struct {
   IMUGyroRange gyro_range;
 } Bmi323Settings;
 
+/** @brief Storage struct for bmi323 */
 typedef struct {
   Bmi323Settings *settings;
   Axes accel;
@@ -195,8 +194,18 @@ typedef struct {
   GyroGainOffsetValues gyro_go_values;
 } Bmi323Storage;
 
+/**
+ * @brief   Initialization function for bmi323
+ * @return  STATUS_CODE_OK if initialization is successful
+ *          STATUS_CODE_INVALID_ARGS if storage is null
+ *          STATUS_CODE_INTERNAL_ERROR if chip ID is incorrect
+ */
 StatusCode bmi323_init(Bmi323Storage *storage);
 
+/**
+ * @brief   Update the gyro/accel data, to be called in medium cycle
+ * @return  STATUS_CODE_OK
+ */
 StatusCode bmi323_update(Bmi323Storage *storage);
 
 /** @} */
