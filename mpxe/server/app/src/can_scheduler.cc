@@ -55,9 +55,9 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.msg_head.ival2.tv_sec = MEDIUM_CYCLE_SPEED_MS / 1000U;
   canMediumCycleBCM.msg_head.ival2.tv_usec = (MEDIUM_CYCLE_SPEED_MS % 1000U) * 1000U;
 
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_DATA;
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_dlc = 5U;
-  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  // canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_DATA;
+  // canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].can_dlc = 5U;
+  // memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_REAR_CONTROLLER_STATUS;
   canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX].can_dlc = 5U;
   memset(canMediumCycleBCM.frame[MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
@@ -94,9 +94,12 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG;
   canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
   memset(canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_STEERING_STEERING;
-  canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].can_dlc = 5U;
-  memset(canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  // canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_STEERING_STEERING_BUTTONS;
+  // canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].can_dlc = 5U;
+  // memset(canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  // canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_STEERING_STEERING_TARGET_VELOCITY;
+  // canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].can_dlc = 4U;
+  // memset(canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
 
   if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
     throw std::runtime_error("Failed to schedule CAN BCM Medium cycle messages");
@@ -171,33 +174,33 @@ void CanScheduler::update_telemetry_telemetry_data(uint64_t telemetry_data_value
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_front_controller_pedal_data_percentage(uint32_t percentage_value) {
-  try {
-    unsigned int start_byte = 0;
+// void CanScheduler::update_front_controller_pedal_data_percentage(uint32_t percentage_value) {
+//   try {
+//     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (percentage_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 1U] = (percentage_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 2U] = (percentage_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 3U] = (percentage_value >> 24U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update front_controller_pedal_data percentage}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_front_controller_pedal_data_brake_enabled(uint8_t brake_enabled_value) {
-  try {
-    unsigned int start_byte = 4;
+//     canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (percentage_value >> 0U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 1U] = (percentage_value >> 8U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 2U] = (percentage_value >> 16U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 3U] = (percentage_value >> 24U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update front_controller_pedal_data percentage}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_front_controller_pedal_data_brake_enabled(uint8_t brake_enabled_value) {
+//   try {
+//     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (brake_enabled_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update front_controller_pedal_data brake_enabled}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
+//     canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_FRONT_CONTROLLER_PEDAL_DATA_FRAME_INDEX].data[start_byte + 0U] = (brake_enabled_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update front_controller_pedal_data brake_enabled}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
 void CanScheduler::update_rear_controller_status_bps_fault(uint16_t bps_fault_value) {
   try {
     unsigned int start_byte = 0;
@@ -845,78 +848,78 @@ void CanScheduler::update_slow_one_shot_msg_sig2(uint16_t sig2_value) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_steering_buttons_drive_state(uint8_t drive_state_value) {
-  try {
-    unsigned int start_byte = 0;
+// void CanScheduler::update_steering_buttons_drive_state(uint8_t drive_state_value) {
+//   try {
+//     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (drive_state_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_buttons drive_state}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_steering_buttons_cruise_control(uint8_t cruise_control_value) {
-  try {
-    unsigned int start_byte = 1;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (drive_state_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_buttons drive_state}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_steering_buttons_cruise_control(uint8_t cruise_control_value) {
+//   try {
+//     unsigned int start_byte = 1;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (cruise_control_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_buttons cruise_control}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_steering_buttons_regen_braking(uint8_t regen_braking_value) {
-  try {
-    unsigned int start_byte = 2;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (cruise_control_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_buttons cruise_control}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_steering_buttons_regen_braking(uint8_t regen_braking_value) {
+//   try {
+//     unsigned int start_byte = 2;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (regen_braking_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_buttons regen_braking}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_steering_buttons_hazard_enabled(uint8_t hazard_enabled_value) {
-  try {
-    unsigned int start_byte = 3;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (regen_braking_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_buttons regen_braking}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_steering_buttons_hazard_enabled(uint8_t hazard_enabled_value) {
+//   try {
+//     unsigned int start_byte = 3;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (hazard_enabled_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_buttons hazard_enabled}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_steering_buttons_horn_enabled(uint8_t horn_enabled_value) {
-  try {
-    unsigned int start_byte = 4;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (hazard_enabled_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_buttons hazard_enabled}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_steering_buttons_horn_enabled(uint8_t horn_enabled_value) {
+//   try {
+//     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (horn_enabled_value >> 0U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_buttons horn_enabled}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-void CanScheduler::update_steering_target_velocity_target_velocity(uint32_t target_velocity_value) {
-  try {
-    unsigned int start_byte = 0;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (horn_enabled_value >> 0U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_buttons horn_enabled}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
+// void CanScheduler::update_steering_target_velocity_target_velocity(uint32_t target_velocity_value) {
+//   try {
+//     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 0U] = (target_velocity_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 1U] = (target_velocity_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 2U] = (target_velocity_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_STEERING_BUTTONS_FRAME_INDEX].data[start_byte + 3U] = (target_velocity_value >> 24U) & 0xFFU;
-    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update steering_target_velocity target_velocity}");
-    }
-  } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].data[start_byte + 0U] = (target_velocity_value >> 0U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].data[start_byte + 1U] = (target_velocity_value >> 8U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].data[start_byte + 2U] = (target_velocity_value >> 16U) & 0xFFU;
+//     canMediumCycleBCM.frame[MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX].data[start_byte + 3U] = (target_velocity_value >> 24U) & 0xFFU;
+//     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+//       throw std::runtime_error("Failed to update steering_target_velocity target_velocity}");
+//     }
+//   } catch (std::exception &e) {
+//     std::cerr << e.what() << std::endl;
+//   }
+// }
