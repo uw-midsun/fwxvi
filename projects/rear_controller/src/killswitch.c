@@ -33,7 +33,7 @@ static InterruptSettings killswitch_settings = {
 };
 
 StatusCode killswitch_init(Event event, const Task *task) {
-  set_rear_controller_status_killswitch_state(false);
+  trigger_bps_fault(BPS_FAULT_KILLSWITCH);
 
   gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 

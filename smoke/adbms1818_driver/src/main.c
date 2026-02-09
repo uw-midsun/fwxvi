@@ -37,11 +37,9 @@ const SpiSettings spi_config = {
 };
 
 static AdbmsAfeSettings s_settings = { .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
-
                                        .num_devices = 1,
                                        .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
                                        .num_thermistors = 1,
-
                                        .spi_settings = &spi_config,
                                        .spi_port = SPI_PORT_2 };
 
@@ -161,19 +159,16 @@ TASK(adbms1818_driver, TASK_STACK_1024) {
         uint16_t temperature_c = calculate_board_thermistor_temperature(s_afe.board_thermistor_voltages[i] / 10U);
         LOG_DEBUG("Board number: %u has Board thermistor voltage: %u 100uV, and temperature: %u C\r\n", i, s_afe.board_thermistor_voltages[i], temperature_c);
       }
-<<<<<<< HEAD
       adbms_afe_write_config(&s_afe);
 
-      uint8_t rx_cfgA[8]   = {0};  
-      uint8_t rx_cfgB[8]   = {0};
-      uint8_t cmd[4]       = {0};
+      uint8_t rx_cfgA[8] = {0};
+      uint8_t rx_cfgB[8] = {0};
+      uint8_t cmd[4] = {0};
 
       /* --- Read back CFG A --- */
       wakeup();
       build_cmd(ADBMS1818_RDCFGA_RESERVED, cmd);
       spi_exchange(SPI_PORT_2, cmd, 4, rx_cfgA, 8);
-=======
->>>>>>> 39d1056 (COmment in commented out code)
       delay_ms(10);
     }
 

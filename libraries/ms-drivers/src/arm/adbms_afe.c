@@ -242,11 +242,11 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
 
   uint8_t gpio_bits[2];
 
-  gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO2_PD_OFF | 
-                 ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF | 
+  gpio_bits[0] = ADBMS1818_GPIO1_PD_OFF | ADBMS1818_GPIO2_PD_OFF |
+                 ADBMS1818_GPIO3_PD_OFF | ADBMS1818_GPIO4_PD_OFF |
                  ADBMS1818_GPIO5_PD_OFF;
 
-  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF | 
+  gpio_bits[1] = ADBMS1818_GPIO6_PD_OFF | ADBMS1818_GPIO7_PD_OFF |
                  ADBMS1818_GPIO8_PD_OFF | ADBMS1818_GPIO9_PD_OFF;
 
   return s_write_config(afe, gpio_bits);

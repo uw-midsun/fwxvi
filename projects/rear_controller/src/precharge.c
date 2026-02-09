@@ -50,7 +50,7 @@ StatusCode precharge_run() {
   notify_get(&notification);
   if (notification & (1 << REAR_CONTROLLER_PRECHARGE_EVENT)) {
     LOG_DEBUG("PRECHARGE COMPLETE\r\n");
-    set_battery_stats_B_motor_precharge_complete(true);
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
   }
   return STATUS_CODE_OK;
 }
