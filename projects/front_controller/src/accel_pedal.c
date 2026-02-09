@@ -62,6 +62,8 @@ StatusCode accel_pedal_run() {
                                            (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
   s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
 
+  front_controller_storage->accel_percentage = s_accel_pedal_storage.accel_percentage;
+
 #if (DEBUG_ACCEL_PEDAL == 1)
   LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
 #endif

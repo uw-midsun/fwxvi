@@ -16,32 +16,10 @@
 
 #include "accel_pedal.h"
 #include "front_controller_getters.h"
+#include "front_controller_setters.h"
 
 #define MOTOR_CAN_DEBUG 0U
 #define IS_BRAKE_CONNECTED 1U
-
-#if (MOTOR_CAN_DEBUG == 1)
-static const char *print_state_str(VehicleDriveState state) {
-  switch (state) {
-    case VEHICLE_DRIVE_STATE_NEUTRAL:
-      return "VEHICLE_DRIVE_STATE_NEUTRAL";
-    case VEHICLE_DRIVE_STATE_DRIVE:
-      return "VEHICLE_DRIVE_STATE_DRIVE";
-    case VEHICLE_DRIVE_STATE_REVERSE:
-      return "VEHICLE_DRIVE_STATE_REVERSE";
-    case VEHICLE_DRIVE_STATE_CRUISE:
-      return "VEHICLE_DRIVE_STATE_CRUISE";
-    case VEHICLE_DRIVE_STATE_BRAKE:
-      return "VEHICLE_DRIVE_STATE_BRAKE";
-    case VEHICLE_DRIVE_STATE_REGEN:
-      return "VEHICLE_DRIVE_STATE_REGEN";
-    case VEHICLE_DRIVE_STATE_INVALID:
-      return "VEHICLE_DRIVE_STATE_INVALID";
-    default:
-      return "UNKNOWN";
-  }
-}
-#endif
 
 static FrontControllerStorage *front_controller_storage = NULL;
 
@@ -83,15 +61,12 @@ StatusCode motor_can_update_target_current_velocity() {
 
   current_drive_state = s_resolve_current_state();
 
-#if (MOTOR_CAN_DEBUG == 1)
-  LOG_DEBUG("resolve_current_state returned %s\n", print_state_str(current_drive_state));
-#endif
-
   if (current_drive_state == VEHICLE_DRIVE_STATE_INVALID) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  front_controller_storage->currentDriveState = current_drive_state;
+  front_controller_storage->current_drive_state = current_drive_state;
+  set_pedal_data_drive_state(front_controller_storage->current_drive_state);
 
   switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
