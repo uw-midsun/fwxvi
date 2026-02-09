@@ -33,10 +33,10 @@ struct ButtonLEDManager;
 #define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
 
 /** @brief  Maximum cruise control spesed in kilometers per hour*/
-#define STEERING_CRUISE_MAX_SPEED_KMH 80U
+#define STEERING_CRUISE_MAX_SPEED_KMH 1000U  // 80
 
 /** @brief  Minimum cruise control speed in kilometers per hour */
-#define STEERING_CRUISE_MIN_SPEED_KMH 40U
+#define STEERING_CRUISE_MIN_SPEED_KMH 0U  // 40
 
 /**
  * @brief   Steering buttons
@@ -74,14 +74,14 @@ typedef struct {
 typedef struct {
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */
 
-  int16_t motor_heatsink_temp;
-  int16_t motor_temp;
+  int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
+  int16_t motor_temp;          /**< Temperature of the motor */
 
-  int16_t vehicle_velocity;
-  int16_t motor_velocity;
+  int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
+  int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
 
-  uint16_t bps_fault;
-  uint16_t state_of_charge;
+  BpsFault bps_fault;    /**< BPS fault bitfield */
+  float state_of_charge; /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
   int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */
@@ -91,10 +91,9 @@ typedef struct {
   uint16_t pack_voltage; /**< Pack voltage reading (mV) */
   uint16_t pack_current; /**< Pack current reading (mA) */
 
-  uint8_t drive_state;
+  VehicleDriveState drive_state;
   uint8_t brake_enabled;
   uint8_t regen_enabled;
-  uint8_t killswitch_state;
   uint8_t precharge_complete;
 } DisplayData;
 

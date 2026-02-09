@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "killswitch.h"
 
+#include "bps_fault.h"
 #include "delay.h"
 #include "gpio.h"
 #include "interrupts.h"
@@ -44,7 +45,7 @@ StatusCode killswitch_init(Event event, const Task *task) {
     gpio_register_interrupt(&killswitch_address, &killswitch_settings, event, task);
   } else {
     LOG_DEBUG("KILLSWITCH PRESSED\r\n");
-    set_rear_controller_status_killswitch_state(true);
+    trigger_bps_fault(BPS_FAULT_KILLSWITCH);
   }
 
   return STATUS_CODE_OK;
@@ -54,7 +55,7 @@ StatusCode killswitch_run() {
   notify_get(&notification);
   if (notification & (1 << REAR_CONTROLLER_KILLSWITCH_EVENT)) {
     LOG_DEBUG("KILLSWITCH PRESSED\r\n");
-    set_rear_controller_status_killswitch_state(true);
+    trigger_bps_fault(BPS_FAULT_KILLSWITCH);
   }
   return STATUS_CODE_OK;
 }

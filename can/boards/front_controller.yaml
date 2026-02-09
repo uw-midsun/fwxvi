@@ -6,7 +6,7 @@
 
 ---
 Messages:
-  pedal_data:
+  pedal:
     id: 21
     cycle: "medium"
     critical: false
@@ -20,11 +20,9 @@ Messages:
     signals:
       percentage:
         length: 32
-      brake_enabled:
-        length: 8
-      regen_enabled:
-        length: 8
-      drive_state:
+      data:
+        type: bitfield
+        flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]
         length: 8
   motor_velocity:
     id: 22

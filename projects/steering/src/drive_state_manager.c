@@ -20,17 +20,20 @@
 #include "button_led.h"
 #include "buzzer.h"
 #include "drive_state_manager.h"
+#include "steering.h"
 
 /**
  * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
 #define IS_REAR_CONNECTED 0U
-#define DRIVE_STATE_MANAGER_DEBUG 1U
+#define DRIVE_STATE_MANAGER_DEBUG 0U
 
 static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 static RegenState current_regen_state = INVALID_REGEN_STATE;
+
+static SteeringStorage *steering_storage = NULL;
 
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
@@ -58,7 +61,7 @@ static StatusCode drive_state_manager_reverse(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -67,7 +70,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -76,7 +79,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
@@ -109,7 +112,7 @@ static StatusCode drive_state_manager_drive(void) {
 
 #if (IS_REAR_CONNECTED != 0U)
   // If the bps has faulted
-  if (get_rear_controller_status_bps_fault() != 0) {
+  if (get_rear_controller_status_triggers_bps_fault() != 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; BPS has faulted\n");
 #endif
@@ -118,7 +121,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the vehicle is not ready
-  } else if (get_rear_controller_status_power_state() != VEHICLE_POWER_STATE_IDLE) {
+  } else if (get_rear_controller_status_triggers_power_state() != VEHICLE_POWER_STATE_IDLE) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Vehicle is not in idle state\n");
 #endif
@@ -127,7 +130,7 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
     // If the precharge is incomplete
-  } else if (get_battery_stats_B_motor_precharge_complete() == 0) {
+  } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
     LOG_DEBUG("Cannot change state; Precharge is not complete\n");
 #endif
@@ -148,7 +151,12 @@ static StatusCode drive_state_manager_drive(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode drive_state_manager_init(void) {
+StatusCode drive_state_manager_init(SteeringStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  steering_storage = storage;
+
   current_state = VEHICLE_DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
   current_regen_state = REGEN_STATE_DISABLED;
@@ -193,6 +201,9 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to NEUTRAL\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
+
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -207,6 +218,8 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to REVERSE\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -235,11 +248,11 @@ StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state) {
   }
 
   if ((current_regen_state != REGEN_STATE_ENABLED) && (new_regen_state == REGEN_STATE_ENABLED)) {
-    set_steering_buttons_regen_braking(REGEN_STATE_ENABLED);
+    set_steering_buttons_regen_enabled(REGEN_STATE_ENABLED);
     button_led_enable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_on();
   } else if ((current_regen_state != REGEN_STATE_DISABLED) && (new_regen_state == REGEN_STATE_DISABLED)) {
-    set_steering_buttons_regen_braking(REGEN_STATE_DISABLED);
+    set_steering_buttons_regen_enabled(REGEN_STATE_DISABLED);
     button_led_disable(STEERING_BUTTON_REGEN);
     buzzer_play_regen_off();
   }

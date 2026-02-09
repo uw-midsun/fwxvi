@@ -40,7 +40,7 @@ StatusCode precharge_init(Event event, const Task *task) {
   if (state == GPIO_STATE_HIGH) {
     gpio_register_interrupt(&precharge_address, &precharge_settings, event, task);
   } else {
-    set_battery_stats_B_motor_precharge_complete(true);
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
   }
 
   return STATUS_CODE_OK;

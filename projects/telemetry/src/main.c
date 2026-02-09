@@ -30,6 +30,8 @@ TelemetryConfig telemetry_config = { .message_transmit_frequency_hz = 1000U,
                                      .uart_settings = {
                                          .tx = { .port = GPIO_PORT_A, .pin = 2 }, .rx = { .port = GPIO_PORT_A, .pin = 3 }, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE } };
 
+Bmi323Storage bmi323_storage = { 0 };
+
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
@@ -40,7 +42,7 @@ int main() {
   mcu_init();
   tasks_init();
 
-  telemetry_init(&telemetry_storage, &telemetry_config);
+  telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage);
 
   tasks_start();
 

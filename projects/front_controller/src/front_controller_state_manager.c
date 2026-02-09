@@ -67,6 +67,7 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
 
   front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
   is_horn_enabled = get_steering_buttons_horn_enabled();
+
   is_brake_enabled = front_controller_storage->brake_enabled || front_controller_storage->regen_enabled;
 
   if (is_horn_enabled) {
@@ -131,14 +132,20 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
 #else
-  uint8_t bps_fault_from_rear = get_rear_controller_status_bps_fault();
-  uint8_t is_precharge_complete_from_rear = get_battery_stats_B_motor_precharge_complete();
+  BpsFault bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
+  uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
 #endif
 
   /* Steering getters */
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t lights_from_steering = get_steering_buttons_lights();
   uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
+
+  uint8_t is_regen_enabled = get_steering_buttons_regen_enabled();
+  uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
+  uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
+
+  printf("ST BITS: H: %d, R: %d, C: %d, Z: %d\r\n", horn_enabled_from_steering, is_regen_enabled, is_cruise_control_enabled, is_hazard_enabled);
 
 #if (FRONT_STATE_MANAGER_DEBUG == 1)
   LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u LIGHTS %u HORN %u\r\n", drive_state_from_steering, lights_from_steering, horn_enabled_from_steering);

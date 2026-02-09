@@ -15,6 +15,7 @@
 #include "motor_can.h"
 
 #include "accel_pedal.h"
+#include "cruise_control.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
 
@@ -28,7 +29,7 @@ static VehicleDriveState current_drive_state;
 static VehicleDriveState s_resolve_current_state() {
 #if (IS_BRAKE_CONNECTED != 0U)
   if (front_controller_storage->brake_enabled) {
-    if (get_steering_buttons_regen_braking()) {
+    if (get_steering_buttons_regen_enabled()) {
       return VEHICLE_DRIVE_STATE_REGEN;
     } else {
       return VEHICLE_DRIVE_STATE_BRAKE;
@@ -37,7 +38,7 @@ static VehicleDriveState s_resolve_current_state() {
 #endif
 
   VehicleDriveState drive_state_from_steering = get_steering_buttons_drive_state();
-  uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control();
+  uint8_t cc_enabled_from_steering = get_steering_buttons_cruise_control_enabled();
 
   if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
     return VEHICLE_DRIVE_STATE_NEUTRAL;
@@ -85,10 +86,15 @@ StatusCode motor_can_update_target_current_velocity() {
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
 #if (MOTOR_CAN_DEBUG == 2)
-      LOG_DEBUG("CRUISE, CC RPM: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO));
+      LOG_DEBUG("CRUISE, CC RPM: %ld\r\n", (int32_t)(get_steering_target_velocity_cruise_control_target_velocity()));
 #endif
-      ws22_motor_can_set_current(1.0f);
-      ws22_motor_can_set_velocity(get_steering_target_velocity_cruise_control_target_velocity() * VEL_TO_RPM_RATIO);
+      if (front_controller_storage->cruise_control_storage->target_motor_velocity != get_steering_cruise_control_target_velocity()) {
+        front_controller_storage->cruise_control_storage->target_motor_velocity = get_steering_cruise_control_target_velocity();
+        front_controller_storage->cruise_control_storage->set_current = front_controller_storage->ws22_motor_can_storage->control.current;
+      }
+      cruise_control_run();
+      ws22_motor_can_set_current(front_controller_storage->cruise_control_storage->set_current);
+      ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_BRAKE:
 #if (MOTOR_CAN_DEBUG == 2)

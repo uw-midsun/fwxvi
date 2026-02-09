@@ -100,8 +100,8 @@ class CanScheduler {
   static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 10U;                               /**< Broadcast Manager gyro_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 11U;                              /**< Broadcast Manager accel_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 12U;       /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX = 13U;                   /**< Broadcast Manager steering_buttons to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX = 14U;           /**< Broadcast Manager steering_target_velocity to Frame index mapping */
+  // static const constexpr unsigned int MEDIUM_STEERING_STEERING_BUTTONS_FRAME_INDEX = 13U;                   /**< Broadcast Manager steering_buttons to Frame index mapping */
+  // static const constexpr unsigned int MEDIUM_STEERING_STEERING_TARGET_VELOCITY_FRAME_INDEX = 14U;           /**< Broadcast Manager steering_target_velocity to Frame index mapping */
 
   static const constexpr unsigned int SLOW_TELEMETRY_TELEMETRY_FRAME_INDEX = 0U;                 /**< Broadcast Manager telemetry to Frame index mapping */
   static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 1U; /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
