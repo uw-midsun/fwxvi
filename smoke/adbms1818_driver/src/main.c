@@ -36,12 +36,9 @@ const SpiSettings spi_config = {
   .cs = { .port = GPIO_PORT_B, .pin = 12 },
 };
 
-static AdbmsAfeSettings s_settings = { .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
-                                       .num_devices = 1,
-                                       .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
-                                       .num_thermistors = 1,
-                                       .spi_settings = &spi_config,
-                                       .spi_port = SPI_PORT_2 };
+static AdbmsAfeSettings s_settings = {
+  .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ, .num_devices = 1, .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE, .num_thermistors = 1, .spi_settings = &spi_config, .spi_port = SPI_PORT_2
+};
 
 static AdbmsAfeStorage s_afe;
 
@@ -161,9 +158,9 @@ TASK(adbms1818_driver, TASK_STACK_1024) {
       }
       adbms_afe_write_config(&s_afe);
 
-      uint8_t rx_cfgA[8] = {0};
-      uint8_t rx_cfgB[8] = {0};
-      uint8_t cmd[4] = {0};
+      uint8_t rx_cfgA[8] = { 0 };
+      uint8_t rx_cfgB[8] = { 0 };
+      uint8_t cmd[4] = { 0 };
 
       /* --- Read back CFG A --- */
       wakeup();

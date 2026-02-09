@@ -48,14 +48,9 @@ static SPIPortData s_port[NUM_SPI_PORTS] = {
 };
 
 static const uint16_t s_spi_baudrate_map[] = {
-  [SPI_BAUDRATE_312_5KHZ] = SPI_BAUDRATEPRESCALER_256,
-  [SPI_BAUDRATE_625KHZ]   = SPI_BAUDRATEPRESCALER_128,
-  [SPI_BAUDRATE_1_25MHZ]  = SPI_BAUDRATEPRESCALER_64,
-  [SPI_BAUDRATE_2_5MHZ]   = SPI_BAUDRATEPRESCALER_32,
-  [SPI_BAUDRATE_5MHZ]     = SPI_BAUDRATEPRESCALER_16,
-  [SPI_BAUDRATE_10MHZ]    = SPI_BAUDRATEPRESCALER_8,
-  [SPI_BAUDRATE_20MHZ]    = SPI_BAUDRATEPRESCALER_4,
-  [SPI_BAUDRATE_40MHZ]    = SPI_BAUDRATEPRESCALER_2,
+  [SPI_BAUDRATE_312_5KHZ] = SPI_BAUDRATEPRESCALER_256, [SPI_BAUDRATE_625KHZ] = SPI_BAUDRATEPRESCALER_128, [SPI_BAUDRATE_1_25MHZ] = SPI_BAUDRATEPRESCALER_64,
+  [SPI_BAUDRATE_2_5MHZ] = SPI_BAUDRATEPRESCALER_32,    [SPI_BAUDRATE_5MHZ] = SPI_BAUDRATEPRESCALER_16,    [SPI_BAUDRATE_10MHZ] = SPI_BAUDRATEPRESCALER_8,
+  [SPI_BAUDRATE_20MHZ] = SPI_BAUDRATEPRESCALER_4,      [SPI_BAUDRATE_40MHZ] = SPI_BAUDRATEPRESCALER_2,
 };
 
 static SPI_HandleTypeDef s_spi_handles[NUM_SPI_PORTS];
@@ -82,8 +77,7 @@ static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef *hspi) {
 
 /* Helper function to release CS pin */
 static void s_release_cs(SpiPort spi) {
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + 
-    (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[spi].pin)), 1U);
 }
 
@@ -102,7 +96,7 @@ void SPI3_IRQHandler(void) {
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   SpiPort spi = s_get_spi_port_from_handle(hspi);
-  
+
   /* Release CS after RX completes - this is the final operation */
   s_release_cs(spi);
   xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
@@ -112,7 +106,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
 void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   SpiPort spi = s_get_spi_port_from_handle(hspi);
-  
+
   /* Release CS on error */
   s_release_cs(spi);
   xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
@@ -219,7 +213,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
   HAL_StatusTypeDef status;
   StatusCode result = STATUS_CODE_OK;
   static uint8_t s_spi_dummy_tx[SPI_MAX_NUM_DATA] = { 0 };
-  
+
   /* Assert CS at the start of the transaction */
   gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_LOW);
 

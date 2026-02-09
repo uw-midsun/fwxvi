@@ -14,7 +14,7 @@
 /* Intra-component Headers */
 #include "thermistor.h"
 
-#define BOARD_THERMISTOR_LUT_SIZE   102U
+#define BOARD_THERMISTOR_LUT_SIZE 102U
 
 typedef struct {
   float resistance;
