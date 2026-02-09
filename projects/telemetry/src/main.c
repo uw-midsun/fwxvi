@@ -16,11 +16,11 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
-#include "system_can.h"
 #include "tasks.h"
 #include "uart.h"
 
 /* Intra-component Headers */
+#include "telemetry_getters.h"
 #include "telemetry.h"
 
 TelemetryStorage telemetry_storage;
@@ -32,6 +32,21 @@ TelemetryConfig telemetry_config = { .message_transmit_frequency_hz = 1000U,
 
 Bmi323Storage bmi323_storage = { 0 };
 
+void pre_loop_init() {}
+
+void run_1000hz_cycle() {
+  run_can_rx_all();
+}
+
+void run_10hz_cycle() {
+  run_can_tx_medium();
+  printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
+}
+
+void run_1hz_cycle() {
+  run_can_tx_slow();
+}
+
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
@@ -41,8 +56,11 @@ int main() {
 #endif
   mcu_init();
   tasks_init();
+  log_init();
 
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage);
+
+  init_master_tasks();
 
   tasks_start();
 

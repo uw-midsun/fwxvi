@@ -51,7 +51,7 @@ static const CanSettings s_can_settings = {
   .tx = GPIO_FRONT_CONTROLLER_CAN_TX,
   .rx = GPIO_FRONT_CONTROLLER_CAN_RX,
   .loopback = false,
-  .can_rx_all_cb = ws22_motor_can_process_rx,
+  .can_rx_all_cb = NULL,
 };
 
 static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
@@ -66,28 +66,28 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
-  flash_init();
-  opamp_init();
-  dac_init();
+  // flash_init();
+  // opamp_init();
+  // dac_init();
 
-  /* Initialize front controller systems */
-  // pedal_calib_read(front_controller_storage);
-  power_manager_init(front_controller_storage);
-  brake_pedal_init(front_controller_storage);
-  accel_pedal_init(front_controller_storage);
-  opd_init(front_controller_storage);
-  ws22_motor_can_init(front_controller_storage);
-  motor_can_init(front_controller_storage);
-  cruise_control_init(front_controller_storage);
-  front_lights_signal_init();
+  // /* Initialize front controller systems */
+  // // pedal_calib_read(front_controller_storage);
+  // power_manager_init(front_controller_storage);
+  // brake_pedal_init(front_controller_storage);
+  // accel_pedal_init(front_controller_storage);
+  // opd_init(front_controller_storage);
+  // ws22_motor_can_init(front_controller_storage);
+  // motor_can_init(front_controller_storage);
+  // cruise_control_init(front_controller_storage);
+  // front_lights_signal_init();
 
-  front_controller_state_manager_init(front_controller_storage);
+  // front_controller_state_manager_init(front_controller_storage);
 
-  /* Enable Board LED */
+  // /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  /* ADC initialization must happen at the very end, so all channels are registered */
-  adc_init();
+  // /* ADC initialization must happen at the very end, so all channels are registered */
+  // adc_init();
   LOG_DEBUG("Front controller initialized\r\n");
 
   return STATUS_CODE_OK;
