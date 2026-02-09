@@ -138,6 +138,36 @@ void Terminal::handleAdcCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
+void Terminal::handleSpiCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+
+  std::string dataStr = "";
+  if (tokens.size() >= 4) {
+    for (size_t i = 3; i < tokens.size(); ++i) {
+      dataStr += tokens[i];
+    }
+  }
+
+  if (action == "write" && tokens.size() >= 4) {
+    message = serverSPIManager.createSpiCommand(CommandCode::SPI_WRITE_DATA, tokens[2], dataStr);
+  } else if (action == "read" && tokens.size() >= 3) {
+    message = serverSPIManager.createSpiCommand(CommandCode::SPI_READ_DATA, tokens[2], "");
+  } else if (action == "transfer" && tokens.size() >= 4) {
+    message = serverSPIManager.createSpiCommand(CommandCode::SPI_TRANSFER_DATA, tokens[2], dataStr);
+  } else if (action == "clear_buffer" && tokens.size() >= 3) {
+    message = serverSPIManager.createSpiCommand(CommandCode::SPI_CLEAR_BUFFER, tokens[2], "");
+  } else {
+    std::cerr << "Unsupported SPI action: " << action << std::endl;
+  }
+
+  if (!message.empty()) {
+    m_Server->sendMessage(m_targetClient, message);
+  } else {
+    std::cout << "Invalid SPI command. Refer to command.md" << std::endl;
+  }
+  m_targetClient = nullptr;
+}
+
 void Terminal::parseCommand(std::vector<std::string> &tokens) {
   if (tokens.size() < 2) {
     std::cout << "Invalid command. Format: <interface> <action> <args...>\n";
@@ -156,6 +186,7 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
       handleAdcCommands(action, tokens);
     } else if (interface == "i2c") {
     } else if (interface == "spi") {
+      handleSpiCommands(action, tokens);
     } else {
       std::cerr << "Unsupported interface: " << interface << std::endl;
     }
