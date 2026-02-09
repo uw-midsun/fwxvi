@@ -64,6 +64,23 @@ static SemaphoreHandle_t s_spi_port_handle[NUM_SPI_PORTS];
 static StaticSemaphore_t s_spi_cmplt_sem[NUM_SPI_PORTS];
 static SemaphoreHandle_t s_spi_cmplt_handle[NUM_SPI_PORTS];
 
+/* Helper function to get SPI port index from handle */
+static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef *hspi) {
+  if (hspi->Instance == SPI1) {
+    return SPI_PORT_1;
+  } else if (hspi->Instance == SPI2) {
+    return SPI_PORT_2;
+  } else {
+    return SPI_PORT_3;
+  }
+}
+
+/* Helper function to release CS pin */
+static void s_release_cs(SpiPort spi) {
+  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
+  HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[spi].pin)), 1U);
+}
+
 void SPI1_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_1]);
 }
@@ -76,19 +93,23 @@ void SPI3_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_3]);
 }
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
-  GPIO_TypeDef *gpio_port;
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  if (hspi->Instance == SPI1) {
-    gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[SPI_PORT_1].port * GPIO_ADDRESS_OFFSET));
-    HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[SPI_PORT_1].pin)), 1U);
-  } else if (hspi->Instance == SPI2) {
-    gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[SPI_PORT_2].port * GPIO_ADDRESS_OFFSET));
-    HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[SPI_PORT_2].pin)), 1U);
-  } else {
-    gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[SPI_PORT_3].port * GPIO_ADDRESS_OFFSET));
-    HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[SPI_PORT_3].pin)), 1U);
-  }
+  SpiPort spi = s_get_spi_port_from_handle(hspi);
+
+  /* Release CS after RX completes - this is the final operation */
+  s_release_cs(spi);
+  xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  SpiPort spi = s_get_spi_port_from_handle(hspi);
+
+  /* Release CS on error */
+  s_release_cs(spi);
+  xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
   portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -167,7 +188,6 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   }
 
   interrupt_nvic_enable(s_port[spi].irq, INTERRUPT_PRIORITY_HIGH);
-  interrupt_nvic_enable(s_port[spi].irq, INTERRUPT_PRIORITY_HIGH);
 
   s_port[spi].initialized = true;
   return STATUS_CODE_OK;
@@ -191,11 +211,14 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
   }
 
   HAL_StatusTypeDef status;
+  StatusCode result = STATUS_CODE_OK;
+  static uint8_t s_spi_dummy_tx[SPI_MAX_NUM_DATA] = { 0 };
 
+  /* Assert CS at the start of the transaction */
   gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_LOW);
 
+  /* First: Transmit command/address if TX data provided */
   if (tx_len > 0) {
-    /* Polling transmit to reduce overhead from semaphores/synchronization */
     status = HAL_SPI_Transmit(&s_spi_handles[spi], tx_data, tx_len, HAL_MAX_DELAY);
     if (status != HAL_OK) {
       gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
@@ -204,17 +227,27 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
     }
   }
 
+  /* Second: Receive response if RX data expected */
   if (rx_len > 0) {
-    /* Interrupt based receive to continue running thread and automatically pull CS high */
-    status = HAL_SPI_Receive_IT(&s_spi_handles[spi], rx_data, rx_len);
+    /* Use interrupt-based receive so CS is released in callback after completion */
+    status = HAL_SPI_TransmitReceive_IT(&s_spi_handles[spi], s_spi_dummy_tx, rx_data, rx_len);
     if (status != HAL_OK) {
       gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
       xSemaphoreGive(s_spi_port_handle[spi]);
       return STATUS_CODE_INTERNAL_ERROR;
     }
+
+    /* Wait for RX to complete - CS will be released in the callback */
+    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) {
+      gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_TIMEOUT;
+    }
+  } else {
+    /* TX only - no RX expected, release CS immediately */
+    gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
   }
 
   xSemaphoreGive(s_spi_port_handle[spi]);
-
-  return STATUS_CODE_OK;
+  return result;
 }

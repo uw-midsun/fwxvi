@@ -22,14 +22,6 @@
  * @{
  */
 
-typedef struct {
-  float resistance;
-} ThermistorDataPoint;
-
-extern const ThermistorDataPoint thermistor_table[];
-
-#define THERMISTOR_TABLE_SIZE 102
-
 uint16_t calculate_board_thermistor_temperature(uint16_t thermistor_voltage_mv);
 
 /** @} */

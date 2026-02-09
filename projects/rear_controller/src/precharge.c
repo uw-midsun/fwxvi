@@ -22,6 +22,8 @@
 
 static GpioAddress precharge_address = GPIO_REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
+static uint32_t notification;
+
 static InterruptSettings precharge_settings = {
   INTERRUPT_TYPE_INTERRUPT,
   INTERRUPT_PRIORITY_NORMAL,
@@ -41,5 +43,14 @@ StatusCode precharge_init(Event event, const Task *task) {
     set_rear_controller_status_triggers_motor_precharge_complete(true);
   }
 
+  return STATUS_CODE_OK;
+}
+
+StatusCode precharge_run() {
+  notify_get(&notification);
+  if (notification & (1 << REAR_CONTROLLER_PRECHARGE_EVENT)) {
+    LOG_DEBUG("PRECHARGE COMPLETE\r\n");
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
+  }
   return STATUS_CODE_OK;
 }

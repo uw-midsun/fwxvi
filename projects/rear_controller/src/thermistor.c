@@ -14,9 +14,17 @@
 /* Intra-component Headers */
 #include "thermistor.h"
 
-// array with thermistor resistances to its corresponding temperature
-// the index of each item is the temperature in celcius, first item has temperature 0 and resistance 28323.4958
-const ThermistorDataPoint thermistor_table[] = {
+#define BOARD_THERMISTOR_LUT_SIZE 102U
+
+typedef struct {
+  float resistance;
+} ThermistorDataPoint;
+
+/**
+ * Lookup-table with thermistor resistances to its corresponding temperature
+ * The index of each item is the temperature in celcius, first item has temperature 0 and resistance 28323.4958
+ */
+const ThermistorDataPoint board_thermistor_lut[BOARD_THERMISTOR_LUT_SIZE] = {
   { 28323.4958f }, { 26501.8267f }, { 25570.0205f }, { 24715.2692f }, { 23959.5885f }, { 22870.0685f }, { 21965.8867f }, { 20943.6820f }, { 20138.0830f }, { 19684.7536f }, { 18664.9554f },
   { 18215.1228f }, { 16926.0998f }, { 16208.3135f }, { 15718.9582f }, { 15187.4935f }, { 14507.6390f }, { 14230.9661f }, { 13635.5823f }, { 13046.7929f }, { 12683.3532f }, { 12223.7880f },
   { 11453.9184f }, { 10916.8314f }, { 10275.1169f }, { 10275.2126f }, { 10181.9322f }, { 9443.8983f },  { 9218.7871f },  { 8827.8454f },  { 8651.4936f },  { 8270.9759f },  { 8131.4508f },
@@ -33,17 +41,18 @@ uint16_t calculate_board_thermistor_temperature(uint16_t thermistor_voltage_mv) 
   float resistance = 0;
   uint16_t temperature = 0;
 
-  // voltage divider formula
+  /* Voltage divider formula */
   resistance = ((float)thermistor_voltage_mv * 10000.0f) / (5000.0f - thermistor_voltage_mv);
 
-  for (uint16_t i = 0; i < THERMISTOR_TABLE_SIZE - 1; i++) {
-    float resistance_1 = thermistor_table[i].resistance;
-    float resistance_2 = thermistor_table[i + 1].resistance;
+  for (uint16_t i = 0; i < BOARD_THERMISTOR_LUT_SIZE - 1; i++) {
+    float resistance_1 = board_thermistor_lut[i].resistance;
+    float resistance_2 = board_thermistor_lut[i + 1].resistance;
 
     if (resistance >= resistance_2 && resistance <= resistance_1) {
-      // linear interpolation when the resistance is between two of the resistances in the table
+      /* Linear interpolation when the resistance is between two of the resistances in the table */
       temperature = (i + 1) + (resistance - resistance_2) * (-1 / (resistance_1 - resistance_2));
     }
   }
+
   return temperature;
 }

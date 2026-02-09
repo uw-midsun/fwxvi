@@ -92,8 +92,6 @@ typedef enum {
 typedef struct AdbmsAfeSettings {
   AdbmsAfeAdcMode adc_mode; /**< Determines ADC Mode */
 
-  uint16_t cell_bitset[ADBMS_AFE_MAX_DEVICES]; /**< Bitset showing cells are enabled for each device */
-
   size_t num_devices;     /**< Number of AFE devices */
   size_t num_cells;       /**< Number of TOTAL cells across all devices */
   size_t num_thermistors; /**< Number of TOTAL thermistors (thermistor inputs) across all devices */
