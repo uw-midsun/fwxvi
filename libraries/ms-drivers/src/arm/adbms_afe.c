@@ -222,7 +222,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     memset(cfgrA, 0, sizeof(*cfgrA));
     memset(cfgrB, 0, sizeof(*cfgrB));
 
-    cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_30_S;
+    cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_1_MIN;
     cfgrA->adcopt = ((config->adc_mode + 1) > 3);
     cfgrA->dten = true;
     cfgrA->refon = true;
@@ -447,24 +447,14 @@ StatusCode adbms_afe_read_board_temp(AdbmsAfeStorage *afe, uint8_t device_num) {
 }
 
 StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge) {
-  if (cell >= ADBMS_AFE_MAX_CELLS) {
+  if (cell >= ADBMS_AFE_MAX_CELLS || cell <= 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   uint16_t device_index = cell / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
-  uint16_t cell_indx_in_dev = cell % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+  uint16_t cell_indx_in_dev = (cell % ADBMS_AFE_MAX_CELLS_PER_DEVICE) + 1;
 
-  if (cell_indx_in_dev == 0) {
-    /* Cell 0 belongs to CFGRB */
-    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[device_index].cfg;
-
-    uint8_t bit_index = 6U;
-    if (discharge) {
-      cfgB->discharge_bitset |= (1U << bit_index);
-    } else {
-      cfgB->discharge_bitset &= ~(1U << bit_index);
-    }
-  } else if (cell_indx_in_dev <= 12) {
+  if (cell_indx_in_dev <= 12) {
     /* Cells 1-12 belong to CFGRA */
     AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[device_index].cfg;
     LOG_DEBUG("Device_index: %u, cell_indx: %u\r\n", device_index, cell_indx_in_dev);
@@ -493,19 +483,29 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
 StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle) {
   AdbmsAfeSettings *settings = afe->settings;
 
-  /* Build WRPWM command with data */
-  size_t pwm_data_len = ADBMS1818_NUM_PWMR_REGS * settings->num_devices;
+  /* 0–100% -> 0–15 (PWMC code), rounded */
+  uint8_t pwmc_value = (duty_cycle >= 100) ? 15 : (uint8_t)((duty_cycle * 15u + 50u) / 100u);
+  pwmc_value &= 0x0F;
+
+  uint8_t packed_duty_cycle = (uint8_t)((pwmc_value << 4) | pwmc_value);
+
+  /* Build WRPWM command with data + PEC (6 bytes data + 2 bytes PEC per device) */
+  size_t pwm_packet_len = ADBMS1818_NUM_PWMR_REGS + 2;
+  size_t pwm_data_len = pwm_packet_len * settings->num_devices;
   size_t pwm_total_len = ADBMS1818_CMD_SIZE + pwm_data_len;
-  uint8_t cmd_with_pwm[ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PWMR_REGS * ADBMS_AFE_MAX_DEVICES)] = { 0 };
+  uint8_t cmd_with_pwm[ADBMS1818_CMD_SIZE + ((ADBMS1818_NUM_PWMR_REGS + 2) * ADBMS_AFE_MAX_DEVICES)] = { 0 };
 
   s_build_cmd(ADBMS1818_WRPWM_RESERVED, cmd_with_pwm, ADBMS1818_CMD_SIZE);
 
-  uint8_t packed_duty_cycle = (duty_cycle << 4) | duty_cycle;
-
   for (uint8_t device = 0; device < settings->num_devices; device++) {
+    uint8_t *device_data = &cmd_with_pwm[ADBMS1818_CMD_SIZE + (device * pwm_packet_len)];
     for (int pwm_reg = 0; pwm_reg < ADBMS1818_NUM_PWMR_REGS; pwm_reg++) {
-      cmd_with_pwm[ADBMS1818_CMD_SIZE + (device * ADBMS1818_NUM_PWMR_REGS) + pwm_reg] = packed_duty_cycle;
+      device_data[pwm_reg] = packed_duty_cycle;
     }
+    /* Calculate and append PEC for this device's data */
+    uint16_t pec = crc15_calculate(device_data, ADBMS1818_NUM_PWMR_REGS);
+    device_data[ADBMS1818_NUM_PWMR_REGS] = (uint8_t)(pec >> 8);
+    device_data[ADBMS1818_NUM_PWMR_REGS + 1] = (uint8_t)(pec & 0xFF);
   }
 
   s_wakeup_idle(afe);
@@ -515,18 +515,26 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
     return ret;
   }
 
-  /* Build WRPSB command with data */
-  size_t psr_data_len = ADBMS1818_NUM_PSR_REGS * settings->num_devices;
+  /* Build WRPSB command with data + PEC (6 bytes data + 2 bytes PEC per device) */
+  size_t psr_packet_len = ADBMS1818_NUM_PSR_REGS + 2;
+  size_t psr_data_len = psr_packet_len * settings->num_devices;
   size_t psr_total_len = ADBMS1818_CMD_SIZE + psr_data_len;
-  uint8_t cmd_with_psr[ADBMS1818_CMD_SIZE + (ADBMS1818_NUM_PSR_REGS * ADBMS_AFE_MAX_DEVICES)] = { 0 };
+  uint8_t cmd_with_psr[ADBMS1818_CMD_SIZE + ((ADBMS1818_NUM_PSR_REGS + 2) * ADBMS_AFE_MAX_DEVICES)] = { 0 };
 
   s_build_cmd(ADBMS1818_WRPSB_RESERVED, cmd_with_psr, ADBMS1818_CMD_SIZE);
 
   for (uint8_t device = 0; device < settings->num_devices; device++) {
+    uint8_t *device_data = &cmd_with_psr[ADBMS1818_CMD_SIZE + (device * psr_packet_len)];
     for (int pwm_reg = 0; pwm_reg < ADBMS1818_NUM_PWM_REGS_IN_PSR; pwm_reg++) {
-      cmd_with_psr[ADBMS1818_CMD_SIZE + (device * ADBMS1818_NUM_PSR_REGS) + pwm_reg] = packed_duty_cycle;
+      device_data[pwm_reg] = packed_duty_cycle;
     }
+    /* Calculate and append PEC for this device's data */
+    uint16_t pec = crc15_calculate(device_data, ADBMS1818_NUM_PSR_REGS);
+    device_data[ADBMS1818_NUM_PSR_REGS] = (uint8_t)(pec >> 8);
+    device_data[ADBMS1818_NUM_PSR_REGS + 1] = (uint8_t)(pec & 0xFF);
   }
+
+  s_wakeup_idle(afe);
 
   return spi_exchange(settings->spi_port, cmd_with_psr, psr_total_len, NULL, 0);
 }

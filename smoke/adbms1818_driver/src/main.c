@@ -23,6 +23,8 @@
 #include "adbms_afe_crc15.h"
 #include "thermistor.h"
 
+#define DISCHARGE_PWM 30
+
 #define ADBMS1818_AFE_THERMISTOR_VOLTAGE_LOOKUP(s_afe, board, thermistor_num) \
   (s_afe.thermistor_voltages[(board * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE) + thermistor_num])
 
@@ -95,13 +97,6 @@ TASK(adbms1818_driver, TASK_STACK_1024) {
         delay_ms(5);
         LOG_DEBUG("Coninue");
       }
-
-      for (size_t i = 0; i < s_afe.settings->num_cells; i++) {
-        LOG_DEBUG("Cell %02u: %4u 100uV\n", (unsigned)i, ADBMS1818_AFE_CELL_VOLTAGE_LOOKUP(s_afe, i));
-        delay_ms(30);
-      }
-
-      adbms_afe_toggle_cell_discharge(&s_afe, 1, true);
       adbms_afe_write_config(&s_afe);
 
       uint8_t rx_cfgA[8]   = {0};  
