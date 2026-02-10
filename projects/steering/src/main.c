@@ -27,6 +27,7 @@
 #include "party_mode.h"
 #include "range_estimator.h"
 #include "steering.h"
+#include "steering_getters.h"
 
 SteeringStorage steering_storage = { 0 };
 
@@ -47,7 +48,6 @@ void run_10hz_cycle() {
   cruise_control_run_medium_cycle();
   display_rx_medium();
   run_can_tx_medium();
-  printf("MV: %d\r\n", steering_storage.display_data.vehicle_velocity);
 }
 
 void run_1hz_cycle() {

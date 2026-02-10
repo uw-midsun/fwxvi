@@ -10,7 +10,6 @@
 /* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
-#include <stdio.h>
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
@@ -106,9 +105,9 @@ StatusCode can_receive(CanMessage *msg) {
   // if (ret == STATUS_CODE_OK)
   // {
   //   LOG_DEBUG("Source Id: %d\n", msg->id);
-    // LOG_DEBUG("Data: %llx\n", msg->data);
-    // LOG_DEBUG("DLC: %d\n", msg->dlc);
-    // LOG_DEBUG("ret: %d\n", ret);
+  //   LOG_DEBUG("Data: %lx\n", msg->data);
+  //   LOG_DEBUG("DLC: %ld\n", msg->dlc);
+  //   LOG_DEBUG("ret: %d\n", ret);
   // }
 
   return ret;

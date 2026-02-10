@@ -28,13 +28,13 @@
 static TelemetryStorage *telemetry_storage;
 
 static CanStorage s_can_storage = { 0 };
-static GpioAddress s_telemetry_board_led = { .port = GPIO_PORT_A, .pin = 6 };
+static GpioAddress s_telemetry_board_led = { .port = GPIO_PORT_B, .pin = 10 };
 
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,
   .bitrate = CAN_HW_BITRATE_500KBPS,
-  .tx = { GPIO_PORT_B, 8 },
-  .rx = { GPIO_PORT_B, 9 },
+  .tx = { .port = GPIO_PORT_B, .pin = 8 },
+  .rx = { .port = GPIO_PORT_B, .pin = 9 },
   .loopback = false,
   .can_rx_all_cb = NULL,
 };
