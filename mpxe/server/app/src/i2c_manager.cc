@@ -1,12 +1,3 @@
-/**
- * Quick summary of meeting:
- * 
- * So we're just writing to a JSON in the server
- * We have to deserialize the enum to make it into a string in order to write to the json faster
- * then we write 
- * only one function updateData
- * 
- */
 
 /************************************************************************************************
  * @file   i2c_manager.cc
@@ -79,6 +70,10 @@ void I2CManager::updateI2CData(std::string &projectName, std::string &payload) {
   m_i2cInfo[key][DATA_KEY] = stringifyData(dataVector);
 
   saveI2CInfo(projectName);
+}
+
+void I2CManager::setSlaveAddress(uint8_t slaveAddress){
+  m_I2CDatagram.
 }
 
 std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i2cPort, std::vector<uint8_t> &data) {

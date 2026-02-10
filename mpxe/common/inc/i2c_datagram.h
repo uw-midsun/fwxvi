@@ -53,6 +53,7 @@ class I2C {
     Port i2cPort;                        /**< I2C port */
     size_t bufferLength;                 /**< Data buffer length */
     uint8_t buffer[I2C_MAX_BUFFER_SIZE]; /**< Data buffer */
+    uint8_t slave_address;               /**< Slave address */
   };
 
   /**
@@ -114,6 +115,20 @@ class I2C {
    * @return  Pointer to the buffer array
    */
   const uint8_t *getBuffer() const;
+
+  /**
+   * @brief   Get I2C slave address from I2C datagram object
+   * @details This function shall be called to receive the slave address
+   * @return  7 bit I2C slave address
+   */
+  uint8_t getSlaveAddress() const;
+
+  /**
+   * @brief   Set I2C slave address to I2C datagram object
+   * @details This function shall be called to write a slave address
+   */
+
+  void setSlaveAddress(uint8_t address);
 
  private:
   Payload m_i2cDatagram; /**< Private datagram payload */
