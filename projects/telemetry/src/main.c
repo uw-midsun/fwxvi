@@ -22,13 +22,14 @@
 /* Intra-component Headers */
 #include "telemetry_getters.h"
 #include "telemetry.h"
+#include "telemetry_hw_defs.h"
 
 TelemetryStorage telemetry_storage;
 
 TelemetryConfig telemetry_config = { .message_transmit_frequency_hz = 1000U,
                                      .uart_port = UART_PORT_2,
                                      .uart_settings = {
-                                         .tx = { .port = GPIO_PORT_A, .pin = 2 }, .rx = { .port = GPIO_PORT_A, .pin = 3 }, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE } };
+                                         .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE } };
 
 Bmi323Storage bmi323_storage = { 0 };
 
