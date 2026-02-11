@@ -32,12 +32,29 @@
  */
 class I2CManager {
  private:
+  Datagram::I2C m_I2CDatagram; /**< Datagram class to serialize/deserialize commands */
  public:
   /**
    * @brief   Constructs a I2CManager object
    * @details Default constructor
    */
   I2CManager() = default;
+
+  /**
+   * @brief sets
+   * @details etet
+   *  
+   * @param payload message data 
+   */
+  std::string I2C_get_data(std::string &payload);
+
+  /**
+   * @brief erre
+   * @details ere
+   * 
+   * @param payload message d
+   */
+  std::string I2C_set_data(std::string &payload);
 };
 
 /** @} */
