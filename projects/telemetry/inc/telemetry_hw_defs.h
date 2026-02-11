@@ -37,7 +37,7 @@
 #define GPIO_TELEMETRY_CAN_TX TELEMETRY_GPIO_DEF(B, 8)
 
 /************************************************************************************************
- * Telemetry UART definitions
+ * Telemetry UART definitions - for XBee transciever
  ************************************************************************************************/
 
 /** @brief  Telemetry UART RX Port */
@@ -45,6 +45,45 @@
 
 /** @brief  Telemetry UART TX Port */
 #define GPIO_TELEMETRY_UART_TX TELEMETRY_GPIO_DEF(A, 3)
+
+/** @brief  Telemetry XBee XRST Pin */
+#define GPIO_TELEMETRY_XBEE_XRST TELEMETRY_GPIO_DEF(A, 5)
+
+/** @brief  Telemetry XBee SLEEP_RQ Pin */
+#define GPIO_TELEMETRY_XBEE_SLEEP_RQ TELEMETRY_GPIO_DEF(A, 11)
+
+/************************************************************************************************
+ * Telemetry SPI definitions - for SD card & IMU
+ ************************************************************************************************/
+
+/** @brief  Telemetry SPI MISO Port */
+#define GPIO_TELEMETRY_SPI_MISO TELEMETRY_GPIO_DEF(B, 14)
+
+/** @brief  Telemetry SPI MOSI Port */
+#define GPIO_TELEMETRY_SPI_MOSI TELEMETRY_GPIO_DEF(B, 15)
+
+/** @brief  Telemetry SPI SCK Port */
+#define GPIO_TELEMETRY_SPI_SCK TELEMETRY_GPIO_DEF(B, 13)
+
+/** @brief  Telemetry SPI NSS Port */
+#define GPIO_TELEMETRY_SPI_NSS TELEMETRY_GPIO_DEF(B, 12)
+
+/************************************************************************************************
+ * Telemetry IMU-specific Definitions
+ ************************************************************************************************/
+
+/** @brief  Telemetry IMU INTL1 Pin */
+#define GPIO_TELEMETRY_IMU_INTL1 TELEMETRY_GPIO_DEF(B, 0)
+
+/** @brief  Telemetry IMU INTL2 Pin */
+#define GPIO_TELEMETRY_IMU_INTL2 TELEMETRY_GPIO_DEF(B, 1)
+
+/************************************************************************************************
+ * Telemetry SD-card-specific Definitions
+ ************************************************************************************************/
+
+/** @brief  Telemetry SD card CD_B Pin (chip-detect) */
+#define GPIO_TELEMETRY_SD_CARD_CD_B TELEMETRY_GPIO_DEF(B, 10)
 
 /************************************************************************************************
  * Board LED definition
