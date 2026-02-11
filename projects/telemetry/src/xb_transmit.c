@@ -11,6 +11,7 @@
 
 /* Inter-component Headers */
 #include "can.h"
+#include "log.h"
 #include "uart.h"
 
 /* Intra-component Headers */

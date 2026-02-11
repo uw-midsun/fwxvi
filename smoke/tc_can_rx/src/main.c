@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for sd_card_api
+ * @brief  Smoke test for Telemetry Board CAN RX
  *
  * @date   2025-10-02
  * @author Midnight Sun Team #24 - MSXVI
@@ -16,15 +16,16 @@
 #include "log.h"
 #include "mcu.h"
 #include "status.h"
+#include "system_can.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "datagram.h"
+#include "global_enums.h"
 #include "sd_card_interface.h"
 #include "sd_card_spi.h"
-#include "datagram.h"
 #include "telemetry.h"
-
-
+#include "telemetry_hw_defs.h"
 
 static TelemetryStorage *telemetry_storage;
 
@@ -36,8 +37,18 @@ static TelemetryConfig s_telemetry_config = {
   .message_transmit_frequency_hz = 10U,
 };
 
+static CanStorage s_can_storage = { 0 };
 
-//FrontController
+static const CanSettings s_can_settings = {
+  .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,
+  .bitrate = CAN_HW_BITRATE_500KBPS,
+  .tx = GPIO_TELEMETRY_CAN_TX,
+  .rx = GPIO_TELEMETRY_CAN_RX,
+  .loopback = false,
+  .can_rx_all_cb = NULL,
+};
+
+// FrontController
 typedef struct {
   uint16_t bps_fault;
   uint8_t relay_state;
@@ -82,7 +93,7 @@ typedef struct {
   uint8_t afe_temp_id;
   uint8_t temperature[7];
 
-}RearControllerData;
+} RearControllerData;
 
 typedef struct {
   uint32_t pedal_percentage;
@@ -109,13 +120,12 @@ typedef struct {
   uint16_t left_sig_current;
 } FrontControllerData;
 
-
 typedef struct {
   uint8_t drive_state;
   uint8_t cruise_control;
-  uint8_t regen_breaking;
+  uint8_t regen_braking;
   uint8_t hazard_enabled;
-  uint8_t horn_enableld;
+  uint8_t horn_enabled;
   uint8_t lights;
   uint8_t cruise_control_target_velocity;
 } SteeringData;
@@ -124,40 +134,31 @@ static FrontControllerData s_front_controller = { 0 };
 static RearControllerData s_rear_controller = { 0 };
 static SteeringData s_steering = { 0 };
 
-
-
-
 static const char *s_drive_state_strings[] = {
-  [VEHICLE_DRIVE_STATE_INVALID] = "INVALID",
-  [VEHICLE_DRIVE_STATE_NEUTRAL] = "NEUTRAL",
-  [VEHICLE_DRIVE_STATE_DRIVE]   = "DRIVE",
-  [VEHICLE_DRIVE_STATE_REVERSE] = "REVERSE",
-  [VEHICLE_DRIVE_STATE_CRUISE]  = "CRUISE",
-  [VEHICLE_DRIVE_STATE_BRAKE]   = "BRAKE",
-  [VEHICLE_DRIVE_STATE_REGEN]   = "REGEN",
+  [VEHICLE_DRIVE_STATE_INVALID] = "INVALID", [VEHICLE_DRIVE_STATE_NEUTRAL] = "NEUTRAL", [VEHICLE_DRIVE_STATE_DRIVE] = "DRIVE", [VEHICLE_DRIVE_STATE_REVERSE] = "REVERSE",
+  [VEHICLE_DRIVE_STATE_CRUISE] = "CRUISE",   [VEHICLE_DRIVE_STATE_BRAKE] = "BRAKE",     [VEHICLE_DRIVE_STATE_REGEN] = "REGEN",
 };
 
 static const char *s_power_state_strings[] = {
-  [VEHICLE_POWER_STATE_IDLE]   = "IDLE",
-  [VEHICLE_POWER_STATE_DRIVE]  = "DRIVE",
+  [VEHICLE_POWER_STATE_IDLE] = "IDLE",
+  [VEHICLE_POWER_STATE_DRIVE] = "DRIVE",
   [VEHICLE_POWER_STATE_CHARGE] = "CHARGE",
-  [VEHICLE_POWER_STATE_FAULT]  = "FAULT",
+  [VEHICLE_POWER_STATE_FAULT] = "FAULT",
 };
 
 static const char *s_bps_fault_strings[] = {
-  [BPS_FAULT_OVERVOLTAGE]           = "OVERVOLTAGE",
-  [BPS_FAULT_UNBALANCE]             = "UNBALANCE",
-  [BPS_FAULT_OVERTEMP_AMBIENT]      = "OVERTEMP_AMBIENT",
-  [BPS_FAULT_COMMS_LOSS_AFE]        = "COMMS_LOSS_AFE",
+  [BPS_FAULT_OVERVOLTAGE] = "OVERVOLTAGE",
+  [BPS_FAULT_UNBALANCE] = "UNBALANCE",
+  [BPS_FAULT_OVERTEMP_AMBIENT] = "OVERTEMP_AMBIENT",
+  [BPS_FAULT_COMMS_LOSS_AFE] = "COMMS_LOSS_AFE",
   [BPS_FAULT_COMMS_LOSS_CURR_SENSE] = "COMMS_LOSS_CURR_SENSE",
-  [BPS_FAULT_OVERTEMP_CELL]         = "OVERTEMP_CELL",
-  [BPS_FAULT_OVERCURRENT]           = "OVERCURRENT",
-  [BPS_FAULT_UNDERVOLTAGE]          = "UNDERVOLTAGE",
-  [BPS_FAULT_KILLSWITCH]            = "KILLSWITCH",
-  [BPS_FAULT_RELAY_CLOSE_FAILED]    = "RELAY_CLOSE_FAILED",
-  [BPS_FAULT_DISCONNECTED]          = "DISCONNECTED",
+  [BPS_FAULT_OVERTEMP_CELL] = "OVERTEMP_CELL",
+  [BPS_FAULT_OVERCURRENT] = "OVERCURRENT",
+  [BPS_FAULT_UNDERVOLTAGE] = "UNDERVOLTAGE",
+  [BPS_FAULT_KILLSWITCH] = "KILLSWITCH",
+  [BPS_FAULT_RELAY_CLOSE_FAILED] = "RELAY_CLOSE_FAILED",
+  [BPS_FAULT_DISCONNECTED] = "DISCONNECTED",
 };
-
 
 static void print_front_controller(const FrontControllerData *data) {
   LOG_DEBUG("  [FRONT CONTROLLER]\r\n");
@@ -212,7 +213,7 @@ static void print_steering(const SteeringData *data) {
   LOG_DEBUG("    Target Vel:    %lu\r\n", (unsigned long)data->cruise_control_target_velocity);
 }
 
-//Validate data are correct
+// Validate data are correct
 
 static void print_bps_faults(uint16_t fault_bitset) {
   if (fault_bitset == 0) {
@@ -227,8 +228,8 @@ static void print_bps_faults(uint16_t fault_bitset) {
   }
 }
 
-static const char * safe_drive_state(uint8_t state){
-   if (state <= VEHICLE_DRIVE_STATE_REGEN) return s_drive_state_strings[state];
+static const char *safe_drive_state(uint8_t state) {
+  if (state <= VEHICLE_DRIVE_STATE_REGEN) return s_drive_state_strings[state];
   return "UNKNOWN";
 }
 
@@ -246,9 +247,8 @@ static uint32_t read_u32(const uint8_t *data) {
   return (uint32_t)(data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24));
 }
 
-
 // Parse messages from front
-static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t* data){
+static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t *data) {
   switch (msg_id) {
     case 21: /* pedal_data (DLC: 7) */
       if (dlc >= 7) {
@@ -298,9 +298,8 @@ static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t* data){
   print_front_controller(&s_front_controller);
 }
 
-
 // Parse messages from rear
-static void parse_rear_controller(uint16_t msg-id, const uint8_t *data, uint8_t dlc){
+static void parse_rear_controller(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
   switch (msg_id) {
     case 1: /* rear_controller_status (DLC: 6) */
       if (dlc >= 6) {
@@ -380,7 +379,7 @@ static void parse_rear_controller(uint16_t msg-id, const uint8_t *data, uint8_t 
   print_rear_controller(&s_rear_controller);
 }
 
-//Parse messages from steering
+// Parse messages from steering
 static void parse_steering(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
   switch (msg_id) {
     case 5: /* steering_target_velocity (DLC: 4) */
@@ -404,8 +403,7 @@ static void parse_steering(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
   print_steering(&s_steering);
 }
 
-
-// Read datagram, update structs accordinglu 
+// Read datagram, update structs accordingly
 static void update_board_data(Datagram *datagram) {
   uint16_t msg_id = datagram->id;
   uint8_t source_id = (msg_id >> 5U) & 0x1FU;
@@ -447,35 +445,32 @@ static void print_all_boards(void) {
   LOG_DEBUG("==========================================================\r\n\r\n");
 }
 
-
-TASK(telemetry_reader, TASK_STACK_1024){
+TASK(telemetry_reader, TASK_STACK_1024) {
   Datagram datagram = { 0U };
   CanMessage message = { 0U };
-  uint16_t msg_count=0;
+  uint16_t msg_count = 0;
   StatusCode status = STATUS_CODE_OK;
 
   LOG_DEBUG("Telemetry smoke test");
   delay_ms(10U);
 
   while (true) {
-  if (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) == STATUS_CODE_OK) {
+    if (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) == STATUS_CODE_OK) {
+      LOG_DEBUG("Received message\n");
+      decode_can_message(&datagram, &message);
+      msg_count++;
+      LOG_DEBUG("[MSG #%lu] ID: 0x%04X | DLC: %d\r\n", msg_count, datagram.id, datagram.dlc);
+      delay_ms(10U);
+      /* Wait for new data to be in the queue */
 
-    LOG_DEBUG("Received message\n");
-    decode_can_message(&tx_datagram, &message);
-    msg_count++;
-    LOG_DEBUG("[MSG #%lu] ID: 0x%04X | DLC: %d\r\n", msg_count, datagram.id, datagram.dlc);
-    delay_ms(10U);
-    /* Wait for new data to be in the queue */
-      
-    update_board_data(&datagram);
+      update_board_data(&datagram);
 
-    if (msg_count % 50U == 0U){
-      print_all_boards();
+      if (msg_count % 50U == 0U) {
+        print_all_boards();
+      }
     }
   }
-  }
 }
-
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
@@ -487,13 +482,12 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+  can_init(&s_can_storage, &s_can_settings);
 
-  tasks_init_task(spi_api, TASK_PRIORITY(3), NULL);
+  tasks_init_task(telemetry_reader, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
   LOG_DEBUG("exiting main?");
   return 0;
 }
-
-

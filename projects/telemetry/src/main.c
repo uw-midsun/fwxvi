@@ -59,17 +59,38 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
+uint8_t datagram_data[] = { 0, 1, 2, 3, 4 };
+
+static Datagram tx_datagram = {
+  .start_frame = 0xAA,
+  .id = 0x01,
+  .dlc = 5,
+};
+
+static size_t datagram_length = 0;
+
+static StatusCode status = STATUS_CODE_OK;
+
 void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
-  xb_transmit_run();
+  // xb_transmit_run();
 }
 
 void run_10hz_cycle() {
   run_can_tx_medium();
-  imu_run();
-  printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
+  // imu_run();
+
+  datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
+  for (int i = 0; i < 5; i++) {
+    tx_datagram.data[i] = i;
+  }
+
+  status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+
+  printf("uart_tx with return code %d\r\n", status);
+  // printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
 }
 
 void run_1hz_cycle() {

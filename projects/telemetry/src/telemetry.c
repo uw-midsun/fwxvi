@@ -26,6 +26,7 @@
 #include "sd_card_interface.h"
 #include "telemetry.h"
 #include "telemetry_hw_defs.h"
+#include "xb_transmit.h"
 
 static TelemetryStorage *telemetry_storage;
 static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
@@ -54,9 +55,9 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   telemetry_storage->datagram_queue.storage_buf = (uint8_t *)telemetry_storage->datagram_buffer;
 
   uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
-  can_init(&telemetry_storage->can_storage, &s_can_settings);
+  can_init(telemetry_storage->can_storage, &s_can_settings);
   queue_init(&telemetry_storage->datagram_queue);
-  xb_transmit_init(&telemetry_storage);
+  xb_transmit_init(telemetry_storage);
   bmi323_init(bmi323_storage);
   sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
 
