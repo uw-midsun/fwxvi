@@ -148,7 +148,7 @@ StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t 
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
+StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
 
 /**
  * @brief   Gets data from the I2C TX queue

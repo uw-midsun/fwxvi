@@ -30,7 +30,7 @@ extern "C" {
     //i2c_get_rx_data
     //Clear buffer? --> after we clear after, dont need to clear 
     // What is a buffer? (an array), we send the data into it
-    //
+    //P
 
 std::string I2CManager::I2C_set_data(std::string &payload) {
     m_I2CDatagram.deserialize(payload); //Use I2C datagram

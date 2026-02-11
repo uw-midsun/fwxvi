@@ -72,10 +72,6 @@ void I2CManager::updateI2CData(std::string &projectName, std::string &payload) {
   saveI2CInfo(projectName);
 }
 
-void I2CManager::setSlaveAddress(uint8_t slaveAddress){
-  m_I2CDatagram.
-}
-
 std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i2cPort, std::vector<uint8_t> &data) {
   try {
     switch (commandCode) {
