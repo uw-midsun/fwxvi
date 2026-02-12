@@ -85,9 +85,9 @@ class AdcTableModel : public QAbstractTableModel {
    * @brief Struct representing one row of GPIO data
    */
   struct Row {
-    QString channel;          /**< Channel (e.g. channel 01, channel 16) */
-    QString pin;         /**< Pin identifier (e.g. A0, B12) */
-    QString reading;        
+    QString channel; /**< Channel (e.g. channel 01, channel 16) */
+    QString pin;     /**< Pin identifier (e.g. A0, B12) */
+    QString reading;
   };
 
   std::vector<Row> m_rows; /**< All rows of the GPIO table */

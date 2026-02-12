@@ -77,9 +77,8 @@ class AdcPage : public QWidget {
   std::map<QString, QVariant> m_payload; /**< Current payload for this page */
   QPointer<QTabWidget> m_tabs;           /**< Tab widget container for tables */
 
-  QSortFilterProxyModel *m_raw_proxy; /**< Proxy for raw readings table (can be used for filtering) */
-  QSortFilterProxyModel *m_conv_proxy;      /**< Proxy model for the converted readings table */
-  
+  QSortFilterProxyModel *m_raw_proxy;  /**< Proxy for raw readings table (can be used for filtering) */
+  QSortFilterProxyModel *m_conv_proxy; /**< Proxy model for the converted readings table */
 };
 
 /** @} */

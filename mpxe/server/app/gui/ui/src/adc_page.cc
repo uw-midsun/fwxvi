@@ -16,8 +16,8 @@
 #include <QVBoxLayout>
 
 /* Inter-component headers */
-#include "dict_table_model.h"
 #include "adc_table_model.h"
+#include "dict_table_model.h"
 #include "utils.h"
 
 /* Intra-component headers */
@@ -69,11 +69,10 @@ void AdcPage::rebuild() {
     AdcTableModel *model = new AdcTableModel(conv_map, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_conv_proxy = tws.proxy;
-    
+
     if (tws.table) {
       QHeaderView *hh = tws.table->horizontalHeader();
 
-      
       hh->setStretchLastSection(true);
       hh->setSectionResizeMode(0, QHeaderView::ResizeToContents); /* Channel */
       hh->setSectionResizeMode(1, QHeaderView::ResizeToContents); /* Pin */
@@ -83,7 +82,7 @@ void AdcPage::rebuild() {
       tws.table->setSelectionMode(QAbstractItemView::SingleSelection);
       tws.table->verticalHeader()->setVisible(false);
     }
-    
+
     m_tabs->addTab(tws.widget, QStringLiteral("Converted Readings"));
   }
 
@@ -92,7 +91,7 @@ void AdcPage::rebuild() {
     AdcTableModel *model = new AdcTableModel(raw_map, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_raw_proxy = tws.proxy;
-    
+
     if (tws.table) {
       QHeaderView *hh = tws.table->horizontalHeader();
 
@@ -105,9 +104,7 @@ void AdcPage::rebuild() {
       tws.table->setSelectionMode(QAbstractItemView::SingleSelection);
       tws.table->verticalHeader()->setVisible(false);
     }
-    
+
     m_tabs->addTab(tws.widget, QStringLiteral("Raw Readings"));
   }
-  
- 
 }
