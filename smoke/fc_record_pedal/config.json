@@ -1,0 +1,13 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/front_controller/inc"
+    ],
+    "can": false
+}
