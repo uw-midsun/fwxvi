@@ -1,119 +1,113 @@
-// /************************************************************************************************
-//  * @file    adc_page.cc
-//  *
-//  * @brief   Adc Page
-//  *
-//  * @date    2025-08-30
-//  * @author  Midnight Sun
-//  ************************************************************************************************/
+/************************************************************************************************
+ * @file    adc_page.cc
+ *
+ * @brief   Adc Page
+ *
+ * @date    2025-08-30
+ * @author  Midnight Sun
+ ************************************************************************************************/
 
-// /* Standard library headers */
+/* Standard library headers */
 
-// /* Qt library headers */
-// #include <QFormLayout>
-// #include <QHeaderView>
-// #include <QTableView>
-// #include <QVBoxLayout>
+/* Qt library headers */
+#include <QFormLayout>
+#include <QHeaderView>
+#include <QTableView>
+#include <QVBoxLayout>
 
-// /* Inter-component headers */
-// #include "dict_table_model.h"
-// #include "utils.h"
-// #include "voltage_table_model.h"
+/* Inter-component headers */
+#include "dict_table_model.h"
+#include "adc_table_model.h"
+#include "utils.h"
 
-// /* Intra-component headers */
-// #include "adc_page.h"
+/* Intra-component headers */
+#include "adc_page.h"
 
-// /**
-//  * @brief Extract maps from afe{...} ex: main_pack, thermistor_temperature, and so on
-//  */
-// inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
-//   std::map<QString, QVariant> out;
-//   std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
+/**
+ * @brief Extract maps from adc{...} ex: raw_readings, converted_readings
+ */
+inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
+  std::map<QString, QVariant> out;
+  std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
 
-//   if (it != input_map.end() && it->second.canConvert<QVariantMap>()) {
-//     const QVariantMap v_map = it->second.toMap();
-//     QVariantMap::const_iterator v_it = v_map.constBegin();
+  if (it != input_map.end() && it->second.canConvert<QVariantMap>()) {
+    const QVariantMap v_map = it->second.toMap();
+    QVariantMap::const_iterator v_it = v_map.constBegin();
 
-//     for (; v_it != v_map.constEnd(); ++v_it) {
-//       out[v_it.key()] = v_it.value();
-//     }
-//   }
-//   return out;
-// }
+    for (; v_it != v_map.constEnd(); ++v_it) {
+      out[v_it.key()] = v_it.value();
+    }
+  }
+  return out;
+}
 
-// AfePage::AfePage(const std::map<QString, QVariant> &payload, QWidget *parent) :
-//     QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_discharge_proxy{ nullptr }, m_pack_proxy{ nullptr }, m_therm_proxy{ nullptr } {
-//   QVBoxLayout *layout = new QVBoxLayout(this);
-//   layout->setContentsMargins(0, 0, 0, 0);
-//   layout->addWidget(m_tabs);
-//   rebuild();
-// }
+AdcPage::AdcPage(const std::map<QString, QVariant> &payload, QWidget *parent) :
+    QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_raw_proxy{ nullptr }, m_conv_proxy{ nullptr } {
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->addWidget(m_tabs);
+  rebuild();
+}
 
-// void AfePage::setPayload(const std::map<QString, QVariant> &payload) {
-//   m_payload = payload;
-//   rebuild();
-// }
+void AdcPage::setPayload(const std::map<QString, QVariant> &payload) {
+  m_payload = payload;
+  rebuild();
+}
 
-// std::map<QString, QVariant> AfePage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
-//   return extractMapInline(input_map, key_wanted);
-// }
+std::map<QString, QVariant> AdcPage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
+  return extractMapInline(input_map, key_wanted);
+}
 
-// void AfePage::rebuild() {
-//   m_tabs->clear();
+void AdcPage::rebuild() {
+  m_tabs->clear();
 
-//   const std::map<QString, QVariant> discharge_map = extractMap(m_payload, QStringLiteral("cell_discharge"));
-//   const std::map<QString, QVariant> main_pack_map = extractMap(m_payload, QStringLiteral("main_pack"));
-//   const std::map<QString, QVariant> therm_map = extractMap(m_payload, QStringLiteral("thermistor_temperature"));
-//   const std::map<QString, QVariant> board_map = extractMap(m_payload, QStringLiteral("board_thermistors"));
+  const std::map<QString, QVariant> conv_map = extractMap(m_payload, QStringLiteral("converted_readings"));
+  const std::map<QString, QVariant> raw_map = extractMap(m_payload, QStringLiteral("raw_readings"));
 
-//   /* Discharge */
-//   {
-//     DictTableModel *model = new DictTableModel(discharge_map, false, m_tabs);
-//     TableWithSearch tws = makeSearchableTable(model, m_tabs);
-//     m_discharge_proxy = tws.proxy;
-//     m_tabs->addTab(tws.widget, QStringLiteral("Cell Discharge"));
-//   }
+  /* Converted Readings */
+  {
+    AdcTableModel *model = new AdcTableModel(conv_map, m_tabs);
+    TableWithSearch tws = makeSearchableTable(model, m_tabs);
+    m_conv_proxy = tws.proxy;
+    
+    if (tws.table) {
+      QHeaderView *hh = tws.table->horizontalHeader();
 
-//   /* Main Pack */
-//   {
-//     VoltageTableModel *model = new VoltageTableModel(main_pack_map, MIN_VOLTAGE, MAX_VOLTAGE, m_tabs);
-//     TableWithSearch tws = makeSearchableTable(model, m_tabs);
-//     m_pack_proxy = tws.proxy;
+      
+      hh->setStretchLastSection(true);
+      hh->setSectionResizeMode(0, QHeaderView::ResizeToContents); /* Channel */
+      hh->setSectionResizeMode(1, QHeaderView::ResizeToContents); /* Pin */
+      hh->setSectionResizeMode(2, QHeaderView::Stretch);          /* Reading */
 
-//     if (tws.table) {
-//       tws.table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-//       tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-//       tws.table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-//       tws.table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-//       tws.table->setColumnWidth(3, 80);
-//     }
-//     m_tabs->addTab(tws.widget, QStringLiteral("Main Pack"));
-//   }
+      tws.table->setSelectionBehavior(QAbstractItemView::SelectRows);
+      tws.table->setSelectionMode(QAbstractItemView::SingleSelection);
+      tws.table->verticalHeader()->setVisible(false);
+    }
+    
+    m_tabs->addTab(tws.widget, QStringLiteral("Converted Readings"));
+  }
 
-//   /* Thermistors */
-//   {
-//     DictTableModel *model = new DictTableModel(therm_map, false, m_tabs);
-//     TableWithSearch tws = makeSearchableTable(model, m_tabs);
-//     m_therm_proxy = tws.proxy;
+  /* Raw Readings */
+  {
+    AdcTableModel *model = new AdcTableModel(raw_map, m_tabs);
+    TableWithSearch tws = makeSearchableTable(model, m_tabs);
+    m_raw_proxy = tws.proxy;
+    
+    if (tws.table) {
+      QHeaderView *hh = tws.table->horizontalHeader();
 
-//     if (tws.table) {
-//       tws.table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-//       tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-//       tws.table->verticalHeader()->setVisible(false);
-//     }
-//     m_tabs->addTab(tws.widget, QStringLiteral("Thermistors"));
-//   }
+      hh->setStretchLastSection(true);
+      hh->setSectionResizeMode(0, QHeaderView::ResizeToContents); /* Channel */
+      hh->setSectionResizeMode(1, QHeaderView::ResizeToContents); /* Pin */
+      hh->setSectionResizeMode(2, QHeaderView::Stretch);          /* Reading */
 
-//   /* Board Thermistors as separate tab */
-//   {
-//     DictTableModel *model = new DictTableModel(board_map, false, m_tabs);
-//     TableWithSearch tws = makeSearchableTable(model, m_tabs);
-
-//     if (tws.table) {
-//       tws.table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-//       tws.table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-//       tws.table->verticalHeader()->setVisible(false);
-//     }
-//     m_tabs->addTab(tws.widget, QStringLiteral("Board Thermistors"));
-//   }
-// }
+      tws.table->setSelectionBehavior(QAbstractItemView::SelectRows);
+      tws.table->setSelectionMode(QAbstractItemView::SingleSelection);
+      tws.table->verticalHeader()->setVisible(false);
+    }
+    
+    m_tabs->addTab(tws.widget, QStringLiteral("Raw Readings"));
+  }
+  
+ 
+}

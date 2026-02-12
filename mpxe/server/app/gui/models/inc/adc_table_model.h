@@ -47,7 +47,7 @@ class AdcTableModel : public QAbstractTableModel {
    * @param   data_map Input dictionary containing channel data
    * @param   parent Pointer to Qt parent (can be nullptr)
    */
-  explicit TableModel(const std::map<QString, QVariant> &data_map, QObject *parent = nullptr);
+  explicit AdcTableModel(const std::map<QString, QVariant> &data_map, QObject *parent = nullptr);
 
   /**
    * @brief   Returns the number of rows in the table

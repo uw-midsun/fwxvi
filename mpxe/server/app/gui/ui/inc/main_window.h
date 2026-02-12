@@ -25,6 +25,7 @@
 /* Inter-component headers */
 #include "afe_page.h"
 #include "gpio_page.h"
+#include "adc_page.h"
 #include "overview_page.h"
 
 /* Intra-component headers */
@@ -135,11 +136,12 @@ class MainWindow : public QMainWindow {
   QPointer<OverviewPage> m_overview_page; /**< Overview page */
   QPointer<AfePage> m_afe_page;           /**< AFE page */
   QPointer<GpioPage> m_gpio_page;         /**< GPIO page */
+  QPointer<AdcPage> m_adc_page;           /**< ADC page */
 
   /* Future pages go here, to be implemented */
   QPointer<QWidget> m_spi_page; /**< Placeholder SPI page */
   QPointer<QWidget> m_i2c_page; /**< Placeholder I2C page */
-  QPointer<QWidget> m_adc_page; /**< Placeholder ADC page */
+  
 };
 
 /** @} */

@@ -43,8 +43,8 @@ AdcTableModel::AdcTableModel(const std::map<QString, QVariant> &data_map, QObjec
     if (it->second.canConvert<QVariantMap>()) {
       const QVariantMap vm = it->second.toMap();
 
-      if (vm.contains(QStringLiteral("GPIO Port"))) {
-        r.pin = vm.value(QStringLiteral("GPIO Port")).toString();
+      if (vm.contains(QStringLiteral("Gpio Port"))) {
+        r.pin = vm.value(QStringLiteral("Gpio Port")).toString();
       }
       if (vm.contains(QStringLiteral("Reading"))) {
         r.reading = vm.value(QStringLiteral("Reading")).toString();
