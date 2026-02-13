@@ -25,8 +25,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define STEERING_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define STEERING_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Steering CAN definitions
@@ -92,6 +91,7 @@
 /************************************************************************************************
  * Display LTDC Config
  ************************************************************************************************/
+#define GPIO_STEERING_BACKLIGHT STEERING_GPIO_DEF(A, 1)
 
 /** @brief  LTDC pixel clock pin */
 #define GPIO_STEERING_DISPLAY_LTDC_CLOCK STEERING_GPIO_DEF(A, 4)
@@ -134,14 +134,14 @@
 /** @brief  LTDC blue channel pins (bits 2-7) */
 #define GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS \
   {                                          \
-    {},                           /* B0 */   \
-        {},                       /* B1 */   \
-        STEERING_GPIO_DEF(D, 14), /* B2 */   \
-        STEERING_GPIO_DEF(D, 15), /* B3 */   \
-        STEERING_GPIO_DEF(D, 0),  /* B4 */   \
-        STEERING_GPIO_DEF(D, 1),  /* B5 */   \
-        STEERING_GPIO_DEF(B, 0),  /* B6 */   \
-        STEERING_GPIO_DEF(E, 4)   /* B7 */   \
+    {},                       /* B0 */       \
+    {},                       /* B1 */       \
+    STEERING_GPIO_DEF(D, 14), /* B2 */       \
+    STEERING_GPIO_DEF(D, 15), /* B3 */       \
+    STEERING_GPIO_DEF(D, 0),  /* B4 */       \
+    STEERING_GPIO_DEF(D, 1),  /* B5 */       \
+    STEERING_GPIO_DEF(B, 0),  /* B6 */       \
+    STEERING_GPIO_DEF(E, 4)   /* B7 */       \
   }
 
 /************************************************************************************************
