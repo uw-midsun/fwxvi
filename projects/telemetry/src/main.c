@@ -82,15 +82,15 @@ void run_10hz_cycle() {
   run_can_tx_medium();
   // imu_run();
 
-  datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-  for (int i = 0; i < 5; i++) {
-    tx_datagram.data[i] = i;
-  }
+  // datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
+  // for (int i = 0; i < 5; i++) {
+  //   tx_datagram.data[i] = i;
+  // }
 
-  status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+  // status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
 
-  printf("uart_tx with return code %d\r\n", status);
-  // printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
+  // printf("uart_tx with return code %d\r\n", status);
+  printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
 }
 
 void run_1hz_cycle() {

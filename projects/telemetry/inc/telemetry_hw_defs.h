@@ -31,10 +31,10 @@
  ************************************************************************************************/
 
 /** @brief  Telemetry CAN RX Port */
-#define GPIO_TELEMETRY_CAN_RX TELEMETRY_GPIO_DEF(B, 9)
+#define GPIO_TELEMETRY_CAN_RX TELEMETRY_GPIO_DEF(B, 8)
 
 /** @brief  Telemetry CAN TX Port */
-#define GPIO_TELEMETRY_CAN_TX TELEMETRY_GPIO_DEF(B, 8)
+#define GPIO_TELEMETRY_CAN_TX TELEMETRY_GPIO_DEF(B, 9)
 
 /************************************************************************************************
  * Telemetry UART definitions - for XBee transciever
