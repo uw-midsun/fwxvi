@@ -27,6 +27,7 @@ static DisplayData *display_data = NULL;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 
@@ -65,6 +66,7 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   return ltdc_init(&settings);
 }
