@@ -14,9 +14,6 @@ apt-get update
 echo "==> Install common tools"
 apt-get -y install tmux git vim curl
 
-echo "==> Install python tooling"
-apt-get -y install python3-pip virtualenv python3-autopep8 pylint
-
 echo "==> Install tooling for CAN"
 apt-get -y install can-utils
 
@@ -27,6 +24,7 @@ echo "==> Install ARM + compiler toolchain"
 apt-get -y install software-properties-common
 add-apt-repository -y ppa:ubuntu-toolchain-r/test
 apt-get update
+
 
 apt-get -y install \
   binutils-arm-none-eabi \

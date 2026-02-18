@@ -1,3 +1,4 @@
+scons<4.0
 virtualenv
 autopep8
 pylint
@@ -7,6 +8,5 @@ cantools
 Jinja2
 PyYAML
 pyserial
-scons
 sv-ttk
 pandas
