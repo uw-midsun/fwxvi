@@ -1,3 +1,7 @@
+# docker run -it --rm \
+# -v ~/projects/FW-docker/fwxvi:/workspace \
+# fw-dev
+
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,6 +23,10 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python-is-python3 \
  && rm -rf /var/lib/apt/lists/*
+
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+RUN pip3 install --upgrade scons scons-compiledb
 
 # ---- System / toolchain deps ----
 COPY requirements.sh /tmp/requirements.sh

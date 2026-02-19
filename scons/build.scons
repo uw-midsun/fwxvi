@@ -60,8 +60,8 @@ def get_lib_deps(entry):
 ###########################################################
 # Header file generation from jinja templates
 ###########################################################
-autogen_sources = list(Path(AUTOGEN_DIR.abspath).rglob("*"))
-autogen_sources += list(Path(ROOT.abspath).glob("can/boards/*"))
+autogen_sources = [str(p) for p in Path(AUTOGEN_DIR.abspath).rglob("*")]
+autogen_sources += [str(p) for p in Path(ROOT.abspath).glob("can/boards/*")]
 
 AlwaysBuild(env.Command(
     LIBRARIES_INC_DIR.File("system_can.h"),
