@@ -121,6 +121,8 @@ TASK(record_pedal_calibration, TASK_STACK_1024) {
   }
 
   while (true) {
+    LOG_DEBUG("fc_record_pedal: calibration complete, task idle\r\n")
+    delay_ms(2000);
   }
 }
 
@@ -138,10 +140,10 @@ TASK(read_pedal_calibration, TASK_STACK_1024) {
     }
   }
 
-  LOG_DEBUG("Accel: %d to %d\r\n", persist_data.accel_pedal_data.lower_value, persist_data.accel_pedal_data.upper_value);
-  LOG_DEBUG("Brake: %d to %d\r\n", persist_data.brake_pedal_data.lower_value, persist_data.brake_pedal_data.upper_value);
-
   while (true) {
+    LOG_DEBUG("Accel: %d to %d\r\n", persist_data.accel_pedal_data.lower_value, persist_data.accel_pedal_data.upper_value);
+    LOG_DEBUG("Brake: %d to %d\r\n", persist_data.brake_pedal_data.lower_value, persist_data.brake_pedal_data.upper_value);
+    delay_ms(2000);
   }
 }
 
