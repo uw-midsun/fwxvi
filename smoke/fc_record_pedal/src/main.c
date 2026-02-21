@@ -82,8 +82,9 @@ TASK(record_pedal_calibration, TASK_STACK_1024) {
 
   status = persist_init(&persist_storage, LAST_PAGE, &persist_data, sizeof(persist_data), true);
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);
     while (true) {
+      LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);
+      delay_ms(2000U);
     }
   }
 
