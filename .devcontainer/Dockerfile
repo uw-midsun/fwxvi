@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 # ---- Python deps ----
-COPY requirements.txt /tmp/requirements.txt
+COPY ./requirements.txt /tmp/requirements.txt
 RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 RUN apt-get update && apt-get install -y \
@@ -30,7 +30,7 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN pip3 install --upgrade scons scons-compiledb
 
 # ---- System / toolchain deps ----
-COPY requirements.sh /tmp/requirements.sh
+COPY ./requirements.sh /tmp/requirements.sh
 RUN chmod +x /tmp/requirements.sh && \
     bash /tmp/requirements.sh && \
     rm /tmp/requirements.sh
