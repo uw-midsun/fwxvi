@@ -38,7 +38,8 @@ TelemetryConfig telemetry_config = {
                        .mosi = GPIO_TELEMETRY_SPI_MOSI,
                        .miso = GPIO_TELEMETRY_SPI_MISO,
                        .sclk = GPIO_TELEMETRY_SPI_SCK,
-                       .cs = GPIO_TELEMETRY_SPI_NSS },
+                       .cs = GPIO_TELEMETRY_SPI_NSS,
+                      },
 };
 
 Bmi323Settings bmi323_settings = {
@@ -48,7 +49,8 @@ Bmi323Settings bmi323_settings = {
                     .sdo = GPIO_TELEMETRY_SPI_MISO,
                     .sdi = GPIO_TELEMETRY_SPI_MOSI,
                     .sclk = GPIO_TELEMETRY_SPI_SCK,
-                    .cs = GPIO_TELEMETRY_SPI_NSS,},
+                    .cs = GPIO_TELEMETRY_SPI_NSS,
+                  },
   .accel_range = IMU_ACCEL_RANGE_2G,
   .gyro_range = IMU_GYRO_RANGE_500_DEG,
 };
