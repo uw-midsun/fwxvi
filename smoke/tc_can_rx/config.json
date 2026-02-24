@@ -6,5 +6,11 @@
     "x86_libs": [
         "ms-mpxe"
     ],
-    "can": false
+    "include": [
+        "projects/telemetry/inc"
+    ],
+    "sources": [
+        "projects/telemetry/src/datagram.o"
+    ],
+    "can": true
 }
