@@ -92,6 +92,7 @@
 /************************************************************************************************
  * Display LTDC Config
  ************************************************************************************************/
+#define GPIO_STEERING_BACKLIGHT STEERING_GPIO_DEF(A, 1)
 
 /** @brief  LTDC pixel clock pin */
 #define GPIO_STEERING_DISPLAY_LTDC_CLOCK STEERING_GPIO_DEF(A, 4)
