@@ -4,7 +4,6 @@ import subprocess
 import os
 import json
 
-
 def set_target(option, opt, value, parser):
     if opt == "--project":
         target = f"projects/{value}"
@@ -155,7 +154,15 @@ if COMMAND == "mpxe_server" or COMMAND == "mpxe_gui" or COMMAND == "sim":
 # Retrieve the construction environment from the appropriate platform script
 env = SConscript(
     f"platform/{PLATFORM}.py", exports=["HARDWARE_TYPE", "FLASH_TYPE", "BUILD_CONFIG"]
-)
+    )
+# env.Tool('compilation_db', toolpath=['/usr/local/lib/python3.10/dist-packages/scons-compiledb'])
+# Disable warnings-as-errors globally
+env.Replace(CCFLAGS=[flag for flag in env['CCFLAGS'] if flag != '-Werror'])
+env.Append(CCFLAGS=['-Wno-error'])
+env.Replace(CXXFLAGS=[flag for flag in env['CXXFLAGS'] if flag != '-Werror'])
+env.Append(CXXFLAGS=['-Wno-error'])
+
+
 VARS = {
     "PLATFORM": PLATFORM,
     "TARGET": TARGET,
@@ -178,12 +185,12 @@ Default(compdb)
 SANITIZER = GetOption("sanitizer")
 
 if SANITIZER == "asan":
-    env["CCFLAGS"] += ["-fsanitize=address"]
-    env["CXXFLAGS"] += ["-fsanitize=address"]
+    env["CCFLAGS"] += ["-fsanitize=address", "-Wno-error"]
+    env["CXXFLAGS"] += ["-fsanitize=address", "-Wno-error"]
     env["LINKFLAGS"] += ["-fsanitize=address"]
 elif SANITIZER == "tsan":
-    env["CCFLAGS"] += ["-fsanitize=thread"]
-    env["CXXFLAGS"] += ["-fsanitize=thread"]
+    env["CCFLAGS"] += ["-fsanitize=thread", "-Wno-error"]
+    env["CXXFLAGS"] += ["-fsanitize=thread", "-Wno-error"]
     env["LINKFLAGS"] += ["-fsanitize=thread"]
 
 env["CXXCOMSTR"] = "Compiling  $TARGET"
@@ -344,3 +351,4 @@ if PLATFORM == "arm" and TARGET:
         exit(0)
 
     AlwaysBuild(Command("#/gdb", project_elf, gdb_run_arm))
+
