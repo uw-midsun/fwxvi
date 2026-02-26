@@ -1,0 +1,16 @@
+<map id="TelemetryStorage" name="TelemetryStorage">
+<area shape="rect" id="node1" title="Telemetry storage." alt="" coords="1056,105,1193,131"/>
+<area shape="rect" id="node2" href="$structDatagram.html" title="Datagram storage class." alt="" coords="789,5,875,31"/>
+<area shape="rect" id="node3" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="800,55,864,80"/>
+<area shape="rect" id="node4" href="$structBmi323Storage.html" title="Storage struct for bmi323." alt="" coords="771,293,893,319"/>
+<area shape="rect" id="node5" href="$structBmi323Settings.html" title=" " alt="" coords="463,244,589,269"/>
+<area shape="rect" id="node6" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="185,313,280,339"/>
+<area shape="rect" id="node7" title=" " alt="" coords="5,200,64,225"/>
+<area shape="rect" id="node11" href="$structCanStorage.html" title="Storage class for the device ID and RX data." alt="" coords="316,87,413,112"/>
+<area shape="rect" id="node13" href="$structUartSettings.html" title="UART Settings." alt="" coords="181,177,284,203"/>
+<area shape="rect" id="node14" href="$structSdSpiSettings.html" title="Configuration settings for initializing an SD SPI port." alt="" coords="177,128,288,153"/>
+<area shape="rect" id="node8" href="$structAxes.html" title=" " alt="" coords="499,400,553,425"/>
+<area shape="rect" id="node9" href="$structAccelGainOffsetValues.html" title="Struct to store offset and gain values for accelerometer." alt="" coords="441,293,611,319"/>
+<area shape="rect" id="node10" href="$structGyroGainOffsetValues.html" title="Struct to store offset and gain values for gyroscope." alt="" coords="443,343,609,368"/>
+<area shape="rect" id="node12" href="$structTelemetryConfig.html" title="Telemetry configuration data." alt="" coords="462,157,590,183"/>
+</map>

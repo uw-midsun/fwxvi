@@ -1,0 +1,8 @@
+<map id="I2CPortData" name="I2CPortData">
+<area shape="rect" id="node1" title="I2C Port data." alt="" coords="59,211,159,236"/>
+<area shape="rect" id="node2" href="$structI2CSettings.html" title="I2C settings struct." alt="" coords="5,108,101,133"/>
+<area shape="rect" id="node3" title=" " alt="" coords="24,5,83,31"/>
+<area shape="rect" id="node4" href="$structI2CBuffer.html" title=" " alt="" coords="125,108,208,133"/>
+<area shape="rect" id="node5" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="120,5,184,31"/>
+<area shape="rect" id="node6" href="$structSemaphore.html" title="Semaphore object with handle and buffer." alt="" coords="208,5,304,31"/>
+</map>

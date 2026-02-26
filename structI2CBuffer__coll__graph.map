@@ -1,0 +1,5 @@
+<map id="I2CBuffer" name="I2CBuffer">
+<area shape="rect" id="node1" title=" " alt="" coords="48,93,131,119"/>
+<area shape="rect" id="node2" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="5,5,69,31"/>
+<area shape="rect" id="node3" href="$structSemaphore.html" title="Semaphore object with handle and buffer." alt="" coords="93,5,189,31"/>
+</map>

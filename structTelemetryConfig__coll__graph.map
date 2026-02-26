@@ -1,0 +1,6 @@
+<map id="TelemetryConfig" name="TelemetryConfig">
+<area shape="rect" id="node1" title="Telemetry configuration data." alt="" coords="58,225,186,251"/>
+<area shape="rect" id="node2" href="$structUartSettings.html" title="UART Settings." alt="" coords="5,137,108,163"/>
+<area shape="rect" id="node3" title=" " alt="" coords="93,5,151,31"/>
+<area shape="rect" id="node4" href="$structSdSpiSettings.html" title="Configuration settings for initializing an SD SPI port." alt="" coords="132,137,243,163"/>
+</map>

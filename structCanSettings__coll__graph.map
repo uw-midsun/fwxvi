@@ -1,0 +1,6 @@
+<map id="CanSettings" name="CanSettings">
+<area shape="rect" id="node1" title="CAN Settings." alt="" coords="5,284,105,309"/>
+<area shape="rect" id="node2" title=" " alt="" coords="26,5,85,31"/>
+<area shape="rect" id="node4" href="$unionCanId.html" title="CAN message ID." alt="" coords="83,93,142,119"/>
+<area shape="rect" id="node3" href="$structCanMessage.html" title="CAN message structure." alt="" coords="72,196,177,221"/>
+</map>

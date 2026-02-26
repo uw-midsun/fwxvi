@@ -1,0 +1,8 @@
+<map id="FotaDFUContext" name="FotaDFUContext">
+<area shape="rect" id="node1" title="DFU Context for writing firmware to flash." alt="" coords="132,313,261,339"/>
+<area shape="rect" id="node2" href="$structPacketManager.html" title="Stores info related to receiving data." alt="" coords="136,225,257,251"/>
+<area shape="rect" id="node3" href="$structNetworkBuffer.html" title="struct containing details of circular buffer" alt="" coords="5,108,121,133"/>
+<area shape="rect" id="node4" href="$structFotaPacket.html" title="FOTA Packet structure." alt="" coords="151,108,243,133"/>
+<area shape="rect" id="node5" href="$structFotaDatagram.html" title="Structure representing datagram." alt="" coords="271,108,386,133"/>
+<area shape="rect" id="node6" href="$structFotaDatagramHeaderPacketPayload.html" title="Structure representing the datagram header (In the payload)" alt="" coords="227,5,431,45"/>
+</map>
