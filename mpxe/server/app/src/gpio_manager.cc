@@ -17,7 +17,7 @@
 #include "app.h"
 #include "gpio_manager.h"
 
-#define GPIO_KEY "gpio"
+#define GPIO_KEY "gpio" 
 #define PIN_STATE_KEY "state"
 #define PIN_MODE_KEY "mode"
 #define PIN_ALT_FUNC_KEY "alternate_function"
@@ -73,7 +73,7 @@ std::string GpioManager::stringifyPinMode(Datagram::Gpio::Mode mode) {
 }
 
 std::string GpioManager::stringifyPinAltFunction(Datagram::Gpio::AltFunction altFunction) {
-  std::string result = "";
+  std::string result = ""; 
 
   switch (altFunction) {
     /* Duplicate value is SWCLK/SWDIO */
@@ -129,11 +129,11 @@ void GpioManager::saveGpioInfo(std::string &projectName) {
   serverJSONManager.setProjectValue(projectName, GPIO_KEY, m_gpioInfo);
 
   /* Upon save, clear the memory */
-  m_gpioInfo.clear();
+  m_gpioInfo.clear(); 
 }
 
 void GpioManager::updateGpioPinState(std::string &projectName, std::string &payload) {
-  loadGpioInfo(projectName);
+  loadGpioInfo(projectName); 
 
   m_gpioDatagram.deserialize(payload);
 
@@ -186,7 +186,7 @@ void GpioManager::updateGpioPinMode(std::string &projectName, std::string &paylo
 
   const uint8_t *receivedData = m_gpioDatagram.getBuffer();
 
-  m_gpioInfo[key][PIN_MODE_KEY] = stringifyPinMode(static_cast<Datagram::Gpio::Mode>(receivedData[0U]));
+  m_gpioInfo[key][PIN_MODE_KEY] = stringifyPinMode(static_cast<Datagram::Gpio::Mode>(receivedData[0U])); 
 
   saveGpioInfo(projectName);
 }
