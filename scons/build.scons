@@ -440,6 +440,7 @@ qt6dir = os.environ.get("QT6DIR", "/usr/lib/qt6")
 if check_qt6_installed():
     print("Qt6 detected, proceeding with Qt6 build.")
     qtEnv = cxx_env.Clone(QT6DIR=qt6dir, tools=['gui_build_tool'], toolpath=['#scons'])
+    qtEnv.Append(CCFLAGS=['-fPIC'])
     qtEnv.EnableQt6Modules(['QtCore', 'QtGui', 'QtWidgets'])
     qtEnv.ParseConfig('pkg-config --cflags --libs Qt6Core Qt6Gui Qt6Widgets')
     qtEnv['QT6_MOCCPPPATH'] = qtEnv['CPPPATH']
