@@ -20,6 +20,7 @@
 #include "uart.h"
 
 /* Intra-component Headers */
+#include "imu.h"
 #include "sd_card_spi.h"
 #include "telemetry.h"
 #include "telemetry_getters.h"
@@ -61,7 +62,7 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
-uint8_t datagram_data[] = "ZZZZZ\r\n";
+uint8_t datagram_data[] = "HELLO\r\n";
 
 static Datagram tx_datagram = {
   .start_frame = 0xAA,
@@ -73,7 +74,15 @@ static size_t datagram_length = 0;
 
 static StatusCode status = STATUS_CODE_OK;
 
-void pre_loop_init() {}
+float roll = 0;
+float pitch = 0;
+float yaw = 0;
+void pre_loop_init() {
+  for (float i = 0; i < 1000; i++) {
+    imu_filter(0.05, 0.05, 0.9, 0, 0, 0);
+    eulerAngles(q_est, &roll, &pitch, &yaw);
+  }
+}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
