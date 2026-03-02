@@ -34,12 +34,12 @@ static TelemetryConfig s_telemetry_config = {
   .message_transmit_frequency_hz = 10U,
 };
 
-uint8_t datagram_data[] = { 0, 1, 2, 3, 4 };
+uint8_t datagram_data[] = "HELLO\r\n";
 
 static Datagram tx_datagram = {
   .start_frame = 0xAA,
   .id = 0x01,
-  .dlc = 5,
+  .dlc = sizeof(datagram_data) - 1,
 };
 
 static size_t datagram_length = 0;
@@ -59,10 +59,10 @@ TASK(xb_transmit, TASK_STACK_1024) {
       tx_datagram.data[i] = i;
     }
 
-    status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+    printf("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
 
     printf("uart_tx with return code %d\r\n", status);
-    delay_ms(10U);
+    delay_ms(1000U);
   }
 }
 

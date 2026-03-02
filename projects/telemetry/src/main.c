@@ -61,12 +61,12 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
-uint8_t datagram_data[] = { 0, 1, 2, 3, 4 };
+uint8_t datagram_data[] = "ZZZZZ\r\n";
 
 static Datagram tx_datagram = {
   .start_frame = 0xAA,
   .id = 0x01,
-  .dlc = 5,
+  .dlc = sizeof(datagram_data) - 1,
 };
 
 static size_t datagram_length = 0;
@@ -83,19 +83,18 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   run_can_tx_medium();
   // imu_run();
-
-  datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-  for (int i = 0; i < 5; i++) {
-    tx_datagram.data[i] = i;
-  }
-
-  status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-
-  printf("uart_tx with return code %d\r\n", status);
 }
 
 void run_1hz_cycle() {
   run_can_tx_slow();
+  datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
+  for (int i = 0; i < 8; i++) {
+    tx_datagram.data[i] = datagram_data[i];
+  }
+
+  status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+
+  printf("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
 }
 
 #ifdef MS_PLATFORM_X86
