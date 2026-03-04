@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for sd_card_api
+ * @brief  Smoke test for sc_sd_card_api
  *
  * @date   2025-10-02
  * @author Midnight Sun Team #24 - MSXVI
