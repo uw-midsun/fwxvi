@@ -19,13 +19,20 @@
 #include "gpio_interrupts.h"
 #include "notify.h"
 
-// port + pin
+/* STM32 register defs for EXTI->SWIER1 */
+#include "stm32l4xx.h"
 
 /* Intra-component Headers */
 
 /* Killswitch GPIO Configuration */
 #define KILLSWITCH_EVENT 1U
 #define KILLSWITCH_DEBOUNCE_MS 10U
+
+/* Smoke Config */
+#define NUM_EXTI_LINES_SMOKE 16U          // EXTI lines 0..15
+#define EXTI_TIMEOUT_MS      100U
+#define DEBOUNCE_MS          10U
+#define TEST_PORT            GPIO_PORT_C  // keep all on one port (driver indexes by pin)
 
 static GpioAddress s_killswitch_address = { .port = GPIO_PORT_C, .pin = 5 };
 uint32_t notification = 0;
@@ -36,6 +43,15 @@ static InterruptSettings s_killswitch_settings = {
   INTERRUPT_EDGE_FALLING,
 };
 
+static StatusCode s_trigger_exti_swi(uint8_t line) {
+  if (line >= 16U ) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  EXTI->SWIER1 |= (1U << line);
+  return STATUS_CODE_OK;
+}
+
 TASK(gpio_interrupts_api, TASK_STACK_1024) {
 
   StatusCode status = STATUS_CODE_OK;
@@ -43,11 +59,11 @@ TASK(gpio_interrupts_api, TASK_STACK_1024) {
   LOG_DEBUG("Initializing killswitch GPIO interrupt...\r\n");
   delay_ms(10U);
   /* configure gpio for interrupt mode*/
+
+  for (uint8_t line = 0; line < NUM_EXTI_LINES_SMOKE; ++line)
   status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
-  if (status != STATUS_CODE_OK) {
+  if (status != STATUS_CODE_OK) { 
     LOG_DEBUG("gpio_it_init failed: %d\r\n", status);
-    // debugging error message
-    // LOG_DEBUG("addr port=%d pin=%d\r\n", s_killswitch_address.port, s_killswitch_address.pin);
     while(true) {
       delay_ms(1000U);
     }
@@ -78,7 +94,6 @@ TASK(gpio_interrupts_api, TASK_STACK_1024) {
       }
     }
   }
-
 }
 
 #ifdef MS_PLATFORM_X86
