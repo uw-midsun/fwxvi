@@ -26,7 +26,7 @@
  * @{
  */
 
-#define BUTTON_MANAGER_DEBUG 1 /**< Set to 1 to enable debug prints */
+#define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
 
 /**
  * @brief Button Manager structure
@@ -44,34 +44,10 @@ typedef struct ButtonManager {
 StatusCode button_manager_init(SteeringStorage *storage);
 
 /**
- * @brief   Reset the button manager state
- * @return  STATUS_CODE_OK if initialized successfully
- *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
- */
-StatusCode button_manager_reset(void);
-
-/**
  * @brief   Update the button manager
  * @param   manager Pointer to the ButtonManager instance
  * @return  STATUS_CODE_OK if updated successfully
  *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
  */
 StatusCode button_manager_update(void);
-
-/**
- * @brief   Turns on LED of the button
- * @param   button Button selector for modification
- * @return  STATUS_CODE_OK if updated successfully
- *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
- */
-StatusCode button_manager_led_enable(SteeringButtons button);
-
-/**
- * @brief   Turns off LED of the button
- * @param   button Button selector for modification
- * @return  STATUS_CODE_OK if updated successfully
- *          STATUS_CODE_UNINITIALIZED if the system has not already been initialized
- */
-StatusCode button_manager_led_disable(SteeringButtons button);
-
 /** @} */

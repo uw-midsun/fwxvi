@@ -50,7 +50,7 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
-TASK(current_sense, TASK_STACK_1024) {
+TASK(cycle_output_groups, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
@@ -96,7 +96,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(current_sense, TASK_PRIORITY(3), NULL);
+  tasks_init_task(cycle_output_groups, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 

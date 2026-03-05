@@ -25,8 +25,17 @@
 
 {% for message in messages %}
     {%- for signal in message.signals %}
+        {%- if signal.type == "bitfield" %}
+#define get_{{message.name}}_{{signal.name}}_raw() \
+    g_rx_struct.{{message.name}}_{{signal.name}}
+            {%- for flag in signal.flags %}
+#define get_{{message.name}}_{{signal.name}}_{{flag["name"]}}() \
+    (g_rx_struct.{{message.name}}_{{signal.name}} >> {{flag["offset"]}}) & 0b{{"1" * flag["length"]}}
+            {%- endfor %}
+        {%- else %}
 #define get_{{message.name}}_{{signal.name}}() \
     g_rx_struct.{{message.name}}_{{signal.name}}
+        {%- endif %}
     {% endfor %}
 #define get_received_{{message.name}}() \
     g_rx_struct.received_{{message.name}}

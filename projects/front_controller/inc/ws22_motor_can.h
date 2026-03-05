@@ -28,7 +28,7 @@
 
 /* CAN Message Base Addresses */
 #define WS22_CAN_BASE_CONTROL 0x500U /**< Base address for control messages */
-#define WS22_CAN_BASE_STATUS 0x400U  /**< Base address for status messages */
+#define WS22_CAN_BASE_STATUS 0x80U   /**< Base address for status messages */
 
 /* CAN Message IDs */
 #define WS22_CAN_ID_DRIVE_CMD (WS22_CAN_BASE_CONTROL + 0x01U)
@@ -46,46 +46,46 @@
  * @brief Motor control command data structure
  */
 typedef struct {
-  float current;     /**< Motor current command (0.0 to 1.0) */
-  uint32_t velocity; /**< Motor velocity command (0 to 12000 rpm) */
+  float current;  /**< Motor current command (0.0 to 1.0) */
+  float velocity; /**< Motor velocity command (float from -12000 to 12000 rpm) */
 } Ws22MotorControlData;
 
 /**
  * @brief Motor status and telemetry data structure
  */
 typedef struct {
-  /* Status Information (0x401) */
+  /* Status Information (0x401/0x81) */
   uint16_t error_flags; /**< Motor controller error flags */
   uint16_t limit_flags; /**< Motor controller limit flags */
 
-  /* Bus Measurements (0x402) */
+  /* Bus Measurements (0x402/0x82) */
   float bus_current; /**< DC bus current (A) */
   float bus_voltage; /**< DC bus voltage (V) */
 
-  /* Velocity Measurements (0x403) */
+  /* Velocity Measurements (0x403/0x83) */
   float vehicle_velocity; /**< Vehicle velocity (m/s) */
   float motor_velocity;   /**< Motor velocity (rpm) */
 
-  /* Phase Currents (0x404) */
+  /* Phase Currents (0x404/0x84) */
   float phase_b_current; /**< Phase B current (A) */
   float phase_c_current; /**< Phase C current (A) */
 
-  /* Motor Voltages (0x405) */
+  /* Motor Voltages (0x405/0x85) */
   float voltage_d; /**< D-axis voltage (V) */
   float voltage_q; /**< Q-axis voltage (V) */
 
-  /* Motor Currents (0x406) */
+  /* Motor Currents (0x406/0x86) */
   float current_d; /**< D-axis current (A) */
   float current_q; /**< Q-axis current (A) */
 
-  /* Motor Back EMF (0x407) */
+  /* Motor Back EMF (0x407/0x87) */
   float back_emf_d; /**< D-axis back EMF (V) */
   float back_emf_q; /**< Q-axis back EMF (V) */
 
-  /* Power Rail (0x408) */
+  /* Power Rail (0x408/0x88) */
   float rail_15v_supply; /**< 15V rail voltage (V) */
 
-  /* Temperature Measurements (0x40B) */
+  /* Temperature Measurements (0x40B/0x8B) */
   float heat_sink_temp; /**< Heat sink temperature (°C) */
   float motor_temp;     /**< Motor temperature (°C) */
 } Ws22MotorTelemetryData;
@@ -117,7 +117,7 @@ StatusCode ws22_motor_can_set_current(float current);
  * @param   velocity Motor velocity command (rpm)
  * @return  STATUS_CODE_OK on success, STATUS_CODE_INVALID_ARGS if out of range
  */
-StatusCode ws22_motor_can_set_velocity(uint32_t velocity);
+StatusCode ws22_motor_can_set_velocity(float velocity);
 
 /**
  * @brief   Build and transmit motor drive command

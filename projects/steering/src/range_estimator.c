@@ -14,6 +14,7 @@
 /* Intra-component Headers */
 #include "range_estimator.h"
 
+#include "steering.h"
 #include "steering_getters.h"
 
 #define MIN_CELL_VOLTAGE 2500.0f
@@ -24,7 +25,9 @@
 /* Track is 3.15 miles which is 5.07 kilometers */
 #define DISTANCE_PER_LAP_KM 5.07f
 
-float estimate_remaining_range_km(void) {
+static SteeringStorage *steering_storage;
+
+StatusCode range_estimator_run() {
   float cell_voltage = get_battery_stats_B_min_cell_voltage();
 
   if (cell_voltage < MIN_CELL_VOLTAGE) {
@@ -40,5 +43,16 @@ float estimate_remaining_range_km(void) {
   /* Calclulate remaining kilometers */
   float km_remaining = laps_remaining * DISTANCE_PER_LAP_KM;
 
-  return km_remaining;
+  steering_storage->estimated_km_remaining = km_remaining;
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode range_estimator_init(SteeringStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  steering_storage = storage;
+
+  return STATUS_CODE_OK;
 }

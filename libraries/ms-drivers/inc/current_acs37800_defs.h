@@ -26,6 +26,9 @@
 
 #define CURRENT_SCALE ((0.84 * 1.19) / 32768.0)
 #define POWER_SCALE ((0.704 * 1.42) / 32768.0)
+#define ACS37800_MASK_FAULTOUT 0x02      // Bit 1
+#define ACS37800_MASK_OVERVOLTAGE 0x08   // Bit 3
+#define ACS37800_MASK_UNDERVOLTAGE 0x10  // Bit 4
 
 // register map is on pg.38
 // https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx

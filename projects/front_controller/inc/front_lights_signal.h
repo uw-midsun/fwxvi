@@ -24,10 +24,6 @@
  * @{
  */
 
-#define FRONT_STEERING_LIGHTS_BLINK_PERIOD_MS 400
-#define FRONT_BPS_LIGHTS_BLINK_PERIOD_MS 200
-#define SYSTEM_CAN_MESSAGE_STEERING_BUTTONS 6
-
 /**
  * @brief Initializes the front lights signal module
  */

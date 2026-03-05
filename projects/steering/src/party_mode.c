@@ -33,7 +33,7 @@
 
 /* Rest (gap) after each note for separation (staccato feel) */
 #define GAP_MS 30U
-#define PLAY_TIME(duration) ((duration)-GAP_MS)
+#define PLAY_TIME(duration) ((duration) - GAP_MS)
 
 static bool party_mode = false;
 static uint8_t party_hue = 0;
@@ -236,8 +236,8 @@ StatusCode party_mode_run(void) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  bool both_pressed = (steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state == BUTTON_PRESSED &&
-                       steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state == BUTTON_PRESSED);
+  bool both_pressed =
+      (steering_storage->button_manager->buttons[STEERING_BUTTON_RIGHT_LIGHT].state == BUTTON_PRESSED && steering_storage->button_manager->buttons[STEERING_BUTTON_LEFT_LIGHT].state == BUTTON_PRESSED);
 
   if (both_pressed && !toggle_triggered) {
     toggle_triggered = true;

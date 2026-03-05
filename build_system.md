@@ -44,6 +44,9 @@ options can occur anywhere in the command string
     --compile-db=
         Create a compile_commands.json for use with clangd
 
+    --board=<Board>
+        Selects the build preset for a specific board.
+
 Commands:
     NONE
         Build the specified target, or all target if not specified.
@@ -84,7 +87,11 @@ Commands:
 
     gdb
         (x86) Run the project's binary with gdb.
-        - e.g. `scons gdb <target>` (`scons gdb --project=new_led`)
+        - e.g. `scons gdb <target>`
+
+        (arm) Start OpenOCD and connect GDB with TUI mode for on-target debugging.
+        Requires a controller board to be connected and powered.
+        - e.g. `scons gdb <target>`
 
     flash
         (arm) Flash the project's binary using openocd. A controller board must be connected an powered.

@@ -1,5 +1,5 @@
 from SCons.Script import *
-from scons.common import flash_run
+from scons.common import flash_run, gdb_run, parse_config
 import subprocess
 import os
 import json
@@ -98,14 +98,32 @@ build_presets_file = File("build_presets.json")
 if build_presets_file.exists():
     with open(build_presets_file.abspath, "r") as f:
         build_preset = json.load(f)
+
+    # Determine which preset to use:
+    # 1. Check if target's config.json has a selected_preset
+    # 2. Fall back to the global selected_preset in build_presets.json
+    selected_build_preset = None
+    preset_source = None
+
+    if TARGET:
+        target_config_file = File(f"{TARGET}/config.json")
+        if target_config_file.exists():
+            with open(target_config_file.abspath, "r") as f:
+                target_config = json.load(f)
+                if "selected_preset" in target_config:
+                    selected_build_preset = target_config["selected_preset"]
+                    preset_source = f"{TARGET}/config.json"
+
+    if not selected_build_preset:
         selected_build_preset = build_preset.get("selected_preset")
+        preset_source = "build_presets.json"
 
     if selected_build_preset:
         # Retrieve the settings for the selected preset
         preset_settings = build_preset["presets"].get(selected_build_preset)
 
         if preset_settings:
-            print(f"Loaded selected preset: '{selected_build_preset}'")
+            print(f"Loaded preset '{selected_build_preset}' from {preset_source}")
             print(f"    Hardware: {preset_settings['hardware']}")
             print(f"    Flash: {preset_settings['flash']}")
             print(f"    Build Config: {preset_settings['build_config']}")
@@ -118,7 +136,7 @@ if build_presets_file.exists():
                 f"Error: Selected preset '{selected_build_preset}' not found in presets."
             )
     else:
-        print("No 'selected_build_preset' field found in the configuration.")
+        print("No 'selected_preset' field found in either project or global configuration.")
 else:
     print(
         "build_presets.json does not exist. Please check update your branch or restore it!"
@@ -236,7 +254,8 @@ elif COMMAND == "doxygen":
 # Cantools Autogeneration Script
 ###########################################################
 elif COMMAND == "cantools":
-    AlwaysBuild(Command("#/cantools", [], "python3 -m autogen cantools -o can/tools"))
+    AlwaysBuild(Command("#/cantools", [],
+                "python3 -m autogen cantools -o can/tools"))
 
 ###########################################################
 # Run MPXE Server
@@ -299,6 +318,8 @@ if PLATFORM == "x86":
 ###########################################################
 if PLATFORM == "arm" and TARGET:
     project_bin = BIN_DIR.File(TARGET + ".bin")
+    project_elf = BIN_DIR.File(TARGET + ".elf")
+    
     # display memory info for the project
     if GetOption("mem-report"):
         AlwaysBuild(
@@ -316,3 +337,10 @@ if PLATFORM == "arm" and TARGET:
         exit(0)
 
     AlwaysBuild(Command("#/flash", project_bin, flash_run_target))
+
+    # GDB debugging for ARM targets
+    def gdb_run_arm(target, source, env):
+        gdb_run(project_elf.path, HARDWARE_TYPE, FLASH_TYPE)
+        exit(0)
+
+    AlwaysBuild(Command("#/gdb", project_elf, gdb_run_arm))

@@ -12,20 +12,27 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "steering.h"
 
 /* Intra-component Headers */
 
 /**
  * @defgroup steering
- * @brief    Csteering Firmware
+ * @brief    steering Firmware
  * @{
  */
 
 /**
- * @brief   Estimate remaining kilometres based on cell voltage
- * @param   min_cell_voltage Minimum cell voltage from the battery telemetry
- * @return  Estimated remaining range (in kilometers)
+ * @brief   Run the range estimator which estimates remaining kilometres based on cell voltage
  */
-float estimate_remaining_range_km(void);
+StatusCode range_estimator_run();
+
+/**
+ * @brief   Initialize the range estimator component
+ * @param   storage storage struct for all steering data
+ * @return  STATUS_CODE_OK if initialization is successful
+ *          STATUS_CODE_INVALID_ARGS if storage is null
+ */
+StatusCode range_estimator_init(SteeringStorage *storage);
 
 /** @} */

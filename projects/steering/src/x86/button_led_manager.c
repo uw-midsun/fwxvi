@@ -22,7 +22,7 @@ static SteeringStorage *steering_storage;
 
 static ButtonLEDManager s_button_led_manager = { 0U };
 
-static GpioAddress s_button_led_pwm_ctrl = STEERING_RGB_LIGHTS_PWM_PIN;
+static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
 
 StatusCode button_led_manager_init(SteeringStorage *storage) {
   if (storage == NULL) {

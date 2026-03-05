@@ -6,20 +6,52 @@
 
 ---
 Messages:
-  front_controller_pedal_data:
+  pedal:
     id: 21
     cycle: "medium"
     critical: false
     target:
       telemetry:
         watchdog: 0
+      steering:
+        watchdog: 0
       rear_controller:
         watchdog: 0
     signals:
       percentage:
         length: 32
-      brake_enabled:
-        length:  8
+      data:
+        type: bitfield
+        flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]
+        length: 8
+  motor_velocity:
+    id: 22
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      vehicle_velocity:
+        length: 32
+      motor_velocity:
+        length: 32
+  motor_temperature:
+    id: 23
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      heat_sink_temp:
+        length: 32
+      motor_temp:
+        length: 32
   fc_power_group_A:
     id: 31
     cycle: "slow"
@@ -64,9 +96,3 @@ Messages:
         length: 16
       left_sig_current:
         length: 16
-
-
-      
- 
-
-

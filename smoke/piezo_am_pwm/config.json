@@ -1,0 +1,14 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "arm-libs": [
+        "CMSIS",
+        "HAL"
+    ],
+    "can": false
+}

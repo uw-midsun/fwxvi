@@ -199,4 +199,24 @@ StatusCode buzzer_play_regen_on(void);
  */
 StatusCode buzzer_play_regen_off(void);
 
+/**
+ * @brief Play predefined cruise_control_enable melody
+ */
+StatusCode buzzer_play_cruise_control_enable(void);
+
+/**
+ * @brief Play predefined cruise_control_disable melody
+ */
+StatusCode buzzer_play_cruise_control_disable(void);
+
+/**
+ * @brief Play predefined cruise_control_up melody
+ */
+StatusCode buzzer_play_cruise_control_up(void);
+
+/**
+ * @brief Play predefined cruise_control_down melody
+ */
+StatusCode buzzer_play_cruise_control_down(void);
+
 /** @} */

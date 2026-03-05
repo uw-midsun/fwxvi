@@ -58,7 +58,7 @@ static DMA_HandleTypeDef s_dma_tim2_ch3_handle = { 0U };
 static SteeringStorage *steering_storage = NULL;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
-static GpioAddress s_button_led_pwm_ctrl = STEERING_RGB_LIGHTS_PWM_PIN;
+static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
 
 void DMA1_Channel2_IRQHandler(void) {
   HAL_DMA_IRQHandler(&s_dma_tim2_ch3_handle);

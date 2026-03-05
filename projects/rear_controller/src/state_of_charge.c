@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 
 /* Intra-component Headers */
+#include "rear_controller_setters.h"
 #include "soc_ekf_matlab.h"
 #include "state_of_charge.h"
 #include "state_of_charge_lut.h"

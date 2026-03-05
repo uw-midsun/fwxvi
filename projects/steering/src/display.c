@@ -9,6 +9,7 @@
 
 /* Standard library Headers */
 #include <stddef.h>
+#include <string.h>
 
 /* Inter-component Headers */
 #include "clut.h"
@@ -18,12 +19,15 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "steering_getters.h"
 #include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage = NULL;
+static DisplayData *display_data = NULL;
 
 /* Enable display when high */
-static GpioAddress s_display_ctrl = STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 
@@ -37,18 +41,19 @@ StatusCode display_init(SteeringStorage *storage) {
   }
 
   steering_storage = storage;
+  display_data = &(steering_storage->display_data);
 
   LtdcTimingConfig timing_config = {
     .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
   };
 
-  LtdcGpioConfig gpio_config = { .clk = STEERING_DISPLAY_LTDC_CLOCK,
-                                 .hsync = STEERING_DISPLAY_LTDC_HSYNC,
-                                 .vsync = STEERING_DISPLAY_LTDC_VSYNC,
-                                 .de = STEERING_DISPLAY_LTDC_DE,
-                                 .r = STEERING_DISPLAY_LTDC_RED_PINS,
-                                 .g = STEERING_DISPLAY_LTDC_GREEN_PINS,
-                                 .b = STEERING_DISPLAY_LTDC_BLUE_PINS,
+  LtdcGpioConfig gpio_config = { .clk = GPIO_STEERING_DISPLAY_LTDC_CLOCK,
+                                 .hsync = GPIO_STEERING_DISPLAY_LTDC_HSYNC,
+                                 .vsync = GPIO_STEERING_DISPLAY_LTDC_VSYNC,
+                                 .de = GPIO_STEERING_DISPLAY_LTDC_DE,
+                                 .r = GPIO_STEERING_DISPLAY_LTDC_RED_PINS,
+                                 .g = GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS,
+                                 .b = GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS,
                                  .num_red_bits = NUMBER_OF_RED_BITS,
                                  .num_green_bits = NUMBER_OF_GREEN_BITS,
                                  .num_blue_bits = NUMBER_OF_BLUE_BITS };
@@ -61,6 +66,40 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   return ltdc_init(&settings);
+}
+
+StatusCode display_rx_slow() {
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_rx_medium() {
+  display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
+  display_data->brake_enabled = get_pedal_data_brake_enabled();
+  display_data->regen_enabled = get_pedal_data_regen_enabled();
+  display_data->pedal_percentage = (uint8_t)get_pedal_percentage();
+  display_data->drive_state = (VehicleDriveState)get_pedal_data_drive_state();
+
+  display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
+
+  display_data->motor_heatsink_temp = (int16_t)get_motor_temperature_heat_sink_temp();
+  display_data->motor_temp = (int16_t)get_motor_temperature_motor_temp();
+
+  display_data->vehicle_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
+  display_data->motor_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
+
+  display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
+  display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
+
+  display_data->pack_voltage = (int16_t)get_battery_stats_A_pack_voltage();
+  display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
+  display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_rx_fast() {
+  return STATUS_CODE_OK;
 }

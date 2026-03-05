@@ -20,7 +20,9 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_setters.h"
 
-static GpioAddress precharge_address = REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
+static GpioAddress precharge_address = GPIO_REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
+
+static uint32_t notification;
 
 static InterruptSettings precharge_settings = {
   INTERRUPT_TYPE_INTERRUPT,
@@ -38,8 +40,17 @@ StatusCode precharge_init(Event event, const Task *task) {
   if (state == GPIO_STATE_HIGH) {
     gpio_register_interrupt(&precharge_address, &precharge_settings, event, task);
   } else {
-    set_battery_stats_B_motor_precharge_complete(true);
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
   }
 
+  return STATUS_CODE_OK;
+}
+
+StatusCode precharge_run() {
+  notify_get(&notification);
+  if (notification & (1 << REAR_CONTROLLER_PRECHARGE_EVENT)) {
+    LOG_DEBUG("PRECHARGE COMPLETE\r\n");
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
+  }
   return STATUS_CODE_OK;
 }

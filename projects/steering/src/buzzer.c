@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "delay.h"
+#include "global_enums.h"
 #include "gpio.h"
 #include "log.h"
 #include "pwm.h"
@@ -22,12 +23,11 @@
 #include "buzzer.h"
 #include "steering_hw_defs.h"
 
-#define BUZZER_TIMER PWM_TIMER_4
+#define BUZZER_TIMER PWM_TIMER_16
 #define BUZZER_CHANNEL PWM_CHANNEL_1
-#define BUZZER_GPIO_ALTFN GPIO_ALT2_TIM4
+#define BUZZER_GPIO_ALTFN GPIO_ALT14_TIM16
 #define BUZZER_DUTY 50U
 #define BUZZER_BEEP_DURATION_MS 250U
-#define BUZZER_SIGNAL_DURATION_MS 400U
 
 /* Upbeat ascending startup jingle */
 static Note MELODY_STARTUP[] = { { NOTE_C5, 100 }, { NOTE_E5, 100 }, { NOTE_G5, 100 }, { NOTE_C6, 150 }, { NOTE_REST, 50 }, { NOTE_G5, 120 }, { NOTE_C6, 150 }, { NOTE_E6, 250 }, { NOTE_REST, 0 } };
@@ -58,9 +58,15 @@ static Note MELODY_REGEN_ON[] = { { NOTE_C4, 30 }, { NOTE_D4, 30 }, { NOTE_E4, 3
 static Note MELODY_REGEN_OFF[] = { { NOTE_E5, 70 }, { NOTE_D5, 50 }, { NOTE_C5, 40 }, { NOTE_B4, 30 }, { NOTE_A4, 30 }, { NOTE_G4, 30 },
                                    { NOTE_F4, 30 }, { NOTE_E4, 30 }, { NOTE_D4, 30 }, { NOTE_C4, 30 }, { NOTE_REST, 0 } };
 
+static Note MELODY_CC_ENABLE[] = { { NOTE_C5, 200 }, { NOTE_REST, 100 }, { NOTE_G5, 200 }, { NOTE_REST, 0 } };
+static Note MELODY_CC_DISABLE[] = { { NOTE_G5, 200 }, { NOTE_REST, 100 }, { NOTE_C5, 200 }, { NOTE_REST, 0 } };
+
+static Note MELODY_CC_UP[] = { { NOTE_A4, 50 }, { NOTE_REST, 0 } };
+static Note MELODY_CC_DOWN[] = { { NOTE_G3, 50 }, { NOTE_REST, 0 } };
+
 static bool turn_sig_state = true;
 
-static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
+static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
 
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
@@ -143,7 +149,7 @@ StatusCode buzzer_init(void) {
   status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
   status_ok_or_return(pwm_init(BUZZER_TIMER, s_freq_to_period_us(NOTE_A4)));
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
-  status_ok_or_return(software_timer_init(BUZZER_SIGNAL_DURATION_MS, s_blink_signal_timer_callback, &s_signal_timer));
+  status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_signal_timer));
 
   return STATUS_CODE_OK;
 }
@@ -234,6 +240,18 @@ StatusCode buzzer_play_regen_on(void) {
 
 StatusCode buzzer_play_regen_off(void) {
   return buzzer_play_melody(MELODY_REGEN_OFF);
+}
+StatusCode buzzer_play_cruise_control_enable(void) {
+  return buzzer_play_melody(MELODY_CC_ENABLE);
+}
+StatusCode buzzer_play_cruise_control_disable(void) {
+  return buzzer_play_melody(MELODY_CC_DISABLE);
+}
+StatusCode buzzer_play_cruise_control_up(void) {
+  return buzzer_play_melody(MELODY_CC_UP);
+}
+StatusCode buzzer_play_cruise_control_down(void) {
+  return buzzer_play_melody(MELODY_CC_DOWN);
 }
 
 StatusCode buzzer_start_turn_signal(void) {
