@@ -21,6 +21,7 @@
 GpioManager clientGpioManager;
 AfeManager clientAfeManager;
 AdcManager clientAdcManager;
+SPIManager clientSpiManager;
 
 void applicationMessageCallback(Client *client, std::string &message) {
   std::string data = message;
@@ -160,6 +161,23 @@ void applicationMessageCallback(Client *client, std::string &message) {
       client->sendMessage(clientAdcManager.processReadAdcAllConverted());
       break;
     }
+    case CommandCode::SPI_WRITE_DATA: {
+      clientSpiManager.writeSpiData(payload);
+      break;
+    }
+    case CommandCode::SPI_READ_DATA: {
+      client->sendMessage(clientSpiManager.processReadSpiData(payload));
+      break;
+    }
+    case CommandCode::SPI_TRANSFER_DATA: {
+      // clientSpiManager.transferSpiData();
+      break;
+    }
+    case CommandCode::SPI_CLEAR_BUFFER: {
+      clientSpiManager.clearBuffer(payload);
+      break;
+    }
+
     default: {
       break;
     }

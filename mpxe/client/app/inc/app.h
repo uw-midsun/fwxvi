@@ -17,6 +17,7 @@
 #include "adbms_afe_manager.h"
 #include "adc_manager.h"
 #include "gpio_manager.h"
+#include "spi_manager.h"
 
 /**
  * @defgroup ClientAppMain
@@ -37,5 +38,6 @@
 
 extern GpioManager clientGpioManager; /**< Global GPIO Manager */
 extern AfeManager clientAfeManager;   /**< Global ADBMS1818 AFE Manager */
+extern SPIManager clientSpiManager;   /**<GLobal SPI Manager */
 
 /** @} */

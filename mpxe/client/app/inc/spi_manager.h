@@ -32,12 +32,49 @@
  */
 class SPIManager {
  private:
+  Datagram::SPI m_spiDatagram; /**<Datagram class to serialize/deserialize commands */
  public:
   /**
    * @brief   Constructs a SPIManager object
    * @details Default constructor
    */
   SPIManager() = default;
+
+  /*
+  SPI COMMANDS JUST FOR ME TO KEEP FOR NOW
+  SPI_WRITE_DATA,
+  SPI_READ_DATA,
+  SPI_TRANSFER_DATA,
+  SPI_CLEAR_BUFFER,
+  */
+
+  /**
+   * @brief   Sets the raw ADC value given the data payload
+   * @details This function shall be called upon receiving a pin-specific payload
+   * @param   payload Message data payload to be parsed
+   */
+  void writeSpiData(std::string &payload);
+
+  /**
+   * @brief   Sets the raw ADC value given the data payload
+   * @details This function shall be called upon receiving a pin-specific payload
+   * @param   payload Message data payload to be parsed
+   */
+  std::string processReadSpiData(std::string &payload);
+
+  /**
+   * @brief   Sets the raw ADC value given the data payload
+   * @details This function shall be called upon receiving a pin-specific payload
+   * @param   payload Message data payload to be parsed
+   */
+  void transferSpiData();
+
+  /**
+   * @brief   Clears the SPI buffer given the data payload
+   * @details This function shall be called upon receiving a port-specific payload
+   * @param   payload Message data payload to be parsed
+   */
+  void clearBuffer(std::string &payload);
 };
 
 /** @} */

@@ -134,7 +134,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
 
 /**
  * @brief   Gets data from the spi TX queue
- * @param   i2c Specifies which SPI port to read from
+ * @param   spi Specifies which SPI port to read from
  * @param   data Pointer to a buffer of data to fill
  * @param   len Length of the data to retrieve
  * @return  STATUS_CODE_OK if data is retrieved successfully
