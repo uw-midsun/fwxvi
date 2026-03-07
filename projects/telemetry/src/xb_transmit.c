@@ -28,7 +28,9 @@ TASK(can_message_forwarder, TASK_STACK_512) {
   size_t datagram_length = 0U;
   Datagram tx_datagram = { 0U };
   CanMessage message = { 0U };
+#if (XB_TRANSMIT_DEBUG == 1)
   StatusCode status = STATUS_CODE_OK;
+#endif
 
   while (true) {
     /* Wait for new data to be in the queue */
