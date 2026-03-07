@@ -28,7 +28,7 @@ TASK(can_message_forwarder, TASK_STACK_512) {
   size_t datagram_length = 0U;
   Datagram tx_datagram = { 0U };
   CanMessage message = { 0U };
-#if (XB_TRANSMIT_DEBUG == 1)
+#if (XB_TRANSMIT_DEBUG != 0)
   StatusCode status = STATUS_CODE_OK;
 #endif
 
@@ -37,15 +37,16 @@ TASK(can_message_forwarder, TASK_STACK_512) {
     while (queue_receive(&s_telemetry_storage->can_storage->rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
     }
 
-#if (XB_TRANSMIT_DEBUG == 1)
+#if (XB_TRANSMIT_DEBUG != 0)
     LOG_DEBUG("Received message\r\n");
 #endif
     decode_can_message(&tx_datagram, &message);
 
     datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-
+#if (XB_TRANSMIT_DEBUG == 0)
+    uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+#else
     status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-#if (XB_TRANSMIT_DEBUG == 1)
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Failed to transmit to telemetry transceiver!\r\n");
     } else {
