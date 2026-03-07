@@ -41,6 +41,12 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligne
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
+static Framebuffer framebuffer_cfg = { 0 };
+
+static GuiSettings gui_cfg = {
+  .framebuffer = &framebuffer_cfg,
+  .ltdc = &settings,
+};
 
 static void draw_grid(void) {
   // 1) Border frame
@@ -88,26 +94,6 @@ TASK(sc_gui_api, TASK_STACK_1024) {
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   StatusCode status = STATUS_CODE_OK;
-
-  status = ltdc_init(&settings);
-  if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("ltdc initialized\r\n");
-  } else {
-    LOG_DEBUG("ltdc cannot be initialized: %d\r\n", status);
-  }
-
-  Framebuffer framebuffer_cfg = { 0 };
-  status = framebuffer_init(&framebuffer_cfg, DISPLAY_WIDTH, DISPLAY_HEIGHT, framebuffer);
-  if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("framebuffer initialized\r\n");
-  } else {
-    LOG_DEBUG("framebuffer cannot be initialized: %d\r\n", status);
-  }
-
-  GuiSettings gui_cfg = {
-    .framebuffer = framebuffer_cfg,
-    .ltdc = settings,
-  };
 
   status = gui_init(&gui_cfg);
   if (status == STATUS_CODE_OK) {

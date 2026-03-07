@@ -30,7 +30,15 @@ static DisplayData *display_data = NULL;
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
+static Framebuffer framebuffer_cfg = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+
+static GuiSettings gui_cfg = {
+  .framebuffer = &framebuffer_cfg,
+  .ltdc = &settings,
+};
+
+static StatusCode status;
 
 #define NUMBER_OF_RED_BITS 8
 #define NUMBER_OF_GREEN_BITS 8
@@ -71,40 +79,32 @@ StatusCode display_init(SteeringStorage *storage) {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  ret = ltdc_init(&settings);
-  if (ret == STATUS_CODE_OK) {
-    LOG_DEBUG("ltdc initialized\r\n");
-  } else {
-    LOG_DEBUG("ltdc_init failed with exit code: %d\r\n", ret);
-    return ret;
-  }
-
-  Framebuffer framebuffer_cfg = { 0 };
-  ret = framebuffer_init(&framebuffer_cfg, DISPLAY_WIDTH, DISPLAY_HEIGHT, framebuffer);
-  if (ret == STATUS_CODE_OK) {
-    LOG_DEBUG("framebuffer initialized\r\n");
-  } else {
-    LOG_DEBUG("framebuffer cannot be initialized: %d\r\n", ret);
-  }
-
-  GuiSettings gui_cfg = {
-    .framebuffer = framebuffer_cfg,
-    .ltdc = settings,
-  };
-
   ret = gui_init(&gui_cfg);
   if (ret == STATUS_CODE_OK) {
     LOG_DEBUG("Gui initialized\r\n");
   } else {
     LOG_DEBUG("Gui cannot be initialized: %d\r\n", ret);
+    return ret;
   }
 
   return ret;
 }
 
 StatusCode display_run() {
-  gui_display_text(250, 250, "abcdefghijklmnopqrstuvwxyz", COLOR_INDEX_RED);
-  gui_render();
+  status = gui_fill_rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, COLOR_INDEX_BLACK);
+
+  status = gui_display_text(100, 100, COLOR_INDEX_BLUE, "Drive State: %s\r\nAccel: %d%%\r\nLight Signal: %s", VEHICLE_DRIVE_STATE_TO_STR(display_data->drive_state), display_data->pedal_percentage,
+                            STEERING_LIGHT_STATE_TO_STR(steering_storage->light_signal));
+
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui_display_text failed: %d\r\n", status);
+  }
+
+  status = gui_render();
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui_render failed: %d\r\n", status);
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode display_rx_slow() {
