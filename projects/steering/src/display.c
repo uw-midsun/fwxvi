@@ -31,13 +31,13 @@ static DisplayData *display_data = NULL;
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static GpioAddress s_ltdc_pwm_pin = STEERING_DISPLAY_BRIGHTNESS; /* Current control for brightness ctrl */
-static LtdcSettings settings = { 0 };
-static Framebuffer framebuffer_cfg = { 0 };
-static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+static LtdcSettings s_settings = { 0 };
+static Framebuffer s_framebuffer_cfg = { 0 };
+static uint8_t s_framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
 
 static GuiSettings gui_cfg = {
-  .framebuffer = &framebuffer_cfg,
-  .ltdc = &settings,
+  .framebuffer = &s_framebuffer_cfg,
+  .ltdc = &s_settings,
 };
 
 static StatusCode status;
@@ -106,7 +106,6 @@ StatusCode display_init(SteeringStorage *storage) {
     return ret;
   }
 
-  setup_brightness_pwm();
   s_current_pwm_init();
 
   return ret;
