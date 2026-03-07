@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "gpio.h"
+#include "gui.h"
 #include "ltdc.h"
 #include "pwm.h"
 
@@ -36,6 +37,8 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligne
 #define NUMBER_OF_BLUE_BITS 8
 
 StatusCode display_init(SteeringStorage *storage) {
+  StatusCode ret = STATUS_CODE_OK;
+
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -68,7 +71,40 @@ StatusCode display_init(SteeringStorage *storage) {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  return ltdc_init(&settings);
+  ret = ltdc_init(&settings);
+  if (ret == STATUS_CODE_OK) {
+    LOG_DEBUG("ltdc initialized\r\n");
+  } else {
+    LOG_DEBUG("ltdc_init failed with exit code: %d\r\n", ret);
+    return ret;
+  }
+
+  Framebuffer framebuffer_cfg = { 0 };
+  ret = framebuffer_init(&framebuffer_cfg, DISPLAY_WIDTH, DISPLAY_HEIGHT, framebuffer);
+  if (ret == STATUS_CODE_OK) {
+    LOG_DEBUG("framebuffer initialized\r\n");
+  } else {
+    LOG_DEBUG("framebuffer cannot be initialized: %d\r\n", ret);
+  }
+
+  GuiSettings gui_cfg = {
+    .framebuffer = framebuffer_cfg,
+    .ltdc = settings,
+  };
+
+  ret = gui_init(&gui_cfg);
+  if (ret == STATUS_CODE_OK) {
+    LOG_DEBUG("Gui initialized\r\n");
+  } else {
+    LOG_DEBUG("Gui cannot be initialized: %d\r\n", ret);
+  }
+
+  return ret;
+}
+
+StatusCode display_run() {
+  gui_display_text(250, 250, "abcdefghijklmnopqrstuvwxyz", COLOR_INDEX_RED);
+  gui_render();
 }
 
 StatusCode display_rx_slow() {
