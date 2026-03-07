@@ -7,5 +7,9 @@
     "x86_libs": [
         "ms-mpxe"
     ],
-    "can": false
+    "include": [
+        "projects/steering/inc"
+    ],
+    "can": false, 
+    "selected_preset": "STM32L4P5VET6_legacy_debug"
 }

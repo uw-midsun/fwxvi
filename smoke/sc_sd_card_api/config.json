@@ -14,5 +14,6 @@
         "projects/telemetry/src/sd_card_interface.o",
         "projects/telemetry/src/arm/sd_card_spi.o"
     ],
-    "can": false
+    "can": false,
+    "selected_preset": "STM32L4P5VET6_legacy_debug"
 }

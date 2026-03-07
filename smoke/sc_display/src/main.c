@@ -19,6 +19,8 @@
 #include "status.h"
 #include "tasks.h"
 /* Intra-component Headers */
+#include "display.h"
+#include "steering_hw_defs.h"
 
 #ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
 #define DISPLAY_WIDTH 480  /**< Width of the display */
@@ -28,55 +30,32 @@
 #define DISPLAY_HEIGHT 1 /**< Height of the display */
 #endif
 
+#define NUMBER_OF_RED_BITS 8
+#define NUMBER_OF_GREEN_BITS 8
+#define NUMBER_OF_BLUE_BITS 8
+
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
-static GpioAddress s_display_ctrl = { .port = GPIO_PORT_A, .pin = 0 };
-static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 };
+static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
-  LtdcTimingConfig timing_config = { .hsync = 4, .vsync = 4, .hbp = 43, .vbp = 12, .hfp = 8, .vfp = 8 };
-
-  LtdcGpioConfig gpio_config = {
-    .clk = {.port = GPIO_PORT_A, .pin = 4},
-    .hsync = {.port = GPIO_PORT_C, .pin = 2},
-    .vsync = {.port = GPIO_PORT_B, .pin = 11},
-    .de = {.port = GPIO_PORT_C, .pin = 0},
-    .r = {
-      {},
-      {},
-      {.port = GPIO_PORT_E, .pin = 15},  /* R2 */
-      {.port = GPIO_PORT_D, .pin = 8},   /* R3 */
-      {.port = GPIO_PORT_D, .pin = 9},   /* R4 */
-      {.port = GPIO_PORT_D, .pin = 10},  /* R5 */
-      {.port = GPIO_PORT_D, .pin = 11},  /* R6 */
-      {.port = GPIO_PORT_D, .pin = 12},  /* R7 */
-    },
-    .g = {
-      {},
-      {},
-      {.port = GPIO_PORT_E, .pin = 9},  /* G2 */
-      {.port = GPIO_PORT_E, .pin = 10}, /* G3 */
-      {.port = GPIO_PORT_E, .pin = 11}, /* G4 */
-      {.port = GPIO_PORT_E, .pin = 12}, /* G5 */
-      {.port = GPIO_PORT_E, .pin = 13}, /* G6 */
-      {.port = GPIO_PORT_E, .pin = 14}, /* G7 */
-    },
-    .b = {
-      {},
-      {},
-      {.port = GPIO_PORT_D, .pin = 14},   /* B2 */
-      {.port = GPIO_PORT_D, .pin = 15},   /* B3 */
-      {.port = GPIO_PORT_D, .pin = 0},    /* B4 */
-      {.port = GPIO_PORT_D, .pin = 1},    /* B5 */
-      {.port = GPIO_PORT_B, .pin = 0},    /* B6 */
-      {.port = GPIO_PORT_E, .pin = 4},    /* B7 */
-    },
-    .num_red_bits = 8,
-    .num_green_bits = 8,
-    .num_blue_bits = 8
+  LtdcTimingConfig timing_config = {
+    .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
   };
+
+  LtdcGpioConfig gpio_config = { .clk = GPIO_STEERING_DISPLAY_LTDC_CLOCK,
+                                 .hsync = GPIO_STEERING_DISPLAY_LTDC_HSYNC,
+                                 .vsync = GPIO_STEERING_DISPLAY_LTDC_VSYNC,
+                                 .de = GPIO_STEERING_DISPLAY_LTDC_DE,
+                                 .r = GPIO_STEERING_DISPLAY_LTDC_RED_PINS,
+                                 .g = GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS,
+                                 .b = GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS,
+                                 .num_red_bits = NUMBER_OF_RED_BITS,
+                                 .num_green_bits = NUMBER_OF_GREEN_BITS,
+                                 .num_blue_bits = NUMBER_OF_BLUE_BITS };
   settings.width = DISPLAY_WIDTH;
   settings.height = DISPLAY_HEIGHT;
   settings.framebuffer = framebuffer;
@@ -86,7 +65,7 @@ StatusCode ltdc_display_init() {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_current_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   return ltdc_init(&settings);
 }
 
