@@ -34,6 +34,9 @@ static TelemetryConfig s_telemetry_config = {
   .message_transmit_frequency_hz = 10U,
 };
 
+static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
+static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
+
 uint8_t datagram_data[] = "HELLO\r\n";
 
 static Datagram tx_datagram = {
@@ -49,6 +52,9 @@ TASK(xb_transmit, TASK_STACK_1024) {
   CanMessage message = { 0U };
   uint16_t msg_count = 0;
   StatusCode status = STATUS_CODE_OK;
+
+  gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
   LOG_DEBUG("Telemetry smoke test");
   delay_ms(1000U);

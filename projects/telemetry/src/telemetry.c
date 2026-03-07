@@ -30,6 +30,8 @@
 
 static TelemetryStorage *telemetry_storage;
 static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
+static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
+static GpioAddress s_xbee_reset = GPIO_TELEMETRY_XBEE_XRST;
 
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,
@@ -62,6 +64,7 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
 
   gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
   return STATUS_CODE_OK;
 }

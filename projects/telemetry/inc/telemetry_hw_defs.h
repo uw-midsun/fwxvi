@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define TELEMETRY_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define TELEMETRY_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Telemetry CAN definitions
@@ -42,10 +41,10 @@
  ************************************************************************************************/
 
 /** @brief  Telemetry UART RX Port */
-#define GPIO_TELEMETRY_UART_RX TELEMETRY_GPIO_DEF(A, 2)
+#define GPIO_TELEMETRY_UART_RX TELEMETRY_GPIO_DEF(A, 3)
 
 /** @brief  Telemetry UART TX Port */
-#define GPIO_TELEMETRY_UART_TX TELEMETRY_GPIO_DEF(A, 3)
+#define GPIO_TELEMETRY_UART_TX TELEMETRY_GPIO_DEF(A, 2)
 
 /** @brief  Telemetry XBee XRST Pin */
 #define GPIO_TELEMETRY_XBEE_XRST TELEMETRY_GPIO_DEF(A, 5)
