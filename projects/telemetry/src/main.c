@@ -31,8 +31,8 @@ TelemetryStorage telemetry_storage;
 
 TelemetryConfig telemetry_config = {
   .message_transmit_frequency_hz = 1000U,
-  .uart_port = UART_PORT_2,
-  .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE },
+  .uart_port = TELEMETRY_XBEE_UART_PORT,
+  .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = TELEMETRY_XBEE_UART_BAUDRATE, .flow_control = TELEMETRY_XBEE_UART_FLOW_CONTROL },
   .sd_spi_port = SPI_PORT_2,
   .sd_spi_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
                        .mode = SD_SPI_MODE_1,
@@ -72,10 +72,7 @@ void pre_loop_init() {
   }
 }
 
-void run_1000hz_cycle() {
-  run_can_rx_all();
-  xb_transmit_run();
-}
+void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
   run_can_tx_medium();
@@ -98,7 +95,6 @@ int main() {
   log_init();
 
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
-
   init_master_tasks();
 
   tasks_start();

@@ -59,9 +59,9 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
   can_init(telemetry_storage->can_storage, &s_can_settings);
   queue_init(&telemetry_storage->datagram_queue);
-  xb_transmit_init(telemetry_storage);
   bmi323_init(bmi323_storage);
   sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
+  xb_transmit_init(telemetry_storage, telemetry_storage->config);
 
   gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);

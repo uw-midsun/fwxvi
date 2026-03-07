@@ -27,15 +27,10 @@
  */
 
 /**
- * @brief   attempts to pop a can message, if successful sends it to XB
- */
-StatusCode xb_transmit_run();
-
-/**
  * @brief   Initializes the xb_transmit component
  * @return  STATUS_CODE_OK if initialization is successful
  *          STATUS_CODE_INVALID_ARGS if storage is null
  */
-StatusCode xb_transmit_init(TelemetryStorage *storage);
+StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config);
 
 /** @} */

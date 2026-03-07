@@ -61,13 +61,13 @@ TASK(xb_transmit, TASK_STACK_1024) {
 
   while (true) {
     datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-    for (int i = 0; i < 5; i++) {
-      tx_datagram.data[i] = i;
+    for (uint8_t i = 0; i < sizeof(datagram_data); i++) {
+      tx_datagram.data[i] = datagram_data[i];
     }
 
-    printf("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
-
-    printf("uart_tx with return code %d\r\n", status);
+    LOG_DEBUG("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
+    delay_ms(10U);
+    LOG_DEBUG("uart_tx with return code %d\r\n", status);
     delay_ms(1000U);
   }
 }

@@ -26,6 +26,8 @@
 
 StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings);
 
+StatusCode imu_run();
+
 #define DELTA_T 0.1f
 #define PI 3.14159265358f
 #define GYRO_MEAN_ERROR (PI * (5.0f / 180.0f))
