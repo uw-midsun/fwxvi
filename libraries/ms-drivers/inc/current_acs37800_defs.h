@@ -22,9 +22,10 @@
  */
 
 // Table value formula, NEED the Rsense and Riso resistor values for line voltage calculation
+
 #define VOLTAGE_SCALE ((0.84 * 1.19) / 32768.0)
 
-#define CURRENT_SCALE ((0.84 * 1.19) / 32768.0)
+#define CURRENT_SCALE ((30 * 1.19) / 32768.0)
 #define POWER_SCALE ((0.704 * 1.42) / 32768.0)
 #define ACS37800_MASK_FAULTOUT 0x02      // Bit 1
 #define ACS37800_MASK_OVERVOLTAGE 0x08   // Bit 3

@@ -42,7 +42,7 @@ StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers re
     return status;
   }
 
-  *out_raw = ((uint32_t)rx_buff[0] << 24) | ((uint32_t)rx_buff[1] << 16) | ((uint32_t)rx_buff[2] << 8) | ((uint32_t)rx_buff[3]);
+  *out_raw = ((uint32_t)rx_buff[3] << 24) | ((uint32_t)rx_buff[2] << 16) | ((uint32_t)rx_buff[1] << 8) | ((uint32_t)rx_buff[0]);
 
   return STATUS_CODE_OK;
 }
