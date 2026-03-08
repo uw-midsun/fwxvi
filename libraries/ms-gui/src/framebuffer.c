@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 #include <stddef.h>
 
 /* Inter-component Headers */
@@ -15,7 +16,13 @@
 /* Intra-component Headers */
 #include "framebuffer.h"
 
+static bool is_initialized = false;
+
 StatusCode framebuffer_init(Framebuffer *fb, uint16_t width, uint16_t height, uint8_t *buffer) {
+  if (is_initialized) {
+    return STATUS_CODE_ALREADY_INITIALIZED;
+  }
+
   if (fb == NULL || buffer == NULL || width == 0 || height == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -23,6 +30,8 @@ StatusCode framebuffer_init(Framebuffer *fb, uint16_t width, uint16_t height, ui
   fb->width = width;
   fb->height = height;
   fb->data = buffer;
+
+  is_initialized = true;
 
   return STATUS_CODE_OK;
 }

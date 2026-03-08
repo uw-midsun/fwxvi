@@ -26,6 +26,7 @@
 
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
+static bool is_initialized = false;
 
 /**
  * @brief   Configure GPIO pins for LTDC
@@ -190,6 +191,10 @@ static StatusCode s_configure_ltdc_pixel_clock(void) {
 }
 
 StatusCode ltdc_init(LtdcSettings *settings) {
+  if (is_initialized) {
+    return STATUS_CODE_ALREADY_INITIALIZED;
+  }
+
   if (settings == NULL || settings->framebuffer == NULL || settings->clut == NULL || settings->clut_size == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -214,6 +219,8 @@ StatusCode ltdc_init(LtdcSettings *settings) {
 
   /* Load CLUT into LTDC */
   status_ok_or_return(s_load_clut());
+
+  is_initialized = true;
 
   return STATUS_CODE_OK;
 }

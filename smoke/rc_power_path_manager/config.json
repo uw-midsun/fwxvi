@@ -21,5 +21,6 @@
         "projects/rear_controller/src/rear_controller_state_manager.o",
         "projects/rear_controller/src/relays.o"
     ],
-    "can": true
+    "can": true,
+    "selected_preset": "STM32L496RGT6_legacy_debug"
 }

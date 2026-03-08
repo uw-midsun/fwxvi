@@ -145,7 +145,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
   uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
 
-  printf("ST BITS: H: %d, R: %d, C: %d, Z: %d\r\n", horn_enabled_from_steering, is_regen_enabled, is_cruise_control_enabled, is_hazard_enabled);
+  // printf("ST BITS: H: %d, R: %d, C: %d, Z: %d\r\n", horn_enabled_from_steering, is_regen_enabled, is_cruise_control_enabled, is_hazard_enabled);
 
 #if (FRONT_STATE_MANAGER_DEBUG == 1)
   LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u LIGHTS %u HORN %u\r\n", drive_state_from_steering, lights_from_steering, horn_enabled_from_steering);
