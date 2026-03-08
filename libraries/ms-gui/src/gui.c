@@ -7,6 +7,7 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 /* Standard library Headers */
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -155,6 +156,8 @@ static char font8x8[128][8] = {
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }  /* U+007F */
 };
 
+char text_buffer[MAX_TEXT_SIZE];
+
 StatusCode gui_init(GuiSettings *settings) {
   if (!settings) {
     return STATUS_CODE_INVALID_ARGS;
@@ -162,13 +165,13 @@ StatusCode gui_init(GuiSettings *settings) {
 
   StatusCode ret;
 
-  ret = framebuffer_init(&settings->framebuffer, settings->ltdc.width, settings->ltdc.height, settings->ltdc.framebuffer);
+  ret = framebuffer_init(settings->framebuffer, settings->ltdc->width, settings->ltdc->height, settings->ltdc->framebuffer);
   if (ret != STATUS_CODE_OK) {
     LOG_DEBUG("Framebuffer_init error: %d\n", ret);
     return ret;
   }
 
-  ret = ltdc_init(&settings->ltdc);
+  ret = ltdc_init(settings->ltdc);
   if (ret != STATUS_CODE_OK) {
     LOG_DEBUG("ltdc_init error: %d\n", ret);
     return ret;
@@ -247,7 +250,7 @@ StatusCode gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_index) {
+StatusCode gui_display_char(uint16_t x, uint16_t y, ColorIndex color_index, char c) {
   if (color_index >= NUM_COLOR_INDICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -263,7 +266,7 @@ StatusCode gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_ind
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex color_index) {
+StatusCode gui_display_text(uint16_t x, uint16_t y, ColorIndex color_index, const char *text, ...) {
   if (!text) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -271,11 +274,22 @@ StatusCode gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex
     return STATUS_CODE_INVALID_ARGS;
   }
   uint16_t cursor_x = x;
+  uint16_t cursor_y = y;
 
-  while (*text) {
-    status_ok_or_return(gui_display_char(cursor_x, y, *text, color_index));
-    text++;
-    cursor_x += 8;
+  va_list args;
+  va_start(args, text);
+  size_t msg_size = (size_t)vsnprintf(text_buffer, MAX_TEXT_SIZE, text, args);
+  va_end(args);
+
+  for (size_t i = 0; i < msg_size; i++) {
+    if (text_buffer[i] == '\n') {
+      cursor_y += 50;
+    } else if (text_buffer[i] == '\r') {
+      cursor_x = x;
+    } else {
+      status_ok_or_return(gui_display_char(cursor_x, cursor_y, color_index, text_buffer[i]));
+      cursor_x += 8;
+    }
   }
   return STATUS_CODE_OK;
 }

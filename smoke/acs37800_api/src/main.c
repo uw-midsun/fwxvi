@@ -89,10 +89,7 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     uint32_t whole = (uint32_t)(current_A < 0 ? -(current_A / 1000) : (current_A / 1000));
     uint32_t frac = (uint32_t)(current_A < 0 ? -(current_A % 1000) : (current_A % 1000));
 
-    LOG_DEBUG("CURRENT_DATA: %s%u.%03u A\r\n",
-              current_A < 0 ? "-" : "",
-              (unsigned)whole,
-              (unsigned)frac);
+    LOG_DEBUG("CURRENT_DATA: %s%u.%03u A\r\n", current_A < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
 
     delay_ms(10);
 
@@ -113,10 +110,7 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     whole = (uint32_t)(voltage_mV < 0 ? -(voltage_mV / 1000) : (voltage_mV / 1000));
     frac = (uint32_t)(voltage_mV < 0 ? -(voltage_mV % 1000) : (voltage_mV % 1000));
 
-    LOG_DEBUG("VOLTAGE_DATA: %s%ld.%03ld mV\r\n",
-              voltage_mV < 0 ? "-" : "",
-              (unsigned)whole,
-              (unsigned)frac);
+    LOG_DEBUG("VOLTAGE_DATA: %s%ld.%03ld mV\r\n", voltage_mV < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
 
     delay_ms(500);
   }

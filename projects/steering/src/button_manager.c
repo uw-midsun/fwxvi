@@ -45,7 +45,7 @@ static bool hazard_light_state = false;
 static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
-  lights_signal_manager_register(LIGHTS_SIGNAL_STATE_LEFT);
+  lights_signal_manager_register(STEERING_LIGHTS_LEFT_STATE);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Falling edge callback\r\n");
@@ -63,7 +63,7 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-  lights_signal_manager_register(LIGHTS_SIGNAL_STATE_RIGHT);
+  lights_signal_manager_register(STEERING_LIGHTS_RIGHT_STATE);
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Falling edge callback\r\n");
@@ -81,7 +81,7 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-  lights_signal_manager_register(LIGHTS_SIGNAL_STATE_HAZARD);
+  lights_signal_manager_register(STEERING_LIGHTS_HAZARD_STATE);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
 #endif

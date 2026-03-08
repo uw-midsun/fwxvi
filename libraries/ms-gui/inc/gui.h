@@ -29,12 +29,16 @@
  * @{
  */
 
+#define MAX_TEXT_SIZE 200
+
+extern char text_buffer[MAX_TEXT_SIZE];
+
 /**
  * @brief   GUI initialization settings
  */
 typedef struct {
-  LtdcSettings ltdc;       /**< LTDC driver configuration */
-  Framebuffer framebuffer; /**< GUI framebuffer */
+  LtdcSettings *ltdc;       /**< LTDC driver configuration */
+  Framebuffer *framebuffer; /**< GUI framebuffer */
 } GuiSettings;
 
 /**
@@ -98,20 +102,20 @@ StatusCode gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
  * @brief   Display a single character at (x, y)
  * @param   x X coordinate
  * @param   y Y coordinate
- * @param   c Character to display
  * @param   color_index CLUT color index
+ * @param   c Character to display
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_display_char(uint16_t x, uint16_t y, char c, ColorIndex color_index);
+StatusCode gui_display_char(uint16_t x, uint16_t y, ColorIndex color_index, char c);
 
 /**
  * @brief   Display a text string at (x, y)
  * @param   x X coordinate
  * @param   y Y coordinate
- * @param   text Pointer to null-terminated string to display
  * @param   color_index CLUT color index
+ * @param   text Pointer to null-terminated string to display
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_display_text(uint16_t x, uint16_t y, const char *text, ColorIndex color_index);
+StatusCode gui_display_text(uint16_t x, uint16_t y, ColorIndex color_index, const char *text, ...);
 
 /** @} */
