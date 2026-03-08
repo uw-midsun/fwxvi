@@ -89,6 +89,8 @@
 /** @brief  Display control (Push-pull to control display state) */
 #define GPIO_STEERING_DISPLAY_CTRL STEERING_GPIO_DEF(C, 6)
 
+#define GPIO_STEERING_DISPLAY_BACKLIGHT_CTRL STEERING_GPIO_DEF(A, 1)
+
 /************************************************************************************************
  * Display LTDC Config
  ************************************************************************************************/
