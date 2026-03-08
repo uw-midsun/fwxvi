@@ -62,7 +62,7 @@ StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amp
   // the current value is signed (16 bits upper)
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
 
-  *out_current_amps = (float)(current_raw)*CURRENT_SCALE;
+  *out_current_amps = (float)(current_raw)*ACS37800_CURRENT_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -82,7 +82,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_voltage_mV = (float)(voltage_raw)*VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -102,7 +102,7 @@ StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_
   // the active power value is signed (16 bits lower)
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_power_mW = (float)(power_raw)*POWER_SCALE;
+  *out_power_mW = (float)(power_raw)*ACS37800_POWER_SCALE;
 
   return STATUS_CODE_OK;
 }
