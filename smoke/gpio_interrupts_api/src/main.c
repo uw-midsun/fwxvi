@@ -12,39 +12,34 @@
 /* Inter-component Headers */
 #include "delay.h"
 #include "gpio.h"
+#include "gpio_interrupts.h"
+#include "interrupts.h"
 #include "log.h"
 #include "mcu.h"
+#include "notify.h"
 #include "status.h"
 #include "tasks.h"
-#include "gpio_interrupts.h"
-#include "notify.h"
 
 /* STM32 register defs for EXTI->SWIER1 */
 #include "stm32l4xx.h"
 
 /* Intra-component Headers */
 
-/* Killswitch GPIO Configuration */
-#define KILLSWITCH_EVENT 1U
-#define KILLSWITCH_DEBOUNCE_MS 10U
-
 /* Smoke Config */
 #define NUM_EXTI_LINES_SMOKE 16U          // EXTI lines 0..15
 #define EXTI_TIMEOUT_MS      100U
-#define DEBOUNCE_MS          10U
 #define TEST_PORT            GPIO_PORT_C  // keep all on one port (driver indexes by pin)
 
-static GpioAddress s_killswitch_address = { .port = GPIO_PORT_C, .pin = 5 };
 uint32_t notification = 0;
 
-static InterruptSettings s_killswitch_settings = {
+static InterruptSettings s_rising_settings = {
   INTERRUPT_TYPE_INTERRUPT,
   INTERRUPT_PRIORITY_NORMAL,
-  INTERRUPT_EDGE_FALLING,
+  INTERRUPT_EDGE_RISING,
 };
 
 static StatusCode s_trigger_exti_swi(uint8_t line) {
-  if (line >= 16U ) {
+  if (line >= 16U) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -53,46 +48,52 @@ static StatusCode s_trigger_exti_swi(uint8_t line) {
 }
 
 TASK(gpio_interrupts_api, TASK_STACK_1024) {
+  uint8_t pass_count = 0;
 
-  StatusCode status = STATUS_CODE_OK;
-  /* Initialize GPIO pin as input with pull-down */
-  LOG_DEBUG("Initializing killswitch GPIO interrupt...\r\n");
+  LOG_DEBUG("Starting GPIO interrupt smoke test...\r\n");
   delay_ms(10U);
-  /* configure gpio for interrupt mode*/
 
-  for (uint8_t line = 0; line < NUM_EXTI_LINES_SMOKE; ++line)
-  status = gpio_it_init(&s_killswitch_address, &s_killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
-  if (status != STATUS_CODE_OK) { 
-    LOG_DEBUG("gpio_it_init failed: %d\r\n", status);
-    while(true) {
-      delay_ms(1000U);
+  for (uint8_t line = 0; line < NUM_EXTI_LINES_SMOKE; ++line) {
+    GpioAddress addr = { .port = TEST_PORT, .pin = line };
+
+    LOG_DEBUG("Testing EXTI line %u (PC%u)...\r\n", line, line);
+    delay_ms(10U);
+
+    StatusCode status = gpio_it_init(&addr, &s_rising_settings, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("  FAIL: gpio_it_init returned %d\r\n", status);
+      delay_ms(10U);
+      continue;
+    }
+
+    status = gpio_register_interrupt(&addr, &s_rising_settings, (Event)line, gpio_interrupts_api);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("  FAIL: gpio_register_interrupt returned %d\r\n", status);
+      delay_ms(10U);
+      continue;
+    }
+
+    s_trigger_exti_swi(line);
+
+    notification = 0;
+    status = notify_wait(&notification, EXTI_TIMEOUT_MS);
+
+    if (status == STATUS_CODE_OK && notify_check_event(&notification, (Event)line)) {
+      LOG_DEBUG("PASS: EXTI line %u interrupt received\r\n", line);
+      delay_ms(10U);
+      pass_count++;
+    } else {
+      LOG_DEBUG("FAIL: EXTI line %u (status=%d, notif=0x%08lx)\r\n", line, status,
+                (unsigned long)notification);
+      delay_ms(10U);
     }
   }
-  status = gpio_register_interrupt(&s_killswitch_address, &s_killswitch_settings, KILLSWITCH_EVENT, gpio_interrupts_api);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("gpio_register_interrupt failed: %d\r\n", status);
-    while(true) {
-      delay_ms(1000U);
-    }
-  }
 
-  // software trigger
-  status = gpio_trigger_interrupt(&s_killswitch_address);
-  LOG_DEBUG("gpio_trigger_interrupt returned: %d\r\n", status);
+  LOG_DEBUG("Results: %u/%u lines passed\r\n", pass_count, NUM_EXTI_LINES_SMOKE);
+  delay_ms(10U);
 
   while (true) {
-    notification = 0;
-
-    status = notify_wait(&notification, 100U);
-
-    if (status == STATUS_CODE_OK) {
-      if (notify_check_event(&notification, KILLSWITCH_EVENT)) {
-        LOG_DEBUG("Pass\r\n");
-        delay_ms(KILLSWITCH_DEBOUNCE_MS);
-      } else {
-        LOG_DEBUG("got notif: 0x%08lx\r\n", (unsigned long)notification);
-      }
-    }
+    delay_ms(1000U);
   }
 }
 
@@ -104,12 +105,13 @@ int main(int argc, char *argv[]) {
 int main(void) {
 #endif
   mcu_init();
+  interrupt_init();
   tasks_init();
   log_init();
 
   tasks_init_task(gpio_interrupts_api, TASK_PRIORITY(3), NULL);
   tasks_start();
 
-  LOG_DEBUG("exiting main?");
+  LOG_DEBUG("exiting main?\r\n");
   return 0;
 }
