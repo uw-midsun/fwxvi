@@ -16,7 +16,9 @@
 #include "software_timer.h"
 
 /* Intra-component Headers */
+#include "global_enums.h"
 #include "gpio.h"
+#include "steering.h"
 #include "steering_hw_defs.h"
 
 /**
@@ -24,16 +26,6 @@
  * @brief    steering Firmware
  * @{
  */
-
-/**
- * @brief Light signal states representing the current output
- */
-typedef enum {
-  LIGHTS_SIGNAL_STATE_OFF = 0, /**< All lights off */
-  LIGHTS_SIGNAL_STATE_LEFT,    /**< Left signal active */
-  LIGHTS_SIGNAL_STATE_RIGHT,   /**< Right signal active */
-  LIGHTS_SIGNAL_STATE_HAZARD   /**< Hazard signal active */
-} LightsSignalState;
 
 /**
  * @brief Requests made to control the light signals
@@ -47,8 +39,9 @@ typedef enum {
 
 /**
  * @brief   Initialize state variables and timer
+ * @param   storage Pointer to the SteeringStorage instance
  */
-void lights_signal_manager_init(void);
+void lights_signal_manager_init(SteeringStorage *storage);
 
 /**
  * @brief   Make a request to change the signal state
@@ -65,6 +58,6 @@ StatusCode lights_signal_manager_update(void);
  * @brief   Get the current state of the signal lights
  * @return  The current light signal state
  */
-LightsSignalState lights_signal_manager_get_state(void);
+SteeringLightState lights_signal_manager_get_state(void);
 
 /** @} */

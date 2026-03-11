@@ -20,6 +20,7 @@
 #include "uart.h"
 
 /* Intra-component Headers */
+#include "imu.h"
 #include "sd_card_spi.h"
 #include "telemetry.h"
 #include "telemetry_getters.h"
@@ -30,8 +31,8 @@ TelemetryStorage telemetry_storage;
 
 TelemetryConfig telemetry_config = {
   .message_transmit_frequency_hz = 1000U,
-  .uart_port = UART_PORT_2,
-  .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = 115200, .flow_control = UART_FLOW_CONTROL_NONE },
+  .uart_port = TELEMETRY_XBEE_UART_PORT,
+  .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = TELEMETRY_XBEE_UART_BAUDRATE, .flow_control = TELEMETRY_XBEE_UART_FLOW_CONTROL },
   .sd_spi_port = SPI_PORT_2,
   .sd_spi_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
                        .mode = SD_SPI_MODE_1,
@@ -61,30 +62,21 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
-uint8_t datagram_data[] = { 0, 1, 2, 3, 4 };
-
-static Datagram tx_datagram = {
-  .start_frame = 0xAA,
-  .id = 0x01,
-  .dlc = 5,
-};
-
-static size_t datagram_length = 0;
-
-static StatusCode status = STATUS_CODE_OK;
-
-void pre_loop_init() {}
-
-void run_1000hz_cycle() {
-  run_can_rx_all();
-  // xb_transmit_run();
+float roll = 0;
+float pitch = 0;
+float yaw = 0;
+void pre_loop_init() {
+  for (float i = 0; i < 1000; i++) {
+    imu_filter(0.05, 0.05, 0.9, 0, 0, 0);
+    eulerAngles(q_est, &roll, &pitch, &yaw);
+  }
 }
+
+void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
   run_can_tx_medium();
-  // imu_run();
-
-  printf("SL: %d, DSS: %d, DSF: %d, PP: %ld\r\n", get_steering_buttons_lights(), get_steering_buttons_drive_state(), get_pedal_data_drive_state(), get_pedal_percentage());
+  imu_run();
 }
 
 void run_1hz_cycle() {
@@ -103,7 +95,6 @@ int main() {
   log_init();
 
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
-
   init_master_tasks();
 
   tasks_start();

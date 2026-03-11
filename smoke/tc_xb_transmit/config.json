@@ -12,5 +12,6 @@
     "sources": [
         "projects/telemetry/src/datagram.o"
     ],
-    "can": true
+    "can": true,
+    "selected_preset": "STM32L433CCU6_legacy_debug"
 }
