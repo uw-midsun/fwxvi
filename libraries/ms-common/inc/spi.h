@@ -150,7 +150,7 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode spi_set_rx(SpiPort spi, uint8_t *data, uint8_t len);
+StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len);
 
 #endif
 

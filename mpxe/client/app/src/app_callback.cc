@@ -162,7 +162,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::SPI_WRITE_DATA: {
-      clientSpiManager.writeSpiData(payload);
+      client->sendMessage(clientSpiManager.writeSpiData(payload));
       break;
     }
     case CommandCode::SPI_READ_DATA: {

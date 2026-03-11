@@ -25,19 +25,28 @@ extern "C" {
 #include "gpio_manager.h"
 #include "spi_manager.h"
 
-void SPIManager::writeSpiData(std::string &payload) {
+// void SPIManager::writeSpiData(std::string &payload) {
+//   m_spiDatagram.deserialize(payload);
+
+//   // Get Spi Port and Data
+//   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
+//   const u_int8_t *receivedData = m_spiDatagram.getBuffer();
+//   size_t len = m_spiDatagram.getBufferLength();
+//   spi_set_rx(port, receivedData, static_cast<uint8_t>(len));
+
+// }
+
+std::string SPIManager::writeSpiData(std::string &payload) {
   m_spiDatagram.deserialize(payload);
 
   // Get Spi Port and Data
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
   const u_int8_t *receivedData = m_spiDatagram.getBuffer();
-  u_int8_t s = *receivedData;
   size_t len = m_spiDatagram.getBufferLength();
+  spi_set_rx(port, receivedData, static_cast<uint8_t>(len));
+  m_spiDatagram.clearBuffer();
 
-  // Write New Data
-  u_int8_t data = spi_tx(port, &s, len);
-  m_spiDatagram.setBuffer(&data, sizeof(data));
-  // m_spiDatagram.clearBuffer();
+  return m_spiDatagram.serialize(CommandCode::SPI_WRITE_DATA);
 }
 
 std::string SPIManager::processReadSpiData(std::string &payload) {
@@ -46,12 +55,11 @@ std::string SPIManager::processReadSpiData(std::string &payload) {
   // Get Spi Port and Data
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
   size_t len = m_spiDatagram.getBufferLength();
-  const u_int8_t *receivedData = m_spiDatagram.getBuffer();
-  u_int8_t s = *receivedData;
-  u_int8_t data = static_cast<u_int8_t>(spi_rx(port, &s, len));
 
-  // m_spiDatagram.clearBuffer();
-  m_spiDatagram.setBuffer(&data, len);
+  u_int8_t tmp[len];
+  spi_get_tx_data(port, tmp, static_cast<u_int8_t>(len));
+
+  m_spiDatagram.setBuffer(tmp, len);
   return m_spiDatagram.serialize(CommandCode::SPI_READ_DATA);
 }
 

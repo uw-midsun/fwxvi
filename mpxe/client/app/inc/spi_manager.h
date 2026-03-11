@@ -53,7 +53,7 @@ class SPIManager {
    * @details This function shall be called upon receiving a pin-specific payload
    * @param   payload Message data payload to be parsed
    */
-  void writeSpiData(std::string &payload);
+  std::string writeSpiData(std::string &payload);
 
   /**
    * @brief   Sets the raw ADC value given the data payload
