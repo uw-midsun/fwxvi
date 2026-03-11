@@ -54,6 +54,7 @@ static TIM_HandleTypeDef h_timer = { 0U };
 static volatile bool s_is_buzzer_on = false;
 static volatile int pwm_counter = 0;
 static bool amplitude_modulation_enabled = false;
+static bool isNoteRest = false;
 
 static uint16_t prescaler = 79;
 
@@ -96,8 +97,6 @@ static Note MELODY_CC_DOWN[] = { { NOTE_G3, 50 }, { NOTE_REST, 0 } };
 
 static bool turn_sig_state = true;
 
-static GpioAddress s_buzzer_pwm_pin = GPIO_STEERING_BUZZER_PWM_PIN;
-
 static SoftTimer s_beep_timer = { 0U };
 static SoftTimer s_melody_timer = { 0U };
 static SoftTimer s_signal_timer = { 0U };
@@ -117,13 +116,13 @@ static uint16_t s_freq_to_period_us(NoteFrequency freq) {
 static StatusCode toggle_carrier() {  // turns the carrier signal on or off
   if (s_is_buzzer_on) {
     if (pwm_counter == PWM_LOW_DIV_AMT) {
-      pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false);
+      status_ok_or_return(pwm_set_dc(BUZZER_TIMER, BUZZER_DUTY, BUZZER_CHANNEL, false));
       s_is_buzzer_on = false;
       pwm_counter = 0;
     }
   } else {
     if (pwm_counter == PWM_HIGH_DIV_AMT) {
-      pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false);
+      status_ok_or_return(pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false));
       s_is_buzzer_on = true;
       pwm_counter = 0;
     }
@@ -176,7 +175,7 @@ static StatusCode hal_timer_init(uint16_t modulation_frequency) {
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
-  if (h_timer->Instance == TIM6) {
+  if (h_timer->Instance == TIM6 && !isNoteRest) {
     toggle_carrier();
   }
 }
@@ -188,8 +187,11 @@ void TIM6_DAC_IRQHandler(void) {
 static StatusCode s_play_note_modulated(NoteFrequency freq) {
   if (freq == NOTE_REST || freq == 0U) {
     /* Stop PWM for rest */
+    isNoteRest = true;
     status_ok_or_return(pwm_set_dc(BUZZER_TIMER, 0U, BUZZER_CHANNEL, false));
+    pwm_counter = 0;
   } else {
+    isNoteRest = false;
     uint16_t arr = get_arr(freq);
 
     #if (BUZZER_DEBUG == 1)
