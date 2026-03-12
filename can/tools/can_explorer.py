@@ -1,63 +1,250 @@
 import cantools
 import struct
 import time
-
 import tkinter as tk
+from tkinter import font
 import can
 from collections import deque, defaultdict
-from collections import deque
 import threading
 
-cache=defaultdict(lambda:deque(maxlen=50))
+cache=defaultdict(lambda: deque(maxlen=50))
 cache_lock=threading.Lock()
-gui_labels={}
+db = None
 
-try:
-    db=cantools.database.load_file('system_dbc.dbc')
-except FileNotFoundError:
-    print(f"DBC file not found")
-    exit()
+bus = None
 
-try:
-    bus = can.interface.Bus(channel='virtual', bustype='virtual')
-except OSError:
-    print("Virtual CAN bus not setup correctly")
-    exit()
-try:
-    bus=can.interface.Bus(channel='can0', bustype='socketcan')
-except OSError:
-    print(f"Can BUS not found")
-cache={}
+root = None
+
+
+
+
+DBC_FILE='system_dbc.dbc'
+DEFAULT_CHANNEL='virtual'
+DEFAULT_INTERFACE='virtual'
+FALLBACK_CHANNEL='can0'
+FALLBACK_INTERFACE = 'socketcan'
+UPDATE_INTERVAL_MS = 100
+WINDOW_GEOMETRY = "700x900"
+
+
+
+
+FONT_FAMILY_TITLE = "Helvetica"
+FONT_SIZE_TITLE = 12
+FONT_FAMILY_MONO = "Monaco"
+FONT_SIZE_MONO = 10
+
+
+
+
+
+def decoder(msg):
+    global db
+    try:
+        decoded_data=db.decode_message(msg.arbitration_id, msg.data)
+        return decoded_data
+    
+    except (KeyError, ValueError):
+        return None
 
 
 def listener_thread():
-    while(1):
+
+    global db, bus, cache, cache_lock
+    while True:
         msg=bus.recv()
+
         if msg is None:
             continue
+
+    try:
+        msg_def=db.get_message_by_frame_id(msg.arbitration_id)
+        msg_name=msg_def.name
+
+    except KeyError:
+        msg_name=f"Unknown ID {hex(msg.arbitration_id)}"
         decoded_data=decoder(msg)
 
         if decoded_data:
             with cache_lock:
-                cache[msg.arbitration_id].append(decoded_data)
- 
-def decoder(msg):
-    try:
-        decoded_data=db.decode_message(msg.arbitration_id, msg.data)
-        return decoded_data
-    except(KeyError, ValueError):
-        return None  
-       
+                cache[msg_name].append(decoded_data)
+
+
+
+def update_gui():
+
+    global cache, cache_lock, gui_labels, db, root
+    with cache_lock:
+        for msg_name, msg_deque in cache.items():
+            if not msg_deque:
+                continue
+
+    latest_data=msg_deque[-1] #Latest message
+
+
+
+    for signal_name, signal_value in latest_data.items():
+        try:
+            if isinstance(signal_value, (float, int)): #is a valid #
+                try:
+                    signal_def_for_type=db.get_message_by_name(msg_name).get_signal_by_name(signal_name)
+                    if signal_def_for_type.is_float:
+                        value_str = f"{signal_value: >8.2f}" # Fallback
+
+                    else:
+                        value_str = f"{signal_value: >8}" # Fallback
+
+                except Exception:
+                    value_str = f"{signal_value: >8.2f}"
+
+            else:
+                value_str = str(signal_value)
+
+                try: # Append unit if exists
+                    signal_def_for_type=db.get_message_by_name(msg_name).get_signal_by_name(signal_name)
+
+                    if signal_def_for_type.unit:
+                        value_str += f" {signal_def_for_type.unit}"
+
+                except Exception:
+                    pass
+
+            gui_labels[msg_name][signal_name].config(text=value_str)
+        except KeyError:
+            pass
+    if root:
+        root.after(UPDATE_INTERVAL_MS, update_gui)
+
+
+
+
+
 def run_gui():
-    root=tk.Tk()
-    root.title("CAN Explorer")
-    root.geometry("500x700")
+
+# Run the main Tkiner GUI
+    global root, db, bus, gui_labels
+    root = tk.Tk()
+    root.title(f"CAN Explorer (Listening on {bus.channel_info})")
+    root.geometry(WINDOW_GEOMETRY)
+
+    title_font = font.Font(family=FONT_FAMILY_TITLE, size=FONT_SIZE_TITLE, weight="bold")
+
+    label_font = font.Font(family=FONT_FAMILY_MONO, size=FONT_SIZE_MONO)
+
+    value_font = font.Font(family=FONT_FAMILY_MONO, size=FONT_SIZE_MONO, weight="bold")
+
+# Frame 
+
+    main_frame = tk.Frame(root)
+
+    canvas = tk.Canvas(main_frame)
+
+    scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
+
+    scrollable_frame = tk.Frame(canvas)
+
+
+
+    scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    for msg in sorted(db.messages, key=lambda m: m.name):
+        msg_name = msg.name
+
+# Create a frame for this message
+
+    msg_frame = tk.LabelFrame(scrollable_frame, text=f"{msg_name} (ID: {hex(msg.frame_id)})", font=title_font, padx=10, pady=10)
+
+    msg_frame.pack(fill="x", expand=True, pady=5, padx=10)
+    gui_labels[msg_name] = {} # Init sub-dictionary
+
+
+
+# Create a row for each signal in the message
+
+    for signal in sorted(msg.signals, key=lambda s: s.name):
+        signal_name = signal.name
+
+
+    row_frame = tk.Frame(msg_frame)
+
+    row_frame.pack(fill="x")
+
+
+
+    name_label = tk.Label(row_frame, text=f"{signal_name}:", width=30, anchor="w", font=label_font)
+
+    name_label.pack(side="left", padx=5)
+
+
+
+    value_label = tk.Label(row_frame, text="---", width=30, anchor="w", font=value_font, fg="#00008B")
+
+    value_label.pack(side="left", padx=5)
+
+
+
+    gui_labels[msg_name][signal_name] = value_label
+
+
+# --- Pack and Run ---
+
+    main_frame.pack(fill="both", expand=True)
+
+    canvas.pack(side="left", fill="both", expand=True)
+
+    scrollbar.pack(side="right", fill="y")
+
+
+
+    print("Starting GUI...")
+
+    root.after(UPDATE_INTERVAL_MS, update_gui) # Start the update loop
+
+    root.mainloop() # Start the main GUI event loop
+
+
+
+
 
 if __name__ == "__main__":
+    try:
+
+        db = cantools.database.load_file(DBC_FILE)
+
+    except FileNotFoundError:
+        print(f"DBC file '{DBC_FILE}' not found. Please place it in the same directory.")
+        exit(1)
+
+    except Exception as e:
+        print(f"Error loading DBC file: {e}")
+        exit(1)
+
+    print("DBC file loaded successfully.")
+
+
+
+    try:
+        bus = can.interface.Bus(channel=DEFAULT_CHANNEL, bustype=DEFAULT_INTERFACE)
+        print(f"Connected to '{DEFAULT_INTERFACE}' bus on channel '{DEFAULT_CHANNEL}'.")
+
+    except Exception:
+
+        try:
+            print(f"'{DEFAULT_INTERFACE}' bus failed, trying '{FALLBACK_INTERFACE}' on '{FALLBACK_CHANNEL}'...")
+            bus = can.interface.Bus(channel=FALLBACK_CHANNEL, bustype=FALLBACK_INTERFACE)
+            print(f"Connected to '{FALLBACK_INTERFACE}' bus on channel '{FALLBACK_CHANNEL}'.")
+
+        except OSError:
+            print(f"Error: Could not connect to any CAN bus.")
+
+    exit(1)
+
+
+
+    listener = threading.Thread(target=listener_thread, daemon=True)
+    listener.start()
+    print("CAN listener thread started.")
     run_gui()
-
-
-
-
-    
-
