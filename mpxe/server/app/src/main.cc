@@ -24,6 +24,7 @@
 #include "app_callback.h"
 #include "app_terminal.h"
 #include "can_listener.h"
+#include "can_manager.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
 #include "spi_manager.h"
@@ -35,6 +36,7 @@ AfeManager serverAfeManager;
 CanListener serverCanListener;
 CanScheduler serverCanScheduler;
 SPIManager serverSPIManager;
+CanManager serverCanManager;
 
 int main(int argc, char **argv) {
   std::cout << "Running Server" << std::endl;
@@ -42,6 +44,9 @@ int main(int argc, char **argv) {
   Terminal applicationTerminal(&Server);
 
   Server.listenClients(8080, applicationMessageCallback, applicationConnectCallback);
+
+  // Start CAN sim
+  serverCanManager.startSimulation();
 
 #if USE_NETWORK_TIME_PROTOCOL == 1U
   ntp_server.startListening("127.0.0.1", "time.google.com");
