@@ -1090,7 +1090,7 @@ struct steering_target_velocity {
  */
 void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
   switch (id) {
-    case SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY: {
+    case SYSTEM_CAN_MESSAGE_TELEMETRY_IMU_DATA: {
       telemetry *message = new telemetry();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
