@@ -1,0 +1,25 @@
+{
+    "libs": [
+        "ms-common"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "arm_libs": [
+        "core"
+    ],
+    "can": false,
+    "no_lint": true,
+    "cflags": [
+        "-Wno-unused-function",
+        "-Wno-double-promotion",
+        "-Wno-undef",
+        "-Wno-cast-align",
+        "-Wno-sign-compare",
+        "-Wno-missing-field-initializers",
+        "-Wno-type-limits",
+        "-Wno-unused-value",
+        "-Wno-switch-default",
+        "-Wno-pointer-arith"
+    ]
+}

@@ -17,7 +17,6 @@
 #include "stm32l4xx_hal_rcc.h"
 
 /* Intra-component Headers */
-#include "clut.h"
 #include "delay.h"
 #include "gpio.h"
 #include "ltdc.h"
@@ -104,7 +103,7 @@ static StatusCode s_init_ltdc_peripheral(void) {
 }
 
 /**
- * @brief   Configure LTDC layer for 8bpp indexed color
+ * @brief   Configure LTDC layer for RGB565 framebuffer
  */
 static StatusCode s_configure_layer(void) {
   LTDC_LayerCfgTypeDef layer_cfg = { 0 };
@@ -114,7 +113,7 @@ static StatusCode s_configure_layer(void) {
   layer_cfg.WindowY0 = 0;
   layer_cfg.WindowY1 = s_ltdc_settings->height;
 
-  layer_cfg.PixelFormat = LTDC_PIXEL_FORMAT_L8; /* 8-bit indexed color */
+  layer_cfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
   layer_cfg.FBStartAdress = (uint32_t)s_ltdc_settings->framebuffer;
   layer_cfg.Alpha = 255;
   layer_cfg.Alpha0 = 0;
@@ -127,32 +126,6 @@ static StatusCode s_configure_layer(void) {
   layer_cfg.Backcolor.Red = 0;
 
   if (HAL_LTDC_ConfigLayer(&s_ltdc_handle, &layer_cfg, 0) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  return STATUS_CODE_OK;
-}
-
-/**
- * @brief   Load CLUT into LTDC hardware
- */
-static StatusCode s_load_clut(void) {
-  if (s_ltdc_settings->clut == NULL || s_ltdc_settings->clut_size == 0U) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  if (s_ltdc_settings->clut_size > NUM_COLOR_INDICES) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  /* Cast ClutEntry array directly. Assuming struct layout matches hardware expectation */
-  uint32_t *clut_data = (uint32_t *)s_ltdc_settings->clut;
-
-  if (HAL_LTDC_ConfigCLUT(&s_ltdc_handle, clut_data, s_ltdc_settings->clut_size, 0) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  if (HAL_LTDC_EnableCLUT(&s_ltdc_handle, 0) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -195,7 +168,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
-  if (settings == NULL || settings->framebuffer == NULL || settings->clut == NULL || settings->clut_size == 0) {
+  if (settings == NULL || settings->framebuffer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -214,11 +187,8 @@ StatusCode ltdc_init(LtdcSettings *settings) {
   /* Initialize LTDC peripheral */
   status_ok_or_return(s_init_ltdc_peripheral());
 
-  /* Configure LTDC Layer 0 for 8-bit indexed framebuffer */
+  /* Configure LTDC Layer 0 for RGB565 framebuffer */
   status_ok_or_return(s_configure_layer());
-
-  /* Load CLUT into LTDC */
-  status_ok_or_return(s_load_clut());
 
   is_initialized = true;
 

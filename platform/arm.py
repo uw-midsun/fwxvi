@@ -49,7 +49,7 @@ hardware_defines = {
 debug_flags = [
     '-g3',
     '-ggdb3',
-    '-O0',
+    '-Og',
     '-fno-inline',
     '-fstack-usage',
     '-DDEBUG'
@@ -74,7 +74,6 @@ common_flags = [
     '-Wpointer-arith',
     '-Wundef',
     '-Wdouble-promotion',
-    '-Wno-enum-conversion',
     '-ffunction-sections',
     '-fdata-sections',
     '-fsingle-precision-constant',

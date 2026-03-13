@@ -61,9 +61,9 @@ typedef struct {
 typedef struct {
   uint16_t width;             /**< Display width in pixels */
   uint16_t height;            /**< Display height in pixels */
-  uint8_t *framebuffer;       /**< Pointer to the framebuffer (8-bit indexed) */
-  ClutEntry *clut;            /**< Pointer to the CLUT entries */
-  uint16_t clut_size;         /**< Number of CLUT entries */
+  uint8_t *framebuffer;       /**< Pointer to the framebuffer */
+  ClutEntry *clut;            /**< Optional pointer to the CLUT entries for indexed modes */
+  uint16_t clut_size;         /**< Number of CLUT entries for indexed modes */
   LtdcTimingConfig timing;    /**< LTDC timing parameters */
   LtdcGpioConfig gpio_config; /**< GPIO configuration */
 } LtdcSettings;
@@ -83,10 +83,10 @@ StatusCode ltdc_init(LtdcSettings *settings);
 StatusCode ltdc_draw(void);
 
 /**
- * @brief   Set pixel in the framebuffer (8-bit index into CLUT)
+ * @brief   Set pixel in the framebuffer
  * @param   x X coordinate
  * @param   y Y coordinate
- * @param   color_index CLUT color index
+ * @param   color_index Color index used by framebuffer-based drawing helpers
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
 StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
