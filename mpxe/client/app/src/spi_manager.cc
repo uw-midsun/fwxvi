@@ -43,6 +43,7 @@ std::string SPIManager::writeSpiData(std::string &payload) {
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
   const u_int8_t *receivedData = m_spiDatagram.getBuffer();
   size_t len = m_spiDatagram.getBufferLength();
+
   spi_set_rx(port, receivedData, static_cast<uint8_t>(len));
   m_spiDatagram.clearBuffer();
 
@@ -63,7 +64,15 @@ std::string SPIManager::processReadSpiData(std::string &payload) {
   return m_spiDatagram.serialize(CommandCode::SPI_READ_DATA);
 }
 
-void transferSpiData(std::string &payload) {}
+std::string SPIManager::transferSpiData(std::string &payload) {
+  m_spiDatagram.deserialize(payload);
+
+  // Get Spi Port and Data
+  SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
+  size_t len = m_spiDatagram.getBufferLength(); //rx and tx buffer have same length (assuming)
+
+  // spi_exchange(port, )
+}
 
 void SPIManager::clearBuffer(std::string &payload) {
   // Clear Data in Port Address

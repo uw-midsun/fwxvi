@@ -67,7 +67,7 @@ class SPIManager {
    * @details This function shall be called upon receiving a pin-specific payload
    * @param   payload Message data payload to be parsed
    */
-  void transferSpiData();
+  std::string transferSpiData(std::string &payload);
 
   /**
    * @brief   Clears the SPI buffer given the data payload
