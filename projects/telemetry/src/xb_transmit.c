@@ -40,19 +40,20 @@ TASK(can_message_forwarder, TASK_STACK_512) {
 #if (XB_TRANSMIT_DEBUG != 0)
     LOG_DEBUG("Received message\r\n");
 #endif
-    decode_can_message(&tx_datagram, &message);
-
-    datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-#if (XB_TRANSMIT_DEBUG == 0)
-    uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-#else
-    status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("Failed to transmit to telemetry transceiver!\r\n");
-    } else {
-      LOG_DEBUG("Transmitted message\r\n");
+    if (decode_can_message(&tx_datagram, &message) == STATUS_CODE_OK){
+      datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
+  #if (XB_TRANSMIT_DEBUG == 0)
+      uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+  #else
+      status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+      if (status != STATUS_CODE_OK) {
+        LOG_DEBUG("Failed to transmit to telemetry transceiver!\r\n");
+      } else {
+        LOG_DEBUG("Transmitted message\r\n");
+      }
+  #endif
     }
-#endif
+
   }
 }
 
