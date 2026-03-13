@@ -26,7 +26,7 @@ StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
   datagram->start_frame = DATAGRAM_START_FRAME;
   datagram->id = FLIP_ENDIANESS_2BYTES(msg->id.raw);
 
-  if (msg->id.raw == 1281 || msg->id.raw == 1377) {
+  if (msg->id.raw == 1281) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
