@@ -20,8 +20,8 @@ extern "C" {
 #include "command_code.h"
 
 /* Intra-component Headers */
-#include "i2c_manager.h"
 #include "app.h"
+#include "i2c_manager.h"
 
 std::string I2CManager::writeI2CData(std::string &payload) {
   m_I2CDatagram.deserialize(payload);

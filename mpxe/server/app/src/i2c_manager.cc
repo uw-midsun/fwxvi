@@ -10,10 +10,10 @@
 
 /* Standard library Headers */
 #include <cstdint>
-#include <vector>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
+#include <vector>
 
 /* Inter-component Headers */
 #include "command_code.h"
@@ -92,8 +92,7 @@ std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i
         }
 
         if (data.size() > Datagram::I2C::I2C_MAX_BUFFER_SIZE) {
-          throw std::runtime_error("Data size exceeds maximum I2C buffer size of " +
-                                   std::to_string(Datagram::I2C::I2C_MAX_BUFFER_SIZE));
+          throw std::runtime_error("Data size exceeds maximum I2C buffer size of " + std::to_string(Datagram::I2C::I2C_MAX_BUFFER_SIZE));
           break;
         }
 
