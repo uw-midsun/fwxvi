@@ -34,7 +34,7 @@
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
-static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((aligned(32)));
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };

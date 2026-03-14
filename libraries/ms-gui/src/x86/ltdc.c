@@ -35,17 +35,31 @@ typedef struct {
 } LtdcSimSettings;
 
 static LtdcSimSettings s_ltdc_sim_settings = { 0 };
+static ClutEntry *s_default_clut;
+
+static uint8_t s_rgb565_red(uint16_t pixel) {
+  return (uint8_t)((((pixel >> 11U) & 0x1FU) * 255U) / 31U);
+}
+
+static uint8_t s_rgb565_green(uint16_t pixel) {
+  return (uint8_t)((((pixel >> 5U) & 0x3FU) * 255U) / 63U);
+}
+
+static uint8_t s_rgb565_blue(uint16_t pixel) {
+  return (uint8_t)(((pixel & 0x1FU) * 255U) / 31U);
+}
 
 StatusCode ltdc_init(LtdcSettings *settings) {
-  if (!settings || !settings->framebuffer || !settings->clut) {
+  if (!settings || !settings->framebuffer) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_ltdc_sim_settings.width = settings->width;
   s_ltdc_sim_settings.height = settings->height;
   s_ltdc_sim_settings.framebuffer = settings->framebuffer;
-  s_ltdc_sim_settings.clut = settings->clut;
-  s_ltdc_sim_settings.clut_size = settings->clut_size;
+  s_default_clut = clut_get_table();
+  s_ltdc_sim_settings.clut = settings->clut != NULL ? settings->clut : s_default_clut;
+  s_ltdc_sim_settings.clut_size = settings->clut != NULL ? settings->clut_size : NUM_COLOR_INDICES;
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
     LOG_DEBUG("SDL_Init Error: %s\n", SDL_GetError());
@@ -72,7 +86,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
 }
 
 StatusCode ltdc_draw(void) {
-  if (!s_ltdc_sim_settings.framebuffer || !s_ltdc_sim_settings.clut) {
+  if (!s_ltdc_sim_settings.framebuffer) {
     SDL_SetRenderDrawColor(s_ltdc_sim_settings.renderer, 100, 100, 100, 255);
     SDL_RenderClear(s_ltdc_sim_settings.renderer);
     SDL_RenderPresent(s_ltdc_sim_settings.renderer);
@@ -82,14 +96,12 @@ StatusCode ltdc_draw(void) {
   SDL_SetRenderDrawColor(s_ltdc_sim_settings.renderer, 0, 0, 0, 255);
   SDL_RenderClear(s_ltdc_sim_settings.renderer);
 
+  uint16_t *framebuffer = (uint16_t *)s_ltdc_sim_settings.framebuffer;
   for (uint16_t y = 0; y < s_ltdc_sim_settings.height; y++) {
     for (uint16_t x = 0; x < s_ltdc_sim_settings.width; x++) {
       size_t idx = y * s_ltdc_sim_settings.width + x;
-      uint8_t color_idx = s_ltdc_sim_settings.framebuffer[idx];
-      if (color_idx >= s_ltdc_sim_settings.clut_size) continue;
-
-      ClutEntry entry = s_ltdc_sim_settings.clut[color_idx];
-      SDL_SetRenderDrawColor(s_ltdc_sim_settings.renderer, entry.red, entry.green, entry.blue, 255);
+      uint16_t pixel = framebuffer[idx];
+      SDL_SetRenderDrawColor(s_ltdc_sim_settings.renderer, s_rgb565_red(pixel), s_rgb565_green(pixel), s_rgb565_blue(pixel), 255);
       SDL_RenderDrawPoint(s_ltdc_sim_settings.renderer, x, y);
     }
   }
@@ -101,8 +113,9 @@ StatusCode ltdc_draw(void) {
 StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
   if (!s_ltdc_sim_settings.framebuffer) return STATUS_CODE_INVALID_ARGS;
   if (x >= s_ltdc_sim_settings.width || y >= s_ltdc_sim_settings.height) return STATUS_CODE_INVALID_ARGS;
+  if (!s_ltdc_sim_settings.clut || color_index >= s_ltdc_sim_settings.clut_size) return STATUS_CODE_INVALID_ARGS;
 
-  s_ltdc_sim_settings.framebuffer[y * s_ltdc_sim_settings.width + x] = (uint8_t)color_index;
+  ((uint16_t *)s_ltdc_sim_settings.framebuffer)[y * s_ltdc_sim_settings.width + x] = clut_entry_rgb565(s_ltdc_sim_settings.clut[color_index]);
   return STATUS_CODE_OK;
 }
 

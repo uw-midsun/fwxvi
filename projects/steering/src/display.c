@@ -13,9 +13,9 @@
 
 /* Inter-component Headers */
 #include "gpio.h"
+#include "gui.h"
 #include "gui_widgets.h"
 #include "ltdc.h"
-#include "lvgl_driver.h"
 #include "pwm.h"
 
 /* Intra-component Headers */
@@ -42,8 +42,8 @@ TASK(display_lvgl_task, TASK_STACK_1024) {
   while (true) {
     gui_widgets_set_speed(display_data->vehicle_velocity);
     gui_widgets_set_throttle_bar(display_data->pedal_percentage);
-    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);
-    lv_driver_process();
+    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0); // TODO change to % base when available
+    gui_render();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
   }
 }
@@ -81,9 +81,7 @@ StatusCode display_init(SteeringStorage *storage) {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  status_ok_or_return(ltdc_init(&settings));
-  status_ok_or_return(lv_driver_init(&settings));
-  status_ok_or_return(gui_widgets_init());
+  status_ok_or_return(gui_init(&settings));
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
   LOG_DEBUG("LVGL display initialized\r\n");
@@ -124,6 +122,5 @@ StatusCode display_rx_medium() {
 }
 
 StatusCode display_rx_fast() {
-  // ltdc_draw();
   return STATUS_CODE_OK;
 }

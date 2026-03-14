@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 /* Intra-component Headers */
+#include "clut.h"
 #include "lvgl_widgets.h"
 
 static lv_style_t s_speedometer_main_style;
@@ -20,8 +21,12 @@ static lv_style_t s_speedometer_needle_style;
 static bool s_speedometer_styles_initialized;
 
 static lv_style_t s_vertical_bar_bg_style;
-static lv_style_t s_vertical_bar_indicator_style;
 static bool s_vertical_bar_styles_initialized;
+
+static lv_color_t s_gui_palette_color(GuiColorId color_id) {
+  ClutEntry color = clut_get_gui_color(color_id);
+  return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
+}
 
 static void s_apply_position(lv_obj_t *obj, const WidgetPosition *position) {
   if (obj == NULL || position == NULL) {
@@ -48,19 +53,19 @@ static void s_init_speedometer_styles(void) {
   }
 
   lv_style_init(&s_speedometer_main_style);
-  lv_style_set_line_color(&s_speedometer_main_style, lv_color_white());
+  lv_style_set_line_color(&s_speedometer_main_style, s_gui_palette_color(GUI_COLOR_SPEEDOMETER_TICK_MAJOR));
   lv_style_set_line_width(&s_speedometer_main_style, 2);
-  lv_style_set_text_color(&s_speedometer_main_style, lv_color_white());
+  lv_style_set_text_color(&s_speedometer_main_style, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY));
   lv_style_set_text_font(&s_speedometer_main_style, GUI_SMALL_TEXT);
   lv_style_set_length(&s_speedometer_main_style, 10);
 
   lv_style_init(&s_speedometer_minor_style);
-  lv_style_set_line_color(&s_speedometer_minor_style, lv_palette_main(LV_PALETTE_GREY));
+  lv_style_set_line_color(&s_speedometer_minor_style, s_gui_palette_color(GUI_COLOR_SPEEDOMETER_TICK_MINOR));
   lv_style_set_line_width(&s_speedometer_minor_style, 1);
   lv_style_set_length(&s_speedometer_minor_style, 5);
 
   lv_style_init(&s_speedometer_needle_style);
-  lv_style_set_line_color(&s_speedometer_needle_style, lv_palette_main(LV_PALETTE_RED));
+  lv_style_set_line_color(&s_speedometer_needle_style, s_gui_palette_color(GUI_COLOR_SPEEDOMETER_NEEDLE));
   lv_style_set_line_width(&s_speedometer_needle_style, 3);
   lv_style_set_line_rounded(&s_speedometer_needle_style, true);
 
@@ -74,13 +79,9 @@ static void s_init_vertical_bar_styles(void) {
 
   lv_style_init(&s_vertical_bar_bg_style);
   lv_style_set_radius(&s_vertical_bar_bg_style, 0);
-  lv_style_set_bg_color(&s_vertical_bar_bg_style, lv_palette_darken(LV_PALETTE_GREY, 3));
-  lv_style_set_border_color(&s_vertical_bar_bg_style, lv_color_white());
+  lv_style_set_bg_color(&s_vertical_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BACKGROUND));
+  lv_style_set_border_color(&s_vertical_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BORDER));
   lv_style_set_border_width(&s_vertical_bar_bg_style, 1);
-
-  lv_style_init(&s_vertical_bar_indicator_style);
-  lv_style_set_radius(&s_vertical_bar_indicator_style, 0);
-  lv_style_set_bg_color(&s_vertical_bar_indicator_style, lv_palette_main(LV_PALETTE_GREEN));
 
   s_vertical_bar_styles_initialized = true;
 }
@@ -90,7 +91,7 @@ static void s_vertical_bar_draw_event_cb(lv_event_t *e) {
   lv_draw_label_dsc_t label_dsc;
   lv_draw_label_dsc_init(&label_dsc);
   label_dsc.font = GUI_SMALL_TEXT;
-  label_dsc.color = lv_color_white();
+  label_dsc.color = s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY);
   label_dsc.align = LV_TEXT_ALIGN_CENTER;
 
   char buf[8];
@@ -141,7 +142,7 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
 
   speedometer->label = lv_label_create(speedometer->scale);
   lv_label_set_text(speedometer->label, "0");
-  lv_obj_set_style_text_color(speedometer->label, lv_color_white(), 0);
+  lv_obj_set_style_text_color(speedometer->label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
   lv_obj_align(speedometer->label, LV_ALIGN_CENTER, 0, 0);
 
   return STATUS_CODE_OK;
@@ -191,12 +192,13 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   lv_bar_set_orientation(bar_widget->bar, config->orientation);
 
   lv_obj_add_style(bar_widget->bar, &s_vertical_bar_bg_style, LV_PART_MAIN);
-  lv_obj_add_style(bar_widget->bar, &s_vertical_bar_indicator_style, LV_PART_INDICATOR);
+  lv_obj_set_style_bg_color(bar_widget->bar, s_gui_palette_color(config->indicator_color_id), LV_PART_INDICATOR);
+  lv_obj_set_style_radius(bar_widget->bar, 0, LV_PART_INDICATOR);
   lv_obj_add_event_cb(bar_widget->bar, s_vertical_bar_draw_event_cb, LV_EVENT_DRAW_MAIN_END, NULL);
 
   bar_widget->label = lv_label_create(parent);
   lv_label_set_text(bar_widget->label, config->label_text);
-  lv_obj_set_style_text_color(bar_widget->label, lv_color_white(), 0);
+  lv_obj_set_style_text_color(bar_widget->label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
   
   lv_obj_align_to(bar_widget->label, bar_widget->bar, config->label_text_alignment, 0, 0);
 

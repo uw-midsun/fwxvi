@@ -26,7 +26,7 @@
 #define TEST_WIDTH 64
 #define TEST_HEIGHT 64
 
-static uint8_t framebuffer[TEST_WIDTH * TEST_HEIGHT];
+static uint8_t framebuffer[TEST_WIDTH * TEST_HEIGHT * 2];
 
 static void clear_framebuffer(void) {
   memset(framebuffer, 0, sizeof(framebuffer));

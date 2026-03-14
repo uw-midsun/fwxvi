@@ -358,9 +358,10 @@ def build_lvgl_library():
     lvgl_src_dir = entry.Dir('src')
 
     # Recursively collect all .c source files under lvgl/src/
-    # Exclude platform-specific driver directories (nuttx, sdl, windows, x11, etc.)
+    # Exclude platform-specific driver directories
     # Exclude disabled libs, GPU draw backends, and other unused modules
     lvgl_excluded_dirs = {'drivers'}
+    # Bad fix (some of these files require external libraries), but works!
     lvgl_excluded_subdirs = {
         # GPU-specific draw backends (not using any HW acceleration)
         ('draw', 'dma2d'),
@@ -399,58 +400,6 @@ def build_lvgl_library():
         ('libs', 'tiny_ttf'),
         ('libs', 'tjpgd'),
         ('libs', 'vg_lite_driver'),
-        # Disabled others
-        ('others', 'file_explorer'),
-        ('others', 'fragment'),
-        ('others', 'translation'),
-        # Disabled layouts
-        ('layouts', 'flex'),
-        ('layouts', 'grid'),
-        # Disabled widgets
-        ('widgets', 'animimage'),
-        ('widgets', 'arclabel'),
-        ('widgets', 'button'),
-        ('widgets', 'buttonmatrix'),
-        ('widgets', 'calendar'),
-        ('widgets', 'canvas'),
-        ('widgets', 'chart'),
-        ('widgets', 'checkbox'),
-        ('widgets', 'dropdown'),
-        ('widgets', 'imagebutton'),
-        ('widgets', 'keyboard'),
-        ('widgets', 'led'),
-        ('widgets', 'list'),
-        ('widgets', 'lottie'),
-        ('widgets', 'menu'),
-        ('widgets', 'msgbox'),
-        ('widgets', 'roller'),
-        ('widgets', 'slider'),
-        ('widgets', 'span'),
-        ('widgets', 'spinbox'),
-        ('widgets', 'spinner'),
-        ('widgets', 'switch'),
-        ('widgets', 'table'),
-        ('widgets', 'tabview'),
-        ('widgets', 'textarea'),
-        ('widgets', 'tileview'),
-        ('widgets', 'win'),
-        ('widgets', '3dtexture'),
-        ('widgets', 'gif'),
-        ('widgets', 'ime'),
-        ('widgets', 'objx_templ'),
-        ('widgets', 'property'),
-        # Disabled themes
-        ('themes', 'mono'),
-        #('themes', 'simple'),
-        # Debugging/test tools
-        ('debugging', 'monkey'),
-        ('debugging', 'sysmon'),
-        ('debugging', 'test'),
-        ('debugging', 'vg_lite_tvg'),
-        # Disabled font features
-        ('font', 'binfont_loader'),
-        ('font', 'font_manager'),
-        ('font', 'imgfont'),
     }
     lvgl_srcs = []
     for c_file in Path(str(lvgl_src_dir)).rglob('*.c'):
@@ -464,8 +413,8 @@ def build_lvgl_library():
 
     # LVGL headers are alongside sources; include the src/ tree and project root for lv_conf.h
     lvgl_incs = [
-        entry,          # libraries/lvgl/ - for lv_conf.h
-        lvgl_src_dir,   # libraries/lvgl/src/ - for lvgl.h and all sub-headers
+        entry,          # for lv_conf.h
+        lvgl_src_dir,   # libraries/lvgl/src/
     ]
 
     # Point LVGL to its conf file explicitly via LV_CONF_PATH

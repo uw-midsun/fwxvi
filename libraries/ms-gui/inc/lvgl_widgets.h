@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "clut.h"
 #include "lvgl.h"
 #include "status.h"
 
@@ -120,6 +121,7 @@ typedef struct {
   const char *label_text;
   WidgetAlignment label_text_alignment;
   WidgetOrientation orientation;
+  GuiColorId indicator_color_id;
 } BarWidgetConfig;
 
 /* Fonts */

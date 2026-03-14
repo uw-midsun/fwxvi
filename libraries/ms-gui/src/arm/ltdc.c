@@ -26,6 +26,7 @@
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
 static bool is_initialized = false;
+static ClutEntry *s_default_clut;
 
 /**
  * @brief   Configure GPIO pins for LTDC
@@ -177,6 +178,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
   }
 
   s_ltdc_settings = settings;
+  s_default_clut = clut_get_table();
 
   /* Configure GPIO pins */
   status_ok_or_return(s_configure_gpio(&settings->gpio_config));
@@ -225,8 +227,15 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  ClutEntry *clut = s_ltdc_settings->clut != NULL ? s_ltdc_settings->clut : s_default_clut;
+  uint16_t clut_size = s_ltdc_settings->clut != NULL ? s_ltdc_settings->clut_size : NUM_COLOR_INDICES;
+  if (clut == NULL || color_index >= clut_size) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint16_t *framebuffer = (uint16_t *)s_ltdc_settings->framebuffer;
   uint32_t offset = (y * s_ltdc_settings->width) + x;
-  s_ltdc_settings->framebuffer[offset] = (uint8_t)color_index;
+  framebuffer[offset] = clut_entry_rgb565(clut[color_index]);
 
   return STATUS_CODE_OK;
 }

@@ -14,14 +14,15 @@
 #include "lvgl.h"
 
 /* Intra-component Headers */
+#include "clut.h"
 #include "gui_widgets.h"
+#include "lvgl_screens.h"
 #include "lvgl_widgets.h"
 
 static SpeedometerWidget s_speedometer;
 static BarWidget s_throttle_bar;
 static BarWidget s_brake_bar;
 static bool s_widgets_initialized;
-
 
 static StatusCode s_create_speedometer(lv_obj_t *screen) {
   const SpeedometerWidgetConfig speedometer_config = {
@@ -50,6 +51,7 @@ static StatusCode s_create_throttle_bar(lv_obj_t *screen) {
     .label_text = "Throttle",
     .label_text_alignment = WIDGET_ALIGN_OUT_TOP_MID,
     .orientation = WIDGET_ORIENTATION_VERTICAL,
+    .indicator_color_id = GUI_COLOR_THROTTLE_FILL,
   };
 
   return lvgl_widgets_create_bar(&s_throttle_bar, &s_throttle_bar_config, screen);
@@ -64,20 +66,21 @@ static StatusCode s_create_brake_bar(lv_obj_t *screen) {
     },
     .label_text = "Brake",
     .label_text_alignment = WIDGET_ALIGN_OUT_BOTTOM_MID,
-    .orientation = WIDGET_ORIENTATION_VERTICAL
+    .orientation = WIDGET_ORIENTATION_VERTICAL,
+    .indicator_color_id = GUI_COLOR_BRAKE_FILL,
   };
 
   return lvgl_widgets_create_bar(&s_brake_bar, &s_brake_bar_config, screen);
 }
 
 StatusCode gui_widgets_init(void) {
-  GuiScreen *screen = lv_screen_active();
+  GuiScreen *screen = lvgl_get_active_screen();
+  
   if (screen == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-
-  /* Black background */
-  lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
+  
+  status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
   /* Create widgets */
   status_ok_or_return(s_create_speedometer(screen));

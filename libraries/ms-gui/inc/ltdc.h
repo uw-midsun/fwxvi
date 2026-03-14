@@ -19,7 +19,6 @@
 
 /* Intra-component Headers */
 #include "clut.h"
-#include "framebuffer.h"
 
 /**
  * @defgroup GUI
@@ -61,9 +60,9 @@ typedef struct {
 typedef struct {
   uint16_t width;             /**< Display width in pixels */
   uint16_t height;            /**< Display height in pixels */
-  uint8_t *framebuffer;       /**< Pointer to the framebuffer */
-  ClutEntry *clut;            /**< Optional pointer to the CLUT entries for indexed modes */
-  uint16_t clut_size;         /**< Number of CLUT entries for indexed modes */
+  uint8_t *framebuffer;       /**< Pointer to the RGB565 framebuffer bytes */
+  ClutEntry *clut;            /**< Optional CLUT for legacy indexed drawing helpers */
+  uint16_t clut_size;         /**< Number of CLUT entries for legacy indexed drawing helpers */
   LtdcTimingConfig timing;    /**< LTDC timing parameters */
   LtdcGpioConfig gpio_config; /**< GPIO configuration */
 } LtdcSettings;

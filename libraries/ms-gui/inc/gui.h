@@ -15,7 +15,6 @@
 
 /* Inter-component Headers */
 #include "clut.h"
-#include "framebuffer.h"
 #include "ltdc.h"
 
 /* Intra-component Headers */
@@ -29,93 +28,17 @@
  * @{
  */
 
-#define MAX_TEXT_SIZE 200
-
-extern char text_buffer[MAX_TEXT_SIZE];
-
 /**
- * @brief   GUI initialization settings
- */
-typedef struct {
-  LtdcSettings *ltdc;       /**< LTDC driver configuration */
-  Framebuffer *framebuffer; /**< GUI framebuffer */
-} GuiSettings;
-
-/**
- * @brief   Initialize GUI subsystem (framebuffer, CLUT, LTDC)
- * @param   settings Pointer to GUI configuration
+ * @brief   Initialize the GUI subsystem
+ * @param   settings Pointer to LTDC/display configuration
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_init(GuiSettings *settings);
+StatusCode gui_init(LtdcSettings *settings);
 
 /**
- * @brief   Draw a single pixel at (x, y)
- * @param   x X coordinate
- * @param   y Y coordinate
- * @param   color_index CLUT color index
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_draw_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
-
-/**
- * @brief   Draw a filled rectangle
- * @param   x X coordinate of the top left corner of the rectangle
- * @param   y Y coordinate of the top left corner of the rectangle
- * @param   width Width in pixels
- * @param   height Height in pixels
- * @param   color_index CLUT color index
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ColorIndex color_index);
-
-/**
- * @brief   Draw a line
- * @param   x0 X coordinate start location
- * @param   y0 Y coordinate start location
- * @param   x1 X coordinate end location
- * @param   y1 Y coordinate end location
- * @param   color_index CLUT color index
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ColorIndex color_index);
-
-/**
- * @brief   Render image (Refresh framebuffer)
+ * @brief   Run one GUI processing/render step
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_render();
-
-/**
- * @brief   Draw a progress bar
- * @param   x X coordinate of the top left corner of the progress bar
- * @param   y Y coordinate of the top left corner of the progress bar
- * @param   width Width in pixels
- * @param   height Height in pixels
- * @param   percentage Fill percentage (0-100)
- * @param   color_index_bg CLUT color index for background
- * @param   color_index_fg CLUT color index for foreground
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_progress_bar(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t percentage, ColorIndex color_index_bg, ColorIndex color_index_fg);
-
-/**
- * @brief   Display a single character at (x, y)
- * @param   x X coordinate
- * @param   y Y coordinate
- * @param   color_index CLUT color index
- * @param   c Character to display
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_display_char(uint16_t x, uint16_t y, ColorIndex color_index, char c);
-
-/**
- * @brief   Display a text string at (x, y)
- * @param   x X coordinate
- * @param   y Y coordinate
- * @param   color_index CLUT color index
- * @param   text Pointer to null-terminated string to display
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_display_text(uint16_t x, uint16_t y, ColorIndex color_index, const char *text, ...);
 
 /** @} */

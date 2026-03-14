@@ -59,7 +59,7 @@ static uint32_t s_tick_get_cb(void) {
   return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);
 }
 
-StatusCode lv_driver_init(LtdcSettings *settings) {
+StatusCode lvgl_driver_init(LtdcSettings *settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -84,7 +84,7 @@ StatusCode lv_driver_init(LtdcSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lv_driver_process(void) {
+StatusCode lvgl_driver_process(void) {
   lv_timer_handler();
   return STATUS_CODE_OK;
 }
