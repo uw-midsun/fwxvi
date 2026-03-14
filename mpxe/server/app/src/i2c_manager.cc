@@ -32,7 +32,7 @@ const char *i2cPortNames[] = {
 
 std::string I2CManager::stringifyData(const std::vector<uint8_t> &data) {
   std::stringstream ss;
-  
+
   ss << "[";
   for (size_t i = 0; i < data.size(); i++) {
     ss << "0x" << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(data[i]);
@@ -41,7 +41,7 @@ std::string I2CManager::stringifyData(const std::vector<uint8_t> &data) {
     }
   }
   ss << "]";
-  
+
   return ss.str();
 }
 
@@ -92,7 +92,7 @@ std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i
         }
 
         if (data.size() > Datagram::I2C::I2C_MAX_BUFFER_SIZE) {
-          throw std::runtime_error("Data size exceeds maximum I2C buffer size of " + 
+          throw std::runtime_error("Data size exceeds maximum I2C buffer size of " +
                                    std::to_string(Datagram::I2C::I2C_MAX_BUFFER_SIZE));
           break;
         }

@@ -120,6 +120,7 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
     }
     case CommandCode::I2C_READ_DATA: {
       serverI2CManager.updateI2CData(clientName, payload);
+      break;
     }
     case CommandCode::SPI_READ_DATA:
     case CommandCode::SPI_TRANSFER_DATA: {
