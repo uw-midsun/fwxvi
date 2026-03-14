@@ -139,7 +139,7 @@ StatusCode opd_run() {
   }
 
   if (front_controller_storage->brake_enabled) {
-    set_pedal_data_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
+    set_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
     set_pedal_data_regen_enabled(front_controller_storage->regen_enabled);
     return STATUS_CODE_OK;
   }
@@ -158,7 +158,7 @@ StatusCode opd_run() {
 
   front_controller_storage->accel_percentage = calculated_reading;
 #endif
-  set_pedal_data_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
+  set_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
   set_pedal_data_regen_enabled(front_controller_storage->regen_enabled);
   return STATUS_CODE_OK;
 }

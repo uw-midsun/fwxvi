@@ -41,18 +41,13 @@ static void s_calc_offsets(AdbmsAfeStorage *afe) {
   size_t enabled_cell_index = 0;
 
   for (size_t device = 0; device < settings->num_devices; device++) {
-    size_t device_offset = device * ADBMS_AFE_MAX_CELLS_PER_DEVICE; /* Device-level offset */
-    uint16_t bitmask = settings->cell_bitset[device];               /* Extract bitmask once, revealing enabled cells */
+    size_t device_offset = device * ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
     for (size_t device_cell = 0; device_cell < ADBMS_AFE_MAX_CELLS_PER_DEVICE; device_cell++) {
-      size_t raw_cell_index = device_offset + device_cell; /* Absolute index of cell in current device across all devices */
+      size_t raw_cell_index = device_offset + device_cell;
 
-      /* Check if current cell is enabled through the given bitmask */
-      if ((bitmask >> device_cell) & 0x1) {
-        /* Map enabled cell to result and discharge arrays to separate handling of cell measurement and discharge */
-        afe->discharge_cell_lookup[enabled_cell_index] = raw_cell_index;
-        afe->cell_result_lookup[raw_cell_index] = enabled_cell_index++;
-      }
+      afe->discharge_cell_lookup[enabled_cell_index] = raw_cell_index;
+      afe->cell_result_lookup[raw_cell_index] = enabled_cell_index++;
     }
   }
 }
@@ -119,15 +114,10 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
       /* Loop through 3 voltages per register */
       for (uint16_t cell = 0; cell < ADBMS1818_CELLS_IN_REG; ++cell) {
         /* Determine index of the battery cell */
-        uint16_t device_cell = cell + (v_reg_group * ADBMS1818_CELLS_IN_REG);
+        uint16_t device_cell = cell + ((v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A) * ADBMS1818_CELLS_IN_REG);
         uint16_t index = device_cell + (device * ADBMS_AFE_MAX_CELLS_PER_DEVICE);
 
-        /* Read voltage if cell status is enabled */
-        if ((settings->cell_bitset[device] >> device_cell) & 0x1) {
-          LOG_DEBUG("Cell %d Voltage: %d\n", afe->cell_result_lookup[index], afe->cell_voltages[afe->cell_result_lookup[index]]);
-        } else {
-          LOG_DEBUG("Cell %d disabled\n", afe->cell_result_lookup[index]);
-        }
+        LOG_DEBUG("Cell %d Voltage: %d\n", afe->cell_result_lookup[index], afe->cell_voltages[afe->cell_result_lookup[index]]);
       }
     }
   }
@@ -170,25 +160,34 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   uint16_t phys_cell = cell;
 
   uint16_t dev_idx = phys_cell / cells_per_dev;
-  uint16_t device = num_devices - dev_idx - 1;
 
   uint16_t cell_indx_in_dev = phys_cell % cells_per_dev;
 
-  if (cell_indx_in_dev < 12) {
-    /* Cells 0-11 belong to CFGRA */
-    AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[dev_idx].cfg;
-
-    if (discharge) {
-      cfgA->discharge_bitset |= (1U << cell_indx_in_dev);
-    } else {
-      cfgA->discharge_bitset &= ~(1U << cell_indx_in_dev);
-    }
-
-  } else {
-    /* Cells 12-17 belong to CFGRB */
+  if (cell_indx_in_dev == 0) {
+    /* Cell 0 belongs to CFGRB */
     AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[dev_idx].cfg;
 
-    uint8_t bit_index = cell_indx_in_dev - 12;
+    uint8_t bit_index = 6U;
+    if (discharge) {
+      cfgB->discharge_bitset |= (1U << bit_index);
+    } else {
+      cfgB->discharge_bitset &= ~(1U << bit_index);
+    }
+  } else if (cell_indx_in_dev < 12) {
+    /* Cells 1-12 belong to CFGRA */
+    AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[dev_idx].cfg;
+
+    uint8_t bit_index = cell_indx_in_dev - 1U;
+    if (discharge) {
+      cfgA->discharge_bitset |= (1U << bit_index);
+    } else {
+      cfgA->discharge_bitset &= ~(1U << bit_index);
+    }
+  } else {
+    /* Cells 13-18 belong to CFGRB */
+    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[dev_idx].cfg;
+
+    uint8_t bit_index = cell_indx_in_dev - 13U;
     if (discharge) {
       cfgB->discharge_bitset |= (1U << bit_index);
     } else {

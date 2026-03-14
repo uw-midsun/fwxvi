@@ -45,7 +45,10 @@ enum class CommandCode {
   I2C_CLEAR_BUFFER, /**< Clear both I2C RX and TX buffers */
 
   /* SPI Commands */
-
+  SPI_WRITE_DATA,
+  SPI_READ_DATA,
+  SPI_TRANSFER_DATA,
+  SPI_CLEAR_BUFFER,
   /* UART Commands */
 
   /* FLASH Commands */

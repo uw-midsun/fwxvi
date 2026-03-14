@@ -14,6 +14,7 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "gpio.h"
+#include "gui.h"
 #include "ltdc.h"
 #include "pwm.h"
 
@@ -27,14 +28,25 @@ static DisplayData *display_data = NULL;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
+static Framebuffer framebuffer_cfg = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+
+static GuiSettings gui_cfg = {
+  .framebuffer = &framebuffer_cfg,
+  .ltdc = &settings,
+};
+
+static StatusCode status;
 
 #define NUMBER_OF_RED_BITS 8
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
 StatusCode display_init(SteeringStorage *storage) {
+  StatusCode ret = STATUS_CODE_OK;
+
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -65,8 +77,34 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  return ltdc_init(&settings);
+  ret = gui_init(&gui_cfg);
+  if (ret == STATUS_CODE_OK) {
+    LOG_DEBUG("Gui initialized\r\n");
+  } else {
+    LOG_DEBUG("Gui cannot be initialized: %d\r\n", ret);
+    return ret;
+  }
+
+  return ret;
+}
+
+StatusCode display_run() {
+  status = gui_fill_rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, COLOR_INDEX_BLACK);
+
+  status = gui_display_text(100, 100, COLOR_INDEX_BLUE, "Drive State: %s\r\nAccel: %d%%\r\nLight Signal: %s", VEHICLE_DRIVE_STATE_TO_STR(display_data->drive_state), display_data->pedal_percentage,
+                            STEERING_LIGHT_STATE_TO_STR(steering_storage->light_signal));
+
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui_display_text failed: %d\r\n", status);
+  }
+
+  status = gui_render();
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui_render failed: %d\r\n", status);
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode display_rx_slow() {
@@ -74,14 +112,13 @@ StatusCode display_rx_slow() {
 }
 
 StatusCode display_rx_medium() {
-  display_data->killswitch_state = get_rear_controller_status_killswitch_state();
-  display_data->precharge_complete = get_battery_stats_B_motor_precharge_complete();
+  display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
   display_data->brake_enabled = get_pedal_data_brake_enabled();
   display_data->regen_enabled = get_pedal_data_regen_enabled();
-  display_data->pedal_percentage = (uint8_t)get_pedal_data_percentage();
+  display_data->pedal_percentage = (uint8_t)get_pedal_percentage();
   display_data->drive_state = (VehicleDriveState)get_pedal_data_drive_state();
 
-  display_data->bps_fault = get_rear_controller_status_bps_fault();
+  display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
 
   display_data->motor_heatsink_temp = (int16_t)get_motor_temperature_heat_sink_temp();
   display_data->motor_temp = (int16_t)get_motor_temperature_motor_temp();
@@ -94,7 +131,7 @@ StatusCode display_rx_medium() {
 
   display_data->pack_voltage = (int16_t)get_battery_stats_A_pack_voltage();
   display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
-  display_data->state_of_charge = (uint16_t)get_battery_stats_A_pack_soc();
+  display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
 
   return STATUS_CODE_OK;
 }

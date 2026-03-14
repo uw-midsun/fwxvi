@@ -597,5 +597,9 @@ StatusCode bmi323_update(Bmi323Storage *storage) {
   get_accel_data(&storage->accel);
   get_gyroscope_data(&storage->gyro);
 
+  // storage->gyro.x -= imu_storage->gyro_go_values.gyro_offset_x+1;
+  // storage->gyro.y -= imu_storage->gyro_go_values.gyro_offset_y+1;
+  // storage->gyro.z -= imu_storage->gyro_go_values.gyro_offset_z+1;
+
   return STATUS_CODE_OK;
 }

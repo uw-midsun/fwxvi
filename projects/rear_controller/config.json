@@ -17,5 +17,6 @@
     "mocks": {
         "test_rear_controller_state_manager": ["relays_reset", "relays_close_pos", "relays_close_neg", "relays_close_motor", "relays_close_solar"]
     },
-    "can": true
+    "can": true, 
+    "selected_preset": "STM32L496RGT6_legacy_debug"
 }

@@ -31,16 +31,27 @@
  */
 typedef enum {
   VEHICLE_DRIVE_STATE_INVALID = 0, /**< Wrong State */
-  VEHICLE_DRIVE_STATE_NEUTRAL,     /**< Car Not Actively Moving in Neutral */
-  VEHICLE_DRIVE_STATE_DRIVE,       /**< Car Drive Forward */
-  VEHICLE_DRIVE_STATE_REVERSE,     /**< Car Drive Reverse*/
+  VEHICLE_DRIVE_STATE_NEUTRAL = 1, /**< Car Not Actively Moving in Neutral */
+  VEHICLE_DRIVE_STATE_DRIVE = 2,   /**< Car Drive Forward */
+  VEHICLE_DRIVE_STATE_REVERSE = 3, /**< Car Drive Reverse*/
 
   /* Extra drive state types used only by motor */
 
-  VEHICLE_DRIVE_STATE_CRUISE, /**< Car Cruise Constant Velocity */
-  VEHICLE_DRIVE_STATE_BRAKE,  /**< Car Brake */
-  VEHICLE_DRIVE_STATE_REGEN,  /**< Car Brake With Regen */
+  VEHICLE_DRIVE_STATE_CRUISE = 4, /**< Car Cruise Constant Velocity */
+  VEHICLE_DRIVE_STATE_BRAKE = 5,  /**< Car Brake */
+  VEHICLE_DRIVE_STATE_REGEN = 6,  /**< Car Brake With Regen */
+  VEHICLE_DRIVE_NUM_STATES,
 } VehicleDriveState;
+
+/**
+ * @brief LUT + Macro to help print vehicle drive states
+ */
+static const char *vehicle_drive_state_strings[VEHICLE_DRIVE_NUM_STATES] = {
+  [VEHICLE_DRIVE_STATE_INVALID] = "INVALID", [VEHICLE_DRIVE_STATE_NEUTRAL] = "NEUTRAL", [VEHICLE_DRIVE_STATE_DRIVE] = "DRIVE", [VEHICLE_DRIVE_STATE_REVERSE] = "REVERSE",
+  [VEHICLE_DRIVE_STATE_CRUISE] = "CRUISE",   [VEHICLE_DRIVE_STATE_BRAKE] = "BRAKE",     [VEHICLE_DRIVE_STATE_REGEN] = "REGEN",
+};
+
+#define VEHICLE_DRIVE_STATE_TO_STR(s) (((s) < VEHICLE_DRIVE_NUM_STATES) ? vehicle_drive_state_strings[(s)] : "UNKNOWN")
 
 /**
  * @brief   Vehicle power states
@@ -116,12 +127,19 @@ typedef enum {
  * @brief   Steering lights definitions
  */
 typedef enum {
-  STEERING_LIGHTS_OFF_STATE,    /**< Steering lights off */
-  STEERING_LIGHTS_LEFT_STATE,   /**< Steering light left turn */
-  STEERING_LIGHTS_RIGHT_STATE,  /**< Steering light right turn */
-  STEERING_LIGHTS_HAZARD_STATE, /**< Steering light hazard state */
-  STEERING_LIGHTS_NUM_STATES,   /**< Number of steering light states */
+  STEERING_LIGHTS_OFF_STATE = 0,    /**< Steering lights off */
+  STEERING_LIGHTS_LEFT_STATE = 1,   /**< Steering light left turn */
+  STEERING_LIGHTS_RIGHT_STATE = 2,  /**< Steering light right turn */
+  STEERING_LIGHTS_HAZARD_STATE = 3, /**< Steering light hazard state */
+  STEERING_LIGHTS_NUM_STATES,       /**< Number of steering light states */
 } SteeringLightState;
+
+/**
+ * @brief LUT + Macro to help print steering light states
+ */
+static const char *steering_light_state_strings[STEERING_LIGHTS_NUM_STATES] = { "OFF", "LEFT", "RIGHT", "HAZARD" };
+
+#define STEERING_LIGHT_STATE_TO_STR(s) (((s) < STEERING_LIGHTS_NUM_STATES) ? steering_light_state_strings[(s)] : "UNKNOWN")
 
 typedef enum {
   BPS_LIGHT_ON_STATE,   /**< BPS light on state */

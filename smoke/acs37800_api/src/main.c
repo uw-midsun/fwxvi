@@ -26,14 +26,15 @@
 static void print_bytes(const char *label, const uint8_t *data, size_t len) {
   LOG_DEBUG("%s:\n", label);
   for (size_t i = 0; i < len; i++) {
-    LOG_DEBUG("Byte[%zu] = 0x%02X\r\n", i, data[i]);
+    LOG_DEBUG("Byte[%u] = 0x%02X\r\n", i, data[i]);
+    delay_ms(10);
   }
 }
 
 I2CSettings i2c_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
 
-#define I2CP I2C_PORT_1
-#define I2CA 0x0
+#define I2CP I2C_PORT_2
+#define I2CA 0x61
 
 ACS37800Storage storage;
 
@@ -51,25 +52,65 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
   uint8_t packet[4];
   uint32_t rx_packet;
   while (true) {
-    printf("--- ACS37800 SMOKE TEST ---\r\r\n\n");
+    LOG_DEBUG("---- ACS37800 SMOKE TEST ----\r\r\n\n");
+    delay_ms(10);
+
+    // To find the I2C address of the board
+    // uint8_t rx_buf[4];
+    // bool found = false;
+    // for (I2CAddress addr = 0x08; addr <= 0x78; addr++) {
+    //   StatusCode status = i2c_read_mem(I2CP, addr, ACS37800_REG_STATUS, rx_buf, sizeof(rx_buf));
+    //   if (status == STATUS_CODE_OK) {
+    //     LOG_DEBUG("Found device at address 0x%02X\r\n", addr);
+    //     delay_ms(50);
+    //     found = true;
+    //   }
+    // }
+    // if (!found) {
+    //   LOG_DEBUG("No device found on bus\r\n");
+    // }
+
     build_packet(packet, 12000, 13000);
     print_bytes("PACKET: ", (uint8_t *)(&packet), 4);
-#ifdef MS_PLATFORM_X86
-    i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
-#endif
-    float current;
-    acs37800_get_current(&storage, &current);
-
-    printf("CURRENT_DATA: %f\r\n", (double)current);
 
 #ifdef MS_PLATFORM_X86
     i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
 #endif
+    float current = 0.0f;
 
-    float voltage;
+    if (acs37800_get_current(&storage, &current) != STATUS_CODE_OK) {
+      LOG_DEBUG("ERROR GETTING CURRENT\r\n");
+      delay_ms(10);
+      continue;
+    }
 
-    acs37800_get_voltage(&storage, &voltage);
-    printf("VOLTAGE DATA: %f\r\n", (double)voltage);
+    int32_t current_A = (int32_t)(current * 1000.0f);
+
+    uint32_t whole = (uint32_t)(current_A < 0 ? -(current_A / 1000) : (current_A / 1000));
+    uint32_t frac = (uint32_t)(current_A < 0 ? -(current_A % 1000) : (current_A % 1000));
+
+    LOG_DEBUG("CURRENT_DATA: %s%u.%03u A\r\n", current_A < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
+
+    delay_ms(10);
+
+#ifdef MS_PLATFORM_X86
+    i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
+#endif
+
+    float voltage = 10.0f;
+
+    if (acs37800_get_voltage(&storage, &voltage) != STATUS_CODE_OK) {
+      LOG_DEBUG("ERROR GETTING VOLTAGE\r\n");
+      delay_ms(10);
+      continue;
+    }
+
+    int32_t voltage_mV = (int32_t)(voltage * 1000.0f);
+
+    whole = (uint32_t)(voltage_mV < 0 ? -(voltage_mV / 1000) : (voltage_mV / 1000));
+    frac = (uint32_t)(voltage_mV < 0 ? -(voltage_mV % 1000) : (voltage_mV % 1000));
+
+    LOG_DEBUG("VOLTAGE_DATA: %s%ld.%03ld mV\r\n", voltage_mV < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
 
     delay_ms(500);
   }

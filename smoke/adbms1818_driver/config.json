@@ -2,17 +2,16 @@
     "libs": [
         "FreeRTOS",
         "ms-common",
-        "FATFs"
+        "ms-drivers"
     ],
     "x86_libs": [
         "ms-mpxe"
     ],
     "include": [
-        "projects/telemetry/inc"
+        "projects/rear_controller/inc"
     ],
     "sources": [
-        "projects/telemetry/src/sd_card_interface.o",
-        "projects/telemetry/src/arm/sd_card_spi.o"
+        "projects/rear_controller/src/thermistor.o"
     ],
     "can": false
 }

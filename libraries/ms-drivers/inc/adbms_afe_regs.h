@@ -350,6 +350,6 @@ static_assert(sizeof(AdbmsAfeAuxData) == 8, "AdbmsAfeAuxData must be 8 bytes");
  * @brief PWM duty cycle configuration (100%).
  * @note See Table 17 (p.38) for details.
  */
-#define ADBMS1818_PWMC_DC_100 (0xF)
+#define ADBMS1818_PWMC_DC_100 100
 
 /** @} */
