@@ -1,0 +1,6 @@
+<map id="SteeringStorage" name="SteeringStorage">
+<area shape="rect" id="node1" title="Steering storage." alt="" coords="141,108,267,133"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,64,31"/>
+<area shape="rect" id="node3" href="$structDisplayData.html" title="Data for the display, CAN RX or internal." alt="" coords="153,5,255,31"/>
+<area shape="rect" id="node4" href="$structSteeringConfig.html" title="Steering configuration data." alt="" coords="280,5,397,31"/>
+</map>
