@@ -29,18 +29,16 @@ std::string I2C::serialize(const CommandCode &commandCode) const {
   std::string serializedData;
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_i2cDatagram.i2cPort));
-  serializeInteger(serializedData, static_cast<uint8_t>(m_i2cDatagram.slave_address));
   serializeInteger(serializedData, static_cast<uint16_t>(m_i2cDatagram.bufferLength));
   serializedData.append(reinterpret_cast<const char *>(m_i2cDatagram.buffer), m_i2cDatagram.bufferLength);
 
-  return serializedData;
+  return encodeCommand(commandCode, serializedData);
 }
 
 void I2C::deserialize(std::string &i2cDatagramPayload) {
   size_t offset = 0;
 
   m_i2cDatagram.i2cPort = static_cast<Port>(deserializeInteger<uint8_t>(i2cDatagramPayload, offset));
-  m_i2cDatagram.slave_address = deserializeInteger<uint8_t>(i2cDatagramPayload, offset);
   m_i2cDatagram.bufferLength = deserializeInteger<uint16_t>(i2cDatagramPayload, offset);
   if (m_i2cDatagram.bufferLength > I2C_MAX_BUFFER_SIZE) {
     throw std::runtime_error("Deserialized I2C buffer length exceeds maximum allowed size");
@@ -49,27 +47,24 @@ void I2C::deserialize(std::string &i2cDatagramPayload) {
   std::memcpy(m_i2cDatagram.buffer, i2cDatagramPayload.data() + offset, m_i2cDatagram.bufferLength);
 }
 
-uint8_t I2C::getSlaveAddress() const{
-  return m_i2cDatagram.slave_address;
-}
-
-void I2C::setSlaveAddress(uint8_t address) {
-  // Assume 7 bit i2c address
-  address &= 0x7f;
-  m_i2cDatagram.slave_address = address;
-}
-
 void I2C::setI2CPort(const Port &i2cPort) {
   m_i2cDatagram.i2cPort = i2cPort;
 }
 
 void I2C::setBuffer(const uint8_t *data, size_t length) {
-  std::memcpy(m_i2cDatagram.buffer, data, length);
+  if (length > I2C_MAX_BUFFER_SIZE) {
+    throw std::runtime_error("Serialized I2C buffer length exceeds maximum allowed size");
+  }
+
+  if (length > 0U) {
+    std::memcpy(m_i2cDatagram.buffer, data, length);
+  }
   m_i2cDatagram.bufferLength = length;
 }
 
 void I2C::clearBuffer() {
   std::memset(m_i2cDatagram.buffer, 0U, I2C_MAX_BUFFER_SIZE);
+  m_i2cDatagram.bufferLength = 0U;
 }
 
 I2C::Port I2C::getI2CPort() const {

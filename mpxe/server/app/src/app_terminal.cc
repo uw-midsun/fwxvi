@@ -60,6 +60,37 @@ void Terminal::handleGpioCommands(const std::string &action, std::vector<std::st
   m_targetClient = nullptr;
 }
 
+void Terminal::handleI2CCommands(const std::string &action, std::vector<std::string> &tokens) {
+  std::string message;
+
+  if (action == "write_data" && tokens.size() >= 4) {
+    std::string port = tokens[2];
+    std::vector<uint8_t> data;
+    for (size_t i = 3; i < tokens.size(); i++) {
+      data.push_back(static_cast<uint8_t>(std::stoi(tokens[i], nullptr, 0)));
+    }
+    message = serverI2CManager.createI2CCommand(CommandCode::I2C_WRITE_DATA, port, data);
+  } else if (action == "read_data" && tokens.size() >= 3) {
+    std::string port = tokens[2];
+    std::vector<uint8_t> empty;
+    message = serverI2CManager.createI2CCommand(CommandCode::I2C_READ_DATA, port, empty);
+  } else if (action == "clear_buffer" && tokens.size() >= 3) {
+    std::string port = tokens[2];
+    std::vector<uint8_t> empty;
+    message = serverI2CManager.createI2CCommand(CommandCode::I2C_CLEAR_BUFFER, port, empty);
+  } else {
+    std::cerr << "Unsupported action: " << action << std::endl;
+  }
+
+  if (!message.empty()) {
+    m_Server->sendMessage(m_targetClient, message);
+  } else {
+    std::cout << "Invalid I2C command. Refer to command.md" << std::endl;
+  }
+
+  m_targetClient = nullptr;
+}
+
 void Terminal::handleAfeCommands(const std::string &action, std::vector<std::string> &tokens) {
   std::string message;
   if (action == "set_cell" && tokens.size() >= 4) {
@@ -155,6 +186,7 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
     } else if (interface == "adc") {
       handleAdcCommands(action, tokens);
     } else if (interface == "i2c") {
+      handleI2CCommands(action, tokens);
     } else if (interface == "spi") {
     } else {
       std::cerr << "Unsupported interface: " << interface << std::endl;

@@ -118,6 +118,10 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
       serverAdcManager.updateAdcConvertedAll(clientName, payload);
       break;
     }
+    case CommandCode::I2C_READ_DATA: {
+      serverI2CManager.updateI2CData(clientName, payload);
+      break;
+    }
     default: {
       break;
     }

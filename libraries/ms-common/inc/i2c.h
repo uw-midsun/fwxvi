@@ -160,6 +160,21 @@ StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
  */
 StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);
 
+/**
+ * @brief   Gets the number of queued TX bytes available to read
+ * @param   i2c Specifies which I2C port to inspect
+ * @return  Number of queued bytes on the TX buffer
+ */
+size_t i2c_get_tx_num_bytes(I2CPort i2c);
+
+/**
+ * @brief   Clears both I2C RX and TX queues
+ * @param   i2c Specifies which I2C port to clear
+ * @return  STATUS_CODE_OK if buffers are cleared successfully
+ *          STATUS_CODE_INVALID_ARGS if the port is invalid
+ */
+StatusCode i2c_clear_buffers(I2CPort i2c);
+
 #endif
 
 /** @} */

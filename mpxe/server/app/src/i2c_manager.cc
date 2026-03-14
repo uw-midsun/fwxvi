@@ -75,7 +75,7 @@ void I2CManager::updateI2CData(std::string &projectName, std::string &payload) {
 std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i2cPort, std::vector<uint8_t> &data) {
   try {
     switch (commandCode) {
-      case CommandCode::I2C_SET_DATA: {
+      case CommandCode::I2C_WRITE_DATA: {
         if (i2cPort.empty() || i2cPort.size() < 4) {
           throw std::runtime_error(
               "Invalid format for I2C port specification. Good examples: 'I2C1' "
@@ -103,7 +103,29 @@ std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i
         break;
       }
 
-      case CommandCode::I2C_GET_DATA: {
+      case CommandCode::I2C_READ_DATA: {
+        if (i2cPort.empty() || i2cPort.size() < 4) {
+          throw std::runtime_error(
+              "Invalid format for I2C port specification. Good examples: 'I2C1' "
+              "'I2C2'");
+          break;
+        }
+
+        /* Extract port number from string (e.g., "I2C1" -> 1) */
+        uint8_t portNum = static_cast<uint8_t>(std::stoi(i2cPort.substr(3))) - 1;
+
+        if (portNum >= static_cast<uint8_t>(Datagram::I2C::Port::NUM_I2C_PORTS)) {
+          throw std::runtime_error("Invalid selection for I2C ports. Expected: I2C1 or I2C2");
+          break;
+        }
+
+        m_I2CDatagram.setI2CPort(static_cast<Datagram::I2C::Port>(portNum));
+        m_I2CDatagram.setBuffer(nullptr, 0U);
+
+        break;
+      }
+
+      case CommandCode::I2C_CLEAR_BUFFER: {
         if (i2cPort.empty() || i2cPort.size() < 4) {
           throw std::runtime_error(
               "Invalid format for I2C port specification. Good examples: 'I2C1' "

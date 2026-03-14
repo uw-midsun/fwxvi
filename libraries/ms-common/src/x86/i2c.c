@@ -136,6 +136,23 @@ StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len) {
   return STATUS_CODE_OK;
 }
 
+size_t i2c_get_tx_num_bytes(I2CPort i2c) {
+  if (i2c >= NUM_I2C_PORTS) {
+    return 0U;
+  }
+
+  return s_port[i2c].i2c_tx_buf.queue.num_items - queue_get_spaces_available(&s_port[i2c].i2c_tx_buf.queue);
+}
+
+StatusCode i2c_clear_buffers(I2CPort i2c) {
+  if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
+
+  queue_reset(&s_port[i2c].i2c_rx_buf.queue);
+  queue_reset(&s_port[i2c].i2c_tx_buf.queue);
+
+  return STATUS_CODE_OK;
+}
+
 StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len) {
   return i2c_read_reg(i2c, addr, mem_addr, rx_data, rx_len);
 }
