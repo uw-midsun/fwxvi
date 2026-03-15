@@ -132,60 +132,6 @@ typedef struct {
 #define WIDGET_ORIENTATION_HORIZONTAL LV_BAR_ORIENTATION_HORIZONTAL
 #define WIDGET_ORIENTATION_VERTICAL LV_BAR_ORIENTATION_VERTICAL
 
-typedef struct {
-  WidgetAlignment align;
-  lv_coord_t x_offset;
-  lv_coord_t y_offset;
-} WidgetAlignedPosition;
-
-typedef struct {
-  lv_coord_t x;
-  lv_coord_t y;
-} WidgetAbsolutePosition;
-
-typedef struct {
-  WidgetPositionType type;
-  union {
-    WidgetAlignedPosition align;
-    WidgetAbsolutePosition absolute;
-  } value;
-} WidgetPosition;
-
-typedef struct {
-  lv_obj_t *scale;
-  lv_obj_t *needle;
-  lv_obj_t *label;
-  lv_point_precise_t needle_points[2];
-  int32_t min_value;
-  int32_t max_value;
-  int32_t angle_range;
-  int32_t rotation;
-} SpeedometerWidget;
-
-typedef struct {
-  WidgetSize size;
-  WidgetPosition position;
-  uint16_t total_tick_count;
-  uint16_t major_tick_every;
-  int32_t angle_range;
-  int32_t rotation;
-  int32_t needle_length;
-} SpeedometerWidgetConfig;
-
-typedef struct {
-  lv_obj_t *bar;
-  lv_obj_t *label;
-} BarWidget;
-
-typedef struct {
-  WidgetSize size;
-  WidgetPosition position;
-  const char *label_text;
-  WidgetAlignment label_text_alignment;
-  WidgetOrientation orientation;
-  GuiColorId indicator_color_id;
-} BarWidgetConfig;
-
 /* Fonts */
 #define GUI_SMALL_TEXT &lv_font_montserrat_14
 #define GUI_MEDIUM_TEXT &lv_font_montserrat_26
