@@ -171,11 +171,11 @@ data = bytearray(pack(can_data_cache.get("steering_steering", "cruise_control_ta
 
 messages_medium.append(system_can_message_steering_steering)
 
-system_can_message_telemetry_telemetry = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_TELEMETRY_ID,
-data = bytearray(pack(can_data_cache.get("telemetry_telemetry", "telemetry_data"), 64)))
+system_can_message_telemetry_imu_data = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_IMU_DATA_ID,
+data = bytearray(pack(can_data_cache.get("telemetry_imu_data", "g_force"), 16) + pack(can_data_cache.get("telemetry_imu_data", "roll"), 16) + pack(can_data_cache.get("telemetry_imu_data", "pitch"), 16) + pack(can_data_cache.get("telemetry_imu_data", "yaw"), 16)))
 
-messages_slow.append(system_can_message_telemetry_telemetry)
+messages_medium.append(system_can_message_telemetry_imu_data)
 def periodic_sender(bus, messages, period, stop_event):
     # Send messages with small delays between each one to avoid buffer overflow
     while not stop_event.is_set():
