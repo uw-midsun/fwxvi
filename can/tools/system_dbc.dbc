@@ -139,6 +139,9 @@ BO_  100  steering: 5 steering
   SG_ cruise_control_target_velocity : 0|32@1+ (1,0) [0|4294967295] "" telemetry, front_controller, rear_controller
   SG_ buttons : 32|8@1+ (1,0) [|] "" telemetry, front_controller, rear_controller
 
-BO_   1861 telemetry: 8 telemetry
-  SG_ telemetry_data : 0|64@1+ (1,0) [0|18446744073709551615] "" telemetry
+BO_   1861 imu_data: 8 telemetry
+  SG_ g_force : 0|16@1+ (1,0) [0|65535] "" steering
+  SG_ roll : 16|16@1+ (1,0) [0|65535] "" steering
+  SG_ pitch : 32|16@1+ (1,0) [0|65535] "" steering
+  SG_ yaw : 48|16@1+ (1,0) [0|65535] "" steering
 

@@ -158,9 +158,12 @@ class CanSimulatorDataCache:
                 "buttons": 0,
             },
 
-            "telemetry_telemetry": {
-                # telemetry cache definitions
-                "telemetry_data": 0,
+            "telemetry_imu_data": {
+                # imu_data cache definitions
+                "g_force": 0,
+                "roll": 0,
+                "pitch": 0,
+                "yaw": 0,
             }
 
         }
