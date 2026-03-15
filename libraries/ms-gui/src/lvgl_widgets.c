@@ -15,6 +15,8 @@
 #include "clut.h"
 #include "lvgl_widgets.h"
 
+/* Intra-component Headers */
+
 /* Speedometer style objects */
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
