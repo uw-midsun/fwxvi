@@ -1,0 +1,77 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_spinbox_private.h
+ *
+ * @brief   Lv Spinbox Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../textarea/lv_textarea_private.h"
+#include "lv_spinbox.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_spinbox_private
+ * @brief    lv_spinbox_private Firmware
+ * @{
+ */
+
+#ifndef LV_SPINBOX_PRIVATE_H
+#define LV_SPINBOX_PRIVATE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_SPINBOX
+
+/*********************
+ *      DEFINES
+ *********************/
+
+/**********************
+ *      TYPEDEFS
+ **********************/
+
+/** Data of spinbox */
+struct _lv_spinbox_t {
+    lv_textarea_t ta;             /**< Ext. of ancestor */
+    /*New data for this type*/
+    int32_t value;
+    int32_t range_max;
+    int32_t range_min;
+    int32_t step;
+    uint32_t digit_count : 4;
+    uint32_t dec_point_pos : 4;   /**< if 0, there is no separator and the number is an integer */
+    uint32_t rollover : 1;        /**< Set to true for rollover functionality */
+    uint32_t digit_step_dir : 2;  /**< the direction the digit will step on encoder button press when editing */
+};
+
+/**********************
+ * GLOBAL PROTOTYPES
+ **********************/
+
+/**********************
+ *      MACROS
+ **********************/
+
+#endif /* LV_USE_SPINBOX */
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
+
+#endif /*LV_SPINBOX_PRIVATE_H*/
+
+/** @} */

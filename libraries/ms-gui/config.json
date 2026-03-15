@@ -1,6 +1,7 @@
 {
     "arm_libs": [
-      "core"
+      "core",
+      "lvgl"
     ],
     "x86_libs": [
         "SDL2"

@@ -1,0 +1,94 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_refr.h
+ *
+ * @brief   Lv Refr
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../misc/lv_types.h"
+#include "lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_refr
+ * @brief    lv_refr Firmware
+ * @{
+ */
+
+#ifndef LV_REFR_H
+#define LV_REFR_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+/*********************
+ *      DEFINES
+ *********************/
+
+/**********************
+ *      TYPEDEFS
+ **********************/
+
+/**********************
+ *  STATIC PROTOTYPES
+ **********************/
+
+/**********************
+ *  STATIC VARIABLES
+ **********************/
+
+/**********************
+ *      MACROS
+ **********************/
+
+/**********************
+ *   GLOBAL FUNCTIONS
+ **********************/
+
+/**
+ * Redraw the invalidated areas now.
+ * Normally the redrawing is periodically executed in `lv_timer_handler` but a long blocking process
+ * can prevent the call of `lv_timer_handler`. In this case if the GUI is updated in the process
+ * (e.g. progress bar) this function can be called when the screen should be updated.
+ * @param disp pointer to display to refresh. NULL to refresh all displays.
+ */
+void lv_refr_now(lv_display_t * disp);
+
+/**
+ * Redrawn on object and all its children using the passed draw context
+ * @param layer pointer to a layer where to draw.
+ * @param obj   the start object from the redraw should start
+ */
+void lv_obj_redraw(lv_layer_t * layer, lv_obj_t * obj);
+
+/**
+ * Called periodically to handle the refreshing
+ * @param timer pointer to the timer itself, or `NULL`
+ */
+void lv_display_refr_timer(lv_timer_t * timer);
+
+/**********************
+ *   STATIC FUNCTIONS
+ **********************/
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
+
+#endif /*LV_REFR_H*/
+
+/** @} */

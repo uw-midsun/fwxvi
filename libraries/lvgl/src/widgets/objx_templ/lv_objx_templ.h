@@ -1,0 +1,100 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_objx_templ.h
+ *
+ * @brief   Lv Objx Templ
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_objx_templ
+ * @brief    lv_objx_templ Firmware
+ * @{
+ */
+
+/**
+ * TODO Remove these instructions
+ * Search and replace: templ -> object short name with lower case(e.g. btn, label etc)
+ *                    TEMPL -> object short name with upper case (e.g. BTN, LABEL etc.)
+ *
+ */
+
+#ifndef LV_OBJX_TEMPL_H
+#define LV_OBJX_TEMPL_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_TEMPL != 0
+
+/*********************
+ *      DEFINES
+ *********************/
+
+/**********************
+ *      TYPEDEFS
+ **********************/
+/*Data of template*/
+typedef struct {
+    lv_ANCESTOR_t ancestor; /*The ancestor widget, e.g. lv_slider_t slider*/
+    /*New data for this type*/
+} lv_templ_t;
+
+LV_ATTRIBUTE_EXTERN_DATA extern const lv_obj_class_t lv_templ_class;
+
+/**********************
+ * GLOBAL PROTOTYPES
+ **********************/
+
+/**
+ * Create a templ object
+ * @param parent    pointer to an object, it will be the parent of the new templ
+ * @return          pointer to the created bar
+ */
+lv_obj_t * lv_templ_create(lv_obj_t * parent);
+
+/*======================
+ * Add/remove functions
+ *=====================*/
+
+/*=====================
+ * Setter functions
+ *====================*/
+
+/*=====================
+ * Getter functions
+ *====================*/
+
+/*=====================
+ * Other functions
+ *====================*/
+
+/**********************
+ *      MACROS
+ **********************/
+
+#endif /*LV_USE_TEMPL*/
+
+#ifdef __cplusplus
+} /*extern "C"*/
+#endif
+
+#endif /*LV_OBJX_TEMPL_H*/
+
+/** @} */
