@@ -1,3 +1,17 @@
+/************************************************************************************************
+ * @file    main.c
+ *
+ * @brief   Main
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 // /************************************************************************************************
 //  * @file   main.c
 //  *
@@ -7,9 +21,6 @@
 //  * @author Midnight Sun Team #24 - MSXVI
 //  ************************************************************************************************/
 
-// /* Standard library Headers */
-
-// /* Inter-component Headers */
 // #include "clut.h"
 // #include "delay.h"
 // #include "framebuffer.h"
@@ -21,7 +32,6 @@
 // #include "status.h"
 // #include "tasks.h"
 
-// /* Intra-component Headers */
 // #include "display.h"
 // #include "steering_hw_defs.h"
 

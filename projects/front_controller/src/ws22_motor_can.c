@@ -92,7 +92,7 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   set_motor_velocity_vehicle_velocity((int16_t)(front_controller_storage->vehicle_speed_kph));
   set_motor_velocity_motor_velocity((int16_t)(telemetry->motor_velocity));
 
-  return STATUS_CODE_OK;    
+  return STATUS_CODE_OK;
 }
 
 static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {

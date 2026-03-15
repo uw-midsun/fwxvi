@@ -11,9 +11,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-/* Intra-component Headers */
+/* Inter-component Headers */
 #include "clut.h"
 #include "lvgl_widgets.h"
+
+/* Intra-component Headers */
 
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
