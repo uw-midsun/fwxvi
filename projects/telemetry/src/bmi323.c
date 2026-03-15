@@ -17,7 +17,6 @@
 
 /* Intra-component Headers */
 #include "bmi323.h"
-#include "imu_hw_defs.h"
 
 #define DUMMY_BYTE 0x00U
 

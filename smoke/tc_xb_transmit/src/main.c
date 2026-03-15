@@ -64,6 +64,7 @@ TASK(xb_transmit, TASK_STACK_1024) {
     for (uint8_t i = 0; i < sizeof(datagram_data); i++) {
       tx_datagram.data[i] = datagram_data[i];
     }
+    uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
 
     LOG_DEBUG("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
     delay_ms(10U);
