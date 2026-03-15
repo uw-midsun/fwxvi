@@ -1,3 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    strtod.h
+ *
+ * @brief   Strtod
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <climits>
+#include <limits>
+
+/* Inter-component Headers */
+#include "biginteger.h"
+#include "diyfp.h"
+#include "ieee754.h"
+#include "pow10.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup strtod
+ * @brief    strtod Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,13 +43,6 @@
 
 #ifndef RAPIDJSON_STRTOD_
 #define RAPIDJSON_STRTOD_
-
-#include "ieee754.h"
-#include "biginteger.h"
-#include "diyfp.h"
-#include "pow10.h"
-#include <climits>
-#include <limits>
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
@@ -291,3 +313,5 @@ inline double StrtodFullPrecision(double d, int p, const Ch* decimals, size_t le
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_STRTOD_
+
+/** @} */

@@ -1,29 +1,38 @@
-#include "lv_indev_private.h"
-#include "../misc/lv_event_private.h"
-#include "../misc/lv_area_private.h"
-#include "../misc/lv_anim_private.h"
-#include "../core/lv_obj_draw_private.h"
-/**
- * @file lv_indev.c
+/************************************************************************************************
+ * @file    lv_indev.c
  *
- */
+ * @brief   Lv Indev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../core/lv_group.h"
+#include "../core/lv_obj_draw_private.h"
+#include "../core/lv_obj_private.h"
+#include "../core/lv_refr.h"
+#include "../display/lv_display_private.h"
+#include "../misc/lv_anim_private.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_event_private.h"
+#include "../misc/lv_math.h"
+#include "../misc/lv_profiler.h"
+#include "../misc/lv_timer_private.h"
+#include "../stdlib/lv_string.h"
+#include "../tick/lv_tick.h"
+#include "lv_indev_gesture.h"
+#include "lv_indev_private.h"
+#include "lv_indev_scroll.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  ********************/
-#include "lv_indev_scroll.h"
-#include "lv_indev_gesture.h"
-#include "../display/lv_display_private.h"
-#include "../core/lv_global.h"
-#include "../core/lv_obj_private.h"
-#include "../core/lv_group.h"
-#include "../core/lv_refr.h"
-
-#include "../tick/lv_tick.h"
-#include "../misc/lv_timer_private.h"
-#include "../misc/lv_math.h"
-#include "../misc/lv_profiler.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -945,8 +954,6 @@ static void indev_keypad_proc(lv_indev_t * i, lv_indev_data_t * data)
     indev_obj_act = NULL;
 }
 
-
-
 /**
  * Process a new point from LV_INDEV_TYPE_ENCODER input device
  * @param i pointer to an input device
@@ -1330,7 +1337,6 @@ static void indev_proc_press(lv_indev_t * indev)
             indev->pointer.vect.x         = 0;
             indev->pointer.vect.y         = 0;
 
-
             /* If the indev was already in a pressed state it means that we got dragged here
              * so we shouldn't send any hover nor pressed events for a new object since the
              * originally pressed object didn't get released
@@ -1403,7 +1409,6 @@ static void indev_proc_press(lv_indev_t * indev)
         if(is_enabled) {
             if(send_event(LV_EVENT_PRESSING, indev_act) == LV_RESULT_INVALID) return;
         }
-
 
         if(indev_act->wait_until_release) return;
 

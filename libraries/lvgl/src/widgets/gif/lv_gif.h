@@ -1,6 +1,26 @@
-/**
- * @file lv_gif.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gif.h
  *
+ * @brief   Lv Gif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gif
+ * @brief    lv_gif Firmware
+ * @{
  */
 
 #ifndef LV_GIF_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_GIF
-
-#include "../../misc/lv_color.h"
 
 /*********************
  *      DEFINES
@@ -136,3 +152,5 @@ int32_t lv_gif_get_current_frame_index(lv_obj_t * obj);
 #endif
 
 #endif /*LV_GIF_H*/
+
+/** @} */

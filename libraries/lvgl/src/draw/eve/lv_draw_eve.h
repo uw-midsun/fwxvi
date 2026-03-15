@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_eve.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve.h
  *
+ * @brief   Lv Draw Eve
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_draw_eve_target.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_eve
+ * @brief    lv_draw_eve Firmware
+ * @{
  */
 
 /*  Created on: 3 dic 2023
@@ -12,7 +32,6 @@
 #ifndef LV_DRAW_EVE_H
 #define LV_DRAW_EVE_H
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21,10 +40,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_DRAW_EVE
-
-#include "lv_draw_eve_target.h"
 
 /*********************
  *      DEFINES
@@ -53,5 +69,6 @@ void lv_draw_eve_set_display_data(lv_display_t * disp, const lv_draw_eve_paramet
 } /*extern "C"*/
 #endif
 
-
 #endif /* LV_DRAW_EVE_H */
+
+/** @} */

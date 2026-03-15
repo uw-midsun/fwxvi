@@ -1,16 +1,26 @@
-/**
- * @file lv_event.c
+/************************************************************************************************
+ * @file    lv_event.c
  *
- */
+ * @brief   Lv Event
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../stdlib/lv_mem.h"
+#include "lv_assert.h"
+#include "lv_event_private.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_event_private.h"
-#include "../core/lv_global.h"
-#include "../stdlib/lv_mem.h"
-#include "lv_assert.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES

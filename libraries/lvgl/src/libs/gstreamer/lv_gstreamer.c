@@ -1,27 +1,34 @@
-/**
- * @file lv_gstreamer.c
+/************************************************************************************************
+ * @file    lv_gstreamer.c
  *
- */
+ * @brief   Lv Gstreamer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <glib.h>
+#include <gst/gstelementfactory.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../misc/lv_event_private.h"
+#include "lv_gstreamer_internal.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_gstreamer_internal.h"
-
 #if LV_USE_GSTREAMER
-
-#include <glib.h>
-#include <gst/gstelementfactory.h>
-#include "../../core/lv_obj_class_private.h"
-#include "../../misc/lv_event_private.h"
 
 /*********************
  *      DEFINES
  *********************/
 
 #define MY_CLASS (&lv_gstreamer_class)
-
 
 /**********************
  *      TYPEDEFS
@@ -460,7 +467,6 @@ static void gstreamer_update_frame(lv_gstreamer_t * streamer)
         }
         streamer->is_video_info_valid = true;
     }
-
 
     GstBuffer * buffer = gst_sample_get_buffer(sample);
     GstMapInfo map;

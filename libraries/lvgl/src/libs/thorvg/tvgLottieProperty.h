@@ -1,3 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieProperty.h
+ *
+ * @brief   Tvglottieproperty
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <algorithm>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgLottieCommon.h"
+#include "tvgLottieExpressions.h"
+#include "tvgLottieInterpolator.h"
+#include "tvgLottieModifier.h"
+#include "tvgMath.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieProperty
+ * @brief    tvgLottieProperty Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,24 +50,14 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_PROPERTY_H_
 #define _TVG_LOTTIE_PROPERTY_H_
 
-#include <algorithm>
-#include "tvgMath.h"
-#include "tvgLottieCommon.h"
-#include "tvgLottieInterpolator.h"
-#include "tvgLottieExpressions.h"
-#include "tvgLottieModifier.h"
-
-
 struct LottieFont;
 struct LottieLayer;
 struct LottieObject;
-
 
 template<typename T>
 struct LottieScalarFrame
@@ -59,7 +79,6 @@ struct LottieScalarFrame
         return lerp(value, next->value, t);
     }
 };
-
 
 template<typename T>
 struct LottieVectorFrame
@@ -111,7 +130,6 @@ struct LottieVectorFrame
     }
 };
 
-
 //Property would have an either keyframes or single value.
 struct LottieProperty
 {
@@ -127,7 +145,6 @@ struct LottieProperty
     virtual uint32_t nearest(float time) = 0;
     virtual float frameNo(int32_t key) = 0;
 };
-
 
 struct LottieExpression
 {
@@ -152,7 +169,6 @@ struct LottieExpression
     }
 };
 
-
 static void _copy(PathSet* pathset, Array<Point>& outPts, Matrix* transform)
 {
     Array<Point> inPts;
@@ -171,7 +187,6 @@ static void _copy(PathSet* pathset, Array<Point>& outPts, Matrix* transform)
     }
 }
 
-
 static void _copy(PathSet* pathset, Array<PathCommand>& outCmds)
 {
     Array<PathCommand> inCmds;
@@ -180,7 +195,6 @@ static void _copy(PathSet* pathset, Array<PathCommand>& outCmds)
     outCmds.push(inCmds);
     inCmds.data = nullptr;
 }
-
 
 template<typename T>
 uint32_t _bsearch(T* frames, float frameNo)
@@ -199,7 +213,6 @@ uint32_t _bsearch(T* frames, float frameNo)
     return low;
 }
 
-
 template<typename T>
 uint32_t _nearest(T* frames, float frameNo)
 {
@@ -211,7 +224,6 @@ uint32_t _nearest(T* frames, float frameNo)
     return 0;
 }
 
-
 template<typename T>
 float _frameNo(T* frames, int32_t key)
 {
@@ -220,7 +232,6 @@ float _frameNo(T* frames, int32_t key)
     if (key >= (int32_t) frames->count) key = (int32_t)(frames->count - 1);
     return (*frames)[key].no;
 }
-
 
 template<typename T>
 float _loop(T* frames, float frameNo, LottieExpression* exp)
@@ -252,7 +263,6 @@ float _loop(T* frames, float frameNo, LottieExpression* exp)
     }
     return frameNo;
 }
-
 
 template<typename T>
 struct LottieGenericProperty : LottieProperty
@@ -345,7 +355,6 @@ struct LottieGenericProperty : LottieProperty
     float angle(float frameNo) { return 0; }
     void prepare() {}
 };
-
 
 struct LottiePathSet : LottieProperty
 {
@@ -488,7 +497,6 @@ struct LottiePathSet : LottieProperty
         return true;
     }
 
-
     bool operator()(float frameNo, Array<PathCommand>& cmds, Array<Point>& pts, Matrix* transform, const LottieRoundnessModifier* roundness, const LottieOffsetModifier* offsetPath, LottieExpressions* exps)
     {
         if (exps && exp) {
@@ -500,7 +508,6 @@ struct LottiePathSet : LottieProperty
 
     void prepare() {}
 };
-
 
 struct LottieColorStop : LottieProperty
 {
@@ -635,7 +642,6 @@ struct LottieColorStop : LottieProperty
     void prepare() {}
 };
 
-
 struct LottiePosition : LottieProperty
 {
     Array<LottieVectorFrame<Point>>* frames = nullptr;
@@ -737,7 +743,6 @@ struct LottiePosition : LottieProperty
     }
 };
 
-
 struct LottieTextDoc : LottieProperty
 {
     Array<LottieScalarFrame<TextDocument>>* frames = nullptr;
@@ -833,7 +838,6 @@ struct LottieTextDoc : LottieProperty
     void prepare() {}
 };
 
-
 using LottiePoint = LottieGenericProperty<Point>;
 using LottieFloat = LottieGenericProperty<float>;
 using LottieOpacity = LottieGenericProperty<uint8_t>;
@@ -845,3 +849,5 @@ using LottieCheckbox = LottieGenericProperty<int8_t>;
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

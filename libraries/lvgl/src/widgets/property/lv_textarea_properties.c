@@ -1,10 +1,18 @@
+/************************************************************************************************
+ * @file    lv_textarea_properties.c
+ *
+ * @brief   Lv Textarea Properties
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_textarea_properties.c
- */
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "../textarea/lv_textarea.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
 

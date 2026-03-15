@@ -1,19 +1,27 @@
-/**
- * @file lv_font_manager.c
+/************************************************************************************************
+ * @file    lv_font_manager.c
  *
- */
+ * @brief   Lv Font Manager
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_ll.h"
+#include "../../stdlib/lv_sprintf.h"
+#include "lv_font_manager.h"
+#include "lv_font_manager_recycle.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_font_manager.h"
-
 #if LV_USE_FONT_MANAGER
-
-#include "lv_font_manager_recycle.h"
-#include "../../misc/lv_ll.h"
-#include "../../stdlib/lv_sprintf.h"
 
 /*********************
  *      DEFINES

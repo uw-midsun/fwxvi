@@ -1,5 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_riscv_v_to_rgb888.h
+ *
+ * @brief   Lv Draw Sw Blend Riscv V To Rgb888
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "../../../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_draw_sw_blend_riscv_v_to_rgb888.h
+ * @defgroup lv_draw_sw_blend_riscv_v_to_rgb888
+ * @brief    lv_draw_sw_blend_riscv_v_to_rgb888 Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_RISCV_V_TO_RGB888_H
@@ -13,10 +34,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../../lv_conf_internal.h"
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
 
-#include "../../../../misc/lv_types.h"
 /*********************
  *      DEFINES
  *********************/
@@ -41,7 +60,6 @@ extern "C" {
 #define LV_DRAW_SW_COLOR_BLEND_TO_RGB888_MIX_MASK_OPA(dsc, dest_px_size) \
     lv_draw_sw_blend_riscv_v_color_to_rgb888_with_opa_mask(dsc, dest_px_size)
 #endif
-
 
 /* RGB565 image blend to RGB888/XRGB8888 */
 #ifndef LV_DRAW_SW_RGB565_BLEND_NORMAL_TO_RGB888
@@ -168,3 +186,5 @@ lv_result_t lv_draw_sw_blend_riscv_v_argb8888_premultiplied_to_rgb888(lv_draw_sw
 #endif
 
 #endif /* LV_DRAW_SW_BLEND_RISCV_V_TO_RGB888_H */
+
+/** @} */

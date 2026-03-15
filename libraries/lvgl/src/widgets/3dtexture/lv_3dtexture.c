@@ -1,17 +1,26 @@
-/**
- * @file lv_3dtexture.c
+/************************************************************************************************
+ * @file    lv_3dtexture.c
  *
- */
+ * @brief   Lv 3Dtexture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../draw/lv_draw_3d.h"
+#include "lv_3dtexture_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_3dtexture_private.h"
 #if LV_USE_3DTEXTURE
-
-#include "../../core/lv_obj_class_private.h"
-#include "../../draw/lv_draw_3d.h"
 
 /*********************
  *      DEFINES

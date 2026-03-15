@@ -1,6 +1,29 @@
-/**
- * @file lv_draw_line.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_line.h
  *
+ * @brief   Lv Draw Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_line
+ * @brief    lv_draw_line Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_LINE_H
@@ -13,16 +36,11 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
  *********************/
 #if LV_USE_FLOAT
-#include <float.h>
 #define LV_DRAW_LINE_POINT_NONE     FLT_MAX
 #else
 #define LV_DRAW_LINE_POINT_NONE     INT32_MAX
@@ -121,3 +139,5 @@ void lv_draw_line_iterate(lv_draw_task_t * t, lv_draw_line_dsc_t * dsc,
 #endif
 
 #endif /*LV_DRAW_LINE_H*/
+
+/** @} */

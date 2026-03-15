@@ -1,6 +1,26 @@
-/**
- * @file lv_arclabel_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_arclabel_private.h
  *
+ * @brief   Lv Arclabel Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_arclabel.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_arclabel_private
+ * @brief    lv_arclabel_private Firmware
+ * @{
  */
 
 #ifndef LV_ARCLABEL_PRIVATE_H
@@ -13,10 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_private.h"
 
 #if LV_USE_ARCLABEL != 0
-#include "lv_arclabel.h"
 
 /*********************
  *      DEFINES
@@ -77,3 +95,5 @@ struct _lv_arclabel_t {
 #endif
 
 #endif /*LV_ARCLABEL_PRIVATE_H*/
+
+/** @} */

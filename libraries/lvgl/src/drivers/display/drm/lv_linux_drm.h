@@ -1,6 +1,26 @@
-/**
- * @file lv_linux_drm.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_linux_drm.h
  *
+ * @brief   Lv Linux Drm
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <xf86drmMode.h>
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_linux_drm
+ * @brief    lv_linux_drm Firmware
+ * @{
  */
 
 #ifndef LV_LINUX_DRM_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../display/lv_display.h"
-
 #if LV_USE_LINUX_DRM
-#include <xf86drmMode.h>
 
 /*********************
  *      DEFINES
@@ -129,3 +146,5 @@ bool lv_linux_drm_mode_is_preferred(const lv_linux_drm_mode_t * mode);
 #endif
 
 #endif /* LV_LINUX_DRM_H */
+
+/** @} */

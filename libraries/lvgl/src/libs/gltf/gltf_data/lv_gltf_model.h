@@ -1,13 +1,35 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_model.h
+ *
+ * @brief   Lv Gltf Model
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_event.h"
+#include "../../../misc/lv_types.h"
+#include "lv_gltf_model_loader.h"
+#include "lv_gltf_model_node.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_model
+ * @brief    lv_gltf_model Firmware
+ * @{
+ */
+
 #ifndef LV_GLTF_MODEL_H
 #define LV_GLTF_MODEL_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_GLTF
-
-#include "lv_gltf_model_node.h"
-#include "../../../misc/lv_types.h"
-#include "../../../misc/lv_event.h"
-#include "lv_gltf_model_loader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,7 +55,6 @@ lv_gltf_model_t * lv_gltf_data_load_from_file(const char * file_path,
  */
 lv_gltf_model_t * lv_gltf_data_load_from_bytes(const uint8_t * data, size_t data_size,
                                                lv_gltf_model_loader_t * loader);
-
 
 /**
  * Delete a glTF model
@@ -84,7 +105,6 @@ size_t lv_gltf_model_get_material_count(const lv_gltf_model_t * model);
  * @return Number of cameras in the model
  */
 size_t lv_gltf_model_get_camera_count(const lv_gltf_model_t * model);
-
 
 /**
  * @brief Get the number of meshes in the glTF model
@@ -176,3 +196,5 @@ uint32_t lv_gltf_model_get_animation_speed(const lv_gltf_model_t * model);
 
 #endif /*LV_USE_GLTF*/
 #endif /*LV_GLTF_MODEL_H*/
+
+/** @} */

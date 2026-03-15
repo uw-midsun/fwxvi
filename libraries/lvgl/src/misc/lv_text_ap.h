@@ -1,6 +1,27 @@
-/**
- * @file lv_text_ap.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_text_ap.h
  *
+ * @brief   Lv Text Ap
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../draw/lv_draw.h"
+#include "lv_text.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_text_ap
+ * @brief    lv_text_ap Firmware
+ * @{
  */
 
 #ifndef LV_TEXT_AP_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_text.h"
-#include "lv_types.h"
-#include "../draw/lv_draw.h"
 
 #if LV_USE_ARABIC_PERSIAN_CHARS == 1
 
@@ -47,3 +65,5 @@ void lv_text_ap_proc(const char * txt, char * txt_out);
 #endif
 
 #endif /*LV_TEXT_AP_H*/
+
+/** @} */

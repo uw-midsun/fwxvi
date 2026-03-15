@@ -1,6 +1,25 @@
-/**
- * @file nuttx_clock.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_clock.h
  *
+ * @brief   Nuttx Clock
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_clock
+ * @brief    nuttx_clock Firmware
+ * @{
  */
 
 #ifndef NUTTX_CLOCK_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES
@@ -53,3 +70,5 @@ static inline int clock_cpuload(int pid, struct cpuload_s * cpuload)
 #endif
 
 #endif /*NUTTX_CLOCK_H*/
+
+/** @} */

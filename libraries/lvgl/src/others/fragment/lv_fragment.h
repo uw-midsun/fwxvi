@@ -1,6 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_fragment.h
+ *
+ * @brief   Lv Fragment
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
 /**
- * Public header for Fragment
- * @file lv_fragment.h
+ * @defgroup lv_fragment
+ * @brief    lv_fragment Firmware
+ * @{
  */
 
 #ifndef LV_FRAGMENT_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_FRAGMENT
 
@@ -295,3 +313,5 @@ void lv_fragment_recreate_obj(lv_fragment_t * fragment);
 #endif
 
 #endif /*LV_FRAGMENT_H*/
+
+/** @} */

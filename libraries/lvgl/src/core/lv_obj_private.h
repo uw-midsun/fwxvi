@@ -1,6 +1,26 @@
-/**
- * @file lv_obj_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_private.h
  *
+ * @brief   Lv Obj Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_ext_data.h"
+#include "lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_private
+ * @brief    lv_obj_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_PRIVATE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_ext_data.h"
-#include "lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -101,3 +119,5 @@ struct _lv_obj_t {
 #endif
 
 #endif /*LV_OBJ_PRIVATE_H*/
+
+/** @} */

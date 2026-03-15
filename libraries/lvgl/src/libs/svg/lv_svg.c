@@ -1,20 +1,28 @@
-/**
- * @file lv_svg.c
+/************************************************************************************************
+ * @file    lv_svg.c
  *
- */
+ * @brief   Lv Svg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_log.h"
+#include "../../stdlib/lv_mem.h"
+#include "lv_svg.h"
+#include "lv_svg_parser.h"
+#include "lv_svg_token.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_svg.h"
 #if LV_USE_SVG
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_log.h"
-#include "../../stdlib/lv_mem.h"
-
-#include "lv_svg_token.h"
-#include "lv_svg_parser.h"
 
 /*********************
 *      DEFINES

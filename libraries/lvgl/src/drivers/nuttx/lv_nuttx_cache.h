@@ -1,6 +1,24 @@
-/**
- * @file lv_nuttx_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_cache.h
  *
+ * @brief   Lv Nuttx Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_cache
+ * @brief    lv_nuttx_cache Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_CACHE_H
@@ -39,3 +57,5 @@ void lv_nuttx_cache_deinit(void);
 #endif
 
 #endif /*LV_NUTTX_CACHE_H*/
+
+/** @} */

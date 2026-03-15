@@ -1,17 +1,28 @@
-/**
- * @file lv_string_builtin.c
- */
+/************************************************************************************************
+ * @file    lv_string_builtin.c
+ *
+ * @brief   Lv String Builtin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_STDLIB_STRING == LV_STDLIB_BUILTIN
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_math.h"
-#include "../../stdlib/lv_string.h"
-#include "../../stdlib/lv_mem.h"
 
 /*********************
  *      DEFINES

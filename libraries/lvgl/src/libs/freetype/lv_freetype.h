@@ -1,7 +1,31 @@
-/**
- * @file lv_freetype.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_freetype.h
  *
+ * @brief   Lv Freetype
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_event.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+#include LV_STDBOOL_INCLUDE
+
+/**
+ * @defgroup lv_freetype
+ * @brief    lv_freetype Firmware
+ * @{
  */
+
 #ifndef LV_FREETYPE_H
 #define LV_FREETYPE_H
 
@@ -12,15 +36,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_FREETYPE
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_event.h"
-#include "../../misc/lv_color.h"
-
-#include LV_STDBOOL_INCLUDE
 
 /*********************
 *      DEFINES
@@ -147,3 +164,5 @@ bool lv_freetype_is_outline_font(const lv_font_t * font);
 #endif
 
 #endif /* LV_FREETYPE_H */
+
+/** @} */

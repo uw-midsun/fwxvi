@@ -1,6 +1,25 @@
-/**
- * @file lv_gridnav.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gridnav.h
  *
+ * @brief   Lv Gridnav
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gridnav
+ * @brief    lv_gridnav Firmware
+ * @{
  */
 
 #ifndef LV_GRIDNAV_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../core/lv_obj.h"
 
 #if LV_USE_GRIDNAV
 
@@ -93,3 +111,5 @@ void lv_gridnav_set_focused(lv_obj_t * cont, lv_obj_t * to_focus, lv_anim_enable
 #endif
 
 #endif /* LV_GRIDNAV_H */
+
+/** @} */

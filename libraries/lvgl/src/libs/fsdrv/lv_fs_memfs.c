@@ -1,47 +1,23 @@
-/**
- * @file lv_fs_memfs.c
+/************************************************************************************************
+ * @file    lv_fs_memfs.c
  *
- * File System Interface driver for memory-mapped files
+ * @brief   Lv Fs Memfs
  *
- * This driver allows using a memory area as a file that can be read by normal file operations. It can
- * be used, e.g., to store font files in slow flash memory, and load them into RAM on demand.
- *
- * You can enable it in lv_conf.h:
- *
- * #define LV_USE_FS_MEMFS 1
- *
- * The actual implementation uses the built-in cache mechanism of the file system interface.
- *
- * Since this is not an actual file system, file write and directories are not supported.
- *
- * The default drive letter is 'M', but this can be changed in lv_conf.h:
- *
- * #define LV_FS_MEMFS_LETTER 'M'
- *
- * To use it seamlessly with the file system interface a new extended path object has been introduced:
- *
- * lv_fs_path_ex_t mempath;
- *
- * This structure can be initialized with the helper function:
- *
- * lv_fs_make_path_ex(&mempath, (const uint8_t *) & my_mem_buffer, sizeof(my_mem_buffer));
- *
- * Then the "file" can be opened with:
- *
- * lv_fs_file_t file;
- * lv_fs_res_t res = lv_fs_open(&file, (const char *) & mempath, LV_FS_MODE_RD);
- *
- * The path object can be used at any place where a file path is required, e.g.:
- *
- * lv_font_t* my_font = lv_binfont_create((const char *) & mempath);
- *
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../misc/lv_fs_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_fs_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_FS_MEMFS
 
 /*********************

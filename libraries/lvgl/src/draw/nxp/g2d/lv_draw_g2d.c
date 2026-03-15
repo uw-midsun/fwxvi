@@ -1,7 +1,22 @@
-/**
- * @file lv_draw_g2d.c
+/************************************************************************************************
+ * @file    lv_draw_g2d.c
  *
- */
+ * @brief   Lv Draw G2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_area_private.h"
+#include "g2d.h"
+#include "lv_draw_g2d.h"
+#include "lv_g2d_buf_map.h"
+#include "lv_g2d_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2024 NXP
@@ -9,13 +24,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "lv_draw_g2d.h"
-
 #if LV_USE_G2D
-#include "../../../misc/lv_area_private.h"
-#include "g2d.h"
-#include "lv_g2d_buf_map.h"
-#include "lv_g2d_utils.h"
 
 /*********************
  *      DEFINES

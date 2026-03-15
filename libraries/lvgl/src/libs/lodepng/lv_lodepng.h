@@ -1,6 +1,25 @@
-/**
- * @file lv_lodepng.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lodepng.h
  *
+ * @brief   Lv Lodepng
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_lodepng
+ * @brief    lv_lodepng Firmware
+ * @{
  */
 
 #ifndef LV_LODEPNG_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_LODEPNG
 
 /*********************
@@ -46,3 +64,5 @@ void lv_lodepng_deinit(void);
 #endif
 
 #endif /*LV_LODEPNG_H*/
+
+/** @} */

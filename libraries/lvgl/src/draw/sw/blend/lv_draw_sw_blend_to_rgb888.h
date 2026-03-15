@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_sw_blend_to_rgb888.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_rgb888.h
  *
+ * @brief   Lv Draw Sw Blend To Rgb888
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_sw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_blend_to_rgb888
+ * @brief    lv_draw_sw_blend_to_rgb888 Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_TO_RGB888_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw_sw.h"
 #if LV_USE_DRAW_SW
 
 /*********************
@@ -45,3 +63,5 @@ void /* LV_ATTRIBUTE_FAST_MEM */ lv_draw_sw_blend_image_to_rgb888(lv_draw_sw_ble
 #endif
 
 #endif /*LV_DRAW_SW_BLEND_TO_RGB888_H*/
+
+/** @} */

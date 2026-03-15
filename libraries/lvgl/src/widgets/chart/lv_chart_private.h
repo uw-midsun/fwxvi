@@ -1,6 +1,26 @@
-/**
- * @file lv_chart_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_chart_private.h
  *
+ * @brief   Lv Chart Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_chart.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_chart_private
+ * @brief    lv_chart_private Firmware
+ * @{
  */
 
 #ifndef LV_CHART_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_chart.h"
 
 #if LV_USE_CHART != 0
 
@@ -67,7 +84,6 @@ struct _lv_chart_t {
     lv_chart_update_mode_t update_mode : 2;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -83,3 +99,5 @@ struct _lv_chart_t {
 #endif
 
 #endif /*LV_CHART_PRIVATE_H*/
+
+/** @} */

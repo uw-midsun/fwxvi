@@ -1,6 +1,26 @@
-/**
- * @file lv_bar_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_bar_private.h
  *
+ * @brief   Lv Bar Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_bar.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_bar_private
+ * @brief    lv_bar_private Firmware
+ * @{
  */
 
 #ifndef LV_BAR_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_bar.h"
 
 #if LV_USE_BAR != 0
 
@@ -48,7 +65,6 @@ struct _lv_bar_t {
     lv_bar_orientation_t orientation : 3;  /**< Orientation of bar*/
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -64,3 +80,5 @@ struct _lv_bar_t {
 #endif
 
 #endif /*LV_BAR_PRIVATE_H*/
+
+/** @} */

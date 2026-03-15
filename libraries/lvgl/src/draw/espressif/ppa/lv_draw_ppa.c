@@ -1,14 +1,23 @@
-/**
- * @file lv_draw_ppa.c
+/************************************************************************************************
+ * @file    lv_draw_ppa.c
  *
- */
+ * @brief   Lv Draw Ppa
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_ppa.h"
+#include "lv_draw_ppa_private.h"
+
+/* Intra-component Headers */
 
 /*********************
 *      INCLUDES
 *********************/
-
-#include "lv_draw_ppa_private.h"
-#include "lv_draw_ppa.h"
 
 #if LV_USE_PPA
 

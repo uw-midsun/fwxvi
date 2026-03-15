@@ -1,21 +1,31 @@
-/**
- * @file lv_obj_pos.c
+/************************************************************************************************
+ * @file    lv_obj_pos.c
  *
- */
+ * @brief   Lv Obj Pos
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../layouts/lv_layout_private.h"
+#include "../misc/lv_area_private.h"
+#include "lv_obj_draw_private.h"
+#include "lv_obj_event_private.h"
+#include "lv_obj_private.h"
+#include "lv_obj_style_private.h"
+#include "lv_refr_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_area_private.h"
-#include "../layouts/lv_layout_private.h"
-#include "lv_obj_event_private.h"
-#include "lv_obj_draw_private.h"
-#include "lv_obj_style_private.h"
-#include "lv_obj_private.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "lv_refr_private.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -1119,7 +1129,6 @@ lv_result_t lv_obj_invalidate_area(const lv_obj_t * obj, const lv_area_t * area)
 
     return obj_invalidate_area_internal(disp, obj, area);
 }
-
 
 lv_result_t lv_obj_invalidate(const lv_obj_t * obj)
 {

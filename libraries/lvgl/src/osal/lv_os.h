@@ -1,6 +1,25 @@
-/**
- * @file lv_os.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_os.h
  *
+ * @brief   Lv Os
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_os
+ * @brief    lv_os Firmware
+ * @{
  */
 
 #ifndef LV_OS_H
@@ -17,7 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -69,3 +87,5 @@ void lv_sleep_ms(uint32_t ms);
 #endif
 
 #endif /*LV_OS_H*/
+
+/** @} */

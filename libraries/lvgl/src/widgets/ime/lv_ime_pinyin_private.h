@@ -1,6 +1,26 @@
-/**
- * @file lv_ime_pinyin_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ime_pinyin_private.h
  *
+ * @brief   Lv Ime Pinyin Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_ime_pinyin.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_ime_pinyin_private
+ * @brief    lv_ime_pinyin_private Firmware
+ * @{
  */
 
 #ifndef LV_IME_PINYIN_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_ime_pinyin.h"
 
 #if LV_USE_IME_PINYIN != 0
 
@@ -50,7 +67,6 @@ struct _lv_ime_pinyin_t {
     lv_ime_pinyin_mode_t  mode; /* Set mode, 1: 26-key input(k26), 0: 9-key input(k9). Default: 1. */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -66,3 +82,5 @@ struct _lv_ime_pinyin_t {
 #endif
 
 #endif /*LV_IME_PINYIN_PRIVATE_H*/
+
+/** @} */

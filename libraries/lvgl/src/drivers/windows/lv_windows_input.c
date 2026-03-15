@@ -1,29 +1,36 @@
-/**
- * @file lv_windows_input.c
+/************************************************************************************************
+ * @file    lv_windows_input.c
  *
- */
+ * @brief   Lv Windows Input
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <windowsx.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "../../misc/lv_text_private.h"
+#include "../../widgets/keyboard/lv_keyboard.h"
+#include "../../widgets/textarea/lv_textarea_private.h"
+#include "lv_windows_context.h"
+#include "lv_windows_display.h"
+#include "lv_windows_input.h"
+#include "lv_windows_input_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_windows_input.h"
 #if LV_USE_WINDOWS
 
 #ifdef __GNUC__
     #pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
-
-#include "lv_windows_context.h"
-#include "lv_windows_display.h"
-#include "lv_windows_input_private.h"
-#include "../../misc/lv_text_private.h"
-#include "../../core/lv_obj_private.h"
-
-#include <windowsx.h>
-
-#include "../../widgets/textarea/lv_textarea_private.h"
-#include "../../widgets/keyboard/lv_keyboard.h"
 
 /*********************
  *      DEFINES

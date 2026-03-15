@@ -1,3 +1,22 @@
+/************************************************************************************************
+ * @file    lv_sprintf_builtin.c
+ *
+ * @brief   Lv Sprintf Builtin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <float.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+#include "../lv_sprintf.h"
+#include "../lv_string.h"
+
+/* Intra-component Headers */
 ///////////////////////////////////////////////////////////////////////////////
 // \author (c) Marco Paland (info@paland.com)
 //             2014-2019, PALANDesign Hannover, Germany
@@ -32,12 +51,7 @@
 
 /*Original repository: https://github.com/mpaland/printf*/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_STDLIB_SPRINTF == LV_STDLIB_BUILTIN
-
-#include "../lv_sprintf.h"
-#include "../lv_string.h"
-#include "../../misc/lv_types.h"
 
 #define PRINTF_DISABLE_SUPPORT_FLOAT    (!LV_USE_FLOAT)
 
@@ -115,7 +129,6 @@ typedef struct {
 
 // import float.h for DBL_MAX
 #if defined(PRINTF_SUPPORT_FLOAT)
-    #include <float.h>
 #endif
 
 // output function type

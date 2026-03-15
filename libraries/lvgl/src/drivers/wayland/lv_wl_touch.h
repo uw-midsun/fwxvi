@@ -1,8 +1,26 @@
+#pragma once
 
+/************************************************************************************************
+ * @file    lv_wl_touch.h
+ *
+ * @brief   Lv Wl Touch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_gesture.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_wl_touch.h
- *
+ * @defgroup lv_wl_touch
+ * @brief    lv_wl_touch Firmware
+ * @{
  */
 
 #ifndef LV_WL_TOUCH_H
@@ -16,8 +34,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_gesture.h"
 #if LV_USE_WAYLAND
 
 /*********************
@@ -52,3 +68,5 @@ lv_indev_t * lv_wayland_get_touchscreen(lv_display_t * display);
 #endif
 
 #endif /*LV_WL_TOUCH_H*/
+
+/** @} */

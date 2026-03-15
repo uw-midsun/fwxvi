@@ -1,6 +1,29 @@
-/**
- * @file lv_draw_arc.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_arc.h
  *
+ * @brief   Lv Draw Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+#include "lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_arc
+ * @brief    lv_draw_arc Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_ARC_H
@@ -13,11 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw.h"
-#include "../lv_conf_internal.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -108,3 +126,5 @@ void lv_draw_arc_get_area(int32_t x, int32_t y, uint16_t radius,  lv_value_preci
 #endif
 
 #endif /*LV_DRAW_ARC_H*/
+
+/** @} */

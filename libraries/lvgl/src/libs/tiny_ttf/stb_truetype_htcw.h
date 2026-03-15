@@ -1,3 +1,39 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stb_truetype_htcw.h
+ *
+ * @brief   Stb Truetype Htcw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <assert.h>
+    #include <math.h>
+    #include <math.h>
+    #include <math.h>
+    #include <math.h>
+    #include <math.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <string.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stb_truetype.h"
+#include "stb_truetype.h"
+
+/**
+ * @defgroup stb_truetype_htcw
+ * @brief    stb_truetype_htcw Firmware
+ * @{
+ */
+
 // stb_truetype.h - v1.26htcw (fork to enable streaming and low memory environments)
 // stb_truetype.h - v1.26 - public domain
 // authored from 2009-2021 by Sean Barrett / RAD Game Tools
@@ -277,7 +313,6 @@
 //  See "tests/truetype_demo_win32.c" for a complete version.
 #if 0
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
 
 unsigned char ttf_buffer[1 << 20];
 unsigned char temp_bitmap[512 * 512];
@@ -330,9 +365,7 @@ void my_stbtt_print(float x, float y, char * text)
 // Complete program (this compiles): get a single bitmap, print as ASCII art
 //
 #if 0
-#include <stdio.h>
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
 
 char ttf_buffer[1 << 25];
 
@@ -446,7 +479,6 @@ typedef char stbtt__check_size16[sizeof(stbtt_int16) == 2 ? 1 : -1];
 // STBTT_STREAM_READ and STBTT_STREAM_SEEK to implement
 // another streaming source
 #ifdef STBTT_STDIO_STREAM
-    #include <stdio.h>
     #define STBTT_STREAM_TYPE FILE*
     #define STBTT_STREAM_READ(s,x,y) fread(x,1,y,s);
     #define STBTT_STREAM_SEEK(s,x)  fseek(s,x,SEEK_SET);
@@ -469,52 +501,43 @@ typedef char stbtt__check_size16[sizeof(stbtt_int16) == 2 ? 1 : -1];
 
 // e.g. #define your own STBTT_ifloor/STBTT_iceil() to avoid math.h
 #ifndef STBTT_ifloor
-    #include <math.h>
     #define STBTT_ifloor(x)   ((int) floor(x))
     #define STBTT_iceil(x)    ((int) ceil(x))
 #endif
 
 #ifndef STBTT_sqrt
-    #include <math.h>
     #define STBTT_sqrt(x)      (float)sqrt(x)
     #define STBTT_pow(x,y)     pow(x,y)
 #endif
 
 #ifndef STBTT_fmod
-    #include <math.h>
     #define STBTT_fmod(x,y)    fmod(x,y)
 #endif
 
 #ifndef STBTT_cos
-    #include <math.h>
     #define STBTT_cos(x)       cos(x)
     #define STBTT_acos(x)      acos(x)
 #endif
 
 #ifndef STBTT_fabs
-    #include <math.h>
     #define STBTT_fabs(x)      (float)fabs(x)
 #endif
 
 // #define your own functions "STBTT_malloc" / "STBTT_free" to avoid malloc.h
 #ifndef STBTT_malloc
-    #include <stdlib.h>
     #define STBTT_malloc(x,u)  ((void)(u),malloc(x))
     #define STBTT_free(x,u)    ((void)(u),free(x))
 #endif
 
 #ifndef STBTT_assert
-    #include <assert.h>
     #define STBTT_assert(x)    assert(x)
 #endif
 
 #ifndef STBTT_strlen
-    #include <string.h>
     #define STBTT_strlen(x)    strlen(x)
 #endif
 
 #ifndef STBTT_memcpy
-    #include <string.h>
     #define STBTT_memcpy       memcpy
     #define STBTT_memset       memset
 #endif
@@ -5596,3 +5619,5 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
+
+/** @} */

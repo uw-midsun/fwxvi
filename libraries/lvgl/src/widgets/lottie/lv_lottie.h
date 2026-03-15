@@ -1,6 +1,26 @@
-/**
- * @file lv_lottie.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lottie.h
  *
+ * @brief   Lv Lottie
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_buf.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_lottie
+ * @brief    lv_lottie Firmware
+ * @{
  */
 
 #ifndef LV_LOTTIE_H
@@ -13,7 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_types.h"
 #if LV_USE_LOTTIE
 
 /*Testing of dependencies*/
@@ -24,8 +43,6 @@ extern "C" {
 #if LV_USE_THORVG == 0
 #error "lv_lottie: ThorVG is required. Enable it in lv_conf.h (LV_USE_THORVG_INTERNAL/EXTERNAL 1)"
 #endif
-
-#include "../../draw/lv_draw_buf.h"
 
 /*********************
  *      DEFINES
@@ -100,3 +117,5 @@ lv_anim_t * lv_lottie_get_anim(lv_obj_t * obj);
 #endif
 
 #endif /*LV_LOTTIE_H*/
+
+/** @} */

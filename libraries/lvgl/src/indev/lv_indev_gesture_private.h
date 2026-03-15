@@ -1,15 +1,26 @@
-/*******************************************************************
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_indev_gesture_private.h
  *
- * @file lv_indev_gesture_private.h
+ * @brief   Lv Indev Gesture Private
  *
- * Contains declarations and definition that are internal
- * to the gesture detection logic
- *
- * Copyright (c) 2024 EDGEMTech Ltd.
- *
- * Author EDGEMTech Ltd, (erik.tagirov@edgemtech.ch)
- *
- ******************************************************************/
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_indev_gesture_private
+ * @brief    lv_indev_gesture_private Firmware
+ * @{
+ */
 
 #ifndef LV_INDEV_GESTURE_PRIVATE_H
 #define LV_INDEV_GESTURE_PRIVATE_H
@@ -21,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../core/lv_obj.h"
 
 #if LV_USE_GESTURE_RECOGNITION
 
@@ -30,7 +40,6 @@ extern "C" {
  *********************/
 
 #define LV_GESTURE_MAX_POINTS 2
-
 
 /**********************
  *      TYPEDEFS
@@ -95,3 +104,5 @@ struct lv_indev_gesture_configuration {
 #endif
 
 #endif /* LV_INDEV_GESTURE_PRIVATE_H */
+
+/** @} */

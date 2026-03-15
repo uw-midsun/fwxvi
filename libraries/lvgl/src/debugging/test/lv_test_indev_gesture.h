@@ -1,6 +1,27 @@
-/**
- * @file lv_test_indev_gesture.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_test_indev_gesture.h
  *
+ * @brief   Lv Test Indev Gesture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_test_indev_gesture
+ * @brief    lv_test_indev_gesture Firmware
+ * @{
  */
 
 #ifndef LV_TEST_INDEV_GESTURE_H
@@ -13,11 +34,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST && LV_USE_GESTURE_RECOGNITION
-
-#include "../../misc/lv_types.h"
-#include "../../indev/lv_indev.h"
 
 /*********************
  *      DEFINES
@@ -89,5 +106,4 @@ void lv_test_gesture_pinch(lv_point_t point_begin_0, lv_point_t point_begin_1,
 #endif /*LV_TEST_INDEV_GESTURE_H*/
 
 
-
-
+/** @} */

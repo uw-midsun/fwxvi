@@ -1,6 +1,29 @@
-/**
- * @file lv_text.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_text.h
  *
+ * @brief   Lv Text
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../font/lv_font.h"
+#include "../lv_conf_internal.h"
+#include "../stdlib/lv_sprintf.h"
+#include "lv_area.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_text
+ * @brief    lv_text Firmware
+ * @{
  */
 
 #ifndef LV_TEXT_H
@@ -13,11 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
-#include "lv_area.h"
-#include "../font/lv_font.h"
-#include "../stdlib/lv_sprintf.h"
 
 /*********************
  *      DEFINES
@@ -84,3 +102,5 @@ void lv_text_get_size(lv_point_t * size_res, const char * text, const lv_font_t 
 #endif
 
 #endif /*LV_TEXT_H*/
+
+/** @} */

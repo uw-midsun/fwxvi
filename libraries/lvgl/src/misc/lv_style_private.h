@@ -1,6 +1,25 @@
-/**
- * @file lv_style_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_style_private.h
  *
+ * @brief   Lv Style Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_style_private
+ * @brief    lv_style_private Firmware
+ * @{
  */
 
 #ifndef LV_STYLE_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_style.h"
 
 /*********************
  *      DEFINES
@@ -37,3 +54,5 @@ extern "C" {
 #endif
 
 #endif /*LV_STYLE_PRIVATE_H*/
+
+/** @} */

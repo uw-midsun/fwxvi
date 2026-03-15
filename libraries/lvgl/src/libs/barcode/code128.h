@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    code128.h
+ *
+ * @brief   Code128
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup code128
+ * @brief    code128 Firmware
+ * @{
+ */
+
 // Copyright (c) 2013-15, LKC Technologies, Inc.
 // All rights reserved.
 //
@@ -23,8 +47,6 @@
 #ifndef CODE128_H
 #define CODE128_H
 
-#include <stddef.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,3 +67,5 @@ size_t code128_encode_raw(const char * s, char * out, size_t maxlength);
 #endif
 
 #endif // CODE128_H
+
+/** @} */

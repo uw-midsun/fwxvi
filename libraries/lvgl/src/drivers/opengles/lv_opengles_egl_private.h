@@ -1,6 +1,29 @@
-/**
- * @file lv_opengles_egl_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_egl_private.h
  *
+ * @brief   Lv Opengles Egl Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_types.h"
+#include "lv_opengles_egl.h"
+#include "lv_opengles_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_egl_private
+ * @brief    lv_opengles_egl_private Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_EGL_PRIVATE_H
@@ -13,15 +36,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_EGL
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_color.h"
-#include "lv_opengles_private.h"
-#include "lv_opengles_egl.h"
-
 
 /*********************
  *      DEFINES
@@ -72,7 +88,6 @@ struct _lv_egl_interface {
     lv_egl_flip_t flip_cb;
 };
 
-
 struct _lv_opengles_egl {
     EGLNativeWindowType native_window;
     EGLDisplay egl_display;
@@ -101,3 +116,5 @@ struct _lv_opengles_egl {
 #endif
 
 #endif /*LV_OPENGLES_EGL_PRIVATE_H*/
+
+/** @} */

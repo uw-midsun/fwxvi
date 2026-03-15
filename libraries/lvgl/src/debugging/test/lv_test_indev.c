@@ -1,16 +1,25 @@
-/**
- * @file lv_test_indev.c
+/************************************************************************************************
+ * @file    lv_test_indev.c
  *
- */
+ * @brief   Lv Test Indev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../lvgl_private.h"
+#include "lv_test.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_test.h"
 #if LV_USE_TEST
-
-#include "../../core/lv_global.h"
-#include "../../lvgl_private.h"
 
 /*********************
  *      DEFINES
@@ -93,7 +102,6 @@ void lv_test_mouse_move_to(int32_t x, int32_t y)
     _state.x_act = x;
     _state.y_act = y;
 }
-
 
 void lv_test_mouse_move_to_obj(lv_obj_t * obj)
 {
@@ -192,14 +200,12 @@ static void lv_test_mouse_read_cb(lv_indev_t * indev, lv_indev_data_t * data)
     data->state = _state.mouse_pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
 }
 
-
 static void lv_test_keypad_read_cb(lv_indev_t * indev, lv_indev_data_t * data)
 {
     LV_UNUSED(indev);
     data->key = _state.key_act;
     data->state = _state.key_pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
 }
-
 
 static void lv_test_encoder_read_cb(lv_indev_t * indev, lv_indev_data_t * data)
 {

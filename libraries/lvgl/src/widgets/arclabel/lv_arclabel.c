@@ -1,26 +1,34 @@
-/**
- * @file lv_arclabel.c
+/************************************************************************************************
+ * @file    lv_arclabel.c
  *
- */
+ * @brief   Lv Arclabel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
+/* Standard library Headers */
+    #include <float.h>
+    #include <math.h>
 
-#include "lv_arclabel_private.h"
-
-#if LV_USE_ARCLABEL != 0
-
+/* Inter-component Headers */
 #include "../../core/lv_obj_class_private.h"
 #include "../../core/lv_obj_event_private.h"
 #include "../../core/lv_obj_private.h"
 #include "../../misc/lv_area_private.h"
 #include "../../misc/lv_assert.h"
 #include "../../misc/lv_text_private.h"
+#include "lv_arclabel_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_ARCLABEL != 0
 
 #if LV_USE_FLOAT
-    #include <math.h>
-    #include <float.h>
     #ifndef  M_PI
         #define M_PI 3.14159265358979323846264338327950288
     #endif
@@ -465,7 +473,6 @@ static void arclabel_draw_main(lv_event_t * e)
         lv_color_t recolor_color = color;
         if(arclabel->recolor) text = recolor_cmd_get_next(text, LV_TEXT_LEN_MAX, &text_start, &text_len, &recolor_color);
         else text = NULL;
-
 
         while(word_i < text_len && (arclabel->overflow == LV_ARCLABEL_OVERFLOW_VISIBLE ||
                                     curr_total_arc_length <= total_arc_length)) {

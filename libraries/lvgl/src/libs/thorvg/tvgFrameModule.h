@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgFrameModule.h
+ *
+ * @brief   Tvgframemodule
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgLoadModule.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgFrameModule
+ * @brief    tvgFrameModule Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_FRAME_MODULE_H_
 #define _TVG_FRAME_MODULE_H_
-
-#include "tvgLoadModule.h"
 
 namespace tvg
 {
@@ -66,3 +88,5 @@ public:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

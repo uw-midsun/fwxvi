@@ -1,3 +1,44 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stb_image.h
+ *
+ * @brief   Stb Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <arm_neon.h>
+    #include <assert.h>
+    #include <math.h>  // ldexp, pow
+    #include <stdint.h>
+    #include <stdio.h>
+    #include <stdio.h>
+#include <emmintrin.h>
+#include <intrin.h> // __cpuid
+#include <limits.h>
+#include <stdarg.h>
+#include <stddef.h> // ptrdiff_t on osx
+#include <stdlib.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+   #include "stb_image.h"
+   #include ...
+   #include ...
+   #include ...
+
+/**
+ * @defgroup stb_image
+ * @brief    stb_image Firmware
+ * @{
+ */
+
 /* stb_image - v2.30 - public domain image loader - http://nothings.org/stb
                                   no warranty implied; use at your own risk
 
@@ -6,15 +47,10 @@
    before you include this file in *one* C or C++ file to create the implementation.
 
    // i.e. it should look like this:
-   #include ...
-   #include ...
-   #include ...
    #define STB_IMAGE_IMPLEMENTATION
-   #include "stb_image.h"
 
    You can #define STBI_ASSERT(x) before the #include to avoid using assert.h.
    And #define STBI_MALLOC, STBI_REALLOC, and STBI_FREE to avoid using malloc,realloc,free
-
 
    QUICK NOTES:
       Primarily of interest to game developers and other people who can
@@ -40,7 +76,6 @@
       - SIMD acceleration on x86/x64 (SSE2) and ARM (NEON)
 
    Full documentation under "DOCUMENTATION" below.
-
 
 LICENSE
 
@@ -75,7 +110,6 @@ RECENT REVISION HISTORY:
       2.09  (2016-01-16) 16-bit TGA; comments in PNM files; STBI_REALLOC_SIZED
 
    See end of file for full revision history.
-
 
  ============================    Contributors    =========================
 
@@ -368,7 +402,6 @@ RECENT REVISION HISTORY:
 //    very big.
 
 #ifndef STBI_NO_STDIO
-    #include <stdio.h>
 #endif // STBI_NO_STDIO
 
 #define STBI_VERSION 1
@@ -382,7 +415,6 @@ enum {
     STBI_rgb_alpha  = 4
 };
 
-#include <stdlib.h>
 typedef unsigned char stbi_uc;
 typedef unsigned short stbi_us;
 
@@ -489,7 +521,6 @@ STBIDEF int      stbi_is_hdr(char const * filename);
 STBIDEF int      stbi_is_hdr_from_file(FILE * f);
 #endif // STBI_NO_STDIO
 
-
 // get a VERY brief reason for failure
 // on most compilers (and ALL modern mainstream compilers) this is threadsafe
 STBIDEF const char * stbi_failure_reason(void);
@@ -509,8 +540,6 @@ STBIDEF int      stbi_info_from_file(FILE * f,                  int * x, int * y
 STBIDEF int      stbi_is_16_bit(char const * filename);
 STBIDEF int      stbi_is_16_bit_from_file(FILE * f);
 #endif
-
-
 
 // for image formats that explicitly notate that they have premultiplied alpha,
 // we just return the colors as stored in the file. set this flag to force
@@ -541,7 +570,6 @@ STBIDEF int   stbi_zlib_decode_buffer(char * obuffer, int olen, const char * ibu
 
 STBIDEF char * stbi_zlib_decode_noheader_malloc(const char * buffer, int len, int * outlen);
 STBIDEF int   stbi_zlib_decode_noheader_buffer(char * obuffer, int olen, const char * ibuffer, int ilen);
-
 
 #ifdef __cplusplus
 }
@@ -591,23 +619,13 @@ STBIDEF int   stbi_zlib_decode_noheader_buffer(char * obuffer, int olen, const c
     #define STBI_NO_ZLIB
 #endif
 
-
-#include <stdarg.h>
-#include <stddef.h> // ptrdiff_t on osx
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-
 #if !defined(STBI_NO_LINEAR) || !defined(STBI_NO_HDR)
-    #include <math.h>  // ldexp, pow
 #endif
 
 #ifndef STBI_NO_STDIO
-    #include <stdio.h>
 #endif
 
 #ifndef STBI_ASSERT
-    #include <assert.h>
     #define STBI_ASSERT(x) assert(x)
 #endif
 
@@ -616,7 +634,6 @@ STBIDEF int   stbi_zlib_decode_noheader_buffer(char * obuffer, int olen, const c
 #else
     #define STBI_EXTERN extern
 #endif
-
 
 #ifndef _MSC_VER
     #ifdef __cplusplus
@@ -652,7 +669,6 @@ STBIDEF int   stbi_zlib_decode_noheader_buffer(char * obuffer, int olen, const c
     typedef unsigned int   stbi__uint32;
     typedef   signed int   stbi__int32;
 #else
-    #include <stdint.h>
     typedef uint16_t stbi__uint16;
     typedef int16_t  stbi__int16;
     typedef uint32_t stbi__uint32;
@@ -731,12 +747,10 @@ typedef unsigned char validate_uint32[sizeof(stbi__uint32) == 4 ? 1 : -1];
 
 #if !defined(STBI_NO_SIMD) && (defined(STBI__X86_TARGET) || defined(STBI__X64_TARGET))
 #define STBI_SSE2
-#include <emmintrin.h>
 
 #ifdef _MSC_VER
 
 #if _MSC_VER >= 1400  // not VC6
-#include <intrin.h> // __cpuid
 static int stbi__cpuid3(void)
 {
     int info[4];
@@ -788,7 +802,6 @@ static int stbi__sse2_available(void)
 #endif
 
 #ifdef STBI_NEON
-    #include <arm_neon.h>
     #ifdef _MSC_VER
         #define STBI_SIMD_ALIGN(type, name) __declspec(align(16)) type name
     #else
@@ -825,7 +838,6 @@ typedef struct {
     stbi_uc * img_buffer, * img_buffer_end;
     stbi_uc * img_buffer_original, * img_buffer_original_end;
 } stbi__context;
-
 
 static void stbi__refill_buffer(stbi__context * s);
 
@@ -1371,7 +1383,6 @@ static FILE * stbi__fopen(char const * filename, char const * mode)
     return f;
 }
 
-
 STBIDEF stbi_uc * stbi_load(char const * filename, int * x, int * y, int * comp, int req_comp)
 {
     FILE * f = stbi__fopen(filename, "rb");
@@ -1417,7 +1428,6 @@ STBIDEF stbi_us * stbi_load_16(char const * filename, int * x, int * y, int * co
     fclose(f);
     return result;
 }
-
 
 #endif //!STBI_NO_STDIO
 
@@ -1606,7 +1616,6 @@ STBIDEF void   stbi_hdr_to_ldr_scale(float scale)
 {
     stbi__h2l_scale_i = 1 / scale;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -4885,7 +4894,6 @@ typedef struct {
     int depth;
 } stbi__png;
 
-
 enum {
     STBI__F_none = 0,
     STBI__F_sub = 1,
@@ -5655,7 +5663,6 @@ static int stbi__bmp_test(stbi__context * s)
     return r;
 }
 
-
 // returns 0..31 for the highest set bit
 static int stbi__high_bit(unsigned int z)
 {
@@ -5838,7 +5845,6 @@ static void * stbi__bmp_parse_header(stbi__context * s, stbi__bmp_data * info)
     }
     return (void *) 1;
 }
-
 
 static void * stbi__bmp_load(stbi__context * s, int * x, int * y, int * comp, int req_comp, stbi__result_info * ri)
 {
@@ -8322,7 +8328,6 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const * c, void * us
               first released version
 */
 
-
 /*
 ------------------------------------------------------------------------------
 This software is available under 2 licenses -- choose whichever you prefer.
@@ -8364,3 +8369,5 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
+
+/** @} */

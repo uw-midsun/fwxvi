@@ -1,6 +1,26 @@
-/**
- * @file lv_spinner_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_spinner_private.h
  *
+ * @brief   Lv Spinner Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../arc/lv_arc_private.h"
+#include "lv_spinner.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_spinner_private
+ * @brief    lv_spinner_private Firmware
+ * @{
  */
 
 #ifndef LV_SPINNER_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_spinner.h"
 #if LV_USE_SPINNER
-
-#include "../arc/lv_arc_private.h"
 
 /*********************
  *      DEFINES
@@ -48,3 +65,5 @@ struct _lv_spinner_t {
 #endif
 
 #endif /*LV_SPINNER_PRIVATE_H*/
+
+/** @} */

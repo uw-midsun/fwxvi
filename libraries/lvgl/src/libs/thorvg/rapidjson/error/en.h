@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    en.h
+ *
+ * @brief   En
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "error.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup en
+ * @brief    en Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_ERROR_EN_H_
 #define RAPIDJSON_ERROR_EN_H_
-
-#include "error.h"
 
 #ifdef __clang__
 RAPIDJSON_DIAG_PUSH
@@ -174,3 +196,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_ERROR_EN_H_
+
+/** @} */

@@ -1,6 +1,37 @@
-/**
- * @file lv_draw_dave2d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_dave2d.h
  *
+ * @brief   Lv Draw Dave2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../lv_draw.h"
+#include "../../lv_draw_arc.h"
+#include "../../lv_draw_buf.h"
+#include "../../lv_draw_image.h"
+#include "../../lv_draw_label.h"
+#include "../../lv_draw_line.h"
+#include "../../lv_draw_private.h"
+#include "../../lv_draw_rect.h"
+#include "../../lv_draw_triangle.h"
+#include "bsp_api.h"
+#include "dave_driver.h"
+#include "lv_draw_dave2d_utils.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_dave2d
+ * @brief    lv_draw_dave2d Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_DAVE2D_H
@@ -13,12 +44,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 #if LV_USE_DRAW_DAVE2D
-#include "../../lv_draw.h"
-#include "../../lv_draw_private.h"
-#include "bsp_api.h"
-#include "dave_driver.h"
 
 #if LV_USE_FLOAT
 
@@ -47,17 +73,6 @@ extern "C" {
 
 /* It also should be included here before the other LVGL Dave2D files */
 #endif
-
-#include "lv_draw_dave2d_utils.h"
-#include "../../lv_draw_rect.h"
-#include "../../lv_draw_line.h"
-#include "../../lv_draw_arc.h"
-#include "../../lv_draw_label.h"
-#include "../../lv_draw_image.h"
-#include "../../lv_draw_triangle.h"
-#include "../../lv_draw_buf.h"
-
-
 
 /*********************
  *      DEFINES
@@ -134,3 +149,5 @@ void lv_draw_dave2d_transform(lv_draw_task_t * t, const lv_area_t * dest_area, c
 #endif
 
 #endif /*LV_DRAW_DAVE2D_H*/
+
+/** @} */

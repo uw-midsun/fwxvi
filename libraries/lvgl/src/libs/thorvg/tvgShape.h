@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgShape.h
+ *
+ * @brief   Tvgshape
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <memory.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgMath.h"
+#include "tvgPaint.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgShape
+ * @brief    tvgShape Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,16 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SHAPE_H_
 #define _TVG_SHAPE_H_
-
-#include <memory.h>
-#include "tvgMath.h"
-#include "tvgPaint.h"
-
 
 struct Shape::Impl
 {
@@ -414,3 +435,5 @@ struct Shape::Impl
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

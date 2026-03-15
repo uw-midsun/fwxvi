@@ -1,14 +1,23 @@
-/**
- * @file lv_ll.c
- * Handle linked lists.
- * The nodes are dynamically allocated by the 'lv_mem' module,
- */
+/************************************************************************************************
+ * @file    lv_ll.c
+ *
+ * @brief   Lv Ll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_mem.h"
+#include "lv_ll.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_ll.h"
-#include "../stdlib/lv_mem.h"
 
 /*********************
  *      DEFINES

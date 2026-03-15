@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_opengles.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_opengles.h
  *
+ * @brief   Lv Draw Opengles
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_opengles
+ * @brief    lv_draw_opengles Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_OPENGLES_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_DRAW_OPENGLES
 
 /*********************
@@ -43,3 +61,5 @@ void lv_draw_opengles_deinit(void);
 #endif
 
 #endif /*LV_DRAW_OPENGLES_H*/
+
+/** @} */

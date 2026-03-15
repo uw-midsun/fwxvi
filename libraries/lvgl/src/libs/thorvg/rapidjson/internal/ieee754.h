@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    ieee754.h
+ *
+ * @brief   Ieee754
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup ieee754
+ * @brief    ieee754 Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_IEEE754_
 #define RAPIDJSON_IEEE754_
-
-#include "../rapidjson.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
@@ -76,3 +98,5 @@ private:
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_IEEE754_
+
+/** @} */

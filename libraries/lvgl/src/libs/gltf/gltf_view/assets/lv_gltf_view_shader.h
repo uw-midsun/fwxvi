@@ -1,6 +1,25 @@
-/**
- * @file lv_gltf_view_shader.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_view_shader.h
  *
+ * @brief   Lv Gltf View Shader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_view_shader
+ * @brief    lv_gltf_view_shader Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_VIEW_SHADER_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
 
 #if LV_USE_GLTF
 
@@ -37,3 +55,5 @@ void lv_gltf_view_shader_get_env(lv_opengl_shader_portions_t *shaders);
 #endif
 
 #endif /*LV_GLTF_VIEW_SHADER_H*/
+
+/** @} */

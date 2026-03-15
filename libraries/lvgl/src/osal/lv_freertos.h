@@ -1,6 +1,31 @@
-/**
- * @file lv_freertos.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_freertos.h
  *
+ * @brief   Lv Freertos
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+#include "freertos/task.h"
+#include "lv_os_private.h"
+#include "task.h"
+
+/* Intra-component Headers */
+#include "semphr.h"
+
+/**
+ * @defgroup lv_freertos
+ * @brief    lv_freertos Firmware
+ * @{
  */
 
 /**
@@ -19,18 +44,11 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_FREERTOS
 
 #ifdef ESP_PLATFORM
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
 #else
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
 #endif
 
 /*********************
@@ -84,7 +102,6 @@ void lv_freertos_task_switch_in(const char * name);
  */
 void lv_freertos_task_switch_out(void);
 
-
 /**********************
  *      MACROS
  **********************/
@@ -96,3 +113,5 @@ void lv_freertos_task_switch_out(void);
 #endif
 
 #endif /*LV_FREERTOS_H*/
+
+/** @} */

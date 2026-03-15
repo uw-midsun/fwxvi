@@ -1,3 +1,34 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    nanovg_gl.h
+ *
+ * @brief   Nanovg Gl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_profiler.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_sprintf.h"
+#include "../../stdlib/lv_string.h"
+#include "nanovg.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nanovg_gl
+ * @brief    nanovg_gl Firmware
+ * @{
+ */
+
 //
 // Copyright (c) 2009-2013 Mikko Mononen memon@inside.org
 //
@@ -17,8 +48,6 @@
 //
 #ifndef NANOVG_GL_H
 #define NANOVG_GL_H
-
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_NANOVG
 
@@ -113,14 +142,6 @@ enum NVGimageFlagsGL {
 #endif /* NANOVG_GL_H */
 
 #ifdef NANOVG_GL_IMPLEMENTATION
-
-#include <math.h>
-#include "nanovg.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "../../stdlib/lv_sprintf.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_profiler.h"
 
 enum GLNVGuniformLoc {
     GLNVG_LOC_VIEWSIZE,
@@ -908,7 +929,6 @@ static int glnvg__renderCreateTexture(void * uptr, int type, int w, int h, int i
 
     return tex->id;
 }
-
 
 static int glnvg__renderDeleteTexture(void * uptr, int image)
 {
@@ -1739,7 +1759,6 @@ static void glnvg__renderDelete(void * uptr)
     lv_free(gl);
 }
 
-
 #if defined NANOVG_GL2
     NVGcontext * nvgCreateGL2(int flags)
 #elif defined NANOVG_GL3
@@ -1840,3 +1859,5 @@ error:
 #endif /* LV_USE_NANOVG */
 
 #endif /* NANOVG_GL_IMPLEMENTATION */
+
+/** @} */

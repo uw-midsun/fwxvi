@@ -1,7 +1,24 @@
-/**
- * @file lv_sdl_window.c
+/************************************************************************************************
+ * @file    lv_sdl_window.c
  *
- */
+ * @brief   Lv Sdl Window
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_refr.h"
+#include "../../display/lv_display_private.h"
+#include "../../lv_init.h"
+#include "lv_sdl_private.h"
+#include "lv_sdl_window.h"
+
+/* Intra-component Headers */
 
 /**
  * Modified by NXP in 2025
@@ -10,16 +27,9 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_sdl_window.h"
 #if LV_USE_SDL
-#include <stdbool.h>
-#include "../../core/lv_refr.h"
-#include "../../core/lv_global.h"
-#include "../../display/lv_display_private.h"
-#include "../../lv_init.h"
 
 #define SDL_MAIN_HANDLED /*To fix SDL's "undefined reference to WinMain" issue*/
-#include "lv_sdl_private.h"
 
 #if LV_COLOR_DEPTH == 1 && LV_SDL_RENDER_MODE != LV_DISPLAY_RENDER_MODE_PARTIAL
     #error SDL LV_COLOR_DEPTH 1 requires LV_SDL_RENDER_MODE LV_DISPLAY_RENDER_MODE_PARTIAL

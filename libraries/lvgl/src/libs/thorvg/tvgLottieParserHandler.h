@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieParserHandler.h
+ *
+ * @brief   Tvglottieparserhandler
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "rapidjson/document.h"
+#include "tvgCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieParserHandler
+ * @brief    tvgLottieParserHandler Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,7 +46,6 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 /*
@@ -48,12 +73,7 @@
 #ifndef _TVG_LOTTIE_PARSER_HANDLER_H_
 #define _TVG_LOTTIE_PARSER_HANDLER_H_
 
-#include "rapidjson/document.h"
-#include "tvgCommon.h"
-
-
 using namespace rapidjson;
-
 
 struct LookaheadParserHandler
 {
@@ -204,3 +224,5 @@ struct LookaheadParserHandler
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

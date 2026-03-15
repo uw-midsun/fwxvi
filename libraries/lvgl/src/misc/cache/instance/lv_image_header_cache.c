@@ -1,18 +1,26 @@
-/**
-* @file lv_image_header_cache.c
-*
- */
+/************************************************************************************************
+ * @file    lv_image_header_cache.c
+ *
+ * @brief   Lv Image Header Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../core/lv_global.h"
+#include "../../../draw/lv_image_decoder_private.h"
+#include "../../lv_assert.h"
+#include "../../lv_iter.h"
+#include "lv_image_header_cache.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../../draw/lv_image_decoder_private.h"
-#include "../../lv_assert.h"
-#include "../../../core/lv_global.h"
-
-#include "lv_image_header_cache.h"
-#include "../../lv_iter.h"
 
 /*********************
  *      DEFINES

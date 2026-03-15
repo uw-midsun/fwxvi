@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    diyfp.h
+ *
+ * @brief   Diyfp
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <intrin.h>
+#include <limits>
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+#include "clzll.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup diyfp
+ * @brief    diyfp Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -19,12 +46,7 @@
 #ifndef RAPIDJSON_DIYFP_H_
 #define RAPIDJSON_DIYFP_H_
 
-#include "../rapidjson.h"
-#include "clzll.h"
-#include <limits>
-
 #if defined(_MSC_VER) && defined(_M_AMD64) && !defined(__INTEL_COMPILER)
-#include <intrin.h>
 #if !defined(_ARM64EC_)
 #pragma intrinsic(_umul128)
 #else
@@ -259,3 +281,5 @@ RAPIDJSON_DIAG_OFF(padded)
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_DIYFP_H_
+
+/** @} */

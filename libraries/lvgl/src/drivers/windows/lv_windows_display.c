@@ -1,18 +1,26 @@
-/**
- * @file lv_windows_display.c
+/************************************************************************************************
+ * @file    lv_windows_display.c
  *
- */
+ * @brief   Lv Windows Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <process.h>
+
+/* Inter-component Headers */
+#include "lv_windows_context.h"
+#include "lv_windows_display.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_windows_display.h"
 #if LV_USE_WINDOWS
-
-#include "lv_windows_context.h"
-
-#include <process.h>
 
 /*********************
  *      DEFINES

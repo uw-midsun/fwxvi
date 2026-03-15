@@ -1,6 +1,26 @@
-/**
- * @file lv_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_utils.h
  *
+ * @brief   Lv Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../draw/lv_draw_buf.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_utils
+ * @brief    lv_utils Firmware
+ * @{
  */
 
 #ifndef LV_UTILS_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_types.h"
-#include "../draw/lv_draw_buf.h"
 
 /*********************
  *      DEFINES
@@ -89,3 +106,5 @@ static inline uint16_t lv_swap_bytes_16(uint16_t x)
 #endif
 
 #endif
+
+/** @} */

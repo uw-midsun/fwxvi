@@ -1,18 +1,27 @@
-/**
- * @file lv_libwebp.c
+/************************************************************************************************
+ * @file    lv_libwebp.c
  *
- */
+ * @brief   Lv Libwebp
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <webp/decode.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lv_libwebp.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_LIBWEBP
-
-#include "lv_libwebp.h"
-#include <webp/decode.h>
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

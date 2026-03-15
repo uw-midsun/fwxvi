@@ -1,23 +1,33 @@
-/**
- * @file lv_fs_stdio.c
+/************************************************************************************************
+ * @file    lv_fs_stdio.c
  *
- */
+ * @brief   Lv Fs Stdio
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <dirent.h>
+    #include <unistd.h>
+    #include <windows.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lvgl.h"
 #if LV_USE_FS_STDIO
 
-#include <stdio.h>
 #ifndef WIN32
-    #include <dirent.h>
-    #include <unistd.h>
 #else
-    #include <windows.h>
 #endif
 
-#include "../../core/lv_global.h"
 /*********************
  *      DEFINES
  *********************/

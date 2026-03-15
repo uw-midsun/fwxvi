@@ -1,6 +1,39 @@
-/**
- * @file lv_obj.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj.h
  *
+ * @brief   Lv Obj
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+#include "../misc/lv_types.h"
+#include "lv_group.h"
+#include "lv_obj_class.h"
+#include "lv_obj_draw.h"
+#include "lv_obj_event.h"
+#include "lv_obj_pos.h"
+#include "lv_obj_property.h"
+#include "lv_obj_scroll.h"
+#include "lv_obj_style.h"
+#include "lv_obj_tree.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj
+ * @brief    lv_obj Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_H
@@ -13,23 +46,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "../misc/lv_types.h"
-#include "../misc/lv_style.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_assert.h"
-
-#include "lv_obj_tree.h"
-#include "lv_obj_pos.h"
-#include "lv_obj_scroll.h"
-#include "lv_obj_style.h"
-#include "lv_obj_draw.h"
-#include "lv_obj_class.h"
-#include "lv_obj_event.h"
-#include "lv_obj_property.h"
-#include "lv_group.h"
 
 /*********************
  *      DEFINES
@@ -247,7 +263,6 @@ void lv_obj_set_state(lv_obj_t * obj, lv_state_t state, bool v);
  */
 void lv_obj_set_user_data(lv_obj_t * obj, void * user_data);
 
-
 /** Allow only one RADIO_BUTTON sibling to be checked
  * @param obj     pointer to a widget
  * @param en      enable or disable radio button behavior
@@ -383,7 +398,6 @@ void lv_obj_add_screen_load_event(lv_obj_t * obj, lv_event_code_t trigger, lv_ob
 void lv_obj_add_screen_create_event(lv_obj_t * obj, lv_event_code_t trigger, lv_screen_create_cb_t screen_create_cb,
                                     lv_screen_load_anim_t anim_type, uint32_t duration, uint32_t delay);
 
-
 /**
  * Play a timeline animation on a trigger
  * @param obj               pointer to widget which should trigger playing the animation
@@ -499,3 +513,5 @@ void lv_objid_builtin_destroy(void);
 #endif
 
 #endif /*LV_OBJ_H*/
+
+/** @} */

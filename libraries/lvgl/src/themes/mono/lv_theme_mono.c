@@ -1,18 +1,27 @@
-/**
- * @file lv_theme_mono.c
+/************************************************************************************************
+ * @file    lv_theme_mono.c
  *
- */
+ * @brief   Lv Theme Mono
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h" /*To see all the widgets*/
+#include "../../core/lv_global.h"
+#include "../lv_theme_private.h"
+#include "lv_theme_mono.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_theme_private.h"
-#include "../../../lvgl.h" /*To see all the widgets*/
 
 #if LV_USE_THEME_MONO
-
-#include "lv_theme_mono.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

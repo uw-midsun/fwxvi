@@ -1,14 +1,32 @@
-/**
- * @file lv_uefi.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi.h
  *
+ * @brief   Lv Uefi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+        #include LV_USE_UEFI_INCLUDE
+    #include LV_USE_UEFI_INCLUDE
+
+/**
+ * @defgroup lv_uefi
+ * @brief    lv_uefi Firmware
+ * @{
  */
 
 #ifndef LV_UEFI_H
 #define LV_UEFI_H
 
 #if LV_USE_UEFI
-
-    #include LV_USE_UEFI_INCLUDE
 
     #if defined(__clang__) || defined(__GNUC__)
         #if defined(__x86_64__)
@@ -43,7 +61,6 @@
     #endif
 
     #ifdef LV_USE_UEFI_INCLUDE
-        #include LV_USE_UEFI_INCLUDE
     #else
         #error No UEFI headers available
     #endif
@@ -104,3 +121,4 @@
 #endif
 
 #endif
+/** @} */

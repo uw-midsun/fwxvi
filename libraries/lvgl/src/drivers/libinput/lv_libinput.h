@@ -1,6 +1,28 @@
-/**
- * @file lv_libinput.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_libinput.h
  *
+ * @brief   Lv Libinput
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <poll.h>
+#include <pthread.h>
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "lv_xkb.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_libinput
+ * @brief    lv_libinput Firmware
+ * @{
  */
 
 #ifndef LV_LIBINPUT_H
@@ -14,15 +36,9 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_LIBINPUT
 
-#include <poll.h>
-#include <pthread.h>
-
 #if LV_LIBINPUT_XKB
-#include "lv_xkb.h"
 #endif /* LV_LIBINPUT_XKB */
 
 /*********************
@@ -99,3 +115,5 @@ void lv_libinput_delete(lv_indev_t * indev);
 #endif
 
 #endif /* LV_LIBINPUT_H */
+
+/** @} */

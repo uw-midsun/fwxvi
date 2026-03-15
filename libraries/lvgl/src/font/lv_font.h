@@ -1,6 +1,29 @@
-/**
- * @file lv_font.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_font.h
  *
+ * @brief   Lv Font
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../draw/lv_draw_buf.h"
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_types.h"
+#include "lv_symbol_def.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_font
+ * @brief    lv_font Firmware
+ * @{
  */
 
 #ifndef LV_FONT_H
@@ -13,12 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../misc/lv_types.h"
-
-#include "lv_symbol_def.h"
-#include "../draw/lv_draw_buf.h"
-#include "../misc/lv_area.h"
 
 /*********************
  *      DEFINES
@@ -150,7 +167,6 @@ struct _lv_font_info_t {
  *                      It can be a draw buffer for bitmap fonts or an image source for imgfonts.
  */
 const void * lv_font_get_glyph_bitmap(lv_font_glyph_dsc_t * g_dsc, lv_draw_buf_t * draw_buf);
-
 
 /**
  * Return the bitmap as it is. It works only if the font stores the bitmap in
@@ -347,3 +363,5 @@ LV_FONT_CUSTOM_DECLARE
 #endif
 
 #endif /*LV_FONT_H*/
+
+/** @} */

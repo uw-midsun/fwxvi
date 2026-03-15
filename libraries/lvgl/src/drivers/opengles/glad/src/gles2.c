@@ -1,15 +1,27 @@
+/************************************************************************************************
+ * @file    gles2.c
+ *
+ * @brief   Gles2
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_opengles_private.h"
+#include "../include/glad/gles2.h"
+
+/* Intra-component Headers */
 /**
  * SPDX-License-Identifier: (WTFPL OR CC0-1.0) AND Apache-2.0
  */
 
-#include "../../lv_opengles_private.h"
-
 #if LV_USE_EGL
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../include/glad/gles2.h"
 
 #ifndef GLAD_IMPL_UTIL_C_
 #define GLAD_IMPL_UTIL_C_
@@ -26,8 +38,6 @@
 extern "C" {
 #endif
 
-
-
 int GLAD_GL_ES_VERSION_2_0 = 0;
 int GLAD_GL_APPLE_texture_max_level = 0;
 int GLAD_GL_ARM_rgba8 = 0;
@@ -43,8 +53,6 @@ int GLAD_GL_OES_texture_float = 0;
 int GLAD_GL_OES_texture_half_float = 0;
 int GLAD_GL_OES_texture_storage_multisample_2d_array = 0;
 int GLAD_GL_OES_vertex_array_object = 0;
-
-
 
 PFNGLACTIVETEXTUREPROC glad_glActiveTexture = NULL;
 PFNGLATTACHSHADERPROC glad_glAttachShader = NULL;
@@ -202,7 +210,6 @@ PFNGLVERTEXATTRIB4FPROC glad_glVertexAttrib4f = NULL;
 PFNGLVERTEXATTRIB4FVPROC glad_glVertexAttrib4fv = NULL;
 PFNGLVERTEXATTRIBPOINTERPROC glad_glVertexAttribPointer = NULL;
 PFNGLVIEWPORTPROC glad_glViewport = NULL;
-
 
 static void glad_gl_load_GL_ES_VERSION_2_0( GLADuserptrloadfunc load, void* userptr) {
     if(!GLAD_GL_ES_VERSION_2_0) return;
@@ -376,7 +383,6 @@ static void glad_gl_load_GL_OES_vertex_array_object( GLADuserptrloadfunc load, v
     glad_glIsVertexArrayOES = (PFNGLISVERTEXARRAYOESPROC) load(userptr, "glIsVertexArrayOES");
 }
 
-
 static void glad_gl_resolve_aliases(void) {
 }
 
@@ -536,21 +542,14 @@ int gladLoadGLES2UserPtr( GLADuserptrloadfunc load, void *userptr) {
     glad_gl_load_GL_OES_texture_storage_multisample_2d_array(load, userptr);
     glad_gl_load_GL_OES_vertex_array_object(load, userptr);
 
-
     glad_gl_resolve_aliases();
 
     return version;
 }
 
-
 int gladLoadGLES2( GLADloadfunc load) {
     return gladLoadGLES2UserPtr( glad_gl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
-
-
-
- 
-
 
 #ifdef __cplusplus
 }

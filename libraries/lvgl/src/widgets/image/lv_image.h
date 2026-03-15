@@ -1,6 +1,29 @@
-/**
- * @file lv_image.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_image.h
  *
+ * @brief   Lv Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_observer.h"
+#include "../../draw/lv_draw.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_fs.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_image
+ * @brief    lv_image Firmware
+ * @{
  */
 
 #ifndef LV_IMAGE_H
@@ -13,7 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_IMAGE != 0
 
@@ -21,11 +43,6 @@ extern "C" {
 #if LV_USE_LABEL == 0
 #error "lv_img: lv_label is required. Enable it in lv_conf.h (LV_USE_LABEL 1)"
 #endif
-
-#include "../../core/lv_obj.h"
-#include "../../misc/lv_fs.h"
-#include "../../draw/lv_draw.h"
-#include "../../core/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -339,7 +356,6 @@ lv_image_align_t lv_image_get_inner_align(lv_obj_t * obj);
  */
 const lv_image_dsc_t * lv_image_get_bitmap_map_src(lv_obj_t * obj);
 
-
 #if LV_USE_OBSERVER
 /**
  * Bind a pointer Subject to an Image's source.
@@ -364,3 +380,5 @@ lv_observer_t * lv_image_bind_src(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_IMAGE_H*/
+
+/** @} */

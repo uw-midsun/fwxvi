@@ -1,17 +1,27 @@
-/**
- * @file lv_text_ap.c
+/************************************************************************************************
+ * @file    lv_text_ap.c
  *
- */
+ * @brief   Lv Text Ap
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../draw/lv_draw.h"
+#include "../stdlib/lv_mem.h"
+#include "lv_bidi.h"
+#include "lv_text_ap.h"
+#include "lv_text_private.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_bidi.h"
-#include "lv_text_private.h"
-#include "lv_text_ap.h"
-#include "lv_types.h"
-#include "../stdlib/lv_mem.h"
-#include "../draw/lv_draw.h"
 
 /*********************
  *      DEFINES

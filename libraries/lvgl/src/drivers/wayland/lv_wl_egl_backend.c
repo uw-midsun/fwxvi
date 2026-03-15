@@ -1,22 +1,30 @@
-/** @file lv_wl_egl_backend.c
+/************************************************************************************************
+ * @file    lv_wl_egl_backend.c
  *
- */
+ * @brief   Lv Wl Egl Backend
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../opengles/lv_opengles_debug.h"
+#include "../opengles/lv_opengles_driver.h"
+#include "../opengles/lv_opengles_egl_private.h"
+#include "../opengles/lv_opengles_texture_private.h"
+#include "lv_wayland_private.h"
+
+/* Intra-component Headers */
+#include <wayland-egl.h>
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_wayland_private.h"
-
 #if LV_WAYLAND_USE_EGL
-
-#include "../../display/lv_display_private.h"
-#include "../opengles/lv_opengles_driver.h"
-#include "../opengles/lv_opengles_texture_private.h"
-#include "../opengles/lv_opengles_egl_private.h"
-#include "../opengles/lv_opengles_debug.h"
-
-#include <wayland-egl.h>
 
 /*********************
  *      DEFINES
@@ -25,7 +33,6 @@
 /**********************
  *      TYPEDEFS
  **********************/
-
 
 typedef struct {
     lv_opengles_texture_t texture;
@@ -62,7 +69,6 @@ static void wl_egl_flip_cb(void * driver_data, bool vsync);
 /**********************
  *  STATIC VARIABLES
  **********************/
-
 
 static const struct wl_callback_listener frame_listener = {
     .done = frame_done,
@@ -119,7 +125,6 @@ static lv_wl_egl_display_data_t * egl_create_display_data(lv_display_t * display
     /* Set the backend display data immediately as we will need it
      * in the EGL window creation callback */
     lv_wayland_set_backend_display_data(display, ddata);
-
 
     /* Create EGL context */
     lv_egl_interface_t egl_interface = wl_egl_get_interface(display);

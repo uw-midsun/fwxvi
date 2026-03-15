@@ -1,6 +1,26 @@
-/**
- * @file lv_gltf_environment.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_environment.h
  *
+ * @brief   Lv Gltf Environment
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_environment
+ * @brief    lv_gltf_environment Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_ENVIRONMENT_H
@@ -13,11 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_GLTF
-
-#include "../../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -28,7 +45,6 @@ extern "C" {
 /**********************
  *      TYPEDEFS
  **********************/
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -90,3 +106,4 @@ void lv_gltf_environment_delete(lv_gltf_environment_t * environment);
 #endif /*LV_GLTF_ENVIRONMENT_H*/
 
 
+/** @} */

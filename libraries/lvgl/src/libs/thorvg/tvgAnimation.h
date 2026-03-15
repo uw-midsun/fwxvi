@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgAnimation.h
+ *
+ * @brief   Tvganimation
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgPaint.h"
+#include "tvgPicture.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgAnimation
+ * @brief    tvgAnimation Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_ANIMATION_H_
 #define _TVG_ANIMATION_H_
-
-#include "tvgCommon.h"
-#include "tvgPaint.h"
-#include "tvgPicture.h"
 
 struct Animation::Impl
 {
@@ -52,3 +74,5 @@ struct Animation::Impl
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

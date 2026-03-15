@@ -1,7 +1,19 @@
-/**
- * @file lv_draw_eve_line.c
+/************************************************************************************************
+ * @file    lv_draw_eve_line.c
  *
- */
+ * @brief   Lv Draw Eve Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_eve_private.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 8 abr 2023
  *      Author: juanj
@@ -13,10 +25,7 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-#include "lv_eve.h"
-
 
 void lv_draw_eve_line(lv_draw_task_t * t, const lv_draw_line_dsc_t * dsc)
 {
@@ -27,8 +36,6 @@ void lv_draw_eve_line(lv_draw_task_t * t, const lv_draw_line_dsc_t * dsc)
         return;
     if(dsc->p1.x == dsc->p2.x && dsc->p1.y == dsc->p2.y)
         return;
-
-
 
     uint32_t line_w = dsc->width * 8;
     lv_eve_scissor(t->clip_area.x1, t->clip_area.y1, t->clip_area.x2, t->clip_area.y2);

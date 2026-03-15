@@ -1,17 +1,26 @@
-/**
- * @file lv_draw_nema_gfx_vector.c
+/************************************************************************************************
+ * @file    lv_draw_nema_gfx_vector.c
  *
- */
+ * @brief   Lv Draw Nema Gfx Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_vector_private.h"
+#include "lv_draw_nema_gfx.h"
+#include "lv_nema_gfx_path.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_nema_gfx.h"
 #if LV_USE_NEMA_GFX && LV_USE_VECTOR_GRAPHIC && LV_USE_NEMA_VG
-
-#include "lv_nema_gfx_path.h"
-#include "../lv_draw_vector_private.h"
 
 /*********************
  *      DEFINES

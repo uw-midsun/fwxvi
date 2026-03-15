@@ -1,16 +1,26 @@
-/**
- * @file lv_draw_arc.c
+/************************************************************************************************
+ * @file    lv_draw_arc.c
  *
- */
+ * @brief   Lv Draw Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../core/lv_obj_event.h"
+#include "../stdlib/lv_string.h"
+#include "lv_draw_arc.h"
+#include "lv_draw_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_private.h"
-#include "../core/lv_obj.h"
-#include "lv_draw_arc.h"
-#include "../core/lv_obj_event.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

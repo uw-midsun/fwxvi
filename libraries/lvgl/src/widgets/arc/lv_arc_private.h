@@ -1,6 +1,26 @@
-/**
- * @file lv_arc_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_arc_private.h
  *
+ * @brief   Lv Arc Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_arc.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_arc_private
+ * @brief    lv_arc_private Firmware
+ * @{
  */
 
 #ifndef LV_ARC_PRIVATE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_private.h"
-#include "lv_arc.h"
 
 #if LV_USE_ARC != 0
 
@@ -46,7 +64,6 @@ struct _lv_arc_t {
     int16_t knob_offset;        /**< knob offset from the main arc */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -62,3 +79,5 @@ struct _lv_arc_t {
 #endif
 
 #endif /*LV_ARC_PRIVATE_H*/
+
+/** @} */

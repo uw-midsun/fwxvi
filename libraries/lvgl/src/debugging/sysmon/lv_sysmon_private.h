@@ -1,6 +1,25 @@
-/**
- * @file lv_sysmon_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sysmon_private.h
  *
+ * @brief   Lv Sysmon Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_sysmon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_sysmon_private
+ * @brief    lv_sysmon_private Firmware
+ * @{
  */
 
 #ifndef LV_SYSMON_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_sysmon.h"
 
 #if LV_USE_SYSMON
 
@@ -92,3 +109,5 @@ void lv_sysmon_builtin_deinit(void);
 #endif
 
 #endif /*LV_SYSMON_PRIVATE_H*/
+
+/** @} */

@@ -1,6 +1,27 @@
-/**
- * @file lv_canvas.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_canvas.h
  *
+ * @brief   Lv Canvas
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_image.h"
+#include "../../lv_conf_internal.h"
+#include "../image/lv_image.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_canvas
+ * @brief    lv_canvas Firmware
+ * @{
  */
 
 #ifndef LV_CANVAS_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_CANVAS != 0
-
-#include "../image/lv_image.h"
-#include "../../draw/lv_draw_image.h"
 
 /*********************
  *      DEFINES
@@ -189,3 +206,5 @@ uint32_t lv_canvas_buf_size(int32_t w, int32_t h, uint8_t bpp, uint8_t stride);
 #endif
 
 #endif /*LV_CANVAS_H*/
+
+/** @} */

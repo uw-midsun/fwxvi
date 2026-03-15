@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    vg_lite_stroke.c
+ *
+ * @brief   Vg Lite Stroke
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_context.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,11 +41,7 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "vg_lite_context.h"
-
 
 #define PI                          3.141592653589793238462643383279502f
 #define SINF(x)                     ((vg_lite_float_t) sin(x))

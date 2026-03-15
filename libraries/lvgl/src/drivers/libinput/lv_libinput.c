@@ -1,34 +1,41 @@
-/**
- * @file lv_libinput.c
+/************************************************************************************************
+ * @file    lv_libinput.c
  *
- */
+ * @brief   Lv Libinput
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <dev/evdev/input.h>
+    #include <linux/input.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <libinput.h>
+#include <linux/limits.h>
+#include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../indev/lv_indev_private.h"
+#include "lv_libinput_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev_private.h"
-#include "lv_libinput_private.h"
-
 #if LV_USE_LIBINPUT
 
-#include "../../display/lv_display_private.h"
-
-#include <stdio.h>
-#include <unistd.h>
-#include <linux/limits.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <dirent.h>
-#include <libinput.h>
-#include <pthread.h>
-#include <string.h>
-
 #if LV_LIBINPUT_BSD
-    #include <dev/evdev/input.h>
 #else
-    #include <linux/input.h>
 #endif
 
 /*********************

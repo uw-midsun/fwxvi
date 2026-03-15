@@ -1,6 +1,27 @@
-/**
- * @file lv_rb.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rb.h
  *
+ * @brief   Lv Rb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_assert.h"
+#include "lv_types.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rb
+ * @brief    lv_rb Firmware
+ * @{
  */
 
 #ifndef LV_RB_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_types.h"
-#include "lv_assert.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -64,3 +82,5 @@ void lv_rb_destroy(lv_rb_t * tree);
 #endif
 
 #endif /*LV_RB_H*/
+
+/** @} */

@@ -1,12 +1,31 @@
-/**
- * @file lv_cache_entry_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache_entry_private.h
  *
+ * @brief   Lv Cache Entry Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "../lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_cache_entry_private
+ * @brief    lv_cache_entry_private Firmware
+ * @{
  */
 
 #ifndef LV_CACHE_ENTRY_PRIVATE_H
 #define LV_CACHE_ENTRY_PRIVATE_H
 
-#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,7 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_types.h"
 
 /*********************
  *      DEFINES
@@ -60,3 +78,5 @@ bool   lv_cache_entry_has_flag(lv_cache_entry_t * entry, uint8_t flags);
 #endif
 
 #endif /* LV_CACHE_ENTRY_PRIVATE_H */
+
+/** @} */

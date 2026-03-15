@@ -1,23 +1,31 @@
-/**
- * @file lv_draw_vg_lite_img.c
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_img.c
  *
- */
+ * @brief   Lv Draw Vg Lite Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
+/* Standard library Headers */
 
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../lv_image_decoder_private.h"
 #include "lv_draw_vg_lite.h"
-
-#if LV_USE_DRAW_VG_LITE
-
 #include "lv_draw_vg_lite_type.h"
 #include "lv_vg_lite_decoder.h"
 #include "lv_vg_lite_path.h"
 #include "lv_vg_lite_pending.h"
 #include "lv_vg_lite_utils.h"
-#include "../../misc/lv_area_private.h"
-#include "../lv_image_decoder_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_DRAW_VG_LITE
 
 /*********************
  *      DEFINES
@@ -117,7 +125,6 @@ void lv_draw_vg_lite_img(lv_draw_task_t * t, const lv_draw_image_dsc_t * dsc,
         LV_PROFILER_DRAW_END;
         return;
     }
-
 
     lv_vg_lite_path_t * path = lv_vg_lite_path_get(u, VG_LITE_FP32);
 

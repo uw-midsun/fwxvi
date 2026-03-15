@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_buf_convert_helium.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_buf_convert_helium.h
  *
+ * @brief   Lv Draw Buf Convert Helium
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_color.h"
+#include "../../lv_draw_buf.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_buf_convert_helium
+ * @brief    lv_draw_buf_convert_helium Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_BUF_CONVERT_HELIUM_H
@@ -9,9 +29,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../../misc/lv_color.h"
-#include "../../lv_draw_buf.h"
 
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
 
@@ -55,3 +72,5 @@ lv_result_t _lv_draw_buf_convert_premultiply_argb8888_helium(lv_draw_buf_t * buf
 #endif
 
 #endif /* LV_DRAW_BUF_CONVERT_HELIUM_H */
+
+/** @} */

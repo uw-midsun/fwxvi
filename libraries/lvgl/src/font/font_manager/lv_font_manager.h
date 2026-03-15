@@ -1,7 +1,27 @@
-/**
- * @file lv_font_manager.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_font_manager.h
  *
+ * @brief   Lv Font Manager
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../font/lv_font.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_font_manager
+ * @brief    lv_font_manager Firmware
+ * @{
  */
+
 #ifndef LV_FONT_MANAGER_H
 #define LV_FONT_MANAGER_H
 
@@ -12,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../font/lv_font.h"
 
 #if LV_USE_FONT_MANAGER
 
@@ -113,3 +131,5 @@ void lv_font_manager_delete_font(lv_font_manager_t * manager, lv_font_t * font);
 #endif
 
 #endif /* LV_FONT_MANAGER_H */
+
+/** @} */

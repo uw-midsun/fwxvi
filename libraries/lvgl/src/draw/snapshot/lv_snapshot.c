@@ -1,22 +1,31 @@
-/**
- * @file lv_snapshot.c
+/************************************************************************************************
+ * @file    lv_snapshot.c
  *
- */
+ * @brief   Lv Snapshot
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_draw_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display.h"
+#include "../../display/lv_display_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_snapshot.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_obj_draw_private.h"
-#include "lv_snapshot.h"
 #if LV_USE_SNAPSHOT
-
-#include <stdbool.h>
-#include "../../display/lv_display.h"
-#include "../../core/lv_refr_private.h"
-#include "../../display/lv_display_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES

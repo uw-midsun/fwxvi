@@ -1,6 +1,26 @@
-/**
- * @file lv_chart.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_chart.h
  *
+ * @brief   Lv Chart
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_chart
+ * @brief    lv_chart Firmware
+ * @{
  */
 
 #ifndef LV_CHART_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
 
 #if LV_USE_CHART != 0
 
@@ -122,7 +140,6 @@ void lv_chart_set_axis_min_value(lv_obj_t * obj, lv_chart_axis_t axis, int32_t m
  * @param max       maximum value of the y axis
  */
 void lv_chart_set_axis_max_value(lv_obj_t * obj, lv_chart_axis_t axis, int32_t max);
-
 
 /**
  * Set update mode of the chart object. Affects
@@ -464,3 +481,5 @@ int32_t lv_chart_get_first_point_center_offset(lv_obj_t * obj);
 #endif
 
 #endif /*LV_CHART_H*/
+
+/** @} */

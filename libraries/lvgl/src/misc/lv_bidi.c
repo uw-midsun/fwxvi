@@ -1,16 +1,26 @@
-/**
- * @file lv_bidi.c
+/************************************************************************************************
+ * @file    lv_bidi.c
  *
- */
+ * @brief   Lv Bidi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_bidi_private.h"
+#include "lv_text_private.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_bidi_private.h"
-#include "lv_text_private.h"
-#include "lv_types.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
 
 #if LV_USE_BIDI
 

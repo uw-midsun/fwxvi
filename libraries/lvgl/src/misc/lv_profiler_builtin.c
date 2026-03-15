@@ -1,15 +1,24 @@
-/**
- * @file lv_profiler_builtin.c
+/************************************************************************************************
+ * @file    lv_profiler_builtin.c
  *
- */
+ * @brief   Lv Profiler Builtin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../lvgl.h"
+#include "lv_profiler_builtin_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_profiler_builtin_private.h"
-#include "../lvgl.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES

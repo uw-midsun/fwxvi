@@ -1,6 +1,27 @@
-/**
- * @file lv_buttonmatrix.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_buttonmatrix.h
  *
+ * @brief   Lv Buttonmatrix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_obj_property.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_buttonmatrix
+ * @brief    lv_buttonmatrix Firmware
+ * @{
  */
 
 #ifndef LV_BUTTONMATRIX_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_BUTTONMATRIX != 0
-
-#include "../../core/lv_obj.h"
-#include "../../core/lv_obj_property.h"
 
 /*********************
  *      DEFINES
@@ -225,3 +242,5 @@ bool lv_buttonmatrix_get_one_checked(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_BUTTONMATRIX_H*/
+
+/** @} */

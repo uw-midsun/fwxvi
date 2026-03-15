@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_sw_blend.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend.h
  *
+ * @brief   Lv Draw Sw Blend
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_area.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_style.h"
+#include "../lv_draw_sw_mask.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_blend
+ * @brief    lv_draw_sw_blend Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_H
@@ -13,12 +35,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw_sw_mask.h"
 #if LV_USE_DRAW_SW
-
-#include "../../../misc/lv_color.h"
-#include "../../../misc/lv_area.h"
-#include "../../../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -62,3 +79,5 @@ void lv_draw_sw_blend(lv_draw_task_t * t, const lv_draw_sw_blend_dsc_t * dsc);
 #endif
 
 #endif /*LV_DRAW_SW_BLEND_H*/
+
+/** @} */

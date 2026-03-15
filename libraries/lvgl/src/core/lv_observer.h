@@ -1,6 +1,26 @@
-/**
- * @file lv_observer.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_observer.h
  *
+ * @brief   Lv Observer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_ext_data.h"
+#include "lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_observer
+ * @brief    lv_observer Firmware
+ * @{
  */
 
 #ifndef LV_OBSERVER_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../misc/lv_ext_data.h"
-#include "lv_obj.h"
 
 #if LV_USE_OBSERVER
 
@@ -131,7 +148,6 @@ int32_t lv_subject_get_int(lv_subject_t * subject);
  * @return          current value
  */
 int32_t lv_subject_get_previous_int(lv_subject_t * subject);
-
 
 /**
  * Set a minimum value for an integer subject
@@ -453,7 +469,6 @@ void lv_obj_add_subject_toggle_event(lv_obj_t * obj, lv_subject_t * subject, lv_
  */
 void lv_obj_add_subject_set_int_event(lv_obj_t * obj, lv_subject_t * subject, lv_event_code_t trigger, int32_t value);
 
-
 #if LV_USE_FLOAT
 /**
  * Set the value of a float subject.
@@ -536,7 +551,6 @@ lv_observer_t * lv_obj_bind_flag_if_lt(lv_obj_t * obj, lv_subject_t * subject, l
  */
 lv_observer_t * lv_obj_bind_flag_if_le(lv_obj_t * obj, lv_subject_t * subject, lv_obj_flag_t flag, int32_t ref_value);
 
-
 /**
  * Set Widget's state(s) if an integer Subject's value is equal to a reference value, clear flag otherwise.
  * @param obj           pointer to Widget
@@ -608,7 +622,6 @@ lv_observer_t * lv_obj_bind_state_if_le(lv_obj_t * obj, lv_subject_t * subject, 
  */
 lv_observer_t * lv_obj_bind_checked(lv_obj_t * obj, lv_subject_t * subject);
 
-
 /**********************
  *      MACROS
  **********************/
@@ -620,3 +633,5 @@ lv_observer_t * lv_obj_bind_checked(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_OBSERVER_H*/
+
+/** @} */

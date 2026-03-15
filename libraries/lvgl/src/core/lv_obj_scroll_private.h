@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_scroll_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_scroll_private.h
  *
+ * @brief   Lv Obj Scroll Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_obj_scroll.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_scroll_private
+ * @brief    lv_obj_scroll_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_SCROLL_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_obj_scroll.h"
 
 /*********************
  *      DEFINES
@@ -48,3 +65,5 @@ lv_result_t lv_obj_scroll_by_raw(lv_obj_t * obj, int32_t x, int32_t y);
 #endif
 
 #endif /*LV_OBJ_SCROLL_PRIVATE_H*/
+
+/** @} */

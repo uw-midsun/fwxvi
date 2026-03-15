@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_hw.h
+ *
+ * @brief   Vg Lite Hw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_hw
+ * @brief    vg_lite_hw Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    The MIT License (MIT)
@@ -55,7 +79,6 @@
 #ifndef VG_LITE_HW_H
 #define VG_LITE_HW_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
 #define VG_LITE_HW_CLOCK_CONTROL     0x000
@@ -96,3 +119,5 @@ typedef union vg_lite_hw_clock_control {
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_HW_H */
+
+/** @} */

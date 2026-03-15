@@ -1,18 +1,27 @@
-/**
- * @file lv_calendar_header_dropdown.c
+/************************************************************************************************
+ * @file    lv_calendar_header_dropdown.c
  *
- */
+ * @brief   Lv Calendar Header Dropdown
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../layouts/flex/lv_flex.h"
+#include "../dropdown/lv_dropdown.h"
+#include "lv_calendar.h"
+#include "lv_calendar_header_dropdown.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_class_private.h"
-#include "lv_calendar_header_dropdown.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_HEADER_DROPDOWN
-
-#include "lv_calendar.h"
-#include "../dropdown/lv_dropdown.h"
-#include "../../layouts/flex/lv_flex.h"
 
 /*********************
  *      DEFINES

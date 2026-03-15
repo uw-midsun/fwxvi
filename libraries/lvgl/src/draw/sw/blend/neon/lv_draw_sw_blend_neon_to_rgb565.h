@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_sw_blend_neon_to_rgb565.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_neon_to_rgb565.h
  *
+ * @brief   Lv Draw Sw Blend Neon To Rgb565
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "../../../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_blend_neon_to_rgb565
+ * @brief    lv_draw_sw_blend_neon_to_rgb565 Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_NEON_TO_RGB565_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../../lv_conf_internal.h"
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-
-#include "../../../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -188,3 +205,5 @@ lv_result_t lv_draw_sw_blend_neon_argb888_to_rgb565_with_opa_mask(lv_draw_sw_ble
 #endif
 
 #endif /*LV_DRAW_SW_BLEND_NEON_TO_RGB565_H*/
+
+/** @} */

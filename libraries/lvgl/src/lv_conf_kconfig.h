@@ -1,27 +1,26 @@
-/** * @file lv_conf_kconfig.h * Configs that need special handling when LVGL is used with Kconfig */
+#pragma once
 
-#ifndef LV_CONF_KCONFIG_H
-#define LV_CONF_KCONFIG_H
+/************************************************************************************************
+ * @file    lv_conf_kconfig.h * Configs that need special handling when LVGL is used with Kconfig */
+ *
+ * @brief   Lv Conf Kconfig
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* Standard library Headers */
 
-#ifdef LV_CONF_KCONFIG_EXTERNAL_INCLUDE
-#  include LV_CONF_KCONFIG_EXTERNAL_INCLUDE
-#else
+/* Inter-component Headers */
 
-#  ifdef ESP_PLATFORM
-#    include "sdkconfig.h"
-#    include "esp_attr.h"
-#  endif
+/* Intra-component Headers */
 
-#  ifdef __NuttX__
-#    include <nuttx/config.h>
-/*
- * Make sure version number in Kconfig file is correctly set.
- * Mismatch can happen when user manually copy lvgl/Kconfig file to their project, like what NuttX does.
+/**
+ * @defgroup lv_conf_kconfig
+ * @brief    lv_conf_kconfig Firmware
+ * @{
  */
+
 #    include "../lv_version.h"
 
 #    if CONFIG_LVGL_VERSION_MAJOR != LVGL_VERSION_MAJOR || CONFIG_LVGL_VERSION_MINOR != LVGL_VERSION_MINOR \
@@ -309,7 +308,6 @@ extern "C" {
 #  define CONFIG_LV_LINUX_FBDEV_RENDER_MODE LV_DISPLAY_RENDER_MODE_FULL
 #endif
 
-
 #ifdef CONFIG_LV_USE_CALENDAR
 #  ifdef CONFIG_LV_CALENDAR_WEEK_STARTS_MONDAY
 #    define CONFIG_LV_CALENDAR_DEFAULT_DAY_NAMES { CONFIG_LV_MONDAY_STR , CONFIG_LV_TUESDAY_STR, CONFIG_LV_WEDNESDAY_STR, CONFIG_LV_THURSDAY_STR, CONFIG_LV_FRIDAY_STR, CONFIG_LV_SATURDAY_STR, CONFIG_LV_SUNDAY_STR }
@@ -323,3 +321,5 @@ extern "C" {
 #endif
 
 #endif /*LV_CONF_KCONFIG_H*/
+
+/** @} */

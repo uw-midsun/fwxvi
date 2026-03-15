@@ -1,19 +1,28 @@
-/**
- * @file lv_spinbox.c
+/************************************************************************************************
+ * @file    lv_spinbox.c
  *
- */
+ * @brief   Lv Spinbox
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../indev/lv_indev.h"
+#include "../../misc/lv_assert.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_spinbox_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_spinbox_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_SPINBOX
-
-#include "../../misc/lv_assert.h"
-#include "../../indev/lv_indev.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -623,7 +632,6 @@ static void lv_spinbox_updatevalue(lv_obj_t * obj)
     lv_textarea_set_cursor_pos(obj, cur_pos);
 }
 
-
 #if LV_USE_OBSERVER
 
 static void spinbox_value_changed_event_cb(lv_event_t * e)
@@ -644,6 +652,5 @@ static void spinbox_value_observer_cb(lv_observer_t * observer, lv_subject_t * s
 }
 
 #endif /*LV_USE_OBSERVER*/
-
 
 #endif /*LV_USE_SPINBOX*/

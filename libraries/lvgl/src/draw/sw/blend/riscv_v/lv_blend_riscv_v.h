@@ -1,6 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_blend_riscv_v.h
+ *
+ * @brief   Lv Blend Riscv V
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_sw_blend.h"
+#include "lv_draw_sw_blend_riscv_v_to_rgb888.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_blend_riscv_v.h
- * RISC-V Vector extension blend header
+ * @defgroup lv_blend_riscv_v
+ * @brief    lv_blend_riscv_v Firmware
+ * @{
  */
 
 #ifndef LV_BLEND_RISCV_V_H
@@ -10,11 +30,7 @@
 extern "C" {
 #endif
 
-#include "../lv_draw_sw_blend.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
-
-#include "lv_draw_sw_blend_riscv_v_to_rgb888.h"
 
 #endif /* LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V */
 
@@ -23,3 +39,5 @@ extern "C" {
 #endif
 
 #endif /* LV_BLEND_RISCV_V_H */
+
+/** @} */

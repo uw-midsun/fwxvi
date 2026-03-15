@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_3d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_3d.h
  *
+ * @brief   Lv Draw 3D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_3d
+ * @brief    lv_draw_3d Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_3D_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../lv_conf_internal.h"
 #if LV_USE_3DTEXTURE
-
-#include "lv_draw.h"
 
 /*********************
  *      DEFINES
@@ -70,3 +87,5 @@ void lv_draw_3d(lv_layer_t * layer, const lv_draw_3d_dsc_t * dsc, const lv_area_
 #endif
 
 #endif /*LV_DRAW_3D_H*/
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_table.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_table.h
  *
+ * @brief   Lv Table
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_property.h"
+#include "../label/lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_table
+ * @brief    lv_table Firmware
+ * @{
  */
 
 #ifndef LV_TABLE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../label/lv_label.h"
-#include "../../core/lv_obj_property.h"
 
 #if LV_USE_TABLE != 0
 
@@ -222,3 +239,5 @@ void * lv_table_get_cell_user_data(lv_obj_t * obj, uint16_t row, uint16_t col);
 #endif
 
 #endif /*LV_TABLE_H*/
+
+/** @} */

@@ -1,19 +1,27 @@
-/**
- * @file lv_lru.c
+/************************************************************************************************
+ * @file    lv_lru.c
  *
- * @see https://github.com/willcannings/C-LRU-Cache
- */
+ * @brief   Lv Lru
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
+/* Standard library Headers */
 
-#include "lv_lru.h"
-#include "lv_math.h"
+/* Inter-component Headers */
 #include "../stdlib/lv_mem.h"
 #include "../stdlib/lv_string.h"
 #include "lv_assert.h"
 #include "lv_log.h"
+#include "lv_lru.h"
+#include "lv_math.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 /*********************
  *      DEFINES

@@ -1,8 +1,21 @@
-#include "../../../lvgl.h"
-#if LV_USE_FS_LITTLEFS
+/************************************************************************************************
+ * @file    lv_fs_littlefs.c
+ *
+ * @brief   Lv Fs Littlefs
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "lfs.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
 #include "../../core/lv_global.h"
+#include "lfs.h"
+
+/* Intra-component Headers */
+#if LV_USE_FS_LITTLEFS
 
 #if !LV_FS_IS_VALID_LETTER(LV_FS_LITTLEFS_LETTER)
     #error "Invalid drive letter"
@@ -29,9 +42,6 @@ static lv_fs_res_t fs_tell(lv_fs_drv_t * drv, void * file_p, uint32_t * pos_p);
 static void * fs_dir_open(lv_fs_drv_t * drv, const char * path);
 static lv_fs_res_t fs_dir_close(lv_fs_drv_t * drv, void * dir_p);
 static lv_fs_res_t fs_dir_read(lv_fs_drv_t * drv, void * dir_p, char * fn, uint32_t fn_len);
-
-
-
 
 void lv_littlefs_set_handler(lfs_t * lfs)
 {

@@ -1,12 +1,22 @@
-/**
- * @file lv_calendar_chinese.c
+/************************************************************************************************
+ * @file    lv_calendar_chinese.c
  *
- */
+ * @brief   Lv Calendar Chinese
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_calendar_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_calendar_private.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_CHINESE
 
 /*********************

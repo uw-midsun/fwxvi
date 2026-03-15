@@ -1,6 +1,27 @@
-/**
- * @file lv_svg_parser.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_svg_parser.h
  *
+ * @brief   Lv Svg Parser
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_svg.h"
+#include "lv_svg_token.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_svg_parser
+ * @brief    lv_svg_parser Firmware
+ * @{
  */
 
 #ifndef LV_SVG_PARSER_H
@@ -9,11 +30,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_SVG
-
-#include "lv_svg.h"
-#include "lv_svg_token.h"
 
 /*********************
  *      DEFINES
@@ -82,3 +99,5 @@ void _lv_svg_dump_tree(lv_svg_node_t * root, int depth);
 #endif /*LV_USE_SVG*/
 
 #endif /*LV_SVG_PARSER_H*/
+
+/** @} */

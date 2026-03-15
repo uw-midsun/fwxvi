@@ -1,37 +1,41 @@
-/**
- * @file lv_test_screenshot_compare.c
+/************************************************************************************************
+ * @file    lv_test_screenshot_compare.c
  *
- * Copyright 2002-2010 Guillaume Cottenceau.
+ * @brief   Lv Test Screenshot Compare
  *
- * This software may be freely redistributed under the terms
- * of the X11 license.
- *
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <direct.h>
+    #include <sys/stat.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../libs/lodepng/lodepng.h"
+#include "../../lv_conf_internal.h"
+#include "../../lvgl.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST && defined(LV_USE_TEST_SCREENSHOT_COMPARE) && LV_USE_TEST_SCREENSHOT_COMPARE
 
 #if LV_USE_LODEPNG == 0
     #error "lodepng is required for screenshot compare. Enable it in lv_conf.h (LV_USE_LODEPNG 1)"
 #endif
 
-#include "../../lvgl.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <errno.h>
-#include "../../libs/lodepng/lodepng.h"
-
 #ifdef _WIN32
-    #include <direct.h>
     #define mkdir(pathname, mode) _mkdir(pathname)
     #define strtok_r strtok_s
 #else
-    #include <sys/stat.h>
 #endif
 
 /*********************
@@ -139,7 +143,6 @@ static lv_test_screenshot_result_t screenshot_compare(const char * fn_ref, uint8
         if(ref_draw_buf) lv_draw_buf_destroy(ref_draw_buf);
         return LV_TEST_SCREENSHOT_RESULT_FAILED;
     }
-
 
     unsigned x, y;
     bool err = false;

@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    lv_font_unscii_8.c
+ *
+ * @brief   Lv Font Unscii 8
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../lvgl.h"
+    #include "lvgl.h"
+
+/* Intra-component Headers */
 /*******************************************************************************
  * Size: 8 px
  * Bpp: 1
@@ -5,9 +21,7 @@
  ******************************************************************************/
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
-    #include "lvgl.h"
 #else
-    #include "../../lvgl.h"
 #endif
 
 #ifndef LV_FONT_UNSCII_8

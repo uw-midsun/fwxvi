@@ -1,6 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tick.h
+ *
+ * @brief   Lv Tick
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_tick.h
- * Provide access to the system tick with 1 millisecond resolution
+ * @defgroup lv_tick
+ * @brief    lv_tick Firmware
+ * @{
  */
 
 #ifndef LV_TICK_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -98,3 +115,5 @@ lv_tick_get_cb_t lv_tick_get_cb(void);
 #endif
 
 #endif /*LV_TICK_H*/
+
+/** @} */

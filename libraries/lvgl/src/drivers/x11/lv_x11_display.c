@@ -1,22 +1,31 @@
-/**
- * @file lv_x11_display.c
+/************************************************************************************************
+ * @file    lv_x11_display.c
  *
- */
+ * @brief   Lv X11 Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <pthread.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_pos.h"
+#include "lv_x11.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_x11.h"
 
 #if LV_USE_X11
-
-#include <stdbool.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include "../../core/lv_obj_pos.h"
 
 /*********************
  *      DEFINES

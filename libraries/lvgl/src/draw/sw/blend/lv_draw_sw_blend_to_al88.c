@@ -1,29 +1,38 @@
-/**
- * @file lv_draw_sw_blend_to_al88.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_al88.c
  *
- */
+ * @brief   Lv Draw Sw Blend To Al88
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "helium/lv_blend_helium.h"
+    #include "neon/lv_blend_neon.h"
+#include "../../../core/lv_refr.h"
+#include "../../../display/lv_display.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_math.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_to_al88.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_to_al88.h"
 #if LV_USE_DRAW_SW
 
 #if LV_DRAW_SW_SUPPORT_AL88
 
-#include "lv_draw_sw_blend_private.h"
-#include "../../../misc/lv_math.h"
-#include "../../../display/lv_display.h"
-#include "../../../core/lv_refr.h"
-#include "../../../misc/lv_color.h"
-#include "../../../stdlib/lv_string.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-    #include "neon/lv_blend_neon.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "helium/lv_blend_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 /*********************
@@ -156,7 +165,6 @@ static inline void /* LV_ATTRIBUTE_FAST_MEM */ lv_color_16a_16a_mix(lv_color16a_
 #ifndef LV_DRAW_SW_ARGB8888_BLEND_NORMAL_TO_AL88_MIX_MASK_OPA
     #define LV_DRAW_SW_ARGB8888_BLEND_NORMAL_TO_AL88_MIX_MASK_OPA(...)    LV_RESULT_INVALID
 #endif
-
 
 #ifndef LV_DRAW_SW_AL88_BLEND_NORMAL_TO_AL88
     #define LV_DRAW_SW_AL88_BLEND_NORMAL_TO_AL88(...)               LV_RESULT_INVALID

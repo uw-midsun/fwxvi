@@ -1,16 +1,26 @@
-/**
- * @file lv_draw_line.c
+/************************************************************************************************
+ * @file    lv_draw_line.c
  *
- */
+ * @brief   Lv Draw Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_draw_private.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../core/lv_refr.h"
 #include "../misc/lv_math.h"
 #include "../misc/lv_types.h"
 #include "../stdlib/lv_string.h"
+#include "lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 /*********************
  *      DEFINES
@@ -126,7 +136,6 @@ void LV_ATTRIBUTE_FAST_MEM lv_draw_line(lv_layer_t * layer, const lv_draw_line_d
     lv_draw_finalize_task_creation(layer, t);
     LV_PROFILER_DRAW_END;
 }
-
 
 void lv_draw_line_iterate(lv_draw_task_t * t, lv_draw_line_dsc_t * dsc,
                           void (*draw_line_cb)(lv_draw_task_t * t, const lv_draw_line_dsc_t * dsc))

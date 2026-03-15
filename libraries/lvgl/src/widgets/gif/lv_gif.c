@@ -1,19 +1,29 @@
-/**
- * @file lv_gif.c
+/************************************************************************************************
+ * @file    lv_gif.c
  *
- */
+ * @brief   Lv Gif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../libs/gif/AnimatedGIF.h"
+#include "../../misc/cache/lv_cache.h"
+#include "../../misc/lv_timer_private.h"
+#include "../../widgets/image/lv_image_private.h"
+#include "lv_gif.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_gif.h"
 
 #if LV_USE_GIF
-#include "../../misc/lv_timer_private.h"
-#include "../../misc/cache/lv_cache.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../widgets/image/lv_image_private.h"
-#include "../../libs/gif/AnimatedGIF.h"
 
 /*********************
  *      DEFINES

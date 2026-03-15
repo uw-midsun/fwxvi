@@ -1,18 +1,27 @@
-/**
- * @file lv_svg_token.c
+/************************************************************************************************
+ * @file    lv_svg_token.c
  *
- */
+ * @brief   Lv Svg Token
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <ctype.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "lv_svg_token.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_svg_token.h"
 #if LV_USE_SVG
-
-#include "../../../lvgl.h"
-#include <ctype.h>
-#include <string.h>
 
 /*********************
 *      DEFINES

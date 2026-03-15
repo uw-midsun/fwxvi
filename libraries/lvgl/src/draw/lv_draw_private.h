@@ -1,6 +1,27 @@
-/**
- * @file lv_draw_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_private.h
  *
+ * @brief   Lv Draw Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/cache/lv_cache.h"
+#include "../osal/lv_os_private.h"
+#include "lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_private
+ * @brief    lv_draw_private Firmware
+ * @{
  */
 
 /**
@@ -17,10 +38,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw.h"
-#include "../osal/lv_os_private.h"
-#include "../misc/cache/lv_cache.h"
 
 /*********************
  *      DEFINES
@@ -208,3 +225,5 @@ typedef struct {
 #endif
 
 #endif /*LV_DRAW_PRIVATE_H*/
+
+/** @} */

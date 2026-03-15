@@ -1,6 +1,25 @@
-/**
- * @file lv_renesas_glcdc.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_renesas_glcdc.h
  *
+ * @brief   Lv Renesas Glcdc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_renesas_glcdc
+ * @brief    lv_renesas_glcdc Firmware
+ * @{
  */
 
 #ifndef LV_RENESAS_GLCDC_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../display/lv_display.h"
 
 #if LV_USE_RENESAS_GLCDC
 
@@ -55,3 +73,5 @@ lv_display_t * lv_renesas_glcdc_partial_create(void * buf1, void * buf2, size_t 
 #endif
 
 #endif /* LV_RENESAS_GLCDC_H */
+
+/** @} */

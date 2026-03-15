@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgStr.h
+ *
+ * @brief   Tvgstr
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstddef>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgStr
+ * @brief    tvgStr Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_STR_H_
 #define _TVG_STR_H_
-
-#include <cstddef>
 
 namespace tvg
 {
@@ -41,3 +63,5 @@ char* strDirname(const char* path);                 //return the full directory 
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

@@ -1,20 +1,29 @@
-/**
- * @file lv_calendar_header_arrow.c
+/************************************************************************************************
+ * @file    lv_calendar_header_arrow.c
  *
- */
+ * @brief   Lv Calendar Header Arrow
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../layouts/flex/lv_flex.h"
+#include "../../misc/lv_assert.h"
+#include "../button/lv_button.h"
+#include "../label/lv_label.h"
+#include "lv_calendar.h"
+#include "lv_calendar_header_arrow.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_class_private.h"
-#include "lv_calendar_header_arrow.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_HEADER_ARROW
-
-#include "lv_calendar.h"
-#include "../button/lv_button.h"
-#include "../label/lv_label.h"
-#include "../../layouts/flex/lv_flex.h"
-#include "../../misc/lv_assert.h"
 
 /*********************
  *      DEFINES

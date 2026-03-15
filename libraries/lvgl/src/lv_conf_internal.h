@@ -1,7 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_conf_internal.h
+ *
+ * @brief   Lv Conf Internal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+        #include "../../lv_conf.h"                /* Else assume lv_conf.h is next to the lvgl folder. */
+        #include "lv_conf.h"
+    #include "lv_conf_kconfig.h"
+#include "my_include.h"
+
+/* Intra-component Headers */
+        #include LV_CONF_PATH                     /* Note: Make sure to define custom CONF_PATH as a string */
+
 /**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_conf_internal.h
- * This file ensures all defines of lv_conf.h have a default value.
+ * @defgroup lv_conf_internal
+ * @brief    lv_conf_internal Firmware
+ * @{
  */
 
 #ifndef LV_CONF_INTERNAL_H
@@ -47,7 +69,6 @@
 
 /** Handle special Kconfig options. */
 #ifndef LV_KCONFIG_IGNORE
-    #include "lv_conf_kconfig.h"
     #if defined(CONFIG_LV_CONF_SKIP) && !defined(LV_CONF_SKIP)
         #define LV_CONF_SKIP
     #endif
@@ -65,11 +86,8 @@
 /* If lv_conf.h is not skipped, include it. */
 #if !defined(LV_CONF_SKIP) || defined(LV_CONF_PATH)
     #ifdef LV_CONF_PATH                           /* If there is a path defined for lv_conf.h, use it */
-        #include LV_CONF_PATH                     /* Note: Make sure to define custom CONF_PATH as a string */
     #elif defined(LV_CONF_INCLUDE_SIMPLE)         /* Or simply include lv_conf.h is enabled. */
-        #include "lv_conf.h"
     #else
-        #include "../../lv_conf.h"                /* Else assume lv_conf.h is next to the lvgl folder. */
     #endif
     #if !defined(LV_CONF_H) && !defined(LV_CONF_SUPPRESS_DEFINE_CHECK)
         /* #include will sometimes silently fail when __has_include is used */
@@ -88,7 +106,6 @@
 
 /* If you need to include anything here, do it inside the `__ASSEMBLY__` guard */
 #if  0 && defined(__ASSEMBLY__)
-#include "my_include.h"
 #endif
 
 /*====================
@@ -4593,7 +4610,6 @@
     #endif
 #endif
 
-
 /** QNX Screen display and input drivers */
 #ifndef LV_USE_QNX
     #ifdef CONFIG_LV_USE_QNX
@@ -4840,8 +4856,6 @@
     #endif
 #endif /* LV_BUILD_DEMOS */
 
-
-
 /*----------------------------------
  * End of parsing lv_conf_template.h
  -----------------------------------*/
@@ -4966,7 +4980,6 @@ LV_EXPORT_CONST_INT(LV_DRAW_BUF_ALIGN);
     #endif
 #endif /* LV_USE_EGL */
 
-
 #if LV_USE_OS
     #if (LV_USE_FREETYPE || LV_USE_THORVG) && LV_DRAW_THREAD_STACK_SIZE < (32 * 1024)
         #error "Increase LV_DRAW_THREAD_STACK_SIZE to at least 32KB for FreeType or ThorVG."
@@ -4989,3 +5002,5 @@ LV_EXPORT_CONST_INT(LV_DRAW_BUF_ALIGN);
 #endif  /*defined(LV_CONF_SKIP)*/
 
 #endif  /*LV_CONF_INTERNAL_H*/
+
+/** @} */

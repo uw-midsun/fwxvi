@@ -1,20 +1,29 @@
-/**
- * @file lv_sdl2.c
+/************************************************************************************************
+ * @file    lv_sdl2.c
  *
- */
+ * @brief   Lv Sdl2
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+
+/* Inter-component Headers */
+    #include "../misc/lv_timer.h"
+#include "../misc/lv_log.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_SDL2
 
-#include <errno.h>
-#include "../misc/lv_log.h"
-
 #ifndef __linux__
-    #include "../misc/lv_timer.h"
 #endif
 
 /*********************

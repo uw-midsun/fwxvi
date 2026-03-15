@@ -1,3 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgRender.h
+ *
+ * @brief   Tvgrender
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstdarg>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgArray.h"
+#include "tvgCommon.h"
+#include "tvgLock.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgRender
+ * @brief    tvgRender Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,17 +49,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_RENDER_H_
 #define _TVG_RENDER_H_
-
-#include <math.h>
-#include <cstdarg>
-#include "tvgCommon.h"
-#include "tvgArray.h"
-#include "tvgLock.h"
 
 namespace tvg
 {
@@ -79,7 +101,6 @@ struct RenderSurface
         channelSize = rhs->channelSize;
         premultiplied = rhs->premultiplied;
     }
-
 
 };
 
@@ -410,3 +431,5 @@ static inline uint8_t MULTIPLY(uint8_t c, uint8_t a)
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

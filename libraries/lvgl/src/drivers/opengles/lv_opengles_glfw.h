@@ -1,6 +1,26 @@
-/**
- * @file lv_opengles_glfw.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_glfw.h
  *
+ * @brief   Lv Opengles Glfw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_glfw
+ * @brief    lv_opengles_glfw Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_GLFW_H
@@ -10,10 +30,7 @@
 extern "C" {
 #endif
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_GLFW
-
-#include "../../misc/lv_types.h"
 
 /*********************
  *      INCLUDES
@@ -86,3 +103,5 @@ void * lv_opengles_glfw_window_get_glfw_window(lv_opengles_window_t * window);
 #endif
 
 #endif /*LV_OPENGLES_GLFW_H*/
+
+/** @} */

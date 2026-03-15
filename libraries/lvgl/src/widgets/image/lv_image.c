@@ -1,25 +1,34 @@
-/**
- * @file lv_image.c
+/************************************************************************************************
+ * @file    lv_image.c
  *
- */
+ * @brief   Lv Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_draw_private.h"
+#include "../../core/lv_obj_event_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw_image_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_image_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_image_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../misc/lv_text_private.h"
-#include "../../draw/lv_draw_image_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_obj_event_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../core/lv_obj_draw_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../core/lv_observer_private.h"
 
 #if LV_USE_IMAGE != 0
-
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -648,7 +657,6 @@ const lv_image_dsc_t * lv_image_get_bitmap_map_src(lv_obj_t * obj)
     return img->bitmap_mask_src;
 }
 
-
 #if LV_USE_OBSERVER
 lv_observer_t * lv_image_bind_src(lv_obj_t * obj, lv_subject_t * subject)
 {
@@ -664,7 +672,6 @@ lv_observer_t * lv_image_bind_src(lv_obj_t * obj, lv_subject_t * subject)
     return observer;
 }
 #endif /*LV_USE_OBSERVER*/
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -1048,7 +1055,6 @@ static void reset_image_attributes(lv_obj_t * obj)
     lv_obj_refresh_self_size(obj);
 }
 
-
 #if LV_USE_OBSERVER
 
 static void image_src_observer_cb(lv_observer_t * observer, lv_subject_t * subject)
@@ -1073,6 +1079,5 @@ static lv_point_t lv_image_get_pivot_helper(lv_obj_t * obj)
     return pivot;
 }
 #endif
-
 
 #endif

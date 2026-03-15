@@ -1,22 +1,31 @@
-/**
- * @file lv_translation.c
+/************************************************************************************************
+ * @file    lv_translation.c
  *
- */
+ * @brief   Lv Translation
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../lvgl_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_ll.h"
+#include "../../misc/lv_log.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_translation.h"
+#include "lv_translation_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_translation.h"
 #if LV_USE_TRANSLATION
-
-#include "lv_translation_private.h"
-#include "../../misc/lv_ll.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_assert.h"
-#include "../../core/lv_global.h"
-#include "../../lvgl_private.h"
 
 /*********************
  *      DEFINES
@@ -226,7 +235,6 @@ int32_t lv_translation_get_language_index(lv_translation_pack_t * pack, const ch
 
     return -1;
 }
-
 
 lv_translation_tag_dsc_t * lv_translation_add_tag(lv_translation_pack_t * pack, const char * tag_name)
 {

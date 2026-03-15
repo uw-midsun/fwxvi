@@ -1,3 +1,23 @@
+/************************************************************************************************
+ * @file    nanovg.c
+ *
+ * @brief   Nanovg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_log.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "nanovg.h"
+
+/* Intra-component Headers */
 //
 // Copyright (c) 2013 Mikko Mononen memon@inside.org
 //
@@ -16,16 +36,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_NANOVG
-
-#include <math.h>
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_log.h"
-
-#include "nanovg.h"
 
 #ifdef _MSC_VER
     #pragma warning(disable: 4100)  // unreferenced formal parameter
@@ -214,7 +225,6 @@ static float nvg__normalize(float * x, float * y)
     }
     return d;
 }
-
 
 static void nvg__deletePathCache(NVGpathCache * c)
 {
@@ -658,7 +668,6 @@ static void nvg__setPaintColor(NVGpaint * p, NVGcolor color)
     p->outerColor = color;
 }
 
-
 // State handling
 void nvgSave(NVGcontext * ctx)
 {
@@ -943,7 +952,6 @@ NVGpaint nvgBoxGradient(NVGcontext * ctx,
     return p;
 }
 
-
 NVGpaint nvgImagePattern(NVGcontext * ctx,
                          float cx, float cy, float w, float h, float angle,
                          int image, float alpha)
@@ -1136,7 +1144,6 @@ static void nvg__appendCommands(NVGcontext * ctx, float * vals, int nvals)
     ctx->ncommands += nvals;
 }
 
-
 static void nvg__clearPathCache(NVGcontext * ctx)
 {
     ctx->cache->npoints = 0;
@@ -1278,7 +1285,6 @@ static void nvg__polyReverse(NVGpoint * pts, int npts)
         j--;
     }
 }
-
 
 static void nvg__vset(NVGvertex * vtx, float x, float y, float u, float v)
 {
@@ -1669,7 +1675,6 @@ static NVGvertex * nvg__buttCapEnd(NVGvertex * dst, NVGpoint * p,
     return dst;
 }
 
-
 static NVGvertex * nvg__roundCapStart(NVGvertex * dst, NVGpoint * p,
                                       float dx, float dy, float w, int ncap,
                                       float aa, float u0, float u1)
@@ -1719,7 +1724,6 @@ static NVGvertex * nvg__roundCapEnd(NVGvertex * dst, NVGpoint * p,
     }
     return dst;
 }
-
 
 static void nvg__calculateJoins(NVGcontext * ctx, float w, int lineJoin, float miterLimit)
 {
@@ -1789,7 +1793,6 @@ static void nvg__calculateJoins(NVGcontext * ctx, float w, int lineJoin, float m
         path->convex = (nleft == path->count) ? 1 : 0;
     }
 }
-
 
 static int nvg__expandStroke(NVGcontext * ctx, float w, float fringe, int lineCap, int lineJoin, float miterLimit)
 {
@@ -2056,7 +2059,6 @@ static int nvg__expandFill(NVGcontext * ctx, float w, int lineJoin, float miterL
 
     return 1;
 }
-
 
 // Draw
 void nvgBeginPath(NVGcontext * ctx)
@@ -2358,7 +2360,6 @@ void nvgStroke(NVGcontext * ctx)
     const NVGpath * path;
     int i;
 
-
     if(strokeWidth < ctx->fringeWidth) {
         // If the stroke width is less than pixel size, use alpha to emulate coverage.
         // Since coverage is area, scale by alpha*alpha.
@@ -2437,7 +2438,6 @@ int nvgFindFont(NVGcontext * ctx, const char * name)
     (void)name;
     return -1;
 }
-
 
 int nvgAddFallbackFontId(NVGcontext * ctx, int baseFont, int fallbackFont)
 {

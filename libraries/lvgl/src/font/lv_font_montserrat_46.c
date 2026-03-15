@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    lv_font_montserrat_46.c
+ *
+ * @brief   Lv Font Montserrat 46
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../lvgl.h"
+    #include "lvgl.h"
+
+/* Intra-component Headers */
 /*******************************************************************************
  * Size: 46 px
  * Bpp: 4
@@ -5,9 +21,7 @@
  ******************************************************************************/
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
-    #include "lvgl.h"
 #else
-    #include "../../lvgl.h"
 #endif
 
 #ifndef LV_FONT_MONTSERRAT_46

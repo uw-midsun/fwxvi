@@ -1,17 +1,25 @@
-/**
- * @file lv_vg_lite_math.c
+/************************************************************************************************
+ * @file    lv_vg_lite_math.c
  *
- */
+ * @brief   Lv Vg Lite Math
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "lv_vg_lite_math.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_math.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES

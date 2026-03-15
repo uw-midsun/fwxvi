@@ -1,3 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieModel.h
+ *
+ * @brief   Tvglottiemodel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstring>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgLottieProperty.h"
+#include "tvgLottieRenderPooler.h"
+#include "tvgRender.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieModel
+ * @brief    tvgLottieModel Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,19 +49,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_MODEL_H_
 #define _TVG_LOTTIE_MODEL_H_
-
-#include <cstring>
-
-#include "tvgCommon.h"
-#include "tvgRender.h"
-#include "tvgLottieProperty.h"
-#include "tvgLottieRenderPooler.h"
-
 
 struct LottieComposition;
 
@@ -79,7 +99,6 @@ struct LottieStroke
     StrokeJoin join = StrokeJoin::Round;
 };
 
-
 struct LottieEffect
 {
     enum Type : uint8_t
@@ -93,7 +112,6 @@ struct LottieEffect
     bool enable = false;
 };
 
-
 struct LottieGaussianBlur : LottieEffect
 {
     LottieSlider blurness = 0.0f;
@@ -106,7 +124,6 @@ struct LottieGaussianBlur : LottieEffect
     }
 };
 
-
 struct LottieMask
 {
     LottiePathSet pathset;
@@ -115,7 +132,6 @@ struct LottieMask
     CompositeMethod method;
     bool inverse = false;
 };
-
 
 struct LottieObject
 {
@@ -158,7 +174,6 @@ struct LottieObject
     bool hidden = false;       //remove?
 };
 
-
 struct LottieGlyph
 {
     Array<LottieObject*> children;   //glyph shapes.
@@ -181,7 +196,6 @@ struct LottieGlyph
     }
 };
 
-
 struct LottieTextStyle
 {
     LottieColor fillColor = RGB24{255, 255, 255};
@@ -196,7 +210,6 @@ struct LottieTextStyle
     LottieOpacity strokeOpacity = 255;
     LottieOpacity opacity = 255;
 };
-
 
 struct LottieTextRange
 {
@@ -220,7 +233,6 @@ struct LottieTextRange
 
     void range(float frameNo, float totalLen, float& start, float& end);
 };
-
 
 struct LottieFont
 {
@@ -283,7 +295,6 @@ struct LottieText : LottieObject, LottieRenderPooler<tvg::Shape>
     }
 };
 
-
 struct LottieTrimpath : LottieObject
 {
     enum Type : uint8_t { Simultaneous = 1, Individual = 2 };
@@ -315,7 +326,6 @@ struct LottieTrimpath : LottieObject
     Type type = Simultaneous;
 };
 
-
 struct LottieShape : LottieObject, LottieRenderPooler<tvg::Shape>
 {
     bool clockwise = true;   //clockwise or counter-clockwise
@@ -333,7 +343,6 @@ struct LottieShape : LottieObject, LottieRenderPooler<tvg::Shape>
     }
 };
 
-
 struct LottieRoundedCorner : LottieObject
 {
     void prepare()
@@ -350,7 +359,6 @@ struct LottieRoundedCorner : LottieObject
     LottieFloat radius = 0.0f;
 };
 
-
 struct LottiePath : LottieShape
 {
     void prepare()
@@ -366,7 +374,6 @@ struct LottiePath : LottieShape
 
     LottiePathSet pathset;
 };
-
 
 struct LottieRect : LottieShape
 {
@@ -387,7 +394,6 @@ struct LottieRect : LottieShape
     LottiePoint size = Point{0.0f, 0.0f};
     LottieFloat radius = 0.0f;       //rounded corner radius
 };
-
 
 struct LottiePolyStar : LottieShape
 {
@@ -420,7 +426,6 @@ struct LottiePolyStar : LottieShape
     Type type = Polygon;
 };
 
-
 struct LottieEllipse : LottieShape
 {
     void prepare()
@@ -438,7 +443,6 @@ struct LottieEllipse : LottieShape
     LottiePosition position = Point{0.0f, 0.0f};
     LottiePoint size = Point{0.0f, 0.0f};
 };
-
 
 struct LottieTransform : LottieObject
 {
@@ -499,7 +503,6 @@ struct LottieTransform : LottieObject
     RotationEx* rotationEx = nullptr;      //extension for 3d rotation
 };
 
-
 struct LottieSolid : LottieObject
 {
     LottieColor color = RGB24{255, 255, 255};
@@ -512,7 +515,6 @@ struct LottieSolid : LottieObject
         return nullptr;
     }
 };
-
 
 struct LottieSolidStroke : LottieSolid, LottieStroke
 {
@@ -539,7 +541,6 @@ struct LottieSolidStroke : LottieSolid, LottieStroke
     }
 };
 
-
 struct LottieSolidFill : LottieSolid
 {
     void prepare()
@@ -555,7 +556,6 @@ struct LottieSolidFill : LottieSolid
 
     FillRule rule = FillRule::Winding;
 };
-
 
 struct LottieGradient : LottieObject
 {
@@ -587,7 +587,6 @@ struct LottieGradient : LottieObject
         return nullptr;
     }
 
-
     uint32_t populate(ColorStop& color, size_t count);
     Fill* fill(float frameNo, LottieExpressions* exps);
 
@@ -599,7 +598,6 @@ struct LottieGradient : LottieObject
     LottieColorStop colorStops;
     uint8_t id = 0;    //1: linear, 2: radial
 };
-
 
 struct LottieGradientFill : LottieGradient
 {
@@ -617,7 +615,6 @@ struct LottieGradientFill : LottieGradient
 
     FillRule rule = FillRule::Winding;
 };
-
 
 struct LottieGradientStroke : LottieGradient, LottieStroke
 {
@@ -645,7 +642,6 @@ struct LottieGradientStroke : LottieGradient, LottieStroke
     }
 };
 
-
 struct LottieImage : LottieObject, LottieRenderPooler<tvg::Picture>
 {
     union {
@@ -660,7 +656,6 @@ struct LottieImage : LottieObject, LottieRenderPooler<tvg::Picture>
     ~LottieImage();
     void prepare();
 };
-
 
 struct LottieRepeater : LottieObject
 {
@@ -695,7 +690,6 @@ struct LottieRepeater : LottieObject
     bool inorder = true;        //true: higher,  false: lower
 };
 
-
 struct LottieOffsetPath : LottieObject
 {
     void prepare()
@@ -707,7 +701,6 @@ struct LottieOffsetPath : LottieObject
     LottieFloat miterLimit = 4.0f;
     StrokeJoin join = StrokeJoin::Miter;
 };
-
 
 struct LottieGroup : LottieObject, LottieRenderPooler<tvg::Shape>
 {
@@ -744,7 +737,6 @@ struct LottieGroup : LottieObject, LottieRenderPooler<tvg::Shape>
     bool visible : 1;       //this group has visible contents.
     bool allowMerge : 1;    //if this group is consisted of simple (transformed) shapes.
 };
-
 
 struct LottieLayer : LottieGroup
 {
@@ -818,7 +810,6 @@ struct LottieLayer : LottieGroup
     }
 };
 
-
 struct LottieSlot
 {
     struct Pair {
@@ -848,7 +839,6 @@ struct LottieSlot
     LottieProperty::Type type;
     bool overridden = false;
 };
-
 
 struct LottieComposition
 {
@@ -903,3 +893,5 @@ struct LottieComposition
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

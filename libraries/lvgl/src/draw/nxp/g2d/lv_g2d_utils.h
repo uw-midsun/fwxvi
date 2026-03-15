@@ -1,6 +1,28 @@
-/**
- * @file lv_g2d_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_g2d_utils.h
  *
+ * @brief   Lv G2D Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../sw/lv_draw_sw_private.h"
+#include "g2d.h"
+#include "g2dExt.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_g2d_utils
+ * @brief    lv_g2d_utils Firmware
+ * @{
  */
 
 /**
@@ -19,13 +41,9 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-#include "../../sw/lv_draw_sw_private.h"
-#include "g2d.h"
-#include "g2dExt.h"
 
 /*********************
  *      DEFINES
@@ -81,3 +99,5 @@ void g2d_rotate(lv_draw_buf_t * buf1, lv_draw_buf_t * buf2, int32_t width, int32
 #endif
 
 #endif /*LV_G2D_UTILS_H*/
+
+/** @} */

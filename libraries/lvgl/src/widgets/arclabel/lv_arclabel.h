@@ -1,6 +1,25 @@
-/**
- * @file lv_arclabel.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_arclabel.h
  *
+ * @brief   Lv Arclabel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_arclabel
+ * @brief    lv_arclabel Firmware
+ * @{
  */
 
 #ifndef LV_ARCLABEL_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_ARCLABEL != 0
 
@@ -299,3 +317,5 @@ lv_value_precise_t lv_arclabel_get_text_angle(lv_obj_t * obj);
 #endif
 
 #endif /*LV_ARCLABEL_H*/
+
+/** @} */

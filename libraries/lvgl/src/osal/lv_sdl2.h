@@ -1,6 +1,26 @@
-/**
- * @file lv_sdl2.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sdl2.h
  *
+ * @brief   Lv Sdl2
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <SDL2/SDL.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_sdl2
+ * @brief    lv_sdl2 Firmware
+ * @{
  */
 
 #ifndef LV_SDL2_H
@@ -14,8 +34,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 #if LV_USE_OS == LV_OS_SDL2
-#include <SDL2/SDL.h>
-#include <stdbool.h>
 
 /*********************
  *      DEFINES
@@ -53,3 +71,5 @@ typedef struct {
 #endif
 
 #endif /*LV_SDL2_H*/
+
+/** @} */

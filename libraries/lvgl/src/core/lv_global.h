@@ -1,6 +1,54 @@
-/**
- * @file lv_global.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_global.h
  *
+ * @brief   Lv Global
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../debugging/sysmon/lv_sysmon.h"
+#include "../debugging/sysmon/lv_sysmon_private.h"
+#include "../debugging/test/lv_test_private.h"
+#include "../draw/lv_draw.h"
+#include "../draw/lv_draw_buf_private.h"
+#include "../draw/lv_draw_private.h"
+#include "../draw/sw/lv_draw_sw.h"
+#include "../draw/sw/lv_draw_sw_mask_private.h"
+#include "../draw/sw/lv_draw_sw_private.h"
+#include "../font/fmt_txt/lv_font_fmt_txt_private.h"
+#include "../layouts/lv_layout.h"
+#include "../layouts/lv_layout_private.h"
+#include "../lv_conf_internal.h"
+#include "../misc/lv_anim.h"
+#include "../misc/lv_anim_private.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_color_op.h"
+#include "../misc/lv_ll.h"
+#include "../misc/lv_log.h"
+#include "../misc/lv_style.h"
+#include "../misc/lv_timer.h"
+#include "../misc/lv_timer_private.h"
+#include "../misc/lv_types.h"
+#include "../misc/lv_types.h"
+#include "../osal/lv_os_private.h"
+#include "../stdlib/builtin/lv_tlsf.h"
+#include "../stdlib/builtin/lv_tlsf_private.h"
+#include "../tick/lv_tick.h"
+#include "../tick/lv_tick_private.h"
+
+/* Intra-component Headers */
+#include LV_GLOBAL_CUSTOM_INCLUDE
+
+/**
+ * @defgroup lv_global
+ * @brief    lv_global Firmware
+ * @{
  */
 
 #ifndef LV_GLOBAL_H
@@ -13,44 +61,12 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
 
-#include "../misc/lv_types.h"
-#include "../draw/lv_draw.h"
 #if LV_USE_DRAW_SW
-#include "../draw/sw/lv_draw_sw.h"
 #endif
-#include "../misc/lv_anim.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_color_op.h"
-#include "../misc/lv_ll.h"
-#include "../misc/lv_log.h"
-#include "../misc/lv_style.h"
-#include "../misc/lv_timer.h"
-#include "../osal/lv_os_private.h"
-#include "../debugging/sysmon/lv_sysmon.h"
-#include "../stdlib/builtin/lv_tlsf.h"
 
 #if LV_USE_FONT_COMPRESSED
-#include "../font/fmt_txt/lv_font_fmt_txt_private.h"
 #endif
-
-#include "../tick/lv_tick.h"
-#include "../layouts/lv_layout.h"
-
-#include "../misc/lv_types.h"
-
-#include "../misc/lv_timer_private.h"
-#include "../misc/lv_anim_private.h"
-#include "../tick/lv_tick_private.h"
-#include "../draw/lv_draw_buf_private.h"
-#include "../draw/lv_draw_private.h"
-#include "../draw/sw/lv_draw_sw_private.h"
-#include "../draw/sw/lv_draw_sw_mask_private.h"
-#include "../stdlib/builtin/lv_tlsf_private.h"
-#include "../debugging/sysmon/lv_sysmon_private.h"
-#include "../debugging/test/lv_test_private.h"
-#include "../layouts/lv_layout_private.h"
 
 /*********************
  *      DEFINES
@@ -219,7 +235,6 @@ typedef struct _lv_global_t {
     struct _lv_profiler_builtin_ctx_t * profiler_context;
 #endif
 
-
 #if LV_USE_FILE_EXPLORER
     lv_style_t file_explorer_quick_access_style;
     size_t file_explorer_count;
@@ -284,7 +299,6 @@ typedef struct _lv_global_t {
  **********************/
 
 #if LV_ENABLE_GLOBAL_CUSTOM
-#include LV_GLOBAL_CUSTOM_INCLUDE
 
 #ifndef LV_GLOBAL_CUSTOM
 #define LV_GLOBAL_CUSTOM() lv_global_default()
@@ -310,3 +324,5 @@ lv_global_t * lv_global_default(void);
 #endif
 
 #endif /*LV_GLOBAL_H*/
+
+/** @} */

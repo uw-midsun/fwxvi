@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_draw_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_draw_private.h
  *
+ * @brief   Lv Obj Draw Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_obj_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_draw_private
+ * @brief    lv_obj_draw_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_DRAW_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_obj_draw.h"
 
 /*********************
  *      DEFINES
@@ -46,3 +63,5 @@ lv_layer_type_t lv_obj_get_layer_type(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_OBJ_DRAW_PRIVATE_H*/
+
+/** @} */

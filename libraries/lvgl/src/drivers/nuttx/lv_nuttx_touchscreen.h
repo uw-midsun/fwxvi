@@ -1,6 +1,25 @@
-/**
- * @file lv_nuttx_touchscreen.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_touchscreen.h
  *
+ * @brief   Lv Nuttx Touchscreen
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_touchscreen
+ * @brief    lv_nuttx_touchscreen Firmware
+ * @{
  */
 
 /*********************
@@ -17,8 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_NUTTX
 
@@ -55,3 +72,5 @@ lv_indev_t * lv_nuttx_touchscreen_create(const char * dev_path);
 #endif
 
 #endif /* LV_NUTTX_TOUCHSCREEN_H */
+
+/** @} */

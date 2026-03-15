@@ -1,12 +1,27 @@
-/**
- * @file lv_blend_riscv_v_private.h
- * Common macros and utilities for RISC-V Vector Extension (RVV 1.0) blend operations
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_blend_riscv_v_private.h
  *
- * This header provides reusable RVV macros for:
- * - Segmented load/store operations (RGB888/XRGB8888/RGB565)
- * - Alpha blending with scalar or vector alpha
- * - Color format conversions (RGB565 <-> RGB888)
- * - Effective alpha calculations (alpha, mask, opa combinations)
+ * @brief   Lv Blend Riscv V Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <riscv_vector.h>
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "lv_blend_riscv_vector_emulation.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_blend_riscv_v_private
+ * @brief    lv_blend_riscv_v_private Firmware
+ * @{
  */
 
 #ifndef LV_BLEND_RISCV_V_PRIVATE_H
@@ -20,15 +35,12 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../../lv_conf_internal.h"
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
 
 /* Try to use real RVV, fall back to emulation if not available */
 #ifdef __riscv_v
-#include <riscv_vector.h>
 #else
 /* No real RVV available, use emulation */
-#include "lv_blend_riscv_vector_emulation.h"
 #endif
 
 /*********************
@@ -394,3 +406,5 @@ static inline void * LV_ATTRIBUTE_FAST_MEM drawbuf_next_row(const void * buf, ui
 #endif
 
 #endif /*LV_BLEND_RISCV_V_PRIVATE_H*/
+
+/** @} */

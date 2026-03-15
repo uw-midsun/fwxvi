@@ -1,6 +1,30 @@
-/**
- * @file lv_color.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_color.h
  *
+ * @brief   Lv Color
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_assert.h"
+#include "lv_color_op.h"
+#include "lv_math.h"
+#include "lv_palette.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_color
+ * @brief    lv_color Firmware
+ * @{
  */
 
 #ifndef LV_COLOR_H
@@ -13,10 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_assert.h"
-#include "lv_math.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -467,7 +487,6 @@ uint8_t lv_color24_luminance(const uint8_t * c);
  */
 uint8_t lv_color32_luminance(lv_color32_t c);
 
-
 /**
  * Swap the endianness of an rgb565 color
  * @param c a color
@@ -482,9 +501,6 @@ static inline uint16_t LV_ATTRIBUTE_FAST_MEM lv_color_swap_16(uint16_t c)
  *      MACROS
  **********************/
 
-#include "lv_palette.h"
-#include "lv_color_op.h"
-
 LV_ATTRIBUTE_EXTERN_DATA extern const lv_color_filter_dsc_t lv_color_filter_shade;
 
 #ifdef __cplusplus
@@ -492,3 +508,5 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_color_filter_dsc_t lv_color_filter_shad
 #endif
 
 #endif /*LV_COLOR_H*/
+
+/** @} */

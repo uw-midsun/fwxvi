@@ -1,6 +1,27 @@
-/**
- * @file lv_event.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_event.h
  *
+ * @brief   Lv Event
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_array.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_event
+ * @brief    lv_event Firmware
+ * @{
  */
 
 #ifndef LV_EVENT_H
@@ -13,10 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_types.h"
-#include "../lv_conf_internal.h"
-
-#include "lv_array.h"
 
 /*********************
  *      DEFINES
@@ -225,7 +242,6 @@ void lv_event_stop_processing(lv_event_t * e);
  */
 void lv_event_free_user_data_cb(lv_event_t * e);
 
-
 /**
  * Register a new, custom event ID.
  * It can be used the same way as e.g. `LV_EVENT_CLICKED` to send custom events
@@ -271,3 +287,5 @@ void lv_event_desc_set_external_data(lv_event_dsc_t * dsc, void * data, void (* 
 #endif
 
 #endif /* LV_EVENT_H */
+
+/** @} */

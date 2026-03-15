@@ -1,7 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wl_window.h
+ *
+ * @brief   Lv Wl Window
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_wl_window.h
- *
+ * @defgroup lv_wl_window
+ * @brief    lv_wl_window Firmware
+ * @{
  */
 
 #ifndef LV_WL_WINDOW_H
@@ -14,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
 
 #if LV_USE_WAYLAND
 
@@ -102,3 +118,5 @@ void lv_wayland_window_set_minimized(lv_display_t * disp);
 #endif
 
 #endif /*LV_WL_WINDOW_H*/
+
+/** @} */

@@ -1,15 +1,24 @@
-/**
- * @file lv_async.c
+/************************************************************************************************
+ * @file    lv_async.c
  *
- */
+ * @brief   Lv Async
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_mem.h"
+#include "lv_async.h"
+#include "lv_timer_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_async.h"
-#include "lv_timer_private.h"
-#include "../stdlib/lv_mem.h"
 
 /*********************
  *      DEFINES

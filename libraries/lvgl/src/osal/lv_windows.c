@@ -1,18 +1,26 @@
-/**
- * @file lv_windows.c
+/************************************************************************************************
+ * @file    lv_windows.c
  *
- */
+ * @brief   Lv Windows
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <process.h>
+
+/* Inter-component Headers */
+#include "../misc/lv_timer.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_os_private.h"
-
 #if LV_USE_OS == LV_OS_WINDOWS
-
-#include <process.h>
-#include "../misc/lv_timer.h"
 
 /*********************
  *      DEFINES

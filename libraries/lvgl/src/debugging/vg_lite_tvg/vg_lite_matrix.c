@@ -1,19 +1,27 @@
-/**
- * @file vg_lite_matrix.c
+/************************************************************************************************
+ * @file    vg_lite_matrix.c
  *
- */
+ * @brief   Vg Lite Matrix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "vg_lite.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE && LV_USE_VG_LITE_THORVG
-
-#include <math.h>
-#include <string.h>
-#include "vg_lite.h"
 
 /*********************
  *      DEFINES

@@ -15,6 +15,8 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "lvgl.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
 /**

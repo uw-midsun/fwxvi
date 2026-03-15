@@ -1,14 +1,24 @@
-/**
- * @file lv_os.c
+/************************************************************************************************
+ * @file    lv_os.c
  *
- */
+ * @brief   Lv Os
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../tick/lv_tick.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
-#include "../core/lv_global.h"
-#include "../tick/lv_tick.h"
 
 /*********************
  *      DEFINES
@@ -41,7 +51,6 @@ void lv_os_init(void)
     lv_mutex_init(&lv_general_mutex);
 #endif
 }
-
 
 void lv_lock(void)
 {
@@ -76,5 +85,4 @@ void lv_sleep_ms(uint32_t ms)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 

@@ -60,10 +60,7 @@ static StatusCode s_create_throttle_bar(lv_obj_t *screen) {
 static StatusCode s_create_brake_bar(lv_obj_t *screen) {
   const BarWidgetConfig s_brake_bar_config = {
     .size = { .width = 40, .height = 100 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_LEFT, .x_offset = 15, .y_offset = -35}
-    },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_LEFT, .x_offset = 15, .y_offset = -35 } },
     .label_text = "Brake",
     .label_text_alignment = WIDGET_ALIGN_OUT_BOTTOM_MID,
     .orientation = WIDGET_ORIENTATION_VERTICAL,
@@ -75,11 +72,11 @@ static StatusCode s_create_brake_bar(lv_obj_t *screen) {
 
 StatusCode gui_widgets_init(void) {
   GuiScreen *screen = lvgl_get_active_screen();
-  
+
   if (screen == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  
+
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
   /* Create widgets */
@@ -119,6 +116,5 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   (void)soc_percent;
   return STATUS_CODE_UNIMPLEMENTED;
 }
-
 
 // }

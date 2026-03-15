@@ -1,26 +1,35 @@
-/**
-* @file lv_draw_vector.c
+/************************************************************************************************
+ * @file    lv_draw_vector.c
  *
- */
+ * @brief   Lv Draw Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_ll.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_string.h"
+#include "lv_draw_private.h"
+#include "lv_draw_vector_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_vector_private.h"
-#include "../misc/lv_area_private.h"
-#include "lv_draw_private.h"
 
 #if LV_USE_VECTOR_GRAPHIC
 
 #if !((LV_USE_DRAW_SW && LV_USE_THORVG) || LV_USE_DRAW_VG_LITE || (LV_USE_NEMA_GFX && LV_USE_NEMA_VG) || LV_USE_DRAW_NANOVG)
     #error "LV_USE_VECTOR_GRAPHIC requires (LV_USE_DRAW_SW and LV_USE_THORVG) or LV_USE_DRAW_VG_LITE or (LV_USE_NEMA_GFX and LV_USE_NEMA_VG) or LV_USE_DRAW_NANOVG"
 #endif
-
-#include "../misc/lv_ll.h"
-#include "../misc/lv_types.h"
-#include "../stdlib/lv_string.h"
-#include <math.h>
-#include <float.h>
 
 #define EPSILON 1e-6f
 #define MATH_PI  3.14159265358979323846f
@@ -77,7 +86,6 @@ static void _copy_draw_dsc(lv_vector_path_ctx_t * dst, const lv_vector_path_ctx_
     lv_memcpy(&(dst->matrix), &(src->matrix), sizeof(lv_matrix_t));
     lv_area_copy(&(dst->scissor_area), &(src->scissor_area));
 }
-
 
 /**********************
  *   GLOBAL FUNCTIONS

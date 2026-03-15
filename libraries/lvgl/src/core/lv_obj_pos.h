@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_pos.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_pos.h
  *
+ * @brief   Lv Obj Pos
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_pos
+ * @brief    lv_obj_pos Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_POS_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_area.h"
 
 /*********************
  *      DEFINES
@@ -581,3 +599,5 @@ int32_t lv_obj_calc_dynamic_height(lv_obj_t * obj, lv_style_prop_t prop);
 #endif
 
 #endif /*LV_OBJ_POS_H*/
+
+/** @} */

@@ -1,6 +1,27 @@
-/**
- * @file lv_nuttx_entry.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_entry.h
  *
+ * @brief   Lv Nuttx Entry
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_entry
+ * @brief    lv_nuttx_entry Firmware
+ * @{
  */
 
 /*********************
@@ -17,10 +38,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../lv_conf_internal.h"
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_NUTTX
 
@@ -114,3 +131,5 @@ uint32_t lv_nuttx_get_idle(void);
 #endif
 
 #endif /* LV_NUTTX_ENTRY_H */
+
+/** @} */

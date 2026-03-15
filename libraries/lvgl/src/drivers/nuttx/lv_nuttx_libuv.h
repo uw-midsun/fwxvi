@@ -1,6 +1,26 @@
-/**
- * @file lv_nuttx_libuv.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_libuv.h
  *
+ * @brief   Lv Nuttx Libuv
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_libuv
+ * @brief    lv_nuttx_libuv Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_LIBUV_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_NUTTX
 
@@ -64,3 +81,5 @@ void lv_nuttx_uv_deinit(void ** data);
 #endif
 
 #endif /*LV_NUTTX_LIBUV_H*/
+
+/** @} */

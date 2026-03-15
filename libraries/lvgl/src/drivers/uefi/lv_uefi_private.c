@@ -1,17 +1,25 @@
-/**
- * @file lv_uefi_private.c
+/************************************************************************************************
+ * @file    lv_uefi_private.c
  *
- */
+ * @brief   Lv Uefi Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "lv_uefi_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi_private.h"
 
 /*********************
  *      DEFINES

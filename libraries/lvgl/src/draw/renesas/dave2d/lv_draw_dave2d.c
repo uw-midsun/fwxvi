@@ -1,15 +1,25 @@
-/**
- * @file lv_draw_dave2d.c
+/************************************************************************************************
+ * @file    lv_draw_dave2d.c
  *
- */
+ * @brief   Lv Draw Dave2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_buf_private.h"
+#include "lv_draw_dave2d.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_dave2d.h"
 #if LV_USE_DRAW_DAVE2D
-#include "../../lv_draw_buf_private.h"
-#include "../../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -371,7 +381,6 @@ static int32_t _dave2d_evaluate(lv_draw_unit_t * u, lv_draw_task_t * t)
 
     return ret;
 }
-
 
 static int32_t lv_draw_dave2d_dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
 {

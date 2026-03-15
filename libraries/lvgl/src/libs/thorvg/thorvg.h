@@ -1,7 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    thorvg.h
+ *
+ * @brief   Thorvg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstdint>
+#include <functional>
+#include <list>
+#include <memory>
+#include <string>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_assert.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+
+/* Intra-component Headers */
 #ifndef _THORVG_H_
 #define _THORVG_H_
-
-#include "../../lv_conf_internal.h"
 
 /*Testing of dependencies*/
 #if LV_USE_THORVG && LV_USE_VECTOR_GRAPHIC == 0
@@ -10,16 +33,6 @@
 
 #if LV_USE_THORVG_INTERNAL
 #define TVG_BUILD 1
-
-
-#include <functional>
-#include <cstdint>
-#include <memory>
-#include <string>
-#include <list>
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_assert.h"
 
 #ifdef TVG_API
     #undef TVG_API
@@ -103,7 +116,6 @@ enum class Result
     Unknown                ///< The value returned in all other cases.
 };
 
-
 /**
  * @brief Enumeration specifying the values of the path commands accepted by TVG.
  *
@@ -118,7 +130,6 @@ enum class PathCommand
     CubicTo    ///< Draws a cubic Bezier curve from the current point to the given point using two given control points and sets a new value of the current point. This command expects 3 points: the 1st control-point, the 2nd control-point, the end-point of the curve.
 };
 
-
 /**
  * @brief Enumeration determining the ending type of a stroke in the open sub-paths.
  */
@@ -128,7 +139,6 @@ enum class StrokeCap
     Round,      ///< The stroke is extended in both end-points of a sub-path by a half circle, with a radius equal to the half of a stroke width. For zero length sub-paths a full circle is rendered.
     Butt        ///< The stroke ends exactly at each of the two end-points of a sub-path. For zero length sub-paths no stroke is rendered.
 };
-
 
 /**
  * @brief Enumeration determining the style used at the corners of joined stroked path segments.
@@ -140,7 +150,6 @@ enum class StrokeJoin
     Miter      ///< The outer corner of the joined path segments is spiked. The spike is created by extension beyond the join point of the outer edges of the stroke until they intersect. In case the extension goes beyond the limit, the join style is converted to the Bevel style.
 };
 
-
 /**
  * @brief Enumeration specifying how to fill the area outside the gradient bounds.
  */
@@ -151,7 +160,6 @@ enum class FillSpread
     Repeat   ///< The gradient pattern is repeated continuously beyond the gradient area until the expected region is filled.
 };
 
-
 /**
  * @brief Enumeration specifying the algorithm used to establish which parts of the shape are treated as the inside of the shape.
  */
@@ -160,7 +168,6 @@ enum class FillRule
     Winding = 0, ///< A line from the point to a location outside the shape is drawn. The intersections of the line with the path segment of the shape are counted. Starting from zero, if the path segment of the shape crosses the line clockwise, one is added, otherwise one is subtracted. If the resulting sum is non zero, the point is inside the shape.
     EvenOdd      ///< A line from the point to a location outside the shape is drawn and its intersections with the path segments of the shape are counted. If the number of intersections is an odd number, the point is inside the shape.
 };
-
 
 /**
  * @brief Enumeration indicating the method used in the composition of two objects - the target and the source.
@@ -184,7 +191,6 @@ enum class CompositeMethod
     LightenMask,        ///< Where multiple masks intersect, the highest transparency value is used. (Experimental API)
     DarkenMask          ///< Where multiple masks intersect, the lowest transparency value is used. (Experimental API)
 };
-
 
 /**
  * @brief Enumeration indicates the method used for blending paint. Please refer to the respective formulas for each method.
@@ -218,7 +224,6 @@ enum class BlendMethod : uint8_t
     HardMix            ///< Reserved. Not supported.
 };
 
-
 /**
  * @brief Enumeration that defines methods used for Scene Effects.
  *
@@ -235,7 +240,6 @@ enum class SceneEffect : uint8_t
     GaussianBlur       ///< Apply a blur effect with a Gaussian filter. Param(3) = {sigma(float)[> 0], direction(int)[both: 0 / horizontal: 1 / vertical: 2], border(int)[duplicate: 0 / wrap: 1], quality(int)[0 - 100]}
 };
 
-
 /**
  * @brief Enumeration specifying the engine type used for the graphics backend. For multiple backends bitwise operation is allowed.
  */
@@ -245,7 +249,6 @@ enum class CanvasEngine
     Gl = (1 << 2), ///< OpenGL rasterizer.
     Wg = (1 << 3), ///< WebGPU rasterizer. @since 0.15
 };
-
 
 /**
  * @brief Enumeration specifying the ThorVG class type value.
@@ -268,7 +271,6 @@ enum class Type : uint8_t
     RadialGradient         ///< RadialGradient class
 };
 
-
 /**
  * @brief A data structure representing a point in two-dimensional space.
  */
@@ -276,7 +278,6 @@ struct Point
 {
     float x, y;
 };
-
 
 /**
  * @brief A data structure representing a three-dimensional matrix.
@@ -291,7 +292,6 @@ struct Matrix
     float e21, e22, e23;
     float e31, e32, e33;
 };
-
 
 /**
  * @class Paint
@@ -485,7 +485,6 @@ public:
     _TVG_DECLARE_PRIVATE(Paint);
 };
 
-
 /**
  * @class Fill
  *
@@ -590,7 +589,6 @@ public:
 
     _TVG_DECLARE_PRIVATE(Fill);
 };
-
 
 /**
  * @class Canvas
@@ -710,7 +708,6 @@ public:
     _TVG_DECLARE_PRIVATE(Canvas);
 };
 
-
 /**
  * @class LinearGradient
  *
@@ -781,7 +778,6 @@ public:
     _TVG_DECLARE_PRIVATE(LinearGradient);
 };
 
-
 /**
  * @class RadialGradient
  *
@@ -845,7 +841,6 @@ public:
 
     _TVG_DECLARE_PRIVATE(RadialGradient);
 };
-
 
 /**
  * @class Shape
@@ -1246,7 +1241,6 @@ public:
     _TVG_DECLARE_PRIVATE(Shape);
 };
 
-
 /**
  * @class Picture
  *
@@ -1385,7 +1379,6 @@ public:
     _TVG_DECLARE_PRIVATE(Picture);
 };
 
-
 /**
  * @class Scene
  *
@@ -1483,7 +1476,6 @@ public:
 
     _TVG_DECLARE_PRIVATE(Scene);
 };
-
 
 /**
  * @class Text
@@ -1637,7 +1629,6 @@ public:
     _TVG_DECLARE_PRIVATE(Text);
 };
 
-
 /**
  * @class SwCanvas
  *
@@ -1725,7 +1716,6 @@ public:
     _TVG_DECLARE_PRIVATE(SwCanvas);
 };
 
-
 /**
  * @class GlCanvas
  *
@@ -1771,7 +1761,6 @@ public:
     _TVG_DECLARE_PRIVATE(GlCanvas);
 };
 
-
 /**
  * @class WgCanvas
  *
@@ -1816,7 +1805,6 @@ public:
 
     _TVG_DECLARE_PRIVATE(WgCanvas);
 };
-
 
 /**
  * @class Initializer
@@ -1872,7 +1860,6 @@ public:
 
     _TVG_DISABLE_CTOR(Initializer);
 };
-
 
 /**
  * @class Animation
@@ -2000,7 +1987,6 @@ public:
     _TVG_DECLARE_PRIVATE(Animation);
 };
 
-
 /**
  * @class Saver
  *
@@ -2103,7 +2089,6 @@ public:
     _TVG_DECLARE_PRIVATE(Saver);
 };
 
-
 /**
  * @class Accessor
  *
@@ -2161,7 +2146,6 @@ public:
     _TVG_DECLARE_PRIVATE(Accessor);
 };
 
-
 /**
  * @brief The cast() function is a utility function used to cast a 'Paint' to type 'T'.
  * @since 0.11
@@ -2172,7 +2156,6 @@ std::unique_ptr<T> cast(Paint* paint)
     return std::unique_ptr<T>(static_cast<T*>(paint));
 }
 
-
 /**
  * @brief The cast() function is a utility function used to cast a 'Fill' to type 'T'.
  * @since 0.11
@@ -2182,7 +2165,6 @@ std::unique_ptr<T> cast(Fill* fill)
 {
     return std::unique_ptr<T>(static_cast<T*>(fill));
 }
-
 
 /** @}*/
 

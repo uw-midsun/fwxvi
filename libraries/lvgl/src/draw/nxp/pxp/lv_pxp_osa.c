@@ -1,7 +1,25 @@
-/**
- * @file lv_pxp_osa.c
+/************************************************************************************************
+ * @file    lv_pxp_osa.c
  *
- */
+ * @brief   Lv Pxp Osa
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <zephyr/irq.h>
+    #include <zephyr/kernel.h>
+
+/* Inter-component Headers */
+    #include "FreeRTOS.h"
+#include "../../../misc/lv_log.h"
+#include "../../../osal/lv_os_private.h"
+#include "fsl_pxp.h"
+#include "lv_pxp_osa.h"
+#include "lv_pxp_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2020, 2022-2023 NXP
@@ -13,22 +31,13 @@
  *      INCLUDES
  *********************/
 
-#include "lv_pxp_osa.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "lv_pxp_utils.h"
-#include "../../../misc/lv_log.h"
-#include "../../../osal/lv_os_private.h"
-#include "fsl_pxp.h"
 
 #if defined(SDK_OS_FREE_RTOS)
-    #include "FreeRTOS.h"
 #endif
 
 #if defined(__ZEPHYR__)
-    #include <zephyr/kernel.h>
-    #include <zephyr/irq.h>
 #endif
 
 /*********************

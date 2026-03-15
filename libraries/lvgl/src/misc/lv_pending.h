@@ -1,6 +1,25 @@
-/**
- * @file lv_pending.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_pending.h
  *
+ * @brief   Lv Pending
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_pending
+ * @brief    lv_pending Firmware
+ * @{
  */
 
 #ifndef LV_PENDING_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -83,3 +100,5 @@ void lv_pending_swap(lv_pending_t * pending);
 #endif
 
 #endif /*LV_PENDING_H*/
+
+/** @} */

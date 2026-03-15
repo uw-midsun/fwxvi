@@ -1,6 +1,26 @@
-/**
- * @file lv_menu.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_menu.h
  *
+ * @brief   Lv Menu
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_obj_property.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_menu
+ * @brief    lv_menu Firmware
+ * @{
  */
 
 #ifndef LV_MENU_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
-#include "../../core/lv_obj_property.h"
 
 #if LV_USE_MENU
 
@@ -239,3 +257,5 @@ void lv_menu_clear_history(lv_obj_t * obj);
 #endif
 
 #endif /*LV_MENU_H*/
+
+/** @} */

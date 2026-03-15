@@ -1,6 +1,25 @@
-/**
- * @file lv_layout_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_layout_private.h
  *
+ * @brief   Lv Layout Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_layout.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_layout_private
+ * @brief    lv_layout_private Firmware
+ * @{
  */
 
 #ifndef LV_LAYOUT_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_layout.h"
 
 /*********************
  *      DEFINES
@@ -58,3 +75,5 @@ void lv_layout_apply(lv_obj_t * obj);
 #endif
 
 #endif /*LV_LAYOUT_PRIVATE_H*/
+
+/** @} */

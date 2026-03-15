@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_sw_blend_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_private.h
  *
+ * @brief   Lv Draw Sw Blend Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_sw_blend.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_blend_private
+ * @brief    lv_draw_sw_blend_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw_sw_blend.h"
 
 #if LV_USE_DRAW_SW
 
@@ -74,7 +91,6 @@ struct _lv_draw_sw_blend_image_dsc_t {
     lv_area_t src_area;             /**< The original src area. */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -90,3 +106,5 @@ struct _lv_draw_sw_blend_image_dsc_t {
 #endif
 
 #endif /*LV_DRAW_SW_BLEND_PRIVATE_H*/
+
+/** @} */

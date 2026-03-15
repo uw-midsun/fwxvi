@@ -1,6 +1,25 @@
-/**
- * @file lv_imagebutton.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_imagebutton.h
  *
+ * @brief   Lv Imagebutton
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_imagebutton
+ * @brief    lv_imagebutton Firmware
+ * @{
  */
 
 #ifndef LV_IMAGEBUTTON_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_IMAGEBUTTON != 0
 
@@ -146,3 +164,5 @@ const void * lv_imagebutton_get_src_right(lv_obj_t * obj, lv_imagebutton_state_t
 #endif
 
 #endif /*LV_IMAGEBUTTON_H*/
+
+/** @} */

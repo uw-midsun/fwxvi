@@ -1,6 +1,26 @@
-/**
- * @file lv_font_fmt_txt.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_font_fmt_txt.h
  *
+ * @brief   Lv Font Fmt Txt
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+#include "../lv_font.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_font_fmt_txt
+ * @brief    lv_font_fmt_txt Firmware
+ * @{
  */
 
 #ifndef LV_FONT_FMT_TXT_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_font.h"
-#include "../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -237,3 +255,5 @@ bool lv_font_get_glyph_dsc_fmt_txt(const lv_font_t * font, lv_font_glyph_dsc_t *
 #endif
 
 #endif /*LV_FONT_FMT_TXT_H*/
+
+/** @} */

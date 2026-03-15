@@ -1,6 +1,26 @@
-/**
- * @file lv_button_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_button_private.h
  *
+ * @brief   Lv Button Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_button.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_button_private
+ * @brief    lv_button_private Firmware
+ * @{
  */
 
 #ifndef LV_BUTTON_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_button.h"
 
 #if LV_USE_BUTTON != 0
 
@@ -35,7 +52,6 @@ struct _lv_button_t {
     lv_obj_t obj;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -51,3 +67,5 @@ struct _lv_button_t {
 #endif
 
 #endif /*LV_BUTTON_PRIVATE_H*/
+
+/** @} */

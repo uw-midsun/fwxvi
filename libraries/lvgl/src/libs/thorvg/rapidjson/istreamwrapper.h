@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    istreamwrapper.h
+ *
+ * @brief   Istreamwrapper
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <ios>
+#include <iosfwd>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup istreamwrapper
+ * @brief    istreamwrapper Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,10 +40,6 @@
 
 #ifndef RAPIDJSON_ISTREAMWRAPPER_H_
 #define RAPIDJSON_ISTREAMWRAPPER_H_
-
-#include "stream.h"
-#include <iosfwd>
-#include <ios>
 
 #ifdef __clang__
 RAPIDJSON_DIAG_PUSH
@@ -126,3 +148,5 @@ RAPIDJSON_DIAG_POP
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_ISTREAMWRAPPER_H_
+
+/** @} */

@@ -1,18 +1,28 @@
-/**
- * @file lv_flex.c
+/************************************************************************************************
+ * @file    lv_flex.c
  *
- */
+ * @brief   Lv Flex
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_obj_private.h"
+#include "../lv_layout.h"
+#include "lv_flex.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_flex.h"
-#include "../lv_layout.h"
-#include "../../core/lv_obj_private.h"
 
 #if LV_USE_FLEX
 
-#include "../../core/lv_global.h"
 /*********************
  *      DEFINES
  *********************/

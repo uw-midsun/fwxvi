@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    dtoa.h
+ *
+ * @brief   Dtoa
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "diyfp.h"
+#include "ieee754.h"
+#include "itoa.h" // GetDigitsLut()
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup dtoa
+ * @brief    dtoa Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -18,10 +44,6 @@
 
 #ifndef RAPIDJSON_DTOA_
 #define RAPIDJSON_DTOA_
-
-#include "itoa.h" // GetDigitsLut()
-#include "diyfp.h"
-#include "ieee754.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
@@ -247,3 +269,5 @@ RAPIDJSON_DIAG_POP
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_DTOA_
+
+/** @} */

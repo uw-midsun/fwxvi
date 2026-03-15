@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    lv_font_montserrat_14_aligned.c
+ *
+ * @brief   Lv Font Montserrat 14 Aligned
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../lvgl.h"
+    #include "lvgl.h"
+
+/* Intra-component Headers */
 /*******************************************************************************
  * Size: 14 px
  * Bpp: 8
@@ -13,9 +29,7 @@
 #endif
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
-    #include "lvgl.h"
 #else
-    #include "../../lvgl.h"
 #endif
 
 #if !LV_VERSION_CHECK(9, 3, 0)
@@ -3495,7 +3509,6 @@ static LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST const uint8_t glyph_bitma
     0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
 };
 
-
 /*---------------------
  *  GLYPH DESCRIPTION
  *--------------------*/
@@ -3678,7 +3691,6 @@ static const lv_font_fmt_txt_cmap_t cmaps[] = {
 /*-----------------
  *    KERNING
  *----------------*/
-
 
 /*Map glyph_ids to kern left classes*/
 static const uint8_t kern_left_class_mapping[] = {
@@ -4104,7 +4116,6 @@ static const int8_t kern_class_values[] = {
     0, 0, 0, 0, 0
 };
 
-
 /*Collect the kern class' data in one place*/
 static const lv_font_fmt_txt_kern_classes_t kern_classes = {
     .class_pair_values   = kern_class_values,
@@ -4143,8 +4154,6 @@ static lv_font_fmt_txt_dsc_t font_dsc = {
     .stride = 16
 };
 
-
-
 /*-----------------
  *  PUBLIC FONT
  *----------------*/
@@ -4173,7 +4182,5 @@ lv_font_t lv_font_montserrat_14_aligned = {
 #endif
     .user_data = NULL,
 };
-
-
 
 #endif /*#if LV_FONT_MONTSERRAT_14_ALIGNED*/

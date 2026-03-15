@@ -1,6 +1,25 @@
-/**
- * @file lv_keyboard.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_keyboard.h
  *
+ * @brief   Lv Keyboard
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../buttonmatrix/lv_buttonmatrix.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_keyboard
+ * @brief    lv_keyboard Firmware
+ * @{
  */
 
 #ifndef LV_KEYBOARD_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../buttonmatrix/lv_buttonmatrix.h"
 
 #if LV_USE_KEYBOARD
 
@@ -173,3 +191,5 @@ void lv_keyboard_def_event_cb(lv_event_t * e);
 #endif
 
 #endif /*LV_KEYBOARD_H*/
+
+/** @} */

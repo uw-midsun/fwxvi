@@ -1,12 +1,27 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 #pragma once
 
+/************************************************************************************************
+ * @file    frogfs_format.h
+ *
+ * @brief   Frogfs Format
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
 #include LV_STDINT_INCLUDE
 
+/**
+ * @defgroup frogfs_format
+ * @brief    frogfs_format Firmware
+ * @{
+ */
 
 /**
  * \brief       Is entry a directory?
@@ -88,3 +103,5 @@ typedef struct frogfs_comp_t {
 typedef struct frogfs_foot_t {
     uint32_t crc32; /**< crc32 of entire file without this field */
 } frogfs_foot_t;
+
+/** @} */

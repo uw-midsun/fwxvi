@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_type.h
+ *
+ * @brief   Vg Lite Type
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <asm/bitsperlong.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_kernel.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_type
+ * @brief    vg_lite_type Firmware
+ * @{
+ */
+
 /*****************************************************************************
 *
 *    copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -27,13 +53,10 @@
 #ifndef VG_LITE_TYPE_H
 #define VG_LITE_TYPE_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
 #if __KERNEL__
-    #include <asm/bitsperlong.h>
 #endif
-#include "vg_lite_kernel.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,3 +101,5 @@ typedef unsigned int       vg_lite_uintptr_t;
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_TYPE_H */
+
+/** @} */

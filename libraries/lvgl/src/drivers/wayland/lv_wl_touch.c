@@ -1,16 +1,23 @@
-/**
- * @file lv_wl_touch.c
+/************************************************************************************************
+ * @file    lv_wl_touch.c
  *
- */
+ * @brief   Lv Wl Touch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_wayland_private.h"
 #include "lv_wl_touch.h"
 
-#if LV_USE_WAYLAND
-
-#include "lv_wayland_private.h"
-
+/* Intra-component Headers */
 #include <wayland-client-protocol.h>
 #include <wayland-cursor.h>
+
+#if LV_USE_WAYLAND
 
 /*********************
  *      INCLUDES

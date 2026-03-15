@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    ftoption.h
+ *
+ * @brief   Ftoption
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <ft2build.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup ftoption
+ * @brief    ftoption Firmware
+ * @{
+ */
+
 /****************************************************************************
  *
  * ftoption.h
@@ -17,8 +41,6 @@
 
 #ifndef FTOPTION_H_
 #define FTOPTION_H_
-
-#include <ft2build.h>
 
 FT_BEGIN_HEADER
 
@@ -962,3 +984,5 @@ FT_END_HEADER
 #endif /* FTOPTION_H_ */
 
 /* END */
+
+/** @} */

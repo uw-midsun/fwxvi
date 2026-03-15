@@ -1,6 +1,25 @@
-/**
- * @file lv_indev_scroll.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_indev_scroll.h
  *
+ * @brief   Lv Indev Scroll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_indev_scroll
+ * @brief    lv_indev_scroll Firmware
+ * @{
  */
 
 #ifndef LV_INDEV_SCROLL_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../core/lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -63,3 +81,5 @@ void lv_indev_scroll_get_snap_dist(lv_obj_t * obj, lv_point_t * p);
 #endif
 
 #endif /*LV_INDEV_SCROLL_H*/
+
+/** @} */

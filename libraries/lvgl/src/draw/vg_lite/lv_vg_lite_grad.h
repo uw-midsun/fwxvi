@@ -1,6 +1,26 @@
-/**
- * @file lv_vg_lite_grad.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_grad.h
  *
+ * @brief   Lv Vg Lite Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_grad
+ * @brief    lv_vg_lite_grad Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_GRAD_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE && LV_USE_VECTOR_GRAPHIC
-
-#include "lv_vg_lite_utils.h"
 
 /*********************
  *      DEFINES
@@ -112,3 +128,5 @@ bool lv_vg_lite_draw_grad_helper(
 #endif
 
 #endif /*LV_VG_LITE_GRAD_H*/
+
+/** @} */

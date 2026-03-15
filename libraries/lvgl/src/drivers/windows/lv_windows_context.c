@@ -1,22 +1,31 @@
-/**
- * @file lv_windows_context.c
+/************************************************************************************************
+ * @file    lv_windows_context.c
  *
- */
+ * @brief   Lv Windows Context
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../osal/lv_os_private.h"
+#include "lv_windows_context.h"
+#include "lv_windows_display.h"
+#include "lv_windows_input_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_windows_context.h"
 #if LV_USE_WINDOWS
 
 #ifdef __GNUC__
     #pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
-
-#include "lv_windows_display.h"
-#include "lv_windows_input_private.h"
-#include "../../osal/lv_os_private.h"
 
 /*********************
  *      DEFINES

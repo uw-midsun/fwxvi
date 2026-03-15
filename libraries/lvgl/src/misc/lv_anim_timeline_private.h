@@ -1,6 +1,25 @@
-/**
- * @file lv_anim_timeline_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_anim_timeline_private.h
  *
+ * @brief   Lv Anim Timeline Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_anim_timeline.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_anim_timeline_private
+ * @brief    lv_anim_timeline_private Firmware
+ * @{
  */
 
 #ifndef LV_ANIM_TIMELINE_PRIVATE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_anim_timeline.h"
 
 /*********************
  *      DEFINES
@@ -65,3 +83,5 @@ struct _lv_anim_timeline_t {
 #endif
 
 #endif /*LV_ANIM_TIMELINE_PRIVATE_H*/
+
+/** @} */

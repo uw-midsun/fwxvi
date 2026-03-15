@@ -1,7 +1,20 @@
-#include "lv_draw_dave2d.h"
-#if LV_USE_DRAW_DAVE2D
+/************************************************************************************************
+ * @file    lv_draw_dave2d_line.c
+ *
+ * @brief   Lv Draw Dave2D Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../../misc/lv_area_private.h"
+#include "lv_draw_dave2d.h"
+
+/* Intra-component Headers */
+#if LV_USE_DRAW_DAVE2D
 
 void lv_draw_dave2d_line(lv_draw_task_t * t, const lv_draw_line_dsc_t * dsc)
 {

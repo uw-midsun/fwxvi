@@ -1,18 +1,26 @@
-/**
- * @file lv_wl_keyboard.c
+/************************************************************************************************
+ * @file    lv_wl_keyboard.c
  *
- */
+ * @brief   Lv Wl Keyboard
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "lv_wl_keyboard.h"
-
-#if LV_USE_WAYLAND
-
-#include "lv_wayland_private.h"
+/* Standard library Headers */
 #include <sys/mman.h>
 #include <unistd.h>
-#include <wayland-client-protocol.h>
 #include <xkbcommon/xkbcommon.h>
+
+/* Inter-component Headers */
 #include "../../misc/lv_log.h"
+#include "lv_wayland_private.h"
+#include "lv_wl_keyboard.h"
+
+/* Intra-component Headers */
+#include <wayland-client-protocol.h>
+
+#if LV_USE_WAYLAND
 
 /*********************
  *      INCLUDES

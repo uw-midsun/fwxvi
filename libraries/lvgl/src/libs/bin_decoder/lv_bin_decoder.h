@@ -1,6 +1,25 @@
-/**
- * @file lv_bin_decoder.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_bin_decoder.h
  *
+ * @brief   Lv Bin Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_image_decoder.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_bin_decoder
+ * @brief    lv_bin_decoder Firmware
+ * @{
  */
 
 #ifndef LV_BIN_DECODER_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder.h"
 
 /*********************
  *      DEFINES
@@ -68,3 +86,5 @@ void lv_bin_decoder_close(lv_image_decoder_t * decoder, lv_image_decoder_dsc_t *
 #endif
 
 #endif /*LV_BIN_DECODER_H*/
+
+/** @} */

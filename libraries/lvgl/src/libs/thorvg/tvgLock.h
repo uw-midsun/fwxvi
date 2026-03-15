@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLock.h
+ *
+ * @brief   Tvglock
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <mutex>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgTaskScheduler.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLock
+ * @brief    tvgLock Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,16 +46,12 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOCK_H_
 #define _TVG_LOCK_H_
 
 #ifdef THORVG_THREAD_SUPPORT
-
-#include <mutex>
-#include "tvgTaskScheduler.h"
 
 namespace tvg {
 
@@ -77,6 +99,7 @@ namespace tvg {
 
 #endif //_TVG_LOCK_H_
 
-
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    prettywriter.h
+ *
+ * @brief   Prettywriter
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "writer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup prettywriter
+ * @brief    prettywriter Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_PRETTYWRITER_H_
 #define RAPIDJSON_PRETTYWRITER_H_
-
-#include "writer.h"
 
 #ifdef __GNUC__
 RAPIDJSON_DIAG_PUSH
@@ -57,7 +79,6 @@ public:
     */
     explicit PrettyWriter(OutputStream& os, StackAllocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) :
         Base(os, allocator, levelDepth), indentChar_(' '), indentCharCount_(4), formatOptions_(kFormatDefault) {}
-
 
     explicit PrettyWriter(StackAllocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) :
         Base(allocator, levelDepth), indentChar_(' '), indentCharCount_(4), formatOptions_(kFormatDefault) {}
@@ -275,3 +296,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_RAPIDJSON_H_
+
+/** @} */

@@ -1,8 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_st7796.h
+ *
+ * @brief   Lv St7796
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lcd/lv_lcd_generic_mipi.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_st7796.h
- *
- * This driver is just a wrapper around the generic MIPI compatible LCD controller driver
- *
+ * @defgroup lv_st7796
+ * @brief    lv_st7796 Firmware
+ * @{
  */
 
 #ifndef LV_ST7796_H
@@ -15,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lcd/lv_lcd_generic_mipi.h"
 
 #if LV_USE_ST7796
 
@@ -91,3 +106,5 @@ void lv_st7796_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_list);
 #endif
 
 #endif /*LV_ST7796_H*/
+
+/** @} */

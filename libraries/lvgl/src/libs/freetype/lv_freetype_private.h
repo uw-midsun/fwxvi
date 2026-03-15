@@ -1,6 +1,36 @@
-/**
- * @file lv_freetype_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_freetype_private.h
  *
+ * @brief   Lv Freetype Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../font/lv_font.h"
+#include "../../misc/cache/lv_cache.h"
+#include "../../misc/lv_ll.h"
+#include "ft2build.h"
+#include "lv_freetype.h"
+
+/* Intra-component Headers */
+#include FT_CACHE_H
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_IMAGE_H
+#include FT_OUTLINE_H
+#include FT_SIZES_H
+#include FT_STROKER_H
+
+/**
+ * @defgroup lv_freetype_private
+ * @brief    lv_freetype_private Firmware
+ * @{
  */
 
 #ifndef LV_FREETYPE_PRIVATE_H
@@ -14,21 +44,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_freetype.h"
-
 #if LV_USE_FREETYPE
-
-#include "../../misc/cache/lv_cache.h"
-#include "../../misc/lv_ll.h"
-#include "../../font/lv_font.h"
-#include "ft2build.h"
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
-#include FT_CACHE_H
-#include FT_SIZES_H
-#include FT_IMAGE_H
-#include FT_OUTLINE_H
-#include FT_STROKER_H
 
 /*********************
  *      DEFINES
@@ -79,7 +95,6 @@ struct _lv_freetype_outline_event_param_t {
     lv_freetype_outline_vector_t control2;
     lv_freetype_outline_sizes_t sizes;
 };
-
 
 typedef struct _lv_freetype_cache_node_t lv_freetype_cache_node_t;
 
@@ -159,3 +174,5 @@ void lv_freetype_set_cbs_outline_font(lv_freetype_font_dsc_t * dsc);
 #endif
 
 #endif /*LV_FREETYPE_PRIVATE_H*/
+
+/** @} */

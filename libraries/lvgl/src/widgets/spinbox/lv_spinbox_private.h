@@ -1,6 +1,26 @@
-/**
- * @file lv_spinbox_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_spinbox_private.h
  *
+ * @brief   Lv Spinbox Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../textarea/lv_textarea_private.h"
+#include "lv_spinbox.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_spinbox_private
+ * @brief    lv_spinbox_private Firmware
+ * @{
  */
 
 #ifndef LV_SPINBOX_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../textarea/lv_textarea_private.h"
-#include "lv_spinbox.h"
 
 #if LV_USE_SPINBOX
 
@@ -41,7 +58,6 @@ struct _lv_spinbox_t {
     uint32_t digit_step_dir : 2;  /**< the direction the digit will step on encoder button press when editing */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -57,3 +73,5 @@ struct _lv_spinbox_t {
 #endif
 
 #endif /*LV_SPINBOX_PRIVATE_H*/
+
+/** @} */

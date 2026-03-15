@@ -1,6 +1,28 @@
-/**
- * @file lv_pxp_cfg.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_pxp_cfg.h
  *
+ * @brief   Lv Pxp Cfg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_log.h"
+#include "fsl_cache.h"
+#include "fsl_pxp.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_pxp_cfg
+ * @brief    lv_pxp_cfg Firmware
+ * @{
  */
 
 /**
@@ -20,18 +42,12 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "fsl_cache.h"
-#include "fsl_pxp.h"
 
 #if ((LV_DRAW_BUF_ALIGN % 32) != 0)
 #error "If PXP is enabled the draw buffers should be aligned to 32-byte boundary, please set LV_DRAW_BUF_ALIGN to a multiple of 32 in lv_conf.h"
 #endif
-
-#include "../../../misc/lv_log.h"
 
 /*********************
  *      DEFINES
@@ -106,3 +122,5 @@ void lv_pxp_wait(void);
 #endif
 
 #endif /*LV_PXP_CFG_H*/
+
+/** @} */

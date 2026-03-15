@@ -1,6 +1,29 @@
-/**
- * @file lv_nanovg_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nanovg_utils.h
  *
+ * @brief   Lv Nanovg Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../libs/nanovg/nanovg.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_matrix.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nanovg_utils
+ * @brief    lv_nanovg_utils Firmware
+ * @{
  */
 
 #ifndef LV_NANOVG_UTILS_H
@@ -14,14 +37,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_matrix.h"
-#include "../../misc/lv_color.h"
-#include "../../libs/nanovg/nanovg.h"
 
 /*********************
  *      DEFINES
@@ -187,3 +203,5 @@ lv_draw_buf_t * lv_nanovg_reshape_global_image(struct _lv_draw_nanovg_unit_t * u
 #endif
 
 #endif /*LV_NANOVG_UTILS_H*/
+
+/** @} */

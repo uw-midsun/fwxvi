@@ -1,18 +1,27 @@
-/**
- * @file lv_sdl_keyboard.c
+/************************************************************************************************
+ * @file    lv_sdl_keyboard.c
  *
- */
+ * @brief   Lv Sdl Keyboard
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_sdl_keyboard.h"
+#include "lv_sdl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_sdl_keyboard.h"
 #if LV_USE_SDL
-
-#include "../../core/lv_group.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_text_private.h"
-#include "lv_sdl_private.h"
 
 /*********************
  *      DEFINES
@@ -120,7 +129,6 @@ void lv_sdl_keyboard_handler(SDL_Event * event)
     }
 
     lv_display_t * disp = lv_sdl_get_disp_from_win_id(win_id);
-
 
     /*Find a suitable indev*/
     lv_indev_t * indev = lv_indev_get_next(NULL);

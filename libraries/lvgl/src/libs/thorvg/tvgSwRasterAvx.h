@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSwRasterAvx.h
+ *
+ * @brief   Tvgswrasteravx
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <immintrin.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSwRasterAvx
+ * @brief    tvgSwRasterAvx Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,12 +45,9 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifdef THORVG_AVX_VECTOR_SUPPORT
-
-#include <immintrin.h>
 
 #define N_32BITS_IN_128REG 4
 #define N_32BITS_IN_256REG 8
@@ -64,7 +86,6 @@ static inline __m128i ALPHA_BLEND(__m128i c, __m128i a)
     return _mm_or_si128(odd, even);
 }
 
-
 static void avxRasterGrayscale8(uint8_t* dst, uint8_t val, uint32_t offset, int32_t len) 
 {
     dst += offset; 
@@ -80,7 +101,6 @@ static void avxRasterGrayscale8(uint8_t* dst, uint8_t val, uint32_t offset, int3
         dst[i] = val;
     }
 }
-
 
 static void avxRasterPixel32(uint32_t *dst, uint32_t val, uint32_t offset, int32_t len)
 {
@@ -100,7 +120,6 @@ static void avxRasterPixel32(uint32_t *dst, uint32_t val, uint32_t offset, int32
     int32_t leftovers = len - avxFilled;
     while (leftovers--) *dst++ = val;
 }
-
 
 static bool avxRasterTranslucentRect(SwSurface* surface, const SwBBox& region, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
@@ -159,7 +178,6 @@ static bool avxRasterTranslucentRect(SwSurface* surface, const SwBBox& region, u
     }
     return true;
 }
-
 
 static bool avxRasterTranslucentRle(SwSurface* surface, const SwRle* rle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
@@ -229,8 +247,9 @@ static bool avxRasterTranslucentRle(SwSurface* surface, const SwRle* rle, uint8_
     return true;
 }
 
-
 #endif
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

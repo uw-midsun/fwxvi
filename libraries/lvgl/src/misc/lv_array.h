@@ -1,6 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_array.h
+ *
+ * @brief   Lv Array
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_array.h
- * Array. The elements are dynamically allocated by the 'lv_mem' module.
+ * @defgroup lv_array
+ * @brief    lv_array Firmware
+ * @{
  */
 
 #ifndef LV_ARRAY_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -238,3 +256,5 @@ static inline void * lv_array_back(const lv_array_t * array)
 #endif
 
 #endif
+
+/** @} */

@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_sw_mask.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_mask.h
  *
+ * @brief   Lv Draw Sw Mask
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_mask
+ * @brief    lv_draw_sw_mask Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_MASK_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_color.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -179,3 +197,5 @@ void lv_draw_sw_mask_map_init(lv_draw_sw_mask_map_param_t * param, const lv_area
 #endif
 
 #endif /*LV_DRAW_SW_MASK_H*/
+
+/** @} */

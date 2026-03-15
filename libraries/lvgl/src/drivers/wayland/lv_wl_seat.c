@@ -1,16 +1,25 @@
-/**
- * @file lv_wl_seat.c
+/************************************************************************************************
+ * @file    lv_wl_seat.c
  *
- */
+ * @brief   Lv Wl Seat
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_wayland.h"
+#include "lv_wayland_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_wayland.h"
 
 #if LV_USE_WAYLAND
-
-#include "lv_wayland_private.h"
 
 /*********************
  *      DEFINES
@@ -84,7 +93,6 @@ void lv_wayland_update_indevs(lv_indev_read_cb_t read_cb, void * new_driver_data
         lv_indev_set_driver_data(indev, new_driver_data);
     }
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

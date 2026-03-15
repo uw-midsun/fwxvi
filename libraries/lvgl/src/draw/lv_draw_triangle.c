@@ -1,18 +1,27 @@
-/**
- * @file lv_draw_triangle.c
+/************************************************************************************************
+ * @file    lv_draw_triangle.c
  *
- */
+ * @brief   Lv Draw Triangle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
+/* Standard library Headers */
 
-#include "lv_draw_triangle_private.h"
-#include "lv_draw_private.h"
+/* Inter-component Headers */
 #include "../core/lv_obj.h"
 #include "../misc/lv_math.h"
 #include "../stdlib/lv_mem.h"
 #include "../stdlib/lv_string.h"
+#include "lv_draw_private.h"
+#include "lv_draw_triangle_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 /*********************
  *      DEFINES
@@ -77,7 +86,6 @@ void lv_draw_triangle(lv_layer_t * layer, const lv_draw_triangle_dsc_t * dsc)
         lv_draw_triangle(ds_layer, &ds_dsc);
         lv_draw_layer_finish_drop_shadow(ds_layer, &dsc->base);
     }
-
 
     lv_draw_task_t * t = lv_draw_add_task(layer, &a, LV_DRAW_TASK_TYPE_TRIANGLE);
 

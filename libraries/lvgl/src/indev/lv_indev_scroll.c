@@ -1,16 +1,26 @@
-/**
- * @file lv_indev_scroll.c
+/************************************************************************************************
+ * @file    lv_indev_scroll.c
  *
- */
+ * @brief   Lv Indev Scroll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj_private.h"
+#include "../core/lv_obj_scroll_private.h"
+#include "lv_indev.h"
+#include "lv_indev_private.h"
+#include "lv_indev_scroll.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../core/lv_obj_scroll_private.h"
-#include "../core/lv_obj_private.h"
-#include "lv_indev.h"
-#include "lv_indev_private.h"
-#include "lv_indev_scroll.h"
 
 /*********************
  *      DEFINES

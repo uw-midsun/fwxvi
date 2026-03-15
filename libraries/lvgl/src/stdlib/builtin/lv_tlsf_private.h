@@ -1,6 +1,26 @@
-/**
- * @file lv_tlsf_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tlsf_private.h
  *
+ * @brief   Lv Tlsf Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../osal/lv_os_private.h"
+#include "lv_tlsf.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tlsf_private
+ * @brief    lv_tlsf_private Firmware
+ * @{
  */
 
 #ifndef LV_TLSF_PRIVATE_H
@@ -15,9 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_tlsf.h"
-#include "../../osal/lv_os_private.h"
 
 /*********************
  *      DEFINES
@@ -52,3 +69,5 @@ typedef struct {
 #endif /*LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN*/
 
 #endif /*LV_TLSF_PRIVATE_H*/
+
+/** @} */

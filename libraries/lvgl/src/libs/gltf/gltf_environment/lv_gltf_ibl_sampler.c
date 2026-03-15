@@ -1,27 +1,34 @@
-/**
- * @file lv_gltf_ibl_sampler.c
+/************************************************************************************************
+ * @file    lv_gltf_ibl_sampler.c
  *
- */
+ * @brief   Lv Gltf Ibl Sampler
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../drivers/opengles/lv_opengles_debug.h"
+#include "../../../drivers/opengles/lv_opengles_private.h"
+#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
+#include "../../../misc/lv_log.h"
+#include "../../../misc/lv_math.h"
+#include "../../../stdlib/lv_string.h"
+#include "../gltf_view/assets/lv_gltf_view_shader.h"
+#include "../stb_image/stb_image.h"
+#include "lv_gltf_environment_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_gltf_environment_private.h"
-
 #if LV_USE_GLTF
 
-#include "../../../misc/lv_math.h"
-#include "../../../misc/lv_log.h"
-#include "../../../stdlib/lv_string.h"
-#include "../../../drivers/opengles/lv_opengles_private.h"
-#include "../../../drivers/opengles/lv_opengles_debug.h"
-
-#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
-#include "../gltf_view/assets/lv_gltf_view_shader.h"
-
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb_image/stb_image.h"
 
 /*********************
  *      DEFINES
@@ -176,7 +183,6 @@ void lv_gltf_environment_delete(lv_gltf_environment_t * env)
     GL_CALL(glDeleteTextures(3, d));
     lv_free(env);
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

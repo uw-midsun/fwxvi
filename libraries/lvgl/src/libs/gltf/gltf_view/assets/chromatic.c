@@ -1,4 +1,18 @@
+/************************************************************************************************
+ * @file    chromatic.c
+ *
+ * @brief   Chromatic
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_GLTF
 unsigned char chromatic_jpg[] = {

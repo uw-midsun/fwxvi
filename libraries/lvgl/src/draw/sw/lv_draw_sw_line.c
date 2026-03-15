@@ -1,23 +1,32 @@
-/**
- * @file lv_draw_sw_line.c
+/************************************************************************************************
+ * @file    lv_draw_sw_line.c
  *
- */
+ * @brief   Lv Draw Sw Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_refr_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "blend/lv_draw_sw_blend_private.h"
+#include "lv_draw_sw.h"
+#include "lv_draw_sw_mask_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_area_private.h"
-#include "lv_draw_sw_mask_private.h"
-#include "blend/lv_draw_sw_blend_private.h"
-#include "../lv_draw_private.h"
-#include "lv_draw_sw.h"
 
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_types.h"
-#include "../../core/lv_refr_private.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -337,7 +346,6 @@ static void LV_ATTRIBUTE_FAST_MEM draw_line_skew(lv_draw_task_t * t, const lv_dr
         masks[2] = &mask_top_param;
         masks[3] = &mask_bottom_param;
     }
-
 
     /*Draw the background line by line*/
     int32_t h;

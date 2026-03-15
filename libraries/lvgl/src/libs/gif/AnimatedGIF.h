@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    AnimatedGIF.h
+ *
+ * @brief   Animatedgif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_fs.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup AnimatedGIF
+ * @brief    AnimatedGIF Firmware
+ * @{
+ */
+
 // Copyright 2020 BitBank Software, Inc. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,11 +38,7 @@
 #ifndef __ANIMATEDGIF__
 #define __ANIMATEDGIF__
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_GIF
-
-#include "../../misc/lv_fs.h"
 
 //
 // GIF Animator
@@ -227,3 +248,5 @@ typedef struct gif_image_tag
 #endif // LV_USE_GIF
 
 #endif // __ANIMATEDGIF__
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_calendar_chinese.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_calendar_chinese.h
  *
+ * @brief   Lv Calendar Chinese
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "lv_calendar.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_calendar_chinese
+ * @brief    lv_calendar_chinese Firmware
+ * @{
  */
 
 #ifndef LV_CALENDAR_CHINESE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
-#include "lv_calendar.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_CHINESE
 
 /*********************
@@ -66,3 +84,5 @@ void lv_calendar_gregorian_to_chinese(lv_calendar_date_t * gregorian_time, lv_ca
 #endif
 
 #endif /*LV_CALENDAR_CHINESE_H*/
+
+/** @} */

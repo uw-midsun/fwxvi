@@ -1,6 +1,26 @@
-/**
- * @file lv_roller_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_roller_private.h
  *
+ * @brief   Lv Roller Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_roller.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_roller_private
+ * @brief    lv_roller_private Firmware
+ * @{
  */
 
 #ifndef LV_ROLLER_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_roller.h"
-
 #if LV_USE_ROLLER != 0
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -37,7 +54,6 @@ struct _lv_roller_t {
     uint32_t moved : 1;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -53,3 +69,5 @@ struct _lv_roller_t {
 #endif
 
 #endif /*LV_ROLLER_PRIVATE_H*/
+
+/** @} */

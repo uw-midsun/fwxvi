@@ -1,19 +1,28 @@
-/**
- * @file lv_monkey.c
+/************************************************************************************************
+ * @file    lv_monkey.c
  *
- */
+ * @brief   Lv Monkey
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "lv_monkey_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_monkey_private.h"
 
 #if LV_USE_MONKEY != 0
-
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_assert.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../display/lv_display.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,25 @@
-/**
- * @file lv_nanovg_fbo_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nanovg_fbo_cache.h
  *
+ * @brief   Lv Nanovg Fbo Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nanovg_fbo_cache
+ * @brief    lv_nanovg_fbo_cache Firmware
+ * @{
  */
 
 #ifndef LV_NANOVG_FBO_CACHE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_DRAW_NANOVG
 
@@ -83,3 +100,5 @@ struct NVGLUframebuffer * lv_nanovg_fbo_cache_entry_to_fb(struct _lv_cache_entry
 #endif
 
 #endif /*LV_NANOVG_FBO_CACHE_H*/
+
+/** @} */

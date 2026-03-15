@@ -1,32 +1,40 @@
-/**
- * @file lv_nuttx_fbdev.c
+/************************************************************************************************
+ * @file    lv_nuttx_fbdev.c
  *
- */
+ * @brief   Lv Nuttx Fbdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <nuttx/video/fb.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <poll.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_video_fb.h"
+#include "../../../lvgl.h"
+#include "../../lvgl_private.h"
+#include "lv_nuttx_fbdev.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_nuttx_fbdev.h"
 #if LV_USE_NUTTX
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <poll.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-
 #ifdef __NuttX__
-    #include <nuttx/video/fb.h>
 #else
-    #include "mock/nuttx_video_fb.h"
 #endif
-
-#include "../../../lvgl.h"
-#include "../../lvgl_private.h"
 
 /*********************
  *      DEFINES

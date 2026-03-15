@@ -1,6 +1,29 @@
-/**
- * @file lv_draw_buf.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_buf.h
  *
+ * @brief   Lv Draw Buf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_string.h"
+#include "lv_image_dsc.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_buf
+ * @brief    lv_draw_buf Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_BUF_H
@@ -13,11 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_color.h"
-#include "../stdlib/lv_string.h"
-#include "lv_image_dsc.h"
 
 /*********************
  *      DEFINES
@@ -137,7 +155,6 @@ lv_draw_buf_handlers_t * lv_draw_buf_get_handlers(void);
 lv_draw_buf_handlers_t * lv_draw_buf_get_font_handlers(void);
 lv_draw_buf_handlers_t * lv_draw_buf_get_image_handlers(void);
 
-
 /**
  * Align the address of a buffer. The buffer needs to be large enough for the real data after alignment
  * @param buf           the data to align
@@ -196,7 +213,6 @@ uint32_t lv_draw_buf_width_to_stride_ex(const lv_draw_buf_handlers_t * handlers,
  * @param a                 the area to clear, or NULL to clear the whole buffer
  */
 void lv_draw_buf_clear(lv_draw_buf_t * draw_buf, const lv_area_t * a);
-
 
 /**
  * Note: Eventually, lv_draw_buf_malloc/free will be kept as private.
@@ -314,7 +330,6 @@ lv_result_t lv_draw_buf_adjust_stride(lv_draw_buf_t * src, uint32_t stride);
  */
 lv_result_t lv_draw_buf_premultiply(lv_draw_buf_t * draw_buf);
 
-
 /**
  * Check if a draw buffer has a given flag.
  * @param draw_buf  pointer to a draw buffer
@@ -387,3 +402,5 @@ void lv_image_buf_free(lv_image_dsc_t * dsc);
 #endif
 
 #endif /*LV_DRAW_BUF_H*/
+
+/** @} */

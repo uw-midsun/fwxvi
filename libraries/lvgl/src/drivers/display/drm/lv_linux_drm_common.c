@@ -1,21 +1,28 @@
-/**
- * @file lv_linux_drm_common.c
+/************************************************************************************************
+ * @file    lv_linux_drm_common.c
  *
- */
+ * @brief   Lv Linux Drm Common
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <dirent.h>
+#include <xf86drmMode.h>
+
+/* Inter-component Headers */
+#include "../../../stdlib/lv_sprintf.h"
+#include "lv_linux_drm.h"
+#include "lv_linux_drm.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_linux_drm.h"
-
 #if LV_USE_LINUX_DRM
-
-#include <dirent.h>
-#include <xf86drmMode.h>
-
-#include "lv_linux_drm.h"
-#include "../../../stdlib/lv_sprintf.h"
 
 /*********************
  *      DEFINES

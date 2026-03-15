@@ -1,6 +1,25 @@
-/**
- * @file lv_bidi_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_bidi_private.h
  *
+ * @brief   Lv Bidi Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_bidi.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_bidi_private
+ * @brief    lv_bidi_private Firmware
+ * @{
  */
 
 #ifndef LV_BIDI_PRIVATE_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_bidi.h"
 #if LV_USE_BIDI
 
 /*********************
@@ -99,3 +117,5 @@ void lv_bidi_process_paragraph(const char * str_in, char * str_out, uint32_t len
 #endif
 
 #endif /*LV_BIDI_PRIVATE_H*/
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_file_explorer.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_file_explorer.h
  *
+ * @brief   Lv File Explorer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_file_explorer
+ * @brief    lv_file_explorer Firmware
+ * @{
  */
 
 #ifndef LV_FILE_EXPLORER_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
 
 #if LV_USE_FILE_EXPLORER != 0
 
@@ -173,3 +191,5 @@ void lv_file_explorer_open_dir(lv_obj_t * obj, const char * dir);
 #endif
 
 #endif /*LV_FILE_EXPLORER_H*/
+
+/** @} */

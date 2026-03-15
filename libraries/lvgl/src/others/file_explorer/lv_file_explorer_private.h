@@ -1,6 +1,26 @@
-/**
- * @file lv_file_explorer_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_file_explorer_private.h
  *
+ * @brief   Lv File Explorer Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_file_explorer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_file_explorer_private
+ * @brief    lv_file_explorer_private Firmware
+ * @{
  */
 
 #ifndef LV_FILE_EXPLORER_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_file_explorer.h"
 
 #if LV_USE_FILE_EXPLORER != 0
 
@@ -64,7 +81,6 @@ typedef struct {
     lv_file_explorer_file_kind_t file_kind;
 } lv_file_explorer_file_table_entry_data_t;
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -80,3 +96,5 @@ typedef struct {
 #endif
 
 #endif /*LV_FILE_EXPLORER_PRIVATE_H*/
+
+/** @} */

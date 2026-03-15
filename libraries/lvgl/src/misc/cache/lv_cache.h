@@ -1,6 +1,28 @@
-/**
- * @file lv_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache.h
  *
+ * @brief   Lv Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_types.h"
+#include "class/lv_cache_class.h"
+#include "instance/lv_cache_instance.h"
+#include "lv_cache_entry.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_cache
+ * @brief    lv_cache Firmware
+ * @{
  */
 
 #ifndef LV_CACHE_H
@@ -13,13 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lv_types.h"
-
-#include "lv_cache_entry.h"
-
-#include "class/lv_cache_class.h"
-#include "instance/lv_cache_instance.h"
 
 /*********************
  *      DEFINES
@@ -235,3 +250,5 @@ lv_iter_t * lv_cache_iter_create(lv_cache_t * cache);
 #endif
 
 #endif /* LV_CACHE_H */
+
+/** @} */

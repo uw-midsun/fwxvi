@@ -1,22 +1,31 @@
-/**
- * @file lv_ftsystem.c
+/************************************************************************************************
+ * @file    lv_ftsystem.c
  *
- */
+ * @brief   Lv Ftsystem
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <freetype/fterrors.h>
+#include <freetype/ftsystem.h>
+#include <freetype/fttypes.h>
+#include <freetype/internal/ftdebug.h>
+#include <freetype/internal/ftstream.h>
+#include <ft2build.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+
+/* Intra-component Headers */
+#include FT_CONFIG_CONFIG_H
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../../lvgl.h"
 #if LV_USE_FREETYPE && LV_FREETYPE_USE_LVGL_PORT
-
-#include <ft2build.h>
-#include FT_CONFIG_CONFIG_H
-#include <freetype/internal/ftdebug.h>
-#include <freetype/internal/ftstream.h>
-#include <freetype/ftsystem.h>
-#include <freetype/fterrors.h>
-#include <freetype/fttypes.h>
 
 /*********************
  *      DEFINES

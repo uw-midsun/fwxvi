@@ -1,3 +1,22 @@
+/************************************************************************************************
+ * @file    lodepng.c
+ *
+ * @brief   Lodepng
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <limits.h> /* LONG_MAX */
+    #include <stdio.h> /* file handling */
+    #include <stdlib.h> /* allocations */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "lodepng.h"
+
+/* Intra-component Headers */
 /*
 LodePNG version 20230410
 
@@ -28,19 +47,14 @@ The manual and changelog are in the header file "lodepng.h"
 Rename this file to lodepng.cpp to use it for C++, or to lodepng.c to use it for C.
 */
 
-#include "lodepng.h"
 #if LV_USE_LODEPNG
-#include "../../core/lv_global.h"
 
 #define image_cache_draw_buf_handlers &(LV_GLOBAL_DEFAULT()->image_cache_draw_buf_handlers)
 
 #ifdef LODEPNG_COMPILE_DISK
-    #include <limits.h> /* LONG_MAX */
-    #include <stdio.h> /* file handling */
 #endif /* LODEPNG_COMPILE_DISK */
 
 #ifdef LODEPNG_COMPILE_ALLOCATORS
-    #include <stdlib.h> /* allocations */
 #endif /* LODEPNG_COMPILE_ALLOCATORS */
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1310) /*Visual Studio: A few warning types are not desired here.*/
@@ -178,7 +192,6 @@ static int lodepng_gtofl(size_t a, size_t b, size_t c)
 }
 #endif /*LODEPNG_COMPILE_ZLIB*/
 #endif /*LODEPNG_COMPILE_DECODER*/
-
 
 /*
 Often in case of an error a value is assigned to a variable and then it breaks
@@ -1326,7 +1339,6 @@ static unsigned inflateHuffmanBlock(ucvector * out, LodePNGBitReader * reader,
     if(btype == 1) error = getTreeInflateFixed(&tree_ll, &tree_d);
     else /*if(btype == 2)*/ error = getTreeInflateDynamic(&tree_ll, &tree_d, reader);
 
-
     while(!error && !done) { /*decode all symbols until end reached, breaks at end code*/
         /*code_ll is literal, length or end code*/
         unsigned code_ll;
@@ -1623,8 +1635,6 @@ static void hash_cleanup(Hash * hash)
     lodepng_free(hash->headz);
     lodepng_free(hash->chainz);
 }
-
-
 
 static unsigned getHash(const unsigned char * data, size_t size, size_t pos)
 {
@@ -2325,7 +2335,6 @@ static unsigned lodepng_zlib_decompressv(ucvector * out,
     return 0; /*no error*/
 }
 
-
 unsigned lodepng_zlib_decompress(unsigned char ** out, size_t * outsize, const unsigned char * in,
                                  size_t insize, const LodePNGDecompressSettings * settings)
 {
@@ -2468,7 +2477,6 @@ void lodepng_compress_settings_init(LodePNGCompressSettings * settings)
 
 const LodePNGCompressSettings lodepng_default_compress_settings = {2, 1, DEFAULT_WINDOWSIZE, 3, 128, 1, 0, 0, 0};
 
-
 #endif /*LODEPNG_COMPILE_ENCODER*/
 
 #ifdef LODEPNG_COMPILE_DECODER
@@ -2499,7 +2507,6 @@ const LodePNGDecompressSettings lodepng_default_decompress_settings = {0, 0, 0, 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* / CRC32                                                                  / */
 /* ////////////////////////////////////////////////////////////////////////// */
-
 
 #ifdef LODEPNG_COMPILE_CRC
 
@@ -3264,7 +3271,6 @@ size_t lodepng_get_raw_size(unsigned w, unsigned h, const LodePNGColorMode * col
 {
     return lodepng_get_raw_size_lct(w, h, color->colortype, color->bitdepth);
 }
-
 
 #ifdef LODEPNG_COMPILE_PNG
 
@@ -4147,7 +4153,6 @@ unsigned lodepng_convert(unsigned char * out, const unsigned char * in,
 
     return error;
 }
-
 
 /* Converts a single rgb color without alpha from one type to another, color bits truncated to
 their bitdepth. In case of single channel (gray or palette), only the r channel is used. Slow
@@ -5155,7 +5160,6 @@ static unsigned readChunk_tRNS(LodePNGColorMode * color, const unsigned char * d
     return 0; /* OK */
 }
 
-
 #ifdef LODEPNG_COMPILE_ANCILLARY_CHUNKS
 /*background color chunk (bKGD)*/
 static unsigned readChunk_bKGD(LodePNGInfo * info, const unsigned char * data, size_t chunkLength)
@@ -5608,7 +5612,6 @@ static void decodeGeneric(unsigned char ** out, unsigned * w, unsigned * h,
     unsigned critical_pos = 1; /*1 = after IHDR, 2 = after PLTE, 3 = after IDAT*/
 #endif /*LODEPNG_COMPILE_ANCILLARY_CHUNKS*/
 
-
     /* safe output values in case error happens */
     *out = 0;
     *w = *h = 0;
@@ -5968,7 +5971,6 @@ void lodepng_state_copy(LodePNGState * dest, const LodePNGState * source)
 /* ////////////////////////////////////////////////////////////////////////// */
 /* / PNG Encoder                                                            / */
 /* ////////////////////////////////////////////////////////////////////////// */
-
 
 static unsigned writeSignature(ucvector * out)
 {
@@ -7506,7 +7508,6 @@ unsigned compress(std::vector<unsigned char> & out, const std::vector<unsigned c
 }
 #endif /* LODEPNG_COMPILE_ENCODER */
 #endif /* LODEPNG_COMPILE_ZLIB */
-
 
 #ifdef LODEPNG_COMPILE_PNG
 

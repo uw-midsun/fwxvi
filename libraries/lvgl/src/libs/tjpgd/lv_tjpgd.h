@@ -1,6 +1,24 @@
-/**
- * @file lv_tjpgd.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tjpgd.h
  *
+ * @brief   Lv Tjpgd
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tjpgd
+ * @brief    lv_tjpgd Firmware
+ * @{
  */
 
 #ifndef LV_TJPGD_H
@@ -43,3 +61,5 @@ void lv_tjpgd_deinit(void);
 #endif
 
 #endif /* LV_TJPGD_H */
+
+/** @} */

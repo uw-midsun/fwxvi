@@ -1,26 +1,36 @@
-/**
- * @file lv_draw_sw_vector.c
+/************************************************************************************************
+ * @file    lv_draw_sw_vector.c
  *
- */
+ * @brief   Lv Draw Sw Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <thorvg_capi.h>
+
+/* Inter-component Headers */
+    #include "../../libs/thorvg/thorvg_capi.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "../lv_draw_vector_private.h"
+#include "../lv_image_decoder_private.h"
+#include "blend/lv_draw_sw_blend_private.h"
+#include "blend/lv_draw_sw_blend_to_rgb565.h"
+#include "blend/lv_draw_sw_blend_to_rgb888.h"
+#include "lv_draw_sw.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_image_decoder_private.h"
-#include "../lv_draw_vector_private.h"
-#include "../lv_draw_private.h"
-#include "lv_draw_sw.h"
 
 #if LV_USE_VECTOR_GRAPHIC && LV_USE_THORVG
 #if LV_USE_THORVG_EXTERNAL
-    #include <thorvg_capi.h>
 #else
-    #include "../../libs/thorvg/thorvg_capi.h"
 #endif
-#include "../../stdlib/lv_string.h"
-#include "blend/lv_draw_sw_blend_private.h"
-#include "blend/lv_draw_sw_blend_to_rgb565.h"
-#include "blend/lv_draw_sw_blend_to_rgb888.h"
 
 /*********************
  *      DEFINES

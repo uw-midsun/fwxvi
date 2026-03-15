@@ -1,6 +1,29 @@
-/**
- * @file lv_sdl_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sdl_private.h
  *
+ * @brief   Lv Sdl Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+#include "../opengles/lv_opengles_egl_private.h"
+#include "../opengles/lv_opengles_texture_private.h"
+#include "lv_sdl_window.h"
+
+/* Intra-component Headers */
+#include LV_SDL_INCLUDE_PATH
+
+/**
+ * @defgroup lv_sdl_private
+ * @brief    lv_sdl_private Firmware
+ * @{
  */
 
 #ifndef LV_SDL_PRIVATE_H
@@ -13,15 +36,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_types.h"
-#include "lv_sdl_window.h"
 
 #if LV_USE_SDL
-
-#include "../opengles/lv_opengles_egl_private.h"
-#include "../opengles/lv_opengles_texture_private.h"
-
-#include LV_SDL_INCLUDE_PATH
 
 /*********************
  *      DEFINES
@@ -69,7 +85,6 @@ void lv_sdl_mouse_handler(SDL_Event * event);
 void lv_sdl_mousewheel_handler(SDL_Event * event);
 lv_display_t * lv_sdl_get_disp_from_win_id(uint32_t win_id);
 
-
 #if LV_SDL_USE_EGL
 lv_result_t lv_sdl_egl_init(lv_display_t * disp);
 lv_result_t lv_sdl_egl_resize(lv_display_t * disp);
@@ -95,3 +110,5 @@ void lv_sdl_sw_deinit(lv_display_t * disp);
 #endif
 
 #endif /* LV_SDL_PRIVATE_H */
+
+/** @} */

@@ -1,23 +1,32 @@
-/**
- * @file lv_bar.c
+/************************************************************************************************
+ * @file    lv_bar.c
  *
- */
+ * @brief   Lv Bar
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw.h"
+#include "../../draw/lv_draw_mask.h"
+#include "../../misc/lv_anim_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "lv_bar_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_bar_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../draw/lv_draw_mask.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_BAR != 0
-
-#include "../../draw/lv_draw.h"
-#include "../../core/lv_observer_private.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_anim_private.h"
-#include "../../misc/lv_math.h"
 
 /*********************
  *      DEFINES
@@ -550,7 +559,6 @@ static void draw_indic(lv_event_t * e)
     lv_draw_rect_dsc_init(&draw_rect_dsc);
     draw_rect_dsc.base.layer = layer;
     lv_obj_init_draw_rect_dsc(obj, LV_PART_INDICATOR, &draw_rect_dsc);
-
 
     int32_t bg_radius = lv_obj_get_style_radius(obj, LV_PART_MAIN);
     int32_t short_side = LV_MIN(barw, barh);

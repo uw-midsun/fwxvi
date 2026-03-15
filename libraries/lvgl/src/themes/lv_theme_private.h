@@ -1,6 +1,26 @@
-/**
- * @file lv_theme_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_theme_private.h
  *
+ * @brief   Lv Theme Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_ext_data.h"
+#include "lv_theme.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_theme_private
+ * @brief    lv_theme_private Firmware
+ * @{
  */
 
 #ifndef LV_THEME_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../misc/lv_ext_data.h"
-#include "lv_theme.h"
 
 /*********************
  *      DEFINES
@@ -41,7 +58,6 @@ struct _lv_theme_t {
     uint32_t flags;                 /**< Any custom flag used by the theme */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -55,3 +71,5 @@ struct _lv_theme_t {
 #endif
 
 #endif /*LV_THEME_PRIVATE_H*/
+
+/** @} */

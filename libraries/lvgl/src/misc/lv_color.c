@@ -1,13 +1,23 @@
-/**
- * @file lv_color.c
+/************************************************************************************************
+ * @file    lv_color.c
  *
- */
+ * @brief   Lv Color
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_color.h"
+#include "lv_log.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_color.h"
-#include "lv_log.h"
 
 /*********************
  *      DEFINES
@@ -394,7 +404,6 @@ uint8_t lv_color32_luminance(lv_color32_t c)
 {
     return (uint8_t)((uint16_t)(77u * c.red + 151u * c.green + 28u * c.blue) >> 8);
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

@@ -1,6 +1,27 @@
-/**
- * @file lv_opengles_egl.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_egl.h
  *
+ * @brief   Lv Opengles Egl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_egl
+ * @brief    lv_opengles_egl Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_EGL_H
@@ -13,13 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_EGL
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_color.h"
-
 
 /*********************
  *      DEFINES
@@ -54,3 +70,5 @@ void lv_opengles_egl_context_destroy(lv_opengles_egl_t * ctx);
 #endif
 
 #endif /*LV_OPENGLES_EGL_H*/
+
+/** @} */

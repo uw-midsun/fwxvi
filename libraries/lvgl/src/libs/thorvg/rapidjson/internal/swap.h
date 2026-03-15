@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    swap.h
+ *
+ * @brief   Swap
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup swap
+ * @brief    swap Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_INTERNAL_SWAP_H_
 #define RAPIDJSON_INTERNAL_SWAP_H_
-
-#include "../rapidjson.h"
 
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
@@ -44,3 +66,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_INTERNAL_SWAP_H_
+
+/** @} */

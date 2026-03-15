@@ -1,18 +1,27 @@
-/**
- * @file lv_draw_dma2d_img.c
+/************************************************************************************************
+ * @file    lv_draw_dma2d_img.c
  *
- */
+ * @brief   Lv Draw Dma2D Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../lv_draw_image_private.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_draw_dma2d_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_dma2d_private.h"
 #if LV_USE_DRAW_DMA2D
-
-#include "../lv_draw_image_private.h"
-#include "../lv_image_decoder_private.h"
-#include "../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES

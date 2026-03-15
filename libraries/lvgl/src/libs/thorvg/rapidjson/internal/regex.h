@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    regex.h
+ *
+ * @brief   Regex
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../allocators.h"
+#include "../stream.h"
+
+/* Intra-component Headers */
+#include "stack.h"
+
+/**
+ * @defgroup regex
+ * @brief    regex Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,10 +40,6 @@
 
 #ifndef RAPIDJSON_INTERNAL_REGEX_H_
 #define RAPIDJSON_INTERNAL_REGEX_H_
-
-#include "../allocators.h"
-#include "../stream.h"
-#include "stack.h"
 
 #ifdef __clang__
 RAPIDJSON_DIAG_PUSH
@@ -737,3 +759,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_INTERNAL_REGEX_H_
+
+/** @} */

@@ -1,18 +1,35 @@
-/**
-  @file lv_opengl_shader_internal.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengl_shader_internal.h
  *
+ * @brief   Lv Opengl Shader Internal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_rb_private.h"
+#include "../../../misc/lv_types.h"
+#include "../lv_opengles_debug.h"
+#include "../lv_opengles_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengl_shader_internal
+ * @brief    lv_opengl_shader_internal Firmware
+ * @{
  */
 
 #ifndef LV_OPENGL_SHADER_INTERNAL_H
 #define LV_OPENGL_SHADER_INTERNAL_H
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_OPENGLES
-#include "../lv_opengles_private.h"
-#include "../lv_opengles_debug.h"
-#include "../../../misc/lv_types.h"
-#include "../../../misc/lv_rb_private.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,3 +157,5 @@ lv_opengl_shader_program_t * lv_opengl_shader_manager_compile_program_best_versi
 
 #endif /*LV_USE_OPENGLES*/
 #endif /*LV_OPENGL_SHADER_INTERNAL_H*/
+
+/** @} */

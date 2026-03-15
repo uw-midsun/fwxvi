@@ -1,6 +1,25 @@
-/**
- * @file lv_cmsis_rtos2.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cmsis_rtos2.h
  *
+ * @brief   Lv Cmsis Rtos2
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "cmsis_os2.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_cmsis_rtos2
+ * @brief    lv_cmsis_rtos2 Firmware
+ * @{
  */
 
 /*
@@ -20,8 +39,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 #if LV_USE_OS == LV_OS_CMSIS_RTOS2
-
-#include "cmsis_os2.h"
 
 /*********************
  *      DEFINES
@@ -51,3 +68,5 @@ typedef osEventFlagsId_t lv_thread_sync_t;
 #endif
 
 #endif /*LV_CMSIS_RTOS2_H*/
+
+/** @} */

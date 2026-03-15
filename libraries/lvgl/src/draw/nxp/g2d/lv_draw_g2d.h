@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_g2d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_g2d.h
  *
+ * @brief   Lv Draw G2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../sw/lv_draw_sw_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_g2d
+ * @brief    lv_draw_g2d Firmware
+ * @{
  */
 
 /**
@@ -20,11 +40,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-#include "../../sw/lv_draw_sw_private.h"
 
 /*********************
  *      DEFINES
@@ -69,3 +86,5 @@ void lv_draw_g2d_img(lv_draw_task_t * t);
 #endif
 
 #endif /*LV_DRAW_G2D_H*/
+
+/** @} */

@@ -1,12 +1,22 @@
-/**
- * @file lv_imgfont.c
+/************************************************************************************************
+ * @file    lv_imgfont.c
  *
- */
+ * @brief   Lv Imgfont
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lvgl.h"
 
 #if LV_USE_IMGFONT
 

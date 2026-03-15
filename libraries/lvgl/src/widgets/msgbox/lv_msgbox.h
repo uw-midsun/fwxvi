@@ -1,6 +1,25 @@
-/**
- * @file lv_msgbox.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_msgbox.h
  *
+ * @brief   Lv Msgbox
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_msgbox
+ * @brief    lv_msgbox Firmware
+ * @{
  */
 
 #ifndef LV_MSGBOX_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_MSGBOX
 
@@ -138,3 +156,5 @@ void lv_msgbox_close_async(lv_obj_t * mbox);
 #endif
 
 #endif /*LV_MSGBOX_H*/
+
+/** @} */

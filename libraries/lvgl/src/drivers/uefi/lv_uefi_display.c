@@ -1,18 +1,26 @@
-/**
- * @file lv_uefi_display.c
+/************************************************************************************************
+ * @file    lv_uefi_display.c
  *
- */
+ * @brief   Lv Uefi Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "lv_uefi_display.h"
+#include "lv_uefi_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi_display.h"
-#include "lv_uefi_private.h"
 
 #if LV_COLOR_DEPTH != 32
     #error [lv_uefi] Unsupported LV_COLOR_DEPTH.

@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    pointer.h
+ *
+ * @brief   Pointer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "document.h"
+#include "error/error.h" // PointerParseErrorCode
+#include "internal/itoa.h"
+#include "uri.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup pointer
+ * @brief    pointer Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,11 +41,6 @@
 
 #ifndef RAPIDJSON_POINTER_H_
 #define RAPIDJSON_POINTER_H_
-
-#include "document.h"
-#include "uri.h"
-#include "internal/itoa.h"
-#include "error/error.h" // PointerParseErrorCode
 
 #ifdef __clang__
 RAPIDJSON_DIAG_PUSH
@@ -70,7 +92,6 @@ public:
     typedef typename ValueType::EncodingType EncodingType;  //!< Encoding type from Value
     typedef typename ValueType::Ch Ch;                      //!< Character type from Value
     typedef GenericUri<ValueType, Allocator> UriType;
-
 
   //! A token is the basic units of internal representation.
     /*!
@@ -573,7 +594,6 @@ public:
     UriType GetUri(const ValueType& root, const UriType& rootUri, size_t* unresolvedTokenIndex = 0, Allocator* allocator = 0) const {
       return GetUri(const_cast<ValueType&>(root), rootUri, unresolvedTokenIndex, allocator);
     }
-
 
     //!@name Query value
     //@{
@@ -1468,3 +1488,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_POINTER_H_
+
+/** @} */

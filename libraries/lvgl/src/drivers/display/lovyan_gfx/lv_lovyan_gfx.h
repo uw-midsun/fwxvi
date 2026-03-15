@@ -1,6 +1,26 @@
-/**
- * @file lv_lovyan_gfx.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lovyan_gfx.h
  *
+ * @brief   Lv Lovyan Gfx
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+#include "../../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_lovyan_gfx
+ * @brief    lv_lovyan_gfx Firmware
+ * @{
  */
 
 #ifndef LV_LOVYAN_GFX_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../display/lv_display.h"
-#include "../../../indev/lv_indev.h"
 
 #if LV_USE_LOVYAN_GFX
 
@@ -43,3 +61,5 @@ lv_display_t * lv_lovyan_gfx_create(uint32_t hor_res, uint32_t ver_res, void * b
 #endif
 
 #endif /* LV_LOVYAN_GFX_H */
+
+/** @} */

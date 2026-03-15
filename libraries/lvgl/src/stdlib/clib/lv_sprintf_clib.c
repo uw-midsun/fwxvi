@@ -1,17 +1,26 @@
-
-/**
- * @file lv_sprintf_clib.c
+/************************************************************************************************
+ * @file    lv_sprintf_clib.c
  *
- */
+ * @brief   Lv Sprintf Clib
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdarg.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../lv_sprintf.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_STDLIB_SPRINTF == LV_STDLIB_CLIB
-#include <stdio.h>
-#include <stdarg.h>
-#include "../lv_sprintf.h"
 
 /*********************
  *      DEFINES

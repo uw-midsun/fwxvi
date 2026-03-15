@@ -15,8 +15,8 @@
 /* Inter-component Headers */
 #include "status.h"
 /* Intra-component Headers */
-#include "ltdc.h"
 #include "display_defs.h"
+#include "ltdc.h"
 
 /**
  * @defgroup GUI

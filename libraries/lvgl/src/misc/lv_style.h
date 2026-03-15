@@ -1,6 +1,35 @@
-/**
- * @file lv_style.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_style.h
  *
+ * @brief   Lv Style
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../font/lv_font.h"
+#include "../layouts/lv_layout.h"
+#include "lv_anim.h"
+#include "lv_area.h"
+#include "lv_assert.h"
+#include "lv_bidi.h"
+#include "lv_color.h"
+#include "lv_grad.h"
+#include "lv_style_gen.h"
+#include "lv_text.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_style
+ * @brief    lv_style Firmware
+ * @{
  */
 
 #ifndef LV_STYLE_H
@@ -13,16 +42,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../font/lv_font.h"
-#include "lv_color.h"
-#include "lv_area.h"
-#include "lv_anim.h"
-#include "lv_text.h"
-#include "lv_types.h"
-#include "lv_assert.h"
-#include "lv_bidi.h"
-#include "lv_grad.h"
-#include "../layouts/lv_layout.h"
 
 /*********************
  *      DEFINES
@@ -425,7 +444,6 @@ void lv_style_copy(lv_style_t * dst, const lv_style_t * src);
  */
 void lv_style_merge(lv_style_t * dst, const lv_style_t * src);
 
-
 /**
  * Check if a style is constant
  * @param style     pointer to a style
@@ -436,7 +454,6 @@ static inline bool lv_style_is_const(const lv_style_t * style)
     if(style->prop_cnt == 255) return true;
     return false;
 }
-
 
 /**
  * Register a new style property for custom usage
@@ -581,8 +598,6 @@ static inline uint32_t lv_style_get_prop_group(lv_style_prop_t prop)
  * @return the flags of the property
  */
 uint8_t lv_style_prop_lookup_flags(lv_style_prop_t prop);
-
-#include "lv_style_gen.h"
 
 /**
  * Set `style`s width and height.
@@ -733,3 +748,5 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_style_prop_t lv_style_const_prop_id_inv
 #endif
 
 #endif /*LV_STYLE_H*/
+
+/** @} */

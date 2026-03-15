@@ -1,6 +1,27 @@
-/**
- * @file lv_obj_tree.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_tree.h
  *
+ * @brief   Lv Obj Tree
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../misc/lv_anim.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_tree
+ * @brief    lv_obj_tree Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_TREE_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_anim.h"
-#include "../display/lv_display.h"
 
 /*********************
  *      DEFINES
@@ -319,3 +337,5 @@ void lv_obj_dump_tree(lv_obj_t * start_obj);
 #endif
 
 #endif /*LV_OBJ_TREE_H*/
+
+/** @} */

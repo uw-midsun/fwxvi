@@ -1,21 +1,30 @@
-/**
- * @file lv_draw_sw_blend_to_argb8888_premultiplied.c
- * @brief Implementation of ARGB8888 Premultiplied blending for LVGL.
- */
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_argb8888_premultiplied.c
+ *
+ * @brief   Implementation of ARGB8888 Premultiplied blending for LVGL.
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../core/lv_refr.h"
+#include "../../../display/lv_display.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_math.h"
+#include "lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_to_argb8888_premultiplied.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_to_argb8888_premultiplied.h"
 #if LV_USE_DRAW_SW
 
 #if LV_DRAW_SW_SUPPORT_ARGB8888_PREMULTIPLIED
-
-#include "lv_draw_sw_blend_private.h"
-#include "../../../misc/lv_math.h"
-#include "../../../display/lv_display.h"
-#include "../../../core/lv_refr.h"
-#include "../../../misc/lv_color.h"
 
 /*********************
  *      DEFINES
@@ -97,7 +106,6 @@ static inline void * /* LV_ATTRIBUTE_FAST_MEM */ drawbuf_next_row(const void * b
 #ifndef LV_DRAW_SW_RGB888_BLEND_NORMAL_TO_ARGB8888_PREMULTIPLIED_MIX_MASK_OPA
     #define   LV_DRAW_SW_RGB888_BLEND_NORMAL_TO_ARGB8888_PREMULTIPLIED_MIX_MASK_OPA(...)             LV_RESULT_INVALID
 #endif
-
 
 #ifndef LV_DRAW_SW_ARGB8888_PREMULTIPLIED_BLEND_NORMAL_TO_ARGB8888_PREMULTIPLIED
     #define   LV_DRAW_SW_ARGB8888_PREMULTIPLIED_BLEND_NORMAL_TO_ARGB8888_PREMULTIPLIED(...)             LV_RESULT_INVALID
@@ -567,7 +575,6 @@ static void LV_ATTRIBUTE_FAST_MEM rgb888_image_blend(lv_draw_sw_blend_image_dsc_
 
 #endif
 
-
 static void LV_ATTRIBUTE_FAST_MEM argb8888_premultiplied_image_blend(lv_draw_sw_blend_image_dsc_t * dsc)
 {
     int32_t w = dsc->dest_w;
@@ -783,12 +790,10 @@ static void lv_color_mix_with_alpha_cache_init(lv_color_mix_alpha_cache_t * cach
     cache->ratio_saved = 255;
 }
 
-
 static inline void * LV_ATTRIBUTE_FAST_MEM drawbuf_next_row(const void * buf, uint32_t stride)
 {
     return (void *)((uint8_t *)buf + stride);
 }
-
 
 static inline void LV_ATTRIBUTE_FAST_MEM blend_non_normal_pixel_premultiplied(
     lv_color32_t * dest, lv_color32_t src, lv_blend_mode_t mode, lv_color_mix_alpha_cache_t * cache)

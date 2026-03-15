@@ -1,22 +1,31 @@
-/**
- * @file lv_svg_render.c
+/************************************************************************************************
+ * @file    lv_svg_render.c
  *
- */
+ * @brief   Lv Svg Render
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+#include <string.h>
+
+/* Inter-component Headers */
+    #include "../../libs/freetype/lv_freetype_private.h"
+#include "../../../lvgl.h"
+#include "../../misc/lv_text_private.h"
+#include "lv_svg_render.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../../lvgl.h"
-#include "lv_svg_render.h"
 #if LV_USE_SVG
 
-#include "../../misc/lv_text_private.h"
-#include <math.h>
-#include <string.h>
-
 #if LV_USE_FREETYPE
-    #include "../../libs/freetype/lv_freetype_private.h"
 #endif
 
 /*********************

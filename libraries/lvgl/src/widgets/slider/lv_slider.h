@@ -1,6 +1,25 @@
-/**
- * @file lv_slider.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_slider.h
  *
+ * @brief   Lv Slider
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../bar/lv_bar.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_slider
+ * @brief    lv_slider Firmware
+ * @{
  */
 
 #ifndef LV_SLIDER_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../bar/lv_bar.h"
 
 #if LV_USE_SLIDER != 0
 
@@ -183,7 +201,6 @@ lv_slider_orientation_t lv_slider_get_orientation(lv_obj_t * slider);
 */
 bool lv_slider_is_symmetrical(lv_obj_t * obj);
 
-
 #if LV_USE_OBSERVER
 /**
  * Bind an integer or float Subject to a Slider's value.
@@ -205,3 +222,5 @@ lv_observer_t * lv_slider_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_SLIDER_H*/
+
+/** @} */

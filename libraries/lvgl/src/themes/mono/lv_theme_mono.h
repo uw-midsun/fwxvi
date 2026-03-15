@@ -1,6 +1,25 @@
-/**
- * @file lv_theme_mono.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_theme_mono.h
  *
+ * @brief   Lv Theme Mono
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_theme.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_theme_mono
+ * @brief    lv_theme_mono Firmware
+ * @{
  */
 
 #ifndef LV_THEME_MONO_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_theme.h"
 
 #if LV_USE_THEME_MONO
 
@@ -66,3 +84,5 @@ void lv_theme_mono_deinit(void);
 #endif
 
 #endif /* LV_THEME_MONO_H */
+
+/** @} */

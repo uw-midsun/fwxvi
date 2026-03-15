@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    nanovg.h
+ *
+ * @brief   Nanovg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nanovg
+ * @brief    nanovg Firmware
+ * @{
+ */
+
 //
 // Copyright (c) 2013 Mikko Mononen memon@inside.org
 //
@@ -22,8 +46,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_NANOVG
 
@@ -190,13 +212,11 @@ NVGcolor nvgRGB(unsigned char r, unsigned char g, unsigned char b);
 // Returns a color value from red, green, blue values. Alpha will be set to 1.0f.
 NVGcolor nvgRGBf(float r, float g, float b);
 
-
 // Returns a color value from red, green, blue and alpha values.
 NVGcolor nvgRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 // Returns a color value from red, green, blue and alpha values.
 NVGcolor nvgRGBAf(float r, float g, float b, float a);
-
 
 // Linearly interpolates from color c0 to c1, and returns resulting color value.
 NVGcolor nvgLerpRGBA(NVGcolor c0, NVGcolor c1, float u);
@@ -323,7 +343,6 @@ void nvgScale(NVGcontext * ctx, float x, float y);
 //   [0 0 1]
 // There should be space for 6 floats in the return buffer for the values a-f.
 void nvgCurrentTransform(NVGcontext * ctx, float * xform);
-
 
 // The following functions can be used to make calculations on 2x3 transformation matrices.
 // A 2x3 matrix is represented as float[6].
@@ -504,7 +523,6 @@ void nvgFill(NVGcontext * ctx);
 
 // Fills the current path with current stroke style.
 void nvgStroke(NVGcontext * ctx);
-
 
 //
 // Text
@@ -705,3 +723,5 @@ void nvgDebugDumpPathCache(NVGcontext * ctx);
 #endif
 
 #endif // NANOVG_H
+
+/** @} */

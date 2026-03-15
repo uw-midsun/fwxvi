@@ -1,3 +1,34 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    schema.h
+ *
+ * @brief   Schema
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cmath> // abs, floor
+#include <regex>
+
+/* Inter-component Headers */
+#include "document.h"
+#include "error/en.h"
+#include "internal/regex.h"
+#include "pointer.h"
+#include "uri.h"
+
+/* Intra-component Headers */
+#include "stringbuffer.h"
+
+/**
+ * @defgroup schema
+ * @brief    schema Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available->
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip-> All rights reserved->
@@ -15,13 +46,6 @@
 #ifndef RAPIDJSON_SCHEMA_H_
 #define RAPIDJSON_SCHEMA_H_
 
-#include "document.h"
-#include "pointer.h"
-#include "stringbuffer.h"
-#include "error/en.h"
-#include "uri.h"
-#include <cmath> // abs, floor
-
 #if !defined(RAPIDJSON_SCHEMA_USE_INTERNALREGEX)
 #define RAPIDJSON_SCHEMA_USE_INTERNALREGEX 1
 #else
@@ -35,9 +59,7 @@
 #endif
 
 #if RAPIDJSON_SCHEMA_USE_INTERNALREGEX
-#include "internal/regex.h"
 #elif RAPIDJSON_SCHEMA_USE_STDREGEX
-#include <regex>
 #endif
 
 #if RAPIDJSON_SCHEMA_USE_INTERNALREGEX || RAPIDJSON_SCHEMA_USE_STDREGEX
@@ -326,7 +348,6 @@ public:
     virtual void DisallowedWhenWriting() = 0;
     virtual void DisallowedWhenReading() = 0;
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Hasher
@@ -1276,7 +1297,6 @@ public:
         }
     }
 
-
     // Generate functions for string literal according to Ch
 #define RAPIDJSON_STRING_(name, ...) \
     static const ValueType& Get##name##String() {\
@@ -2109,7 +2129,6 @@ public:
         // $schema not found
         return kDraftNone;
     }
-
 
     // Get open api version of any schema document
     static OpenApiVersion GetOpenApiVersion(const ValueType& document) {
@@ -3260,3 +3279,5 @@ RAPIDJSON_NAMESPACE_END
 RAPIDJSON_DIAG_POP
 
 #endif // RAPIDJSON_SCHEMA_H_
+
+/** @} */

@@ -1,19 +1,27 @@
-/**
- * @file lv_nxp_elcdif.c
+/************************************************************************************************
+ * @file    lv_nxp_elcdif.c
  *
- * Driver for NXP's ELCD
- */
+ * @brief   Lv Nxp Elcdif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "fsl_cache.h"
+#include "fsl_elcdif.h"
+#include "fsl_video_common.h"
 #include "lv_nxp_elcdif.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_NXP_ELCDIF == 1
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../display/lv_display_private.h"
-#include "fsl_video_common.h"
-#include "fsl_elcdif.h"
-#include "fsl_cache.h"
 
 /*********************
  *      DEFINES

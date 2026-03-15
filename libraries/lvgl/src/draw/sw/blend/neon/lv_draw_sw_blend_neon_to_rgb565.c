@@ -1,18 +1,27 @@
-/**
- * @file lv_draw_sw_blend_neon_to_rgb565.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_neon_to_rgb565.c
  *
- */
+ * @brief   Lv Draw Sw Blend Neon To Rgb565
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <arm_neon.h>
+
+/* Inter-component Headers */
+#include "../../../../misc/lv_color.h"
+#include "../../../../misc/lv_types.h"
+#include "../lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_neon_to_rgb565.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_neon_to_rgb565.h"
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-
-#include "../../../../misc/lv_color.h"
-#include "../../../../misc/lv_types.h"
-#include "../lv_draw_sw_blend_private.h"
-#include <arm_neon.h>
 
 /*********************
  *      DEFINES

@@ -1,6 +1,40 @@
-/**
- * @file lv_draw_ppa_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_ppa_private.h
  *
+ * @brief   Lv Draw Ppa Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_area_private.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_log.h"
+#include "../../lv_draw_private.h"
+#include "driver/ppa.h"
+#include "esp_cache.h"
+#include "esp_err.h"
+#include "esp_heap_caps.h"
+#include "esp_log.h"
+#include "hal/color_hal.h"
+
+/* Intra-component Headers */
+#include "sdkconfig.h"
+#include LV_STDBOOL_INCLUDE
+#include LV_STDDEF_INCLUDE
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_draw_ppa_private
+ * @brief    lv_draw_ppa_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_PPA_PRIVATE_H
@@ -13,7 +47,6 @@ extern "C" {
 /*********************
 *      INCLUDES
 *********************/
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_PPA
 #if LV_PPA_NONBLOCKING_OPS
@@ -24,34 +57,16 @@ extern "C" {
 #define LV_PPA_NONBLOCKING_OPS 0
 #endif
 
-#include LV_STDDEF_INCLUDE
-#include LV_STDBOOL_INCLUDE
-#include LV_STDINT_INCLUDE
-
-#include "../../../misc/lv_color.h"
-#include "../../../misc/lv_log.h"
-#include "../../lv_draw_private.h"
-#include "../../../display/lv_display_private.h"
-#include "../../../misc/lv_area_private.h"
-
 /* The ppa driver depends heavily on the esp-idf headers*/
-#include "sdkconfig.h"
 
 #if (CONFIG_LV_DRAW_BUF_ALIGN != CONFIG_CACHE_L2_CACHE_LINE_SIZE)
 #error "CONFIG_LV_DRAW_BUF_ALIGN must be equal to CONFIG_CACHE_L2_CACHE_LINE_SIZE!"
 #endif
 
-
 #ifndef CONFIG_SOC_PPA_SUPPORTED
 #error "This SoC does not support PPA"
 #endif
 
-#include "driver/ppa.h"
-#include "esp_heap_caps.h"
-#include "esp_err.h"
-#include "hal/color_hal.h"
-#include "esp_cache.h"
-#include "esp_log.h"
 /*********************
 *      DEFINES
 *********************/
@@ -175,3 +190,5 @@ static inline ppa_srm_color_mode_t lv_color_format_to_ppa_srm(lv_color_format_t 
 #endif
 
 #endif /* LV_DRAW_PPA_PRIVATE_H */
+
+/** @} */

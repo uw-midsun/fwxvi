@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgIteratorAccessor.h
+ *
+ * @brief   Tvgiteratoraccessor
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgPaint.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgIteratorAccessor
+ * @brief    tvgIteratorAccessor Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_ITERATOR_ACCESSOR_H_
 #define _TVG_ITERATOR_ACCESSOR_H_
-
-#include "tvgPaint.h"
 
 namespace tvg
 {
@@ -47,3 +69,5 @@ public:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

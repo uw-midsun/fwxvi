@@ -1,20 +1,29 @@
-/**
- * @file lv_x11_input.c
+/************************************************************************************************
+ * @file    lv_x11_input.c
  *
- */
+ * @brief   Lv X11 Input
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <stdbool.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../widgets/image/lv_image.h"
+#include "lv_x11.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_x11.h"
 
 #if LV_USE_X11
-
-#include <string.h>
-#include <stdbool.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include "../../widgets/image/lv_image.h"
 
 /*********************
  *      DEFINES

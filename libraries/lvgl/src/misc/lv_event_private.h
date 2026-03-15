@@ -1,6 +1,26 @@
-/**
- * @file lv_event_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_event_private.h
  *
+ * @brief   Lv Event Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_event.h"
+#include "lv_ext_data.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_event_private
+ * @brief    lv_event_private Firmware
+ * @{
  */
 
 #ifndef LV_EVENT_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_ext_data.h"
-#include "lv_event.h"
 
 /*********************
  *      DEFINES
@@ -50,7 +67,6 @@ struct _lv_event_t {
 #endif
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -62,7 +78,6 @@ struct _lv_event_t {
 void lv_event_push(lv_event_t * e);
 
 void lv_event_pop(lv_event_t * e);
-
 
 lv_result_t lv_event_push_and_send(lv_event_list_t * event_list, lv_event_code_t code, void * original_target,
                                    void * param);
@@ -83,3 +98,5 @@ void lv_event_mark_deleted(void * target);
 #endif
 
 #endif /*LV_EVENT_PRIVATE_H*/
+
+/** @} */

@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_kernel.h
+ *
+ * @brief   Vg Lite Kernel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../VGLite/vg_lite_options.h"
+#include "vg_lite_option.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_kernel
+ * @brief    vg_lite_kernel Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    The MIT License (MIT)
@@ -55,11 +81,7 @@
 #ifndef VG_LITE_KERNEL_H
 #define VG_LITE_KERNEL_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "../VGLite/vg_lite_options.h"
-#include "vg_lite_option.h"
 
 /* Interrupt IDs from GPU. */
 #define EVENT_UNEXPECTED_MESH  0x80000000
@@ -590,3 +612,5 @@ extern size_t physical_address;
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_KERNEL_H */
+
+/** @} */

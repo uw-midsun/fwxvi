@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    meta.h
+ *
+ * @brief   Meta
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <type_traits>
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup meta
+ * @brief    meta Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,8 +40,6 @@
 #ifndef RAPIDJSON_INTERNAL_META_H_
 #define RAPIDJSON_INTERNAL_META_H_
 
-#include "../rapidjson.h"
-
 #ifdef __GNUC__
 RAPIDJSON_DIAG_PUSH
 RAPIDJSON_DIAG_OFF(effc++)
@@ -28,7 +51,6 @@ RAPIDJSON_DIAG_OFF(6334)
 #endif
 
 #if RAPIDJSON_HAS_CXX11_TYPETRAITS
-#include <type_traits>
 #endif
 
 //@cond RAPIDJSON_INTERNAL
@@ -47,7 +69,6 @@ template <bool Cond> struct BoolType {
 };
 typedef BoolType<true> TrueType;
 typedef BoolType<false> FalseType;
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // SelectIf, BoolExpr, NotExpr, AndExpr, OrExpr
@@ -68,14 +89,12 @@ template <typename C> struct NotExpr  : SelectIf<C,FalseType,TrueType>::Type {};
 template <typename C1, typename C2> struct AndExpr : AndExprCond<C1::Value, C2::Value>::Type {};
 template <typename C1, typename C2> struct OrExpr  : OrExprCond<C1::Value, C2::Value>::Type {};
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // AddConst, MaybeAddConst, RemoveConst
 template <typename T> struct AddConst { typedef const T Type; };
 template <bool Constify, typename T> struct MaybeAddConst : SelectIfCond<Constify, const T, T> {};
 template <typename T> struct RemoveConst { typedef T Type; };
 template <typename T> struct RemoveConst<const T> { typedef T Type; };
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // IsSame, IsConst, IsMoreConst, IsPointer
@@ -127,7 +146,6 @@ template <typename B, typename D> struct IsBaseOf
     : OrExpr<IsSame<B, D>, BoolExpr<IsBaseOfImpl<B, D> > >::Type {};
 
 #endif // RAPIDJSON_HAS_CXX11_TYPETRAITS
-
 
 //////////////////////////////////////////////////////////////////////////
 // EnableIf / DisableIf
@@ -184,3 +202,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_INTERNAL_META_H_
+
+/** @} */

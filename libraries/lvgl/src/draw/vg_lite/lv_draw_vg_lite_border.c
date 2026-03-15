@@ -1,21 +1,29 @@
-/**
- * @file lv_draw_vg_lite_border.c
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_border.c
  *
- */
+ * @brief   Lv Draw Vg Lite Border
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "lv_draw_vg_lite.h"
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_math.h"
+#include "lv_vg_lite_path.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_vg_lite.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_utils.h"
-#include "lv_vg_lite_path.h"
-#include "lv_vg_lite_math.h"
-#include "../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES

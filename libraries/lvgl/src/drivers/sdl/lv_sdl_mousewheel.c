@@ -1,17 +1,26 @@
-/**
- * @file lv_sdl_mousewheel.c
+/************************************************************************************************
+ * @file    lv_sdl_mousewheel.c
  *
- */
+ * @brief   Lv Sdl Mousewheel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_sdl_mousewheel.h"
+#include "lv_sdl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_sdl_mousewheel.h"
 #if LV_USE_SDL && LV_SDL_MOUSEWHEEL_MODE == LV_SDL_MOUSEWHEEL_MODE_ENCODER
-
-#include "../../core/lv_group.h"
-#include "../../stdlib/lv_string.h"
-#include "lv_sdl_private.h"
 
 /*********************
  *      DEFINES

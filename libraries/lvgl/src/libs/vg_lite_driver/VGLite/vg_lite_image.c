@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    vg_lite_image.c
+ *
+ * @brief   Vg Lite Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_context.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,10 +41,7 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "vg_lite_context.h"
 
 #define MATRIX_FP_ABS(x)            (((x) < 0) ? -(x) : (x))
 #define MATRIX_FP_EPS               2.2204460492503131e-14
@@ -2084,7 +2097,6 @@ static vg_lite_error_t convert_color(vg_lite_buffer_format_t format, uint32_t va
                 *result = ARGB(0xff, r, g, b);
                 Bpp = 32;
                 break;
-
 
             case VG_LITE_RGBA4444:
                 *result = ARGB4(a, b, g, r);

@@ -1,6 +1,25 @@
-/**
- * @file lv_api_map_v9_3.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_api_map_v9_3.h
  *
+ * @brief   Lv Api Map V9 3
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_api_map_v9_3
+ * @brief    lv_api_map_v9_3 Firmware
+ * @{
  */
 
 #ifndef LV_API_MAP_V9_3_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -89,9 +107,10 @@ extern "C" {
 #define lv_vector_dsc_add_path                      lv_draw_vector_dsc_add_path
 #define lv_vector_dsc_clear_area                    lv_draw_vector_dsc_clear_area
 
-
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif
 
 #endif /* LV_API_MAP_V9_3_H */
+
+/** @} */

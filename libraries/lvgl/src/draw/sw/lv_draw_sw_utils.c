@@ -1,12 +1,22 @@
-/**
- * @file lv_draw_sw_utils.c
+/************************************************************************************************
+ * @file    lv_draw_sw_utils.c
  *
- */
+ * @brief   Lv Draw Sw Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_sw_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_utils.h"
 #if LV_USE_DRAW_SW
 
 /*********************
@@ -535,7 +545,6 @@ static void rotate90_rgb565(const uint16_t * src, uint16_t * dst, int32_t src_wi
 }
 
 #endif
-
 
 #if LV_DRAW_SW_SUPPORT_L8
 

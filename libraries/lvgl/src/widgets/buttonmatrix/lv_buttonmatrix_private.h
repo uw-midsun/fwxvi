@@ -1,6 +1,26 @@
-/**
- * @file lv_buttonmatrix_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_buttonmatrix_private.h
  *
+ * @brief   Lv Buttonmatrix Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_buttonmatrix.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_buttonmatrix_private
+ * @brief    lv_buttonmatrix_private Firmware
+ * @{
  */
 
 #ifndef LV_BUTTONMATRIX_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_buttonmatrix.h"
 
 #if LV_USE_BUTTONMATRIX != 0
 
@@ -40,7 +57,6 @@ struct _lv_buttonmatrix_t {
     uint32_t auto_free_map : 1;          /**< 1: Automatically free the map when the widget is deleted */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -56,3 +72,5 @@ struct _lv_buttonmatrix_t {
 #endif
 
 #endif /*LV_BUTTONMATRIX_PRIVATE_H*/
+
+/** @} */

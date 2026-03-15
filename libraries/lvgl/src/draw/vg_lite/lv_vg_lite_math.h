@@ -1,6 +1,28 @@
-/**
- * @file lv_vg_lite_math.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_math.h
  *
+ * @brief   Lv Vg Lite Math
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_math
+ * @brief    lv_vg_lite_math Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_MATH_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include <math.h>
-#include <stdbool.h>
-#include <float.h>
 
 /*********************
  *      DEFINES
@@ -74,3 +90,5 @@ float math_fast_inv_sqrtf(float number);
 #endif
 
 #endif /*LV_VG_LITE_MATH_H*/
+
+/** @} */

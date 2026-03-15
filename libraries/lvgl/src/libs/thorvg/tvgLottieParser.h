@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieParser.h
+ *
+ * @brief   Tvglottieparser
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgLottieParserHandler.h"
+#include "tvgLottieProperty.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieParser
+ * @brief    tvgLottieParser Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_PARSER_H_
 #define _TVG_LOTTIE_PARSER_H_
-
-#include "tvgCommon.h"
-#include "tvgLottieParserHandler.h"
-#include "tvgLottieProperty.h"
 
 struct LottieParser : LookaheadParserHandler
 {
@@ -129,3 +151,5 @@ private:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

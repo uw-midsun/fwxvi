@@ -1,13 +1,23 @@
-/**
- * @file lv_color_op.c
+/************************************************************************************************
+ * @file    lv_color_op.c
  *
- */
+ * @brief   Lv Color Op
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_color_op_private.h"
+#include "lv_log.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_color_op_private.h"
-#include "lv_log.h"
 
 /*********************
  *      DEFINES

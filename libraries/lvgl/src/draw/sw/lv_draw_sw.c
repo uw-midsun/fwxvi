@@ -1,33 +1,42 @@
-/**
- * @file lv_draw_sw.c
+/************************************************************************************************
+ * @file    lv_draw_sw.c
  *
- */
+ * @brief   Lv Draw Sw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+        #include <thorvg_capi.h>
+
+/* Inter-component Headers */
+        #include "../../libs/thorvg/thorvg_capi.h"
+    #include "arm2d/lv_draw_sw_helium.h"
+#include "../../core/lv_global.h"
+#include "../../core/lv_refr.h"
+#include "../../display/lv_display_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "lv_draw_sw_private.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_private.h"
-#include "../lv_draw_private.h"
 #if LV_USE_DRAW_SW
-
-#include "../../core/lv_refr.h"
-#include "../../display/lv_display_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_global.h"
-#include "../../misc/lv_area_private.h"
 
 #if LV_USE_VECTOR_GRAPHIC && LV_USE_THORVG
     #if LV_USE_THORVG_EXTERNAL
-        #include <thorvg_capi.h>
     #else
-        #include "../../libs/thorvg/thorvg_capi.h"
     #endif
 #endif
 
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "arm2d/lv_draw_sw_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 #if LV_DRAW_SW_DRAW_UNIT_CNT > 1 && LV_USE_OS == LV_OS_NONE
@@ -431,7 +440,6 @@ static void execute_drawing(lv_draw_task_t * t)
             break;
     }
 
-
     LV_PROFILER_DRAW_END;
 }
 
@@ -486,6 +494,5 @@ static void parallel_debug_draw(lv_draw_task_t * t, uint32_t idx)
     }
 }
 #endif
-
 
 #endif /*LV_USE_DRAW_SW*/

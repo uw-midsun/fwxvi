@@ -1,19 +1,28 @@
-/**
- * @file lv_pthread.c
+/************************************************************************************************
+ * @file    lv_pthread.c
  *
- */
+ * @brief   Lv Pthread
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../misc/lv_timer.h"
+#include "../misc/lv_log.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_PTHREAD
 
-#include "../misc/lv_log.h"
-
 #ifndef __linux__
-    #include "../misc/lv_timer.h"
 #endif
 
 /*********************
@@ -28,7 +37,6 @@
  *  STATIC PROTOTYPES
  **********************/
 static void * generic_callback(void * user_data);
-
 
 /**********************
  *  STATIC VARIABLES
@@ -194,6 +202,5 @@ static void * generic_callback(void * user_data)
     thread->callback(thread->user_data);
     return NULL;
 }
-
 
 #endif /*LV_USE_OS == LV_OS_PTHREAD*/

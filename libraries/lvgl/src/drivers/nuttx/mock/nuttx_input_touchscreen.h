@@ -1,6 +1,25 @@
-/**
- * @file nuttx_input_touchscreen.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_input_touchscreen.h
  *
+ * @brief   Nuttx Input Touchscreen
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_input_touchscreen
+ * @brief    nuttx_input_touchscreen Firmware
+ * @{
  */
 
 #ifndef NUTTX_INPUT_TOUCHSCREEN_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES
@@ -123,3 +140,5 @@ struct touch_sample_s {
 #endif
 
 #endif /*NUTTX_INPUT_TOUCHSCREEN_H*/
+
+/** @} */

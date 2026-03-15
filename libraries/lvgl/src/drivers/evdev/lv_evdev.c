@@ -1,39 +1,49 @@
-/**
- * @file lv_evdev.c
+/************************************************************************************************
+ * @file    lv_evdev.c
  *
- */
+ * @brief   Lv Evdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <dev/evdev/input.h>
+    #include <linux/input.h>
+    #include <sys/inotify.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/param.h> /*To detect BSD*/
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../display/lv_display.h"
+#include "../../display/lv_display_private.h"
+#include "../../indev/lv_indev_gesture.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_async.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "../../widgets/image/lv_image.h"
+#include "lv_evdev_private.h"
+
+/* Intra-component Headers */
 
 /**********************
  *      INCLUDES
  **********************/
-#include "lv_evdev_private.h"
 #if LV_USE_EVDEV
 
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/param.h> /*To detect BSD*/
 #ifdef BSD
-    #include <dev/evdev/input.h>
 #else
-    #include <linux/input.h>
-    #include <sys/inotify.h>
 #endif /*BSD*/
-#include "../../core/lv_global.h"
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_async.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "../../display/lv_display.h"
-#include "../../display/lv_display_private.h"
-#include "../../widgets/image/lv_image.h"
-#include "../../indev/lv_indev_gesture.h"
 
 /*********************
  *      DEFINES

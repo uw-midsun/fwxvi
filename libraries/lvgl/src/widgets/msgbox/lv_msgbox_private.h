@@ -1,6 +1,26 @@
-/**
- * @file lv_msgbox_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_msgbox_private.h
  *
+ * @brief   Lv Msgbox Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_msgbox.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_msgbox_private
+ * @brief    lv_msgbox_private Firmware
+ * @{
  */
 
 #ifndef LV_MSGBOX_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_msgbox.h"
-
 #if LV_USE_MSGBOX
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -39,7 +56,6 @@ struct _lv_msgbox_t {
     lv_obj_t * title;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -55,3 +71,5 @@ struct _lv_msgbox_t {
 #endif
 
 #endif /*LV_MSGBOX_PRIVATE_H*/
+
+/** @} */

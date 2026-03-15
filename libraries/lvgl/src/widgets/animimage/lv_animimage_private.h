@@ -1,6 +1,27 @@
-/**
- * @file lv_animimage_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_animimage_private.h
  *
+ * @brief   Lv Animimage Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_anim_private.h"
+#include "../image/lv_image_private.h"
+#include "lv_animimage.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_animimage_private
+ * @brief    lv_animimage_private Firmware
+ * @{
  */
 
 #ifndef LV_ANIMIMAGE_PRIVATE_H
@@ -13,10 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../image/lv_image_private.h"
-#include "../../misc/lv_anim_private.h"
-#include "lv_animimage.h"
 
 #if LV_USE_ANIMIMG != 0
 
@@ -37,7 +54,6 @@ struct _lv_animimg_t {
     int8_t  pic_count;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -53,3 +69,5 @@ struct _lv_animimg_t {
 #endif
 
 #endif /*LV_ANIMIMAGE_PRIVATE_H*/
+
+/** @} */

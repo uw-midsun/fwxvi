@@ -1,6 +1,24 @@
-/**
- * @file lv_os_none.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_os_none.h
  *
+ * @brief   Lv Os None
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_os_none
+ * @brief    lv_os_none Firmware
+ * @{
  */
 
 #ifndef LV_OS_NONE_H
@@ -41,3 +59,5 @@ typedef int lv_thread_sync_t;
 #endif
 
 #endif /*LV_OS_NONE_H*/
+
+/** @} */

@@ -1,17 +1,27 @@
-/**
- * @file lv_style.c
+/************************************************************************************************
+ * @file    lv_style.c
  *
- */
+ * @brief   Lv Style
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_style_private.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../core/lv_global.h"
 #include "../stdlib/lv_mem.h"
 #include "../stdlib/lv_string.h"
 #include "lv_assert.h"
+#include "lv_style_private.h"
 #include "lv_types.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 /*********************
  *      DEFINES
@@ -205,7 +215,6 @@ void lv_style_reset(lv_style_t * style)
     style->sentinel = LV_STYLE_SENTINEL_VALUE;
 #endif
 }
-
 
 void lv_style_copy(lv_style_t * dst, const lv_style_t * src)
 {

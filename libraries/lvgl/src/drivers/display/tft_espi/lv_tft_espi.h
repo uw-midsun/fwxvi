@@ -1,6 +1,25 @@
-/**
- * @file lv_tft_espi.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tft_espi.h
  *
+ * @brief   Lv Tft Espi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tft_espi
+ * @brief    lv_tft_espi Firmware
+ * @{
  */
 
 #ifndef LV_TFT_ESPI_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../display/lv_display.h"
 
 #if LV_USE_TFT_ESPI
 
@@ -41,3 +59,5 @@ lv_display_t * lv_tft_espi_create(uint32_t hor_res, uint32_t ver_res, void * buf
 #endif
 
 #endif /* LV_TFT_ESPI_H */
+
+/** @} */

@@ -1,8 +1,26 @@
-/**
-* @file lv_circle_buf.h
-*
- */
+#pragma once
 
+/************************************************************************************************
+ * @file    lv_circle_buf.h
+ *
+ * @brief   Lv Circle Buf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_circle_buf
+ * @brief    lv_circle_buf Firmware
+ * @{
+ */
 
 #ifndef LV_CIRCLE_BUF_H
 #define LV_CIRCLE_BUF_H
@@ -14,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -189,3 +205,5 @@ lv_result_t lv_circle_buf_peek_at(const lv_circle_buf_t * circle_buf, uint32_t i
 #endif
 
 #endif /*LV_CIRCLE_BUF_H*/
+
+/** @} */

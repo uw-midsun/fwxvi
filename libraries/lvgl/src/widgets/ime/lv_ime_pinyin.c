@@ -1,17 +1,26 @@
-/**
- * @file lv_ime_pinyin.c
+/************************************************************************************************
+ * @file    lv_ime_pinyin.c
  *
- */
+ * @brief   Lv Ime Pinyin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../lvgl.h"
+#include "lv_ime_pinyin_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_ime_pinyin_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_IME_PINYIN != 0
-
-#include "../../lvgl.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,26 @@
-/**
- * @file lv_lru.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lru.h
  *
+ * @brief   Lv Lru
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_lru
+ * @brief    lv_lru Firmware
+ * @{
  */
 
 #ifndef LV_LRU_H
@@ -13,10 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lv_conf_internal.h"
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -81,3 +97,5 @@ void lv_lru_remove_lru_item(lv_lru_t * cache);
 #endif
 
 #endif /*LV_LRU_H*/
+
+/** @} */

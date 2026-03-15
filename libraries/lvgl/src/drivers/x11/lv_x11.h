@@ -1,6 +1,27 @@
-/**
- * @file lv_x11.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_x11.h
  *
+ * @brief   Lv X11
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../draw/lv_image_dsc.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_x11
+ * @brief    lv_x11 Firmware
+ * @{
  */
 
 #ifndef LV_X11_H
@@ -13,10 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
-#include "../../draw/lv_image_dsc.h"
 
 #if LV_USE_X11
 
@@ -80,3 +97,5 @@ lv_display_t * lv_x11_window_create(char const * title, int32_t hor_res, int32_t
 #endif
 
 #endif /* LV_X11_H */
+
+/** @} */

@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_eve_display_defines.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve_display_defines.h
  *
+ * @brief   Lv Draw Eve Display Defines
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_eve_display_defines
+ * @brief    lv_draw_eve_display_defines Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_EVE_DISPLAY_DEFINES_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_DRAW_EVE
 
 /*********************
@@ -521,7 +539,6 @@ extern "C" {
 #define LV_EVE_REG_VSIZE            ((uint32_t) 0x00302048UL)
 #define LV_EVE_REG_VSYNC0           ((uint32_t) 0x0030204cUL)
 #define LV_EVE_REG_VSYNC1           ((uint32_t) 0x00302050UL)
-
 
 /* Macros for static display list generation */
 
@@ -1205,3 +1222,5 @@ static inline uint32_t LV_EVE_BITMAP_TRANSFORM_E(uint8_t prc, uint32_t val)
 #endif
 
 #endif /*LV_DRAW_EVE_DISPLAY_DEFINES_H*/
+
+/** @} */

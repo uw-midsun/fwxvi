@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    biginteger.h
+ *
+ * @brief   Biginteger
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <intrin.h> // for _umul128
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup biginteger
+ * @brief    biginteger Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,10 +40,7 @@
 #ifndef RAPIDJSON_BIGINTEGER_H_
 #define RAPIDJSON_BIGINTEGER_H_
 
-#include "../rapidjson.h"
-
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER) && defined(_M_AMD64)
-#include <intrin.h> // for _umul128
 #if !defined(_ARM64EC_)
 #pragma intrinsic(_umul128)
 #else
@@ -295,3 +317,5 @@ private:
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_BIGINTEGER_H_
+
+/** @} */

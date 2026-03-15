@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgXmlParser.h
+ *
+ * @brief   Tvgxmlparser
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgSvgLoaderCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgXmlParser
+ * @brief    tvgXmlParser Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SIMPLE_XML_PARSER_H_
 #define _TVG_SIMPLE_XML_PARSER_H_
-
-#include "tvgSvgLoaderCommon.h"
 
 #define NUMBER_OF_XML_ENTITIES 9
 const char* const xmlEntity[] = {"&#10;", "&quot;", "&nbsp;", "&apos;", "&amp;", "&lt;", "&gt;", "&#035;", "&#039;"};
@@ -62,3 +84,5 @@ const char* simpleXmlNodeTypeToString(SvgNodeType type);
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

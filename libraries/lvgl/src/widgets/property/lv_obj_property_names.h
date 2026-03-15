@@ -1,12 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_property_names.h
+ *
+ * @brief   Lv Obj Property Names
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_obj_property_names.h
- * GENERATED FILE, DO NOT EDIT IT!
+ * @defgroup lv_obj_property_names
+ * @brief    lv_obj_property_names Firmware
+ * @{
  */
+
 #ifndef LV_OBJ_PROPERTY_NAMES_H
 #define LV_OBJ_PROPERTY_NAMES_H
-
-#include "../../misc/lv_types.h"
 
 #if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
 
@@ -37,3 +54,5 @@
     extern const lv_property_name_t lv_textarea_property_names[14];
 #endif
 #endif
+
+/** @} */

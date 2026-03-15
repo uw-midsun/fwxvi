@@ -1,18 +1,27 @@
-/**
- * @file lv_fs_frogfs.c
+/************************************************************************************************
+ * @file    lv_fs_frogfs.c
  *
- */
+ * @brief   Lv Fs Frogfs
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../misc/lv_ll.h"
+#include "../frogfs/include/frogfs/frogfs.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../../lvgl.h"
 #if LV_USE_FS_FROGFS
-
-#include "../frogfs/include/frogfs/frogfs.h"
-#include "../../core/lv_global.h"
-#include "../../misc/lv_ll.h"
 
 #if !LV_FS_IS_VALID_LETTER(LV_FS_FROGFS_LETTER)
     #error "Invalid drive letter"

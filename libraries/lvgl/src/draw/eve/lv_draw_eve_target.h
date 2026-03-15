@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_eve_target.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve_target.h
  *
+ * @brief   Lv Draw Eve Target
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+#include LV_STDBOOL_INCLUDE
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_draw_eve_target
+ * @brief    lv_draw_eve_target Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_EVE_TARGET_H
@@ -14,12 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_DRAW_EVE
-
-#include "../../misc/lv_types.h"
-#include LV_STDBOOL_INCLUDE
-#include LV_STDINT_INCLUDE
 
 typedef struct {
     uint16_t hor_res;          /**< active display width */
@@ -77,3 +94,5 @@ typedef void (*lv_draw_eve_operation_cb_t)(lv_display_t * disp, lv_draw_eve_oper
 #endif
 
 #endif /*LV_DRAW_EVE_TARGET_H*/
+
+/** @} */

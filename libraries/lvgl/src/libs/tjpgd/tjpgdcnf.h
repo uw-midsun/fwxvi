@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tjpgdcnf.h
+ *
+ * @brief   Tjpgdcnf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tjpgdcnf
+ * @brief    tjpgdcnf Firmware
+ * @{
+ */
+
 /*----------------------------------------------*/
 /* TJpgDec System Configurations R0.03          */
 /*----------------------------------------------*/
@@ -31,3 +54,5 @@
 /  2: + Table conversion for huffman decoding (wants 6 << HUFF_BIT bytes of RAM)
 */
 
+
+/** @} */

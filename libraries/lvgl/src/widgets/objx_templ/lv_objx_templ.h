@@ -1,6 +1,26 @@
-/**
- * @file lv_objx_templ.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_objx_templ.h
  *
+ * @brief   Lv Objx Templ
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_objx_templ
+ * @brief    lv_objx_templ Firmware
+ * @{
  */
 
 /**
@@ -20,11 +40,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
 
 #if LV_USE_TEMPL != 0
-
-#include "../core/lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -79,3 +96,5 @@ lv_obj_t * lv_templ_create(lv_obj_t * parent);
 #endif
 
 #endif /*LV_OBJX_TEMPL_H*/
+
+/** @} */

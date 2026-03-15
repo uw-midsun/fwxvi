@@ -1,54 +1,17 @@
-/**
- * MIT License
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_nema_gfx_utils.h
  *
- * -----------------------------------------------------------------------------
- * Copyright (c) 2008-24 Think Silicon Single Member PC
- * -----------------------------------------------------------------------------
+ * @brief   Lv Draw Nema Gfx Utils
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice (including the next paragraph)
- * shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * @file lv_draw_nema_gfx_utils.h
- *
- */
+/* Standard library Headers */
 
-#ifndef LV_DRAW_NEMA_GFX_UTILS_H
-#define LV_DRAW_NEMA_GFX_UTILS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/*********************
- *      INCLUDES
- *********************/
-#include "../../lv_conf_internal.h"
-
-#if LV_USE_NEMA_GFX
-#include "../sw/lv_draw_sw.h"
-
-#if LV_USE_NEMA_LIB == LV_NEMA_LIB_NONE
-#warning since v9.5, LV_USE_NEMA_LIB should be specified in lv_conf.h. LV_NEMA_LIB_M33_REVC will be used by default.
-#endif
-
-#if LV_USE_NEMA_LIB == LV_NEMA_LIB_NONE || LV_USE_NEMA_LIB == LV_NEMA_LIB_M33_REVC || LV_USE_NEMA_LIB == LV_NEMA_LIB_M33_NEMAPVG
+/* Inter-component Headers */
 #include "../../../libs/nema_gfx/include/cortex_m33/build_version.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_blender.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_cmdlist.h"
@@ -68,15 +31,14 @@ extern "C" {
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_transitions.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_utils.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_version.h"
+#include "../../../libs/nema_gfx/include/cortex_m33/nema_vg.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_context.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_font.h"
-#include "../../../libs/nema_gfx/include/cortex_m33/nema_vg.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_paint.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_path.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_tsvg.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/nema_vg_version.h"
 #include "../../../libs/nema_gfx/include/cortex_m33/tsi_malloc.h"
-#elif LV_USE_NEMA_LIB == LV_NEMA_LIB_M55 || LV_USE_NEMA_LIB == LV_NEMA_LIB_M7
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/build_version.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_blender.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_cmdlist.h"
@@ -95,14 +57,44 @@ extern "C" {
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_sys_defs.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_transitions.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_version.h"
+#include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_context.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_font.h"
-#include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_paint.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_path.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_tsvg.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/nema_vg_version.h"
 #include "../../../libs/nema_gfx/include/cortex_m55_m7/tsi_malloc.h"
+#include "../../lv_conf_internal.h"
+#include "../sw/lv_draw_sw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_nema_gfx_utils
+ * @brief    lv_draw_nema_gfx_utils Firmware
+ * @{
+ */
+
+#ifndef LV_DRAW_NEMA_GFX_UTILS_H
+#define LV_DRAW_NEMA_GFX_UTILS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_NEMA_GFX
+
+#if LV_USE_NEMA_LIB == LV_NEMA_LIB_NONE
+#warning since v9.5, LV_USE_NEMA_LIB should be specified in lv_conf.h. LV_NEMA_LIB_M33_REVC will be used by default.
+#endif
+
+#if LV_USE_NEMA_LIB == LV_NEMA_LIB_NONE || LV_USE_NEMA_LIB == LV_NEMA_LIB_M33_REVC || LV_USE_NEMA_LIB == LV_NEMA_LIB_M33_NEMAPVG
+#elif LV_USE_NEMA_LIB == LV_NEMA_LIB_M55 || LV_USE_NEMA_LIB == LV_NEMA_LIB_M7
 #endif
 
 /*********************
@@ -161,7 +153,6 @@ uint32_t lv_nemagfx_cf_to_nema(lv_color_format_t cf);
  */
 uint32_t lv_nemagfx_blending_mode(lv_blend_mode_t lv_blend_mode);
 
-
 /**
  * Get NemaGFX blending mode
  *
@@ -185,3 +176,5 @@ void lv_nemagfx_grad_set(NEMA_VG_GRAD_HANDLE gradient, lv_grad_dsc_t lv_grad, lv
 #endif
 
 #endif /*LV_DRAW_NEMA_GFX_UTILS_H*/
+
+/** @} */

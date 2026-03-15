@@ -1,3 +1,22 @@
+/************************************************************************************************
+ * @file    qrcodegen.c
+ *
+ * @brief   Qrcodegen
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../misc/lv_assert.h"
+#include "qrcodegen.h"
+
+/* Intra-component Headers */
 /*
  * QR Code generator library (C)
  *
@@ -21,20 +40,13 @@
  *   Software.
  */
 
-#include "qrcodegen.h"
-#include "../../misc/lv_assert.h"
-
 #if LV_USE_QRCODE
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
 
 #ifndef QRCODEGEN_TEST
     #define testable static  // Keep functions private
 #else
     #define testable  // Expose private functions
 #endif
-
 
 /*---- Forward declarations for private functions ----*/
 
@@ -86,8 +98,6 @@ testable int calcSegmentBitLength(enum qrcodegen_Mode mode, size_t numChars);
 testable int getTotalBits(const struct qrcodegen_Segment segs[], size_t len, int version);
 static int numCharCountBits(enum qrcodegen_Mode mode, int version);
 
-
-
 /*---- Private tables of constants ----*/
 
 // The set of all legal characters in alphanumeric mode, where each character
@@ -121,8 +131,6 @@ static const int PENALTY_N1 =  3;
 static const int PENALTY_N2 =  3;
 static const int PENALTY_N3 = 40;
 static const int PENALTY_N4 = 10;
-
-
 
 /*---- High-level QR Code encoding functions ----*/
 
@@ -166,7 +174,6 @@ fail:
     return false;
 }
 
-
 // Public function - see documentation comment in header file.
 bool qrcodegen_encodeBinary(uint8_t dataAndTemp[], size_t dataLen, uint8_t qrcode[],
                             enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl)
@@ -184,7 +191,6 @@ bool qrcodegen_encodeBinary(uint8_t dataAndTemp[], size_t dataLen, uint8_t qrcod
     return qrcodegen_encodeSegmentsAdvanced(&seg, 1, ecl, minVersion, maxVersion, mask, boostEcl, dataAndTemp, qrcode);
 }
 
-
 // Appends the given number of low-order bits of the given value to the given byte-based
 // bit buffer, increasing the bit length. Requires 0 <= numBits <= 16 and val < 2^numBits.
 testable void appendBitsToBuffer(unsigned int val, int numBits, uint8_t buffer[], int * bitLen)
@@ -193,8 +199,6 @@ testable void appendBitsToBuffer(unsigned int val, int numBits, uint8_t buffer[]
     for(int i = numBits - 1; i >= 0; i--, (*bitLen)++)
         buffer[*bitLen >> 3] |= ((val >> i) & 1) << (7 - (*bitLen & 7));
 }
-
-
 
 /*---- Low-level QR Code encoding functions ----*/
 
@@ -205,7 +209,6 @@ bool qrcodegen_encodeSegments(const struct qrcodegen_Segment segs[], size_t len,
     return qrcodegen_encodeSegmentsAdvanced(segs, len, ecl,
                                             qrcodegen_VERSION_MIN, qrcodegen_VERSION_MAX, -1, true, tempBuffer, qrcode);
 }
-
 
 // Public function - see documentation comment in header file.
 bool qrcodegen_encodeSegmentsAdvanced(const struct qrcodegen_Segment segs[], size_t len, enum qrcodegen_Ecc ecl,
@@ -289,8 +292,6 @@ bool qrcodegen_encodeSegmentsAdvanced(const struct qrcodegen_Segment segs[], siz
     return true;
 }
 
-
-
 /*---- Error correction code generation functions ----*/
 
 // Appends error correction bytes to each block of the given data array, then interleaves
@@ -328,7 +329,6 @@ testable void addEccAndInterleave(uint8_t data[], int version, enum qrcodegen_Ec
     }
 }
 
-
 // Returns the number of 8-bit codewords that can be used for storing data (not ECC),
 // for the given version number and error correction level. The result is in the range [9, 2956].
 testable int getNumDataCodewords(int version, enum qrcodegen_Ecc ecl)
@@ -339,7 +339,6 @@ testable int getNumDataCodewords(int version, enum qrcodegen_Ecc ecl)
            - ECC_CODEWORDS_PER_BLOCK    [e][v]
            * NUM_ERROR_CORRECTION_BLOCKS[e][v];
 }
-
 
 // Returns the number of data bits that can be stored in a QR Code of the given version number, after
 // all function modules are excluded. This includes remainder bits, so it might not be a multiple of 8.
@@ -356,8 +355,6 @@ testable int getNumRawDataModules(int ver)
     }
     return result;
 }
-
-
 
 /*---- Reed-Solomon ECC generator functions ----*/
 
@@ -384,7 +381,6 @@ testable void calcReedSolomonGenerator(int degree, uint8_t result[])
     }
 }
 
-
 // Calculates the remainder of the polynomial data[0 : dataLen] when divided by the generator[0 : degree], where all
 // polynomials are in big endian and the generator has an implicit leading 1 term, storing the result in result[0 : degree].
 testable void calcReedSolomonRemainder(const uint8_t data[], int dataLen,
@@ -405,7 +401,6 @@ testable void calcReedSolomonRemainder(const uint8_t data[], int dataLen,
 
 #undef qrcodegen_REED_SOLOMON_DEGREE_MAX
 
-
 // Returns the product of the two given field elements modulo GF(2^8/0x11D).
 // All inputs are valid. This could be implemented as a 256*256 lookup table.
 testable uint8_t finiteFieldMultiply(uint8_t x, uint8_t y)
@@ -418,8 +413,6 @@ testable uint8_t finiteFieldMultiply(uint8_t x, uint8_t y)
     }
     return z;
 }
-
-
 
 /*---- Drawing function modules ----*/
 
@@ -458,7 +451,6 @@ testable void initializeFunctionModules(int version, uint8_t qrcode[])
         fillRectangle(0, qrsize - 11, 6, 3, qrcode);
     }
 }
-
 
 // Draws white function modules and possibly some black modules onto the given QR Code, without changing
 // non-function modules. This does not draw the format bits. This requires all function modules to be previously
@@ -521,7 +513,6 @@ static void drawWhiteFunctionModules(uint8_t qrcode[], int version)
     }
 }
 
-
 // Draws two copies of the format bits (with its own error correction code) based
 // on the given mask and error correction level. This always draws all modules of
 // the format bits, unlike drawWhiteFunctionModules() which might skip black modules.
@@ -555,7 +546,6 @@ static void drawFormatBits(enum qrcodegen_Ecc ecl, enum qrcodegen_Mask mask, uin
     setModule(qrcode, 8, qrsize - 8, true);  // Always black
 }
 
-
 // Calculates and stores an ascending list of positions of alignment patterns
 // for this version number, returning the length of the list (in the range [0,7]).
 // Each position is in the range [0,177), and are used on both the x and y axes.
@@ -573,7 +563,6 @@ testable int getAlignmentPatternPositions(int version, uint8_t result[7])
     return numAlign;
 }
 
-
 // Sets every pixel in the range [left : left + width] * [top : top + height] to black.
 static void fillRectangle(int left, int top, int width, int height, uint8_t qrcode[])
 {
@@ -582,8 +571,6 @@ static void fillRectangle(int left, int top, int width, int height, uint8_t qrco
             setModule(qrcode, left + dx, top + dy, true);
     }
 }
-
-
 
 /*---- Drawing data modules and masking ----*/
 
@@ -614,7 +601,6 @@ static void drawCodewords(const uint8_t data[], int dataLen, uint8_t qrcode[])
     }
     LV_ASSERT(i == dataLen * 8);
 }
-
 
 // XORs the codeword modules in this QR Code with the given mask pattern.
 // The function modules must be marked and the codeword bits must be drawn
@@ -664,7 +650,6 @@ static void applyMask(const uint8_t functionModules[], uint8_t qrcode[], enum qr
         }
     }
 }
-
 
 // Calculates and returns the penalty score based on state of the given QR Code's current modules.
 // This is used by the automatic mask choice algorithm to find the mask pattern that yields the lowest score.
@@ -754,7 +739,6 @@ static long getPenaltyScore(const uint8_t qrcode[])
     return result;
 }
 
-
 // Inserts the given value to the front of the given array, which shifts over the
 // existing values and deletes the last value. A helper function for getPenaltyScore().
 static void addRunToHistory(unsigned char run, unsigned char history[7])
@@ -762,7 +746,6 @@ static void addRunToHistory(unsigned char run, unsigned char history[7])
     memmove(&history[1], &history[0], 6 * sizeof(history[0]));
     history[0] = run;
 }
-
 
 // Tests whether the given run history has the pattern of ratio 1:1:3:1:1 in the middle, and
 // surrounded by at least 4 on either or both ends. A helper function for getPenaltyScore().
@@ -776,8 +759,6 @@ static bool hasFinderLikePattern(const unsigned char runHistory[7])
            && runHistory[3] == n * 3 && (runHistory[0] >= n * 4 || runHistory[6] >= n * 4);
 }
 
-
-
 /*---- Basic QR Code information ----*/
 
 // Public function - see documentation comment in header file.
@@ -790,7 +771,6 @@ int qrcodegen_getSize(const uint8_t qrcode[])
     return result;
 }
 
-
 // Public function - see documentation comment in header file.
 bool qrcodegen_getModule(const uint8_t qrcode[], int x, int y)
 {
@@ -798,7 +778,6 @@ bool qrcodegen_getModule(const uint8_t qrcode[], int x, int y)
     int qrsize = qrcode[0];
     return (0 <= x && x < qrsize && 0 <= y && y < qrsize) && getModule(qrcode, x, y);
 }
-
 
 // Gets the module at the given coordinates, which must be in bounds.
 testable bool getModule(const uint8_t qrcode[], int x, int y)
@@ -808,7 +787,6 @@ testable bool getModule(const uint8_t qrcode[], int x, int y)
     int index = y * qrsize + x;
     return getBit(qrcode[(index >> 3) + 1], index & 7);
 }
-
 
 // Sets the module at the given coordinates, which must be in bounds.
 testable void setModule(uint8_t qrcode[], int x, int y, bool isBlack)
@@ -824,7 +802,6 @@ testable void setModule(uint8_t qrcode[], int x, int y, bool isBlack)
         qrcode[byteIndex] &= (1 << bitIndex) ^ 0xFF;
 }
 
-
 // Sets the module at the given coordinates, doing nothing if out of bounds.
 testable void setModuleBounded(uint8_t qrcode[], int x, int y, bool isBlack)
 {
@@ -833,14 +810,11 @@ testable void setModuleBounded(uint8_t qrcode[], int x, int y, bool isBlack)
         setModule(qrcode, x, y, isBlack);
 }
 
-
 // Returns true iff the i'th bit of x is set to 1. Requires x >= 0 and 0 <= i <= 14.
 static bool getBit(int x, int i)
 {
     return ((x >> i) & 1) != 0;
 }
-
-
 
 /*---- Segment handling ----*/
 
@@ -855,7 +829,6 @@ bool qrcodegen_isAlphanumeric(const char * text)
     return true;
 }
 
-
 // Public function - see documentation comment in header file.
 bool qrcodegen_isNumeric(const char * text)
 {
@@ -867,7 +840,6 @@ bool qrcodegen_isNumeric(const char * text)
     return true;
 }
 
-
 // Public function - see documentation comment in header file.
 size_t qrcodegen_calcSegmentBufferSize(enum qrcodegen_Mode mode, size_t numChars)
 {
@@ -877,7 +849,6 @@ size_t qrcodegen_calcSegmentBufferSize(enum qrcodegen_Mode mode, size_t numChars
     LV_ASSERT(0 <= temp && temp <= INT16_MAX);
     return ((size_t)temp + 7) / 8;
 }
-
 
 // Returns the number of data bits needed to represent a segment
 // containing the given number of characters using the given mode. Notes:
@@ -913,7 +884,6 @@ testable int calcSegmentBitLength(enum qrcodegen_Mode mode, size_t numChars)
     return (int)result;
 }
 
-
 // Public function - see documentation comment in header file.
 struct qrcodegen_Segment qrcodegen_makeBytes(const uint8_t data[], size_t len, uint8_t buf[])
 {
@@ -928,7 +898,6 @@ struct qrcodegen_Segment qrcodegen_makeBytes(const uint8_t data[], size_t len, u
     result.data = buf;
     return result;
 }
-
 
 // Public function - see documentation comment in header file.
 struct qrcodegen_Segment qrcodegen_makeNumeric(const char * digits, uint8_t buf[])
@@ -964,7 +933,6 @@ struct qrcodegen_Segment qrcodegen_makeNumeric(const char * digits, uint8_t buf[
     return result;
 }
 
-
 // Public function - see documentation comment in header file.
 struct qrcodegen_Segment qrcodegen_makeAlphanumeric(const char * text, uint8_t buf[])
 {
@@ -999,7 +967,6 @@ struct qrcodegen_Segment qrcodegen_makeAlphanumeric(const char * text, uint8_t b
     return result;
 }
 
-
 // Public function - see documentation comment in header file.
 struct qrcodegen_Segment qrcodegen_makeEci(long assignVal, uint8_t buf[])
 {
@@ -1032,7 +999,6 @@ struct qrcodegen_Segment qrcodegen_makeEci(long assignVal, uint8_t buf[])
     return result;
 }
 
-
 // Calculates the number of bits needed to encode the given segments at the given version.
 // Returns a non-negative number if successful. Otherwise returns -1 if a segment has too
 // many characters to fit its length field, or the total bits exceeds INT16_MAX.
@@ -1056,7 +1022,6 @@ testable int getTotalBits(const struct qrcodegen_Segment segs[], size_t len, int
     LV_ASSERT(0 <= result && result <= INT16_MAX);
     return (int)result;
 }
-
 
 // Returns the bit width of the character count field for a segment in the given mode
 // in a QR Code at the given version number. The result is in the range [0, 16].

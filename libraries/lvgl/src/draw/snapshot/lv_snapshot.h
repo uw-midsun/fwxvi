@@ -1,6 +1,27 @@
-/**
- * @file lv_snapshot.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_snapshot.h
  *
+ * @brief   Lv Snapshot
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_snapshot
+ * @brief    lv_snapshot Firmware
+ * @{
  */
 
 #ifndef LV_SNAPSHOT_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_SNAPSHOT
-
-#include <stdint.h>
-#include <stddef.h>
 
 /*********************
  *      DEFINES
@@ -99,3 +116,5 @@ lv_result_t lv_snapshot_take_to_buf(lv_obj_t * obj, lv_color_format_t cf, lv_ima
 #endif
 
 #endif
+
+/** @} */

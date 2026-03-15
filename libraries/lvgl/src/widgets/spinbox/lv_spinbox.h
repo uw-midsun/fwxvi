@@ -1,6 +1,25 @@
-/**
- * @file lv_spinbox.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_spinbox.h
  *
+ * @brief   Lv Spinbox
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../textarea/lv_textarea.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_spinbox
+ * @brief    lv_spinbox Firmware
+ * @{
  */
 
 #ifndef LV_SPINBOX_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../textarea/lv_textarea.h"
 
 #if LV_USE_SPINBOX
 
@@ -229,8 +247,6 @@ void lv_spinbox_increment(lv_obj_t * obj);
  */
 void lv_spinbox_decrement(lv_obj_t * obj);
 
-
-
 #if LV_USE_OBSERVER
 /**
  * Bind an integer subject to a Spinbox's value.
@@ -251,3 +267,5 @@ lv_observer_t * lv_spinbox_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 } /*extern "C"*/
 #endif
 #endif /*LV_SPINBOX_H*/
+
+/** @} */

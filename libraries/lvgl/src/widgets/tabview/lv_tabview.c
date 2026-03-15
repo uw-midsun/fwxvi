@@ -1,19 +1,28 @@
-/**
- * @file lv_tabview.c
+/************************************************************************************************
+ * @file    lv_tabview.c
  *
- */
+ * @brief   Lv Tabview
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../indev/lv_indev_private.h"
+#include "../../lvgl.h"
+#include "../../misc/lv_assert.h"
+#include "lv_tabview_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_tabview_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../lvgl.h"
 
 #if LV_USE_TABVIEW
-
-#include "../../misc/lv_assert.h"
-#include "../../indev/lv_indev_private.h"
 
 /*********************
  *      DEFINES

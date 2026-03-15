@@ -1,8 +1,21 @@
-#include "lv_draw_dave2d.h"
-#if LV_USE_DRAW_DAVE2D
+/************************************************************************************************
+ * @file    lv_draw_dave2d_label.c
+ *
+ * @brief   Lv Draw Dave2D Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "../../lv_draw_label_private.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_label_private.h"
+#include "lv_draw_dave2d.h"
+
+/* Intra-component Headers */
+#if LV_USE_DRAW_DAVE2D
 
 static void lv_draw_dave2d_draw_letter_cb(lv_draw_task_t * t, lv_draw_glyph_dsc_t * glyph_draw_dsc,
                                           lv_draw_fill_dsc_t * fill_draw_dsc, const lv_area_t * fill_area);

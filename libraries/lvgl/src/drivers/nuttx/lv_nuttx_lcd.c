@@ -1,33 +1,40 @@
-/**
- * @file lv_nuttx_lcd.c
+/************************************************************************************************
+ * @file    lv_nuttx_lcd.c
  *
- */
+ * @brief   Lv Nuttx Lcd
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <debug.h>
+    #include <nuttx/lcd/lcd_dev.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_lcd_dev.h"
+#include "../../../lvgl.h"
+#include "../../lvgl_private.h"
+#include "lv_nuttx_lcd.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nuttx_lcd.h"
-
 #if LV_USE_NUTTX
 
 #if LV_USE_NUTTX_LCD
 
-#include <sys/ioctl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-
-#include "../../../lvgl.h"
-#include "../../lvgl_private.h"
-
 #ifdef __NuttX__
-    #include <debug.h>
-    #include <nuttx/lcd/lcd_dev.h>
 #else
-    #include "mock/nuttx_lcd_dev.h"
 #endif
 
 /*********************

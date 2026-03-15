@@ -1,6 +1,26 @@
-/**
- * @file lv_image_decoder_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_image_decoder_private.h
  *
+ * @brief   Lv Image Decoder Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/cache/lv_cache.h"
+#include "lv_image_decoder.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_image_decoder_private
+ * @brief    lv_image_decoder_private Firmware
+ * @{
  */
 
 #ifndef LV_IMAGE_DECODER_PRIVATE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_image_decoder.h"
-#include "../misc/cache/lv_cache.h"
 
 /*********************
  *      DEFINES
@@ -116,7 +134,6 @@ struct _lv_image_decoder_dsc_t {
     void * user_data;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -142,3 +159,5 @@ void lv_image_decoder_deinit(void);
 #endif
 
 #endif /*LV_IMAGE_DECODER_PRIVATE_H*/
+
+/** @} */

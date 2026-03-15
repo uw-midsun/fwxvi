@@ -1,7 +1,20 @@
-/**
- * @file lv_eve.c
+/************************************************************************************************
+ * @file    lv_eve.c
  *
- */
+ * @brief   Lv Eve
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_eve.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
+#include "../../libs/FT800-FT813/EVE_commands.h"
 
 /*  Created on: 8 jun 2023
  *      Author: juanj
@@ -12,11 +25,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve.h"
 #if LV_USE_DRAW_EVE
-#include "lv_eve.h"
-#include "../../libs/FT800-FT813/EVE_commands.h"
-
 
 /*********************
  *      DEFINES
@@ -76,7 +85,6 @@ void lv_eve_restore_context(void)
     EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
     ct = ct_temp;
 }
-
 
 void lv_eve_primitive(uint8_t context)
 {
@@ -194,7 +202,6 @@ void lv_eve_draw_circle_simple(int16_t coord_x1, int16_t coord_y1, uint16_t radi
     lv_eve_vertex_2f(coord_x1, coord_y1);
 }
 
-
 void lv_eve_draw_rect_simple(int16_t coord_x1, int16_t coord_y1, int16_t coord_x2, int16_t coord_y2, uint16_t radius)
 {
     lv_eve_primitive(LV_EVE_PRIMITIVE_RECTS);
@@ -210,7 +217,6 @@ void lv_eve_mask_round(int16_t coord_x1, int16_t coord_y1, int16_t coord_x2, int
 {
     lv_eve_color_mask(0, 0, 0, 1);
     EVE_cmd_dl_burst(CLEAR(1, 1, 1));
-
 
     lv_eve_draw_rect_simple(coord_x1, coord_y1, coord_x2, coord_y2, radius);
     lv_eve_color_mask(1, 1, 1, 0);
@@ -255,8 +261,6 @@ void lv_eve_bitmap_layout(uint8_t format, uint16_t linestride, uint16_t height)
         st.bitmap_layout_h = bitmap_layout_h;
     }
 }
-
-
 
 /**********************
  *   STATIC FUNCTIONS

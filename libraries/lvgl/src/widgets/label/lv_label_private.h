@@ -1,6 +1,27 @@
-/**
- * @file lv_label_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_label_private.h
  *
+ * @brief   Lv Label Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "../../draw/lv_draw_label_private.h"
+#include "lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_label_private
+ * @brief    lv_label_private Firmware
+ * @{
  */
 
 #ifndef LV_LABEL_PRIVATE_H
@@ -13,10 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../draw/lv_draw_label_private.h"
-#include "../../core/lv_obj_private.h"
-#include "lv_label.h"
 
 #if LV_USE_LABEL != 0
 
@@ -58,7 +75,6 @@ struct _lv_label_t {
     lv_point_t text_size;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -74,3 +90,5 @@ struct _lv_label_t {
 #endif
 
 #endif /*LV_LABEL_PRIVATE_H*/
+
+/** @} */

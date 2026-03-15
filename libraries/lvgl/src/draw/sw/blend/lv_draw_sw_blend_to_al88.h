@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_sw_blend_to_al88.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_al88.h
  *
+ * @brief   Lv Draw Sw Blend To Al88
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_sw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_blend_to_al88
+ * @brief    lv_draw_sw_blend_to_al88 Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_BLEND_TO_AL88_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw_sw.h"
 #if LV_USE_DRAW_SW
 
 /*********************
@@ -43,3 +61,5 @@ void /* LV_ATTRIBUTE_FAST_MEM */ lv_draw_sw_blend_image_to_al88(lv_draw_sw_blend
 #endif
 
 #endif /*LV_DRAW_SW_BLEND_TO_AL88_H*/
+
+/** @} */

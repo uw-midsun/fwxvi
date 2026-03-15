@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgPaint.h
+ *
+ * @brief   Tvgpaint
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgMath.h"
+#include "tvgRender.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgPaint
+ * @brief    tvgPaint Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,14 +46,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_PAINT_H_
 #define _TVG_PAINT_H_
-
-#include "tvgRender.h"
-#include "tvgMath.h"
 
 namespace tvg
 {
@@ -184,3 +206,5 @@ namespace tvg
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

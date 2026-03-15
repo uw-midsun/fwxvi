@@ -1,19 +1,28 @@
-/**
- * @file lv_libpng.c
+/************************************************************************************************
+ * @file    lv_libpng.c
  *
- */
+ * @brief   Lv Libpng
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <png.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lv_libpng.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_LIBPNG
-
-#include "lv_libpng.h"
-#include <png.h>
-#include <string.h>
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

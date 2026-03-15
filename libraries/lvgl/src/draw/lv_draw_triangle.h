@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_triangle.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_triangle.h
  *
+ * @brief   Lv Draw Triangle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_rect.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_triangle
+ * @brief    lv_draw_triangle Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_TRIANGLE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_rect.h"
 
 /*********************
  *      DEFINES
@@ -73,3 +91,5 @@ void lv_draw_triangle(lv_layer_t * layer, const lv_draw_triangle_dsc_t * draw_ds
 #endif
 
 #endif /*LV_DRAW_TRIANGLE_H*/
+
+/** @} */

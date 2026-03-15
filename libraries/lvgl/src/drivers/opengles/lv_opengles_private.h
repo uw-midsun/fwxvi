@@ -1,6 +1,31 @@
-/**
- * @file lv_opengles_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_private.h
  *
+ * @brief   Lv Opengles Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <GLFW/glfw3.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_color.h"
+#include "glad/include/glad/egl.h"
+#include "glad/include/glad/gl.h"
+#include "glad/include/glad/gles2.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_private
+ * @brief    lv_opengles_private Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_PRIVATE_H
@@ -14,26 +39,17 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_OPENGLES
-
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_color.h"
 
 #if !LV_USE_MATRIX
 #error "LV_USE_OPENGLES requires LV_USE_MATRIX"
 #endif
 
 #if LV_USE_EGL
-#include "glad/include/glad/gles2.h"
-#include "glad/include/glad/egl.h"
 #else
-#include "glad/include/glad/gl.h"
 #endif /*LV_USE_EGL*/
 
 #if LV_USE_GLFW
-#include <GLFW/glfw3.h>
 #endif
 
 /*********************
@@ -181,3 +197,5 @@ void lv_opengles_render_display(lv_display_t * display, const lv_opengles_render
 #endif
 
 #endif /*LV_OPENGLES_PRIVATE_H*/
+
+/** @} */

@@ -1,6 +1,25 @@
-/**
- * @file lv_rle.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rle.h
  *
+ * @brief   Lv Rle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rle
+ * @brief    lv_rle Firmware
+ * @{
  */
 
 #ifndef LV_RLE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_RLE
 
@@ -44,3 +62,5 @@ uint32_t lv_rle_decompress(const uint8_t * input,
 #endif
 
 #endif /*LV_RLE_H*/
+
+/** @} */

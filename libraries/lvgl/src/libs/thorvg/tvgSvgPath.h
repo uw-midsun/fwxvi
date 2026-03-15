@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSvgPath.h
+ *
+ * @brief   Tvgsvgpath
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSvgPath
+ * @brief    tvgSvgPath Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SVG_PATH_H_
 #define _TVG_SVG_PATH_H_
-
-#include "tvgCommon.h"
 
 bool svgPathToShape(const char* svgPath, Shape* shape);
 
@@ -34,3 +56,5 @@ bool svgPathToShape(const char* svgPath, Shape* shape);
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

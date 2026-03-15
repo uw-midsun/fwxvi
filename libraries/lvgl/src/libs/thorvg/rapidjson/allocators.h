@@ -1,3 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    allocators.h
+ *
+ * @brief   Allocators
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <limits>
+#include <memory>
+#include <type_traits>
+
+/* Inter-component Headers */
+#include "../../../misc/lv_assert.h"
+#include "internal/meta.h"
+#include "rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup allocators
+ * @brief    allocators Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,17 +44,8 @@
 #ifndef RAPIDJSON_ALLOCATORS_H_
 #define RAPIDJSON_ALLOCATORS_H_
 
-#include "rapidjson.h"
-#include "internal/meta.h"
-
-#include <memory>
-#include <limits>
-
 #if RAPIDJSON_HAS_CXX11
-#include <type_traits>
 #endif
-
-#include "../../../misc/lv_assert.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -62,7 +82,6 @@ concept Allocator {
 \endcode
 */
 
-
 /*! \def RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY
     \ingroup RAPIDJSON_CONFIG
     \brief User-defined kDefaultChunkCapacity definition.
@@ -73,7 +92,6 @@ concept Allocator {
 #ifndef RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY
 #define RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY (64 * 1024)
 #endif
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // CrtAllocator
@@ -698,3 +716,5 @@ RAPIDJSON_DIAG_POP
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_ENCODINGS_H_
+
+/** @} */

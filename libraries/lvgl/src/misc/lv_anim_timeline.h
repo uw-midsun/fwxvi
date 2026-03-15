@@ -1,6 +1,25 @@
-/**
- * @file lv_anim_timeline.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_anim_timeline.h
  *
+ * @brief   Lv Anim Timeline
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_anim.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_anim_timeline
+ * @brief    lv_anim_timeline Firmware
+ * @{
  */
 
 #ifndef LV_ANIM_TIMELINE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_anim.h"
 
 /*********************
  *      DEFINES
@@ -32,7 +50,6 @@ typedef struct _lv_anim_timeline_dsc_t {
     uint8_t is_started : 1;
     uint8_t is_completed : 1;
 } lv_anim_timeline_dsc_t;
-
 
 /**********************
 * GLOBAL PROTOTYPES
@@ -177,3 +194,5 @@ void lv_anim_timeline_merge(lv_anim_timeline_t * dest, const lv_anim_timeline_t 
 #endif
 
 #endif /*LV_ANIM_TIMELINE_H*/
+
+/** @} */

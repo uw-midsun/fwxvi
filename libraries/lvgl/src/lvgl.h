@@ -1,6 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lvgl.h
+ *
+ * @brief   Lvgl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lvgl.h"
+#include "lv_conf_internal.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lvgl.h
- * This file exists only to be compatible with Arduino's library structure
+ * @defgroup lvgl
+ * @brief    lvgl Firmware
+ * @{
  */
 
 #ifndef LVGL_SRC_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lvgl.h"
-#include "lv_conf_internal.h"
 
 /*********************
  *      DEFINES
@@ -37,3 +55,5 @@ extern "C" {
 #endif
 
 #endif /* LVGL_SRC_H */
+
+/** @} */

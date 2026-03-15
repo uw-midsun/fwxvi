@@ -1,6 +1,25 @@
-/**
- * @file lv_area_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_area_private.h
  *
+ * @brief   Lv Area Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_area.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_area_private
+ * @brief    lv_area_private Firmware
+ * @{
  */
 
 #ifndef LV_AREA_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_area.h"
 
 /*********************
  *      DEFINES
@@ -113,3 +130,5 @@ bool lv_area_is_equal(const lv_area_t * a, const lv_area_t * b);
 #endif
 
 #endif /*LV_AREA_PRIVATE_H*/
+
+/** @} */

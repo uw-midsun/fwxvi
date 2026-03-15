@@ -1,26 +1,34 @@
-/**
- * @file lv_draw_vg_lite_vector.c
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_vector.c
  *
- */
+ * @brief   Lv Draw Vg Lite Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../lv_draw_vector_private.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_draw_vg_lite.h"
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_grad.h"
+#include "lv_vg_lite_path.h"
+#include "lv_vg_lite_pending.h"
+#include "lv_vg_lite_stroke.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_vg_lite.h"
-
 #if LV_USE_DRAW_VG_LITE && LV_USE_VECTOR_GRAPHIC
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_path.h"
-#include "lv_vg_lite_pending.h"
-#include "lv_vg_lite_utils.h"
-#include "lv_vg_lite_grad.h"
-#include "lv_vg_lite_stroke.h"
-#include "../lv_image_decoder_private.h"
-#include "../lv_draw_vector_private.h"
-#include <float.h>
-#include <math.h>
 
 /*********************
  *      DEFINES

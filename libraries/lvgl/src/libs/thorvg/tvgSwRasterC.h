@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSwRasterC.h
+ *
+ * @brief   Tvgswrasterc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSwRasterC
+ * @brief    tvgSwRasterC Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,7 +44,6 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 template<typename PIXEL_T>
@@ -62,7 +85,6 @@ static void inline cRasterPixels(PIXEL_T* dst, PIXEL_T val, uint32_t offset, int
     while (len--) *dst++ = val;
 }
 
-
 static bool inline cRasterTranslucentRle(SwSurface* surface, const SwRle* rle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     auto span = rle->spans;
@@ -96,7 +118,6 @@ static bool inline cRasterTranslucentRle(SwSurface* surface, const SwRle* rle, u
     return true;
 }
 
-
 static bool inline cRasterTranslucentRect(SwSurface* surface, const SwBBox& region, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     auto h = static_cast<uint32_t>(region.max.y - region.min.y);
@@ -126,7 +147,6 @@ static bool inline cRasterTranslucentRect(SwSurface* surface, const SwBBox& regi
     }
     return true;
 }
-
 
 static bool inline cRasterABGRtoARGB(RenderSurface* surface)
 {
@@ -158,7 +178,6 @@ static bool inline cRasterABGRtoARGB(RenderSurface* surface)
     return true;
 }
 
-
 static bool inline cRasterARGBtoABGR(RenderSurface* surface)
 {
     //exactly same with ABGRtoARGB
@@ -167,3 +186,5 @@ static bool inline cRasterARGBtoABGR(RenderSurface* surface)
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

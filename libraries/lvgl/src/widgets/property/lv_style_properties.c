@@ -1,13 +1,20 @@
+/************************************************************************************************
+ * @file    lv_style_properties.c
+ *
+ * @brief   Lv Style Properties
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_style_properties.c
- */
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "lv_style_properties.h"
 
-#if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
+/* Intra-component Headers */
 
+#if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
 
 /**
  * Style property names, name must be in order.

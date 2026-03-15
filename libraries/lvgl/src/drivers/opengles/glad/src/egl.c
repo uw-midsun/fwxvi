@@ -1,13 +1,27 @@
+/************************************************************************************************
+ * @file    egl.c
+ *
+ * @brief   Egl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_opengles_private.h"
+#include "../include/glad/egl.h"
+
+/* Intra-component Headers */
 /**
  * SPDX-License-Identifier: (WTFPL OR CC0-1.0) AND Apache-2.0
  */
 
-#include "../../lv_opengles_private.h"
 #if LV_USE_EGL
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../include/glad/egl.h"
 
 #ifndef GLAD_IMPL_UTIL_C_
 #define GLAD_IMPL_UTIL_C_
@@ -23,8 +37,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 
 int GLAD_EGL_VERSION_1_0 = 0;
 int GLAD_EGL_VERSION_1_1 = 0;
@@ -42,8 +54,6 @@ int GLAD_EGL_KHR_image = 0;
 int GLAD_EGL_KHR_image_base = 0;
 int GLAD_EGL_KHR_platform_gbm = 0;
 int GLAD_EGL_KHR_reusable_sync = 0;
-
-
 
 PFNEGLBINDAPIPROC glad_eglBindAPI = NULL;
 PFNEGLBINDTEXIMAGEPROC glad_eglBindTexImage = NULL;
@@ -102,7 +112,6 @@ PFNEGLWAITCLIENTPROC glad_eglWaitClient = NULL;
 PFNEGLWAITGLPROC glad_eglWaitGL = NULL;
 PFNEGLWAITNATIVEPROC glad_eglWaitNative = NULL;
 PFNEGLWAITSYNCPROC glad_eglWaitSync = NULL;
-
 
 static void glad_egl_load_EGL_VERSION_1_0( GLADuserptrloadfunc load, void* userptr) {
     if(!GLAD_EGL_VERSION_1_0) return;
@@ -203,7 +212,6 @@ static void glad_egl_load_EGL_KHR_reusable_sync( GLADuserptrloadfunc load, void*
     glad_eglGetSyncAttribKHR = (PFNEGLGETSYNCATTRIBKHRPROC) load(userptr, "eglGetSyncAttribKHR");
     glad_eglSignalSyncKHR = (PFNEGLSIGNALSYNCKHRPROC) load(userptr, "eglSignalSyncKHR");
 }
-
 
 static void glad_egl_resolve_aliases(void) {
     if (glad_eglClientWaitSync == NULL && glad_eglClientWaitSyncKHR != NULL) glad_eglClientWaitSync = (PFNEGLCLIENTWAITSYNCPROC)glad_eglClientWaitSyncKHR;
@@ -338,9 +346,6 @@ int gladLoadEGLUserPtr(EGLDisplay display, GLADuserptrloadfunc load, void* userp
 int gladLoadEGL(EGLDisplay display, GLADloadfunc load) {
     return gladLoadEGLUserPtr(display, glad_egl_get_proc_from_userptr, GLAD_GNUC_EXTENSION (void*) load);
 }
-
-
-
 
 #ifdef __cplusplus
 }

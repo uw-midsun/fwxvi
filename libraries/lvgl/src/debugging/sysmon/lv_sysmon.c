@@ -1,22 +1,30 @@
-/**
- * @file lv_sysmon.c
+/************************************************************************************************
+ * @file    lv_sysmon.c
  *
- */
+ * @brief   Lv Sysmon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../display/lv_display_private.h"
+#include "../../misc/lv_async.h"
+#include "../../misc/lv_timer_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../../widgets/label/lv_label.h"
+#include "lv_sysmon_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_sysmon_private.h"
-#include "../../misc/lv_timer_private.h"
-
 #if LV_USE_SYSMON
-
-#include "../../core/lv_global.h"
-#include "../../misc/lv_async.h"
-#include "../../stdlib/lv_string.h"
-#include "../../widgets/label/lv_label.h"
-#include "../../display/lv_display_private.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,29 @@
-/**
- * @file lv_indev_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_indev_private.h
  *
+ * @brief   Lv Indev Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_anim.h"
+#include "../misc/lv_ext_data.h"
+#include "lv_indev.h"
+#include "lv_indev_gesture.h"
+#include "lv_indev_scroll.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_indev_private
+ * @brief    lv_indev_private Firmware
+ * @{
  */
 
 #ifndef LV_INDEV_PRIVATE_H
@@ -13,11 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_ext_data.h"
-#include "lv_indev.h"
-#include "../misc/lv_anim.h"
-#include "lv_indev_scroll.h"
-#include "lv_indev_gesture.h"
 
 /*********************
  *      DEFINES
@@ -149,7 +167,6 @@ struct _lv_indev_t {
  */
 lv_obj_t * lv_indev_find_scroll_obj(lv_indev_t * indev);
 
-
 /**********************
  *      MACROS
  **********************/
@@ -159,3 +176,5 @@ lv_obj_t * lv_indev_find_scroll_obj(lv_indev_t * indev);
 #endif
 
 #endif /*LV_INDEV_PRIVATE_H*/
+
+/** @} */

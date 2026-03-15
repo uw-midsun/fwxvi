@@ -1,6 +1,26 @@
-/**
- * @file lv_wl_pointer_axis.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wl_pointer_axis.h
  *
+ * @brief   Lv Wl Pointer Axis
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_gesture.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_wl_pointer_axis
+ * @brief    lv_wl_pointer_axis Firmware
+ * @{
  */
 
 #ifndef LV_WL_POINTER_AXIS_H
@@ -9,9 +29,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_gesture.h"
 
 #if LV_USE_WAYLAND
 
@@ -52,3 +69,5 @@ lv_indev_t * lv_wayland_get_pointeraxis(lv_display_t * display);
 #endif
 
 #endif /*LV_WL_POINTER_AXIS_H*/
+
+/** @} */

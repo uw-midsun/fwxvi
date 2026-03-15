@@ -1,6 +1,26 @@
-/**
- * @file lv_fsdrv.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_fsdrv.h
  *
+ * @brief   Lv Fsdrv
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lfs.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_fsdrv
+ * @brief    lv_fsdrv Firmware
+ * @{
  */
 
 #ifndef LV_FSDRV_H
@@ -13,7 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 /*********************
  *      DEFINES
@@ -50,7 +69,6 @@ void lv_fs_memfs_init(void);
 #endif
 
 #if LV_USE_FS_LITTLEFS
-#include "lfs.h"
 struct lfs;
 /**
  * Set the default LittleFS handler to be used by LVGL
@@ -117,3 +135,5 @@ void lv_fs_frogfs_unregister_blob(const char * path_prefix);
 #endif
 
 #endif /*LV_FSDRV_H*/
+
+/** @} */

@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_dma2d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_dma2d.h
  *
+ * @brief   Lv Draw Dma2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_dma2d
+ * @brief    lv_draw_dma2d Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_DMA2D_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_DRAW_DMA2D
 
 /*********************
@@ -47,3 +65,5 @@ void lv_draw_dma2d_transfer_complete_interrupt_handler(void);
 #endif
 
 #endif /*LV_DRAW_DMA2D_H*/
+
+/** @} */

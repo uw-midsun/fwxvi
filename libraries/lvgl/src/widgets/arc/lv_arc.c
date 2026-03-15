@@ -1,24 +1,33 @@
-/**
- * @file lv_arc.c
+/************************************************************************************************
+ * @file    lv_arc.c
  *
- */
+ * @brief   Lv Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_event_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw_arc.h"
+#include "../../indev/lv_indev.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "lv_arc_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_arc_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_event_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_ARC != 0
-
-#include "../../core/lv_group.h"
-#include "../../indev/lv_indev.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_math.h"
-#include "../../draw/lv_draw_arc.h"
-#include "../../core/lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -459,7 +468,6 @@ lv_observer_t * lv_arc_bind_value(lv_obj_t * obj, lv_subject_t * subject)
 }
 #endif /*LV_USE_OBSERVER*/
 
-
 void lv_arc_align_obj_to_angle(const lv_obj_t * obj, lv_obj_t * obj_to_align, int32_t r_offset)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -612,11 +620,9 @@ static void lv_arc_event(const lv_obj_class_t * class_p, lv_event_t * e)
         angle -= arc->rotation;
         angle -= arc->bg_angle_start;  /*Make the angle relative to the start angle*/
 
-
         /* ensure the angle is in the range [0, 360) */
         while(angle < 0) angle += 360;
         while(angle >= 360) angle -= 360;
-
 
         const uint32_t circumference = (uint32_t)((2U * r * 314U) / 100U);  /* Equivalent to: 2r * 3.14, avoiding floats */
         const lv_value_precise_t tolerance_deg = (360 * lv_dpx(20U)) / circumference;

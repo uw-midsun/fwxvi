@@ -1,6 +1,27 @@
-/**
- * @file lv_group.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_group.h
  *
+ * @brief   Lv Group
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_ll.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_group
+ * @brief    lv_group Firmware
+ * @{
  */
 
 #ifndef LV_GROUP_H
@@ -13,10 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "../misc/lv_types.h"
-#include "../misc/lv_ll.h"
 
 /*********************
  *      DEFINES
@@ -276,3 +293,5 @@ void * lv_group_get_user_data(const lv_group_t * group);
 #endif
 
 #endif /*LV_GROUP_H*/
+
+/** @} */

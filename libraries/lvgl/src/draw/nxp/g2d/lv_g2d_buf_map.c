@@ -1,7 +1,21 @@
-/**
- * @file lv_g2d_buf_map.c
+/************************************************************************************************
+ * @file    lv_g2d_buf_map.c
  *
- */
+ * @brief   Lv G2D Buf Map
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "g2d.h"
+#include "lv_g2d_buf_map.h"
+#include "lv_g2d_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2024 NXP
@@ -9,13 +23,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "lv_g2d_buf_map.h"
-
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-#include <stdio.h>
-#include "lv_g2d_utils.h"
-#include "g2d.h"
 
 /*********************
  *      DEFINES

@@ -1,17 +1,26 @@
-/**
- * @file lv_freetype.c
+/************************************************************************************************
+ * @file    lv_freetype.c
  *
- */
+ * @brief   Lv Freetype
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../misc/lv_fs_private.h"
+#include "lv_freetype_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_freetype_private.h"
 
 #if LV_USE_FREETYPE
-
-#include "../../misc/lv_fs_private.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

@@ -1,7 +1,18 @@
-/**
- * @file lv_pxp_utils.c
+/************************************************************************************************
+ * @file    lv_pxp_utils.c
  *
- */
+ * @brief   Lv Pxp Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_pxp_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2023-2024 NXP
@@ -12,8 +23,6 @@
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_pxp_utils.h"
 
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP

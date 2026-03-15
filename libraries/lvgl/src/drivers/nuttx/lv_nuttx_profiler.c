@@ -1,31 +1,39 @@
-/**
- * @file lv_nuttx_profiler.c
+/************************************************************************************************
+ * @file    lv_nuttx_profiler.c
  *
- */
+ * @brief   Lv Nuttx Profiler
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <nuttx/arch.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_arch.h"
+#include "../../core/lv_global.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_profiler_builtin_private.h"
+#include "../../stdlib/lv_sprintf.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_nuttx_entry.h"
+#include "lv_nuttx_profiler.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nuttx_profiler.h"
-
 #if LV_USE_NUTTX && LV_USE_PROFILER && LV_USE_PROFILER_BUILTIN
 
-#include "../../misc/lv_profiler_builtin_private.h"
-#include "../../misc/lv_log.h"
-#include "../../core/lv_global.h"
-#include "../../stdlib/lv_sprintf.h"
-#include "../../stdlib/lv_string.h"
-#include "lv_nuttx_entry.h"
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-
 #ifdef __NuttX__
-    #include <nuttx/arch.h>
 #else
-    #include "mock/nuttx_arch.h"
 #endif
 
 /*********************

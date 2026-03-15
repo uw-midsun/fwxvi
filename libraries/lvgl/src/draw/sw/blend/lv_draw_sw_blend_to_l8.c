@@ -1,29 +1,38 @@
-/**
- * @file lv_draw_sw_blend_to_l8.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_l8.c
  *
- */
+ * @brief   Lv Draw Sw Blend To L8
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "helium/lv_blend_helium.h"
+    #include "neon/lv_blend_neon.h"
+#include "../../../core/lv_refr.h"
+#include "../../../display/lv_display.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_math.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_to_l8.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_to_l8.h"
 #if LV_USE_DRAW_SW
 
 #if LV_DRAW_SW_SUPPORT_L8
 
-#include "lv_draw_sw_blend_private.h"
-#include "../../../misc/lv_math.h"
-#include "../../../display/lv_display.h"
-#include "../../../core/lv_refr.h"
-#include "../../../misc/lv_color.h"
-#include "../../../stdlib/lv_string.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-    #include "neon/lv_blend_neon.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "helium/lv_blend_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 /*********************
@@ -609,7 +618,6 @@ static void LV_ATTRIBUTE_FAST_MEM rgb565_image_blend(lv_draw_sw_blend_image_dsc_
     const lv_opa_t * mask_buf = dsc->mask_buf;
     int32_t mask_stride = dsc->mask_stride;
 
-
     int32_t src_x;
     int32_t dest_x;
     int32_t y;
@@ -859,7 +867,6 @@ static void LV_ATTRIBUTE_FAST_MEM rgb888_image_blend(lv_draw_sw_blend_image_dsc_
                 src_argb.blue = src_buf_u8[src_x + 0];
                 if(mask_buf == NULL) src_argb.alpha = opa;
                 else src_argb.alpha = LV_OPA_MIX2(mask_buf[dest_x], opa);
-
 
                 blend_non_normal_pixel(&dest_buf_l8[dest_x], src_argb, dsc->blend_mode);
             }

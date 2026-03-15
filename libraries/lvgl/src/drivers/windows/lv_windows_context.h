@@ -1,6 +1,27 @@
-/**
- * @file lv_windows_context.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_windows_context.h
  *
+ * @brief   Lv Windows Context
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_windows_context
+ * @brief    lv_windows_context Firmware
+ * @{
  */
 
 #ifndef LV_WINDOWS_CONTEXT_H
@@ -14,16 +35,11 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_WINDOWS
 
 #if LV_USE_OS != LV_OS_WINDOWS
 #error [lv_windows] LV_OS_WINDOWS is required. Enable it in lv_conf.h (LV_USE_OS LV_OS_WINDOWS)
 #endif
-
-#include <windows.h>
 
 #ifndef CREATE_WAITABLE_TIMER_MANUAL_RESET
 #define CREATE_WAITABLE_TIMER_MANUAL_RESET  0x00000001
@@ -132,3 +148,5 @@ lv_windows_window_context_t * lv_windows_get_window_context(
 #endif
 
 #endif /*LV_WINDOWS_CONTEXT_H*/
+
+/** @} */

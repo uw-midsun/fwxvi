@@ -1,6 +1,28 @@
-/**
- * @file lv_span.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_span.h
  *
+ * @brief   Lv Span
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_obj_property.h"
+#include "../../core/lv_observer.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_span
+ * @brief    lv_span Firmware
+ * @{
  */
 
 #ifndef LV_SPAN_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
-#include "../../core/lv_observer.h"
-#include "../../core/lv_obj_property.h"
 
 #if LV_USE_SPAN != 0
 
@@ -106,7 +124,6 @@ void lv_spangroup_delete_span(lv_obj_t * obj, lv_span_t * span);
  * @param text  pointer to a text.
  */
 void lv_span_set_text(lv_span_t * span, const char * text);
-
 
 /**
  * Set a new text for a span using a printf-like formatting string.
@@ -375,3 +392,5 @@ lv_observer_t * lv_spangroup_bind_span_text(lv_obj_t * obj, lv_span_t * span, lv
 #endif
 
 #endif /*LV_SPAN_H*/
+
+/** @} */

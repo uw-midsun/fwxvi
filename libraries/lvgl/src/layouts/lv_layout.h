@@ -1,6 +1,28 @@
-/**
- * @file lv_layout.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_layout.h
  *
+ * @brief   Lv Layout
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_types.h"
+#include "flex/lv_flex.h"
+#include "grid/lv_grid.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_layout
+ * @brief    lv_layout Firmware
+ * @{
  */
 
 #ifndef LV_LAYOUT_H
@@ -13,8 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -32,7 +52,6 @@ typedef struct {
     lv_layout_get_min_size_cb_t get_min_size_cb;
 } lv_layout_callbacks_t;
 
-
 typedef enum {
     LV_LAYOUT_NONE = 0,
 
@@ -46,7 +65,6 @@ typedef enum {
 
     LV_LAYOUT_LAST
 } lv_layout_t;
-
 
 /**
  * Create a new layout
@@ -71,11 +89,9 @@ uint32_t lv_layout_register(lv_layout_update_cb_t cb, void * user_data);
  **********************/
 
 #if LV_USE_FLEX
-#include "flex/lv_flex.h"
 #endif /* LV_USE_FLEX */
 
 #if LV_USE_GRID
-#include "grid/lv_grid.h"
 #endif /* LV_USE_GRID */
 
 #ifdef __cplusplus
@@ -83,3 +99,5 @@ uint32_t lv_layout_register(lv_layout_update_cb_t cb, void * user_data);
 #endif
 
 #endif /*LV_LAYOUT_H*/
+
+/** @} */

@@ -1,3 +1,42 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    reader.h
+ *
+ * @brief   Reader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <stdexcept>               // std::runtime_error
+#include <arm_neon.h>
+#include <emmintrin.h>
+#include <intrin.h>
+#include <limits>
+#include <nmmintrin.h>
+
+/* Inter-component Headers */
+    #include "rapidjson/error/error.h" // rapidjson::ParseResult
+    #include "rapidjson/reader.h"
+#include "allocators.h"
+#include "encodedstream.h"
+#include "error/error.h" // ParseErrorCode, ParseResult
+#include "internal/clzll.h"
+#include "internal/meta.h"
+#include "internal/stack.h"
+#include "internal/strtod.h"
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup reader
+ * @brief    reader Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -17,25 +56,12 @@
 
 /*! \file reader.h */
 
-#include "allocators.h"
-#include "stream.h"
-#include "encodedstream.h"
-#include "internal/clzll.h"
-#include "internal/meta.h"
-#include "internal/stack.h"
-#include "internal/strtod.h"
-#include <limits>
-
 #if defined(RAPIDJSON_SIMD) && defined(_MSC_VER)
-#include <intrin.h>
 #pragma intrinsic(_BitScanForward)
 #endif
 #ifdef RAPIDJSON_SSE42
-#include <nmmintrin.h>
 #elif defined(RAPIDJSON_SSE2)
-#include <emmintrin.h>
 #elif defined(RAPIDJSON_NEON)
-#include <arm_neon.h>
 #endif
 
 #ifdef __clang__
@@ -83,15 +109,11 @@ RAPIDJSON_DIAG_OFF(effc++)
     #define RAPIDJSON_PARSE_ERROR_NORETURN(parseErrorCode,offset) \
        throw ParseException(parseErrorCode, #parseErrorCode, offset)
 
-    #include <stdexcept>               // std::runtime_error
-    #include "rapidjson/error/error.h" // rapidjson::ParseResult
-
     struct ParseException : std::runtime_error, rapidjson::ParseResult {
       ParseException(rapidjson::ParseErrorCode code, const char* msg, size_t offset)
         : std::runtime_error(msg), ParseResult(code, offset) {}
     };
 
-    #include "rapidjson/reader.h"
     \endcode
 
     \see RAPIDJSON_PARSE_ERROR, rapidjson::GenericReader::Parse
@@ -122,8 +144,6 @@ RAPIDJSON_DIAG_OFF(effc++)
     RAPIDJSON_PARSE_ERROR_EARLY_RETURN_VOID; \
     RAPIDJSON_MULTILINEMACRO_END
 #endif
-
-#include "error/error.h" // ParseErrorCode, ParseResult
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -2238,9 +2258,10 @@ RAPIDJSON_NAMESPACE_END
 RAPIDJSON_DIAG_POP
 #endif
 
-
 #ifdef __GNUC__
 RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_READER_H_
+
+/** @} */

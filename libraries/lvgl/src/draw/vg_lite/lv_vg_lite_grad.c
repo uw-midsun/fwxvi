@@ -1,20 +1,28 @@
-/**
- * @file lv_vg_lite_grad.c
+/************************************************************************************************
+ * @file    lv_vg_lite_grad.c
  *
- */
+ * @brief   Lv Vg Lite Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_vector_private.h"
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_grad.h"
+#include "lv_vg_lite_math.h"
+#include "lv_vg_lite_pending.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_grad.h"
-
 #if LV_USE_DRAW_VG_LITE && LV_USE_VECTOR_GRAPHIC
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_pending.h"
-#include "lv_vg_lite_math.h"
-#include "../lv_draw_vector_private.h"
 
 /*********************
  *      DEFINES
@@ -820,7 +828,6 @@ static lv_cache_compare_res_t grad_compare_cb(const grad_item_ref_t * lhs_ref, c
 
     return 0;
 }
-
 
 static void lv_vg_lite_linear_gradient_dump_info(const vg_lite_linear_gradient_t * grad)
 {

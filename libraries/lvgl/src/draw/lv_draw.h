@@ -1,6 +1,33 @@
-/**
- * @file lv_draw.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw.h
  *
+ * @brief   Lv Draw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_event.h"
+#include "../misc/lv_matrix.h"
+#include "../misc/lv_profiler.h"
+#include "../misc/lv_style.h"
+#include "../misc/lv_text.h"
+#include "../misc/lv_types.h"
+#include "lv_draw_buf.h"
+#include "lv_image_decoder.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw
+ * @brief    lv_draw Firmware
+ * @{
  */
 
 /**
@@ -17,16 +44,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "../misc/lv_types.h"
-#include "../misc/lv_style.h"
-#include "../misc/lv_text.h"
-#include "../misc/lv_profiler.h"
-#include "../misc/lv_matrix.h"
-#include "../misc/lv_event.h"
-#include "lv_image_decoder.h"
-#include "lv_draw_buf.h"
 
 /*********************
  *      DEFINES
@@ -293,7 +310,6 @@ lv_draw_task_t * lv_draw_get_next_available_task(lv_layer_t * layer, lv_draw_tas
  */
 uint32_t lv_draw_get_dependent_count(lv_draw_task_t * t_check);
 
-
 /**
  * Send an event to the draw units
  * @param name              the name of the draw unit to send the event to
@@ -371,13 +387,10 @@ void * lv_draw_task_get_draw_dsc(const lv_draw_task_t * t);
 */
 void lv_draw_task_get_area(const lv_draw_task_t * t, lv_area_t * area);
 
-
-
 lv_layer_t * lv_draw_layer_create_drop_shadow(lv_layer_t * parent_layer, const lv_draw_dsc_base_t * base,
                                               const lv_area_t * area);
 
 void lv_draw_layer_finish_drop_shadow(lv_layer_t * drop_shadow_layer, const lv_draw_dsc_base_t * base);
-
 
 /**********************
  *  GLOBAL VARIABLES
@@ -392,3 +405,5 @@ void lv_draw_layer_finish_drop_shadow(lv_layer_t * drop_shadow_layer, const lv_d
 #endif
 
 #endif /*LV_DRAW_H*/
+
+/** @} */

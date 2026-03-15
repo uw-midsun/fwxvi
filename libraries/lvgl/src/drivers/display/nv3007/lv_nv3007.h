@@ -1,8 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nv3007.h
+ *
+ * @brief   Lv Nv3007
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lcd/lv_lcd_generic_mipi.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_nv3007.h
- *
- * This driver is just a wrapper around the generic MIPI compatible LCD controller driver
- *
+ * @defgroup lv_nv3007
+ * @brief    lv_nv3007 Firmware
+ * @{
  */
 
 #ifndef LV_NV3007_H
@@ -15,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lcd/lv_lcd_generic_mipi.h"
 
 #if LV_USE_NV3007
 
@@ -84,7 +99,6 @@ void lv_nv3007_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_list);
  *      MACROS
  **********************/
 
-
 #endif /*LV_USE_NV3007*/
 
 #ifdef __cplusplus
@@ -92,3 +106,5 @@ void lv_nv3007_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_list);
 #endif
 
 #endif /*LV_NV3007_H*/
+
+/** @} */

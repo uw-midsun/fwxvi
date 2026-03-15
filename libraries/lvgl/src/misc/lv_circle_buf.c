@@ -1,16 +1,24 @@
-/**
- * @file lv_circle_buf.c
+/************************************************************************************************
+ * @file    lv_circle_buf.c
  *
- */
+ * @brief   Lv Circle Buf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_array.h"
+#include "lv_assert.h"
+#include "lv_circle_buf.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_assert.h"
-
-#include "lv_circle_buf.h"
-#include "lv_array.h"
 
 /*********************
  *      DEFINES

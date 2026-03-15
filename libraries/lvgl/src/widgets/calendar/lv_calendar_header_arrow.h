@@ -1,6 +1,25 @@
-/**
- * @file lv_calendar_header_arrow.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_calendar_header_arrow.h
  *
+ * @brief   Lv Calendar Header Arrow
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_calendar_header_arrow
+ * @brief    lv_calendar_header_arrow Firmware
+ * @{
  */
 
 #ifndef LV_CALENDAR_HEADER_ARROW_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_HEADER_ARROW
 
 /*********************
@@ -47,3 +65,5 @@ lv_obj_t * lv_calendar_add_header_arrow(lv_obj_t * parent);
 #endif
 
 #endif /*LV_CALENDAR_HEADER_ARROW_H*/
+
+/** @} */

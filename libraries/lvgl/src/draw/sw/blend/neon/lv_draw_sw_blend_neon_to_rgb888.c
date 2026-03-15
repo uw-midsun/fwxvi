@@ -1,19 +1,28 @@
-/**
- * @file lv_draw_sw_blend_neon_to_rgb888.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_neon_to_rgb888.c
  *
- */
+ * @brief   Lv Draw Sw Blend Neon To Rgb888
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <arm_neon.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "../../../../misc/lv_color.h"
+#include "../../../../misc/lv_types.h"
+#include "../lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_neon_to_rgb888.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_neon_to_rgb888.h"
-#include <stdint.h>
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-
-#include "../../../../misc/lv_color.h"
-#include "../../../../misc/lv_types.h"
-#include "../lv_draw_sw_blend_private.h"
-#include <arm_neon.h>
 
 /*********************
  *      DEFINES
@@ -41,7 +50,6 @@ static inline uint8x16_t lv_color_to_xrgb888_4(const lv_color_t * color);
 static inline uint8x8_t lv_color_to_xrgb888_2(const lv_color_t * color);
 static inline uint8x8x3_t lv_rgb565_to_rgb888_8(const uint16_t * color);
 static inline uint8x8x4_t lv_rgb565_to_xrgb8888_8(const uint16_t * color);
-
 
 static inline uint8x8x3_t rgb565_rgb888_mix_8_internal(uint16x8_t src, uint8x8x3_t dst, uint8x8_t mix);
 
@@ -1205,7 +1213,6 @@ lv_result_t lv_draw_sw_blend_neon_argb888_premultiplied_to_rgb888(lv_draw_sw_ble
  *   STATIC FUNCTIONS
  **********************/
 
-
 static inline void * LV_ATTRIBUTE_FAST_MEM drawbuf_next_row(const void * buf, uint32_t stride)
 {
     return (void *)((uint8_t *)buf + stride);
@@ -1345,7 +1352,6 @@ static inline void rgb565_mix_1(const uint16_t * src, uint8_t * dest, uint8_t mi
     dest[1] = (uint32_t)(g * mix + dest[1] * mix_inv) >> 8;
     dest[2] = (uint32_t)(r * mix + dest[2] * mix_inv) >> 8;
 
-
 }
 
 static inline void lv_color_24_24_mix_1(const uint8_t * src, uint8_t * dest, uint8_t mix)
@@ -1382,7 +1388,6 @@ static inline void lv_color_24_24_mix_premult(const uint8_t * src, uint8_t * des
         dest[2] = (uint32_t)src[2] + ((uint32_t)(dest[2] * mix_inv) >> 8);
     }
 }
-
 
 static inline uint32x4_t argb_rgb_mix_4(const uint32_t * src, const uint32_t * dst)
 {

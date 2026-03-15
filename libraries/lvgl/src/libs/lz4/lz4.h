@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lz4.h
+ *
+ * @brief   Lz4
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>   /* size_t */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../lvgl.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lz4
+ * @brief    lz4 Firmware
+ * @{
+ */
+
 /*
  *  LZ4 - Fast LZ compression algorithm
  *  Header File
@@ -33,7 +59,6 @@
     - LZ4 source repository : https://github.com/lz4/lz4
 */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_LZ4_INTERNAL
 #if defined (__cplusplus)
 extern "C" {
@@ -42,7 +67,6 @@ extern "C" {
 /**
  * LVGL's porting
  */
-#include "../../lvgl.h"
 #define LZ4_FREESTANDING    1
 #define LZ4_memset  lv_memset
 #define LZ4_memcpy  lv_memcpy
@@ -52,8 +76,6 @@ extern "C" {
 #define LZ4_H_2983827168210
 
 /* --- Dependency --- */
-#include <stddef.h>   /* size_t */
-
 
 /**
   Introduction
@@ -138,7 +160,6 @@ extern "C" {
 #  define LZ4_FREESTANDING 0
 #endif
 
-
 /*------   Version   ------*/
 #define LZ4_VERSION_MAJOR    1    /* for breaking interface changes  */
 #define LZ4_VERSION_MINOR   10    /* for new (non-breaking) interface capabilities */
@@ -153,7 +174,6 @@ extern "C" {
 
 LZ4LIB_API int LZ4_versionNumber (void);  /**< library version number; useful to check dll version; requires v1.3.0+ */
 LZ4LIB_API const char* LZ4_versionString (void);   /**< library version string; useful to check dll version; requires v1.7.5+ */
-
 
 /*-************************************
 *  Tuning memory usage
@@ -219,7 +239,6 @@ LZ4LIB_API int LZ4_compress_default(const char* src, char* dst, int srcSize, int
  */
 LZ4LIB_API int LZ4_decompress_safe (const char* src, char* dst, int compressedSize, int dstCapacity);
 
-
 /*-************************************
 *  Advanced Functions
 **************************************/
@@ -246,7 +265,6 @@ LZ4LIB_API int LZ4_compressBound(int inputSize);
     Values > LZ4_ACCELERATION_MAX will be replaced by LZ4_ACCELERATION_MAX (currently == 65537, see lz4.c).
 */
 LZ4LIB_API int LZ4_compress_fast (const char* src, char* dst, int srcSize, int dstCapacity, int acceleration);
-
 
 /*! LZ4_compress_fast_extState() :
  *  Same as LZ4_compress_fast(), using an externally allocated memory space for its state.
@@ -318,7 +336,6 @@ LZ4LIB_API int LZ4_compress_destSize(const char* src, char* dst, int* srcSizePtr
  *           Otherwise, *silent corruption will occur*.
  */
 LZ4LIB_API int LZ4_decompress_safe_partial (const char* src, char* dst, int srcSize, int targetOutputSize, int dstCapacity);
-
 
 /*-*********************************************
 *  Streaming Compression Functions
@@ -461,7 +478,6 @@ LZ4LIB_API int LZ4_compress_fast_continue (LZ4_stream_t* streamPtr, const char* 
  */
 LZ4LIB_API int LZ4_saveDict (LZ4_stream_t* streamPtr, char* safeBuffer, int maxDictSize);
 
-
 /*-**********************************************
 *  Streaming Decompression Functions
 *  Bufferless synchronous API
@@ -545,7 +561,6 @@ LZ4_decompress_safe_continue (LZ4_streamDecode_t* LZ4_streamDecode,
                         const char* src, char* dst,
                         int srcSize, int dstCapacity);
 
-
 /*! LZ4_decompress_safe_usingDict() :
  *  Works the same as
  *  a combination of LZ4_setStreamDecode() followed by LZ4_decompress_safe_continue()
@@ -572,7 +587,6 @@ LZ4_decompress_safe_partial_usingDict(const char* src, char* dst,
                                       const char* dictStart, int dictSize);
 
 #endif /* LZ4_H_2983827168210 */
-
 
 /*^*************************************
  * !!!!!!   STATIC LINKING ONLY   !!!!!!
@@ -608,7 +622,6 @@ LZ4_decompress_safe_partial_usingDict(const char* src, char* dst,
 #else
 # define LZ4LIB_STATIC_API
 #endif
-
 
 /*! LZ4_compress_fast_extState_fastReset() :
  *  A variant of LZ4_compress_fast_extState().
@@ -692,8 +705,6 @@ int LZ4_compress_destSize_extState(void* state, const char* src, char* dst, int*
 #endif   /* LZ4_STATIC_3504398509 */
 #endif   /* LZ4_STATIC_LINKING_ONLY */
 
-
-
 #ifndef LZ4_H_98237428734687
 #define LZ4_H_98237428734687
 
@@ -744,7 +755,6 @@ union LZ4_stream_u {
     LZ4_stream_t_internal internal_donotuse;
 }; /* previously typedef'd to LZ4_stream_t */
 
-
 /*! LZ4_initStream() : v1.9.0+
  *  An LZ4_stream_t structure must be initialized at least once.
  *  This is automatically done when invoking LZ4_createStream(),
@@ -760,7 +770,6 @@ union LZ4_stream_u {
  *  Note3: Before v1.9.0, use LZ4_resetStream() instead
 **/
 LZ4LIB_API LZ4_stream_t* LZ4_initStream (void* stateBuffer, size_t size);
-
 
 /*! LZ4_streamDecode_t :
  *  Never ever use below internal definitions directly !
@@ -779,8 +788,6 @@ union LZ4_streamDecode_u {
     char minStateSize[LZ4_STREAMDECODE_MINSIZE];
     LZ4_streamDecode_t_internal internal_donotuse;
 } ;   /* previously typedef'd to LZ4_streamDecode_t */
-
-
 
 /*-************************************
 *  Obsolete Functions
@@ -887,9 +894,7 @@ LZ4LIB_API int LZ4_decompress_fast_usingDict (const char* src, char* dst, int or
  */
 LZ4LIB_API void LZ4_resetStream (LZ4_stream_t* streamPtr);
 
-
 #endif /* LZ4_H_98237428734687 */
-
 
 #if defined (__cplusplus)
 }
@@ -897,3 +902,5 @@ LZ4LIB_API void LZ4_resetStream (LZ4_stream_t* streamPtr);
 
 #endif /* LV_USE_LZ4_INTERNAL */
 
+
+/** @} */

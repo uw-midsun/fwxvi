@@ -1,21 +1,30 @@
-/**
- * @file lv_chart.c
+/************************************************************************************************
+ * @file    lv_chart.c
  *
- */
+ * @brief   Lv Chart
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_draw_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../draw/lv_draw_vector_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "lv_chart_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_chart_private.h"
 #if LV_USE_CHART != 0
-
-#include "../../misc/lv_area_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../draw/lv_draw_vector_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../core/lv_obj_draw_private.h"
-#include "../../misc/lv_assert.h"
 
 /*********************
  *      DEFINES
@@ -683,7 +692,6 @@ void lv_chart_set_all_values(lv_obj_t * obj, lv_chart_series_t * ser, int32_t va
     lv_chart_refresh(obj);
 }
 
-
 void lv_chart_set_next_value(lv_obj_t * obj, lv_chart_series_t * ser, int32_t value)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -730,7 +738,6 @@ void lv_chart_set_series_values2(lv_obj_t * obj, lv_chart_series_t * ser, const 
         lv_chart_set_next_value2(obj, ser, x_values[i], y_values[i]);
     }
 }
-
 
 void lv_chart_set_series_value_by_id(lv_obj_t * obj, lv_chart_series_t * ser, uint32_t id, int32_t value)
 {
@@ -1345,7 +1352,6 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
 
 }
 
-
 static void draw_series_scatter(lv_obj_t * obj, lv_layer_t * layer)
 {
     lv_chart_t * chart  = (lv_chart_t *)obj;
@@ -1786,7 +1792,6 @@ static void invalidate_point(lv_obj_t * obj, uint32_t i)
 {
     lv_chart_t * chart  = (lv_chart_t *)obj;
     if(i >= chart->point_cnt) return;
-
 
     /*In shift mode the whole chart changes so the whole object*/
     if(chart->update_mode == LV_CHART_UPDATE_MODE_SHIFT) {

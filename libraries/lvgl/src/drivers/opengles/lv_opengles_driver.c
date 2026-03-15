@@ -1,26 +1,34 @@
-/**
- * @file lv_opengles_driver.c
+/************************************************************************************************
+ * @file    lv_opengles_driver.c
  *
- */
+ * @brief   Lv Opengles Driver
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../draw/nanovg/lv_draw_nanovg.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_matrix.h"
+#include "../../misc/lv_profiler.h"
+#include "../../misc/lv_types.h"
+#include "assets/lv_opengles_shader.h"
+#include "lv_opengles_debug.h"
+#include "lv_opengles_driver.h"
+#include "lv_opengles_private.h"
+#include "opengl_shader/lv_opengl_shader_internal.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_opengles_driver.h"
 #if LV_USE_OPENGLES
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_profiler.h"
-#include "../../misc/lv_matrix.h"
-#include "lv_opengles_debug.h"
-#include "lv_opengles_private.h"
-
-#include "../../display/lv_display_private.h"
-#include "../../draw/nanovg/lv_draw_nanovg.h"
-#include "../../misc/lv_area_private.h"
-#include "opengl_shader/lv_opengl_shader_internal.h"
-#include "assets/lv_opengles_shader.h"
 
 /*********************
  *      DEFINES

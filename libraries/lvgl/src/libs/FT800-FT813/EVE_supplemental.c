@@ -1,5 +1,3 @@
-#include "../../lv_conf_internal.h"
-#if LV_USE_DRAW_EVE
 /*
 @file    EVE_supplemental.h
 @brief   supplemental functions
@@ -37,15 +35,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+/* Standard library Headers */
+#include <avr/pgmspace.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
 #include "EVE_suppplemental.h"
+
+/* Intra-component Headers */
 
 /* define NULL if it not already is */
 #ifndef NULL
-#include <stdio.h>
 #endif
 
 #if defined (__AVR__)
-#include <avr/pgmspace.h>
 #else
 #define PROGMEM
 #endif

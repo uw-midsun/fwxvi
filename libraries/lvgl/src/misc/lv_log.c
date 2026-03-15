@@ -1,23 +1,32 @@
-/**
- * @file lv_log.c
+/************************************************************************************************
+ * @file    lv_log.c
  *
- */
+ * @brief   Lv Log
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <stdio.h>
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_sprintf.h"
+#include "../stdlib/lv_string.h"
+#include "../tick/lv_tick.h"
+#include "lv_log.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_log.h"
 #if LV_USE_LOG
 
-#include "../misc/lv_types.h"
-#include "../stdlib/lv_sprintf.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
-#include "../tick/lv_tick.h"
-#include "../core/lv_global.h"
-
 #if LV_LOG_PRINTF
-    #include <stdio.h>
 #endif
 
 /*********************

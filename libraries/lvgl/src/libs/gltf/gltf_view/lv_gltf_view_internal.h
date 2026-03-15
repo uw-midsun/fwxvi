@@ -1,6 +1,33 @@
-/**
- * @file lv_gltf_view_internal.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_view_internal.h
  *
+ * @brief   Lv Gltf View Internal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <fastgltf/math.hpp>
+#include <fastgltf/types.hpp>
+#include <map>
+
+/* Inter-component Headers */
+#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_types.h"
+#include "../../../widgets/3dtexture/lv_3dtexture_private.h"
+#include "../gltf_data/lv_gltf_data_internal.h"
+#include "lv_gltf.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_view_internal
+ * @brief    lv_gltf_view_internal Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_VIEW_INTERNAL_H
@@ -10,16 +37,7 @@
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_GLTF
-
-#include "lv_gltf.h"
-#include "../../../misc/lv_types.h"
-#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
-#include "../../../widgets/3dtexture/lv_3dtexture_private.h"
-#include "../gltf_data/lv_gltf_data_internal.h"
-
 
 /*********************
  *      DEFINES
@@ -65,7 +83,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif/* __cplusplus*/
-
 
 typedef struct {
     uint32_t texture;
@@ -146,14 +163,8 @@ typedef struct {
     GLfloat clear_color[4];
 } lv_opengl_state_t;
 
-
 #ifdef __cplusplus
 }
-
-
-#include <fastgltf/math.hpp>
-#include <fastgltf/types.hpp>
-#include <map>
 
 typedef struct {
     lv_gltf_model_t * model;
@@ -164,7 +175,6 @@ typedef struct {
     bool last_frame_no_motion;
     bool _last_frame_no_motion;
 } lv_gltf_model_data_t;
-
 
 struct _lv_gltf_t {
     lv_3dtexture_t texture;
@@ -200,3 +210,5 @@ lv_result_t lv_gltf_view_shader_injest_discover_defines(lv_array_t * result, lv_
 #endif /*LV_USE_GLTF*/
 
 #endif /*LV_GLTF_VIEW_INTERNAL_H*/
+
+/** @} */

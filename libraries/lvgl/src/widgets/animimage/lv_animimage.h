@@ -1,6 +1,26 @@
-/**
- * @file lv_animimage.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_animimage.h
  *
+ * @brief   Lv Animimage
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+#include "../image/lv_image.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_animimage
+ * @brief    lv_animimage Firmware
+ * @{
  */
 
 /**
@@ -17,8 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../image/lv_image.h"
-#include "../../misc/lv_types.h"
 
 #if LV_USE_ANIMIMG != 0
 
@@ -183,3 +201,5 @@ lv_anim_t * lv_animimg_get_anim(lv_obj_t * obj);
 #endif
 
 #endif /*LV_ANIMIMAGE_H*/
+
+/** @} */

@@ -1,30 +1,34 @@
-/**
- * @file lv_draw_nema_gfx_stm32_hal.c
+/************************************************************************************************
+ * @file    lv_draw_nema_gfx_stm32_hal.c
  *
- * Global functions that implement some HAL functionality
- * which Nema will call directly.
- */
+ * @brief   Lv Draw Nema Gfx Stm32 Hal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <assert.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_types.h"
+#include "../../osal/lv_os_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_draw_nema_gfx_utils.h"
+
+/* Intra-component Headers */
+#include LV_NEMA_STM32_HAL_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_NEMA_GFX
 
 #if LV_USE_NEMA_HAL == LV_NEMA_HAL_STM32
-
-#include "lv_draw_nema_gfx_utils.h"
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_assert.h"
-#include "../../stdlib/lv_string.h"
-#include "../../osal/lv_os_private.h"
-
-#include <assert.h>
-#include <string.h>
-
-#include LV_NEMA_STM32_HAL_INCLUDE
 
 extern GPU2D_HandleTypeDef hgpu2d;
 
@@ -129,15 +133,11 @@ void nema_reg_write(uint32_t reg, uint32_t value)
     HAL_GPU2D_WriteRegister(&hgpu2d, reg, value);
 }
 
-
-
-
 int nema_wait_irq(void)
 {
     lv_thread_sync_wait(&sync);
     return 0;
 }
-
 
 int nema_wait_irq_cl(int cl_id)
 {

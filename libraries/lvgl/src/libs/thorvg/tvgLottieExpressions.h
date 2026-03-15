@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieExpressions.h
+ *
+ * @brief   Tvglottieexpressions
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "jerryscript.h"
+#include "tvgCommon.h"
+#include "tvgLottieCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieExpressions
+ * @brief    tvgLottieExpressions Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,14 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_EXPRESSIONS_H_
 #define _TVG_LOTTIE_EXPRESSIONS_H_
-
-#include "tvgCommon.h"
-#include "tvgLottieCommon.h"
 
 struct LottieExpression;
 struct LottieComposition;
@@ -36,9 +59,6 @@ struct LottieRoundnessModifier;
 struct LottieOffsetModifier;
 
 #ifdef THORVG_LOTTIE_EXPRESSIONS_SUPPORT
-
-#include "jerryscript.h"
-
 
 struct LottieExpressions
 {
@@ -172,3 +192,5 @@ struct LottieExpressions
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

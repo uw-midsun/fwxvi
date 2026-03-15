@@ -1,17 +1,25 @@
-/**
- * @file lv_sdl_texture.c
+/************************************************************************************************
+ * @file    lv_sdl_texture.c
  *
- */
+ * @brief   Lv Sdl Texture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_buf.h"
+#include "lv_sdl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_sdl_private.h"
-
 #if LV_USE_SDL && !LV_SDL_USE_EGL && LV_USE_DRAW_SDL
-
-#include "../../draw/lv_draw_buf.h"
 
 /*********************
  *      DEFINES

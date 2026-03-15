@@ -1,8 +1,27 @@
-/**
- * @file lv_opengles_texture_private.h
- *
- */
+#pragma once
 
+/************************************************************************************************
+ * @file    lv_opengles_texture_private.h
+ *
+ * @brief   Lv Opengles Texture Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_opengles_texture.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_texture_private
+ * @brief    lv_opengles_texture_private Firmware
+ * @{
+ */
 
 #ifndef LV_OPENGLES_TEXTURE_PRIVATE_H
 #define LV_OPENGLES_TEXTURE_PRIVATE_H
@@ -14,11 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_OPENGLES
-
-#include "lv_opengles_texture.h"
 
 /*********************
  *      DEFINES
@@ -55,3 +71,5 @@ void lv_opengles_texture_deinit(lv_opengles_texture_t * texture);
 #endif
 
 #endif /* LV_OPENGLES_TEXTURE_PRIVATE_H */
+
+/** @} */

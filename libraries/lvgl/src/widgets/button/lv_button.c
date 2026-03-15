@@ -1,14 +1,24 @@
-/**
- * @file lv_button.c
+/************************************************************************************************
+ * @file    lv_button.c
  *
- */
+ * @brief   Lv Button
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "lv_button_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_button_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_BUTTON != 0
 
 /*********************

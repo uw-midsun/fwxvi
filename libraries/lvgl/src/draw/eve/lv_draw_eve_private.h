@@ -1,6 +1,35 @@
-/**
- * @file lv_draw_eve_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve_private.h
  *
+ * @brief   Lv Draw Eve Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../font/fmt_txt/lv_font_fmt_txt.h"
+#include "../../misc/lv_types.h"
+#include "../lv_draw_arc.h"
+#include "../lv_draw_label.h"
+#include "../lv_draw_line.h"
+#include "../lv_draw_private.h"
+#include "../lv_draw_triangle.h"
+#include "lv_draw_eve.h"
+#include "lv_draw_eve_ram_g.h"
+#include "lv_draw_eve_target.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_eve_private
+ * @brief    lv_draw_eve_private Firmware
+ * @{
  */
 
 /*  Author: juanj
@@ -19,19 +48,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_draw_eve.h"
 #if LV_USE_DRAW_EVE
-
-#include "lv_draw_eve_target.h"
-#include "lv_draw_eve_ram_g.h"
-#include "../lv_draw_private.h"
-#include "../../misc/lv_types.h"
-#include "../../core/lv_global.h"
-#include "../lv_draw_triangle.h"
-#include "../lv_draw_line.h"
-#include "../lv_draw_label.h"
-#include "../../font/fmt_txt/lv_font_fmt_txt.h"
-#include "../lv_draw_arc.h"
 
 #if LV_DRAW_EVE_WRITE_BUFFER_SIZE != 0 && LV_DRAW_EVE_WRITE_BUFFER_SIZE < 4
 #warning LV_DRAW_EVE_WRITE_BUFFER_SIZE cannot be less than 4. Using 0 (buffering disabled).
@@ -115,3 +132,5 @@ void lv_draw_eve_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t * dsc
 #endif
 
 #endif /*LV_DRAW_EVE_PRIVATE_H*/
+
+/** @} */

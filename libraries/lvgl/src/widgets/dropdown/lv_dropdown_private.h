@@ -1,6 +1,26 @@
-/**
- * @file lv_dropdown_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_dropdown_private.h
  *
+ * @brief   Lv Dropdown Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_dropdown.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_dropdown_private
+ * @brief    lv_dropdown_private Firmware
+ * @{
  */
 
 #ifndef LV_DROPDOWN_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_dropdown.h"
 
 #if LV_USE_DROPDOWN != 0
 
@@ -52,7 +69,6 @@ struct _lv_dropdown_list_t {
     lv_obj_t * dropdown;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -68,3 +84,5 @@ struct _lv_dropdown_list_t {
 #endif
 
 #endif /*LV_DROPDOWN_PRIVATE_H*/
+
+/** @} */

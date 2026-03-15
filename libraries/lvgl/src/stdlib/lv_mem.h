@@ -1,6 +1,27 @@
-/**
- * @file lv_mem.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_mem.h
  *
+ * @brief   Lv Mem
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_types.h"
+#include "lv_string.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_mem
+ * @brief    lv_mem Firmware
+ * @{
  */
 
 #ifndef LV_MEM_H
@@ -13,11 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "lv_string.h"
-
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -164,3 +180,5 @@ void lv_mem_monitor(lv_mem_monitor_t * mon_p);
 #endif
 
 #endif /*LV_MEM_H*/
+
+/** @} */

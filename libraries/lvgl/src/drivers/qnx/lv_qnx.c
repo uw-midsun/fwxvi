@@ -1,23 +1,33 @@
-/**
- * @file lv_qnx.c
+/************************************************************************************************
+ * @file    lv_qnx.c
  *
- */
+ * @brief   Lv Qnx
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <screen/screen.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <sys/keycodes.h>
+#include <time.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_refr.h"
+#include "../../display/lv_display_private.h"
+#include "../../lv_init.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_qnx.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_qnx.h"
 #if LV_USE_QNX
-#include <stdbool.h>
-#include "../../core/lv_refr.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_global.h"
-#include "../../display/lv_display_private.h"
-#include "../../lv_init.h"
-#include <stdlib.h>
-#include <time.h>
-#include <screen/screen.h>
-#include <sys/keycodes.h>
 
 /*********************
  *      DEFINES

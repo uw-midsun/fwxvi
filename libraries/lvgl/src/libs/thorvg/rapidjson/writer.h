@@ -1,3 +1,39 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    writer.h
+ *
+ * @brief   Writer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <arm_neon.h>
+#include <emmintrin.h>
+#include <intrin.h>
+#include <new>      // placement new
+#include <nmmintrin.h>
+
+/* Inter-component Headers */
+#include "internal/clzll.h"
+#include "internal/dtoa.h"
+#include "internal/itoa.h"
+#include "internal/meta.h"
+#include "internal/stack.h"
+#include "internal/strfunc.h"
+
+/* Intra-component Headers */
+#include "stream.h"
+#include "stringbuffer.h"
+
+/**
+ * @defgroup writer
+ * @brief    writer Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,26 +51,12 @@
 #ifndef RAPIDJSON_WRITER_H_
 #define RAPIDJSON_WRITER_H_
 
-#include "stream.h"
-#include "internal/clzll.h"
-#include "internal/meta.h"
-#include "internal/stack.h"
-#include "internal/strfunc.h"
-#include "internal/dtoa.h"
-#include "internal/itoa.h"
-#include "stringbuffer.h"
-#include <new>      // placement new
-
 #if defined(RAPIDJSON_SIMD) && defined(_MSC_VER)
-#include <intrin.h>
 #pragma intrinsic(_BitScanForward)
 #endif
 #ifdef RAPIDJSON_SSE42
-#include <nmmintrin.h>
 #elif defined(RAPIDJSON_SSE2)
-#include <emmintrin.h>
 #elif defined(RAPIDJSON_NEON)
-#include <arm_neon.h>
 #endif
 
 #ifdef __clang__
@@ -708,3 +730,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_RAPIDJSON_H_
+
+/** @} */

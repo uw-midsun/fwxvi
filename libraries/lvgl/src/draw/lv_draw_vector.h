@@ -1,6 +1,27 @@
-/**
- * @file lv_draw_vector.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_vector.h
  *
+ * @brief   Lv Draw Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_array.h"
+#include "../misc/lv_matrix.h"
+#include "lv_draw_image.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_vector
+ * @brief    lv_draw_vector Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_VECTOR_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_array.h"
-#include "../misc/lv_matrix.h"
-#include "lv_draw_image.h"
 
 #if LV_USE_VECTOR_GRAPHIC
 
@@ -571,3 +589,5 @@ typedef void (*vector_draw_task_cb)(void * ctx, const lv_vector_path_t * path, c
 #endif
 
 #endif /* LV_DRAW_VECTOR_H */
+
+/** @} */

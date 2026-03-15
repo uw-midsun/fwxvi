@@ -1,6 +1,25 @@
-/**
- * @file lv_evdev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_evdev.h
  *
+ * @brief   Lv Evdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_evdev
+ * @brief    lv_evdev Firmware
+ * @{
  */
 
 #ifndef LV_EVDEV_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_EVDEV
 
@@ -104,3 +121,5 @@ void lv_evdev_delete(lv_indev_t * indev);
 #endif
 
 #endif /*LV_EVDEV_H*/
+
+/** @} */

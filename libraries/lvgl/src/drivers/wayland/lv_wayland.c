@@ -1,12 +1,38 @@
-/**
- * @file lv_wayland.c
- */
+/************************************************************************************************
+ * @file    lv_wayland.c
+ *
+ * @brief   Lv Wayland
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/input.h>
+#include <poll.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <time.h>
+#include <unistd.h>
+#include <xkbcommon/xkbcommon.h>
+
+/* Inter-component Headers */
+#include "lv_wayland_private.h"
+#include "lv_wayland_private.h"
+
+/* Intra-component Headers */
+#include <linux/input-event-codes.h>
+#include <wayland-client.h>
+#include <wayland-cursor.h>
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_wayland_private.h"
 
 #if LV_USE_WAYLAND
 
@@ -21,32 +47,13 @@
     #endif
 #endif
 
-#include "lv_wayland_private.h"
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <poll.h>
-#include <sys/mman.h>
-#include <linux/input.h>
-#include <linux/input-event-codes.h>
-#include <wayland-client.h>
-#include <wayland-cursor.h>
-#include <xkbcommon/xkbcommon.h>
-
 /*********************
  *      DEFINES
  *********************/
 
-
 /**********************
  *      TYPEDEFS
  **********************/
-
 
 /**********************
  *  STATIC PROTOTYPES

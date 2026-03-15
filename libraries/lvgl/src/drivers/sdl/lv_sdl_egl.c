@@ -1,20 +1,29 @@
-/**
- * @file lv_sdl_egl.c
+/************************************************************************************************
+ * @file    lv_sdl_egl.c
  *
- */
+ * @brief   Lv Sdl Egl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <SDL2/SDL_syswm.h>
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_buf.h"
+#include "../../lv_conf_internal.h"
+#include "../opengles/lv_opengles_driver.h"
+#include "../opengles/lv_opengles_egl_private.h"
+#include "lv_sdl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_SDL_USE_EGL
-
-#include <SDL2/SDL_syswm.h>
-#include "lv_sdl_private.h"
-#include "../opengles/lv_opengles_egl_private.h"
-#include "../opengles/lv_opengles_driver.h"
-#include "../../draw/lv_draw_buf.h"
 
 /*********************
  *      DEFINES
@@ -141,7 +150,6 @@ static void deinit_display(lv_display_t * display)
     lv_sdl_backend_set_display_data(display, NULL);
 }
 
-
 static lv_egl_interface_t lv_sdl_get_egl_interface(lv_display_t * display)
 {
     return (lv_egl_interface_t) {
@@ -212,7 +220,6 @@ static size_t select_config_cb(void * driver_data, const lv_egl_config_t * confi
 #error "Unsupported color format"
 #endif
 
-
     for(size_t i = 0; i < config_count; ++i) {
         LV_LOG_TRACE("Got config %zu %#x %dx%d %d %d %d %d buffer size %d depth %d  samples %d stencil %d surface type %d renderable type %d",
                      i, configs[i].id,
@@ -249,7 +256,6 @@ static void flip_cb(void * driver_data, bool vsync)
     LV_UNUSED(driver_data);
     LV_UNUSED(vsync);
 }
-
 
 static SDL_Renderer * get_renderer(lv_display_t * display)
 {

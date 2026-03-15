@@ -1,6 +1,25 @@
-/**
- * @file lv_textarea.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_textarea.h
  *
+ * @brief   Lv Textarea
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../label/lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_textarea
+ * @brief    lv_textarea Firmware
+ * @{
  */
 
 #ifndef LV_TEXTAREA_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../label/lv_label.h"
 
 #if LV_USE_TEXTAREA != 0
 
@@ -355,3 +373,5 @@ void lv_textarea_cursor_up(lv_obj_t * obj);
 #endif
 
 #endif /*LV_TEXTAREA_H*/
+
+/** @} */

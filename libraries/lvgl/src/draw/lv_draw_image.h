@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_image.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_image.h
  *
+ * @brief   Lv Draw Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_style.h"
+#include "lv_draw.h"
+#include "lv_draw_buf.h"
+#include "lv_image_decoder.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_image
+ * @brief    lv_draw_image Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_IMAGE_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw.h"
-#include "lv_image_decoder.h"
-#include "lv_draw_buf.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -165,3 +183,5 @@ lv_image_src_t lv_image_src_get_type(const void * src);
 #endif
 
 #endif /*LV_DRAW_IMAGE_H*/
+
+/** @} */

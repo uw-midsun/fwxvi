@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSwRasterNeon.h
+ *
+ * @brief   Tvgswrasterneon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <arm_neon.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSwRasterNeon
+ * @brief    tvgSwRasterNeon Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,12 +45,9 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifdef THORVG_NEON_VECTOR_SUPPORT
-
-#include <arm_neon.h>
 
 //TODO : need to support windows ARM
  
@@ -35,13 +57,11 @@
 #define TVG_AARCH64 0
 #endif
 
-
 static inline uint8x8_t ALPHA_BLEND(uint8x8_t c, uint8x8_t a)
 {
     uint16x8_t t = vmull_u8(c, a);
     return vshrn_n_u16(t, 8);
 }
-
 
 static void neonRasterGrayscale8(uint8_t* dst, uint8_t val, uint32_t offset, int32_t len)
 {
@@ -63,7 +83,6 @@ static void neonRasterGrayscale8(uint8_t* dst, uint8_t val, uint32_t offset, int
         dst[i] = val;
     }
 }
-
 
 static void neonRasterPixel32(uint32_t *dst, uint32_t val, uint32_t offset, int32_t len)
 {
@@ -90,7 +109,6 @@ static void neonRasterPixel32(uint32_t *dst, uint32_t val, uint32_t offset, int3
     int32_t leftovers = len - neonFilled;
     while (leftovers--) *dst++ = val;
 }
-
 
 static bool neonRasterTranslucentRle(SwSurface* surface, const SwRle* rle, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
@@ -148,7 +166,6 @@ static bool neonRasterTranslucentRle(SwSurface* surface, const SwRle* rle, uint8
     return true;
 }
 
-
 static bool neonRasterTranslucentRect(SwSurface* surface, const SwBBox& region, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     auto h = static_cast<uint32_t>(region.max.y - region.min.y);
@@ -204,3 +221,5 @@ static bool neonRasterTranslucentRect(SwSurface* surface, const SwBBox& region, 
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

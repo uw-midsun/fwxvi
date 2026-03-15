@@ -1,18 +1,26 @@
-/**
- * @file lv_fs_uefi.c
+/************************************************************************************************
+ * @file    lv_fs_uefi.c
  *
- */
+ * @brief   Lv Fs Uefi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../drivers/uefi/lv_uefi_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lvgl.h"
 
 #if LV_USE_FS_UEFI && LV_USE_UEFI
-
-#include "../../drivers/uefi/lv_uefi_private.h"
-
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

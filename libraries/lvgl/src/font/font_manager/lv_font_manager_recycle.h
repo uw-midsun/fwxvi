@@ -1,6 +1,25 @@
-/**
- * @file lv_font_manager_recycle.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_font_manager_recycle.h
  *
+ * @brief   Lv Font Manager Recycle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_font_manager_recycle
+ * @brief    lv_font_manager_recycle Firmware
+ * @{
  */
 
 #ifndef LV_FONT_MANAGER_RECYCLE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../misc/lv_types.h"
 
 #if LV_USE_FONT_MANAGER
 
@@ -83,3 +100,5 @@ void lv_font_recycle_remove_fonts(lv_font_manager_recycle_t * manager, const cha
 #endif
 
 #endif /* LV_FONT_MANAGER_RECYCLE_H */
+
+/** @} */

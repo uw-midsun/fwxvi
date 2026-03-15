@@ -1,18 +1,27 @@
-/**
- * @file lv_array.c
- * Array.
- * The nodes are dynamically allocated by the 'lv_mem' module,
- */
+/************************************************************************************************
+ * @file    lv_array.c
+ *
+ * @brief   Lv Array
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_array.h"
+#include "lv_assert.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_array.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
 
-#include "lv_assert.h"
-#include "lv_types.h"
 /*********************
  *      DEFINES
  *********************/

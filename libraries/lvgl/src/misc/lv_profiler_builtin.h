@@ -1,6 +1,26 @@
-/**
- * @file lv_profiler_builtin.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_profiler_builtin.h
  *
+ * @brief   Lv Profiler Builtin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_profiler_builtin
+ * @brief    lv_profiler_builtin Firmware
+ * @{
  */
 
 #ifndef LV_PROFILER_BUILTIN_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../lv_conf_internal.h"
-
 #if LV_USE_PROFILER && LV_USE_PROFILER_BUILTIN
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -83,3 +99,5 @@ void lv_profiler_builtin_write(const char * func, char tag);
 #endif
 
 #endif /*LV_PROFILER_BUILTIN_H*/
+
+/** @} */

@@ -1,18 +1,26 @@
-/**
- * @file lv_vg_lite_pending.c
+/************************************************************************************************
+ * @file    lv_vg_lite_pending.c
  *
- */
+ * @brief   Lv Vg Lite Pending
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_array.h"
+#include "../../misc/lv_assert.h"
+#include "lv_vg_lite_pending.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_pending.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_array.h"
 
 /*********************
  *      DEFINES

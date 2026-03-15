@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stb_rect_pack.h
+ *
+ * @brief   Stb Rect Pack
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <assert.h>
+    #include <stdlib.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup stb_rect_pack
+ * @brief    stb_rect_pack Firmware
+ * @{
+ */
+
 // stb_rect_pack.h - v1.01 - public domain - rectangle packing
 // Sean Barrett 2014
 //
@@ -207,12 +232,10 @@ struct stbrp_context {
 
 #ifdef STB_RECT_PACK_IMPLEMENTATION
 #ifndef STBRP_SORT
-    #include <stdlib.h>
     #define STBRP_SORT qsort
 #endif
 
 #ifndef STBRP_ASSERT
-    #include <assert.h>
     #define STBRP_ASSERT assert
 #endif
 
@@ -631,3 +654,5 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
+
+/** @} */

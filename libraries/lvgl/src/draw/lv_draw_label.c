@@ -1,25 +1,35 @@
-/**
- * @file lv_draw_label.c
+/************************************************************************************************
+ * @file    lv_draw_label.c
  *
- */
+ * @brief   Lv Draw Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../core/lv_obj.h"
+#include "../core/lv_obj_event.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_bidi_private.h"
+#include "../misc/lv_math.h"
+#include "../misc/lv_text_private.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_draw_label_private.h"
+#include "lv_draw_private.h"
+#include "lv_draw_rect_private.h"
+#include "lv_draw_vector_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_label_private.h"
-#include "lv_draw_private.h"
-#include "../misc/lv_area_private.h"
-#include "lv_draw_vector_private.h"
-#include "lv_draw_rect_private.h"
-#include "../core/lv_obj.h"
-#include "../misc/lv_math.h"
-#include "../core/lv_obj_event.h"
-#include "../misc/lv_bidi_private.h"
-#include "../misc/lv_text_private.h"
-#include "../misc/lv_assert.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -120,7 +130,6 @@ void LV_ATTRIBUTE_FAST_MEM lv_draw_label(lv_layer_t * layer, const lv_draw_label
         lv_draw_label(ds_layer, &ds_dsc, coords);
         lv_draw_layer_finish_drop_shadow(ds_layer, &dsc->base);
     }
-
 
     lv_draw_task_t * t = lv_draw_add_task(layer, coords, LV_DRAW_TASK_TYPE_LABEL);
 

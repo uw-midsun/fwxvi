@@ -11,10 +11,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-/* Intra-component Headers */
+/* Inter-component Headers */
 #include "clut.h"
 #include "lvgl_screens.h"
 
+/* Intra-component Headers */
 
 static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   ClutEntry color = clut_get_gui_color(color_id);

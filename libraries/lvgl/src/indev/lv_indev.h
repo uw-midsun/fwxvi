@@ -1,6 +1,28 @@
-/**
- * @file lv_indev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_indev.h
  *
+ * @brief   Lv Indev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_group.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_event.h"
+#include "../misc/lv_timer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_indev
+ * @brief    lv_indev Firmware
+ * @{
  */
 
 #ifndef LV_INDEV_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../core/lv_group.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_timer.h"
-#include "../misc/lv_event.h"
 
 /*********************
  *      DEFINES
@@ -46,7 +64,6 @@ typedef enum {
     LV_INDEV_MODE_TIMER,
     LV_INDEV_MODE_EVENT,
 } lv_indev_mode_t;
-
 
 /* Supported types of gestures */
 typedef enum {
@@ -333,7 +350,6 @@ lv_dir_t lv_indev_get_gesture_dir(const lv_indev_t * indev);
  */
 uint32_t lv_indev_get_key(const lv_indev_t * indev);
 
-
 /**
  * Get the counter for consecutive clicks within a short distance and time.
  * The counter is updated before LV_EVENT_SHORT_CLICKED is fired.
@@ -498,3 +514,5 @@ void lv_indev_set_external_data(lv_indev_t * indev, void * data, void (* free_cb
 #endif
 
 #endif /*LV_INDEV_H*/
+
+/** @} */

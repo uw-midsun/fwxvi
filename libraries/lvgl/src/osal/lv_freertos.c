@@ -1,7 +1,23 @@
-/**
- * @file lv_freertos.c
+/************************************************************************************************
+ * @file    lv_freertos.c
  *
- */
+ * @brief   Lv Freertos
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "atomic.h"
+    #include "freertos/atomic.h"
+#include "../core/lv_global.h"
+#include "../misc/lv_log.h"
+#include "../tick/lv_tick.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2023 NXP
@@ -12,18 +28,11 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 #if LV_USE_OS == LV_OS_FREERTOS
 
 #ifdef ESP_PLATFORM
-    #include "freertos/atomic.h"
 #else
-    #include "atomic.h"
 #endif
-
-#include "../tick/lv_tick.h"
-#include "../misc/lv_log.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -390,7 +399,6 @@ lv_result_t lv_thread_sync_signal_isr(lv_thread_sync_t * pxCond)
 
     return LV_RESULT_OK;
 }
-
 
 void lv_freertos_task_switch_in(const char * name)
 {

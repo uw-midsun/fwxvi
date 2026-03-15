@@ -1,6 +1,26 @@
-/**
- * @file lv_st_ltdc.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_st_ltdc.h
  *
+ * @brief   Lv St Ltdc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_st_ltdc
+ * @brief    lv_st_ltdc Firmware
+ * @{
  */
 
 #ifndef LV_ST_LTDC_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_ST_LTDC
-
-#include "../../../display/lv_display.h"
 
 /*********************
  *      DEFINES
@@ -63,3 +80,5 @@ lv_display_t * lv_st_ltdc_create_partial(void * render_buf_1, void * render_buf_
 #endif
 
 #endif /*LV_ST_LTDC_H*/
+
+/** @} */

@@ -1,21 +1,31 @@
-/**
- * @file lv_obj_style.c
+/************************************************************************************************
+ * @file    lv_obj_style.c
  *
- */
+ * @brief   Lv Obj Style
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../misc/lv_anim_private.h"
+#include "../misc/lv_color.h"
+#include "../stdlib/lv_string.h"
+#include "lv_obj_class_private.h"
+#include "lv_obj_private.h"
+#include "lv_obj_style_private.h"
+#include "lv_observer_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_private.h"
-#include "../misc/lv_anim_private.h"
-#include "lv_obj_style_private.h"
-#include "lv_obj_class_private.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "../misc/lv_color.h"
-#include "../stdlib/lv_string.h"
-#include "../core/lv_global.h"
-#include "lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -316,7 +326,6 @@ bool lv_obj_style_get_disabled(lv_obj_t * obj, const lv_style_t * style, lv_styl
     LV_LOG_WARN("%p style was not found on %p widget with %6" LV_PRIx32 " selector", (void *)style, (void *)obj, selector);
     return false;
 }
-
 
 void lv_obj_enable_style_refresh(bool en)
 {
@@ -735,9 +744,7 @@ lv_observer_t * lv_obj_bind_style_prop(lv_obj_t * obj, lv_style_prop_t prop, lv_
     return observable;
 }
 
-
 #endif /*LV_USE_OBSERVER*/
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -1312,8 +1319,6 @@ static void remove_style_core(lv_obj_t * obj, const lv_style_t * style, lv_style
     }
 }
 
-
-
 #if LV_USE_OBSERVER
 
 static void bind_style_observer_cb(lv_observer_t * observer, lv_subject_t * subject)
@@ -1340,6 +1345,5 @@ static void bind_style_prop_observer_cb(lv_observer_t * observer, lv_subject_t *
 
     lv_obj_set_local_style_prop(observer->target, p->prop, style_v, p->selector);
 }
-
 
 #endif /*LV_USE_OBSERVER*/

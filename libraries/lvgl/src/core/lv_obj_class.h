@@ -1,6 +1,27 @@
-/**
- * @file lv_obj_class.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_class.h
  *
+ * @brief   Lv Obj Class
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+#include "../misc/lv_types.h"
+#include "lv_obj_property.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_class
+ * @brief    lv_obj_class Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_CLASS_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_area.h"
-#include "lv_obj_property.h"
 
 /*********************
  *      DEFINES
@@ -87,3 +105,5 @@ void lv_obj_set_external_data(lv_obj_t * obj, void * data, void (* free_cb)(void
 #endif
 
 #endif /*LV_OBJ_CLASS_H*/
+
+/** @} */

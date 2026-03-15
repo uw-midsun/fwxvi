@@ -1,6 +1,26 @@
-/**
- * @file lv_slider_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_slider_private.h
  *
+ * @brief   Lv Slider Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../bar/lv_bar_private.h"
+#include "lv_slider.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_slider_private
+ * @brief    lv_slider_private Firmware
+ * @{
  */
 
 #ifndef LV_SLIDER_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../bar/lv_bar_private.h"
-#include "lv_slider.h"
 
 #if LV_USE_SLIDER != 0
 
@@ -37,7 +54,6 @@ struct _lv_slider_t {
     uint8_t left_knob_focus : 1;  /**< 1: with encoder now the right knob can be adjusted */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -53,3 +69,5 @@ struct _lv_slider_t {
 #endif
 
 #endif /*LV_SLIDER_PRIVATE_H*/
+
+/** @} */

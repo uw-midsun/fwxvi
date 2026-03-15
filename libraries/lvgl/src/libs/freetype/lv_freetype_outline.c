@@ -1,15 +1,24 @@
-/**
- * @file lv_freetype_outline.c
+/************************************************************************************************
+ * @file    lv_freetype_outline.c
  *
- */
+ * @brief   Lv Freetype Outline
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "../../misc/lv_event_private.h"
+#include "lv_freetype_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../misc/lv_event_private.h"
-#include "../../lvgl.h"
-#include "lv_freetype_private.h"
 
 #if LV_USE_FREETYPE
 
@@ -321,7 +330,6 @@ static lv_freetype_outline_t outline_create(
         return NULL;
     }
 
-
     /**
      * Disable AUTOHINT(https://freetype.org/autohinting/hinter.html) to avoid display clipping
      * caused by inconsistent glyph measurement and outline.
@@ -339,7 +347,6 @@ static lv_freetype_outline_t outline_create(
             FT_ERROR_MSG("FT_Outline_Embolden", error);
         }
     }
-
 
     FT_Outline_Funcs outline_funcs = {
         .move_to = outline_move_to_cb,

@@ -1,6 +1,27 @@
-/**
- * @file lv_matrix.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_matrix.h
  *
+ * @brief   Lv Matrix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_area.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_matrix
+ * @brief    lv_matrix Firmware
+ * @{
  */
 
 #ifndef LV_MATRIX_H
@@ -14,12 +35,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../lv_conf_internal.h"
-
 #if LV_USE_MATRIX
-
-#include "lv_types.h"
-#include "lv_area.h"
 
 /*********************
  *      DEFINES
@@ -142,3 +158,5 @@ void lv_matrix_transpose(const lv_matrix_t * src, lv_matrix_t * dst);
 #endif
 
 #endif /*LV_MATRIX_H*/
+
+/** @} */

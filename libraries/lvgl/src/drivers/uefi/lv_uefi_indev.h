@@ -1,6 +1,26 @@
-/**
- * @file lv_uefi_indev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi_indev.h
  *
+ * @brief   Lv Uefi Indev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "lv_uefi.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_uefi_indev
+ * @brief    lv_uefi_indev Firmware
+ * @{
  */
 
 #ifndef __LV_UEFI_INDEV_H__
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi.h"
 
 /*********************
  *      DEFINES
@@ -107,3 +123,5 @@ void lv_uefi_simple_text_input_indev_add_all(lv_indev_t * indev);
 
 #endif //__LV_UEFI_INDEV_H__
 
+
+/** @} */

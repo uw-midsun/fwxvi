@@ -1,6 +1,29 @@
-/**
- * @file lv_image_decoder.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_image_decoder.h
  *
+ * @brief   Lv Image Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_fs.h"
+#include "../misc/lv_types.h"
+#include "lv_draw_buf.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_image_decoder
+ * @brief    lv_image_decoder Firmware
+ * @{
  */
 
 #ifndef LV_IMAGE_DECODER_H
@@ -13,12 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "lv_draw_buf.h"
-#include "../misc/lv_fs.h"
-#include "../misc/lv_types.h"
-#include "../misc/lv_area.h"
 
 /*********************
  *      DEFINES
@@ -201,3 +218,5 @@ lv_draw_buf_t * lv_image_decoder_post_process(lv_image_decoder_dsc_t * dsc, lv_d
 #endif
 
 #endif /*LV_IMAGE_DECODER_H*/
+
+/** @} */

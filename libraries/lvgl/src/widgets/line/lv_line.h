@@ -1,6 +1,25 @@
-/**
- * @file lv_line.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_line.h
  *
+ * @brief   Lv Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_line
+ * @brief    lv_line Firmware
+ * @{
  */
 
 #ifndef LV_LINE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 #if LV_USE_LINE != 0
 
 /*********************
@@ -123,3 +141,5 @@ bool lv_line_get_y_invert(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_LINE_H*/
+
+/** @} */

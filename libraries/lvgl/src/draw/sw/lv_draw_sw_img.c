@@ -1,33 +1,42 @@
-/**
- * @file lv_draw_sw_img.c
+/************************************************************************************************
+ * @file    lv_draw_sw_img.c
  *
- */
+ * @brief   Lv Draw Sw Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "arm2d/lv_draw_sw_helium.h"
+#include "../../core/lv_global.h"
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display.h"
+#include "../../display/lv_display_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_image_private.h"
+#include "../lv_draw_private.h"
+#include "../lv_image_decoder_private.h"
+#include "blend/lv_draw_sw_blend_private.h"
+#include "lv_draw_sw.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_area_private.h"
-#include "blend/lv_draw_sw_blend_private.h"
-#include "../lv_image_decoder_private.h"
-#include "../lv_draw_image_private.h"
-#include "../lv_draw_private.h"
-#include "lv_draw_sw.h"
 #if LV_USE_DRAW_SW
 
-#include "../../display/lv_display.h"
-#include "../../display/lv_display_private.h"
-#include "../../misc/lv_log.h"
-#include "../../core/lv_refr_private.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_color.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_global.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "arm2d/lv_draw_sw_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 /*********************
@@ -63,11 +72,9 @@
  *  STATIC PROTOTYPES
  **********************/
 
-
 static void img_draw_core(lv_draw_task_t * t, const lv_draw_image_dsc_t * draw_dsc,
                           const lv_image_decoder_dsc_t * decoder_dsc, lv_draw_image_sup_t * sup,
                           const lv_area_t * img_coords, const lv_area_t * clipped_img_area);
-
 
 #if LV_DRAW_SW_COMPLEX
 static void radius_only(lv_draw_task_t * t, const lv_draw_image_dsc_t * draw_dsc,

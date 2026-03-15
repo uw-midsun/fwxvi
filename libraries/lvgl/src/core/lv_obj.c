@@ -1,32 +1,42 @@
-/**
- * @file lv_obj.c
+/************************************************************************************************
+ * @file    lv_obj.c
  *
- */
+ * @brief   Lv Obj
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../indev/lv_indev.h"
+#include "../indev/lv_indev_private.h"
+#include "../misc/lv_anim_timeline.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_event_private.h"
+#include "../misc/lv_log.h"
+#include "../misc/lv_math.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_string.h"
+#include "../themes/lv_theme.h"
+#include "../tick/lv_tick.h"
+#include "lv_group.h"
+#include "lv_obj_class_private.h"
+#include "lv_obj_draw_private.h"
+#include "lv_obj_event_private.h"
+#include "lv_obj_private.h"
+#include "lv_obj_style_private.h"
+#include "lv_refr.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_private.h"
-#include "../misc/lv_event_private.h"
-#include "../misc/lv_area_private.h"
-#include "lv_obj_style_private.h"
-#include "lv_obj_event_private.h"
-#include "lv_obj_class_private.h"
-#include "../indev/lv_indev.h"
-#include "../indev/lv_indev_private.h"
-#include "lv_refr.h"
-#include "lv_group.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "../themes/lv_theme.h"
-#include "../misc/lv_assert.h"
-#include "../misc/lv_math.h"
-#include "../misc/lv_log.h"
-#include "../misc/lv_types.h"
-#include "../misc/lv_anim_timeline.h"
-#include "../tick/lv_tick.h"
-#include "../stdlib/lv_string.h"
-#include "lv_obj_draw_private.h"
 
 /*********************
  *      DEFINES
@@ -729,7 +739,6 @@ static void lv_obj_draw(lv_event_t * e)
             draw_dsc.border_post = 1;
         }
 
-
         lv_draw_rect(layer, &draw_dsc, &coords);
     }
     else if(code == LV_EVENT_DRAW_MAIN_END) {
@@ -1273,7 +1282,6 @@ static void play_timeline_on_trigger_event_cb(lv_event_t * e)
     }
     lv_anim_timeline_start(dsc->at);
 }
-
 
 static void delete_on_screen_unloaded_event_cb(lv_event_t * e)
 {

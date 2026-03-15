@@ -1,6 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tree.h
+ *
+ * @brief   Lv Tree
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_tree.h
- * Tree. The tree nodes are dynamically allocated by the 'lv_mem' module.
+ * @defgroup lv_tree
+ * @brief    lv_tree Firmware
+ * @{
  */
 
 #ifndef LV_TREE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -107,3 +125,5 @@ bool lv_tree_walk(const lv_tree_node_t * node,
 #endif
 
 #endif
+
+/** @} */

@@ -1,20 +1,29 @@
-/**
- * @file lv_svg_decoder.c
+/************************************************************************************************
+ * @file    lv_svg_decoder.c
  *
- */
+ * @brief   Lv Svg Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../display/lv_display_private.h"
+#include "../../draw/lv_draw_buf_private.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lv_svg.h"
+#include "lv_svg_decoder.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
 
 #if LV_USE_SVG
-#include "lv_svg_decoder.h"
-
-#include "lv_svg.h"
-#include "../../draw/lv_draw_buf_private.h"
-#include "../../display/lv_display_private.h"
 
 /*********************
  *      DEFINES

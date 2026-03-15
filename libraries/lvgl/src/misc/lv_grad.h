@@ -1,6 +1,27 @@
-/**
- * @file lv_grad.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_grad.h
  *
+ * @brief   Lv Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_area.h"
+#include "lv_color.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_grad
+ * @brief    lv_grad Firmware
+ * @{
  */
 
 #ifndef LV_GRAD_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_color.h"
-#include "lv_area.h"
 
 /*********************
  *      DEFINES
@@ -87,7 +105,6 @@ typedef struct {
     } params;
     void * state;
 } lv_grad_dsc_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -174,3 +191,5 @@ void lv_grad_conical_init(lv_grad_dsc_t * dsc, int32_t center_x, int32_t center_
 #endif
 
 #endif /*LV_GRAD_H*/
+
+/** @} */

@@ -1,22 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_blend_riscv_vector_emulation.h
+ *
+ * @brief   Lv Blend Riscv Vector Emulation
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_blend_riscv_vector_emulation.h
- * Software emulation of RISC-V Vector Extension (RVV 1.0) intrinsics
- *
- * This header provides pure C implementations of RVV intrinsics to enable
- * testing and verification on non-RVV platforms. The implementations follow
- * the RVV specification as documented in:
- * https://dzaima.github.io/intrinsics-viewer/
- *
- * Usage:
- * 1. On systems without RVV support, include this header BEFORE <riscv_vector.h>
- * 2. Or define RISCV_VECTOR_EMULATION before including actual <riscv_vector.h>
- * 3. All __riscv_* functions will be emulated in software
- *
- * Limitations:
- * - No performance optimization (this is software emulation)
- * - Vector length (vl) is tracked but all operations work on single elements in a loop
- * - Predication and masking are simplified but functionally correct
- * - LMUL < 1 (fractional multipliers) are not supported
+ * @defgroup lv_blend_riscv_vector_emulation
+ * @brief    lv_blend_riscv_vector_emulation Firmware
+ * @{
  */
 
 #ifndef LV_BLEND_RISCV_VECTOR_EMULATION_H
@@ -25,12 +31,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../../../../lv_conf_internal.h"
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
-
-#include <stdint.h>
-#include <string.h>
-#include <stddef.h>
 
 /* ============================================================================
  * Vector Type Definitions
@@ -919,3 +920,5 @@ static inline vuint16m2_t __riscv_vnsrl_wx_u16m2(vuint32m4_t v, uint32_t x, size
 #endif
 
 #endif /* LV_BLEND_RISCV_VECTOR_EMULATION_H */
+
+/** @} */

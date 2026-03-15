@@ -1,24 +1,31 @@
-/**
- * @file lv_xkb.c
+/************************************************************************************************
+ * @file    lv_xkb.c
  *
- */
+ * @brief   Lv Xkb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-
-#include "lv_xkb_private.h"
-
-#if defined(LV_LIBINPUT_XKB) && LV_LIBINPUT_XKB
-
-#include "../../core/lv_group.h"
-#include "../../misc/lv_log.h"
-
+/* Standard library Headers */
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../misc/lv_log.h"
+#include "lv_xkb_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if defined(LV_LIBINPUT_XKB) && LV_LIBINPUT_XKB
 
 /*********************
  *      DEFINES

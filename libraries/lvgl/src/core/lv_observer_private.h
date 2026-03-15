@@ -1,6 +1,25 @@
-/**
- * @file lv_observer_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_observer_private.h
  *
+ * @brief   Lv Observer Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_observer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_observer_private
+ * @brief    lv_observer_private Firmware
+ * @{
  */
 
 #ifndef LV_OBSERVER_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_observer.h"
 
 #if LV_USE_OBSERVER
 
@@ -65,3 +82,5 @@ struct _lv_subject_increment_dsc_t {
 #endif
 
 #endif /*LV_OBSERVER_PRIVATE_H*/
+
+/** @} */

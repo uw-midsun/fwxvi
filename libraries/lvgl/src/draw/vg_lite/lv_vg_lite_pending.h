@@ -1,6 +1,25 @@
-/**
- * @file lv_vg_lite_pending.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_pending.h
  *
+ * @brief   Lv Vg Lite Pending
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_pending
+ * @brief    lv_vg_lite_pending Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_PENDING_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../misc/lv_types.h"
 
 #if LV_USE_DRAW_VG_LITE
 
@@ -87,3 +104,5 @@ void lv_vg_lite_pending_swap(lv_vg_lite_pending_t * pending);
 #endif
 
 #endif /*LV_VG_LITE_PENDING_H*/
+
+/** @} */

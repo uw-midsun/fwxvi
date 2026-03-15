@@ -1,6 +1,25 @@
-/**
- * @file nuttx_lcd_dev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_lcd_dev.h
  *
+ * @brief   Nuttx Lcd Dev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "nuttx_video_fb.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_lcd_dev
+ * @brief    nuttx_lcd_dev Firmware
+ * @{
  */
 
 #ifndef NUTTX_LCD_DEV_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "nuttx_video_fb.h"
 
 /*********************
  *      DEFINES
@@ -102,3 +119,5 @@ struct lcd_planeinfo_s {
 #endif
 
 #endif /*NUTTX_LCD_DEV_H*/
+
+/** @} */

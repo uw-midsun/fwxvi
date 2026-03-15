@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_pxp.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_pxp.h
  *
+ * @brief   Lv Draw Pxp
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_pxp
+ * @brief    lv_draw_pxp Firmware
+ * @{
  */
 
 /**
@@ -20,13 +42,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "../../lv_draw_private.h"
-#include "../../../display/lv_display_private.h"
-#include "../../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -80,3 +97,5 @@ void lv_draw_pxp_layer(lv_draw_task_t * t);
 #endif
 
 #endif /*LV_DRAW_PXP_H*/
+
+/** @} */

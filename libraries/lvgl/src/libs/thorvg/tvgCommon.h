@@ -1,3 +1,31 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgCommon.h
+ *
+ * @brief   Tvgcommon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <mutex>
+#include <sys/time.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "config.h"
+#include "thorvg.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgCommon
+ * @brief    tvgCommon Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +48,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_COMMON_H_
 #define _TVG_COMMON_H_
-
-#include "config.h"
-#include "thorvg.h"
-#include <mutex>
 
 // using namespace std;
 using std::string;
@@ -83,14 +106,11 @@ using Size = Point;
 
 uint16_t THORVG_VERSION_NUMBER();
 
-
 #define P(A) ((A)->pImpl)              //Access to pimpl.
 #define PP(A) (((Paint*)(A))->pImpl)   //Access to pimpl.
 
-
 //for debugging
 #if 0
-#include <sys/time.h>
 static inline double THORVG_TIMESTAMP()
 {
    struct timeval tv;
@@ -103,3 +123,5 @@ static inline double THORVG_TIMESTAMP()
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

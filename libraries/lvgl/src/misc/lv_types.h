@@ -1,6 +1,31 @@
-/**
- * @file lv_types.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_types.h
  *
+ * @brief   Lv Types
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+#include LV_INTTYPES_INCLUDE
+#include LV_LIMITS_INCLUDE
+#include LV_STDARG_INCLUDE
+#include LV_STDBOOL_INCLUDE
+#include LV_STDDEF_INCLUDE
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_types
+ * @brief    lv_types Firmware
+ * @{
  */
 
 #ifndef LV_TYPES_H
@@ -13,15 +38,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
 
 #ifndef __ASSEMBLY__
-#include LV_STDINT_INCLUDE
-#include LV_STDDEF_INCLUDE
-#include LV_STDBOOL_INCLUDE
-#include LV_INTTYPES_INCLUDE
-#include LV_LIMITS_INCLUDE
-#include LV_STDARG_INCLUDE
 #endif
 
 /*********************
@@ -383,7 +401,6 @@ typedef struct _lv_sysmon_perf_info_t lv_sysmon_perf_info_t;
 
 #endif /*LV_USE_SYSMON*/
 
-
 #if LV_USE_EVDEV
 typedef struct _lv_evdev_discovery_t lv_evdev_discovery_t;
 #endif
@@ -459,3 +476,5 @@ typedef struct _lv_draw_eve_unit_t lv_draw_eve_unit_t;
 #endif
 
 #endif /*LV_TYPES_H*/
+
+/** @} */

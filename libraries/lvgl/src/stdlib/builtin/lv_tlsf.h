@@ -1,4 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tlsf.h
+ *
+ * @brief   Lv Tlsf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../lv_conf_internal.h"
+#include "../../misc/lv_ll.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tlsf
+ * @brief    lv_tlsf Firmware
+ * @{
+ */
+
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
 
 #ifndef LV_TLSF_H
@@ -40,9 +65,6 @@
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ** SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-#include "../../misc/lv_ll.h"
-#include "../../misc/lv_types.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -94,3 +116,5 @@ int lv_tlsf_check_pool(lv_pool_t pool);
 #endif /*LV_TLSF_H*/
 
 #endif /*LV_STDLIB_BUILTIN*/
+
+/** @} */

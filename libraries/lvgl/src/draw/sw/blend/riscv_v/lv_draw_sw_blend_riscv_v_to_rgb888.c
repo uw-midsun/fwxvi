@@ -1,24 +1,27 @@
-/**
- * @file lv_draw_sw_blend_riscv_v_to_rgb888.c
- * RGB888/XRGB8888 blend implementation for RISC-V Vector Extension (RVV 1.0)
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_riscv_v_to_rgb888.c
  *
- * Supports both dest_px_size=3 (RGB888) and dest_px_size=4 (XRGB8888)
- * Reference: lv_draw_sw_blend_neon_to_rgb888.c
+ * @brief   Lv Draw Sw Blend Riscv V To Rgb888
  *
- * NOTE: All RVV blend logic is inlined to avoid passing vuint32m4_t as function
- * parameters, which causes complex stack operations that can corrupt the stack.
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_draw_sw_blend_riscv_v_to_rgb888.h"
-#if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "../../../../misc/lv_color.h"
 #include "../../../../misc/lv_types.h"
 #include "../lv_draw_sw_blend_private.h"
 #include "lv_blend_riscv_v_private.h"
+#include "lv_draw_sw_blend_riscv_v_to_rgb888.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+#if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_RISCV_V
 
 /*********************
  *      DEFINES
@@ -335,7 +338,6 @@ lv_result_t lv_draw_sw_blend_riscv_v_color_to_rgb888_with_opa_mask(lv_draw_sw_bl
     }
     else { /* dest_px_size == 4 */
         /* XRGB8888: 4 bytes per pixel - use segmented load/store like RGB888 */
-
 
         for(int32_t y = 0; y < h; y++) {
             /* Process with RVV using segmented load/store for 4-byte pixels */

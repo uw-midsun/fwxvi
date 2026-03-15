@@ -1,7 +1,24 @@
-/**
- * @file lv_draw_eve.c
+/************************************************************************************************
+ * @file    lv_draw_eve.c
  *
- */
+ * @brief   Lv Draw Eve
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_refr.h"
+#include "../../display/lv_display_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_draw_eve.h"
+#include "lv_draw_eve_private.h"
+#include "lv_draw_eve_ram_g.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 3 dic 2023
  *      Author: juanj
@@ -13,15 +30,7 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-
-#include "../../core/lv_refr.h"
-#include "../../display/lv_display_private.h"
-#include "../../stdlib/lv_string.h"
-#include "lv_draw_eve_ram_g.h"
-#include "lv_draw_eve.h"
-#include "lv_eve.h"
 
 /*********************
  *      DEFINES
@@ -96,7 +105,6 @@ static int32_t eve_dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
     t = lv_draw_get_next_available_task(layer, NULL, DRAW_UNIT_ID_EVE);
     if(t == NULL) return LV_DRAW_UNIT_IDLE;
 
-
     t->state = LV_DRAW_TASK_STATE_IN_PROGRESS;
     draw_eve_unit->task_act = t;
 
@@ -107,7 +115,6 @@ static int32_t eve_dispatch(lv_draw_unit_t * draw_unit, lv_layer_t * layer)
 
     /*The draw unit is free now. Request a new dispatching as it can get a new task*/
     lv_draw_dispatch_request();
-
 
     return 1;
 }
@@ -159,6 +166,5 @@ static void disp_delete_cb(lv_event_t * e)
     lv_draw_eve_unit_g->disp = NULL;
     lv_draw_eve_unit_g = NULL;
 }
-
 
 #endif /*LV_USE_DRAW_EVE*/

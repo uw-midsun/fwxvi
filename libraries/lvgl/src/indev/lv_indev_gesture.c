@@ -1,26 +1,28 @@
-/******************************************************************
- * @file lv_indev_gesture.c
+/************************************************************************************************
+ * @file    lv_indev_gesture.c
  *
- * Recognize gestures that consist of multiple touch events
+ * @brief   Lv Indev Gesture
  *
- * Copyright (c) 2024 EDGEMTech Ltd
- *
- * Author EDGEMTech Ltd. (erik.tagirov@edgemtech.ch)
- *
- ******************************************************************/
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../misc/lv_event_private.h"
+#include "lv_indev_gesture.h"
+#include "lv_indev_gesture_private.h"
+#include "lv_indev_private.h"
+
+/* Intra-component Headers */
 
 /********************
  *      INCLUDES
  ********************/
 
-#include "lv_indev_private.h"
-#include "../misc/lv_event_private.h"
-
 #if LV_USE_GESTURE_RECOGNITION
-
-#include <math.h>
-#include "lv_indev_gesture.h"
-#include "lv_indev_gesture_private.h"
 
 /********************
  *      DEFINES
@@ -30,7 +32,6 @@
 #define LV_GESTURE_PINCH_UP_THRESHOLD 1.5f /* Default value - start sending events when reached */
 #define LV_GESTURE_PINCH_MAX_INITIAL_SCALE 2.5f /* Default value */
 #define LV_GESTURE_ROTATION_ANGLE_RAD_THRESHOLD 0.2f /* Default value - start sending events when reached */
-
 
 /********************
  *     TYPEDEFS
@@ -267,7 +268,6 @@ void lv_indev_set_gesture_data(lv_indev_data_t * data, lv_indev_gesture_recogniz
             break;
     }
 }
-
 
 void lv_indev_gesture_detect_pinch(lv_indev_gesture_recognizer_t * recognizer, lv_indev_touch_data_t * touches,
                                    uint16_t touch_cnt)
@@ -603,7 +603,6 @@ void lv_indev_gesture_recognizers_set_data(lv_indev_t * indev, lv_indev_data_t *
         }
     }
 }
-
 
 /********************
  * STATIC FUNCTIONS
@@ -976,6 +975,5 @@ static void indev_delete_event_cb(lv_event_t * e)
         }
     }
 }
-
 
 #endif /* LV_USE_GESTURE_RECOGNITION */

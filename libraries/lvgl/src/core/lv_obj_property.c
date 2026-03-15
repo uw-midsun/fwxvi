@@ -1,17 +1,27 @@
-/**
- * @file lv_obj_property.c
+/************************************************************************************************
+ * @file    lv_obj_property.c
  *
- */
+ * @brief   Lv Obj Property
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../misc/lv_utils.h"
+#include "../stdlib/lv_string.h"
+#include "lv_obj_class_private.h"
+#include "lv_obj_private.h"
+#include "lv_obj_property.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_private.h"
-#include "../core/lv_obj.h"
-#include "../stdlib/lv_string.h"
-#include "../misc/lv_utils.h"
-#include "lv_obj_property.h"
-#include "lv_obj_class_private.h"
 
 #if LV_USE_OBJ_PROPERTY
 
@@ -49,7 +59,6 @@
                 break; \
         } \
     }
-
 
 /**********************
  *      TYPEDEFS

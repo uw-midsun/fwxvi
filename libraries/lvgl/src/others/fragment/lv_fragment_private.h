@@ -1,6 +1,25 @@
-/**
- * @file lv_fragment_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_fragment_private.h
  *
+ * @brief   Lv Fragment Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_fragment.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_fragment_private
+ * @brief    lv_fragment_private Firmware
+ * @{
  */
 
 #ifndef LV_FRAGMENT_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_fragment.h"
 
 #if LV_USE_FRAGMENT
 
@@ -75,3 +92,5 @@ struct _lv_fragment_managed_states_t  {
 #endif
 
 #endif /*LV_FRAGMENT_PRIVATE_H*/
+
+/** @} */

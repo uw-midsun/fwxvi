@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_mask.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_mask.h
  *
+ * @brief   Lv Draw Mask
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+#include "lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_mask
+ * @brief    lv_draw_mask Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_MASK_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -73,3 +91,5 @@ void lv_draw_mask_rect(lv_layer_t * layer, const lv_draw_mask_rect_dsc_t * dsc);
 #endif
 
 #endif /*LV_DRAW_MASK_H*/
+
+/** @} */

@@ -1,6 +1,25 @@
-/**
- * @file lv_font_fmt_txt_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_font_fmt_txt_private.h
  *
+ * @brief   Lv Font Fmt Txt Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_font_fmt_txt.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_font_fmt_txt_private
+ * @brief    lv_font_fmt_txt_private Firmware
+ * @{
  */
 
 #ifndef LV_FONT_FMT_TXT_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_font_fmt_txt.h"
 
 /*********************
  *      DEFINES
@@ -54,3 +71,5 @@ typedef struct {
 #endif
 
 #endif /*LV_FONT_FMT_TXT_PRIVATE_H*/
+
+/** @} */

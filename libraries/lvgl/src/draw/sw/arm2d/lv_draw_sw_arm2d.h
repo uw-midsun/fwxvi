@@ -1,6 +1,30 @@
-/**
- * @file lv_draw_sw_arm2d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_arm2d.h
  *
+ * @brief   Lv Draw Sw Arm2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../draw/lv_draw_image_private.h"
+#include "../../../draw/lv_draw_private.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_area_private.h"
+#include "__arm_2d_impl.h"
+#include "arm_2d.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_arm2d
+ * @brief    lv_draw_sw_arm2d Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_ARM2D_H
@@ -16,16 +40,9 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-#include "../../../misc/lv_area_private.h"
-#include "../../../draw/lv_draw_private.h"
-#include "../../../draw/lv_draw_image_private.h"
-
 #if LV_USE_DRAW_ARM2D_SYNC
 
 #define __ARM_2D_IMPL__
-#include "arm_2d.h"
-#include "__arm_2d_impl.h"
 
 #if defined(__IS_COMPILER_ARM_COMPILER_5__)
 #pragma diag_suppress 174,177,188,68,513,144,1296
@@ -677,3 +694,5 @@ static inline lv_result_t lv_draw_sw_image_recolor_rgb888(
 #endif
 
 #endif /*LV_DRAW_SW_ARM2D_H */
+
+/** @} */

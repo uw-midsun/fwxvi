@@ -1,6 +1,28 @@
-/**
- * @file lv_barcode.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_barcode.h
  *
+ * @brief   Lv Barcode
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_types.h"
+#include "../../widgets/canvas/lv_canvas.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_barcode
+ * @brief    lv_barcode Firmware
+ * @{
  */
 
 #ifndef LV_BARCODE_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_color.h"
-#include "../../widgets/canvas/lv_canvas.h"
 
 #if LV_USE_BARCODE
 
@@ -141,3 +159,5 @@ lv_barcode_encoding_t lv_barcode_get_encoding(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_BARCODE_H*/
+
+/** @} */

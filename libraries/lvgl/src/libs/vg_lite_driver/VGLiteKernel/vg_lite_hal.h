@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_hal.h
+ *
+ * @brief   Vg Lite Hal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_hal
+ * @brief    vg_lite_hal Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    The MIT License (MIT)
@@ -55,7 +79,6 @@
 #ifndef VG_LITE_HAL_H
 #define VG_LITE_HAL_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
 #define VGLITE_MEM_ALIGNMENT      128
@@ -330,3 +353,4 @@ void vg_lite_set_gpu_execute_state(vg_lite_gpu_execute_state_t state);
 #endif /* VG_LITE_HAL_H */
 
 
+/** @} */

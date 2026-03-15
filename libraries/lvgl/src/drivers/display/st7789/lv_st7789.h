@@ -1,8 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_st7789.h
+ *
+ * @brief   Lv St7789
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lcd/lv_lcd_generic_mipi.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_st7789.h
- *
- * This driver is just a wrapper around the generic MIPI compatible LCD controller driver
- *
+ * @defgroup lv_st7789
+ * @brief    lv_st7789 Firmware
+ * @{
  */
 
 #ifndef LV_ST7789_H
@@ -15,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lcd/lv_lcd_generic_mipi.h"
 
 #if LV_USE_ST7789
 
@@ -84,7 +99,6 @@ void lv_st7789_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_list);
  *      MACROS
  **********************/
 
-
 #endif /*LV_USE_ST7789*/
 
 #ifdef __cplusplus
@@ -92,3 +106,5 @@ void lv_st7789_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_list);
 #endif
 
 #endif /*LV_ST7789_H*/
+
+/** @} */

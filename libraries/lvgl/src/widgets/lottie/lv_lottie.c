@@ -1,24 +1,33 @@
-/**
- * @file lv_lottie.c
+/************************************************************************************************
+ * @file    lv_lottie.c
  *
- */
+ * @brief   Lv Lottie
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <thorvg_capi.h>
+
+/* Inter-component Headers */
+    #include "../../libs/thorvg/thorvg_capi.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/cache/lv_cache.h"
+#include "../../misc/lv_timer.h"
+#include "lv_lottie_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_lottie_private.h"
-#include "../../lv_conf_internal.h"
 #if LV_USE_LOTTIE
 
 #if LV_USE_THORVG_EXTERNAL
-    #include <thorvg_capi.h>
 #else
-    #include "../../libs/thorvg/thorvg_capi.h"
 #endif
-
-#include "../../misc/lv_timer.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../misc/cache/lv_cache.h"
 
 /*********************
  *      DEFINES
@@ -149,7 +158,6 @@ void lv_lottie_set_src_file(lv_obj_t * obj, const char * src)
     lottie->anim->reverse_play_in_progress = false;
     lottie_update(lottie, 0);   /*Render immediately*/
 }
-
 
 lv_anim_t * lv_lottie_get_anim(lv_obj_t * obj)
 {

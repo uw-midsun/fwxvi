@@ -1,6 +1,26 @@
-/**
- * @file lv_keyboard_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_keyboard_private.h
  *
+ * @brief   Lv Keyboard Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../buttonmatrix/lv_buttonmatrix_private.h"
+#include "lv_keyboard.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_keyboard_private
+ * @brief    lv_keyboard_private Firmware
+ * @{
  */
 
 #ifndef LV_KEYBOARD_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../buttonmatrix/lv_buttonmatrix_private.h"
-#include "lv_keyboard.h"
 
 #if LV_USE_KEYBOARD
 
@@ -35,7 +52,6 @@ struct _lv_keyboard_t {
     uint8_t popovers : 1;       /**< Show button titles in popovers on press */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -51,3 +67,5 @@ struct _lv_keyboard_t {
 #endif
 
 #endif /*LV_KEYBOARD_PRIVATE_H*/
+
+/** @} */

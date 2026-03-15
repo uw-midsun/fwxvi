@@ -1,19 +1,29 @@
-/**
- * @file lv_grid.c
+/************************************************************************************************
+ * @file    lv_grid.c
  *
- */
+ * @brief   Lv Grid
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_obj_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_layout.h"
+#include "lv_grid.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_grid.h"
 
 #if LV_USE_GRID
 
-#include "../../stdlib/lv_string.h"
-#include "../lv_layout.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_global.h"
 /*********************
  *      DEFINES
  *********************/

@@ -1,6 +1,29 @@
-/**
- * @file lv_blend_helium.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_blend_helium.h
  *
+ * @brief   Lv Blend Helium
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "../arm2d/lv_blend_arm2d.h"
+#include "Pre_Include_Global.h"
+#include "lv_conf_cmsis.h"
+
+/* Intra-component Headers */
+#include LV_DRAW_SW_HELIUM_CUSTOM_INCLUDE
+
+/**
+ * @defgroup lv_blend_helium
+ * @brief    lv_blend_helium Firmware
+ * @{
  */
 
 #ifndef LV_BLEND_HELIUM_H
@@ -15,17 +38,12 @@ extern "C" {
  *********************/
 
 #if defined(_RTE_)
-#include "Pre_Include_Global.h"
-#include "lv_conf_cmsis.h"
 #endif
-
-#include "../../../../lv_conf_internal.h"
 
 /* detect whether helium is available based on arm compilers' standard */
 #if defined(__ARM_FEATURE_MVE) && __ARM_FEATURE_MVE
 
 #ifdef LV_DRAW_SW_HELIUM_CUSTOM_INCLUDE
-#include LV_DRAW_SW_HELIUM_CUSTOM_INCLUDE
 #endif
 
 #if !defined(__ASSEMBLY__)
@@ -37,7 +55,6 @@ extern "C" {
 #endif
 
 /* Use arm2d functions if present */
-#include "../arm2d/lv_blend_arm2d.h"
 
 /*********************
  *      DEFINES
@@ -1317,3 +1334,5 @@ static inline lv_result_t lv_argb8888_blend_normal_to_argb8888_mix_mask_opa_heli
 #endif
 
 #endif /*LV_BLEND_HELIUM_H*/
+
+/** @} */

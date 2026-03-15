@@ -1,24 +1,33 @@
-/**
- * @file lv_span.c
+/************************************************************************************************
+ * @file    lv_span.c
  *
- */
+ * @brief   Lv Span
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_bidi_private.h"
+#include "../../misc/lv_text_ap.h"
+#include "../../misc/lv_text_private.h"
+#include "lv_span_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_span_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_obj_class_private.h"
 
 #if LV_USE_SPAN != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_text_private.h"
-#include "../../misc/lv_bidi_private.h"
-#include "../../core/lv_observer_private.h"
-#include "../../misc/lv_text_ap.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -266,7 +275,6 @@ void lv_span_set_text_fmt(lv_span_t * span, const char * fmt, ...)
     span->static_flag = 0;
     span->txt = text;
 }
-
 
 void lv_spangroup_set_span_text(lv_obj_t * obj, lv_span_t * span, const char * text)
 {
@@ -516,7 +524,6 @@ int32_t lv_spangroup_get_max_lines(lv_obj_t * obj)
     return spans->lines;
 }
 
-
 int32_t lv_spangroup_get_max_line_height(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -759,7 +766,6 @@ lv_span_t * lv_spangroup_get_span_by_point(lv_obj_t * obj, const lv_point_t * p)
     return NULL;
 }
 
-
 /*=====================
  * Other functions
  *====================*/
@@ -818,7 +824,6 @@ lv_observer_t * lv_spangroup_bind_span_text(lv_obj_t * obj, lv_span_t * span, lv
     return observer;
 }
 #endif /*LV_USE_OBSERVER*/
-
 
 /**********************
  *   STATIC FUNCTIONS

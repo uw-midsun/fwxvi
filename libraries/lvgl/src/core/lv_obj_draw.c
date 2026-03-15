@@ -1,17 +1,27 @@
-/**
- * @file lv_obj_draw.c
+/************************************************************************************************
+ * @file    lv_obj_draw.c
  *
- */
+ * @brief   Lv Obj Draw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../indev/lv_indev.h"
+#include "../stdlib/lv_string.h"
+#include "lv_obj_draw_private.h"
+#include "lv_obj_private.h"
+#include "lv_obj_style.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_draw_private.h"
-#include "lv_obj_private.h"
-#include "lv_obj_style.h"
-#include "../display/lv_display.h"
-#include "../indev/lv_indev.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -189,7 +199,6 @@ void lv_obj_init_draw_label_dsc(lv_obj_t * obj, lv_part_t part, lv_draw_label_ds
         return;
     }
 
-
     lv_color_t text_color = lv_obj_get_style_text_color_filtered(obj, part);
     draw_dsc->color = normal_apply_layer_recolor(obj, part, &draw_dsc->base, text_color);
     draw_dsc->letter_space = lv_obj_get_style_text_letter_space(obj, part);
@@ -349,7 +358,6 @@ void lv_obj_init_draw_blur_dsc(lv_obj_t * obj, lv_part_t part, lv_draw_blur_dsc_
     LV_PROFILER_DRAW_END;
 }
 
-
 int32_t lv_obj_calculate_ext_draw_size(lv_obj_t * obj, lv_part_t part)
 {
     LV_PROFILER_DRAW_BEGIN;
@@ -451,7 +459,6 @@ static inline lv_opa_t get_layer_opa(const lv_obj_t * obj, lv_part_t part, const
     return lv_obj_get_style_opa_recursive(obj, part);
 }
 
-
 static lv_color_t normal_apply_layer_recolor(const lv_obj_t * obj, lv_part_t part,  const lv_draw_dsc_base_t * base_dsc,
                                              lv_color_t color)
 {
@@ -469,7 +476,6 @@ static lv_color_t normal_apply_layer_recolor(const lv_obj_t * obj, lv_part_t par
 
     return lv_color_mix(lv_color_make(recolor.red, recolor.green, recolor.blue), color, recolor.alpha);
 }
-
 
 static lv_color32_t image_apply_layer_recolor(const lv_obj_t * obj, lv_part_t part,
                                               const lv_draw_dsc_base_t * base_dsc, lv_color_t color, lv_opa_t opa)

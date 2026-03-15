@@ -1,6 +1,26 @@
-/**
- * @file lv_uefi_context.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi_context.h
  *
+ * @brief   Lv Uefi Context
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_uefi.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_uefi_context
+ * @brief    lv_uefi_context Firmware
+ * @{
  */
 
 #ifndef __LV_UEFI_CONTEXT_H__
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi.h"
 
 /*********************
  *      DEFINES
@@ -70,3 +86,5 @@ void lv_uefi_platform_deinit(void);
 
 #endif //__LV_UEFI_CONTEXT_H__
 
+
+/** @} */

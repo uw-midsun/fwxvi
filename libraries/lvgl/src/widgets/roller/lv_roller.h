@@ -1,6 +1,26 @@
-/**
- * @file lv_roller.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_roller.h
  *
+ * @brief   Lv Roller
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../label/lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_roller
+ * @brief    lv_roller Firmware
+ * @{
  */
 
 #ifndef LV_ROLLER_H
@@ -13,7 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_ROLLER != 0
 
@@ -21,8 +40,6 @@ extern "C" {
 #if LV_USE_LABEL == 0
 #error "lv_roller: lv_label is required. Enable it in lv_conf.h (LV_USE_ROLLER 1)"
 #endif
-
-#include "../label/lv_label.h"
 
 /*********************
  *      DEFINES
@@ -160,3 +177,5 @@ lv_observer_t * lv_roller_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_ROLLER_H*/
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_theme_simple.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_theme_simple.h
  *
+ * @brief   Lv Theme Simple
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../lv_theme.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_theme_simple
+ * @brief    lv_theme_simple Firmware
+ * @{
  */
 
 #ifndef LV_THEME_SIMPLE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_theme.h"
-#include "../../display/lv_display.h"
 
 #if LV_USE_THEME_SIMPLE
 
@@ -65,3 +83,5 @@ void lv_theme_simple_deinit(void);
 #endif
 
 #endif /*LV_THEME_SIMPLE_H*/
+
+/** @} */

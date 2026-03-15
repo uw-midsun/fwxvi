@@ -1,15 +1,24 @@
-/**
- * @file lv_pending.c
+/************************************************************************************************
+ * @file    lv_pending.c
  *
- */
+ * @brief   Lv Pending
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_array.h"
+#include "lv_assert.h"
+#include "lv_pending.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_pending.h"
-#include "lv_array.h"
-#include "lv_assert.h"
 
 /*********************
  *      DEFINES

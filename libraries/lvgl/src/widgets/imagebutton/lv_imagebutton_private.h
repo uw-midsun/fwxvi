@@ -1,6 +1,26 @@
-/**
- * @file lv_imagebutton_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_imagebutton_private.h
  *
+ * @brief   Lv Imagebutton Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_imagebutton.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_imagebutton_private
+ * @brief    lv_imagebutton_private Firmware
+ * @{
  */
 
 #ifndef LV_IMAGEBUTTON_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_imagebutton.h"
-
 #if LV_USE_IMAGEBUTTON != 0
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -40,7 +57,6 @@ struct _lv_imagebutton_t {
     lv_imagebutton_src_info_t src_right[LV_IMAGEBUTTON_STATE_NUM]; /**< Store right side images to each state */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -56,3 +72,5 @@ struct _lv_imagebutton_t {
 #endif
 
 #endif /*LV_IMAGEBUTTON_PRIVATE_H*/
+
+/** @} */

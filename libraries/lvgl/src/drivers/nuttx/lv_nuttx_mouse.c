@@ -1,32 +1,40 @@
-/**
- * @file lv_nuttx_mouse.c
+/************************************************************************************************
+ * @file    lv_nuttx_mouse.c
  *
- */
+ * @brief   Lv Nuttx Mouse
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <debug.h>
+    #include <nuttx/input/mouse.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_input_mouse.h"
+#include "../../lvgl_private.h"
+#include "lv_nuttx_mouse.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nuttx_mouse.h"
-
 #if LV_USE_NUTTX
 
 #if LV_USE_NUTTX_MOUSE
 
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include "../../lvgl_private.h"
-
 #ifdef __NuttX__
-    #include <debug.h>
-    #include <nuttx/input/mouse.h>
 #else
-    #include "mock/nuttx_input_mouse.h"
 #endif
 
 /*********************

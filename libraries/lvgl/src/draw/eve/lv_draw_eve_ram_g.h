@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_eve_ram_g.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve_ram_g.h
  *
+ * @brief   Lv Draw Eve Ram G
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_eve.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_eve_ram_g
+ * @brief    lv_draw_eve_ram_g Firmware
+ * @{
  */
 
 /*  Created on: 19 nov 2023
@@ -19,7 +38,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve.h"
 #if LV_USE_DRAW_EVE
 
 /*********************
@@ -46,3 +64,5 @@ bool lv_draw_eve_ramg_get_addr(uint32_t * addr_dst, uintptr_t key,
 #endif
 
 #endif /* LV_DRAW_EVE_RAM_G_H */
+
+/** @} */

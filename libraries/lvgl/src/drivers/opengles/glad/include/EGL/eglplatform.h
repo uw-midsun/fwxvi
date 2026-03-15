@@ -1,7 +1,35 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    eglplatform.h
+ *
+ * @brief   Eglplatform
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <KHR/khrplatform.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <kernel/image.h>
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "../../../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup eglplatform
+ * @brief    eglplatform Firmware
+ * @{
+ */
+
 #ifndef __eglplatform_h_
 #define __eglplatform_h_
 
-#include "../../../../../lv_conf_internal.h"
 #if LV_USE_OPENGLES
 
 /*
@@ -17,8 +45,6 @@
  * by filing an issue or pull request on the public Khronos EGL Registry, at
  * https://www.github.com/KhronosGroup/EGL-Registry/
  */
-
-#include <KHR/khrplatform.h>
 
 /* Macros used in EGL function prototype declarations.
  *
@@ -61,7 +87,6 @@ typedef void *EGLNativeWindowType;
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
-#include <windows.h>
 
 typedef HDC     EGLNativeDisplayType;
 typedef HBITMAP EGLNativePixmapType;
@@ -115,8 +140,6 @@ typedef intptr_t EGLNativeWindowType;
 #elif defined(USE_X11)
 
 /* X11 (tentative)  */
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
 typedef Display *EGLNativeDisplayType;
 typedef Pixmap   EGLNativePixmapType;
@@ -135,8 +158,6 @@ typedef void *EGLNativePixmapType;
 typedef void *EGLNativeWindowType;
 
 #elif defined(__HAIKU__)
-
-#include <kernel/image.h>
 
 typedef void              *EGLNativeDisplayType;
 typedef khronos_uintptr_t  EGLNativePixmapType;
@@ -157,7 +178,6 @@ typedef EGLNativeDisplayType NativeDisplayType;
 typedef EGLNativePixmapType  NativePixmapType;
 typedef EGLNativeWindowType  NativeWindowType;
 
-
 /* Define EGLint. This must be a signed integral type large enough to contain
  * all legal attribute names and values passed into and out of EGL, whether
  * their type is boolean, bitmask, enumerant (symbolic constant), integer,
@@ -166,7 +186,6 @@ typedef EGLNativeWindowType  NativeWindowType;
  * integer type.
  */
 typedef khronos_int32_t EGLint;
-
 
 /* C++ / C typecast macros for special EGL handle values */
 #if defined(__cplusplus)
@@ -177,3 +196,5 @@ typedef khronos_int32_t EGLint;
 
 #endif /*LV_USE_OPENGLES*/
 #endif /* __eglplatform_h */
+
+/** @} */

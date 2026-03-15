@@ -1,6 +1,26 @@
-/**
- * @file lv_checkbox.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_checkbox.h
  *
+ * @brief   Lv Checkbox
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_checkbox
+ * @brief    lv_checkbox Firmware
+ * @{
  */
 
 #ifndef LV_CHECKBOX_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
 
 #if LV_USE_CHECKBOX != 0
 
@@ -84,3 +102,5 @@ const char * lv_checkbox_get_text(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_CHECKBOX_H*/
+
+/** @} */

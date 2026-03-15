@@ -1,22 +1,31 @@
-/**
- * @file lv_switch.c
+/************************************************************************************************
+ * @file    lv_switch.c
  *
- */
+ * @brief   Lv Switch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+#include "../../misc/lv_anim_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "lv_switch_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_switch_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
 
 #if LV_USE_SWITCH != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_anim_private.h"
-#include "../../indev/lv_indev.h"
-#include "../../display/lv_display.h"
 
 /*********************
  *      DEFINES

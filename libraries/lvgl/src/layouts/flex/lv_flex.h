@@ -1,6 +1,26 @@
-/**
- * @file lv_flex.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_flex.h
  *
+ * @brief   Lv Flex
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_flex
+ * @brief    lv_flex Firmware
+ * @{
  */
 
 #ifndef LV_FLEX_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../misc/lv_area.h"
 
 #if LV_USE_FLEX
 
@@ -100,3 +118,5 @@ void lv_obj_set_flex_grow(lv_obj_t * obj, uint8_t grow);
 #endif
 
 #endif /*LV_FLEX_H*/
+
+/** @} */

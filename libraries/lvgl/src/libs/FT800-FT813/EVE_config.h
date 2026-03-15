@@ -1,7 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    EVE_config.h
+ *
+ * @brief   Eve Config
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/eve/lv_draw_eve_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup EVE_config
+ * @brief    EVE_config Firmware
+ * @{
+ */
+
 #ifndef EVE_CONFIG_H
 #define EVE_CONFIG_H
-
-#include "../../draw/eve/lv_draw_eve_private.h"
 
 #define EVE_HSIZE          (lv_draw_eve_unit_g->params.hor_res)
 #define EVE_VSIZE          (lv_draw_eve_unit_g->params.ver_res)
@@ -24,3 +46,5 @@
 #define EVE_BACKLIGHT_FREQ (lv_draw_eve_unit_g->params.backlight_freq)
 
 #endif /* EVE_CONFIG_H */
+
+/** @} */

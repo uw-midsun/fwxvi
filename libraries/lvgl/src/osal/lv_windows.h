@@ -1,6 +1,26 @@
-/**
- * @file lv_windows.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_windows.h
  *
+ * @brief   Lv Windows
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+#include <windows.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_windows
+ * @brief    lv_windows Firmware
+ * @{
  */
 
 #ifndef LV_WINDOWS_H
@@ -15,9 +35,6 @@ extern "C" {
  *********************/
 
 #if LV_USE_OS == LV_OS_WINDOWS
-
-#include <windows.h>
-#include <stdbool.h>
 
 /*********************
  *      DEFINES
@@ -52,3 +69,5 @@ typedef struct {
 #endif
 
 #endif /*LV_WINDOWS_H*/
+
+/** @} */

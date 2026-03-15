@@ -1,17 +1,25 @@
-/**
- * @file lv_tree.c
- * Tree.
- * The nodes are dynamically allocated by the 'lv_mem' module,
- */
+/************************************************************************************************
+ * @file    lv_tree.c
+ *
+ * @brief   Lv Tree
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_assert.h"
+#include "lv_tree.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_tree.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
-
-#include "lv_assert.h"
 
 /*********************
  *      DEFINES

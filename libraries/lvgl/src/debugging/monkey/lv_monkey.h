@@ -1,7 +1,28 @@
-/**
- * @file lv_monkey.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_monkey.h
  *
+ * @brief   Lv Monkey
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_monkey
+ * @brief    lv_monkey Firmware
+ * @{
  */
+
 #ifndef LV_MONKEY_H
 #define LV_MONKEY_H
 
@@ -12,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_MONKEY != 0
 
@@ -117,3 +136,5 @@ void lv_monkey_delete(lv_monkey_t * monkey);
 #endif
 
 #endif /*LV_MONKEY_H*/
+
+/** @} */

@@ -1,6 +1,29 @@
-/**
- * @file lv_obj_property.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_property.h
  *
+ * @brief   Lv Obj Property
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_style.h"
+#include "../misc/lv_types.h"
+#include "../widgets/property/lv_obj_property_names.h"
+#include "../widgets/property/lv_style_properties.h"
+#include "lv_obj_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_property
+ * @brief    lv_obj_property Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_PROPERTY_H
@@ -13,9 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_style.h"
-#include "lv_obj_style.h"
 
 #if LV_USE_OBJ_PROPERTY
 
@@ -79,7 +99,6 @@ extern "C" {
     .properties_count = LV_ARRAYLEN(lv_##widget##_properties)
 #endif
 /* *INDENT-ON* */
-
 
 /**********************
  *      TYPEDEFS
@@ -269,9 +288,6 @@ lv_prop_id_t lv_style_property_get_id(const char * name);
  *      MACROS
  **********************/
 
-#include "../widgets/property/lv_obj_property_names.h"
-#include "../widgets/property/lv_style_properties.h"
-
 #else
 #define LV_PROPERTY_CLASS_FIELDS(widget, uppercase)
 #endif /*LV_USE_OBJ_PROPERTY*/
@@ -281,3 +297,5 @@ lv_prop_id_t lv_style_property_get_id(const char * name);
 #endif
 
 #endif /*LV_OBJ_PROPERTY_H*/
+
+/** @} */

@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgMath.h
+ *
+ * @brief   Tvgmath
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cmath>
+#include <float.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgMath
+ * @brief    tvgMath Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,17 +47,12 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_MATH_H_
 #define _TVG_MATH_H_
 
  #define _USE_MATH_DEFINES
-
-#include <float.h>
-#include <cmath>
-#include "tvgCommon.h"
 
 namespace tvg
 {
@@ -46,30 +68,25 @@ namespace tvg
 
 float atan2(float y, float x);
 
-
 static inline float deg2rad(float degree)
 {
      return degree * (MATH_PI / 180.0f);
 }
-
 
 static inline float rad2deg(float radian)
 {
     return radian * (180.0f / MATH_PI);
 }
 
-
 static inline bool zero(float a)
 {
     return (fabsf(a) <= FLOAT_EPSILON) ? true : false;
 }
 
-
 static inline bool equal(float a, float b)
 {
     return tvg::zero(a - b);
 }
-
 
 template <typename T>
 static inline void clamp(T& v, const T& min, const T& max)
@@ -95,12 +112,10 @@ static inline bool rightAngle(const Matrix& m)
    return false;
 }
 
-
 static inline bool skewed(const Matrix& m)
 {
     return !tvg::zero(m.e21 + m.e12);
 }
-
 
 static inline void identity(Matrix* m)
 {
@@ -115,13 +130,11 @@ static inline void identity(Matrix* m)
     m->e33 = 1.0f;
 }
 
-
 static inline void scale(Matrix* m, float sx, float sy)
 {
     m->e11 *= sx;
     m->e22 *= sy;
 }
-
 
 static inline void scaleR(Matrix* m, float x, float y)
 {
@@ -135,13 +148,11 @@ static inline void scaleR(Matrix* m, float x, float y)
     }
 }
 
-
 static inline void translate(Matrix* m, float x, float y)
 {
     m->e13 += x;
     m->e23 += y;
 }
-
 
 static inline void translateR(Matrix* m, float x, float y)
 {
@@ -150,24 +161,20 @@ static inline void translateR(Matrix* m, float x, float y)
     m->e23 += (x * m->e21 + y * m->e22);
 }
 
-
 static inline bool operator!=(const Matrix& lhs, const Matrix& rhs)
 {
     return !(lhs == rhs);
 }
-
 
 static inline void operator*=(Matrix& lhs, const Matrix& rhs)
 {
     lhs = lhs * rhs;
 }
 
-
 static inline void log(const Matrix& m)
 {
     TVGLOG("COMMON", "Matrix: [%f %f %f] [%f %f %f] [%f %f %f]", m.e11, m.e12, m.e13, m.e21, m.e22, m.e23, m.e31, m.e32, m.e33);
 }
-
 
 /************************************************************************/
 /* Point functions                                                      */
@@ -182,12 +189,10 @@ static inline float cross(const Point& lhs, const Point& rhs)
     return lhs.x * rhs.y - rhs.x * lhs.y;
 }
 
-
 static inline bool zero(const Point& p)
 {
     return tvg::zero(p.x) && tvg::zero(p.y);
 }
-
 
 static inline float length(const Point* a, const Point* b)
 {
@@ -200,60 +205,50 @@ static inline float length(const Point* a, const Point* b)
     return (x > y) ? (x + 0.375f * y) : (y + 0.375f * x);
 }
 
-
 static inline float length(const Point& a)
 {
     return sqrtf(a.x * a.x + a.y * a.y);
 }
-
 
 static inline bool operator==(const Point& lhs, const Point& rhs)
 {
     return tvg::equal(lhs.x, rhs.x) && tvg::equal(lhs.y, rhs.y);
 }
 
-
 static inline bool operator!=(const Point& lhs, const Point& rhs)
 {
     return !(lhs == rhs);
 }
-
 
 static inline Point operator-(const Point& lhs, const Point& rhs)
 {
     return {lhs.x - rhs.x, lhs.y - rhs.y};
 }
 
-
 static inline Point operator+(const Point& lhs, const Point& rhs)
 {
     return {lhs.x + rhs.x, lhs.y + rhs.y};
 }
-
 
 static inline Point operator*(const Point& lhs, float rhs)
 {
     return {lhs.x * rhs, lhs.y * rhs};
 }
 
-
 static inline Point operator*(const float& lhs, const Point& rhs)
 {
     return {lhs * rhs.x, lhs * rhs.y};
 }
-
 
 static inline Point operator/(const Point& lhs, const float rhs)
 {
     return {lhs.x / rhs, lhs.y / rhs};
 }
 
-
 static inline void log(const Point& pt)
 {
     TVGLOG("COMMON", "Point: [%f %f]", pt.x, pt.y);
 }
-
 
 /************************************************************************/
 /* Line functions                                                       */
@@ -267,7 +262,6 @@ struct Line
     void split(float at, Line& left, Line& right) const;
     float length() const;
 };
-
 
 /************************************************************************/
 /* Bezier functions                                                     */
@@ -291,7 +285,6 @@ struct Bezier
     float angle(float t) const;
 };
 
-
 /************************************************************************/
 /* Interpolation functions                                              */
 /************************************************************************/
@@ -310,3 +303,5 @@ uint8_t lerp(const uint8_t &start, const uint8_t &end, float t);
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

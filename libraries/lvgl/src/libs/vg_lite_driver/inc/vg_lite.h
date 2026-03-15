@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite.h
+ *
+ * @brief   Vg Lite
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite
+ * @brief    vg_lite Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -36,11 +62,7 @@ extern "C" {
 #define inline __inline
 #endif
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include <stddef.h>
-#include <stdint.h>
 
 /*  VGLite API Constants *******************************************************************************************************************/
 
@@ -103,7 +125,6 @@ extern "C" {
 #define VLC_MAX_GRADIENT_STOPS      16              /*! The max number of gradient stops. */
 #define VLC_GRADIENT_BUFFER_WIDTH   1024            /*! The internal gradient buffer width.*/
 
-
 /* API name defines for backward compatibility to VGLite 2.0 APIs */
 #define vg_lite_buffer_upload                   vg_lite_upload_buffer
 #define vg_lite_path_append                     vg_lite_append_path
@@ -155,7 +176,6 @@ typedef char        *       vg_lite_string;
 typedef void        *       vg_lite_pointer;
 typedef void                vg_lite_void;
 typedef unsigned int        vg_lite_color_t;
-
 
 /* VGLite API Enumerations ****************************************************************************************************************/
 
@@ -1456,3 +1476,5 @@ vg_lite_error_t vg_lite_frame_delimiter(vg_lite_frame_flag_t flag);
 #endif
 
 #endif /* VG_LITE_H */
+
+/** @} */

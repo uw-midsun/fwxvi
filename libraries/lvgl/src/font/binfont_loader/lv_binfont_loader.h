@@ -1,6 +1,25 @@
-/**
- * @file lv_binfont_loader.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_binfont_loader.h
  *
+ * @brief   Lv Binfont Loader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_binfont_loader
+ * @brief    lv_binfont_loader Firmware
+ * @{
  */
 
 #ifndef LV_BINFONT_LOADER_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 /*********************
  *      DEFINES
@@ -22,7 +40,6 @@ extern "C" {
 /**********************
  *      TYPEDEFS
  **********************/
-
 
 typedef struct {
     uint32_t font_size; /**< Size of the font in pixels*/
@@ -70,3 +87,5 @@ void lv_binfont_destroy(lv_font_t * font);
 #endif
 
 #endif /* LV_BINFONT_LOADER_H */
+
+/** @} */

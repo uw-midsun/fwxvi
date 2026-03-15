@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_sw_mask_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_mask_private.h
  *
+ * @brief   Lv Draw Sw Mask Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_sw_mask.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_mask_private
+ * @brief    lv_draw_sw_mask_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_MASK_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw_sw_mask.h"
 
 #if LV_DRAW_SW_COMPLEX
 
@@ -155,3 +172,5 @@ void lv_draw_sw_mask_cleanup(void);
 #endif
 
 #endif /*LV_DRAW_SW_MASK_PRIVATE_H*/
+
+/** @} */

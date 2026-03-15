@@ -1,18 +1,28 @@
-/**
- * @file lv_draw_rect.c
+/************************************************************************************************
+ * @file    lv_draw_rect.c
  *
- */
+ * @brief   Lv Draw Rect
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../core/lv_obj_event.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_text_private.h"
+#include "../stdlib/lv_string.h"
+#include "lv_draw_private.h"
+#include "lv_draw_rect_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_rect_private.h"
-#include "lv_draw_private.h"
-#include "../core/lv_obj.h"
-#include "../misc/lv_assert.h"
-#include "../misc/lv_text_private.h"
-#include "../core/lv_obj_event.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

@@ -1,10 +1,18 @@
+/************************************************************************************************
+ * @file    lv_span_properties.c
+ *
+ * @brief   Lv Span Properties
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_span_properties.c
- */
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "../span/lv_span.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
 

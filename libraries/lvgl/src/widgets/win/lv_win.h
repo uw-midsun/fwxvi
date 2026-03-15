@@ -1,6 +1,26 @@
-/**
- * @file lv_win.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_win.h
  *
+ * @brief   Lv Win
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_win
+ * @brief    lv_win Firmware
+ * @{
  */
 
 #ifndef LV_WIN_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
 #if LV_USE_WIN
 /*********************
  *      DEFINES
@@ -72,3 +90,5 @@ lv_obj_t * lv_win_get_content(lv_obj_t * win);
 #endif
 
 #endif /*LV_WIN_H*/
+
+/** @} */

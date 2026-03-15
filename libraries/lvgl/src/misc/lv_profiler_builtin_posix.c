@@ -1,29 +1,37 @@
-/**
- * @file lv_profiler_builtin_posix.c
+/************************************************************************************************
+ * @file    lv_profiler_builtin_posix.c
  *
- */
+ * @brief   Lv Profiler Builtin Posix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <pthread.h>
+    #include <sys/syscall.h>
+    #include <sys/types.h>
+    #include <unistd.h>
+    #include <windows.h>
+#include <stdio.h>
+#include <time.h>
+
+/* Inter-component Headers */
+#include "lv_profiler_builtin_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_profiler_builtin_private.h"
-
 #if LV_USE_PROFILER && LV_USE_PROFILER_BUILTIN && LV_USE_PROFILER_BUILTIN_POSIX
 
 #if defined(_WIN32)
-    #include <windows.h>
 #else
-    #include <pthread.h>
 #endif
 
-#include <stdio.h>
-#include <time.h>
-
 #if defined(__linux__)
-    #include <sys/syscall.h>
-    #include <sys/types.h>
-    #include <unistd.h>
 #endif
 
 /*********************

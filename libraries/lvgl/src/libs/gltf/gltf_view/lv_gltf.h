@@ -1,6 +1,29 @@
-/**
- * @file lv_gltf.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf.h
  *
+ * @brief   Lv Gltf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_area.h"
+#include "../../../misc/lv_types.h"
+#include "../gltf_data/lv_gltf_model.h"
+#include "../math/lv_3dmath.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf
+ * @brief    lv_gltf Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_H
@@ -10,14 +33,7 @@
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_GLTF
-
-#include "../math/lv_3dmath.h"
-#include "../../../misc/lv_types.h"
-#include "../../../misc/lv_area.h"
-#include "../gltf_data/lv_gltf_model.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +57,6 @@ typedef enum {
     LV_GLTF_BG_MODE_SOLID = 0, /** Solid background. Use `lv_obj_set_style_bg_color` to set the background color*/
     LV_GLTF_BG_MODE_ENVIRONMENT = 1, /** Environnement background*/
 } lv_gltf_bg_mode_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -405,7 +420,6 @@ lv_3dplane_t lv_gltf_get_current_view_plane(lv_obj_t * obj, float distance);
  */
 lv_3dray_t lv_gltf_get_ray_from_2d_coordinate(lv_obj_t * obj, const lv_point_t * screen_pos);
 
-
 /**
  * Get the screen position of a 3d point
  * @param obj pointer to a GLTF viewer object
@@ -414,7 +428,6 @@ lv_3dray_t lv_gltf_get_ray_from_2d_coordinate(lv_obj_t * obj, const lv_point_t *
  * @return LV_RESULT_OK if conversion valid, LV_RESULT_INVALID if no valid conversion
  */
 lv_result_t lv_gltf_world_to_screen(lv_obj_t * obj, const lv_3dpoint_t world_pos, lv_point_t * screen_pos);
-
 
 /**********************
  *      MACROS
@@ -427,3 +440,5 @@ lv_result_t lv_gltf_world_to_screen(lv_obj_t * obj, const lv_3dpoint_t world_pos
 #endif /*LV_USE_GLTF*/
 
 #endif /*LV_GLTF_H*/
+
+/** @} */

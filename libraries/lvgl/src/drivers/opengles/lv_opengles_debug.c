@@ -1,18 +1,26 @@
-/**
- * @file lv_opengles_debug.c
+/************************************************************************************************
+ * @file    lv_opengles_debug.c
  *
- */
+ * @brief   Lv Opengles Debug
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_log.h"
+#include "lv_opengles_debug.h"
+#include "lv_opengles_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_opengles_debug.h"
 #if LV_USE_OPENGLES
-
-#include "lv_opengles_private.h"
-
-#include "../../misc/lv_log.h"
 
 /*********************
  *      DEFINES

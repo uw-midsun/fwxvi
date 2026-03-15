@@ -1,14 +1,25 @@
-/**
- * @file lv_mem_core_clib.c
- */
+/************************************************************************************************
+ * @file    lv_mem_core_clib.c
+ *
+ * @brief   Lv Mem Core Clib
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "../../stdlib/lv_mem.h"
+#include "../lv_mem.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_mem.h"
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_CLIB
-#include "../../stdlib/lv_mem.h"
-#include <stdlib.h>
 
 /*********************
  *      DEFINES

@@ -1,6 +1,37 @@
-/**
- * @file lv_os_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_os_private.h
  *
+ * @brief   Lv Os Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_types.h"
+#include "lv_cmsis_rtos2.h"
+#include "lv_freertos.h"
+#include "lv_linux.h"
+#include "lv_mqx.h"
+#include "lv_os.h"
+#include "lv_os_none.h"
+#include "lv_pthread.h"
+#include "lv_rtthread.h"
+#include "lv_sdl2.h"
+#include "lv_windows.h"
+
+/* Intra-component Headers */
+#include LV_OS_CUSTOM_INCLUDE
+
+/**
+ * @defgroup lv_os_private
+ * @brief    lv_os_private Firmware
+ * @{
  */
 
 #ifndef LV_OS_PRIVATE_H
@@ -17,33 +48,19 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "lv_os.h"
-#include "../misc/lv_types.h"
 
 #ifdef __linux__
-#include "lv_linux.h"
 #endif
 
 #if LV_USE_OS == LV_OS_NONE
-#include "lv_os_none.h"
 #elif LV_USE_OS == LV_OS_PTHREAD
-#include "lv_pthread.h"
 #elif LV_USE_OS == LV_OS_FREERTOS
-#include "lv_freertos.h"
 #elif LV_USE_OS == LV_OS_CMSIS_RTOS2
-#include "lv_cmsis_rtos2.h"
 #elif LV_USE_OS == LV_OS_RTTHREAD
-#include "lv_rtthread.h"
 #elif LV_USE_OS == LV_OS_WINDOWS
-#include "lv_windows.h"
 #elif LV_USE_OS == LV_OS_MQX
-#include "lv_mqx.h"
 #elif LV_USE_OS == LV_OS_SDL2
-#include "lv_sdl2.h"
 #elif LV_USE_OS == LV_OS_CUSTOM
-#include LV_OS_CUSTOM_INCLUDE
 #endif
 
 /*********************
@@ -277,3 +294,5 @@ static inline lv_result_t lv_thread_sync_delete(lv_thread_sync_t * sync)
 #endif
 
 #endif /*LV_OS_PRIVATE_H*/
+
+/** @} */

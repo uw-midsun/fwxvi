@@ -42,7 +42,7 @@ TASK(display_lvgl_task, TASK_STACK_1024) {
   while (true) {
     gui_widgets_set_speed(display_data->vehicle_velocity);
     gui_widgets_set_throttle_bar(display_data->pedal_percentage);
-    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0); // TODO change to % base when available
+    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
     gui_render();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
   }

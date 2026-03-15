@@ -1,15 +1,31 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 #pragma once
 
-#include "../include/frogfs/frogfs_types.h"
+/************************************************************************************************
+ * @file    frogfs_priv.h
+ *
+ * @brief   Frogfs Priv
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#define FROGFS_PRIVATE_STRUCTS
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../include/frogfs/frogfs.h"
+#include "../include/frogfs/frogfs.h"
+#include "../include/frogfs/frogfs_types.h"
 #include "frogfs_format.h"
 
+/* Intra-component Headers */
+
+/**
+ * @defgroup frogfs_priv
+ * @brief    frogfs_priv Firmware
+ * @{
+ */
+
+#define FROGFS_PRIVATE_STRUCTS
 
 typedef struct frogfs_decomp_funcs_t frogfs_decomp_funcs_t;
 
@@ -68,4 +84,5 @@ extern const frogfs_decomp_funcs_t frogfs_decomp_miniz;
  */
 extern const frogfs_decomp_funcs_t frogfs_decomp_zlib;
 
-#include "../include/frogfs/frogfs.h"
+
+/** @} */

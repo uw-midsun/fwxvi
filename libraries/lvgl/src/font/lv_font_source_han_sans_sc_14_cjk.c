@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    lv_font_source_han_sans_sc_14_cjk.c
+ *
+ * @brief   Lv Font Source Han Sans Sc 14 Cjk
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../lvgl.h"
+    #include "lvgl.h"
+
+/* Intra-component Headers */
 /*******************************************************************************
  * Size: 14 px
  * Bpp: 4
@@ -5,9 +21,7 @@
  ******************************************************************************/
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
-    #include "lvgl.h"
 #else
-    #include "../../lvgl.h"
 #endif
 
 #ifndef LV_FONT_SOURCE_HAN_SANS_SC_14_CJK
@@ -19135,7 +19149,6 @@ static LV_ATTRIBUTE_LARGE_CONST const uint8_t glyph_bitmap[] = {
     0x4f, 0xff, 0xff, 0xfe
 };
 
-
 /*---------------------
  *  GLYPH DESCRIPTION
  *--------------------*/
@@ -20784,7 +20797,6 @@ static const lv_font_fmt_txt_cmap_t cmaps[] = {
 /*-----------------
  *    KERNING
  *----------------*/
-
 
 /*Map glyph_ids to kern left classes*/
 static const uint8_t kern_left_class_mapping[] = {
@@ -23832,7 +23844,6 @@ static const int8_t kern_class_values[] = {
     0, 0, 0, -11, 0, 0
 };
 
-
 /*Collect the kern class' data in one place*/
 static const lv_font_fmt_txt_kern_classes_t kern_classes = {
     .class_pair_values   = kern_class_values,
@@ -23867,7 +23878,6 @@ static lv_font_fmt_txt_dsc_t font_dsc = {
 #endif
 };
 
-
 /*-----------------
  *  PUBLIC FONT
  *----------------*/
@@ -23891,8 +23901,6 @@ lv_font_t lv_font_source_han_sans_sc_14_cjk = {
 #endif
     .dsc = &font_dsc           /*The custom font data. Will be accessed by `get_glyph_bitmap/dsc` */
 };
-
-
 
 #endif /*#if LV_FONT_SOURCE_HAN_SANS_SC_14_CJK*/
 

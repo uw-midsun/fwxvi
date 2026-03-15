@@ -1,35 +1,44 @@
-/**
- * @file lv_nuttx_entry.c
+/************************************************************************************************
+ * @file    lv_nuttx_entry.c
  *
- */
+ * @brief   Lv Nuttx Entry
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <nuttx/clock.h>
+    #include <nuttx/tls.h>
+    #include <uv.h>
+#include <pthread.h>
+#include <syslog.h>
+#include <time.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_clock.h"
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "lv_nuttx_cache.h"
+#include "lv_nuttx_entry.h"
+#include "lv_nuttx_image_cache.h"
+#include "lv_nuttx_mouse.h"
+#include "lv_nuttx_profiler.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_nuttx_entry.h"
 
 #if LV_USE_NUTTX
 
-#include <time.h>
-#include <syslog.h>
-#include <pthread.h>
-#include <unistd.h>
-#include "lv_nuttx_cache.h"
-#include "lv_nuttx_image_cache.h"
-#include "../../core/lv_global.h"
-#include "lv_nuttx_profiler.h"
-#include "lv_nuttx_mouse.h"
-#include "../../../lvgl.h"
-
 #if LV_USE_NUTTX_LIBUV
-    #include <uv.h>
 #endif
 
 #ifdef __NuttX__
-    #include <nuttx/tls.h>
-    #include <nuttx/clock.h>
 #else
-    #include "mock/nuttx_clock.h"
 #endif
 
 /*********************

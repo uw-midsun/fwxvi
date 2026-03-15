@@ -1,6 +1,30 @@
-/**
- * @file lv_wayland_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wayland_private.h
  *
+ * @brief   Lv Wayland Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <sys/poll.h>
+#include <wayland_xdg_shell.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+#include "lv_wl_backend_private.h"
+
+/* Intra-component Headers */
+#include <wayland-client-protocol.h>
+
+/**
+ * @defgroup lv_wayland_private
+ * @brief    lv_wayland_private Firmware
+ * @{
  */
 
 #ifndef LV_WAYLAND_PRIVATE_H
@@ -14,16 +38,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_WAYLAND
-
-
-#include <sys/poll.h>
-#include <wayland-client-protocol.h>
-#include <wayland_xdg_shell.h>
-#include "../../misc/lv_types.h"
-#include "lv_wl_backend_private.h"
 
 /*********************
  *      DEFINES
@@ -71,7 +86,6 @@ typedef struct {
     bool is_pressed;
 } lv_wl_seat_keyboard_t;
 
-
 typedef struct {
     struct wl_seat * wl_seat;
 
@@ -79,8 +93,6 @@ typedef struct {
     lv_wl_seat_touch_t * touch;
     lv_wl_seat_keyboard_t * keyboard;
 } lv_wl_seat_t;
-
-
 
 typedef struct {
     struct wl_output * wl_output;
@@ -124,7 +136,6 @@ typedef struct {
     bool configured;
 } lv_wl_window_xdg_t;
 
-
 typedef struct _lv_wl_window_t {
     void * backend_display_data;
     lv_display_t * lv_disp;
@@ -147,7 +158,6 @@ typedef struct _lv_wl_window_t {
     bool fullscreen;
 
 } lv_wl_window_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -217,3 +227,5 @@ void lv_wayland_update_indevs(lv_indev_read_cb_t read_cb, void * new_driver_data
 #endif
 
 #endif /*LV_WAYLAND_PRIVATE_H*/
+
+/** @} */

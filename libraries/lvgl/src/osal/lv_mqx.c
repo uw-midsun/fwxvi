@@ -1,18 +1,27 @@
-/**
- * @file lv_mqx.c
+/************************************************************************************************
+ * @file    lv_mqx.c
  *
- */
+ * @brief   Lv Mqx
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_log.h"
+#include "../misc/lv_timer.h"
+#include "../stdlib/lv_string.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_MQX
-
-#include "../misc/lv_log.h"
-#include "../misc/lv_timer.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

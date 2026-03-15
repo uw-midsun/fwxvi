@@ -1,17 +1,26 @@
-/**
- * @file lv_draw_sw_grad.c
+/************************************************************************************************
+ * @file    lv_draw_sw_grad.c
  *
- */
+ * @brief   Lv Draw Sw Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_types.h"
+#include "../../osal/lv_os_private.h"
+#include "lv_draw_sw_grad.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_grad.h"
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_types.h"
-#include "../../osal/lv_os_private.h"
-#include "../../misc/lv_math.h"
 
 /*********************
  *      DEFINES
@@ -219,7 +228,6 @@ void lv_draw_sw_grad_cleanup(lv_draw_sw_grad_calc_t * grad)
 {
     lv_free(grad);
 }
-
 
 #if LV_USE_DRAW_SW_COMPLEX_GRADIENTS
 

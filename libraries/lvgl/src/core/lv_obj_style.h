@@ -1,6 +1,28 @@
-/**
- * @file lv_obj_style.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_style.h
  *
+ * @brief   Lv Obj Style
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_bidi.h"
+#include "../misc/lv_style.h"
+#include "../misc/lv_types.h"
+#include "lv_obj_style_gen.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_style
+ * @brief    lv_obj_style Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_STYLE_H
@@ -13,9 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_bidi.h"
-#include "../misc/lv_style.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -139,7 +158,6 @@ bool lv_obj_replace_style(lv_obj_t * obj, const lv_style_t * old_style, const lv
  * @endcode
  */
 void lv_obj_remove_style(lv_obj_t * obj, const lv_style_t * style, lv_style_selector_t selector);
-
 
 /**
  * Remove all styles added by a theme from a widget
@@ -271,8 +289,6 @@ static inline lv_part_t lv_obj_style_get_selector_part(lv_style_selector_t selec
     return (lv_part_t)(selector & 0xFF0000);
 }
 
-#include "lv_obj_style_gen.h"
-
 static inline void lv_obj_set_style_pad_all(lv_obj_t * obj, int32_t value, lv_style_selector_t selector)
 {
     lv_obj_set_style_pad_left(obj, value, selector);
@@ -387,7 +403,6 @@ static inline int32_t lv_obj_get_style_transform_scale_y_safe(const lv_obj_t * o
  */
 lv_opa_t lv_obj_get_style_opa_recursive(const lv_obj_t * obj, lv_part_t part);
 
-
 /**
  * Apply recolor effect to the input color based on the object's style properties.
  * @param obj       the target object containing recolor style properties
@@ -441,3 +456,5 @@ lv_observer_t * lv_obj_bind_style_prop(lv_obj_t * obj, lv_style_prop_t prop, lv_
 #endif
 
 #endif /*LV_OBJ_STYLE_H*/
+
+/** @} */

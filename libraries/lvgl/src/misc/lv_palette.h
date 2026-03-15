@@ -1,6 +1,26 @@
-/**
- * @file lv_palette.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_palette.h
  *
+ * @brief   Lv Palette
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_color.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_palette
+ * @brief    lv_palette Firmware
+ * @{
  */
 
 #ifndef LV_PALETTE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_color.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -66,3 +84,5 @@ lv_color_t lv_palette_darken(lv_palette_t p, uint8_t lvl);
 #endif
 
 #endif /*LV_PALETTE_H*/
+
+/** @} */

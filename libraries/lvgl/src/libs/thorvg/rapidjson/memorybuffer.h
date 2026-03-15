@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    memorybuffer.h
+ *
+ * @brief   Memorybuffer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "internal/stack.h"
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup memorybuffer
+ * @brief    memorybuffer Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,9 +39,6 @@
 
 #ifndef RAPIDJSON_MEMORYBUFFER_H_
 #define RAPIDJSON_MEMORYBUFFER_H_
-
-#include "stream.h"
-#include "internal/stack.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -68,3 +90,5 @@ inline void PutN(MemoryBuffer& memoryBuffer, char c, size_t n) {
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_MEMORYBUFFER_H_
+
+/** @} */

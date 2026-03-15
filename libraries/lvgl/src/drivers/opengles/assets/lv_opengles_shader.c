@@ -1,9 +1,24 @@
+/************************************************************************************************
+ * @file    lv_opengles_shader.c
+ *
+ * @brief   Lv Opengles Shader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <hsv_adjust.glsl>
+#include <hsv_adjust.glsl>
+
+/* Inter-component Headers */
+#include "../../../misc/lv_types.h"
+#include "../opengl_shader/lv_opengl_shader_internal.h"
 #include "lv_opengles_shader.h"
 
-#if LV_USE_OPENGLES
+/* Intra-component Headers */
 
-#include "../opengl_shader/lv_opengl_shader_internal.h"
-#include "../../../misc/lv_types.h"
+#if LV_USE_OPENGLES
 
 static const lv_opengl_shader_t src_includes_v100[] = {{
         "hsv_adjust.glsl", R"(
@@ -88,7 +103,6 @@ static const char *src_fragment_shader_v100 = R"(
     uniform bool u_SwapRB;
     
     #ifdef HSV_ADJUST
-#include <hsv_adjust.glsl>
     #endif
     
     void main()
@@ -215,7 +229,6 @@ static const char *src_fragment_shader_v300es = R"(
     uniform bool u_SwapRB;
     
     #ifdef HSV_ADJUST
-#include <hsv_adjust.glsl>
     #endif
 
     void main()

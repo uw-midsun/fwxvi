@@ -1,11 +1,27 @@
-#include "../../lv_conf_internal.h"
-#if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
+/************************************************************************************************
+ * @file    lv_tlsf.c
+ *
+ * @brief   Lv Tlsf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "lv_tlsf_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_log.h"
+/* Standard library Headers */
+#include <intrin.h>
+#include <ppc_ghs.h>
+#include <ppcintrinsics.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
 #include "../../misc/lv_assert.h"
+#include "../../misc/lv_log.h"
 #include "../../misc/lv_types.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_tlsf_private.h"
+
+/* Intra-component Headers */
+#if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
 
 #undef  printf
 #define printf LV_LOG_ERROR
@@ -107,8 +123,6 @@ tlsf_decl int tlsf_fls(unsigned int word)
 #elif defined (_MSC_VER) && (_MSC_VER >= 1400) && (defined (_M_IX86) || defined (_M_X64))
 /* Microsoft Visual C++ support on x86/X64 architectures. */
 
-#include <intrin.h>
-
 #pragma intrinsic(_BitScanReverse)
 #pragma intrinsic(_BitScanForward)
 
@@ -126,8 +140,6 @@ tlsf_decl int tlsf_ffs(unsigned int word)
 
 #elif defined (_MSC_VER) && defined (_M_PPC)
 /* Microsoft Visual C++ support on PowerPC architectures. */
-
-#include <ppcintrinsics.h>
 
 tlsf_decl int tlsf_fls(unsigned int word)
 {
@@ -160,8 +172,6 @@ tlsf_decl int tlsf_fls(unsigned int word)
 
 #elif defined (__ghs__)
 /* Green Hills support for PowerPC */
-
-#include <ppc_ghs.h>
 
 tlsf_decl int tlsf_ffs(unsigned int word)
 {

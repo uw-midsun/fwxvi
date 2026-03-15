@@ -1,12 +1,22 @@
-/**
- * @file lv_grad.c
+/************************************************************************************************
+ * @file    lv_grad.c
  *
- */
+ * @brief   Lv Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_grad.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_grad.h"
 
 /*********************
  *      DEFINES

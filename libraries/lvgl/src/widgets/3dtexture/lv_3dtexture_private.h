@@ -1,6 +1,26 @@
-/**
- * @file lv_3dtexture_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_3dtexture_private.h
  *
+ * @brief   Lv 3Dtexture Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_3dtexture.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_3dtexture_private
+ * @brief    lv_3dtexture_private Firmware
+ * @{
  */
 
 #ifndef LV_3DTEXTURE_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_3dtexture.h"
 #if LV_USE_3DTEXTURE
-
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -50,3 +67,5 @@ struct _lv_3dtexture_t {
 #endif
 
 #endif /*LV_3DTEXTURE_PRIVATE_H*/
+
+/** @} */

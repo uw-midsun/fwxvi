@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_eve_display.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_eve_display.h
  *
+ * @brief   Lv Draw Eve Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../draw/eve/lv_draw_eve_target.h"
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_eve_display
+ * @brief    lv_draw_eve_display Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_EVE_DISPLAY_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_DRAW_EVE
-
-#include "../../../draw/eve/lv_draw_eve_target.h"
 
 /*********************
  *      DEFINES
@@ -55,7 +72,6 @@ void * lv_draw_eve_display_get_user_data(lv_display_t * disp);
  */
 lv_indev_t * lv_draw_eve_touch_create(lv_display_t * disp);
 
-
 /* RAM_G asset pre-upload functions */
 
 /**
@@ -86,7 +102,6 @@ void lv_draw_eve_pre_upload_font_range(lv_display_t * disp, const lv_font_t * fo
  * @param text    the ASCII or UTF-8 string that will be iterated for glyphs to upload
  */
 void lv_draw_eve_pre_upload_font_text(lv_display_t * disp, const lv_font_t * font, const char * text);
-
 
 /* Low-level EVE control functions */
 
@@ -149,3 +164,5 @@ void lv_draw_eve_memwrite32(lv_display_t * disp, uint32_t address, uint32_t data
 #endif
 
 #endif /*LV_DRAW_EVE_DISPLAY_H*/
+
+/** @} */

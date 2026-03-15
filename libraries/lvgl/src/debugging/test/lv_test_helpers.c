@@ -1,16 +1,25 @@
-/**
- * @file lv_test_helpers.c
+/************************************************************************************************
+ * @file    lv_test_helpers.c
  *
- */
+ * @brief   Lv Test Helpers
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "lv_test_helpers.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_test_helpers.h"
-
 #if LV_USE_TEST
-#include "../../lvgl.h"
 
 /*********************
  *      DEFINES

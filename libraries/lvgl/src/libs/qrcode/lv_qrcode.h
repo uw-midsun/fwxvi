@@ -1,6 +1,30 @@
-/**
- * @file lv_qrcode.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_qrcode.h
  *
+ * @brief   Lv Qrcode
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_types.h"
+#include "../../widgets/canvas/lv_canvas.h"
+
+/* Intra-component Headers */
+#include LV_STDBOOL_INCLUDE
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_qrcode
+ * @brief    lv_qrcode Firmware
+ * @{
  */
 
 #ifndef LV_QRCODE_H
@@ -13,12 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../misc/lv_color.h"
-#include "../../misc/lv_types.h"
-#include "../../widgets/canvas/lv_canvas.h"
-#include LV_STDBOOL_INCLUDE
-#include LV_STDINT_INCLUDE
 #if LV_USE_QRCODE
 
 /*********************
@@ -98,3 +116,5 @@ void lv_qrcode_set_quiet_zone(lv_obj_t * obj, bool enable);
 #endif
 
 #endif /*LV_QRCODE_H*/
+
+/** @} */

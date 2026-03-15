@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    strfunc.h
+ *
+ * @brief   Strfunc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cwchar>
+
+/* Inter-component Headers */
+#include "../stream.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup strfunc
+ * @brief    strfunc Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,9 +39,6 @@
 
 #ifndef RAPIDJSON_INTERNAL_STRFUNC_H_
 #define RAPIDJSON_INTERNAL_STRFUNC_H_
-
-#include "../stream.h"
-#include <cwchar>
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
@@ -81,3 +103,5 @@ bool CountStringCodePoint(const typename Encoding::Ch* s, SizeType length, SizeT
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_INTERNAL_STRFUNC_H_
+
+/** @} */

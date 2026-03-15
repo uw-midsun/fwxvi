@@ -1,7 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache_private.h
+ *
+ * @brief   Lv Cache Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../osal/lv_os_private.h"
+#include "../lv_types.h"
+
+/* Intra-component Headers */
+
 /**
-* @file lv_cache_private.h
-*
-*/
+ * @defgroup lv_cache_private
+ * @brief    lv_cache_private Firmware
+ * @{
+ */
 
 #ifndef LV_CACHE_PRIVATE_H
 #define LV_CACHE_PRIVATE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_types.h"
-#include "../../osal/lv_os_private.h"
 
 /*********************
  *      DEFINES
@@ -197,3 +215,5 @@ struct _lv_cache_slot_size_t {
 #endif
 
 #endif /*LV_CACHE_PRIVATE_H*/
+
+/** @} */

@@ -1,22 +1,30 @@
-/**
- * @file lv_ft81x.c
+/************************************************************************************************
+ * @file    lv_ft81x.c
  *
- */
+ * @brief   Lv Ft81X
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_types.h"
+#include "../../../misc/lv_utils.h"
+#include "../../../stdlib/lv_mem.h"
+#include "../../../stdlib/lv_sprintf.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_ft81x.h"
+#include "lv_ft81x_defines.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_ft81x.h"
 #if LV_USE_FT81X
-
-#include "lv_ft81x_defines.h"
-
-#include "../../../stdlib/lv_mem.h"
-#include "../../../stdlib/lv_sprintf.h"
-#include "../../../stdlib/lv_string.h"
-#include "../../../misc/lv_types.h"
-#include "../../../misc/lv_utils.h"
 
 /*********************
  *      DEFINES
@@ -188,7 +196,6 @@ static lv_result_t initialize(lv_display_t * disp, const lv_ft81x_parameters_t *
 
     LV_ASSERT(0 == lv_ft81x_read_16(disp, REG_CMD_WRITE));
 
-
     lv_ft81x_cmd_list_t cmd_list;
     lv_ft81x_cmd_list_init(disp, &cmd_list);
     lv_ft81x_cmd_list_add_32(disp, &cmd_list, CMD_MEMSET);
@@ -225,7 +232,6 @@ static lv_result_t initialize(lv_display_t * disp, const lv_ft81x_parameters_t *
     lv_ft81x_cmd_list_add_32(disp, &cmd_list, CMD_SWAP);
 
     lv_ft81x_cmd_list_send(disp, &cmd_list);
-
 
     return LV_RESULT_OK;
 }

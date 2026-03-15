@@ -1,6 +1,25 @@
-/**
- * @file lv_list.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_list.h
  *
+ * @brief   Lv List
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_list
+ * @brief    lv_list Firmware
+ * @{
  */
 
 #ifndef LV_LIST_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_LIST
 
@@ -116,3 +134,5 @@ void lv_list_set_button_translation_tag(lv_obj_t * list, lv_obj_t * btn, const c
 #endif
 
 #endif /*LV_LIST_H*/
+
+/** @} */

@@ -1,8 +1,26 @@
-/**
-* @file lv_iter.h
-*
- */
+#pragma once
 
+/************************************************************************************************
+ * @file    lv_iter.h
+ *
+ * @brief   Lv Iter
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_iter
+ * @brief    lv_iter Firmware
+ * @{
+ */
 
 #ifndef LV_ITER_H
 #define LV_ITER_H
@@ -14,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -118,3 +134,5 @@ void lv_iter_inspect(lv_iter_t * iter, lv_iter_inspect_cb inspect_cb);
 #endif
 
 #endif /*LV_ITER_H*/
+
+/** @} */

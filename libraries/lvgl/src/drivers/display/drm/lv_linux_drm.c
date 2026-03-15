@@ -1,34 +1,41 @@
-/**
- * @file lv_linux_drm.c
+/************************************************************************************************
+ * @file    lv_linux_drm.c
  *
- */
+ * @brief   Lv Linux Drm
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_linux_drm.h"
-#if LV_USE_LINUX_DRM && !LV_LINUX_DRM_USE_EGL
-
+/* Standard library Headers */
+    #include <gbm.h>
+    #include <sys/ioctl.h>
+#include <drm_fourcc.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
 #include <stdint.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <time.h>
 #include <unistd.h>
-#include <string.h>
-
 #include <xf86drm.h>
 #include <xf86drmMode.h>
-#include <drm_fourcc.h>
 
-#include "../../../stdlib/lv_sprintf.h"
+/* Inter-component Headers */
 #include "../../../draw/lv_draw_buf.h"
+#include "../../../stdlib/lv_sprintf.h"
+#include "lv_linux_drm.h"
+
+/* Intra-component Headers */
+    #include <linux/dma-buf.h>
+
+/*********************
+ *      INCLUDES
+ *********************/
+#if LV_USE_LINUX_DRM && !LV_LINUX_DRM_USE_EGL
 
 #if LV_USE_LINUX_DRM_GBM_BUFFERS
-    #include <gbm.h>
-    #include <linux/dma-buf.h>
-    #include <sys/ioctl.h>
 #endif
 
 /*********************
@@ -235,7 +242,6 @@ lv_result_t lv_linux_drm_set_file(lv_display_t * disp, const char * file, int64_
     lv_display_set_resolution(disp, hor_res, ver_res);
     lv_display_set_buffers_with_stride(disp, drm_dev->drm_bufs[1].map, drm_dev->drm_bufs[0].map, buf_size,
                                        stride, LV_DISPLAY_RENDER_MODE_DIRECT);
-
 
     /* Set the handler that is called before a redraw occurs to set the active buffer/plane
      * when GBM buffers are used the DMA_BUF_SYNC_START is issued there */
@@ -822,7 +828,6 @@ static int drm_setup(drm_dev_t * drm_dev, const char * device_path, int64_t conn
     LV_LOG_INFO("drm: %dx%d (%dmm X% dmm) pixel format %c%c%c%c",
                 drm_dev->width, drm_dev->height, drm_dev->mmWidth, drm_dev->mmHeight,
                 (fourcc >> 0) & 0xff, (fourcc >> 8) & 0xff, (fourcc >> 16) & 0xff, (fourcc >> 24) & 0xff);
-
 
 #if LV_USE_LINUX_DRM_GBM_BUFFERS
 

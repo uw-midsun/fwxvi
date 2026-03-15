@@ -1,21 +1,30 @@
-/**
- * @file lv_matrix.c
+/************************************************************************************************
+ * @file    lv_matrix.c
  *
- */
+ * @brief   Lv Matrix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../misc/lv_log.h"
+#include "../stdlib/lv_string.h"
+#include "lv_math.h"
+#include "lv_matrix.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_matrix.h"
-
 #if LV_USE_MATRIX
 
-#include "../stdlib/lv_string.h"
-#include "lv_math.h"
-#include <math.h>
-#include <float.h>
-#include "../misc/lv_log.h"
 /*********************
  *      DEFINES
  *********************/

@@ -1,6 +1,27 @@
-/**
- * @file lv_svg.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_svg.h
  *
+ * @brief   Lv Svg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_array.h"
+#include "../../misc/lv_tree.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_svg
+ * @brief    lv_svg Firmware
+ * @{
  */
 
 #ifndef LV_SVG_H
@@ -9,11 +30,8 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_SVG
 
-#include "../../misc/lv_array.h"
-#include "../../misc/lv_tree.h"
 /*********************
  *      DEFINES
  *********************/
@@ -334,3 +352,5 @@ void lv_svg_node_delete(lv_svg_node_t * node);
 #endif /*LV_USE_SVG*/
 
 #endif /*LV_SVG_H*/
+
+/** @} */

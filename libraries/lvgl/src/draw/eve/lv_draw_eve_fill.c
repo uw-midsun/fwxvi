@@ -1,7 +1,19 @@
-/**
- * @file lv_draw_eve_fill.c
+/************************************************************************************************
+ * @file    lv_draw_eve_fill.c
  *
- */
+ * @brief   Lv Draw Eve Fill
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_eve_private.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 27 mar 2023
  *      Author: juanj
@@ -12,10 +24,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-#include "lv_eve.h"
-
 
 /**********************
  * STATIC PROTOTYPES
@@ -49,12 +58,9 @@ void lv_draw_eve_fill(lv_draw_task_t * t, const lv_draw_fill_dsc_t * dsc, const 
     lv_eve_restore_context();
 }
 
-
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
-
 
 void lv_draw_eve_border(lv_draw_task_t * t, const lv_draw_border_dsc_t * dsc, const lv_area_t * coords)
 {

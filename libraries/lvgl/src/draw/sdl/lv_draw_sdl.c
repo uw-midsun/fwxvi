@@ -1,21 +1,31 @@
-/**
- * @file lv_draw_sdl.c
+/************************************************************************************************
+ * @file    lv_draw_sdl.c
  *
- */
+ * @brief   Lv Draw Sdl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display_private.h"
+#include "../../drivers/sdl/lv_sdl_window.h"
+#include "../../misc/cache/lv_cache_entry_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "lv_draw_sdl.h"
+
+/* Intra-component Headers */
+#include LV_SDL_INCLUDE_PATH
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw_private.h"
 #if LV_USE_DRAW_SDL
-#include LV_SDL_INCLUDE_PATH
-#include "lv_draw_sdl.h"
-#include "../../core/lv_refr_private.h"
-#include "../../display/lv_display_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../drivers/sdl/lv_sdl_window.h"
-#include "../../misc/cache/lv_cache_entry_private.h"
-#include "../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -218,7 +228,6 @@ static bool draw_to_texture(lv_draw_sdl_unit_t * u, cache_data_t * cache_data)
                                                    LV_STRIDE_AUTO, data, data_size);
         LV_ASSERT(init_result == LV_RESULT_OK);
     }
-
 
     dest_layer.draw_buf = &u->render_draw_buf;
     dest_layer.color_format = LV_COLOR_FORMAT_ARGB8888;

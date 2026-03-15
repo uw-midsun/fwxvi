@@ -1,6 +1,28 @@
-/**
- * @file lv_xkb.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_xkb.h
  *
+ * @brief   Lv Xkb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+#include <xkbcommon/xkbcommon.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_xkb
+ * @brief    lv_xkb Firmware
+ * @{
  */
 
 #ifndef LV_XKB_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if defined(LV_LIBINPUT_XKB) && LV_LIBINPUT_XKB
-
-#include "../../misc/lv_types.h"
-#include <stdbool.h>
-#include <xkbcommon/xkbcommon.h>
 
 /*********************
  *      DEFINES
@@ -62,3 +78,5 @@ uint32_t lv_xkb_process_key(lv_xkb_t * dsc, uint32_t scancode, bool down);
 #endif
 
 #endif /* LV_XKB_H */
+
+/** @} */

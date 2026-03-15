@@ -1,3 +1,36 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    document.h
+ *
+ * @brief   Document
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <compare>
+#include <iterator> // std::random_access_iterator_tag
+#include <limits>
+#include <map> // std::multimap
+#include <new>      // placement new
+
+/* Inter-component Headers */
+#include "encodedstream.h"
+#include "internal/meta.h"
+#include "internal/strfunc.h"
+#include "memorystream.h"
+#include "reader.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup document
+ * @brief    document Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -17,15 +50,7 @@
 
 /*! \file document.h */
 
-#include "reader.h"
-#include "internal/meta.h"
-#include "internal/strfunc.h"
-#include "memorystream.h"
-#include "encodedstream.h"
-#include <new>      // placement new
-#include <limits>
 #ifdef __cpp_lib_three_way_comparison
-#include <compare>
 #endif
 
 RAPIDJSON_DIAG_PUSH
@@ -52,11 +77,9 @@ RAPIDJSON_DIAG_OFF(effc++)
 #endif
 
 #ifndef RAPIDJSON_NOMEMBERITERATORCLASS
-#include <iterator> // std::random_access_iterator_tag
 #endif
 
 #if RAPIDJSON_USE_MEMBERSMAP
-#include <map> // std::multimap
 #endif
 
 RAPIDJSON_NAMESPACE_BEGIN
@@ -1460,7 +1483,6 @@ public:
         return AddMember(n, value, allocator);
     }
 #endif // RAPIDJSON_HAS_CXX11_RVALUE_REFS
-
 
     //! Add a member (name-value pair) to the object.
     /*! \param name A constant string reference as name of member.
@@ -2888,7 +2910,6 @@ private:
 //! GenericDocument with UTF8 encoding
 typedef GenericDocument<UTF8<> > Document;
 
-
 //! Helper class for accessing Value of array type.
 /*!
     Instance of this helper class is obtained by \c GenericValue::GetArray().
@@ -3041,3 +3062,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_DOCUMENT_H_
+
+/** @} */

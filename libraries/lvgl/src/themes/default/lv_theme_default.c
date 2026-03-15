@@ -1,18 +1,27 @@
-/**
- * @file lv_theme_default.c
+/************************************************************************************************
+ * @file    lv_theme_default.c
  *
- */
+ * @brief   Lv Theme Default
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h" /*To see all the widgets*/
+#include "../../core/lv_global.h"
+#include "../../misc/lv_color.h"
+#include "../lv_theme_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lvgl.h" /*To see all the widgets*/
 
 #if LV_USE_THEME_DEFAULT
-
-#include "../lv_theme_private.h"
-#include "../../misc/lv_color.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -1232,7 +1241,6 @@ static void style_init_reset(lv_style_t * style)
         lv_style_init(style);
     }
 }
-
 
 static void resolution_change_event_cb(lv_event_t * e)
 {

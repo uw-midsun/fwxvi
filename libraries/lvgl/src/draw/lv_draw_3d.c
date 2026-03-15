@@ -1,16 +1,25 @@
-/**
- * @file lv_draw_3d.c
+/************************************************************************************************
+ * @file    lv_draw_3d.c
  *
- */
+ * @brief   Lv Draw 3D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_3d.h"
+#include "lv_draw_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_3d.h"
 #if LV_USE_3DTEXTURE
-
-#include "lv_draw_private.h"
 
 /*********************
  *      DEFINES

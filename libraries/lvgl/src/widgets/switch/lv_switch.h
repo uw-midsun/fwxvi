@@ -1,6 +1,26 @@
-/**
- * @file lv_switch.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_switch.h
  *
+ * @brief   Lv Switch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_switch
+ * @brief    lv_switch Firmware
+ * @{
  */
 
 #ifndef LV_SWITCH_H
@@ -13,11 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_SWITCH != 0
-
-#include "../../core/lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -89,3 +106,5 @@ lv_switch_orientation_t lv_switch_get_orientation(lv_obj_t * obj);
 #endif
 
 #endif /*LV_SWITCH_H*/
+
+/** @} */

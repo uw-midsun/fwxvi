@@ -1,6 +1,26 @@
-/**
- * @file lv_textarea_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_textarea_private.h
  *
+ * @brief   Lv Textarea Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_textarea.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_textarea_private
+ * @brief    lv_textarea_private Firmware
+ * @{
  */
 
 #ifndef LV_TEXTAREA_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_textarea.h"
 
 #if LV_USE_TEXTAREA != 0
 
@@ -58,7 +75,6 @@ struct _lv_textarea_t {
     uint8_t static_accepted_chars : 1; /**<1: Only a pointer is saved in `accepted_chars` */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -74,3 +90,5 @@ struct _lv_textarea_t {
 #endif
 
 #endif /*LV_TEXTAREA_PRIVATE_H*/
+
+/** @} */

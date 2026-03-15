@@ -1,6 +1,27 @@
-/**
- * @file lv_windows_input.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_windows_input.h
  *
+ * @brief   Lv Windows Input
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_windows_input
+ * @brief    lv_windows_input Firmware
+ * @{
  */
 
 #ifndef LV_WINDOWS_INPUT_H
@@ -14,12 +35,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_WINDOWS
-
-#include <windows.h>
 
 /*********************
  *      DEFINES
@@ -81,3 +97,5 @@ lv_indev_t * lv_windows_acquire_encoder_indev(lv_display_t * display);
 #endif
 
 #endif /*LV_WINDOWS_INPUT_H*/
+
+/** @} */

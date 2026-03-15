@@ -1,19 +1,28 @@
-/**
- * @file lv_barcode.c
+/************************************************************************************************
+ * @file    lv_barcode.c
  *
- */
+ * @brief   Lv Barcode
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../lvgl.h"
+#include "../../misc/cache/lv_cache.h"
+#include "code128.h"
+#include "lv_barcode_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_class_private.h"
-#include "lv_barcode_private.h"
-#include "../../lvgl.h"
 
 #if LV_USE_BARCODE
-
-#include "code128.h"
-#include "../../misc/cache/lv_cache.h"
 
 /*********************
  *      DEFINES

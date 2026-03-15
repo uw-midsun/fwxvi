@@ -1,31 +1,39 @@
-/**
- * @file lv_nuttx_touchscreen.c
+/************************************************************************************************
+ * @file    lv_nuttx_touchscreen.c
  *
- */
+ * @brief   Lv Nuttx Touchscreen
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <debug.h>
+    #include <nuttx/input/touchscreen.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+    #include "mock/nuttx_input_touchscreen.h"
+#include "../../lvgl_private.h"
+#include "lv_nuttx_touchscreen.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nuttx_touchscreen.h"
-
 #if LV_USE_NUTTX
 
 #if LV_USE_NUTTX_TOUCHSCREEN
 
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include "../../lvgl_private.h"
-
 #ifdef __NuttX__
-    #include <debug.h>
-    #include <nuttx/input/touchscreen.h>
 #else
-    #include "mock/nuttx_input_touchscreen.h"
 #endif
 
 /*********************

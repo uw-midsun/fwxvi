@@ -1,6 +1,26 @@
-/**
- * @file lv_win_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_win_private.h
  *
+ * @brief   Lv Win Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_win.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_win_private
+ * @brief    lv_win_private Firmware
+ * @{
  */
 
 #ifndef LV_WIN_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_win.h"
 
 #if LV_USE_WIN
 
@@ -34,7 +51,6 @@ struct _lv_win_t {
     lv_obj_t obj;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -50,3 +66,5 @@ struct _lv_win_t {
 #endif
 
 #endif /*LV_WIN_PRIVATE_H*/
+
+/** @} */

@@ -1,6 +1,38 @@
-/**
- * @file lv_draw_sw.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw.h
  *
+ * @brief   Lv Draw Sw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_color.h"
+#include "../lv_draw.h"
+#include "../lv_draw_arc.h"
+#include "../lv_draw_blur.h"
+#include "../lv_draw_image.h"
+#include "../lv_draw_label.h"
+#include "../lv_draw_line.h"
+#include "../lv_draw_mask.h"
+#include "../lv_draw_triangle.h"
+#include "../lv_draw_vector.h"
+#include "blend/lv_draw_sw_blend.h"
+#include "lv_draw_sw_utils.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw
+ * @brief    lv_draw_sw Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_H
@@ -13,23 +45,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw.h"
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_color.h"
-#include "../../display/lv_display.h"
-
-#include "../lv_draw_vector.h"
-#include "../lv_draw_triangle.h"
-#include "../lv_draw_label.h"
-#include "../lv_draw_image.h"
-#include "../lv_draw_line.h"
-#include "../lv_draw_mask.h"
-#include "../lv_draw_arc.h"
-#include "../lv_draw_blur.h"
-#include "lv_draw_sw_utils.h"
-#include "blend/lv_draw_sw_blend.h"
 
 /*********************
  *      DEFINES
@@ -123,7 +139,6 @@ void lv_draw_sw_layer(lv_draw_task_t * t, const lv_draw_image_dsc_t * draw_dsc, 
  */
 void lv_draw_sw_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t * dsc);
 
-
 /**
  * Blur an area with SW render
  * @param t             pointer to a draw task
@@ -206,3 +221,5 @@ lv_draw_sw_blend_handler_t lv_draw_sw_get_blend_handler(lv_color_format_t dest_c
 #endif
 
 #endif /*LV_DRAW_SW_H*/
+
+/** @} */

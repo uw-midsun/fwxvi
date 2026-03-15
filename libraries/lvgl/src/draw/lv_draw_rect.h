@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_rect.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_rect.h
  *
+ * @brief   Lv Draw Rect
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+#include "lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_rect
+ * @brief    lv_draw_rect Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_RECT_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -100,7 +118,6 @@ typedef struct {
 
     /**The color of the border. */
     lv_color_t color;
-
 
     /**The width of the border in pixels */
     int32_t width;
@@ -237,3 +254,5 @@ void lv_draw_rect(lv_layer_t * layer, const lv_draw_rect_dsc_t * dsc, const lv_a
 #endif
 
 #endif /*LV_DRAW_RECT_H*/
+
+/** @} */

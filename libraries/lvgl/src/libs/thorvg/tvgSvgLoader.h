@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSvgLoader.h
+ *
+ * @brief   Tvgsvgloader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgSvgLoaderCommon.h"
+#include "tvgTaskScheduler.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSvgLoader
+ * @brief    tvgSvgLoader Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,14 +46,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SVG_LOADER_H_
 #define _TVG_SVG_LOADER_H_
-
-#include "tvgTaskScheduler.h"
-#include "tvgSvgLoaderCommon.h"
 
 using std::ifstream;
 
@@ -69,8 +91,9 @@ private:
     void run(unsigned tid) override;
 };
 
-
 #endif //_TVG_SVG_LOADER_H_
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

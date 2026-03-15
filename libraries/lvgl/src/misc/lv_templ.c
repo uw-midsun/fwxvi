@@ -1,7 +1,17 @@
-/**
- * @file lv_templ.c
+/************************************************************************************************
+ * @file    lv_templ.c
  *
- */
+ * @brief   Lv Templ
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES

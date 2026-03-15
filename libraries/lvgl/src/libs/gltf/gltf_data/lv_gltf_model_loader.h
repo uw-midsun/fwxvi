@@ -1,6 +1,26 @@
-/**
- * @file lv_gltf_model_loader.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_model_loader.h
  *
+ * @brief   Lv Gltf Model Loader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_model_loader
+ * @brief    lv_gltf_model_loader Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_MODEL_LOADER_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_GLTF
-
-#include "../../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -73,3 +89,5 @@ void lv_gltf_model_loader_delete(lv_gltf_model_loader_t * loader);
 #endif
 
 #endif /*LV_GLTF_MODEL_LOADER_H*/
+
+/** @} */

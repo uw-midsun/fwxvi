@@ -1,6 +1,32 @@
-/**
- * @file lv_label.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_label.h
  *
+ * @brief   Lv Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_observer.h"
+#include "../../draw/lv_draw.h"
+#include "../../font/lv_font.h"
+#include "../../font/lv_symbol_def.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_text.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_label
+ * @brief    lv_label Firmware
+ * @{
  */
 
 #ifndef LV_LABEL_H
@@ -13,17 +39,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_LABEL != 0
-
-#include "../../misc/lv_types.h"
-#include "../../core/lv_obj.h"
-#include "../../font/lv_font.h"
-#include "../../font/lv_symbol_def.h"
-#include "../../misc/lv_text.h"
-#include "../../draw/lv_draw.h"
-#include "../../core/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -170,7 +187,6 @@ void lv_label_set_translation_tag(lv_obj_t * obj, const char * tag);
 
 #endif /*LV_USE_TRANSLATION*/
 
-
 /*=====================
  * Getter functions
  *====================*/
@@ -255,7 +271,6 @@ bool lv_label_get_recolor(const lv_obj_t * obj);
 lv_observer_t * lv_label_bind_text(lv_obj_t * obj, lv_subject_t * subject, const char * fmt);
 #endif
 
-
 /**
  * Insert a text to a label. The label text cannot be static.
  * @param obj       pointer to a label object
@@ -274,8 +289,6 @@ void lv_label_ins_text(lv_obj_t * obj, uint32_t pos, const char * txt);
  */
 void lv_label_cut_text(lv_obj_t * obj, uint32_t pos, uint32_t cnt);
 
-
-
 /**********************
  *      MACROS
  **********************/
@@ -287,3 +300,5 @@ void lv_label_cut_text(lv_obj_t * obj, uint32_t pos, uint32_t cnt);
 #endif
 
 #endif /*LV_LABEL_H*/
+
+/** @} */

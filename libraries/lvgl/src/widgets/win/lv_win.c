@@ -1,14 +1,24 @@
-/**
- * @file lv_win.c
+/************************************************************************************************
+ * @file    lv_win.c
  *
- */
+ * @brief   Lv Win
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../lvgl.h"
+#include "lv_win_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_win_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../lvgl.h"
 #if LV_USE_WIN
 
 /*********************

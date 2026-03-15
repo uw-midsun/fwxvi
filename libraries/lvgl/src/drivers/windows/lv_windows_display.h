@@ -1,6 +1,27 @@
-/**
- * @file lv_windows_display.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_windows_display.h
  *
+ * @brief   Lv Windows Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_windows_display
+ * @brief    lv_windows_display Firmware
+ * @{
  */
 
 #ifndef LV_WINDOWS_DISPLAY_H
@@ -14,12 +35,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_WINDOWS
-
-#include <windows.h>
 
 /*********************
  *      DEFINES
@@ -125,3 +141,5 @@ int32_t lv_windows_dpi_to_physical(int32_t logical, int32_t dpi);
 #endif
 
 #endif /*LV_WINDOWS_DISPLAY_H*/
+
+/** @} */

@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    memorystream.h
+ *
+ * @brief   Memorystream
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup memorystream
+ * @brief    memorystream Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_MEMORYSTREAM_H_
 #define RAPIDJSON_MEMORYSTREAM_H_
-
-#include "stream.h"
 
 #ifdef __clang__
 RAPIDJSON_DIAG_PUSH
@@ -69,3 +91,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_MEMORYBUFFER_H_
+
+/** @} */

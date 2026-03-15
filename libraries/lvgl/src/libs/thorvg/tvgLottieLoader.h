@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieLoader.h
+ *
+ * @brief   Tvglottieloader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgFrameModule.h"
+#include "tvgTaskScheduler.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieLoader
+ * @brief    tvgLottieLoader Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_LOADER_H_
 #define _TVG_LOTTIE_LOADER_H_
-
-#include "tvgCommon.h"
-#include "tvgFrameModule.h"
-#include "tvgTaskScheduler.h"
 
 struct LottieComposition;
 struct LottieBuilder;
@@ -83,8 +105,9 @@ private:
     void release();
 };
 
-
 #endif //_TVG_LOTTIELOADER_H_
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

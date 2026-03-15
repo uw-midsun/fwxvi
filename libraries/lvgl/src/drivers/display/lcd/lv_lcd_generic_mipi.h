@@ -1,18 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lcd_generic_mipi.h
+ *
+ * @brief   Lv Lcd Generic Mipi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_lcd_generic_mipi.h
- *
- * Generic driver for controllers adhering to the MIPI DBI/DCS specification
- *
- * Works with:
- *
- * ST7735
- * ST7789
- * ST7796
- * ILI9341
- * ILI9488 (NOTE: in SPI mode ILI9488 only supports RGB666 mode, which is currently not supported)
- *
- * any probably many more
- *
+ * @defgroup lv_lcd_generic_mipi
+ * @brief    lv_lcd_generic_mipi Firmware
+ * @{
  */
 
 #ifndef LV_LCD_GENERIC_MIPI_H
@@ -25,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../../display/lv_display.h"
 
 #if LV_USE_GENERIC_MIPI
 
@@ -233,7 +238,6 @@ void lv_lcd_generic_mipi_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_
  *      MACROS
  **********************/
 
-
 #endif /*LV_USE_GENERIC_MIPI*/
 
 #ifdef __cplusplus
@@ -241,3 +245,5 @@ void lv_lcd_generic_mipi_send_cmd_list(lv_display_t * disp, const uint8_t * cmd_
 #endif
 
 #endif /*LV_LCD_GENERIC_MIPI_H*/
+
+/** @} */

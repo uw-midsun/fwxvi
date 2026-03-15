@@ -1,23 +1,31 @@
-/**
- * @file lv_draw_nanovg_label.c
+/************************************************************************************************
+ * @file    lv_draw_nanovg_label.c
  *
- */
+ * @brief   Lv Draw Nanovg Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../libs/freetype/lv_freetype.h"
+#include "../../misc/cache/lv_cache_entry_private.h"
+#include "../../misc/lv_pending.h"
+#include "../lv_draw_image_private.h"
+#include "../lv_draw_label_private.h"
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_image_cache.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_nanovg_private.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "lv_nanovg_utils.h"
-#include "lv_nanovg_image_cache.h"
-#include "../lv_draw_label_private.h"
-#include "../lv_draw_image_private.h"
-#include "../../misc/cache/lv_cache_entry_private.h"
-#include "../../misc/lv_pending.h"
-#include "../../libs/freetype/lv_freetype.h"
 
 /*********************
 *      DEFINES
@@ -289,7 +297,6 @@ static lv_cache_compare_res_t letter_compare_cb(const letter_item_t * lhs, const
 
     return 0;
 }
-
 
 static void draw_letter_cb(lv_draw_task_t * t, lv_draw_glyph_dsc_t * glyph_draw_dsc,
                            lv_draw_fill_dsc_t * fill_draw_dsc, const lv_area_t * fill_area)

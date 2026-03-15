@@ -1,6 +1,26 @@
-/**
- * @file lv_opengles_window.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_window.h
  *
+ * @brief   Lv Opengles Window
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_window
+ * @brief    lv_opengles_window Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_WINDOW_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_OPENGLES
-
-#include "../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -100,3 +117,5 @@ lv_indev_t * lv_opengles_window_texture_get_mouse_indev(lv_opengles_window_textu
 #endif
 
 #endif /* LV_OPENGLES_WINDOW_H */
+
+/** @} */

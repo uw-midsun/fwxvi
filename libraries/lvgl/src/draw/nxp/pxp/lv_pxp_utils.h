@@ -1,6 +1,27 @@
-/**
- * @file lv_pxp_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_pxp_utils.h
  *
+ * @brief   Lv Pxp Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_color.h"
+#include "fsl_pxp.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_pxp_utils
+ * @brief    lv_pxp_utils Firmware
+ * @{
  */
 
 /**
@@ -19,12 +40,9 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "fsl_pxp.h"
-#include "../../../misc/lv_color.h"
 
 /*********************
  *      DEFINES
@@ -82,3 +100,5 @@ bool pxp_buf_aligned(const void * buf, uint32_t stride);
 #endif
 
 #endif /*LV_PXP_UTILS_H*/
+
+/** @} */

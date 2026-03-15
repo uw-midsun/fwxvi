@@ -1,22 +1,31 @@
-/**
- * @file lv_scale.c
+/************************************************************************************************
+ * @file    lv_scale.c
  *
- */
+ * @brief   Lv Scale
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw_arc.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_text_private.h"
+#include "lv_scale_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_scale_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_SCALE != 0
-
-#include "../../core/lv_group.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_text_private.h"
-#include "../../core/lv_observer_private.h"
-#include "../../draw/lv_draw_arc.h"
 
 /*********************
  *      DEFINES
@@ -431,7 +440,6 @@ lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj)
     return section;
 }
 
-
 void lv_scale_set_section_range(lv_obj_t * scale, lv_scale_section_t * section, int32_t min, int32_t max)
 {
     LV_ASSERT_OBJ(scale, MY_CLASS);
@@ -468,7 +476,6 @@ void lv_scale_section_set_range(lv_scale_section_t * section, int32_t min, int32
     section->range_min = min;
     section->range_max = max;
 }
-
 
 void lv_scale_set_section_style_main(lv_obj_t * scale, lv_scale_section_t * section, const lv_style_t * style)
 {
@@ -745,7 +752,6 @@ static void scale_draw_indicator(lv_obj_t * obj, lv_event_t * event)
     label_dsc.base.layer = layer;
     /* Formatting the labels with the configured style for LV_PART_INDICATOR */
     lv_obj_init_draw_label_dsc(obj, LV_PART_INDICATOR, &label_dsc);
-
 
     /* Major tick style */
     lv_draw_line_dsc_t major_tick_dsc;
@@ -1888,6 +1894,5 @@ static void scale_section_max_value_observer_cb(lv_observer_t * observer, lv_sub
 }
 
 #endif /*LV_USE_OBSERVER*/
-
 
 #endif

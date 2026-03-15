@@ -1,17 +1,26 @@
-/**
- * @file lv_bmp.c
+/************************************************************************************************
+ * @file    lv_bmp.c
  *
- */
+ * @brief   Lv Bmp
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_image_decoder_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_BMP
-
-#include <string.h>
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

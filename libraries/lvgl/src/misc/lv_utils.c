@@ -1,15 +1,25 @@
-/**
- * @file lv_utils.c
+/************************************************************************************************
+ * @file    lv_utils.c
  *
- */
+ * @brief   Lv Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "cache/lv_cache.h"
+#include "lv_fs.h"
+#include "lv_types.h"
+#include "lv_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_utils.h"
-#include "lv_fs.h"
-#include "lv_types.h"
-#include "cache/lv_cache.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,27 @@
-/**
- * @file lv_translation.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_translation.h
  *
+ * @brief   Lv Translation
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_array.h"
+
+/* Intra-component Headers */
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_translation
+ * @brief    lv_translation Firmware
+ * @{
  */
 
 #ifndef LV_TRANSLATION_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_TRANSLATION
-
-#include LV_STDINT_INCLUDE
-#include "../../misc/lv_array.h"
 
 /*********************
  *      DEFINES
@@ -145,3 +162,5 @@ lv_result_t lv_translation_set_tag_translation(lv_translation_pack_t * pack, lv_
 #endif
 
 #endif /* LV_TRANSLATION_H */
+
+/** @} */

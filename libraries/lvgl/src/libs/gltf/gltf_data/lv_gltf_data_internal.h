@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_data_internal.h
+ *
+ * @brief   Lv Gltf Data Internal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_data_internal
+ * @brief    lv_gltf_data_internal Firmware
+ * @{
+ */
+
 #ifndef LV_GLTFDATA_PRIVATE_H
 #define LV_GLTFDATA_PRIVATE_H
 
@@ -5,12 +31,7 @@
 extern "C" {
 #endif
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_GLTF
-#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
-#include "../../../misc/lv_types.h"
-
 
 typedef struct {
     GLuint count;
@@ -197,7 +218,6 @@ lv_gltf_compiled_shader_t * lv_gltf_get_compiled_shader(lv_gltf_model_t * data, 
  */
 double lv_gltf_data_get_radius(const lv_gltf_model_t * model);
 
-
 /**
  * @brief Copy the bounds information from one GLTF data object to another.
  *
@@ -228,3 +248,5 @@ void lv_gltf_model_invalidate(lv_gltf_model_t * model);
 #endif
 
 #endif /* LV_GLTFDATA_PRIVATE_H */
+
+/** @} */

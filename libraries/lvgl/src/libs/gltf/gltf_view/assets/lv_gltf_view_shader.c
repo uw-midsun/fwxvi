@@ -1,10 +1,62 @@
-#include "lv_gltf_view_shader.h"
+/************************************************************************************************
+ * @file    lv_gltf_view_shader.c
+ *
+ * @brief   Lv Gltf View Shader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <animation1.glsl>
+#include <animation2.glsl>
+#include <brdf1.glsl>
+#include <brdf2.glsl>
+#include <brdf3.glsl>
+#include <frag_v1_chunk_00.glsl>
+#include <frag_v1_chunk_01a.glsl>
+#include <frag_v1_chunk_01b.glsl>
+#include <frag_v1_chunk_02a.glsl>
+#include <frag_v1_chunk_02b.glsl>
+#include <frag_v1_chunk_03a.glsl>
+#include <frag_v1_chunk_03b.glsl>
+#include <frag_v1_chunk_04.glsl>
+#include <frag_v1_chunk_05.glsl>
+#include <functions.glsl>
+#include <ibl1.glsl>
+#include <ibl2.glsl>
+#include <ibl_filtering1.glsl>
+#include <ibl_filtering2.glsl>
+#include <ibl_filtering3.glsl>
+#include <ibl_filtering4.glsl>
+#include <ibl_filtering5.glsl>
+#include <ibl_filtering6.glsl>
+#include <iridescence.glsl>
+#include <material_info1.glsl>
+#include <material_info2.glsl>
+#include <material_info3.glsl>
+#include <material_info4.glsl>
+#include <material_info5.glsl>
+#include <punctual1.glsl>
+#include <punctual2.glsl>
+#include <string.h>
+#include <textures1.glsl>
+#include <textures2.glsl>
+#include <textures3.glsl>
+#include <textures4.glsl>
+#include <tonemapping.glsl>
+#include <tonemapping.glsl>
+#include <vert_v1_chunk_00.glsl>
+#include <vert_v1_chunk_01.glsl>
+
+/* Inter-component Headers */
+#include "../../../../stdlib/lv_sprintf.h"
 #include "../lv_gltf_view_internal.h"
+#include "lv_gltf_view_shader.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_GLTF
-
-#include "../../../../stdlib/lv_sprintf.h"
-#include <string.h>
 
 static const lv_opengl_shader_t src_includes[] = {
     {
@@ -12,12 +64,10 @@ static const lv_opengl_shader_t src_includes[] = {
 
         uniform float u_Exposure;
 
-
         // const float STANDARD_GAMMA = 2.2; // Retained for reference - unused
 
         const float GAMMA = )" LV_GLTF_TONEMAP_GAMMA R"(;
         const float INV_GAMMA = 1.0 / GAMMA;
-
 
         // sRGB => XYZ => D65_2_D60 => AP1 => RRT_SAT
         const mat3 ACESInputMat = mat3
@@ -27,7 +77,6 @@ static const lv_opengl_shader_t src_includes[] = {
             0.04823, 0.01566, 0.83777
         );
 
-
         // ODT_SAT => XYZ => D60_2_D65 => sRGB
         const mat3 ACESOutputMat = mat3
         (
@@ -36,14 +85,12 @@ static const lv_opengl_shader_t src_includes[] = {
             -0.07367, -0.00605,  1.07602
         );
 
-
         // linear to sRGB approximation
         // see http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
         vec3 linearTosRGB(vec3 color)
         {
             return pow(color, vec3(INV_GAMMA));
         }
-
 
         // sRGB to linear approximation
         // see http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
@@ -52,12 +99,10 @@ static const lv_opengl_shader_t src_includes[] = {
             return vec3(pow(srgbIn.xyz, vec3(GAMMA)));
         }
 
-
         vec4 sRGBToLinear(vec4 srgbIn)
         {
             return vec4(sRGBToLinear(srgbIn.xyz), srgbIn.w);
         }
-
 
         // ACES tone map (faster approximation)
         // see: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
@@ -71,7 +116,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return clamp((color * (A * color + B)) / (color * (C * color + D) + E), 0.0, 1.0);
         }
 
-
         // ACES filmic tone map approximation
         // see https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
         vec3 RRTAndODTFit(vec3 color)
@@ -80,7 +124,6 @@ static const lv_opengl_shader_t src_includes[] = {
             vec3 b = color * (0.983729 * color + 0.4329510) + 0.238081;
             return a / b;
         }
-
 
         // tone mapping
         vec3 toneMapACES_Hill(vec3 color)
@@ -164,9 +207,7 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform sampler2D u_SheenELUT;
         uniform mat3 u_EnvRotation;
 
-
         // General Material
-
 
         uniform sampler2D u_NormalSampler;
         uniform float u_NormalScale;
@@ -183,10 +224,8 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform float u_OcclusionStrength;
         uniform mat3 u_OcclusionUVTransform;
 
-
         in vec2 v_texcoord_0;
         in vec2 v_texcoord_1;
-
 
         vec2 getNormalUV()
         {
@@ -199,7 +238,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return uv.xy;
         }
 
-
         vec2 getEmissiveUV()
         {
             vec3 uv = vec3(u_EmissiveUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
@@ -211,7 +249,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return uv.xy;
         }
 
-
         vec2 getOcclusionUV()
         {
             vec3 uv = vec3(u_OcclusionUVSet < 1 ? v_texcoord_0 : v_texcoord_1, 1.0);
@@ -222,7 +259,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
             return uv.xy;
         }
-
 
         // MK TEMP - Added special optimized handling for unlit materials
         #ifdef MATERIAL_UNLIT
@@ -283,7 +319,6 @@ static const lv_opengl_shader_t src_includes[] = {
         "textures2.glsl", R"(
         // Specular Glossiness Material
 
-
         #ifdef MATERIAL_SPECULARGLOSSINESS
 
         uniform sampler2D u_DiffuseSampler;
@@ -293,7 +328,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform sampler2D u_SpecularGlossinessSampler;
         uniform int u_SpecularGlossinessUVSet;
         uniform mat3 u_SpecularGlossinessUVTransform;
-
 
         vec2 getSpecularGlossinessUV()
         {
@@ -319,9 +353,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Clearcoat Material
-
 
         #ifdef MATERIAL_CLEARCOAT
 
@@ -337,7 +369,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform int u_ClearcoatNormalUVSet;
         uniform mat3 u_ClearcoatNormalUVTransform;
         uniform float u_ClearcoatNormalScale;
-
 
         vec2 getClearcoatUV()
         {
@@ -368,9 +399,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Sheen Material
-
 
         #ifdef MATERIAL_SHEEN
 
@@ -405,9 +434,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Specular Material
-
 
         #ifdef MATERIAL_SPECULAR
 
@@ -417,7 +444,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform sampler2D u_SpecularColorSampler;
         uniform int u_SpecularColorUVSet;
         uniform mat3 u_SpecularColorUVTransform;
-
 
         vec2 getSpecularUV()
         {
@@ -439,9 +465,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Transmission Material
-
 
         #ifdef MATERIAL_TRANSMISSION
 
@@ -450,7 +474,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform mat3 u_TransmissionUVTransform;
         uniform sampler2D u_TransmissionFramebufferSampler;
         uniform ivec2 u_TransmissionFramebufferSize;
-
 
         vec2 getTransmissionUV()
         {
@@ -463,16 +486,13 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Volume Material
-
 
         #ifdef MATERIAL_VOLUME
 
         uniform sampler2D u_ThicknessSampler;
         uniform int u_ThicknessUVSet;
         uniform mat3 u_ThicknessUVTransform;
-
 
     )"
     },
@@ -489,9 +509,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Iridescence
-
 
         #ifdef MATERIAL_IRIDESCENCE
 
@@ -502,7 +520,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform sampler2D u_IridescenceThicknessSampler;
         uniform int u_IridescenceThicknessUVSet;
         uniform mat3 u_IridescenceThicknessUVTransform;
-
 
         vec2 getIridescenceUV()
         {
@@ -524,7 +541,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
         #endif
 
-
         // Diffuse Transmission
 
         #ifdef MATERIAL_DIFFUSE_TRANSMISSION
@@ -536,7 +552,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform sampler2D u_DiffuseTransmissionColorSampler;
         uniform int u_DiffuseTransmissionColorUVSet;
         uniform mat3 u_DiffuseTransmissionColorUVTransform;
-
 
         vec2 getDiffuseTransmissionUV()
         {
@@ -584,9 +599,7 @@ static const lv_opengl_shader_t src_includes[] = {
 
         const float M_PI = 3.141592653589793;
 
-
         in vec3 v_Position;
-
 
         #ifdef HAS_NORMAL_VEC3
         #ifdef HAS_TANGENT_VEC4
@@ -596,14 +609,12 @@ static const lv_opengl_shader_t src_includes[] = {
         #endif
         #endif
 
-
         #ifdef HAS_COLOR_0_VEC3
         in vec3 v_Color;
         #endif
         #ifdef HAS_COLOR_0_VEC4
         in vec4 v_Color;
         #endif
-
 
         vec4 getVertexColor()
         {
@@ -619,7 +630,6 @@ static const lv_opengl_shader_t src_includes[] = {
         return color;
         }
 
-
         struct NormalInfo {
             vec3 ng;   // Geometry normal
             vec3 t;    // Geometry tangent
@@ -628,18 +638,15 @@ static const lv_opengl_shader_t src_includes[] = {
             vec3 ntex; // Normal from texture, scaling is accounted for.
         };
 
-
         float clampedDot(vec3 x, vec3 y)
         {
             return clamp(dot(x, y), 0.0, 1.0);
         }
 
-
         float max3(vec3 v)
         {
             return max(max(v.x, v.y), v.z);
         }
-
 
         float sq(float t)
         {
@@ -661,7 +668,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return t * t;
         }
 
-
         float applyIorToRoughness(float roughness, float ior)
         {
             // Scale roughness with IOR so that an IOR of 1.0 results in no microfacet refraction and
@@ -674,7 +680,6 @@ static const lv_opengl_shader_t src_includes[] = {
             float rgb_alpha_max = max(rgb_alpha.r, max(rgb_alpha.g, rgb_alpha.b));
             return (1.0 - rgb_alpha_max) * base + rgb_alpha * layer;
         }
-
 
     )"
     },
@@ -771,7 +776,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return 0.0;
         }
 
-
         // The following equation(s) model the distribution of microfacet normals across the area being drawn (aka D())
         // Implementation from "Average Irregularity Representation of a Roughened Surface for Ray Reflection" by T. S. Trowbridge, and K. P. Reitz
         // Follows the distribution function recommended in the SIGGRAPH 2013 course notes from EPIC Games [1], Equation 3.
@@ -781,7 +785,6 @@ static const lv_opengl_shader_t src_includes[] = {
             float f = (NdotH * NdotH) * (alphaRoughnessSq - 1.0) + 1.0;
             return alphaRoughnessSq / (M_PI * f * f);
         }
-
 
         float lambdaSheenNumericHelper(float x, float alphaG)
         {
@@ -793,7 +796,6 @@ static const lv_opengl_shader_t src_includes[] = {
             float e = mix(-4.32054, -4.85967, oneMinusAlphaSq);
             return a / (1.0 + b * pow(x, c)) + d * x + e;
         }
-
 
         float lambdaSheen(float cosTheta, float alphaG)
         {
@@ -807,7 +809,6 @@ static const lv_opengl_shader_t src_includes[] = {
             }
         }
 
-
         float V_Sheen(float NdotL, float NdotV, float sheenRoughness)
         {
             sheenRoughness = max(sheenRoughness, 0.000001); //clamp (0,1]
@@ -816,7 +817,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return clamp(1.0 / ((1.0 + lambdaSheen(NdotV, alphaG) + lambdaSheen(NdotL, alphaG)) *
                 (4.0 * NdotV * NdotL)), 0.0, 1.0);
         }
-
 
         //Sheen implementation-------------------------------------------------------------------------------------
         // See  https://github.com/sebavan/glTF/tree/KHR_materials_sheen/extensions/2.0/Khronos/KHR_materials_sheen
@@ -851,7 +851,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
             return vec3(Vis * D);
         }
-
 
         #ifdef MATERIAL_ANISOTROPY
         // GGX Distribution Anisotropic (Same as Babylon.js)
@@ -891,7 +890,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         // f_sheen
         vec3 BRDF_specularSheen(vec3 sheenColor, float sheenRoughness, float NdotL, float NdotV, float NdotH)
         {
@@ -921,7 +919,6 @@ static const lv_opengl_shader_t src_includes[] = {
         const int LightType_Directional = 0;
         const int LightType_Point = 1;
         const int LightType_Spot = 2;
-
 
         #ifdef USE_PUNCTUAL
         //Light u_Lights[LIGHT_COUNT + 1]; //Array [0] is not allowed
@@ -990,7 +987,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return baseColor * D * Vis;
         }
 
-
         vec3 getPunctualRadianceClearCoat(vec3 clearcoatNormal, vec3 v, vec3 l, vec3 h, float VdotH, vec3 f0, vec3 f90, float clearcoatRoughness)
         {
             float NdotL = clampedDot(clearcoatNormal, l);
@@ -999,12 +995,10 @@ static const lv_opengl_shader_t src_includes[] = {
             return NdotL * BRDF_specularGGX(clearcoatRoughness * clearcoatRoughness, NdotL, NdotV, NdotH);
         }
 
-
         vec3 getPunctualRadianceSheen(vec3 sheenColor, float sheenRoughness, float NdotL, float NdotV, float NdotH)
         {
             return NdotL * BRDF_specularSheen(sheenColor, sheenRoughness, NdotL, NdotV, NdotH);
         }
-
 
         vec3 applyVolumeAttenuation(vec3 radiance, float transmissionDistance, vec3 attenuationColor, float attenuationDistance)
         {
@@ -1019,7 +1013,6 @@ static const lv_opengl_shader_t src_includes[] = {
                 return transmittance * radiance;
             }
         }
-
 
         vec3 getVolumeTransmissionRay(vec3 n, vec3 v, float thickness, float ior, mat4 modelMatrix)
         {
@@ -1093,7 +1086,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return specularLight;
         }
 
-
         #ifdef MATERIAL_TRANSMISSION
         vec3 getTransmissionSample(vec2 fragCoord, float roughness, float ior)
         {
@@ -1157,7 +1149,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         #ifdef MATERIAL_ANISOTROPY
         vec3 getIBLRadianceAnisotropy(vec3 n, vec3 v, float roughness, float anisotropy, vec3 anisotropyDirection)
         {
@@ -1180,7 +1171,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return specularLight;
         }
         #endif
-
 
         vec3 getIBLRadianceCharlie(vec3 n, vec3 v, float sheenRoughness, vec3 sheenColor)
         {
@@ -1261,7 +1251,6 @@ static const lv_opengl_shader_t src_includes[] = {
         uniform mat4 u_ViewMatrix;
         uniform mat4 u_ProjectionMatrix;
 
-
         struct MaterialInfo
         {
             vec4 baseColorFactor;
@@ -1323,7 +1312,6 @@ static const lv_opengl_shader_t src_includes[] = {
             // KHR_materials_dispersion
             float dispersion;
         };
-
 
         // Get normal, tangent and bitangent vectors.
         NormalInfo getNormalInfo(vec3 v)
@@ -1391,7 +1379,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return info;
         }
 
-
         #ifdef MATERIAL_CLEARCOAT
         vec3 getClearcoatNormal(NormalInfo normalInfo)
         {
@@ -1430,7 +1417,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
         }
 
-
         #ifdef MATERIAL_METALLICROUGHNESS
         MaterialInfo getMetallicRoughnessInfo(MaterialInfo info)
         {
@@ -1448,7 +1434,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return info;
         }
         #endif
-
 
         #ifdef MATERIAL_SHEEN
         MaterialInfo getSheenInfo(MaterialInfo info)
@@ -1469,7 +1454,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         #ifdef MATERIAL_SPECULAR
         MaterialInfo getSpecularInfo(MaterialInfo info)
         {   
@@ -1487,7 +1471,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return info;
         }
         #endif
-
 
         #ifdef MATERIAL_TRANSMISSION
         MaterialInfo getTransmissionInfo(MaterialInfo info)
@@ -1526,7 +1509,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         #ifdef MATERIAL_IRIDESCENCE
         MaterialInfo getIridescenceInfo(MaterialInfo info)
         {
@@ -1547,7 +1529,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return info;
         }
         #endif
-
 
         #ifdef MATERIAL_DIFFUSE_TRANSMISSION
         MaterialInfo getDiffuseTransmissionInfo(MaterialInfo info)
@@ -1595,7 +1576,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         #ifdef MATERIAL_IOR
         MaterialInfo getIorInfo(MaterialInfo info)
         {
@@ -1625,7 +1605,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return info;
         }
         #endif
-
 
         float albedoSheenScalingLUT(float NdotV, float sheenRoughnessFactor)
         {
@@ -1805,7 +1784,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return skin;
         }
 
-
         mat4 getSkinningNormalMatrix()
         {
             mat4 skin = mat4(0);
@@ -1850,7 +1828,6 @@ static const lv_opengl_shader_t src_includes[] = {
         }
         #endif
 
-
         vec4 getTargetPosition(int vertexID)
         {
             vec4 pos = vec4(0);
@@ -1881,7 +1858,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
             return normal;
         }
-
 
         vec3 getTargetTangent(int vertexID)
         {
@@ -2010,7 +1986,6 @@ static const lv_opengl_shader_t src_includes[] = {
             return pos;
         }
 
-
         #ifdef HAS_NORMAL_VEC3
         vec3 getNormal()
         {
@@ -2120,7 +2095,6 @@ static const lv_opengl_shader_t src_includes[] = {
             v_texcoord_1 += getTargetTexCoord1(gl_VertexID);
         #endif
 
-
         #if defined(HAS_COLOR_0_VEC3) 
             v_Color = a_color_0;
         #if defined(USE_MORPHING)
@@ -2229,7 +2203,6 @@ static const lv_opengl_shader_t src_includes[] = {
         // convert to material roughness by squaring the perceptual roughness.
         materialInfo.alphaRoughness = materialInfo.perceptualRoughness * materialInfo.perceptualRoughness;
 
-
         // LIGHTING
         vec3 f_specular_dielectric = vec3(0.0);
         vec3 f_specular_metal = vec3(0.0);
@@ -2285,7 +2258,6 @@ static const lv_opengl_shader_t src_includes[] = {
         #endif
             f_diffuse = mix(f_diffuse, diffuseTransmissionIBL, materialInfo.diffuseTransmissionFactor);
         #endif
-
 
         #if defined(MATERIAL_TRANSMISSION)
             f_specular_transmission = getIBLVolumeRefraction(
@@ -2351,7 +2323,6 @@ static const lv_opengl_shader_t src_includes[] = {
         //    color = color * (1.0 + u_OcclusionStrength * (ao - 1.0)); 
         //#endif
         #endif //end USE_IBL
-
 
         f_diffuse = vec3(0.0);
 
@@ -2491,7 +2462,6 @@ static const lv_opengl_shader_t src_includes[] = {
                 l_metal_brdf = metal_fresnel * l_specular_metal;
                 l_dielectric_brdf = mix(l_diffuse, l_specular_dielectric, dielectric_fresnel); // Do we need to handle vec3 fresnel here?
 
-
         #ifdef MATERIAL_IRIDESCENCE
                 l_metal_brdf = mix(l_metal_brdf, l_specular_metal * iridescenceFresnel_metallic, materialInfo.iridescenceFactor);
                 l_dielectric_brdf = mix(l_dielectric_brdf, rgb_mix(l_diffuse, l_specular_dielectric, iridescenceFresnel_dielectric), materialInfo.iridescenceFactor);
@@ -2527,7 +2497,6 @@ static const lv_opengl_shader_t src_includes[] = {
         #ifdef HAS_EMISSIVE_MAP
             f_emissive *= texture(u_EmissiveSampler, getEmissiveUV()).rgb;
         #endif
-
 
         #ifdef MATERIAL_UNLIT
             #ifdef HAS_EMISSIVE_MAP
@@ -2575,8 +2544,6 @@ static const lv_opengl_shader_t src_includes[] = {
             }
         #endif
         
-
-        
             // Debug views:
 
             // Generic:
@@ -2611,7 +2578,6 @@ static const lv_opengl_shader_t src_includes[] = {
         #if DEBUG == DEBUG_EMISSIVE
             g_finalColor.rgb = linearTosRGB(f_emissive);
         #endif
-
 
         #if DEBUG == DEBUG_METALLIC
             g_finalColor.rgb = vec3(materialInfo.metallic);
@@ -2740,7 +2706,6 @@ static const lv_opengl_shader_t src_includes[] = {
     {
         "cubemap.frag", R"(
         precision highp float;
-#include <tonemapping.glsl>
         uniform float u_EnvIntensity;
         uniform float u_EnvBlurNormalized;
         uniform int u_MipCount;
@@ -2748,7 +2713,6 @@ static const lv_opengl_shader_t src_includes[] = {
 
         out vec4 FragColor;
         in vec3 v_TexCoords;
-
 
         void main()
         {
@@ -2848,12 +2812,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
     },
     {
         "ibl_filtering.frag", R"(
-#include <ibl_filtering1.glsl>
-#include <ibl_filtering2.glsl>
-#include <ibl_filtering3.glsl>
-#include <ibl_filtering4.glsl>
-#include <ibl_filtering5.glsl>
-#include <ibl_filtering6.glsl>
     )"
     },
     {
@@ -2871,7 +2829,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
         const int cLambertian = 0;
         const int cGGX = 1;
         const int cCharlie = 2;
-
 
         //layout(push_constant) uniform FilterParameters {
         uniform  float u_roughness;
@@ -2891,11 +2848,9 @@ static const lv_opengl_shader_t env_src_includes[] = {
         //layout (location = 0) in vec2 inUV;
         in vec2 texCoord;
 
-
         out vec4 fragmentColor;
 
         //layout(location = 6) out vec3 outLUT;
-
 
         vec3 uvToXYZ(int face, vec2 uv)
         {
@@ -3050,7 +3005,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
             return (2.0 + invR) * pow(sin2h, invR * 0.5) / (2.0 * MATH_PI);
         }
 
-
         MicrofacetDistributionSample Charlie(vec2 xi, float roughness)
         {
             MicrofacetDistributionSample charlie;
@@ -3083,7 +3037,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
 
             return lambertian;
         }
-
 
         // getImportanceSample returns an importance sample direction with pdf in the .w component
         vec4 getImportanceSample(int sampleIndex, vec3 N, float roughness)
@@ -3151,7 +3104,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
             // https://cgg.mff.cuni.cz/~jaroslav/papers/2007-sketch-fis/Final_sap_0073.pdf
             float lod = 0.5 * log2( 6.0 * float(u_width) * float(u_width) / (float(u_sampleCount) * pdf));
             //float lod = 0.5 * log2( 3.0 * float(u_width) * float(u_width) / (float(u_sampleCount) * pdf));
-
 
             return lod;
         }
@@ -3308,7 +3260,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
     {
         "ibl_filtering6.glsl", R"(
 
-
         // entry point
         void main()
         {
@@ -3379,7 +3330,6 @@ static const lv_opengl_shader_t env_src_includes[] = {
             {	return vec3(    -uv.x,  +uv.y,     -1.f);}
         }
         
-        
         void main(void)   
         {
             fragmentColor = vec4(texCoord.x*10.0, 0.0, texCoord.y*10.0, 1.0);
@@ -3415,11 +3365,7 @@ static const char * src_vertex_shader = R"(
 
     in vec3 a_position;
     out vec3 v_Position;
-#include <animation1.glsl>
-#include <animation2.glsl>
-#include <vert_v1_chunk_00.glsl>
 // CHUNK 00 -> 01
-#include <vert_v1_chunk_01.glsl>
 )";
 
 static const char *src_fragment_shader = R"(
@@ -3444,53 +3390,18 @@ static const char *src_fragment_shader = R"(
 
     precision mediump float;
 
-#include <tonemapping.glsl>
-#include <textures1.glsl>
-#include <textures2.glsl>
-#include <textures3.glsl>
-#include <textures4.glsl>
-#include <functions.glsl>
-#include <brdf1.glsl>
-#include <brdf2.glsl>
-#include <brdf3.glsl>
-#include <punctual1.glsl>
-#include <punctual2.glsl>
-#include <ibl1.glsl>
-#include <ibl2.glsl>
-#include <material_info1.glsl>
-#include <material_info2.glsl>
-#include <material_info3.glsl>
-#include <material_info4.glsl>
-#include <material_info5.glsl>
-
     #ifdef MATERIAL_IRIDESCENCE
-#include <iridescence.glsl>
     #endif
-
-#include <frag_v1_chunk_00.glsl>
 
 // CHUNK 00 -> 01
 
-#include <frag_v1_chunk_01a.glsl>
-#include <frag_v1_chunk_01b.glsl>
-
 // CHUNK 01 -> 02
-
-#include <frag_v1_chunk_02a.glsl>
-#include <frag_v1_chunk_02b.glsl>
 
 // CHUNK 02 -> 03
 
-#include <frag_v1_chunk_03a.glsl>
-#include <frag_v1_chunk_03b.glsl>
-
 // CHUNK 03 -> 04
 
-#include <frag_v1_chunk_04.glsl>
-
 // CHUNK 04 -> 05
-
-#include <frag_v1_chunk_05.glsl>
 
 )";
 

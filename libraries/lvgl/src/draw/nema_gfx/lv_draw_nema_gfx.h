@@ -1,32 +1,38 @@
-/**
- * MIT License
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_nema_gfx.h
  *
- * -----------------------------------------------------------------------------
- * Copyright (c) 2008-24 Think Silicon Single Member PC
- * -----------------------------------------------------------------------------
+ * @brief   Lv Draw Nema Gfx
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice (including the next paragraph)
- * shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area_private.h"
+#include "../lv_draw_arc.h"
+#include "../lv_draw_buf_private.h"
+#include "../lv_draw_image_private.h"
+#include "../lv_draw_label_private.h"
+#include "../lv_draw_line.h"
+#include "../lv_draw_mask.h"
+#include "../lv_draw_private.h"
+#include "../lv_draw_rect_private.h"
+#include "../lv_draw_triangle_private.h"
+#include "../lv_draw_vector_private.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_draw_nema_gfx_utils.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_draw_nema_gfx.h
- *
+ * @defgroup lv_draw_nema_gfx
+ * @brief    lv_draw_nema_gfx Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_NEMA_GFX_H
@@ -39,25 +45,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_NEMA_GFX
-
-#include "lv_draw_nema_gfx_utils.h"
-
-#include "../lv_draw_private.h"
-#include "../lv_draw_buf_private.h"
-#include "../lv_draw_image_private.h"
-#include "../lv_image_decoder_private.h"
-#include "../lv_draw_label_private.h"
-#include "../lv_draw_mask.h"
-#include "../lv_draw_rect_private.h"
-#include "../lv_draw_triangle_private.h"
-#include "../lv_draw_vector_private.h"
-#include "../lv_draw_line.h"
-#include "../lv_draw_arc.h"
-
-#include "../../misc/lv_area_private.h"
 
 /**********************
  *      TYPEDEFS
@@ -117,7 +106,6 @@ void lv_draw_nema_gfx_vector(lv_draw_task_t * t, const lv_draw_vector_dsc_t * ds
                              const lv_area_t * coords);
 #endif
 
-
 /**********************
  *      MACROS
  **********************/
@@ -129,3 +117,5 @@ void lv_draw_nema_gfx_vector(lv_draw_task_t * t, const lv_draw_vector_dsc_t * ds
 #endif
 
 #endif /*LV_DRAW_NEMA_GFX_H*/
+
+/** @} */

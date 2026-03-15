@@ -1,20 +1,29 @@
-/**
- * @file lv_opengl_shader_program.c
+/************************************************************************************************
+ * @file    lv_opengl_shader_program.c
  *
- */
+ * @brief   Lv Opengl Shader Program
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_assert.h"
+#include "../../../stdlib/lv_mem.h"
+#include "../lv_opengles_debug.h"
+#include "../lv_opengles_private.h"
+#include "lv_opengl_shader_internal.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_opengl_shader_internal.h"
-
 #if LV_USE_OPENGLES
 
-#include "../lv_opengles_private.h"
-#include "../lv_opengles_debug.h"
-#include "../../../misc/lv_assert.h"
-#include "../../../stdlib/lv_mem.h"
 /*********************
  *      DEFINES
  *********************/
@@ -110,7 +119,6 @@ GLuint lv_opengl_shader_program_get_id(lv_opengl_shader_program_t * program)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 static void update_uniform_1i(lv_opengl_shader_program_t * program, const char * prop,
                               int value)

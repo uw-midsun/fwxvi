@@ -1,6 +1,26 @@
-/**
- * @file lv_rtthread.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rtthread.h
  *
+ * @brief   Lv Rtthread
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <rtthread.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rtthread
+ * @brief    lv_rtthread Firmware
+ * @{
  */
 
 #ifndef LV_RTTHREAD_H
@@ -14,9 +34,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 #if LV_USE_OS == LV_OS_RTTHREAD
-
-#include <rtthread.h>
-#include <stdbool.h>
 
 /*********************
  *      DEFINES
@@ -52,3 +69,5 @@ typedef struct {
 #endif
 
 #endif /*LV_RTTHREAD_H*/
+
+/** @} */

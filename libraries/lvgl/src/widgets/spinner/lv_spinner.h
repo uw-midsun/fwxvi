@@ -1,6 +1,27 @@
-/**
- * @file lv_spinner.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_spinner.h
  *
+ * @brief   Lv Spinner
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_property.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_spinner
+ * @brief    lv_spinner Firmware
+ * @{
  */
 
 #ifndef LV_SPINNER_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_SPINNER
-
-#include "../../misc/lv_types.h"
-#include "../../core/lv_obj_property.h"
 
 /*Testing of dependencies*/
 #if LV_USE_ARC == 0
@@ -102,3 +119,5 @@ uint32_t lv_spinner_get_arc_sweep(lv_obj_t * obj);
 #endif
 
 #endif /*LV_SPINNER_H*/
+
+/** @} */

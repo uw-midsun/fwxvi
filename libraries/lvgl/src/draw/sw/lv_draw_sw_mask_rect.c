@@ -1,23 +1,32 @@
-/**
- * @file lv_draw_sw_mask_rect.c
+/************************************************************************************************
+ * @file    lv_draw_sw_mask_rect.c
  *
- */
+ * @brief   Lv Draw Sw Mask Rect
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_mask.h"
+#include "../lv_draw_private.h"
+#include "lv_draw_sw.h"
+#include "lv_draw_sw_mask_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_area_private.h"
-#include "../lv_draw_mask.h"
-#include "../lv_draw_private.h"
 #if LV_USE_DRAW_SW
 #if LV_DRAW_SW_COMPLEX
-
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_log.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
-#include "lv_draw_sw.h"
-#include "lv_draw_sw_mask_private.h"
 
 /*********************
  *      DEFINES

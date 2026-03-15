@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    clzll.h
+ *
+ * @brief   Clzll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <intrin.h>
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup clzll
+ * @brief    clzll Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,10 +40,7 @@
 #ifndef RAPIDJSON_CLZLL_H_
 #define RAPIDJSON_CLZLL_H_
 
-#include "../rapidjson.h"
-
 #if defined(_MSC_VER) && !defined(UNDER_CE)
-#include <intrin.h>
 #if defined(_WIN64)
 #pragma intrinsic(_BitScanReverse64)
 #else
@@ -69,3 +91,5 @@ inline uint32_t clzll(uint64_t x) {
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_CLZLL_H_
+
+/** @} */

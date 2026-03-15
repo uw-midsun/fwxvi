@@ -1,17 +1,27 @@
-/**
- * @file lv_obj_class.c
+/************************************************************************************************
+ * @file    lv_obj_class.c
  *
- */
+ * @brief   Lv Obj Class
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../stdlib/lv_string.h"
+#include "../themes/lv_theme.h"
+#include "lv_obj_class_private.h"
+#include "lv_obj_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_class_private.h"
-#include "lv_obj_private.h"
-#include "../themes/lv_theme.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stringbuffer.h
+ *
+ * @brief   Stringbuffer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <utility> // std::move
+
+/* Inter-component Headers */
+#include "internal/stack.h"
+#include "internal/stack.h"
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup stringbuffer
+ * @brief    stringbuffer Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,14 +42,8 @@
 #ifndef RAPIDJSON_STRINGBUFFER_H_
 #define RAPIDJSON_STRINGBUFFER_H_
 
-#include "stream.h"
-#include "internal/stack.h"
-
 #if RAPIDJSON_HAS_CXX11_RVALUE_REFS
-#include <utility> // std::move
 #endif
-
-#include "internal/stack.h"
 
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
@@ -119,3 +140,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_STRINGBUFFER_H_
+
+/** @} */

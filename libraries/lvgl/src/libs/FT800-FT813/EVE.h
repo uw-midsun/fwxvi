@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 @file    EVE.h
 @brief   Contains FT80x/FT81x/BT81x API definitions
@@ -72,18 +74,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "EVE_commands.h"
+#include "EVE_config.h"
+#include "EVE_target.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup EVE
+ * @brief    EVE Firmware
+ * @{
+ */
+
 #ifndef EVE_H
 #define EVE_H
-
-#include "EVE_target.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "EVE_config.h"
-#include "EVE_commands.h"
 
 /* Memory */
 #define EVE_RAM_G         ((uint32_t) 0x00000000UL)
@@ -585,7 +597,6 @@ extern "C"
 #define REG_VSIZE            ((uint32_t) 0x00302048UL)
 #define REG_VSYNC0           ((uint32_t) 0x0030204cUL)
 #define REG_VSYNC1           ((uint32_t) 0x00302050UL)
-
 
 /* Macros for static display list generation */
 
@@ -1255,3 +1266,5 @@ static inline uint32_t BITMAP_TRANSFORM_E(uint8_t prc, uint32_t val)
 #endif
 
 #endif /* EVE_H */
+
+/** @} */

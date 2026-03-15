@@ -1,20 +1,28 @@
-/**
- * @file lv_vg_lite_decoder.c
+/************************************************************************************************
+ * @file    lv_vg_lite_decoder.c
  *
- */
+ * @brief   Lv Vg Lite Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../libs/bin_decoder/lv_bin_decoder.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_vg_lite_decoder.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_decoder.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "lv_vg_lite_utils.h"
-#include "../../core/lv_global.h"
-#include "../lv_image_decoder_private.h"
-#include "../../libs/bin_decoder/lv_bin_decoder.h"
 
 /*********************
  *      DEFINES

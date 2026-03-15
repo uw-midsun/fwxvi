@@ -1,18 +1,26 @@
-/**
- * @file lv_draw_buf_vg_lite.c
+/************************************************************************************************
+ * @file    lv_draw_buf_vg_lite.c
  *
- */
+ * @brief   Lv Draw Buf Vg Lite
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_buf_private.h"
+#include "lv_draw_vg_lite.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_vg_lite.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "../lv_draw_buf_private.h"
-#include "lv_vg_lite_utils.h"
 
 /*********************
  *      DEFINES

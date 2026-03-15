@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    cursorstreamwrapper.h
+ *
+ * @brief   Cursorstreamwrapper
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stream.h"
+
+/**
+ * @defgroup cursorstreamwrapper
+ * @brief    cursorstreamwrapper Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -15,8 +39,6 @@
 #ifndef RAPIDJSON_CURSORSTREAMWRAPPER_H_
 #define RAPIDJSON_CURSORSTREAMWRAPPER_H_
 
-#include "stream.h"
-
 #if defined(__GNUC__)
 RAPIDJSON_DIAG_PUSH
 RAPIDJSON_DIAG_OFF(effc++)
@@ -29,7 +51,6 @@ RAPIDJSON_DIAG_OFF(4512)  // assignment operator could not be generated
 #endif
 
 RAPIDJSON_NAMESPACE_BEGIN
-
 
 //! Cursor stream wrapper for counting line and column number if error exists.
 /*!
@@ -76,3 +97,5 @@ RAPIDJSON_DIAG_POP
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_CURSORSTREAMWRAPPER_H_
+
+/** @} */

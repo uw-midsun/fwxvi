@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    gif.c
+ *
+ * @brief   Gif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_log.h"
+#include "../../stdlib/lv_string.h"
+#include "AnimatedGIF.h"
+
+/* Intra-component Headers */
 //
 // GIF Animator
 // written by Larry Bank
@@ -18,12 +35,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //===========================================================================
-#include "AnimatedGIF.h"
 
 #if LV_USE_GIF
-
-#include "../../misc/lv_log.h"
-#include "../../stdlib/lv_string.h"
 
 static const unsigned char cGIFBits[9] = {1,4,4,4,8,8,8,8,8}; // convert odd bpp values to ones we can handle
 

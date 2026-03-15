@@ -1,18 +1,27 @@
-/**
- * @file lv_qrcode.c
+/************************************************************************************************
+ * @file    lv_qrcode.c
  *
- */
+ * @brief   Lv Qrcode
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../misc/cache/lv_cache.h"
+#include "lv_qrcode_private.h"
+#include "qrcodegen.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_class_private.h"
-#include "lv_qrcode_private.h"
 
 #if LV_USE_QRCODE
-
-#include "../../misc/cache/lv_cache.h"
-#include "qrcodegen.h"
 
 /*********************
  *      DEFINES

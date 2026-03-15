@@ -1,6 +1,32 @@
-/**
- * @file lv_draw_vg_lite.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_vg_lite.h
  *
+ * @brief   Lv Draw Vg Lite
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_arc.h"
+#include "../../draw/lv_draw_image.h"
+#include "../../draw/lv_draw_label.h"
+#include "../../draw/lv_draw_line.h"
+#include "../../draw/lv_draw_rect.h"
+#include "../../draw/lv_draw_triangle.h"
+#include "../../draw/lv_draw_vector.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_vg_lite
+ * @brief    lv_draw_vg_lite Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_VG_LITE_H
@@ -13,17 +39,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_DRAW_VG_LITE
-
-#include "../../draw/lv_draw_vector.h"
-#include "../../draw/lv_draw_arc.h"
-#include "../../draw/lv_draw_rect.h"
-#include "../../draw/lv_draw_image.h"
-#include "../../draw/lv_draw_label.h"
-#include "../../draw/lv_draw_line.h"
-#include "../../draw/lv_draw_triangle.h"
 
 /*********************
  *      DEFINES
@@ -93,3 +110,5 @@ void lv_draw_vg_lite_vector(lv_draw_task_t * t, const lv_draw_vector_dsc_t * dsc
 #endif
 
 #endif /*LV_DRAW_VG_LITE_H*/
+
+/** @} */

@@ -1,38 +1,22 @@
-/**
- * MIT License
+/************************************************************************************************
+ * @file    lv_draw_nema_gfx_triangle.c
  *
- * -----------------------------------------------------------------------------
- * Copyright (c) 2008-24 Think Silicon Single Member PC
- * -----------------------------------------------------------------------------
+ * @brief   Lv Draw Nema Gfx Triangle
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice (including the next paragraph)
- * shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- */
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * @file lv_draw_nema_gfx_triangle.c
- *
- */
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_nema_gfx.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_nema_gfx.h"
 
 #if LV_USE_NEMA_GFX
 
@@ -103,7 +87,6 @@ void lv_draw_nema_gfx_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t 
         nema_vg_paint_set_type(draw_nema_gfx_unit->paint, NEMA_VG_PAINT_GRAD_LINEAR);
         nema_vg_set_blend(NEMA_BL_SRC_OVER | NEMA_BLOP_SRC_PREMULT);
         nema_vg_set_fill_rule(NEMA_VG_FILL_EVEN_ODD);
-
 
         float stops[LV_GRADIENT_MAX_STOPS];
         color_var_t colors[LV_GRADIENT_MAX_STOPS];

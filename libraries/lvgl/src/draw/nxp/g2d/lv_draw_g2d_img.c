@@ -1,7 +1,25 @@
-/**
- * @file lv_draw_g2d_img.c
+/************************************************************************************************
+ * @file    lv_draw_g2d_img.c
  *
- */
+ * @brief   Lv Draw G2D Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_image_private.h"
+#include "../../lv_image_decoder_private.h"
+#include "g2d.h"
+#include "lv_draw_g2d.h"
+#include "lv_g2d_buf_map.h"
+#include "lv_g2d_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2024 NXP
@@ -13,17 +31,8 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_g2d.h"
-
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D
-#include <math.h>
-#include "g2d.h"
-#include "../../../misc/lv_area_private.h"
-#include "../../lv_draw_image_private.h"
-#include "../../lv_image_decoder_private.h"
-#include "lv_g2d_utils.h"
-#include "lv_g2d_buf_map.h"
 
 /*********************
  *      DEFINES
@@ -128,7 +137,6 @@ static void _g2d_draw_core_cb(lv_draw_task_t * t, const lv_draw_image_dsc_t * dr
 
     /* Destination buffer */
     struct g2d_buf * dst_buf = g2d_search_buf_map(draw_buf->data);
-
 
     void * handle = g2d_get_handle();
 

@@ -1,3 +1,39 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    rapidjson.h
+ *
+ * @brief   Rapidjson
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cassert>
+#include <cassert>
+#include <cstdlib>  // malloc(), realloc(), free(), size_t
+#include <cstring>  // memset(), memcpy(), memmove(), memcmp()
+#include <inttypes.h>
+#include <stdint.h>
+#include <string>
+#include <utility> // std::move
+
+/* Inter-component Headers */
+#include "../../../stdlib/lv_mem.h"
+#include "msinttypes/inttypes.h"
+#include "msinttypes/stdint.h"
+
+/* Intra-component Headers */
+    #include "rapidjson/..."
+    #include "rapidjson/..."
+
+/**
+ * @defgroup rapidjson
+ * @brief    rapidjson Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -35,9 +71,6 @@
           (where applicable)  to avoid inconsistent values when compiling
           different translation units of a single application.
  */
-
-#include <cstdlib>  // malloc(), realloc(), free(), size_t
-#include <cstring>  // memset(), memcpy(), memmove(), memcmp()
 
 ///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_VERSION_STRING
@@ -99,7 +132,6 @@
     #define RAPIDJSON_NAMESPACE my::rapidjson
     #define RAPIDJSON_NAMESPACE_BEGIN namespace my { namespace rapidjson {
     #define RAPIDJSON_NAMESPACE_END   } }
-    #include "rapidjson/..."
     \endcode
 
     \see rapidjson
@@ -159,7 +191,6 @@
 #endif // !defined(RAPIDJSON_HAS_STDSTRING)
 
 #if RAPIDJSON_HAS_STDSTRING
-#include <string>
 #endif // RAPIDJSON_HAS_STDSTRING
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,12 +227,8 @@
 #ifndef RAPIDJSON_NO_INT64DEFINE
 //!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
 #if defined(_MSC_VER) && (_MSC_VER < 1800) // Visual Studio 2013
-#include "msinttypes/stdint.h"
-#include "msinttypes/inttypes.h"
 #else
 // Other compilers should have this.
-#include <stdint.h>
-#include <inttypes.h>
 #endif
 //!@endcond
 #ifdef RAPIDJSON_DOXYGEN_RUNNING
@@ -398,7 +425,6 @@
     \code
     #define RAPIDJSON_NO_SIZETYPEDEFINE
     namespace rapidjson { typedef ::std::size_t SizeType; }
-    #include "rapidjson/..."
     \endcode
 
     \see rapidjson::SizeType
@@ -433,7 +459,6 @@ RAPIDJSON_NAMESPACE_END
           \ref RAPIDJSON_ERRORS APIs.
 */
 #ifndef RAPIDJSON_ASSERT
-#include <cassert>
 #define RAPIDJSON_ASSERT(x) assert(x)
 #endif // RAPIDJSON_ASSERT
 
@@ -597,7 +622,6 @@ RAPIDJSON_NAMESPACE_END
 #endif // RAPIDJSON_HAS_CXX11_RVALUE_REFS
 
 #if RAPIDJSON_HAS_CXX11_RVALUE_REFS
-#include <utility> // std::move
 #endif
 
 #ifndef RAPIDJSON_HAS_CXX11_NOEXCEPT
@@ -681,7 +705,6 @@ RAPIDJSON_NAMESPACE_END
 
 #ifndef RAPIDJSON_NOEXCEPT_ASSERT
 #ifdef RAPIDJSON_ASSERT_THROWS
-#include <cassert>
 #define RAPIDJSON_NOEXCEPT_ASSERT(x) assert(x)
 #else
 #define RAPIDJSON_NOEXCEPT_ASSERT(x) RAPIDJSON_ASSERT(x)
@@ -690,7 +713,6 @@ RAPIDJSON_NAMESPACE_END
 
 ///////////////////////////////////////////////////////////////////////////////
 // malloc/realloc/free
-#include "../../../stdlib/lv_mem.h"
 #ifndef RAPIDJSON_MALLOC
 ///! customization point for global \c malloc
 #define RAPIDJSON_MALLOC(size) lv_malloc(size)
@@ -739,3 +761,5 @@ enum Type {
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_RAPIDJSON_H_
+
+/** @} */

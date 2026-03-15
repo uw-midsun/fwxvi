@@ -1,3 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgTaskScheduler.h
+ *
+ * @brief   Tvgtaskscheduler
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgInlist.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgTaskScheduler
+ * @brief    tvgTaskScheduler Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,20 +49,13 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_TASK_SCHEDULER_H_
 #define _TVG_TASK_SCHEDULER_H_
 
 #ifdef THORVG_THREAD_SUPPORT
-#include <mutex>
-#include <condition_variable>
-#include <thread>
 #endif
-
-#include "tvgCommon.h"
-#include "tvgInlist.h"
 
 #ifdef THORVG_THREAD_SUPPORT
 using std::mutex;
@@ -111,7 +133,6 @@ private:
 
 #endif  //THORVG_THREAD_SUPPORT
 
-
 struct TaskScheduler
 {
     static uint32_t threads();
@@ -125,6 +146,7 @@ struct TaskScheduler
 
 #endif //_TVG_TASK_SCHEDULER_H_
  
-
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

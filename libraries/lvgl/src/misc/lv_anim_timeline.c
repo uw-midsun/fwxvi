@@ -1,18 +1,28 @@
-/**
- * @file lv_anim_timeline.c
+/************************************************************************************************
+ * @file    lv_anim_timeline.c
  *
- */
+ * @brief   Lv Anim Timeline
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../core/lv_obj_tree.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_anim_private.h"
+#include "lv_anim_timeline_private.h"
+#include "lv_assert.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_anim_private.h"
-#include "lv_assert.h"
-#include "lv_anim_timeline_private.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
 #if LV_USE_OBJ_NAME
-    #include "../core/lv_obj_tree.h"
 #endif
 
 /*********************
@@ -180,7 +190,6 @@ bool lv_anim_timeline_get_reverse(lv_anim_timeline_t * at)
     return at->reverse;
 }
 
-
 uint32_t lv_anim_timeline_get_delay(lv_anim_timeline_t * at)
 {
     LV_ASSERT_NULL(at);
@@ -220,7 +229,6 @@ void lv_anim_timeline_merge(lv_anim_timeline_t * dest, const lv_anim_timeline_t 
         lv_anim_timeline_add(dest, anim_delay, &src->anim_dsc[i].anim);
     }
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

@@ -1,15 +1,25 @@
-/**
- * @file lv_draw_buf_convert_helium.c
+/************************************************************************************************
+ * @file    lv_draw_buf_convert_helium.c
  *
- */
+ * @brief   Lv Draw Buf Convert Helium
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "lv_draw_buf_convert_helium.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-#include "lv_draw_buf_convert_helium.h"
 
 /*********************
  *      DEFINES

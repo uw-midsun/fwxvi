@@ -1,18 +1,27 @@
-/**
- * @file lv_font.c
+/************************************************************************************************
+ * @file    lv_font.c
  *
- */
+ * @brief   Lv Font
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_assert.h"
+#include "../misc/lv_log.h"
+#include "../misc/lv_text_private.h"
+#include "../misc/lv_utils.h"
+#include "../stdlib/lv_string.h"
+#include "lv_font.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_font.h"
-#include "../misc/lv_text_private.h"
-#include "../misc/lv_utils.h"
-#include "../misc/lv_log.h"
-#include "../misc/lv_assert.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -173,7 +182,6 @@ int32_t lv_font_get_line_height(const lv_font_t * font)
 {
     return font->line_height;
 }
-
 
 const lv_font_t * lv_font_get_default(void)
 {

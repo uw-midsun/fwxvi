@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    vg_lite.c
+ *
+ * @brief   Vg Lite
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_context.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,10 +41,7 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "vg_lite_context.h"
 
 static float offsetTable[7] = {0, 0.000575f, -0.000575f, 0.0001f, -0.0001f, 0.0000375f, -0.0000375f};
 
@@ -604,7 +617,6 @@ static void dump_img(void * memory, int32_t width, int32_t height, vg_lite_buffe
 
     if(fp == NULL)
         printf("error!\n");
-
 
     switch(format) {
         case VG_LITE_INDEX_1:
@@ -1568,7 +1580,6 @@ vg_lite_error_t srcbuf_align_check(vg_lite_buffer_t * source)
 #endif
     }
 
-
     if(source->compress_mode != VG_LITE_DEC_DISABLE) {
 #if (gcFEATURE_VG_DEC_COMPRESS || gcFEATURE_VG_DEC_COMPRESS_2_0)
 #if gcFEATURE_VG_DEC_COMPRESS_2_0
@@ -1807,7 +1818,6 @@ vg_lite_error_t dstbuf_align_check(vg_lite_buffer_t * target)
 #endif
     return error;
 }
-
 
 /* Convert VGLite source color format to HW values. */
 uint32_t convert_source_format(vg_lite_buffer_format_t format)

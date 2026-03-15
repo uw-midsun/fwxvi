@@ -1,20 +1,30 @@
-/**
- * @file lv_nuttx_libuv.c
- */
+/************************************************************************************************
+ * @file    lv_nuttx_libuv.c
+ *
+ * @brief   Lv Nuttx Libuv
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+#include <uv.h>
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "../../lvgl_private.h"
+#include "lv_nuttx_libuv.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_nuttx_libuv.h"
-
-#include "../../lvgl.h"
-#include "../../lvgl_private.h"
 
 #if LV_USE_NUTTX
-#include <stdlib.h>
 
 #if LV_USE_NUTTX_LIBUV
-#include <uv.h>
 
 /*********************
  *      DEFINES

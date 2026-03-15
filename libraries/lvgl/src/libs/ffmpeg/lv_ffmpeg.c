@@ -1,23 +1,32 @@
-/**
- * @file lv_ffmpeg.c
+/************************************************************************************************
+ * @file    lv_ffmpeg.c
  *
- */
+ * @brief   Lv Ffmpeg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_ffmpeg_private.h"
-#if LV_USE_FFMPEG != 0
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../draw/lv_draw_buf_private.h"
-#include "../../core/lv_obj_class_private.h"
-
+/* Standard library Headers */
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
 #include <libavutil/timestamp.h>
 #include <libswscale/swscale.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../draw/lv_draw_buf_private.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lv_ffmpeg_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+#if LV_USE_FFMPEG != 0
 
 /*********************
  *      DEFINES

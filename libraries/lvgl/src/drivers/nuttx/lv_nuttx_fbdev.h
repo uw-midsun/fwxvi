@@ -1,6 +1,25 @@
-/**
- * @file lv_nuttx_fbdev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_fbdev.h
  *
+ * @brief   Lv Nuttx Fbdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_fbdev
+ * @brief    lv_nuttx_fbdev Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_FBDEV_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
 
 #if LV_USE_NUTTX
 
@@ -53,3 +70,5 @@ int lv_nuttx_fbdev_set_file(lv_display_t * disp, const char * file);
 #endif
 
 #endif /* LV_NUTTX_FBDEV_H */
+
+/** @} */

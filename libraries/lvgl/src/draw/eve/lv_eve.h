@@ -1,6 +1,28 @@
-/**
- * @file lv_eve.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_eve.h
  *
+ * @brief   Lv Eve
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_types.h"
+#include "lv_draw_eve.h"
+
+/* Intra-component Headers */
+#include "../../libs/FT800-FT813/EVE.h"
+
+/**
+ * @defgroup lv_eve
+ * @brief    lv_eve Firmware
+ * @{
  */
 
 /*  Created on: 8 jun 2023
@@ -20,13 +42,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_draw_eve.h"
-
 #if LV_USE_DRAW_EVE
-
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_color.h"
-#include "../../libs/FT800-FT813/EVE.h"
 
 /*********************
  *      DEFINES
@@ -47,7 +63,6 @@ typedef enum {
     LV_EVE_PRIMITIVE_EDGE_STRIP_B = 8UL, /* Edge strip below side drawing primitive */
     LV_EVE_PRIMITIVE_RECTS = 9UL,        /* Rectangle drawing primitive */
 } lv_eve_primitive_t;
-
 
 typedef struct {
     lv_eve_primitive_t primitive;
@@ -128,7 +143,6 @@ void lv_eve_bitmap_layout(uint8_t format, uint16_t linestride, uint16_t height);
  *  EXTERN VARIABLES
  **********************/
 
-
 /**********************
  *      MACROS
  **********************/
@@ -143,9 +157,10 @@ void lv_eve_bitmap_layout(uint8_t format, uint16_t linestride, uint16_t height);
 
 #endif /*LV_USE_DRAW_EVE*/
 
-
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif
 
 #endif /* LV_EVE_H */
+
+/** @} */

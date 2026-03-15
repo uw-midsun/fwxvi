@@ -1,18 +1,26 @@
-/**
- * @file lv_freetype_image.c
+/************************************************************************************************
+ * @file    lv_freetype_image.c
  *
- */
+ * @brief   Lv Freetype Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../lvgl.h"
+#include "lv_freetype_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
-#include "lv_freetype_private.h"
-
 #if LV_USE_FREETYPE
-
-#include "../../core/lv_global.h"
 
 #define font_draw_buf_handlers &(LV_GLOBAL_DEFAULT()->font_draw_buf_handlers)
 

@@ -1,19 +1,27 @@
-
-/**
- * @file lv_keyboard.c
+/************************************************************************************************
+ * @file    lv_keyboard.c
  *
- */
+ * @brief   Lv Keyboard
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../stdlib/lv_string.h"
+#include "../textarea/lv_textarea.h"
+#include "lv_keyboard_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_keyboard_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_KEYBOARD
-
-#include "../textarea/lv_textarea.h"
-#include "../../misc/lv_assert.h"
-#include "../../stdlib/lv_string.h"
 
 /*Testing of dependencies*/
 #if LV_USE_BUTTONMATRIX == 0

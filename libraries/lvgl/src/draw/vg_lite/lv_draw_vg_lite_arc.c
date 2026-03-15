@@ -1,23 +1,31 @@
-/**
- * @file lv_draw_vg_lite_arc.c
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_arc.c
  *
- */
+ * @brief   Lv Draw Vg Lite Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
+/* Standard library Headers */
 
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../lv_image_decoder_private.h"
 #include "lv_draw_vg_lite.h"
-
-#if LV_USE_DRAW_VG_LITE
-
 #include "lv_draw_vg_lite_type.h"
 #include "lv_vg_lite_math.h"
 #include "lv_vg_lite_path.h"
 #include "lv_vg_lite_pending.h"
 #include "lv_vg_lite_utils.h"
-#include "../../misc/lv_area_private.h"
-#include "../lv_image_decoder_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_DRAW_VG_LITE
 
 /*********************
  *      DEFINES

@@ -1,6 +1,25 @@
-/**
- * @file nuttx_input_mouse.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_input_mouse.h
  *
+ * @brief   Nuttx Input Mouse
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_input_mouse
+ * @brief    nuttx_input_mouse Firmware
+ * @{
  */
 
 #ifndef NUTTX_INPUT_MOUSE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES
@@ -53,3 +70,5 @@ struct mouse_report_s {
 #endif
 
 #endif /*NUTTX_INPUT_MOUSE_H*/
+
+/** @} */

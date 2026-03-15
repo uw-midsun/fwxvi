@@ -1,12 +1,22 @@
-/**
- * @file lv_palette.c
+/************************************************************************************************
+ * @file    lv_palette.c
  *
- */
+ * @brief   Lv Palette
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_palette.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_palette.h"
 
 /*********************
  *      DEFINES

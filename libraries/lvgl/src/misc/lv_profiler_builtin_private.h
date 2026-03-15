@@ -1,6 +1,25 @@
-/**
- * @file lv_profiler_builtin_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_profiler_builtin_private.h
  *
+ * @brief   Lv Profiler Builtin Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_profiler_builtin.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_profiler_builtin_private
+ * @brief    lv_profiler_builtin_private Firmware
+ * @{
  */
 
 #ifndef LV_PROFILER_BUILTIN_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_profiler_builtin.h"
 
 #if LV_USE_PROFILER && LV_USE_PROFILER_BUILTIN
 
@@ -37,7 +54,6 @@ struct _lv_profiler_builtin_config_t {
     int (*tid_get_cb)(void);            /**< Callback function to get the current thread ID */
     int (*cpu_get_cb)(void);            /**< Callback function to get the current CPU */
 };
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -63,3 +79,5 @@ void lv_profiler_builtin_posix_init(void);
 #endif
 
 #endif /*LV_PROFILER_BUILTIN_PRIVATE_H*/
+
+/** @} */

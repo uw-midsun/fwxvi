@@ -1,6 +1,25 @@
-/**
- * @file lv_api_map_v8.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_api_map_v8.h
  *
+ * @brief   Lv Api Map V8
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_api_map_v8
+ * @brief    lv_api_map_v8 Firmware
+ * @{
  */
 
 #ifndef LV_API_MAP_V8_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -326,3 +343,5 @@ static inline void lv_obj_move_background(lv_obj_t * obj)
 #endif
 
 #endif /*LV_API_MAP_V8_H*/
+
+/** @} */

@@ -1,18 +1,28 @@
-/**
- * @file lv_list.c
+/************************************************************************************************
+ * @file    lv_list.c
  *
- */
+ * @brief   Lv List
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../display/lv_display.h"
+#include "../../layouts/flex/lv_flex.h"
+#include "../button/lv_button.h"
+#include "../image/lv_image.h"
+#include "../label/lv_label.h"
+#include "lv_list.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj_class_private.h"
-#include "lv_list.h"
-#include "../../layouts/flex/lv_flex.h"
-#include "../../display/lv_display.h"
-#include "../label/lv_label.h"
-#include "../image/lv_image.h"
-#include "../button/lv_button.h"
 
 #if LV_USE_LIST
 

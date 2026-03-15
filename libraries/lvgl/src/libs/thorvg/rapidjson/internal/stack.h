@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stack.h
+ *
+ * @brief   Stack
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstddef>
+
+/* Inter-component Headers */
+#include "../allocators.h"
+
+/* Intra-component Headers */
+#include "swap.h"
+
+/**
+ * @defgroup stack
+ * @brief    stack Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,10 +40,6 @@
 
 #ifndef RAPIDJSON_INTERNAL_STACK_H_
 #define RAPIDJSON_INTERNAL_STACK_H_
-
-#include "../allocators.h"
-#include "swap.h"
-#include <cstddef>
 
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
@@ -230,3 +252,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_STACK_H_
+
+/** @} */

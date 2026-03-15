@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_event_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_event_private.h
  *
+ * @brief   Lv Obj Event Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_obj_event.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_event_private
+ * @brief    lv_obj_event_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_EVENT_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_obj_event.h"
 
 /*********************
  *      DEFINES
@@ -46,7 +63,6 @@ struct _lv_cover_check_info_t {
     const lv_area_t * area;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -60,3 +76,5 @@ struct _lv_cover_check_info_t {
 #endif
 
 #endif /*LV_OBJ_EVENT_PRIVATE_H*/
+
+/** @} */

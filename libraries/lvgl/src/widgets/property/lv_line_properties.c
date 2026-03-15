@@ -1,10 +1,18 @@
+/************************************************************************************************
+ * @file    lv_line_properties.c
+ *
+ * @brief   Lv Line Properties
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_line_properties.c
- */
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "../line/lv_line.h"
+
+/* Intra-component Headers */
 
 #if LV_USE_OBJ_PROPERTY && LV_USE_OBJ_PROPERTY_NAME
 

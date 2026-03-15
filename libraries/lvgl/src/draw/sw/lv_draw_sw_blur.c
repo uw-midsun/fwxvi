@@ -1,22 +1,31 @@
-/**
- * @file lv_draw_sw_blur.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blur.c
  *
- */
+ * @brief   Lv Draw Sw Blur
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_refr_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "lv_draw_sw.h"
+#include "lv_draw_sw_mask_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_area_private.h"
-#include "lv_draw_sw_mask_private.h"
-#include "../lv_draw_private.h"
-#include "lv_draw_sw.h"
 
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_types.h"
-#include "../../core/lv_refr_private.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -217,7 +226,6 @@ void lv_draw_sw_blur(lv_draw_task_t * t, const lv_draw_blur_dsc_t * dsc, const l
         if(x_start > x_end) continue;
         uint32_t line_len_byte = (x_end - x_start + skip_cnt) * px_size;
         uint32_t sample_len_limited = LV_MIN((x_end - x_start) / skip_cnt + 1, sample_len);
-
 
         if(px_size == 1) {
             /*Compiler optimization might mishandle it, so add volatile*/
@@ -420,7 +428,6 @@ static void blur_2_bytes_init(uint32_t * sum, lv_color16_t * buf, uint32_t sampl
     sum[2] = (sum[2] << BLUR_INTENSITY_BITS) / sample_len;
 }
 
-
 static inline uint8_t blur_1_bytes(uint32_t * sum, uint8_t px, uint32_t intensity)
 {
     uint32_t intensity_inv = BLUR_INTENSITY_MAX - intensity;
@@ -465,8 +472,6 @@ static inline uint16_t blur_2_bytes(uint32_t * sum, uint16_t px, uint32_t intens
     return res;
 }
 
-
-
 static inline void blur_3_bytes(uint32_t * sum, volatile uint8_t * buf, uint32_t intensity)
 {
     uint32_t intensity_inv = BLUR_INTENSITY_MAX - intensity;
@@ -500,6 +505,5 @@ static int32_t get_rounded_edge_point(int32_t p_start, int32_t p_end, int32_t p,
     uint32_t res = lv_sqrt32(r * r - p * p);
     return r - res;
 }
-
 
 #endif /*LV_USE_DRAW_SW*/

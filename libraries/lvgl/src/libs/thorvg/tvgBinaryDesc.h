@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgBinaryDesc.h
+ *
+ * @brief   Tvgbinarydesc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgBinaryDesc
+ * @brief    tvgBinaryDesc Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,7 +44,6 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_BINARY_DESC_H_
@@ -33,7 +56,6 @@ using TvgBinByte = uint8_t;
 using TvgBinCounter = uint32_t;
 using TvgBinTag = TvgBinByte;
 using TvgBinFlag = TvgBinByte;
-
 
 //Header
 #define TVG_HEADER_SIZE 33                //TVG_HEADER_SIGNATURE_LENGTH + TVG_HEADER_VERSION_LENGTH + 2*SIZE(float) + TVG_HEADER_RESERVED_LENGTH + TVG_HEADER_COMPRESS_SIZE
@@ -55,18 +77,15 @@ using TvgBinFlag = TvgBinByte;
 #define TVG_TAG_CLASS_SHAPE                         (TvgBinTag)0xfd
 #define TVG_TAG_CLASS_SCENE                         (TvgBinTag)0xfe
 
-
 //Paint
 #define TVG_TAG_PAINT_OPACITY                       (TvgBinTag)0x10
 #define TVG_TAG_PAINT_TRANSFORM                     (TvgBinTag)0x11
 #define TVG_TAG_PAINT_CMP_TARGET                    (TvgBinTag)0x01
 #define TVG_TAG_PAINT_CMP_METHOD                    (TvgBinTag)0x20
 
-
 //TODO: Keep this for the compatibility, Remove in TVG 1.0 release
 //Scene
  #define TVG_TAG_SCENE_RESERVEDCNT                   (TvgBinTag)0x30
-
 
 //Shape
 #define TVG_TAG_SHAPE_PATH                          (TvgBinTag)0x40
@@ -74,7 +93,6 @@ using TvgBinFlag = TvgBinByte;
 #define TVG_TAG_SHAPE_FILL                          (TvgBinTag)0x42
 #define TVG_TAG_SHAPE_COLOR                         (TvgBinTag)0x43
 #define TVG_TAG_SHAPE_FILLRULE                      (TvgBinTag)0x44
-
 
 //Stroke
 #define TVG_TAG_SHAPE_STROKE_CAP                    (TvgBinTag)0x50
@@ -86,7 +104,6 @@ using TvgBinFlag = TvgBinByte;
 #define TVG_TAG_SHAPE_STROKE_MITERLIMIT             (TvgBinTag)0x56
 #define TVG_TAG_SHAPE_STROKE_ORDER                  (TvgBinTag)0x57
 #define TVG_TAG_SHAPE_STROKE_DASH_OFFSET            (TvgBinTag)0x58
-
 
 //Fill
 #define TVG_TAG_FILL_LINEAR_GRADIENT                (TvgBinTag)0x60
@@ -104,3 +121,5 @@ using TvgBinFlag = TvgBinByte;
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

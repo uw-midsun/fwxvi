@@ -11,9 +11,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-/* Intra-component Headers */
+/* Inter-component Headers */
 #include "clut.h"
 #include "lvgl_widgets.h"
+
+/* Intra-component Headers */
 
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
@@ -199,7 +201,7 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   bar_widget->label = lv_label_create(parent);
   lv_label_set_text(bar_widget->label, config->label_text);
   lv_obj_set_style_text_color(bar_widget->label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
-  
+
   lv_obj_align_to(bar_widget->label, bar_widget->bar, config->label_text_alignment, 0, 0);
 
   return STATUS_CODE_OK;

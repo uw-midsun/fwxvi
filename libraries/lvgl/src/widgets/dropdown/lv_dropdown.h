@@ -1,6 +1,26 @@
-/**
- * @file lv_dropdown.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_dropdown.h
  *
+ * @brief   Lv Dropdown
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../label/lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_dropdown
+ * @brief    lv_dropdown Firmware
+ * @{
  */
 
 #ifndef LV_DROPDOWN_H
@@ -13,7 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_DROPDOWN != 0
 
@@ -22,8 +41,6 @@ extern "C" {
 #if LV_USE_LABEL == 0
 #error "lv_dropdown: lv_label is required. Enable it in lv_conf.h (LV_USE_LABEL 1)"
 #endif
-
-#include "../label/lv_label.h"
 
 /*********************
  *      DEFINES
@@ -242,7 +259,6 @@ void lv_dropdown_close(lv_obj_t * obj);
  */
 bool lv_dropdown_is_open(lv_obj_t * obj);
 
-
 #if LV_USE_OBSERVER
 /**
  * Bind an integer Subject to a Dropdown's value.
@@ -264,3 +280,5 @@ lv_observer_t * lv_dropdown_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_DROPDOWN_H*/
+
+/** @} */

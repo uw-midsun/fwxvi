@@ -1,17 +1,28 @@
+/************************************************************************************************
+ * @file    decomp_raw.c
+ *
+ * @brief   Decomp Raw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_fs.h"
+#include "../../../stdlib/lv_string.h"
+#include "../include/frogfs/frogfs.h"
+#include "frogfs_format.h"
+#include "frogfs_priv.h"
+
+/* Intra-component Headers */
+#include LV_STDDEF_INCLUDE
+#include LV_STDINT_INCLUDE
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
-#include "../../../lv_conf_internal.h"
-#include LV_STDDEF_INCLUDE
-#include LV_STDINT_INCLUDE
-#include "../../../stdlib/lv_string.h"
-#include "../../../misc/lv_fs.h"
-
-#include "frogfs_priv.h"
-#include "frogfs_format.h"
-#include "../include/frogfs/frogfs.h"
-
 
 static ssize_t read_raw(frogfs_fh_t *f, void *buf, size_t len)
 {

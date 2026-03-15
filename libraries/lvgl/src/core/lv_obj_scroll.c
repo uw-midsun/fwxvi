@@ -1,18 +1,28 @@
-/**
- * @file lv_obj_scroll.c
+/************************************************************************************************
+ * @file    lv_obj_scroll.c
  *
- */
+ * @brief   Lv Obj Scroll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../indev/lv_indev.h"
+#include "../indev/lv_indev_scroll.h"
+#include "../misc/lv_anim_private.h"
+#include "../misc/lv_area.h"
+#include "lv_obj_private.h"
+#include "lv_obj_scroll_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_scroll_private.h"
-#include "../misc/lv_anim_private.h"
-#include "lv_obj_private.h"
-#include "../indev/lv_indev.h"
-#include "../indev/lv_indev_scroll.h"
-#include "../display/lv_display.h"
-#include "../misc/lv_area.h"
 
 /*********************
  *      DEFINES

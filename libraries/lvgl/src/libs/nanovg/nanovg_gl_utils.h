@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    nanovg_gl_utils.h
+ *
+ * @brief   Nanovg Gl Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+        #include <OpenGL/glext.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nanovg_gl_utils
+ * @brief    nanovg_gl_utils Firmware
+ * @{
+ */
+
 //
 // Copyright (c) 2009-2013 Mikko Mononen memon@inside.org
 //
@@ -17,10 +44,6 @@
 //
 #ifndef NANOVG_GL_UTILS_H
 #define NANOVG_GL_UTILS_H
-
-#include "../../lv_conf_internal.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../stdlib/lv_string.h"
 
 #if LV_USE_NANOVG
 
@@ -52,7 +75,6 @@ void nvgluDeleteFramebuffer(NVGLUframebuffer * fb);
 #elif defined(NANOVG_GL2)
     // On OS X including glext defines FBO on GL2 too.
     #ifdef __APPLE__
-        #include <OpenGL/glext.h>
         #define NANOVG_FBO_VALID 1
     #endif
 #endif
@@ -165,3 +187,5 @@ void nvgluDeleteFramebuffer(NVGLUframebuffer * fb)
 #endif // LV_USE_NANOVG
 
 #endif // NANOVG_GL_IMPLEMENTATION
+
+/** @} */

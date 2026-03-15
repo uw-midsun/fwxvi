@@ -1,6 +1,28 @@
-/**
- * @file lv_obj_event.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_event.h
  *
+ * @brief   Lv Obj Event
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../indev/lv_indev.h"
+#include "../misc/lv_event.h"
+#include "../misc/lv_types.h"
+#include "lv_obj_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_event
+ * @brief    lv_obj_event Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_EVENT_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_event.h"
-#include "../indev/lv_indev.h"
-#include "lv_obj_style.h"
 
 /*********************
  *      DEFINES
@@ -211,3 +229,5 @@ lv_state_t lv_event_get_prev_state(lv_event_t * e);
 #endif
 
 #endif /*LV_OBJ_EVENT_H*/
+
+/** @} */

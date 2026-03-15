@@ -1,35 +1,43 @@
-/**
- * @file lv_linux_fbdev.c
+/************************************************************************************************
+ * @file    lv_linux_fbdev.c
  *
- */
+ * @brief   Lv Linux Fbdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <linux/fb.h>
+    #include <sys/consio.h>
+    #include <sys/fbio.h>
+    #include <sys/fcntl.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <time.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "../../../draw/sw/lv_draw_sw.h"
+#include "../../../misc/lv_area_private.h"
+#include "lv_linux_fbdev.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_linux_fbdev.h"
 #if LV_USE_LINUX_FBDEV
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-#include <time.h>
-#include <errno.h>
-
 #if LV_LINUX_FBDEV_BSD
-    #include <sys/fcntl.h>
-    #include <sys/consio.h>
-    #include <sys/fbio.h>
 #else
-    #include <linux/fb.h>
 #endif /* LV_LINUX_FBDEV_BSD */
-
-#include "../../../display/lv_display_private.h"
-#include "../../../draw/sw/lv_draw_sw.h"
-#include "../../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES

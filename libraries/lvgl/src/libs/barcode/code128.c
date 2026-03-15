@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    code128.c
+ *
+ * @brief   Code128
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "code128.h"
+
+/* Intra-component Headers */
 // Copyright (c) 2013, LKC Technologies, Inc.
 // All rights reserved.
 //
@@ -20,11 +37,7 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "../../../lvgl.h"
 #if LV_USE_BARCODE
-
-#include "code128.h"
-#include <string.h>
 
 #define CODE128_MALLOC      lv_malloc
 #define CODE128_REALLOC     lv_realloc

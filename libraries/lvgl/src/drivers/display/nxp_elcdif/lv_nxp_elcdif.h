@@ -1,13 +1,31 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nxp_elcdif.h
+ *
+ * @brief   Lv Nxp Elcdif
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+#include "../../../lvgl.h"
+#include "fsl_elcdif.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_nxp_elcdif.h
- * Driver for NXP's ELCD
+ * @defgroup lv_nxp_elcdif
+ * @brief    lv_nxp_elcdif Firmware
+ * @{
  */
 
 #ifndef LV_NXP_ELCDIF_H
 #define LV_NXP_ELCDIF_H
-
-#include "../../../lvgl.h"
-#include "../../../display/lv_display.h"
 
 #if LV_USE_NXP_ELCDIF == 1
 
@@ -19,7 +37,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "fsl_elcdif.h"
 /*********************
  *      DEFINES
  *********************/
@@ -45,7 +62,6 @@ extern "C" {
 lv_display_t * lv_nxp_display_elcdif_create_direct(LCDIF_Type * base, const elcdif_rgb_mode_config_t * config,
                                                    void * frame_buffer1,
                                                    void * frame_buffer2, size_t buf_size);
-
 
 /**
 * Attach LVGL to ELCDIF using PARTIAL rendering mode.
@@ -82,3 +98,5 @@ void lv_nxp_display_elcdif_event_handler(const lv_display_t * disp);
 #endif /*LV_USE_NXP_ELCDIF*/
 
 #endif /* LV_NXP_ELCDIF_H */
+
+/** @} */

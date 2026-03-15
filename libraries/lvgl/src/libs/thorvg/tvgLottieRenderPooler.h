@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieRenderPooler.h
+ *
+ * @brief   Tvglottierenderpooler
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgArray.h"
+#include "tvgCommon.h"
+#include "tvgPaint.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieRenderPooler
+ * @brief    tvgLottieRenderPooler Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,16 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_RENDER_POOLER_H_
 #define _TVG_LOTTIE_RENDER_POOLER_H_
-
-#include "tvgCommon.h"
-#include "tvgArray.h"
-#include "tvgPaint.h"
-
 
 template<typename T>
 struct LottieRenderPooler
@@ -62,3 +83,5 @@ struct LottieRenderPooler
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

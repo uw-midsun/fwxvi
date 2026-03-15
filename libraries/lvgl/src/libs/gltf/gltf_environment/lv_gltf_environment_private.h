@@ -1,6 +1,28 @@
-/**
- * @file lv_gltf_environment_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_environment_private.h
  *
+ * @brief   Lv Gltf Environment Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_types.h"
+#include "lv_gltf_environment.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_environment_private
+ * @brief    lv_gltf_environment_private Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_ENVIRONMENT_PRIVATE_H
@@ -13,12 +35,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lv_conf_internal.h"
 #if LV_USE_GLTF
-
-#include "lv_gltf_environment.h"
-#include "../../../misc/lv_types.h"
-#include "../../../drivers/opengles/opengl_shader/lv_opengl_shader_internal.h"
 
 /*********************
  *      DEFINES
@@ -104,3 +121,5 @@ struct _lv_gltf_environment {
 
 #endif /*LV_GLTF_ENVIRONMENT_PRIVATE_H*/
 
+
+/** @} */

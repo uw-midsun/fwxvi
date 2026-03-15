@@ -1,25 +1,34 @@
-/**
- * @file lv_wl_window.c
+/************************************************************************************************
+ * @file    lv_wl_window.c
  *
- */
+ * @brief   Lv Wl Window
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_init.h"
+#include "lv_wayland_private.h"
+#include "lv_wayland_private.h"
+#include "lv_wl_keyboard.h"
+#include "lv_wl_pointer.h"
+#include "lv_wl_pointer_axis.h"
+#include "lv_wl_touch.h"
+#include "lv_wl_window.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_wl_window.h"
 
 #if LV_USE_WAYLAND
-
-#include "../../lv_init.h"
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include "lv_wayland_private.h"
-#include "lv_wayland_private.h"
-#include "lv_wl_pointer.h"
-#include "lv_wl_pointer_axis.h"
-#include "lv_wl_touch.h"
-#include "lv_wl_keyboard.h"
 
 /*********************
  *      DEFINES
@@ -296,7 +305,6 @@ void lv_wayland_window_delete(lv_wl_window_t * window)
      * so that the delete event doesn't do anything*/
     lv_display_set_driver_data(window->lv_disp, NULL);
     lv_display_delete(window->lv_disp);
-
 
     lv_ll_remove(&lv_wl_ctx.window_ll, window);
 

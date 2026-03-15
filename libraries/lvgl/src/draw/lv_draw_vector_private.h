@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_vector_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_vector_private.h
  *
+ * @brief   Lv Draw Vector Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_vector.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_vector_private
+ * @brief    lv_draw_vector_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_VECTOR_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw_vector.h"
 
 #if LV_USE_VECTOR_GRAPHIC
 
@@ -101,7 +118,6 @@ struct _lv_draw_vector_dsc_t {
     lv_ll_t * task_list;
 };
 
-
 /**
  * Contains a path shape and its attributes together.
  * It's a task that will be passed to the vector rendering engine.
@@ -111,7 +127,6 @@ typedef struct {
     lv_vector_path_t * path;
     lv_vector_path_ctx_t ctx;
 } lv_draw_vector_subtask_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -139,3 +154,5 @@ void lv_vector_for_each_destroy_tasks(lv_ll_t * task_list, vector_draw_task_cb c
 #endif
 
 #endif /*LV_DRAW_VECTOR_PRIVATE_H*/
+
+/** @} */

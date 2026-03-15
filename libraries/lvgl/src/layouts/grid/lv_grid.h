@@ -1,6 +1,26 @@
-/**
- * @file lv_grid.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_grid.h
  *
+ * @brief   Lv Grid
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_grid
+ * @brief    lv_grid Firmware
+ * @{
  */
 
 #ifndef LV_GRID_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../misc/lv_area.h"
 
 #if LV_USE_GRID
 
@@ -97,3 +115,5 @@ int32_t lv_grid_fr(uint8_t x);
 #endif
 
 #endif /*LV_GRID_H*/
+
+/** @} */

@@ -1,6 +1,29 @@
-/**
- * @file lv_bar.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_bar.h
  *
+ * @brief   Lv Bar
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_observer.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_anim.h"
+#include "../label/lv_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_bar
+ * @brief    lv_bar Firmware
+ * @{
  */
 
 #ifndef LV_BAR_H
@@ -13,14 +36,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_BAR != 0
-
-#include "../../core/lv_obj.h"
-#include "../../misc/lv_anim.h"
-#include "../label/lv_label.h"
-#include "../../core/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -197,3 +214,5 @@ lv_observer_t * lv_bar_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
 #endif /*LV_BAR_H*/
+
+/** @} */

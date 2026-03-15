@@ -1,7 +1,17 @@
-/**
- * @file lv_objx_templ.c
+/************************************************************************************************
+ * @file    lv_objx_templ.c
  *
- */
+ * @brief   Lv Objx Templ
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 
 /**
  * TODO Remove these instructions

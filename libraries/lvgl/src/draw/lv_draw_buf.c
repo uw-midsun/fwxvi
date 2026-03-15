@@ -1,18 +1,28 @@
-/**
- * @file lv_draw_buf.c
+/************************************************************************************************
+ * @file    lv_draw_buf.c
  *
- */
+ * @brief   Lv Draw Buf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_math.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_string.h"
+#include "convert/lv_draw_buf_convert.h"
+#include "lv_draw_buf_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_buf_private.h"
-#include "../misc/lv_types.h"
-#include "../stdlib/lv_string.h"
-#include "../core/lv_global.h"
-#include "../misc/lv_math.h"
-#include "../misc/lv_area_private.h"
-#include "convert/lv_draw_buf_convert.h"
 
 /*********************
  *      DEFINES

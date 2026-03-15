@@ -1,14 +1,24 @@
-/**
- * @file lv_tick.c
- * Provide access to the system tick with 1 millisecond resolution
- */
+/************************************************************************************************
+ * @file    lv_tick.c
+ *
+ * @brief   Lv Tick
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../misc/lv_types.h"
+#include "lv_tick_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_tick_private.h"
-#include "../misc/lv_types.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES

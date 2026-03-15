@@ -1,6 +1,26 @@
-/**
- * @file lv_barcode_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_barcode_private.h
  *
+ * @brief   Lv Barcode Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../widgets/canvas/lv_canvas_private.h"
+#include "lv_barcode.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_barcode_private
+ * @brief    lv_barcode_private Firmware
+ * @{
  */
 
 #ifndef LV_BARCODE_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../widgets/canvas/lv_canvas_private.h"
-#include "lv_barcode.h"
 
 #if LV_USE_BARCODE
 
@@ -38,7 +55,6 @@ struct _lv_barcode_t {
     lv_barcode_encoding_t encoding;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -54,3 +70,5 @@ struct _lv_barcode_t {
 #endif
 
 #endif /*LV_BARCODE_PRIVATE_H*/
+
+/** @} */

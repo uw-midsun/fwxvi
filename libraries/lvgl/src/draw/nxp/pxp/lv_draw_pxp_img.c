@@ -1,7 +1,23 @@
-/**
- * @file lv_draw_pxp_img.c
+/************************************************************************************************
+ * @file    lv_draw_pxp_img.c
  *
- */
+ * @brief   Lv Draw Pxp Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../lv_draw_image_private.h"
+#include "../../lv_image_decoder_private.h"
+#include "lv_draw_pxp.h"
+#include "lv_pxp_cfg.h"
+#include "lv_pxp_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2020-2024 NXP
@@ -13,16 +29,8 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_pxp.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP
-#include "lv_pxp_cfg.h"
-#include "lv_pxp_utils.h"
-#include "../../lv_draw_image_private.h"
-#include "../../lv_image_decoder_private.h"
-
-#include <math.h>
 
 /*********************
  *      DEFINES

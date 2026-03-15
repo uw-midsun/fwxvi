@@ -1,6 +1,26 @@
-/**
- * @file nuttx_mm.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_mm.h
  *
+ * @brief   Nuttx Mm
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+#include <stddef.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_mm
+ * @brief    nuttx_mm Firmware
+ * @{
  */
 
 #ifndef NUTTX_MM_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stddef.h>
-#include <stdbool.h>
 
 /*********************
  *      DEFINES
@@ -140,3 +157,5 @@ static inline int gettid(void)
 #endif
 
 #endif /*NUTTX_MM_H*/
+
+/** @} */

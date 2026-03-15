@@ -1,7 +1,26 @@
-/**
- * @file lv_animimage.c
+/************************************************************************************************
+ * @file    lv_animimage.c
  *
- */
+ * @brief   Lv Animimage
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../draw/lv_image_decoder.h"
+#include "../../misc/lv_anim.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_fs.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_text_private.h"
+#include "lv_animimage_private.h"
+
+/* Intra-component Headers */
 
 /**
  * Modified by NXP in 2025
@@ -10,22 +29,12 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_animimage_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_ANIMIMG != 0
 
 /*Testing of dependencies*/
 #if LV_USE_IMAGE == 0
     #error "lv_animimg: lv_img is required. Enable it in lv_conf.h (LV_USE_IMAGE  1) "
 #endif
-
-#include "../../draw/lv_image_decoder.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_fs.h"
-#include "../../misc/lv_text_private.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_anim.h"
 
 /*********************
  *      DEFINES

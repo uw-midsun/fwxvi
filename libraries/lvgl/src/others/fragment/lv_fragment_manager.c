@@ -1,18 +1,26 @@
-/**
- * @file lv_fragment_manager.c
+/************************************************************************************************
+ * @file    lv_fragment_manager.c
  *
- */
+ * @brief   Lv Fragment Manager
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_ll.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_fragment_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_fragment_private.h"
-
 #if LV_USE_FRAGMENT
-
-#include "../../misc/lv_ll.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

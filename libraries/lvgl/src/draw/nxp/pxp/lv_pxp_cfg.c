@@ -1,7 +1,19 @@
-/**
- * @file lv_pxp_cfg.c
+/************************************************************************************************
+ * @file    lv_pxp_cfg.c
  *
- */
+ * @brief   Lv Pxp Cfg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_pxp_cfg.h"
+#include "lv_pxp_osa.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2020-2023 NXP
@@ -13,11 +25,8 @@
  *      INCLUDES
  *********************/
 
-#include "lv_pxp_cfg.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "lv_pxp_osa.h"
 
 /*********************
  *      DEFINES

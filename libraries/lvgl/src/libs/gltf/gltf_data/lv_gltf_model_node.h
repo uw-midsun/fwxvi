@@ -1,6 +1,28 @@
-/**
- * @file lv_gltf_model_node.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gltf_model_node.h
  *
+ * @brief   Lv Gltf Model Node
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_event.h"
+#include "../../../misc/lv_types.h"
+#include "../math/lv_3dmath.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gltf_model_node
+ * @brief    lv_gltf_model_node Firmware
+ * @{
  */
 
 #ifndef LV_GLTF_MODEL_NODE_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_GLTF
-
-#include "../../../misc/lv_types.h"
-#include "../math/lv_3dmath.h"
-#include "../../../misc/lv_event.h"
 
 /*********************
  *      DEFINES
@@ -271,3 +287,5 @@ lv_result_t lv_gltf_model_node_get_euler_rotation(lv_event_t * e, lv_3dpoint_t *
 #endif
 
 #endif /*LV_GLTF_MODEL_NODE_H*/
+
+/** @} */

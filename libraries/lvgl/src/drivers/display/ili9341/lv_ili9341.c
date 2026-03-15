@@ -1,12 +1,22 @@
-/**
- * @file lv_ili9341.c
+/************************************************************************************************
+ * @file    lv_ili9341.c
  *
- */
+ * @brief   Lv Ili9341
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_ili9341.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_ili9341.h"
 
 #if LV_USE_ILI9341
 

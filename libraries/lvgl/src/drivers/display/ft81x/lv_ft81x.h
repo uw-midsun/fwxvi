@@ -1,6 +1,26 @@
-/**
- * @file lv_ft81x.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ft81x.h
  *
+ * @brief   Lv Ft81X
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_ft81x
+ * @brief    lv_ft81x Firmware
+ * @{
  */
 
 #ifndef LV_FT81X_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_FT81X
-
-#include "../../../display/lv_display.h"
 
 /*********************
  *      DEFINES
@@ -92,3 +109,5 @@ void * lv_ft81x_get_user_data(lv_display_t * disp);
 #endif
 
 #endif /*LV_FT81X_H*/
+
+/** @} */

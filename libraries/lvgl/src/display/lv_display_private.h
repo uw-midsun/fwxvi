@@ -1,6 +1,30 @@
-/**
- * @file lv_display_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_display_private.h
  *
+ * @brief   Lv Display Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "../debugging/sysmon/lv_sysmon_private.h"
+#include "../draw/lv_draw.h"
+#include "../misc/lv_ext_data.h"
+#include "../misc/lv_types.h"
+#include "lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_display_private
+ * @brief    lv_display_private Firmware
+ * @{
  */
 
 #ifndef LV_DISPLAY_PRIVATE_H
@@ -13,14 +37,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_ext_data.h"
-#include "../misc/lv_types.h"
-#include "../core/lv_obj.h"
-#include "../draw/lv_draw.h"
-#include "lv_display.h"
 
 #if LV_USE_SYSMON
-#include "../debugging/sysmon/lv_sysmon_private.h"
 #endif
 
 /*********************
@@ -120,7 +138,6 @@ struct _lv_display_t {
     uint32_t tile_cnt     : 8;       /**< Divide the display buffer into these number of tiles */
     uint32_t stride_is_auto : 1;     /**< 1: The stride of the buffers was not set explicitly. */
 
-
     /** 1: The current screen rendering is in progress*/
     uint32_t rendering_in_progress : 1;
 
@@ -208,3 +225,5 @@ struct _lv_display_t {
 #endif
 
 #endif /*LV_DISPLAY_PRIVATE_H*/
+
+/** @} */

@@ -1,21 +1,29 @@
-/**
- * @file lv_nanovg_image_cache.c
+/************************************************************************************************
+ * @file    lv_nanovg_image_cache.c
  *
- */
+ * @brief   Lv Nanovg Image Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_iter.h"
+#include "../../misc/lv_pending.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_image_cache.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nanovg_image_cache.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "lv_draw_nanovg_private.h"
-#include "lv_nanovg_utils.h"
-#include "../lv_image_decoder_private.h"
-#include "../../misc/lv_pending.h"
-#include "../../misc/lv_iter.h"
 
 /*********************
 *      DEFINES

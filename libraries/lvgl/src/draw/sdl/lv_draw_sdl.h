@@ -1,6 +1,35 @@
-/**
- * @file lv_draw_sdl.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sdl.h
  *
+ * @brief   Lv Draw Sdl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../draw/lv_draw_arc.h"
+#include "../../draw/lv_draw_image.h"
+#include "../../draw/lv_draw_label.h"
+#include "../../draw/lv_draw_line.h"
+#include "../../draw/lv_draw_rect.h"
+#include "../../draw/lv_draw_triangle.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_color.h"
+#include "../../osal/lv_os_private.h"
+#include "../lv_draw.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sdl
+ * @brief    lv_draw_sdl Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SDL_H
@@ -13,20 +42,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_draw.h"
 
 #if LV_USE_DRAW_SDL
-
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_color.h"
-#include "../../display/lv_display.h"
-#include "../../osal/lv_os_private.h"
-#include "../../draw/lv_draw_label.h"
-#include "../../draw/lv_draw_rect.h"
-#include "../../draw/lv_draw_arc.h"
-#include "../../draw/lv_draw_image.h"
-#include "../../draw/lv_draw_triangle.h"
-#include "../../draw/lv_draw_line.h"
 
 /*********************
  *      DEFINES
@@ -78,3 +95,5 @@ void lv_draw_sdl_mask_rect(lv_draw_unit_t * draw_unit, const lv_draw_mask_rect_d
 #endif
 
 #endif /*LV_DRAW_SDL_H*/
+
+/** @} */

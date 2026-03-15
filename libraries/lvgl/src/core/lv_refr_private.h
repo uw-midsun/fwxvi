@@ -1,6 +1,25 @@
-/**
- * @file lv_refr_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_refr_private.h
  *
+ * @brief   Lv Refr Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_refr.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_refr_private
+ * @brief    lv_refr_private Firmware
+ * @{
  */
 
 #ifndef LV_REFR_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_refr.h"
 
 /*********************
  *      DEFINES
@@ -83,3 +100,5 @@ void lv_obj_refr(lv_layer_t * layer, lv_obj_t * obj);
 #endif
 
 #endif /*LV_REFR_PRIVATE_H*/
+
+/** @} */

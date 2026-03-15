@@ -13,8 +13,8 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
-#include "status.h"
 #include "display_defs.h"
+#include "status.h"
 
 /* Intra-component Headers */
 #include "steering.h"

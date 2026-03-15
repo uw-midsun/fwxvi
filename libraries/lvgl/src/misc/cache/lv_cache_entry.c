@@ -1,15 +1,25 @@
-/**
-* @file lv_cache_entry.c
-*
- */
+/************************************************************************************************
+ * @file    lv_cache_entry.c
+ *
+ * @brief   Lv Cache Entry
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../stdlib/lv_sprintf.h"
+#include "../lv_assert.h"
+#include "lv_cache_entry.h"
+#include "lv_cache_entry_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_cache_entry.h"
-#include "../../stdlib/lv_sprintf.h"
-#include "../lv_assert.h"
-#include "lv_cache_entry_private.h"
 
 /*********************
  *      DEFINES

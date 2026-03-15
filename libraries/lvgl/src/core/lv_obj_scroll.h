@@ -1,6 +1,27 @@
-/**
- * @file lv_obj_scroll.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_scroll.h
  *
+ * @brief   Lv Obj Scroll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_anim.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_scroll
+ * @brief    lv_obj_scroll Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_SCROLL_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_area.h"
-#include "../misc/lv_anim.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -299,3 +317,5 @@ void lv_obj_readjust_scroll(lv_obj_t * obj, lv_anim_enable_t anim_en);
 #endif
 
 #endif /*LV_OBJ_SCROLL_H*/
+
+/** @} */

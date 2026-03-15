@@ -1,6 +1,26 @@
-/**
- * @file lv_canvas_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_canvas_private.h
  *
+ * @brief   Lv Canvas Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../image/lv_image_private.h"
+#include "lv_canvas.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_canvas_private
+ * @brief    lv_canvas_private Firmware
+ * @{
  */
 
 #ifndef LV_CANVAS_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../image/lv_image_private.h"
-#include "lv_canvas.h"
 
 #if LV_USE_CANVAS != 0
 
@@ -34,7 +51,6 @@ struct _lv_canvas_t {
     lv_draw_buf_t static_buf;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -50,3 +66,5 @@ struct _lv_canvas_t {
 #endif
 
 #endif /*LV_CANVAS_PRIVATE_H*/
+
+/** @} */

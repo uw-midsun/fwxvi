@@ -1,18 +1,26 @@
-/**
- * @file lv_wl_xdg_shell.c
+/************************************************************************************************
+ * @file    lv_wl_xdg_shell.c
  *
- */
+ * @brief   Lv Wl Xdg Shell
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_wayland_private.h"
+#include "wayland_xdg_shell.h"
+
+/* Intra-component Headers */
+#include <linux/input-event-codes.h>
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_wayland_private.h"
-
 #if LV_USE_WAYLAND
-
-#include <linux/input-event-codes.h>
-#include "wayland_xdg_shell.h"
 
 /*********************
  *      DEFINES
@@ -159,7 +167,6 @@ void lv_wayland_xdg_resize(lv_wl_window_t * window)
         return;
     }
 
-
     lv_display_set_resolution(window->lv_disp,
                               window->resize_event.width,
                               window->resize_event.height);
@@ -183,7 +190,6 @@ void lv_wayland_xdg_delete_window(lv_wl_window_xdg_t * xdg)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 static void xdg_surface_handle_configure(void * data, struct xdg_surface * xdg_surface, uint32_t serial)
 {

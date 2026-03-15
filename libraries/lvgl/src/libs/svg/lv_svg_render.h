@@ -1,6 +1,28 @@
-/**
- * @file lv_svg_render.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_svg_render.h
  *
+ * @brief   Lv Svg Render
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_vector_private.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+#include "lv_svg.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_svg_render
+ * @brief    lv_svg_render Firmware
+ * @{
  */
 
 #ifndef LV_SVG_RENDER_H
@@ -9,16 +31,11 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_SVG
 #if !LV_USE_VECTOR_GRAPHIC
     #error "LV_USE_SVG requires LV_USE_VECTOR_GRAPHIC = 1"
 #endif
-
-#include "lv_svg.h"
-#include "../../misc/lv_types.h"
-#include "../../draw/lv_draw_vector_private.h"
 
 /*********************
  *      DEFINES
@@ -123,3 +140,5 @@ void lv_draw_svg(lv_layer_t * layer, const lv_svg_node_t * svg_doc);
 #endif /*LV_USE_SVG*/
 
 #endif /*LV_SVG_RENDER_H*/
+
+/** @} */

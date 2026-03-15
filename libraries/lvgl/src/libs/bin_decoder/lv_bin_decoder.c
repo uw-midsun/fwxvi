@@ -1,26 +1,36 @@
-/**
- * @file lv_bin_decoder.c
+/************************************************************************************************
+ * @file    lv_bin_decoder.c
  *
- */
+ * @brief   Lv Bin Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <lz4.h>
+
+/* Inter-component Headers */
+    #include "../../libs/lz4/lz4.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_draw_buf.h"
+#include "../../draw/lv_draw_image.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "../../libs/rle/lv_rle.h"
+#include "../../stdlib/lv_sprintf.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_bin_decoder.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "lv_bin_decoder.h"
-#include "../../draw/lv_draw_image.h"
-#include "../../draw/lv_draw_buf.h"
-#include "../../stdlib/lv_string.h"
-#include "../../stdlib/lv_sprintf.h"
-#include "../../libs/rle/lv_rle.h"
-#include "../../core/lv_global.h"
 
 #if LV_USE_LZ4_EXTERNAL
-    #include <lz4.h>
 #endif
 
 #if LV_USE_LZ4_INTERNAL
-    #include "../../libs/lz4/lz4.h"
 #endif
 
 /*********************

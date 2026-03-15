@@ -1,6 +1,25 @@
-/**
- * @file lv_mem_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_mem_private.h
  *
+ * @brief   Lv Mem Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_mem.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_mem_private
+ * @brief    lv_mem_private Firmware
+ * @{
  */
 
 #ifndef LV_MEM_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_mem.h"
 
 /*********************
  *      DEFINES
@@ -37,3 +54,5 @@ extern "C" {
 #endif
 
 #endif /*LV_MEM_PRIVATE_H*/
+
+/** @} */

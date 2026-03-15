@@ -1,26 +1,34 @@
-/**
- * @file lv_draw_vg_lite_label.c
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_label.c
  *
- */
+ * @brief   Lv Draw Vg Lite Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../libs/freetype/lv_freetype_private.h"
+#include "../../misc/cache/lv_cache_entry_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../lv_draw_image_private.h"
+#include "../lv_draw_label_private.h"
+#include "lv_draw_vg_lite.h"
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_bitmap_font_cache.h"
+#include "lv_vg_lite_path.h"
+#include "lv_vg_lite_pending.h"
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_vg_lite.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_utils.h"
-#include "lv_vg_lite_path.h"
-#include "lv_vg_lite_pending.h"
-#include "lv_vg_lite_bitmap_font_cache.h"
-#include "../../misc/cache/lv_cache_entry_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../libs/freetype/lv_freetype_private.h"
-#include "../lv_draw_label_private.h"
-#include "../lv_draw_image_private.h"
 
 /*********************
  *      DEFINES

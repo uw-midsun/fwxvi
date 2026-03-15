@@ -1,6 +1,25 @@
-/**
- * @file lv_ext_data.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ext_data.h
  *
+ * @brief   Lv Ext Data
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_ext_data
+ * @brief    lv_ext_data Firmware
+ * @{
  */
 
 #ifndef LV_EXT_DATA_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
 
 /*********************
  *      DEFINES
@@ -42,3 +60,5 @@ typedef struct {
 #endif
 
 #endif /* LV_EXT_DATA_H */
+
+/** @} */

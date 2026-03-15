@@ -1,6 +1,26 @@
-/**
- * @file nuttx_video_fb.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_video_fb.h
  *
+ * @brief   Nuttx Video Fb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_video_fb
+ * @brief    nuttx_video_fb Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_VIDEO_FB_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
-#include <stddef.h>
 
 /*********************
  *      DEFINES
@@ -341,3 +358,5 @@ struct fb_planeinfo_s {
 #endif
 
 #endif /*LV_NUTTX_VIDEO_FB_H*/
+
+/** @} */

@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_blur.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_blur.h
  *
+ * @brief   Lv Draw Blur
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_blur
+ * @brief    lv_draw_blur Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_BLUR_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -80,3 +98,5 @@ void lv_draw_blur(lv_layer_t * layer, const lv_draw_blur_dsc_t * dsc, const lv_a
 #endif
 
 #endif /*LV_DRAW_BLUR_H*/
+
+/** @} */

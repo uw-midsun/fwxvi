@@ -1,7 +1,21 @@
-/**
- * @file lv_draw_eve_image.c
+/************************************************************************************************
+ * @file    lv_draw_eve_image.c
  *
- */
+ * @brief   Lv Draw Eve Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_image_private.h"
+#include "lv_draw_eve_private.h"
+#include "lv_draw_eve_ram_g.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 17 jun 2023
  *      Author: juanj
@@ -12,17 +26,11 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-
-#include "../lv_draw_image_private.h"
-#include "lv_draw_eve_ram_g.h"
-#include "lv_eve.h"
 
 /*********************
  *      DEFINES
  *********************/
-
 
 /**********************
  *      TYPEDEFS
@@ -38,8 +46,6 @@ static void convert_row_argb8888_to_argb4444(const uint8_t * src, uint8_t * dst,
 /**********************
  *  STATIC VARIABLES
  **********************/
-
-
 
 /**********************
  *      MACROS
@@ -245,9 +251,6 @@ uint32_t lv_draw_eve_image_upload_image(bool burst_is_active, const lv_image_dsc
 
     return ramg_addr;
 }
-
-
-
 
 /**********************
  *   STATIC FUNCTIONS

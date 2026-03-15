@@ -1,23 +1,40 @@
-/**
- * @file lv_init.c
+/************************************************************************************************
+ * @file    lv_init.c
  *
- */
+ * @brief   Lv Init
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "misc/lv_timer_private.h"
-#include "misc/lv_profiler_builtin_private.h"
-#include "misc/lv_anim_private.h"
-#include "draw/lv_image_decoder_private.h"
-#include "draw/lv_draw_buf_private.h"
-#include "core/lv_refr_private.h"
-#include "core/lv_obj_style_private.h"
-#include "core/lv_group_private.h"
-#include "lv_init.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
+        #include "draw/nxp/g2d/lv_draw_g2d.h"
+        #include "draw/nxp/pxp/lv_draw_pxp.h"
+    #include "draw/dma2d/lv_draw_dma2d.h"
+    #include "draw/espressif/ppa/lv_draw_ppa.h"
+    #include "draw/eve/lv_draw_eve.h"
+    #include "draw/nema_gfx/lv_draw_nema_gfx.h"
+    #include "draw/opengles/lv_draw_opengles.h"
+    #include "draw/renesas/dave2d/lv_draw_dave2d.h"
+    #include "draw/sdl/lv_draw_sdl.h"
+    #include "draw/vg_lite/lv_draw_vg_lite.h"
+    #include "drivers/evdev/lv_evdev_private.h"
+    #include "drivers/uefi/lv_uefi_context.h"
+    #include "drivers/windows/lv_windows_context.h"
+    #include "libs/svg/lv_svg_decoder.h"
 #include "core/lv_global.h"
+#include "core/lv_group_private.h"
 #include "core/lv_obj.h"
+#include "core/lv_obj_style_private.h"
+#include "core/lv_refr_private.h"
+#include "debugging/sysmon/lv_sysmon_private.h"
 #include "display/lv_display_private.h"
+#include "draw/lv_draw.h"
+#include "draw/lv_draw_buf_private.h"
+#include "draw/lv_image_decoder_private.h"
+#include "drivers/wayland/lv_wayland_private.h"
 #include "indev/lv_indev_private.h"
 #include "layouts/lv_layout_private.h"
 #include "libs/bin_decoder/lv_bin_decoder.h"
@@ -25,70 +42,63 @@
 #include "libs/ffmpeg/lv_ffmpeg.h"
 #include "libs/freetype/lv_freetype.h"
 #include "libs/fsdrv/lv_fsdrv.h"
-#include "libs/tjpgd/lv_tjpgd.h"
 #include "libs/libjpeg_turbo/lv_libjpeg_turbo.h"
-#include "libs/lodepng/lv_lodepng.h"
 #include "libs/libpng/lv_libpng.h"
 #include "libs/libwebp/lv_libwebp.h"
+#include "libs/lodepng/lv_lodepng.h"
 #include "libs/tiny_ttf/lv_tiny_ttf.h"
-#include "draw/lv_draw.h"
+#include "libs/tjpgd/lv_tjpgd.h"
+#include "lv_init.h"
+#include "misc/lv_anim_private.h"
 #include "misc/lv_async.h"
+#include "misc/lv_fs.h"
 #include "misc/lv_fs_private.h"
+#include "misc/lv_profiler_builtin_private.h"
+#include "misc/lv_timer_private.h"
+#include "osal/lv_os_private.h"
+#include "others/translation/lv_translation.h"
+#include "themes/simple/lv_theme_simple.h"
 #include "widgets/gif/lv_gif.h"
 #include "widgets/span/lv_span.h"
-#include "themes/simple/lv_theme_simple.h"
-#include "misc/lv_fs.h"
-#include "osal/lv_os_private.h"
-#include "debugging/sysmon/lv_sysmon_private.h"
-#include "others/translation/lv_translation.h"
-#include "drivers/wayland/lv_wayland_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 #if LV_USE_SVG
-    #include "libs/svg/lv_svg_decoder.h"
 #endif
 
 #if LV_USE_NEMA_GFX
-    #include "draw/nema_gfx/lv_draw_nema_gfx.h"
 #endif
 #if LV_USE_PXP
     #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-        #include "draw/nxp/pxp/lv_draw_pxp.h"
     #endif
 #endif
 #if LV_USE_G2D
     #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-        #include "draw/nxp/g2d/lv_draw_g2d.h"
     #endif
 #endif
 #if LV_USE_DRAW_DAVE2D
-    #include "draw/renesas/dave2d/lv_draw_dave2d.h"
 #endif
 #if LV_USE_DRAW_SDL
-    #include "draw/sdl/lv_draw_sdl.h"
 #endif
 #if LV_USE_DRAW_VG_LITE
-    #include "draw/vg_lite/lv_draw_vg_lite.h"
 #endif
 #if LV_USE_DRAW_DMA2D
-    #include "draw/dma2d/lv_draw_dma2d.h"
 #endif
 #if LV_USE_DRAW_OPENGLES
-    #include "draw/opengles/lv_draw_opengles.h"
 #endif
 #if LV_USE_PPA
-    #include "draw/espressif/ppa/lv_draw_ppa.h"
 #endif
 #if LV_USE_WINDOWS
-    #include "drivers/windows/lv_windows_context.h"
 #endif
 #if LV_USE_UEFI
-    #include "drivers/uefi/lv_uefi_context.h"
 #endif
 #if LV_USE_EVDEV
-    #include "drivers/evdev/lv_evdev_private.h"
 #endif
 #if LV_USE_DRAW_EVE
-    #include "draw/eve/lv_draw_eve.h"
 #endif
 
 /*********************

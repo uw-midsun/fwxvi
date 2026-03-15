@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_style_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_style_private.h
  *
+ * @brief   Lv Obj Style Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_obj_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_style_private
+ * @brief    lv_obj_style_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_STYLE_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_obj_style.h"
 
 /*********************
  *      DEFINES
@@ -41,7 +58,6 @@ struct _lv_obj_style_transition_dsc_t {
     lv_anim_path_cb_t path_cb;
     void * user_data;
 };
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -95,3 +111,5 @@ void lv_obj_update_layer_type(lv_obj_t * obj);
 #endif
 
 #endif /*LV_OBJ_STYLE_PRIVATE_H*/
+
+/** @} */

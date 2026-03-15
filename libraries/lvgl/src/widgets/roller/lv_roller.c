@@ -1,28 +1,37 @@
-/**
- * @file lv_roller.c
+/************************************************************************************************
+ * @file    lv_roller.c
  *
- */
+ * @brief   Lv Roller
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_private.h"
+#include "../../indev/lv_indev_scroll.h"
+#include "../../misc/lv_anim_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../label/lv_label_private.h"
+#include "lv_roller_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_roller_private.h"
-#include "../label/lv_label_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../misc/lv_anim_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_ROLLER != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_text_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_group.h"
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_scroll.h"
-#include "../../indev/lv_indev_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -964,6 +973,5 @@ static void roller_value_observer_cb(lv_observer_t * observer, lv_subject_t * su
 }
 
 #endif /*LV_USE_OBSERVER*/
-
 
 #endif

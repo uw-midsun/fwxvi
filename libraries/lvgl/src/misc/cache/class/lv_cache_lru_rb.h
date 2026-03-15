@@ -1,7 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache_lru_rb.h
+ *
+ * @brief   Lv Cache Lru Rb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_cache_private.h"
+
+/* Intra-component Headers */
+
 /**
-* @file lv_cache_lru_rb.h
-*
-*/
+ * @defgroup lv_cache_lru_rb
+ * @brief    lv_cache_lru_rb Firmware
+ * @{
+ */
 
 #ifndef LV_CACHE_LRU_RB_H
 #define LV_CACHE_LRU_RB_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lv_cache_private.h"
 
 /*********************
  *      DEFINES
@@ -42,3 +59,5 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_cache_class_t lv_cache_class_lru_rb_siz
 #endif
 
 #endif /*LV_CACHE_LRU_RB_H*/
+
+/** @} */

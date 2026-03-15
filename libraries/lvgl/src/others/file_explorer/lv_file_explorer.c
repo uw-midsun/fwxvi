@@ -1,18 +1,27 @@
-/**
- * @file lv_file_explorer.c
+/************************************************************************************************
+ * @file    lv_file_explorer.c
  *
- */
+ * @brief   Lv File Explorer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../lvgl.h"
+#include "../../misc/lv_fs_private.h"
+#include "lv_file_explorer_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_file_explorer_private.h"
-#include "../../misc/lv_fs_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_FILE_EXPLORER
-
-#include "../../lvgl.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES
@@ -56,7 +65,6 @@ static void clear_table_cells_user_data(lv_file_explorer_t * explorer);
 /**********************
  *  STATIC VARIABLES
  **********************/
-
 
 const lv_obj_class_t lv_file_explorer_class = {
     .constructor_cb = lv_file_explorer_constructor,
@@ -543,7 +551,6 @@ static void browser_file_event_handler(lv_event_t * e)
          * - Navigate to (current directory) child */
         navigate_to_parent_dir = (lv_strcmp(selected_text, LV_FILE_NAVIGATION_PARENT_DIR) == 0);
         navigate_to_child = !navigate_to_parent_dir;
-
 
         if((navigate_to_parent_dir) && (lv_strlen(explorer->current_path) > 3)) {
             lv_strlcpy(file_name, explorer->current_path, sizeof(file_name));

@@ -1,29 +1,38 @@
-/**
- * @file lv_draw_sw_blend_to_rgb565.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_rgb565.c
  *
- */
+ * @brief   Lv Draw Sw Blend To Rgb565
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "helium/lv_blend_helium.h"
+    #include "neon/lv_blend_neon.h"
+#include "../../../core/lv_refr.h"
+#include "../../../display/lv_display.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_math.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_to_rgb565.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_to_rgb565.h"
 #if LV_USE_DRAW_SW
 
 #if LV_DRAW_SW_SUPPORT_RGB565
 
-#include "lv_draw_sw_blend_private.h"
-#include "../../../misc/lv_math.h"
-#include "../../../display/lv_display.h"
-#include "../../../core/lv_refr.h"
-#include "../../../misc/lv_color.h"
-#include "../../../stdlib/lv_string.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-    #include "neon/lv_blend_neon.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "helium/lv_blend_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 /*********************

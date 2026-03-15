@@ -1,6 +1,26 @@
-/**
- * @file lv_fs.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_fs.h
  *
+ * @brief   Lv Fs
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_fs
+ * @brief    lv_fs Firmware
+ * @{
  */
 
 #ifndef LV_FS_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -94,18 +112,15 @@ typedef struct {
     lv_fs_file_cache_t * cache;
 } lv_fs_file_t;
 
-
 typedef struct {
     void * dir_d;
     lv_fs_drv_t * drv;
 } lv_fs_dir_t;
 
-
 /** Extended path object to specify buffer for memory-mapped files */
 typedef struct {
     char path[64];   /**<  Store the driver letter address and size*/
 } lv_fs_path_ex_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -342,3 +357,5 @@ int lv_fs_path_join(char * buf, size_t buf_sz, const char * base, const char * e
 #endif
 
 #endif /*LV_FS_H*/
+
+/** @} */

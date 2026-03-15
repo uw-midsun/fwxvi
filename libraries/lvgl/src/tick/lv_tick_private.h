@@ -1,6 +1,25 @@
-/**
- * @file lv_tick_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tick_private.h
  *
+ * @brief   Lv Tick Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_tick.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tick_private
+ * @brief    lv_tick_private Firmware
+ * @{
  */
 
 #ifndef LV_TICK_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_tick.h"
 
 /*********************
  *      DEFINES
@@ -44,3 +61,5 @@ typedef struct {
 #endif
 
 #endif /*LV_TICK_PRIVATE_H*/
+
+/** @} */

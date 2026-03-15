@@ -1,6 +1,29 @@
-/**
- * @file lv_gstreamer_internal.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gstreamer_internal.h
  *
+ * @brief   Lv Gstreamer Internal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <gst/gst.h>
+#include <gst/video/video.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../widgets/image/lv_image_private.h"
+#include "lv_gstreamer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gstreamer_internal
+ * @brief    lv_gstreamer_internal Firmware
+ * @{
  */
 
 #ifndef LV_GSTREAMER_INTERNAL_H
@@ -14,16 +37,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_GSTREAMER
-
-#include <gst/gst.h>
-#include <gst/video/video.h>
-
-#include "../../widgets/image/lv_image_private.h"
-
-#include "lv_gstreamer.h"
 
 /*********************
  *      DEFINES
@@ -76,3 +90,5 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_obj_class_t lv_gstreamer_class;
 #endif
 
 #endif /*LV_GSTREAMER_INTERNAL_H*/
+
+/** @} */

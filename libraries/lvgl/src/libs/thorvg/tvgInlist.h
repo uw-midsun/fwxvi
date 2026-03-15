@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgInlist.h
+ *
+ * @brief   Tvginlist
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgInlist
+ * @brief    tvgInlist Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,7 +44,6 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_INLIST_H_
@@ -115,3 +138,5 @@ struct Inlist
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

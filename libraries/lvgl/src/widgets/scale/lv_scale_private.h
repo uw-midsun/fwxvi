@@ -1,6 +1,26 @@
-/**
- * @file lv_scale_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_scale_private.h
  *
+ * @brief   Lv Scale Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_scale.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_scale_private
+ * @brief    lv_scale_private Firmware
+ * @{
  */
 
 #ifndef LV_SCALE_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_scale.h"
-
 #if LV_USE_SCALE != 0
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -85,7 +102,6 @@ struct _lv_scale_t {
     lv_array_t needles;                /**< Needle list of this scale */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -101,3 +117,5 @@ struct _lv_scale_t {
 #endif
 
 #endif /*LV_SCALE_PRIVATE_H*/
+
+/** @} */

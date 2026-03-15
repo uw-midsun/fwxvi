@@ -1,22 +1,29 @@
-/**
- * @file lv_draw_eve_display.c
+/************************************************************************************************
+ * @file    lv_draw_eve_display.c
  *
- */
+ * @brief   Lv Draw Eve Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "../../../draw/eve/lv_draw_eve.h"
+#include "../../../draw/eve/lv_eve.h"
+#include "../../../misc/lv_text_private.h"
+#include "lv_draw_eve_display.h"
+
+/* Intra-component Headers */
+#include "../../../libs/FT800-FT813/EVE_commands.h"
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_eve_display.h"
 #if LV_USE_DRAW_EVE
-
-#include "../../../draw/eve/lv_eve.h"
-#include "../../../draw/eve/lv_draw_eve.h"
-#include "../../../display/lv_display_private.h"
-#include "../../../misc/lv_text_private.h"
-
-#include "../../../libs/FT800-FT813/EVE_commands.h"
-
 
 /*********************
  *      DEFINES

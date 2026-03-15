@@ -1,6 +1,27 @@
-/**
- * @file lv_test_helpers.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_test_helpers.h
  *
+ * @brief   Lv Test Helpers
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_mem.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_test_helpers
+ * @brief    lv_test_helpers Firmware
+ * @{
  */
 
 #ifndef LV_TEST_HELPERS_H
@@ -14,11 +35,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST
-
-#include "../../misc/lv_types.h"
-#include "../../stdlib/lv_mem.h"
 
 /*********************
  *      DEFINES
@@ -78,3 +95,5 @@ static inline size_t lv_test_get_free_mem(void)
 #endif
 
 #endif /*LV_TEST_HELPERS_H*/
+
+/** @} */

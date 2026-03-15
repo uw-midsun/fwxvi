@@ -1,3 +1,31 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgText.h
+ *
+ * @brief   Tvgtext
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cstring>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgFill.h"
+#include "tvgLoader.h"
+#include "tvgShape.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgText
+ * @brief    tvgText Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,16 +48,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_TEXT_H
 #define _TVG_TEXT_H
-
-#include <cstring>
-#include "tvgShape.h"
-#include "tvgFill.h"
-#include "tvgLoader.h"
 
 struct Text::Impl
 {
@@ -170,9 +192,9 @@ struct Text::Impl
     }
 };
 
-
-
 #endif //_TVG_TEXT_H
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

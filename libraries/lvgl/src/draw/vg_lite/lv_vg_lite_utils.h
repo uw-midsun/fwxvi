@@ -1,6 +1,32 @@
-/**
- * @file lv_vg_lite_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_utils.h
  *
+ * @brief   Lv Vg Lite Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <vg_lite.h>
+
+/* Inter-component Headers */
+#include "../../debugging/vg_lite_tvg/vg_lite.h"
+#include "../../libs/vg_lite_driver/inc/vg_lite.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_matrix.h"
+#include "../../misc/lv_profiler.h"
+#include "../../misc/lv_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_utils
+ * @brief    lv_vg_lite_utils Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_UTILS_H
@@ -14,22 +40,12 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE
 
-#include "../../misc/lv_profiler.h"
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_style.h"
-#include "../../misc/lv_matrix.h"
-
 #if LV_USE_VG_LITE_THORVG
-#include "../../debugging/vg_lite_tvg/vg_lite.h"
 #else
 #if LV_USE_VG_LITE_DRIVER
-#include "../../libs/vg_lite_driver/inc/vg_lite.h"
 #else
-#include <vg_lite.h>
 #endif
 #endif
 
@@ -328,3 +344,5 @@ static inline void lv_vg_lite_clear(vg_lite_buffer_t * target, const lv_area_t *
 #endif
 
 #endif /*LV_VG_LITE_UTILS_H*/
+
+/** @} */

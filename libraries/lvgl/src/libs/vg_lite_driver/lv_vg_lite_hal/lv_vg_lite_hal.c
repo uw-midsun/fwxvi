@@ -1,20 +1,31 @@
+/************************************************************************************************
+ * @file    lv_vg_lite_hal.c
+ *
+ * @brief   Lv Vg Lite Hal
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+#include <stdarg.h>
+
+/* Inter-component Headers */
 #include "../../../lv_conf_internal.h"
-#if LV_USE_VG_LITE_DRIVER
-
 #include "../../../osal/lv_os_private.h"
 #include "../../../stdlib/lv_mem.h"
+#include "../VGLiteKernel/vg_lite_hal.h"
+#include "../VGLiteKernel/vg_lite_hw.h"
+#include "../VGLiteKernel/vg_lite_kernel.h"
+#include "vg_lite_platform.h"
+
+/* Intra-component Headers */
+
+#if LV_USE_VG_LITE_DRIVER
 
 #if LV_USE_OS == LV_OS_NONE
     #error "VGLite hal needs support from an OS, please select one of the supported by LVGL!"
 #endif
-
-#include "vg_lite_platform.h"
-#include "../VGLiteKernel/vg_lite_kernel.h"
-#include "../VGLiteKernel/vg_lite_hal.h"
-#include "../VGLiteKernel/vg_lite_hw.h"
-
-#include <stdarg.h>
 
 static void sleep(uint32_t msec)
 {
@@ -488,7 +499,6 @@ vg_lite_error_t vg_lite_hal_memory_export(int32_t * fd)
     return VG_LITE_SUCCESS;
 }
 
-
 void * vg_lite_hal_map(uint32_t flags, uint32_t bytes, void * logical, uint32_t physical, int32_t dma_buf_fd,
                        uint32_t * gpu)
 {
@@ -558,7 +568,6 @@ static int vg_lite_init(void)
 
     /* Setup register memory. **********************************************/
     device->register_base = registerMemBase;
-
 
     /* Initialize contiguous memory. ***************************************/
     /* Allocate the contiguous memory. */

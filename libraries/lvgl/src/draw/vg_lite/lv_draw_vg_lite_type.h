@@ -1,6 +1,30 @@
-/**
- * @file lv_draw_vg_lite_type.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_vg_lite_type.h
  *
+ * @brief   Lv Draw Vg Lite Type
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <vg_lite.h>
+
+/* Inter-component Headers */
+#include "../../debugging/vg_lite_tvg/vg_lite.h"
+#include "../../libs/vg_lite_driver/inc/vg_lite.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_array.h"
+#include "../lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_vg_lite_type
+ * @brief    lv_draw_vg_lite_type Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_VG_LITE_TYPE_H
@@ -14,20 +38,12 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE
 
-#include "../lv_draw_private.h"
-#include "../../misc/lv_array.h"
-
 #if LV_USE_VG_LITE_THORVG
-#include "../../debugging/vg_lite_tvg/vg_lite.h"
 #else
 #if LV_USE_VG_LITE_DRIVER
-#include "../../libs/vg_lite_driver/inc/vg_lite.h"
 #else
-#include <vg_lite.h>
 #endif
 #endif
 
@@ -80,3 +96,5 @@ typedef struct _lv_draw_vg_lite_unit_t {
 #endif
 
 #endif /*LV_DRAW_VG_LITE_TYPE_H*/
+
+/** @} */

@@ -1,6 +1,25 @@
-/**
- * @file lv_led.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_led.h
  *
+ * @brief   Lv Led
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_led
+ * @brief    lv_led Firmware
+ * @{
  */
 
 #ifndef LV_LED_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 
 #if LV_USE_LED
 
@@ -112,3 +130,5 @@ lv_color_t lv_led_get_color(const lv_obj_t * obj);
 #endif
 
 #endif /*LV_LED_H*/
+
+/** @} */

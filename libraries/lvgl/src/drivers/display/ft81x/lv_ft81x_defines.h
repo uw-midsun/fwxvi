@@ -1,7 +1,24 @@
-/**
- * @file lv_ft81x_defines.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ft81x_defines.h
  *
- * Copied from https://github.com/lvgl/lvgl_esp32_drivers/blob/9fed1cc47b5a45fec6bae08b55d2147d3b50260c/lvgl_tft/EVE.h
+ * @brief   Lv Ft81X Defines
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_ft81x_defines
+ * @brief    lv_ft81x_defines Firmware
+ * @{
  */
 
 #ifndef LV_FT81X_DEFINES_H
@@ -29,7 +46,6 @@ extern "C" {
 #define FT81X_ENABLE
 /* #define BT81X_ENABLE */
 
-
 #define DL_CLEAR        0x26000000UL /* requires OR'd arguments */
 #define DL_CLEAR_RGB    0x02000000UL /* requires OR'd arguments */
 #define DL_COLOR_RGB    0x04000000UL /* requires OR'd arguments */
@@ -47,7 +63,6 @@ extern "C" {
 #define SPI_WIDTH_DIO       0x1
 #define SPI_WIDTH_QIO       0x2
 
-
 /* Host commands */
 #define EVE_ACTIVE  0x00  /* place FT8xx in active state */
 #define EVE_STANDBY 0x41  /* place FT8xx in Standby (clk running) */
@@ -59,7 +74,6 @@ extern "C" {
 #define EVE_CLK48M  0x62  /* select 48MHz PLL output */
 #define EVE_CLK36M  0x61  /* select 36MHz PLL output */
 
-
 /* defines used for graphics commands */
 #define EVE_NEVER                0UL
 #define EVE_LESS                 1UL
@@ -69,7 +83,6 @@ extern "C" {
 #define EVE_EQUAL                5UL
 #define EVE_NOTEQUAL             6UL
 #define EVE_ALWAYS               7UL
-
 
 /* Bitmap formats */
 #define EVE_ARGB1555             0UL
@@ -85,16 +98,13 @@ extern "C" {
 #define EVE_TEXTVGA              10UL
 #define EVE_BARGRAPH             11UL
 
-
 /* Bitmap filter types */
 #define EVE_NEAREST              0UL
 #define EVE_BILINEAR             1UL
 
-
 /* Bitmap wrap types */
 #define EVE_BORDER               0UL
 #define EVE_REPEAT               1UL
-
 
 /* Stencil defines */
 #define EVE_KEEP                 1UL
@@ -103,12 +113,10 @@ extern "C" {
 #define EVE_DECR                 4UL
 #define EVE_INVERT               5UL
 
-
 /* Graphics display list swap defines */
 #define EVE_DLSWAP_DONE          0UL
 #define EVE_DLSWAP_LINE          1UL
 #define EVE_DLSWAP_FRAME         2UL
-
 
 /* Interrupt bits */
 #define EVE_INT_SWAP             0x01
@@ -120,13 +128,11 @@ extern "C" {
 #define EVE_INT_CMDFLAG          0x40
 #define EVE_INT_CONVCOMPLETE     0x80
 
-
 /* Touch mode */
 #define EVE_TMODE_OFF           0
 #define EVE_TMODE_ONESHOT       1
 #define EVE_TMODE_FRAME         2
 #define EVE_TMODE_CONTINUOUS    3
-
 
 /* Alpha blending */
 #define EVE_ZERO                 0UL
@@ -135,7 +141,6 @@ extern "C" {
 #define EVE_DST_ALPHA            3UL
 #define EVE_ONE_MINUS_SRC_ALPHA  4UL
 #define EVE_ONE_MINUS_DST_ALPHA  5UL
-
 
 /* Graphics primitives */
 #define EVE_BITMAPS              1UL
@@ -147,7 +152,6 @@ extern "C" {
 #define EVE_EDGE_STRIP_A         7UL
 #define EVE_EDGE_STRIP_B         8UL
 #define EVE_RECTS                9UL
-
 
 /* Widget command */
 #define EVE_OPT_MONO             1
@@ -165,18 +169,15 @@ extern "C" {
 #define EVE_OPT_RIGHTX           2048
 #define EVE_OPT_SIGNED           256
 
-
 /* Defines related to inbuilt font */
 #define EVE_NUMCHAR_PERFONT         (128L)  /* number of font characters per bitmap handle */
 #define EVE_FONT_TABLE_SIZE         (148L)  /* size of the font table - utilized for lookup by the graphics engine */
 #define EVE_FONT_TABLE_POINTER  (0xFFFFCUL) /* pointer to the inbuilt font tables starting from bitmap handle 16 */
 
-
 /* Audio sample type defines */
 #define EVE_LINEAR_SAMPLES       0UL    /* 8bit signed samples */
 #define EVE_ULAW_SAMPLES         1UL    /* 8bit ulaw samples */
 #define EVE_ADPCM_SAMPLES        2UL    /* 4bit ima adpcm samples */
-
 
 /* Synthesized sound */
 #define EVE_SILENCE              0x00
@@ -210,7 +211,6 @@ extern "C" {
 #define EVE_CHACK                0x58
 #define EVE_MUTE                 0x60
 #define EVE_UNMUTE               0x61
-
 
 /* Synthesized sound frequencies, midi note */
 #define EVE_MIDI_A0   21
@@ -302,17 +302,14 @@ extern "C" {
 #define EVE_MIDI_B7   107
 #define EVE_MIDI_C8   108
 
-
 /* GPIO bits */
 #define EVE_GPIO0   0
 #define EVE_GPIO1   1   /* default gpio pin for audio shutdown, 1 - enable, 0 - disable */
 #define EVE_GPIO7   7   /* default gpio pin for display enable, 1 - enable, 0 - disable */
 
-
 /* Display rotation */
 #define EVE_DISPLAY_0       0   /* 0 degrees rotation */
 #define EVE_DISPLAY_180     1   /* 180 degrees rotation */
-
 
 /* commands common to EVE/EVE2/EVE3 */
 #define CMD_APPEND              0xFFFFFF1E
@@ -361,7 +358,6 @@ extern "C" {
 #define CMD_TRACK               0xFFFFFF2C
 #define CMD_TRANSLATE           0xFFFFFF27
 
-
 /* the following are undocumented commands that therefore should not be used */
 #if 0
 #define CMD_CRC                 0xFFFFFF03
@@ -372,7 +368,6 @@ extern "C" {
 #define CMD_GETPOINT            0xFFFFFF08
 #define CMD_TOUCH_TRANSFORM     0xFFFFFF20
 #endif
-
 
 /* FT8xx graphics engine specific macros useful for static display list generation */
 #define ALPHA_FUNC(func,ref) ((9UL<<24)|(((func)&7UL)<<8)|(((ref)&255UL)<<0))
@@ -414,7 +409,6 @@ extern "C" {
 #define VERTEX2F(x,y) ((1UL<<30)|(((x)&32767UL)<<15)|(((y)&32767UL)<<0))
 #define VERTEX2II(x,y,handle,cell) ((2UL<<30)|(((x)&511UL)<<21)|(((y)&511UL)<<12)|(((handle)&31UL)<<7)|(((cell)&127UL)<<0))
 
-
 /* ----------------- BT81x exclusive definitions -----------------*/
 #if defined (BT81X_ENABLE)
 
@@ -438,7 +432,6 @@ extern "C" {
 #define EVE_COMPRESSED_RGBA_ASTC_12x10_KHR 37820UL
 #define EVE_COMPRESSED_RGBA_ASTC_12x12_KHR 37821UL
 
-
 #define EVE_RAM_ERR_REPORT      0x309800UL /* max 128 bytes null terminated string */
 #define EVE_RAM_FLASH           0x800000UL
 #define EVE_RAM_FLASH_POSTBLOB  0x801000UL
@@ -446,7 +439,6 @@ extern "C" {
 #define EVE_OPT_FLASH  64UL
 #define EVE_OPT_FORMAT 4096UL
 #define EVE_OPT_FILL   8192UL
-
 
 /* additional commands for BT81x */
 #define CMD_BITMAP_TRANSFORM 0xFFFFFF21
@@ -485,7 +477,6 @@ extern "C" {
 
 #endif
 
-
 /* additional registers for BT81x */
 #define REG_ADAPTIVE_FRAMERATE 0x30257cUL
 #define REG_PLAYBACK_PAUSE     0x3025ecUL
@@ -493,7 +484,6 @@ extern "C" {
 #define REG_FLASH_SIZE         0x309024UL
 #define REG_PLAY_CONTROL       0x30914eUL
 #define REG_COPRO_PATCH_DTR    0x309162UL
-
 
 /* BT81x graphics engine specific macros */
 #define BITMAP_EXT_FORMAT(format) ((46UL<<24)|(((format)&65535UL)<<0))
@@ -521,13 +511,11 @@ extern "C" {
 /* ----------------- FT81x / BT81x exclusive definitions -----------------*/
 #if defined (FT81X_ENABLE)
 
-
 /* Host commands */
 #define EVE_CLKSEL          0x61 /* configure system clock */
 #define EVE_RST_PULSE       0x68 /* reset core - all registers default and processors reset */
 #define EVE_PINDRIVE        0x70 /* setup drive strength for various pins */
 #define EVE_PIN_PD_STATE    0x71 /* setup how pins behave during power down */
-
 
 /* Memory definitions */
 #define EVE_RAM_G           0x000000UL
@@ -538,12 +526,10 @@ extern "C" {
 #define EVE_RAM_REG         0x302000UL
 #define EVE_RAM_CMD         0x308000UL
 
-
 /* Memory buffer sizes */
 #define EVE_RAM_G_SIZE      1024*1024L
 #define EVE_CMDFIFO_SIZE    4*1024L
 #define EVE_RAM_DL_SIZE     8*1024L
-
 
 /* various additional defines for FT81x */
 #define EVE_ADC_DIFFERENTIAL     1UL
@@ -563,7 +549,6 @@ extern "C" {
 #define EVE_PALETTED8            16UL
 #define EVE_L2                   17UL
 
-
 /* additional commands for FT81x */
 #define CMD_MEDIAFIFO           0xFFFFFF39
 #define CMD_PLAYVIDEO           0xFFFFFF3A
@@ -577,14 +562,12 @@ extern "C" {
 #define CMD_VIDEOFRAME          0xFFFFFF41
 #define CMD_VIDEOSTART          0xFFFFFF40
 
-
 /* the following are undocumented commands that therefore should not be used */
 #if 0
 #define CMD_CSKETCH             0xFFFFFF35
 #define CMD_INT_RAMSHARED       0xFFFFFF3D
 #define CMD_INT_SWLOADIMAGE     0xFFFFFF3E
 #endif
-
 
 /* Register definitions */
 #define REG_ANA_COMP         0x302184UL /* only listed in datasheet */
@@ -702,7 +685,6 @@ extern "C" {
 #define REG_TOUCH_FAULT      0x302170UL /* only listed as "reserved" in datasheet */
 #endif
 
-
 /* FT81x graphics engine specific macros useful for static display list generation */
 
 /* beware, these are different to FTDIs implementation as these take the original values as parameters and not only the upper bits */
@@ -718,8 +700,6 @@ extern "C" {
 #define VERTEX_TRANSLATE_X(x) ((43UL<<24)|(((x)&131071UL)<<0))
 #define VERTEX_TRANSLATE_Y(y) ((44UL<<24)|(((y)&131071UL)<<0))
 
-
-
 /* ----------------- FT80x exclusive definitions -----------------*/
 #else
 
@@ -733,13 +713,11 @@ extern "C" {
 #define EVE_RAM_CMD         0x108000UL
 #define EVE_RAM_SCREENSHOT  0x1C2000UL
 
-
 /* Memory buffer sizes */
 #define EVE_RAM_G_SIZE      256*1024L
 #define EVE_CMDFIFO_SIZE    4*1024L
 #define EVE_RAM_DL_SIZE     8*1024L
 #define EVE_RAM_PAL_SIZE    1*1024L
-
 
 /* Register definitions */
 #define REG_ID                  0x102400UL
@@ -844,3 +822,5 @@ extern "C" {
 #endif
 
 #endif /*LV_FT81X_DEFINES_H*/
+
+/** @} */

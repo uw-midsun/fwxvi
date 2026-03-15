@@ -1,6 +1,25 @@
-/**
- * @file lv_libwebp.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_libwebp.h
  *
+ * @brief   Lv Libwebp
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_libwebp
+ * @brief    lv_libwebp Firmware
+ * @{
  */
 
 #ifndef LV_LIBWEBP_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_LIBWEBP
 
 /*********************
@@ -46,3 +64,5 @@ void lv_libwebp_deinit(void);
 #endif
 
 #endif /*LV_LIBWEBP_H*/
+
+/** @} */

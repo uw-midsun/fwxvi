@@ -1,7 +1,20 @@
-/**
- * @file lv_draw_pxp_fill.c
+/************************************************************************************************
+ * @file    lv_draw_pxp_fill.c
  *
- */
+ * @brief   Lv Draw Pxp Fill
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_pxp.h"
+#include "lv_pxp_cfg.h"
+#include "lv_pxp_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2020-2024 NXP
@@ -13,12 +26,8 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_pxp.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP
-#include "lv_pxp_cfg.h"
-#include "lv_pxp_utils.h"
 
 /*********************
  *      DEFINES

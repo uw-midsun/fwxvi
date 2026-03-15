@@ -1,6 +1,26 @@
-/**
- * @file lv_sdl_window.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sdl_window.h
  *
+ * @brief   Lv Sdl Window
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_sdl_window
+ * @brief    lv_sdl_window Firmware
+ * @{
  */
 
 /**
@@ -17,9 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
 
 #if LV_USE_SDL
 
@@ -65,7 +82,6 @@ struct SDL_Window * lv_sdl_window_get_window(lv_display_t * disp);
  *      MACROS
  **********************/
 
-
 #endif /* LV_DRV_SDL */
 
 #ifdef __cplusplus
@@ -73,3 +89,5 @@ struct SDL_Window * lv_sdl_window_get_window(lv_display_t * disp);
 #endif
 
 #endif /* LV_SDL_WINDOW_H */
+
+/** @} */

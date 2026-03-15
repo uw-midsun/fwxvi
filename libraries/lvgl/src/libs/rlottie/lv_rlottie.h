@@ -1,6 +1,25 @@
-/**
- * @file lv_rlottie.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rlottie.h
  *
+ * @brief   Lv Rlottie
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rlottie
+ * @brief    lv_rlottie Firmware
+ * @{
  */
 
 #ifndef LV_RLOTTIE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_RLOTTIE
 
 /*********************
@@ -56,3 +74,5 @@ void lv_rlottie_set_current_frame(lv_obj_t * rlottie, const size_t goto_frame);
 #endif
 
 #endif /*LV_RLOTTIE_H*/
+
+/** @} */

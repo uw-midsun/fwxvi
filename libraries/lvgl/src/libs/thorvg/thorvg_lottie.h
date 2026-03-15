@@ -1,7 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    thorvg_lottie.h
+ *
+ * @brief   Thorvg Lottie
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "thorvg.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup thorvg_lottie
+ * @brief    thorvg_lottie Firmware
+ * @{
+ */
+
 #ifndef _THORVG_LOTTIE_H_
 #define _THORVG_LOTTIE_H_
-
-#include "thorvg.h"
 
 namespace tvg
 {
@@ -18,7 +41,6 @@ namespace tvg
  * @since 0.15
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 class TVG_API LottieAnimation final : public Animation
 {
@@ -98,3 +120,5 @@ public:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

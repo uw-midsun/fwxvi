@@ -1,7 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wl_pointer.h
+ *
+ * @brief   Lv Wl Pointer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_gesture.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_wl_pointer.h
- *
+ * @defgroup lv_wl_pointer
+ * @brief    lv_wl_pointer Firmware
+ * @{
  */
 
 #ifndef LV_WL_POINTER_H
@@ -15,8 +34,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_gesture.h"
 #if LV_USE_WAYLAND
 
 /*********************
@@ -52,3 +69,5 @@ lv_indev_t * lv_wayland_get_pointer(lv_display_t * disp);
 #endif
 
 #endif /*LV_WL_POINTER_H*/
+
+/** @} */

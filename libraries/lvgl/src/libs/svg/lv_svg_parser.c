@@ -1,19 +1,29 @@
-/**
- * @file lv_svg_parser.c
+/************************************************************************************************
+ * @file    lv_svg_parser.c
  *
- */
+ * @brief   Lv Svg Parser
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <ctype.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "lv_svg_parser.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_svg_parser.h"
 #if LV_USE_SVG
-
-#include "../../../lvgl.h"
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
 /*********************
 *      DEFINES
@@ -2433,7 +2443,6 @@ bool _lv_svg_parser_token(_lv_svg_parser_t * parser, const _lv_svg_token_t * tok
 }
 
 #if LV_USE_SVG_DEBUG
-#include <stdio.h>
 void _lv_svg_dump_tree(lv_svg_node_t * root, int depth)
 {
     if(!root) {

@@ -1,6 +1,25 @@
-/**
- * @file nuttx_arch.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_arch.h
  *
+ * @brief   Nuttx Arch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_arch
+ * @brief    nuttx_arch Firmware
+ * @{
  */
 
 #ifndef NUTTX_ARCH_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES
@@ -47,3 +64,5 @@ static inline uint32_t up_perf_gettime(void)
 #endif
 
 #endif /*NUTTX_ARCH_H*/
+
+/** @} */

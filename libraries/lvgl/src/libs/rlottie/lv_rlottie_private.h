@@ -1,6 +1,26 @@
-/**
- * @file lv_rlottie_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rlottie_private.h
  *
+ * @brief   Lv Rlottie Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../widgets/image/lv_image_private.h"
+#include "lv_rlottie.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rlottie_private
+ * @brief    lv_rlottie_private Firmware
+ * @{
  */
 
 #ifndef LV_RLOTTIE_PRIVATE_H
@@ -14,9 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_rlottie.h"
 #if LV_USE_RLOTTIE
-#include "../../widgets/image/lv_image_private.h"
 
 /*********************
  *      DEFINES
@@ -59,3 +77,5 @@ struct _lv_rlottie_t {
 #endif
 
 #endif /*LV_RLOTTIE_PRIVATE_H*/
+
+/** @} */

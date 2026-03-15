@@ -1,14 +1,25 @@
-/**
- * @file lv_mem_core_rtthread.c
- */
+/************************************************************************************************
+ * @file    lv_mem_core_rtthread.c
+ *
+ * @brief   Lv Mem Core Rtthread
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <rtthread.h>
+
+/* Inter-component Headers */
+#include "../../stdlib/lv_mem.h"
+#include "../lv_mem.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_mem.h"
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_RTTHREAD
-#include "../../stdlib/lv_mem.h"
-#include <rtthread.h>
 
 #ifndef RT_USING_HEAP
     #error "lv_mem_core_rtthread: RT_USING_HEAP is required. Define it in rtconfig.h"

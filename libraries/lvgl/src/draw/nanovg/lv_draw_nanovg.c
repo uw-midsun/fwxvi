@@ -1,59 +1,66 @@
-/**
- * @file lv_draw_nanovg.c
+/************************************************************************************************
+ * @file    lv_draw_nanovg.c
  *
- */
+ * @brief   Lv Draw Nanovg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+        #include <GL/glew.h>
+        #include <GL/glew.h>
+        #include <GLES2/gl2.h>
+        #include <GLES3/gl3.h>
+
+/* Inter-component Headers */
+    #include "../../drivers/opengles/lv_opengles_private.h"
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display.h"
+#include "../../libs/nanovg/nanovg_gl.h"
+#include "../../libs/nanovg/nanovg_gl_utils.h"
+#include "lv_draw_nanovg.h"
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_fbo_cache.h"
+#include "lv_nanovg_image_cache.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_nanovg.h"
-
 #if LV_USE_DRAW_NANOVG
 
-#include "../../display/lv_display.h"
-#include "../../core/lv_refr_private.h"
-#include "lv_draw_nanovg_private.h"
-#include "lv_nanovg_utils.h"
-#include "lv_nanovg_image_cache.h"
-#include "lv_nanovg_fbo_cache.h"
-
 #if LV_USE_OPENGLES && LV_USE_EGL
-    #include "../../drivers/opengles/lv_opengles_private.h"
 #else
     #define NANOVG_GL_STATIC_LINK
 #endif
 
 #if defined(NANOVG_GL2_IMPLEMENTATION)
     #ifdef NANOVG_GL_STATIC_LINK
-        #include <GL/glew.h>
     #endif
     #define NVG_CTX_CREATE nvgCreateGL2
     #define NVG_CTX_DELETE nvgDeleteGL2
 #elif defined(NANOVG_GL3_IMPLEMENTATION)
     #ifdef NANOVG_GL_STATIC_LINK
-        #include <GL/glew.h>
     #endif
     #define NVG_CTX_CREATE nvgCreateGL3
     #define NVG_CTX_DELETE nvgDeleteGL3
 #elif defined(NANOVG_GLES2_IMPLEMENTATION)
     #ifdef NANOVG_GL_STATIC_LINK
-        #include <GLES2/gl2.h>
     #endif
     #define NVG_CTX_CREATE nvgCreateGLES2
     #define NVG_CTX_DELETE nvgDeleteGLES2
 #elif defined(NANOVG_GLES3_IMPLEMENTATION)
     #ifdef NANOVG_GL_STATIC_LINK
-        #include <GLES3/gl3.h>
     #endif
     #define NVG_CTX_CREATE nvgCreateGLES3
     #define NVG_CTX_DELETE nvgDeleteGLES3
 #else
     #error "No NanoVG implementation defined"
 #endif
-
-#include "../../libs/nanovg/nanovg_gl.h"
-#include "../../libs/nanovg/nanovg_gl_utils.h"
 
 /* GL_BGRA may not be defined on all platforms */
 #ifndef GL_BGRA

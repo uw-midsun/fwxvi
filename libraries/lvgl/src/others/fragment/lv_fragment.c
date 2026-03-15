@@ -1,16 +1,25 @@
-/**
- * @file lv_fragment.c
+/************************************************************************************************
+ * @file    lv_fragment.c
  *
- */
+ * @brief   Lv Fragment
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../stdlib/lv_string.h"
+#include "lv_fragment_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_fragment_private.h"
-
 #if LV_USE_FRAGMENT
-#include "../../stdlib/lv_string.h"
 
 /**********************
  *  STATIC PROTOTYPES

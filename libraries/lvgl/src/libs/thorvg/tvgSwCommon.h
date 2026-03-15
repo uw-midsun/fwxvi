@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSwCommon.h
+ *
+ * @brief   Tvgswcommon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <algorithm>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgRender.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSwCommon
+ * @brief    tvgSwCommon Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SW_COMMON_H_
 #define _TVG_SW_COMMON_H_
-
-#include <algorithm>
-#include "tvgCommon.h"
-#include "tvgRender.h"
 
 #define SW_CURVE_TYPE_POINT 0
 #define SW_CURVE_TYPE_CUBIC 1
@@ -38,7 +60,6 @@
 
 using SwCoord = signed long;
 using SwFixed = signed long long;
-
 
 static inline float TO_FLOAT(SwCoord val)
 {
@@ -481,7 +502,6 @@ static inline uint32_t opBlendSoftLight(uint32_t s, uint32_t d, TVG_UNUSED uint8
     return JOIN(255, c1, c2, c3);
 }
 
-
 int64_t mathMultiply(int64_t a, int64_t b);
 int64_t mathDivide(int64_t a, int64_t b);
 int64_t mathMulDiv(int64_t a, int64_t b, int64_t c);
@@ -584,3 +604,5 @@ bool effectGaussianPrepare(RenderEffectGaussian* effect);
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

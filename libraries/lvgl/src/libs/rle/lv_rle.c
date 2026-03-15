@@ -1,13 +1,23 @@
-/**
- * @file lv_rle.c
- */
+/************************************************************************************************
+ * @file    lv_rle.c
+ *
+ * @brief   Lv Rle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../stdlib/lv_string.h"
+#include "lv_rle.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../stdlib/lv_string.h"
-#include "lv_rle.h"
 
 #if LV_USE_RLE
 

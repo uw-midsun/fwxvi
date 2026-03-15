@@ -1,26 +1,35 @@
-/**
- * @file lv_textarea.c
+/************************************************************************************************
+ * @file    lv_textarea.c
  *
- */
+ * @brief   Lv Textarea
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_refr.h"
+#include "../../draw/lv_draw.h"
+#include "../../indev/lv_indev.h"
+#include "../../misc/lv_anim_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../label/lv_label_private.h"
+#include "lv_textarea_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_textarea_private.h"
 
 #if LV_USE_TEXTAREA != 0
-
-#include "../label/lv_label_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../core/lv_group.h"
-#include "../../core/lv_refr.h"
-#include "../../indev/lv_indev.h"
-#include "../../draw/lv_draw.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_anim_private.h"
-#include "../../misc/lv_text_private.h"
-#include "../../misc/lv_math.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -575,7 +584,6 @@ void lv_textarea_set_accepted_chars_static(lv_obj_t * obj, const char * list)
     ta->static_accepted_chars = 1;
     ta->accepted_chars = (char *)list;
 }
-
 
 void lv_textarea_set_max_length(lv_obj_t * obj, uint32_t num)
 {

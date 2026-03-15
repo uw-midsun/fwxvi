@@ -1,17 +1,27 @@
-/**
- * @file lv_draw_mask.c
+/************************************************************************************************
+ * @file    lv_draw_mask.c
  *
- */
+ * @brief   Lv Draw Mask
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_draw_mask.h"
-#include "lv_draw_private.h"
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../core/lv_refr.h"
 #include "../misc/lv_math.h"
 #include "../misc/lv_types.h"
 #include "../stdlib/lv_string.h"
+#include "lv_draw_mask.h"
+#include "lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
 
 /*********************
  *      DEFINES

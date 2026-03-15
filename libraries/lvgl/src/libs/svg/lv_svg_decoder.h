@@ -1,6 +1,26 @@
-/**
- * @file lv_svg_decoder.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_svg_decoder.h
  *
+ * @brief   Lv Svg Decoder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_image_decoder.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_svg_decoder
+ * @brief    lv_svg_decoder Firmware
+ * @{
  */
 
 #ifndef LV_SVG_DECODER_H
@@ -13,11 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_SVG
-
-#include "../../draw/lv_image_decoder.h"
 
 /*********************
  *      DEFINES
@@ -49,3 +66,5 @@ void lv_svg_decoder_deinit(void);
 #endif
 
 #endif /*LV_SVG_DECODER_H*/
+
+/** @} */

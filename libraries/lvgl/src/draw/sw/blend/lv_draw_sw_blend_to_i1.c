@@ -1,27 +1,36 @@
-/**
- * @file lv_draw_sw_blend_to_i1.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend_to_i1.c
  *
- */
+ * @brief   Lv Draw Sw Blend To I1
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "helium/lv_blend_helium.h"
+    #include "neon/lv_blend_neon.h"
+#include "../../../core/lv_refr.h"
+#include "../../../display/lv_display.h"
+#include "../../../misc/lv_color.h"
+#include "../../../misc/lv_math.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_draw_sw_blend_private.h"
+#include "lv_draw_sw_blend_to_i1.h"
+
+/* Intra-component Headers */
+    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_blend_to_i1.h"
 #if LV_USE_DRAW_SW
 
-#include "lv_draw_sw_blend_private.h"
-#include "../../../misc/lv_math.h"
-#include "../../../display/lv_display.h"
-#include "../../../core/lv_refr.h"
-#include "../../../misc/lv_color.h"
-#include "../../../stdlib/lv_string.h"
-
 #if LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_NEON
-    #include "neon/lv_blend_neon.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_HELIUM
-    #include "helium/lv_blend_helium.h"
 #elif LV_USE_DRAW_SW_ASM == LV_DRAW_SW_ASM_CUSTOM
-    #include LV_DRAW_SW_ASM_CUSTOM_INCLUDE
 #endif
 
 /*********************
@@ -68,7 +77,6 @@ static inline void /* LV_ATTRIBUTE_FAST_MEM */ lv_color_8_8_mix(const uint8_t sr
 static inline void /* LV_ATTRIBUTE_FAST_MEM */ blend_non_normal_pixel(uint8_t * dest_buf, int32_t dest_x,
                                                                       lv_color32_t src,
                                                                       lv_blend_mode_t mode);
-
 
 static inline void /* LV_ATTRIBUTE_FAST_MEM */ set_bit(uint8_t * buf, int32_t bit_idx);
 
@@ -859,7 +867,6 @@ static void LV_ATTRIBUTE_FAST_MEM rgb888_image_blend(lv_draw_sw_blend_image_dsc_
 
     int32_t bit_ofs = dsc->relative_area.x1 % 8;
 
-
     if(dsc->blend_mode == LV_BLEND_MODE_NORMAL) {
         /*Special case*/
         if(mask_buf == NULL && opa >= LV_OPA_MAX) {
@@ -1098,7 +1105,6 @@ static void LV_ATTRIBUTE_FAST_MEM rgb565_swapped_image_blend(lv_draw_sw_blend_im
     int32_t dest_x;
     int32_t y;
     lv_color16_t px;
-
 
     if(dsc->blend_mode == LV_BLEND_MODE_NORMAL) {
         if(mask_buf == NULL && opa >= LV_OPA_MAX) {

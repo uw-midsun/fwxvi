@@ -1,6 +1,26 @@
-/**
- * @file lv_3dtexture.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_3dtexture.h
  *
+ * @brief   Lv 3Dtexture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_3dtexture
+ * @brief    lv_3dtexture Firmware
+ * @{
  */
 
 #ifndef LV_3DTEXTURE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_3DTEXTURE
-
-#include "../../core/lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -84,3 +101,5 @@ void lv_3dtexture_set_flip(lv_obj_t * obj, bool h_flip, bool v_flip);
 #endif
 
 #endif /*LV_3DTEXTURE_H*/
+
+/** @} */

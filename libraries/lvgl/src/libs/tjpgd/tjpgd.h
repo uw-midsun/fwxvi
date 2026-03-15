@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tjpgd.h
+ *
+ * @brief   Tjpgd
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tjpgdcnf.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tjpgd
+ * @brief    tjpgd Firmware
+ * @{
+ */
+
 /*----------------------------------------------------------------------------/
 / TJpgDec - Tiny JPEG Decompressor R0.03 include file         (C)ChaN, 2021
 /----------------------------------------------------------------------------*/
@@ -8,20 +35,13 @@
 extern "C" {
 #endif
 
-#include "../../lv_conf_internal.h"
-#include "tjpgdcnf.h"
-
 #if LV_USE_TJPGD
-
-#include <string.h>
-#include <stdint.h>
 
 #if JD_FASTDECODE >= 1
 typedef int16_t jd_yuv_t;
 #else
 typedef uint8_t jd_yuv_t;
 #endif
-
 
 /* Error code */
 typedef enum {
@@ -36,8 +56,6 @@ typedef enum {
     JDR_FMT3    /* 8: Not supported JPEG standard */
 } JRESULT;
 
-
-
 /* Rectangular region in the output image */
 typedef struct {
     uint16_t left;      /* Left end */
@@ -45,8 +63,6 @@ typedef struct {
     uint16_t top;       /* Top end */
     uint16_t bottom;    /* Bottom end */
 } JRECT;
-
-
 
 /* Decompressor object structure */
 typedef struct JDEC JDEC;
@@ -86,8 +102,6 @@ struct JDEC {
     void * device;              /* Pointer to I/O device identifier for the session */
 };
 
-
-
 /* TJpgDec API functions */
 JRESULT jd_prepare(JDEC * jd, size_t (*infunc)(JDEC *, uint8_t *, size_t), void * pool, size_t sz_pool, void * dev);
 
@@ -106,3 +120,5 @@ JRESULT jd_restart(JDEC * jd, uint16_t rstn);
 #endif
 
 #endif /* _TJPGDEC */
+
+/** @} */

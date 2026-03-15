@@ -1,18 +1,27 @@
-/**
- * @file lv_observer.c
+/************************************************************************************************
+ * @file    lv_observer.c
  *
- */
+ * @brief   Lv Observer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj_private.h"
+#include "../lvgl.h"
+#include "../misc/lv_event_private.h"
+#include "lv_observer_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_observer_private.h"
 #if LV_USE_OBSERVER
-
-#include "../lvgl.h"
-#include "../core/lv_obj_private.h"
-#include "../misc/lv_event_private.h"
 
 /*********************
  *      DEFINES
@@ -235,7 +244,6 @@ void lv_subject_set_max_value_float(lv_subject_t * subject, float max_value)
 
     subject->max_value.float_v = max_value;
 }
-
 
 #endif /*LV_USE_FLOAT*/
 
@@ -499,7 +507,6 @@ lv_observer_t * lv_subject_add_observer_with_target(lv_subject_t * subject, lv_o
     return observer;
 }
 
-
 void lv_observer_remove(lv_observer_t * observer)
 {
     LV_ASSERT_NULL(observer);
@@ -642,7 +649,6 @@ void lv_obj_set_subject_increment_event_max_value(lv_obj_t * obj, lv_subject_inc
         return;
     }
 
-
     dsc->max_value = max_value;
     if(dsc->subject->type == LV_SUBJECT_TYPE_INT) {
         if(dsc->subject->value.num > max_value) {
@@ -747,7 +753,6 @@ void lv_obj_add_subject_set_string_event(lv_obj_t * obj, lv_subject_t * subject,
     lv_obj_add_event_cb(obj, subject_set_string_free_user_data_event_cb, LV_EVENT_DELETE, user_data);
 }
 
-
 lv_observer_t * lv_obj_bind_flag_if_eq(lv_obj_t * obj, lv_subject_t * subject, lv_obj_flag_t flag, int32_t ref_value)
 {
     lv_observer_t * observable = bind_to_bitfield(subject, obj, obj_flag_observer_cb, flag, ref_value, false, FLAG_COND_EQ);
@@ -836,7 +841,6 @@ lv_observer_t * lv_obj_bind_state_if_le(lv_obj_t * obj, lv_subject_t * subject, 
     return observable;
 }
 
-
 lv_observer_t * lv_obj_bind_checked(lv_obj_t * obj, lv_subject_t * subject)
 {
     lv_observer_t * observable = bind_to_bitfield(subject, obj, obj_state_observer_cb, LV_STATE_CHECKED, 0, true,
@@ -846,7 +850,6 @@ lv_observer_t * lv_obj_bind_checked(lv_obj_t * obj, lv_subject_t * subject)
 
     return observable;
 }
-
 
 lv_obj_t * lv_observer_get_target_obj(lv_observer_t * observer)
 {
@@ -877,7 +880,6 @@ static void subject_set_int_cb(lv_event_t * e)
     subject_set_int_user_data_t * user_data = lv_event_get_user_data(e);
     lv_subject_set_int(user_data->subject, user_data->value);
 }
-
 
 #if LV_USE_FLOAT
 static void subject_set_float_cb(lv_event_t * e)
@@ -924,7 +926,6 @@ static void subject_increment_cb(lv_event_t * e)
         /*Use the smaller range*/
         float max_value = LV_MIN((float)user_data->max_value, user_data->subject->max_value.float_v);
         float min_value = LV_MAX((float)user_data->min_value, user_data->subject->min_value.float_v);
-
 
         float value = lv_subject_get_float(user_data->subject);
         value += (float)user_data->step;
@@ -1093,6 +1094,5 @@ static void subject_set_string_free_user_data_event_cb(lv_event_t * e)
     lv_free((void *)user_data->value);
     lv_free(user_data);
 }
-
 
 #endif /*LV_USE_OBSERVER*/

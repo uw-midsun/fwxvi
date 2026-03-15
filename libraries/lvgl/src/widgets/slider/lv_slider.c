@@ -1,28 +1,37 @@
-/**
- * @file lv_slider.c
+/************************************************************************************************
+ * @file    lv_slider.c
  *
- */
+ * @brief   Lv Slider
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_event_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../display/lv_display.h"
+#include "../../draw/lv_draw.h"
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_string.h"
+#include "../image/lv_image.h"
+#include "lv_slider_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_slider_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_event_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_SLIDER != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../core/lv_group.h"
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_private.h"
-#include "../../display/lv_display.h"
-#include "../../draw/lv_draw.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_math.h"
-#include "../image/lv_image.h"
-#include "../../core/lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -228,7 +237,6 @@ lv_observer_t * lv_slider_bind_value(lv_obj_t * obj, lv_subject_t * subject)
     return observer;
 }
 #endif /*LV_USE_OBSERVER*/
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -651,7 +659,6 @@ static void update_knob_pos(lv_obj_t * obj, bool check_drag)
     }
 }
 
-
 #if LV_USE_OBSERVER
 
 static void slider_value_changed_event_cb(lv_event_t * e)
@@ -685,6 +692,5 @@ static void slider_value_observer_cb(lv_observer_t * observer, lv_subject_t * su
 }
 
 #endif /*LV_USE_OBSERVER*/
-
 
 #endif

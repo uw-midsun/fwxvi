@@ -1,6 +1,26 @@
-/**
- * @file lv_group_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_group_private.h
  *
+ * @brief   Lv Group Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_ext_data.h"
+#include "lv_group.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_group_private
+ * @brief    lv_group_private Firmware
+ * @{
  */
 
 #ifndef LV_GROUP_PRIVATE_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_ext_data.h"
-#include "lv_group.h"
 
 /*********************
  *      DEFINES
@@ -50,7 +68,6 @@ struct _lv_group_t {
                                    of list.*/
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -76,3 +93,5 @@ void lv_group_deinit(void);
 #endif
 
 #endif /*LV_GROUP_PRIVATE_H*/
+
+/** @} */

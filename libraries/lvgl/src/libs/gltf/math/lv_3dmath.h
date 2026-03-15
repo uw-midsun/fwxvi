@@ -1,6 +1,25 @@
-/**
- * @file lv_3dmath.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_3dmath.h
  *
+ * @brief   Lv 3Dmath
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_3dmath
+ * @brief    lv_3dmath Firmware
+ * @{
  */
 
 #ifndef LV_3DMATH_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../../lv_conf_internal.h"
 
 #if LV_USE_GLTF
 
@@ -46,7 +63,6 @@ typedef struct {
 
 typedef lv_3dplane_t lv_3dray_t;
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -68,5 +84,6 @@ lv_3dplane_t lv_get_ground_plane(float elevation);
 } /*extern "C"*/
 #endif
 
-
 #endif /*LV_3DMATH_H*/
+
+/** @} */

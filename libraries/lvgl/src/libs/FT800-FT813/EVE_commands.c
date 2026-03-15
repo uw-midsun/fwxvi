@@ -1,5 +1,3 @@
-#include "../../lv_conf_internal.h"
-#if LV_USE_DRAW_EVE
 /*
 @file    EVE_commands.c
 @brief   contains FT8xx / BT8xx functions
@@ -11,7 +9,6 @@
 
 At least for Arm Cortex-M0 and Cortex-M4 I have fastest execution with -O2.
 The c-standard is C99.
-
 
 @section LICENSE
 
@@ -35,7 +32,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 @section History
 
@@ -158,7 +154,15 @@ without the traling _burst in the name when exceution speed is not an issue - e.
 
 */
 
+/* Standard library Headers */
+#include <avr/pgmspace.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
 #include "EVE_commands.h"
+
+/* Intra-component Headers */
 
 /* EVE Memory Commands - used with EVE_memWritexx and EVE_memReadxx */
 #define MEM_WRITE 0x80U /* EVE Host Memory Write */
@@ -166,7 +170,6 @@ without the traling _burst in the name when exceution speed is not an issue - e.
 
 /* define NULL if it not already is */
 #ifndef NULL
-#include <stdio.h>
 #endif
 
 static volatile uint8_t cmd_burst = 0U; /* flag to indicate cmd-burst is active */
@@ -1375,7 +1378,6 @@ uint8_t EVE_init_flash(void)
 
 #if EVE_GEN < 3
 #if defined (__AVR__)
-#include <avr/pgmspace.h>
 #else
 #define PROGMEM
 #endif
@@ -3787,7 +3789,6 @@ void EVE_color_a_burst(uint8_t alpha)
 {
     spi_transmit_burst(DL_COLOR_A | ((uint32_t) alpha));
 }
-
 
 /* ##################################################################
     special purpose functions

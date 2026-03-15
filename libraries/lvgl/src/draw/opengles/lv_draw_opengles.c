@@ -1,37 +1,46 @@
-/**
- * @file lv_draw_opengles.c
+/************************************************************************************************
+ * @file    lv_draw_opengles.c
  *
- */
+ * @brief   Lv Draw Opengles
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display_private.h"
+#include "../../draw/lv_draw_3d.h"
+#include "../../draw/lv_draw_arc.h"
+#include "../../draw/lv_draw_image.h"
+#include "../../draw/lv_draw_label.h"
+#include "../../draw/lv_draw_line.h"
+#include "../../draw/lv_draw_rect.h"
+#include "../../draw/lv_draw_triangle.h"
+#include "../../drivers/opengles/lv_opengles_debug.h"
+#include "../../drivers/opengles/lv_opengles_driver.h"
+#include "../../drivers/opengles/lv_opengles_private.h"
+#include "../../drivers/opengles/lv_opengles_texture.h"
+#include "../../misc/cache/lv_cache_entry_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "lv_draw_opengles.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_opengles.h"
 #if LV_USE_DRAW_OPENGLES
 
 #if LV_USE_DRAW_NANOVG
     #error "LV_USE_DRAW_NANOVG and LV_USE_DRAW_OPENGLES cannot be enabled at the same time. Disable one of them in lv_conf.h or Kconfig."
 #endif
-
-#include "../lv_draw_private.h"
-#include "../../misc/cache/lv_cache_entry_private.h"
-#include "../../drivers/opengles/lv_opengles_debug.h"
-#include "../../drivers/opengles/lv_opengles_texture.h"
-#include "../../drivers/opengles/lv_opengles_driver.h"
-#include "../../drivers/opengles/lv_opengles_private.h"
-#include "../../draw/lv_draw_label.h"
-#include "../../draw/lv_draw_rect.h"
-#include "../../draw/lv_draw_arc.h"
-#include "../../draw/lv_draw_image.h"
-#include "../../draw/lv_draw_triangle.h"
-#include "../../draw/lv_draw_line.h"
-#include "../../draw/lv_draw_3d.h"
-#include "../../core/lv_obj.h"
-#include "../../core/lv_refr_private.h"
-#include "../../display/lv_display_private.h"
-#include "../../stdlib/lv_string.h"
-#include "../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -411,7 +420,6 @@ static void blend_texture_layer(lv_draw_task_t * t)
 
     lv_layer_t * src_layer = (lv_layer_t *)draw_dsc->src;
     unsigned int src_texture = layer_get_texture(src_layer);
-
 
     lv_layer_t * dest_layer = t->target_layer;
     unsigned int target_texture = layer_get_texture(dest_layer);

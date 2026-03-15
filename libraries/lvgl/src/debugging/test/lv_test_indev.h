@@ -1,6 +1,27 @@
-/**
- * @file lv_test_indev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_test_indev.h
  *
+ * @brief   Lv Test Indev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_test_indev
+ * @brief    lv_test_indev Firmware
+ * @{
  */
 
 #ifndef LV_TEST_INDEV_H
@@ -13,11 +34,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST
-
-#include "../../misc/lv_types.h"
-#include "../../indev/lv_indev.h"
 
 /*********************
  *      DEFINES
@@ -117,7 +134,6 @@ void lv_test_key_release(void);
  */
 void lv_test_key_hit(uint32_t k);
 
-
 /**
  * Emulate encoder rotation, use positive parameter to rotate to the right
  * and negative to rotate to the left.
@@ -167,5 +183,4 @@ void lv_test_encoder_click(void);
 #endif /*LV_TEST_INDEV_H*/
 
 
-
-
+/** @} */

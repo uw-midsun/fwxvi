@@ -1,30 +1,36 @@
-
-/**
- * @file lv_wl_g2d_backend.c
+/************************************************************************************************
+ * @file    lv_wl_g2d_backend.c
  *
- */
+ * @brief   Lv Wl G2D Backend
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+#include <drm/drm_fourcc.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <unistd.h>
+#include <wayland_linux_dmabuf.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../draw/nxp/g2d/lv_g2d_utils.h"
+#include "../../misc/lv_types.h"
+#include "lv_wayland_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_wayland_private.h"
-
 #if LV_WAYLAND_USE_G2D
-
-#include "../../display/lv_display_private.h"
-#include <wayland_linux_dmabuf.h>
-#include <drm/drm_fourcc.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "../../misc/lv_types.h"
-#include <string.h>
-#include "../../draw/nxp/g2d/lv_g2d_utils.h"
-#include <stdio.h>
-#include <sys/mman.h>
-#include <unistd.h>
-#include <errno.h>
 
 /*********************
  *      DEFINES
@@ -70,7 +76,6 @@ static void wl_g2d_deinit(void * backend_ctx);
 static void wl_g2d_global_handler(void * backend_ctx, struct wl_registry * registry, uint32_t name,
                                   const char * interface, uint32_t version);
 
-
 static void * wl_g2d_init_display(void * backend_ctx, lv_display_t * display, int32_t width, int32_t height);
 static void * wl_g2d_resize_display(void * backend_ctx, lv_display_t * display);
 static void wl_g2d_deinit_display(void * backend_ctx, lv_display_t * display);
@@ -81,7 +86,6 @@ static lv_wl_g2d_display_data_t * wl_g2d_create_display_data(lv_wl_g2d_ctx_t * c
 static void wl_g2d_delete_display_data(lv_wl_g2d_display_data_t * ddata);
 
 static void flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * color_p);
-
 
 static void dmabuf_done(void * data, struct zwp_linux_dmabuf_feedback_v1 * zwp_linux_dmabuf_feedback);
 static void dmabuf_format_table(void * data, struct zwp_linux_dmabuf_feedback_v1 * zwp_linux_dmabuf_feedback,
@@ -175,7 +179,6 @@ static const struct wl_callback_listener frame_listener = {
  *   STATIC FUNCTIONS
  **********************/
 
-
 static void * wl_g2d_init(void)
 {
     lv_memset(&ctx, 0, sizeof(ctx));
@@ -192,7 +195,6 @@ static void wl_g2d_deinit(void * backend_ctx)
         zwp_linux_dmabuf_v1_destroy(ctx->handler);
     }
 }
-
 
 static void wl_g2d_global_handler(void * backend_ctx, struct wl_registry * registry, uint32_t name,
                                   const char * interface, uint32_t version)
@@ -372,7 +374,6 @@ static void frame_done(void * data, struct wl_callback * callback, uint32_t time
     lv_display_flush_ready(display);
 }
 
-
 static void buffer_release(void * data, struct wl_buffer * buffer)
 {
     LV_LOG_TRACE("Buffer released");
@@ -380,7 +381,6 @@ static void buffer_release(void * data, struct wl_buffer * buffer)
     lv_wl_buffer_t * buf = data;
     buf->busy = false;
 }
-
 
 static void create_succeeded(void * data, struct zwp_linux_buffer_params_v1 * params, struct wl_buffer * new_buffer)
 {

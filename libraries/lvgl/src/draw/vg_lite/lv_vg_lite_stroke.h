@@ -1,6 +1,25 @@
-/**
- * @file lv_vg_lite_stroke.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_stroke.h
  *
+ * @brief   Lv Vg Lite Stroke
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_stroke
+ * @brief    lv_vg_lite_stroke Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_STROKE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_vg_lite_utils.h"
 
 #if LV_USE_DRAW_VG_LITE && LV_USE_VECTOR_GRAPHIC
 
@@ -82,3 +99,5 @@ void lv_vg_lite_stroke_drop(struct _lv_draw_vg_lite_unit_t * unit, lv_cache_entr
 #endif
 
 #endif /*LV_VG_LITE_STROKE_H*/
+
+/** @} */

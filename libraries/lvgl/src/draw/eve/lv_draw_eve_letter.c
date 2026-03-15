@@ -1,7 +1,22 @@
-/**
- * @file lv_draw_eve_letter.c
+/************************************************************************************************
+ * @file    lv_draw_eve_letter.c
  *
- */
+ * @brief   Lv Draw Eve Letter
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_label_private.h"
+#include "../lv_draw_private.h"
+#include "../lv_draw_rect.h"
+#include "lv_draw_eve_private.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Author: juanj
  *
@@ -11,13 +26,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-
-#include "../lv_draw_private.h"
-#include "../lv_draw_label_private.h"
-#include "../lv_draw_rect.h"
-#include "lv_eve.h"
 
 /*********************
  *      DEFINES
@@ -227,7 +236,6 @@ static void font_bitmap_to_ramg(uint32_t addr, const uint8_t * src, uint32_t wid
 
     lv_free(row_buf);
 }
-
 
 #endif /*LV_USE_DRAW_EVE*/
 

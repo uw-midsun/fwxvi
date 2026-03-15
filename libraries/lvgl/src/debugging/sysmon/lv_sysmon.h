@@ -1,6 +1,26 @@
-/**
- * @file lv_sysmon.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sysmon.h
  *
+ * @brief   Lv Sysmon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_observer.h"
+#include "../../misc/lv_timer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_sysmon
+ * @brief    lv_sysmon Firmware
+ * @{
  */
 
 #ifndef LV_SYSMON_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../misc/lv_timer.h"
-#include "../../core/lv_observer.h"
 
 #if LV_USE_SYSMON
 
@@ -81,7 +98,6 @@ void lv_sysmon_performance_resume(lv_display_t * disp);
  */
 void lv_sysmon_performance_pause(lv_display_t * disp);
 
-
 #endif /*LV_USE_PERF_MONITOR*/
 
 #if LV_USE_MEM_MONITOR
@@ -111,3 +127,5 @@ void lv_sysmon_hide_memory(lv_display_t * disp);
 #endif
 
 #endif /*LV_SYSMON_H*/
+
+/** @} */

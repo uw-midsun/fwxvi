@@ -1,7 +1,20 @@
-/**
- * @file lv_draw_pxp_layer.c
+/************************************************************************************************
+ * @file    lv_draw_pxp_layer.c
  *
- */
+ * @brief   Lv Draw Pxp Layer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../../core/lv_global.h"
+#include "../../../stdlib/lv_string.h"
+#include "lv_draw_pxp.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2023-2024 NXP
@@ -13,14 +26,10 @@
  *      INCLUDES
  *********************/
 
-#include "lv_draw_pxp.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP
 
-#include "../../../stdlib/lv_string.h"
 #if LV_USE_PARALLEL_DRAW_DEBUG
-    #include "../../../core/lv_global.h"
 #endif
 
 /*********************

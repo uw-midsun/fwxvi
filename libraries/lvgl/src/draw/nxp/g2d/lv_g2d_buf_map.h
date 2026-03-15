@@ -1,7 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_g2d_buf_map.h
+ *
+ * @brief   Lv G2D Buf Map
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_array.h"
+
+/* Intra-component Headers */
 
 /**
- * @file lv_g2d_buf_map.h
- *
+ * @defgroup lv_g2d_buf_map
+ * @brief    lv_g2d_buf_map Firmware
+ * @{
  */
 
 /**
@@ -21,13 +41,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-
-#include "../../../misc/lv_array.h"
-#include <string.h>
 
 /*********************
  *      DEFINES
@@ -81,3 +96,5 @@ void g2d_print_table(void);
 #endif
 
 #endif /* LV_G2D_BUF_MAP_H */
+
+/** @} */

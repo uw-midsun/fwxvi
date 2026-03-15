@@ -1,5 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wayland.h
+ *
+ * @brief   Lv Wayland
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lv_wl_keyboard.h"
+#include "lv_wl_pointer.h"
+#include "lv_wl_pointer_axis.h"
+#include "lv_wl_touch.h"
+#include "lv_wl_window.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_wayland.h
+ * @defgroup lv_wayland
+ * @brief    lv_wayland Firmware
+ * @{
  */
 
 #ifndef LV_WAYLAND_H
@@ -13,15 +38,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_WAYLAND
-
-#include "lv_wl_keyboard.h"
-#include "lv_wl_pointer.h"
-#include "lv_wl_touch.h"
-#include "lv_wl_window.h"
-#include "lv_wl_pointer_axis.h"
 
 /*********************
  *      DEFINES
@@ -59,3 +76,5 @@ int lv_wayland_get_fd(void);
 #endif
 
 #endif /* LV_WAYLAND_H */
+
+/** @} */

@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgCanvas.h
+ *
+ * @brief   Tvgcanvas
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgPaint.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgCanvas
+ * @brief    tvgCanvas Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_CANVAS_H_
 #define _TVG_CANVAS_H_
-
-#include "tvgPaint.h"
 
 using std::list;
 
@@ -160,3 +182,5 @@ struct Canvas::Impl
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

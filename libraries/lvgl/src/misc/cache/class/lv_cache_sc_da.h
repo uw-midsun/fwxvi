@@ -1,7 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache_sc_da.h
+ *
+ * @brief   Lv Cache Sc Da
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_cache_private.h"
+
+/* Intra-component Headers */
+
 /**
-* @file lv_cache_sc_da.h
-*
-*/
+ * @defgroup lv_cache_sc_da
+ * @brief    lv_cache_sc_da Firmware
+ * @{
+ */
 
 #ifndef LV_CACHE_SC_DA_H
 #define LV_CACHE_SC_DA_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../lv_cache_private.h"
 
 /*********************
  *      DEFINES
@@ -42,3 +59,5 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_cache_class_t lv_cache_class_sc_da;
 #endif
 
 #endif /*LV_CACHE_SC_DA_H*/
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_tileview_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tileview_private.h
  *
+ * @brief   Lv Tileview Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_tileview.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tileview_private
+ * @brief    lv_tileview_private Firmware
+ * @{
  */
 
 #ifndef LV_TILEVIEW_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_tileview.h"
 
 #if LV_USE_TILEVIEW
 
@@ -40,7 +57,6 @@ struct _lv_tileview_tile_t {
     lv_dir_t dir;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -56,3 +72,5 @@ struct _lv_tileview_tile_t {
 #endif
 
 #endif /*LV_TILEVIEW_PRIVATE_H*/
+
+/** @} */

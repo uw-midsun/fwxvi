@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSvgCssStyle.h
+ *
+ * @brief   Tvgsvgcssstyle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgSvgLoaderCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSvgCssStyle
+ * @brief    tvgSvgCssStyle Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2022 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SVG_CSS_STYLE_H_
 #define _TVG_SVG_CSS_STYLE_H_
-
-#include "tvgSvgLoaderCommon.h"
 
 void cssCopyStyleAttr(SvgNode* to, const SvgNode* from);
 SvgNode* cssFindStyleNode(const SvgNode* style, const char* title, SvgNodeType type);
@@ -38,3 +60,5 @@ void cssApplyStyleToPostponeds(Array<SvgNodeIdPair>& postponeds, SvgNode* style)
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

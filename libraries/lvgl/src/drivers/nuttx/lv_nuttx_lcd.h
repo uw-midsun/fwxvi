@@ -1,6 +1,25 @@
-/**
- * @file lv_nuttx_lcd.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_lcd.h
  *
+ * @brief   Lv Nuttx Lcd
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nuttx_lcd
+ * @brief    lv_nuttx_lcd Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_LCD_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../display/lv_display.h"
 
 #if LV_USE_NUTTX
 
@@ -47,3 +64,5 @@ lv_display_t * lv_nuttx_lcd_create(const char * dev_path);
 #endif
 
 #endif /* LV_NUTTX_LCD_H */
+
+/** @} */

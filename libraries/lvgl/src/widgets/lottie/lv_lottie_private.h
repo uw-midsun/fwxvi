@@ -1,6 +1,29 @@
-/**
- * @file lv_lottie_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_lottie_private.h
  *
+ * @brief   Lv Lottie Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <thorvg_capi.h>
+
+/* Inter-component Headers */
+#include "../../libs/thorvg/thorvg_capi.h"
+#include "../../lv_conf_internal.h"
+#include "../canvas/lv_canvas_private.h"
+#include "lv_lottie.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_lottie_private
+ * @brief    lv_lottie_private Firmware
+ * @{
  */
 
 #ifndef LV_LOTTIE_PRIVATE_H
@@ -14,11 +37,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_LOTTIE
-
-#include "lv_lottie.h"
-#include "../canvas/lv_canvas_private.h"
 
 /*********************
  *      DEFINES
@@ -29,9 +48,7 @@ extern "C" {
  **********************/
 
 #if LV_USE_THORVG_EXTERNAL
-#include <thorvg_capi.h>
 #else
-#include "../../libs/thorvg/thorvg_capi.h"
 #endif
 
 typedef struct {
@@ -58,3 +75,5 @@ typedef struct {
 #endif
 
 #endif /*LV_LOTTIE_PRIVATE_H*/
+
+/** @} */

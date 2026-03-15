@@ -1,19 +1,27 @@
-/**
- * @file lv_vg_lite_stroke.c
+/************************************************************************************************
+ * @file    lv_vg_lite_stroke.c
  *
- */
+ * @brief   Lv Vg Lite Stroke
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_vector_private.h"
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_path.h"
+#include "lv_vg_lite_stroke.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_stroke.h"
-
 #if LV_USE_DRAW_VG_LITE && LV_USE_VECTOR_GRAPHIC
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_path.h"
-#include "../lv_draw_vector_private.h"
 
 /*********************
  *      DEFINES
@@ -22,7 +30,6 @@
 /**********************
  *      TYPEDEFS
  **********************/
-
 
 /**
  * Since the key-value data structure of lv_cache is integrated, the kv data structure

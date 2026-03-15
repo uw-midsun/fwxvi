@@ -1,6 +1,25 @@
-/**
- * @file lv_anim_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_anim_private.h
  *
+ * @brief   Lv Anim Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_anim.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_anim_private
+ * @brief    lv_anim_private Firmware
+ * @{
  */
 
 #ifndef LV_ANIM_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_anim.h"
 
 /*********************
  *      DEFINES
@@ -61,3 +78,5 @@ void lv_anim_enable_vsync_mode(bool enable);
 #endif
 
 #endif /*LV_ANIM_PRIVATE_H*/
+
+/** @} */

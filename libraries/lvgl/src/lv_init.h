@@ -1,6 +1,26 @@
-/**
- * @file lv_init.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_init.h
  *
+ * @brief   Lv Init
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_conf_internal.h"
+#include "misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_init
+ * @brief    lv_init Firmware
+ * @{
  */
 
 #ifndef LV_INIT_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_conf_internal.h"
-#include "misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -53,3 +71,5 @@ bool lv_is_initialized(void);
 #endif
 
 #endif /*LV_INIT_H*/
+
+/** @} */

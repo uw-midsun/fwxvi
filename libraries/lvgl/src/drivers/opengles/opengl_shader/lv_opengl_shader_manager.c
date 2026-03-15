@@ -1,27 +1,35 @@
-/**
- * @file lv_opengl_shader_manager.c
+/************************************************************************************************
+ * @file    lv_opengl_shader_manager.c
  *
- */
+ * @brief   Lv Opengl Shader Manager
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+#include <string.h>
 
-/*********************
- *      INCLUDES
- *********************/
-
+/* Inter-component Headers */
 #include "../../../lv_conf_internal.h"
-#if LV_USE_OPENGLES
-#include "lv_opengl_shader_internal.h"
 #include "../../../misc/lv_assert.h"
 #include "../../../misc/lv_log.h"
 #include "../../../misc/lv_rb.h"
 #include "../../../misc/lv_types.h"
 #include "../../../stdlib/lv_mem.h"
 #include "../../../stdlib/lv_sprintf.h"
-#include "../lv_opengles_private.h"
-#include "../lv_opengles_debug.h"
 #include "../../../stdlib/lv_string.h"
+#include "../lv_opengles_debug.h"
+#include "../lv_opengles_private.h"
+#include "lv_opengl_shader_internal.h"
 
-#include <string.h>
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_OPENGLES
 
 /*********************
  *      DEFINES

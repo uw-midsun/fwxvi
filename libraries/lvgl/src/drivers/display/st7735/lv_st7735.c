@@ -1,12 +1,22 @@
-/**
- * @file lv_st7735.c
+/************************************************************************************************
+ * @file    lv_st7735.c
  *
- */
+ * @brief   Lv St7735
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_st7735.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_st7735.h"
 
 #if LV_USE_ST7735
 

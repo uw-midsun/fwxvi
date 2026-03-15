@@ -1,6 +1,26 @@
-/**
- * @file lv_timer_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_timer_private.h
  *
+ * @brief   Lv Timer Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_ext_data.h"
+#include "lv_timer.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_timer_private
+ * @brief    lv_timer_private Firmware
+ * @{
  */
 
 #ifndef LV_TIMER_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_ext_data.h"
-#include "lv_timer.h"
 
 /*********************
  *      DEFINES
@@ -83,3 +100,5 @@ void lv_timer_core_deinit(void);
 #endif
 
 #endif /*LV_TIMER_PRIVATE_H*/
+
+/** @} */

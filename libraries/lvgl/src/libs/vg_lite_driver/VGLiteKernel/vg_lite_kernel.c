@@ -1,3 +1,30 @@
+/************************************************************************************************
+ * @file    vg_lite_kernel.c
+ *
+ * @brief   Vg Lite Kernel
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+        #include <linux/jiffies.h>
+        #include <sys/time.h>
+    #include <linux/kernel.h>
+    #include <linux/pm.h>
+    #include <linux/sched.h>
+    #include <linux/suspend.h>
+    #include <linux/uaccess.h>
+    #include <linux/version.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../lv_vg_lite_hal/vg_lite_platform.h"
+#include "vg_lite_hal.h"
+#include "vg_lite_hw.h"
+#include "vg_lite_kernel.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    The MIT License (MIT)
@@ -52,32 +79,19 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
-#include "../lv_vg_lite_hal/vg_lite_platform.h"
-#include "vg_lite_kernel.h"
-#include "vg_lite_hal.h"
-#include "vg_lite_hw.h"
 #if defined(__linux__) && !defined(EMULATOR)
-    #include <linux/sched.h>
     /*#include <asm/uaccess.h>*/
-    #include <linux/uaccess.h>
-    #include <linux/version.h>
-    #include <linux/kernel.h>
-    #include <linux/pm.h>
-    #include <linux/suspend.h>
 #endif
 
 #if gcdVG_RECORD_HARDWARE_RUNNING_TIME
 
     #ifdef __linux__
-        #include <linux/jiffies.h>
         unsigned long start_time, end_time;
         unsigned long period_time, total_time = 0;
 
     #else
-        #include <sys/time.h>
         struct timeval start_time, end_time;
         unsigned long period_time, total_time = 0;
     #endif

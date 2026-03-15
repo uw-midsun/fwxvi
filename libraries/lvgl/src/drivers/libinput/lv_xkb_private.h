@@ -1,6 +1,25 @@
-/**
- * @file lv_xkb_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_xkb_private.h
  *
+ * @brief   Lv Xkb Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_xkb.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_xkb_private
+ * @brief    lv_xkb_private Firmware
+ * @{
  */
 
 #ifndef LV_XKB_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_xkb.h"
 
 #if defined(LV_LIBINPUT_XKB) && LV_LIBINPUT_XKB
 
@@ -35,7 +52,6 @@ struct _lv_xkb_t {
     struct xkb_state * state;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -51,3 +67,5 @@ struct _lv_xkb_t {
 #endif
 
 #endif /*LV_XKB_PRIVATE_H*/
+
+/** @} */

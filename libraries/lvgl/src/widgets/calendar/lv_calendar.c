@@ -1,18 +1,27 @@
-/**
- * @file lv_calendar.c
+/************************************************************************************************
+ * @file    lv_calendar.c
  *
- */
+ * @brief   Lv Calendar
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../misc/lv_assert.h"
+#include "lv_calendar_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_calendar_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_CALENDAR
-
-#include "../../misc/lv_assert.h"
 
 /*********************
  *      DEFINES

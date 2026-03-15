@@ -1,5 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_timer.h
+ *
+ * @brief   Lv Timer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../tick/lv_tick.h"
+#include "lv_ll.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_timer.h
+ * @defgroup lv_timer
+ * @brief    lv_timer Firmware
+ * @{
  */
 
 #ifndef LV_TIMER_H
@@ -12,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../tick/lv_tick.h"
-#include "lv_types.h"
-#include "lv_ll.h"
 
 /*********************
  *      DEFINES
@@ -221,3 +240,5 @@ void lv_timer_set_external_data(lv_timer_t * timer, void * data, void (* free_cb
 #endif
 
 #endif
+
+/** @} */

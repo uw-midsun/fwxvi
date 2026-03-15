@@ -1,16 +1,26 @@
-/**
- * @file lv_group.c
+/************************************************************************************************
+ * @file    lv_group.c
  *
- */
+ * @brief   Lv Group
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../core/lv_obj_private.h"
+#include "../indev/lv_indev.h"
+#include "../misc/lv_types.h"
+#include "lv_group_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_group_private.h"
-#include "../core/lv_obj_private.h"
-#include "../core/lv_global.h"
-#include "../indev/lv_indev.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_cache_entry.h
+ *
+ * @brief   Lv Cache Entry
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_types.h"
+
+/* Intra-component Headers */
+
 /**
-* @file lv_cache_entry.h
-*
+ * @defgroup lv_cache_entry
+ * @brief    lv_cache_entry Firmware
+ * @{
  */
 
 #ifndef LV_CACHE_ENTRY_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_types.h"
 
 /*********************
  *      DEFINES
@@ -111,3 +129,5 @@ void lv_cache_entry_delete(lv_cache_entry_t * entry);
 #endif
 
 #endif /*LV_CACHE_ENTRY_H*/
+
+/** @} */

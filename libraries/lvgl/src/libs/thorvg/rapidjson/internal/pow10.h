@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    pow10.h
+ *
+ * @brief   Pow10
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup pow10
+ * @brief    pow10 Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_POW10_
 #define RAPIDJSON_POW10_
-
-#include "../rapidjson.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
@@ -53,3 +75,5 @@ inline double Pow10(int n) {
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_POW10_
+
+/** @} */

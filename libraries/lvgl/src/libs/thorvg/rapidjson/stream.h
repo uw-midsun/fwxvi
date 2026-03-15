@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stream.h
+ *
+ * @brief   Stream
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "encodings.h"
+#include "rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup stream
+ * @brief    stream Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -12,12 +37,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-#include "rapidjson.h"
-
 #ifndef RAPIDJSON_STREAM_H_
 #define RAPIDJSON_STREAM_H_
-
-#include "encodings.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -221,3 +242,5 @@ typedef GenericInsituStringStream<UTF8<> > InsituStringStream;
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_STREAM_H_
+
+/** @} */

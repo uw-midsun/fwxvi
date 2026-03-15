@@ -1,20 +1,29 @@
-/**
- * @file lv_anim.c
+/************************************************************************************************
+ * @file    lv_anim.c
  *
- */
+ * @brief   Lv Anim
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "../tick/lv_tick.h"
+#include "lv_anim_private.h"
+#include "lv_assert.h"
+#include "lv_math.h"
+#include "lv_timer.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_anim_private.h"
-
-#include "../core/lv_global.h"
-#include "../tick/lv_tick.h"
-#include "lv_assert.h"
-#include "lv_timer.h"
-#include "lv_math.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

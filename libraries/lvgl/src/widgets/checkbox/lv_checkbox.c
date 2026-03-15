@@ -1,22 +1,31 @@
-/**
- * @file lv_checkbox.c
+/************************************************************************************************
+ * @file    lv_checkbox.c
  *
- */
+ * @brief   Lv Checkbox
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../draw/lv_draw.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_text_ap.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_checkbox_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_checkbox_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_CHECKBOX != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_text_private.h"
-#include "../../misc/lv_text_ap.h"
-#include "../../core/lv_group.h"
-#include "../../draw/lv_draw.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

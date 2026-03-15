@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_debug.h
+ *
+ * @brief   Vg Lite Debug
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_kernel.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_debug
+ * @brief    vg_lite_debug Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -28,10 +53,7 @@
 #ifndef VG_LITE_DEBUG_H
 #define VG_LITE_DEBUG_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "vg_lite_kernel.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,3 +97,5 @@ extern "C" {
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_DEBUG_H */
+
+/** @} */

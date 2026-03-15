@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    ftmodule.h
+ *
+ * @brief   Ftmodule
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup ftmodule
+ * @brief    ftmodule Firmware
+ * @{
+ */
+
 /*
  * This file registers the FreeType modules compiled into the library.
  *
@@ -31,3 +54,5 @@ FT_USE_MODULE(FT_Renderer_Class, ft_smooth_renderer_class)
 /* FT_USE_MODULE( FT_Renderer_Class, ft_svg_renderer_class ) */
 
 /* EOF */
+
+/** @} */

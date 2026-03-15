@@ -1,6 +1,26 @@
-/**
- * @file lv_button.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_button.h
  *
+ * @brief   Lv Button
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_button
+ * @brief    lv_button Firmware
+ * @{
  */
 
 #ifndef LV_BUTTON_H
@@ -13,10 +33,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_BUTTON != 0
-#include "../../core/lv_obj.h"
 
 /*********************
  *      DEFINES
@@ -46,3 +64,5 @@ lv_obj_t * lv_button_create(lv_obj_t * parent);
 #endif
 
 #endif /*LV_BUTTON_H*/
+
+/** @} */

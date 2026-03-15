@@ -1,13 +1,23 @@
-/**
- * @file lv_3dmath.c
+/************************************************************************************************
+ * @file    lv_3dmath.c
  *
- */
+ * @brief   Lv 3Dmath
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_3dmath.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_3dmath.h"
 #if LV_USE_GLTF
 
 /*********************
@@ -41,7 +51,6 @@ lv_3dplane_t lv_get_ground_plane(float elevation)
         .direction = {0.f, 1.f, 0.f}
     };
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

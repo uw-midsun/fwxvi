@@ -1,12 +1,22 @@
-/**
- * @file lv_nv3007.c
+/************************************************************************************************
+ * @file    lv_nv3007.c
  *
- */
+ * @brief   Lv Nv3007
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_nv3007.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_nv3007.h"
 
 #if LV_USE_NV3007
 

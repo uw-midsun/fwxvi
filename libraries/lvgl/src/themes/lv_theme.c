@@ -1,16 +1,26 @@
-/**
- * @file lv_theme.c
+/************************************************************************************************
+ * @file    lv_theme.c
  *
- */
+ * @brief   Lv Theme
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "../core/lv_obj_class_private.h"
+#include "../core/lv_obj_private.h"
+#include "../core/lv_obj_style_private.h"
+#include "lv_theme_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_theme_private.h"
-#include "../core/lv_obj_private.h"
-#include "../core/lv_obj_style_private.h"
-#include "../core/lv_obj_class_private.h"
-#include "../../lvgl.h"
 
 /*********************
  *      DEFINES

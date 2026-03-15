@@ -1,7 +1,24 @@
-/**
- * @file lv_draw_eve_triangle.c
+/************************************************************************************************
+ * @file    lv_draw_eve_triangle.c
  *
- */
+ * @brief   Lv Draw Eve Triangle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_draw_eve_private.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 10 ene 2024
  *      Author: juanj
@@ -12,15 +29,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-
-#include "../../misc/lv_math.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../misc/lv_area_private.h"
-#include "../../misc/lv_color.h"
-#include "../../stdlib/lv_string.h"
-#include "lv_eve.h"
 
 /*********************
  *      DEFINES
@@ -123,5 +132,4 @@ void lv_draw_eve_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t * dsc
  **********************/
 
 #endif /*LV_USE_DRAW_EVE*/
-
 

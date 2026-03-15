@@ -1,20 +1,30 @@
-/**
- * @file lv_obj_tree.c
+/************************************************************************************************
+ * @file    lv_obj_tree.c
  *
- */
+ * @brief   Lv Obj Tree
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../indev/lv_indev.h"
+#include "../indev/lv_indev_private.h"
+#include "../misc/lv_anim_private.h"
+#include "../misc/lv_async.h"
+#include "lv_obj_class_private.h"
+#include "lv_obj_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj_private.h"
-#include "lv_obj_class_private.h"
-#include "../indev/lv_indev.h"
-#include "../indev/lv_indev_private.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "../misc/lv_anim_private.h"
-#include "../misc/lv_async.h"
-#include "../core/lv_global.h"
 
 /*********************
  *      DEFINES

@@ -1,17 +1,24 @@
-/**
- * @file lv_iter.c
+/************************************************************************************************
+ * @file    lv_iter.c
  *
- */
+ * @brief   Lv Iter
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_assert.h"
+#include "lv_circle_buf.h"
+#include "lv_iter.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_assert.h"
-
-#include "lv_iter.h"
-
-#include "lv_circle_buf.h"
 
 /*********************
  *      DEFINES

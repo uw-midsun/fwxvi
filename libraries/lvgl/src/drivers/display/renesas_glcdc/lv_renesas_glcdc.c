@@ -1,7 +1,26 @@
-/**
- * @file lv_renesas_glcdc.c
+/************************************************************************************************
+ * @file    lv_renesas_glcdc.c
  *
- */
+ * @brief   Lv Renesas Glcdc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+
+/* Inter-component Headers */
+    #include "LVGL_thread.h"
+    #include "hal_data.h"
+    #include "platform.h"
+    #include "r_glcdc_rx_if.h"
+    #include "r_glcdc_rx_pinset.h"
+#include "../../../display/lv_display_private.h"
+#include "../../../draw/sw/lv_draw_sw.h"
+#include "lv_renesas_glcdc.h"
+
+/* Intra-component Headers */
 
 /*********************
  *PLATFORM ABSTRACTION
@@ -22,22 +41,12 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_renesas_glcdc.h"
 
 #if LV_USE_RENESAS_GLCDC
 
 #ifdef _RENESAS_RA_
-    #include "LVGL_thread.h"
 #else /* RX */
-    #include "hal_data.h"
-    #include "platform.h"
-    #include "r_glcdc_rx_if.h"
-    #include "r_glcdc_rx_pinset.h"
 #endif /*_RENESAS_RA_*/
-
-#include <stdbool.h>
-#include "../../../display/lv_display_private.h"
-#include "../../../draw/sw/lv_draw_sw.h"
 
 /*********************
  *      DEFINES

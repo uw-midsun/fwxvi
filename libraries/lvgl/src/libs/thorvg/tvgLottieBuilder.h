@@ -1,3 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieBuilder.h
+ *
+ * @brief   Tvglottiebuilder
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgCommon.h"
+#include "tvgInlist.h"
+#include "tvgLottieExpressions.h"
+#include "tvgLottieModifier.h"
+#include "tvgPaint.h"
+#include "tvgShape.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieBuilder
+ * @brief    tvgLottieBuilder Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2023 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,18 +50,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_BUILDER_H_
 #define _TVG_LOTTIE_BUILDER_H_
-
-#include "tvgCommon.h"
-#include "tvgInlist.h"
-#include "tvgPaint.h"
-#include "tvgShape.h"
-#include "tvgLottieExpressions.h"
-#include "tvgLottieModifier.h"
 
 struct LottieComposition;
 
@@ -138,3 +160,5 @@ private:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

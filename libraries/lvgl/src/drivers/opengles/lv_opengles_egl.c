@@ -1,30 +1,37 @@
-/**
- * @file lv_opengles_egl.c
+/************************************************************************************************
+ * @file    lv_opengles_egl.c
  *
- */
+ * @brief   Lv Opengles Egl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/*********************
- *      INCLUDES
- *********************/
-#include "lv_opengles_egl.h"
-#include <stdint.h>
-
-#if LV_USE_EGL
-
+/* Standard library Headers */
 #include <dlfcn.h>
-
+#include <stdint.h>
 #include <string.h>
-#include "lv_opengles_debug.h"
 
-#include "glad/include/glad/egl.h"
+/* Inter-component Headers */
 #include "../../misc/lv_assert.h"
 #include "../../misc/lv_log.h"
 #include "../../misc/lv_types.h"
 #include "../../misc/lv_types.h"
 #include "../../stdlib/lv_mem.h"
-#include "lv_opengles_private.h"
-#include "lv_opengles_egl_private.h"
+#include "glad/include/glad/egl.h"
+#include "lv_opengles_debug.h"
 #include "lv_opengles_driver.h"
+#include "lv_opengles_egl.h"
+#include "lv_opengles_egl_private.h"
+#include "lv_opengles_private.h"
+
+/* Intra-component Headers */
+
+/*********************
+ *      INCLUDES
+ *********************/
+
+#if LV_USE_EGL
 
 /*********************
 *      DEFINES
@@ -133,7 +140,6 @@ void lv_opengles_egl_update(lv_opengles_egl_t * ctx)
     eglSwapBuffers(ctx->egl_display, ctx->egl_surface);
     ctx->interface.flip_cb(ctx->interface.driver_data, ctx->vsync);
 }
-
 
 /**********************
 *   STATIC FUNCTIONS

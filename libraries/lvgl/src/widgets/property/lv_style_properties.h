@@ -1,14 +1,31 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_style_properties.h
+ *
+ * @brief   Lv Style Properties
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_property.h"
+
+/* Intra-component Headers */
 
 /**
- * GENERATED FILE, DO NOT EDIT IT!
- * @file lv_style_properties.h
+ * @defgroup lv_style_properties
+ * @brief    lv_style_properties Firmware
+ * @{
  */
+
 #ifndef LV_STYLE_PROPERTIES_H
 #define LV_STYLE_PROPERTIES_H
 
-#include "../../core/lv_obj_property.h"
 #if LV_USE_OBJ_PROPERTY
-
 
 /* *INDENT-OFF* */
 enum _lv_property_style_id_t {
@@ -146,3 +163,5 @@ enum _lv_property_style_id_t {
 
 #endif
 #endif
+
+/** @} */

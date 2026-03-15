@@ -1,31 +1,41 @@
-/**
- * @file lv_label.c
+/************************************************************************************************
+ * @file    lv_label.c
  *
- */
+ * @brief   Lv Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../display/lv_display.h"
+#include "../../draw/lv_draw_label_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../misc/lv_anim_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_bidi_private.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_text_ap.h"
+#include "../../misc/lv_text_private.h"
+#include "../../others/translation/lv_translation.h"
+#include "../../stdlib/lv_sprintf.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_label_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_label_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../misc/lv_anim_private.h"
-#include "../../draw/lv_draw_label_private.h"
-#include "../../core/lv_obj_class_private.h"
 #if LV_USE_LABEL != 0
-#include "../../core/lv_obj_private.h"
-#include "../../misc/lv_assert.h"
-#include "../../core/lv_group.h"
-#include "../../display/lv_display.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../misc/lv_color.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_bidi_private.h"
-#include "../../misc/lv_text_ap.h"
-#include "../../misc/lv_text_private.h"
-#include "../../stdlib/lv_sprintf.h"
-#include "../../stdlib/lv_string.h"
-#include "../../core/lv_observer_private.h"
-#include "../../others/translation/lv_translation.h"
 
 /*********************
  *      DEFINES
@@ -318,7 +328,6 @@ void lv_label_get_letter_pos(const lv_obj_t * obj, uint32_t char_id, lv_point_t 
         }
         return;
     }
-
 
     const uint32_t byte_id = lv_text_encoded_get_byte_id(txt, char_id);
     /*Search the line of the index letter*/
@@ -685,7 +694,6 @@ lv_observer_t * lv_label_bind_text(lv_obj_t * obj, lv_subject_t * subject, const
 }
 #endif /*LV_USE_OBSERVER*/
 
-
 void lv_label_ins_text(lv_obj_t * obj, uint32_t pos, const char * txt)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -727,8 +735,6 @@ void lv_label_cut_text(lv_obj_t * obj, uint32_t pos, uint32_t cnt)
     /*Refresh the label*/
     lv_label_mark_need_refr_text(obj);
 }
-
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -899,7 +905,6 @@ static void draw_main(lv_event_t * e)
     label_draw_dsc.outline_stroke_color = lv_obj_get_style_text_outline_stroke_color(obj, LV_PART_MAIN);
     label_draw_dsc.outline_stroke_opa = lv_obj_get_style_text_outline_stroke_opa(obj, LV_PART_MAIN);
     label_draw_dsc.outline_stroke_width = lv_obj_get_style_text_outline_stroke_width(obj, LV_PART_MAIN);
-
 
     /* In SCROLL and SCROLL_CIRCULAR mode the CENTER and RIGHT are pointless, so remove them.
      * (In addition, they will create misalignment in this situation)*/

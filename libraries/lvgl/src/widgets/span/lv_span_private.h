@@ -1,6 +1,26 @@
-/**
- * @file lv_span_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_span_private.h
  *
+ * @brief   Lv Span Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_span.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_span_private
+ * @brief    lv_span_private Firmware
+ * @{
  */
 
 #ifndef LV_SPAN_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_span.h"
 
 #if LV_USE_SPAN != 0
 
@@ -48,7 +65,6 @@ struct _lv_spangroup_t {
     uint32_t refresh : 1;   /**<  the spangroup need refresh cache_w and cache_h */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -64,3 +80,5 @@ struct _lv_spangroup_t {
 #endif
 
 #endif /*LV_SPAN_PRIVATE_H*/
+
+/** @} */

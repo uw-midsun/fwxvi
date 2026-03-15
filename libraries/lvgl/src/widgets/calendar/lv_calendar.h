@@ -1,6 +1,28 @@
-/**
- * @file lv_calendar.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_calendar.h
  *
+ * @brief   Lv Calendar
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../buttonmatrix/lv_buttonmatrix.h"
+#include "lv_calendar_chinese.h"
+#include "lv_calendar_header_arrow.h"
+#include "lv_calendar_header_dropdown.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_calendar
+ * @brief    lv_calendar Firmware
+ * @{
  */
 
 #ifndef LV_CALENDAR_H
@@ -13,7 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../buttonmatrix/lv_buttonmatrix.h"
 
 #if LV_USE_CALENDAR
 
@@ -182,10 +203,6 @@ lv_result_t lv_calendar_get_pressed_date(const lv_obj_t * calendar, lv_calendar_
  *      MACROS
  **********************/
 
-#include "lv_calendar_header_arrow.h"
-#include "lv_calendar_header_dropdown.h"
-#include "lv_calendar_chinese.h"
-
 #endif  /*LV_USE_CALENDAR*/
 
 #ifdef __cplusplus
@@ -193,3 +210,5 @@ lv_result_t lv_calendar_get_pressed_date(const lv_obj_t * calendar, lv_calendar_
 #endif
 
 #endif /*LV_CALENDAR_H*/
+
+/** @} */

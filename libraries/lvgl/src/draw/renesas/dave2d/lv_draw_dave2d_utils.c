@@ -1,12 +1,22 @@
-/**
- * @file lv_draw_dave2d_utils.c
+/************************************************************************************************
+ * @file    lv_draw_dave2d_utils.c
  *
- */
+ * @brief   Lv Draw Dave2D Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_dave2d.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_dave2d.h"
 
 #if LV_USE_DRAW_DAVE2D
 

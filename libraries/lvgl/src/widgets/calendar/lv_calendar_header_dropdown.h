@@ -1,6 +1,25 @@
-/**
- * @file lv_calendar_header_dropdown.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_calendar_header_dropdown.h
  *
+ * @brief   Lv Calendar Header Dropdown
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_calendar_header_dropdown
+ * @brief    lv_calendar_header_dropdown Firmware
+ * @{
  */
 
 #ifndef LV_CALENDAR_HEADER_DROPDOWN_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../core/lv_obj.h"
 #if LV_USE_CALENDAR && LV_USE_CALENDAR_HEADER_DROPDOWN
 
 #if LV_USE_DROPDOWN == 0
@@ -60,3 +78,5 @@ void lv_calendar_header_dropdown_set_year_list(lv_obj_t * parent, const char * y
 #endif
 
 #endif /*LV_CALENDAR_HEADER_DROPDOWN_H*/
+
+/** @} */

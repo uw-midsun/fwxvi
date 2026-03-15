@@ -1,6 +1,26 @@
-/**
- * @file lv_nuttx_image_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nuttx_image_cache.h
  *
+ * @brief   Lv Nuttx Image Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+#include LV_STDBOOL_INCLUDE
+
+/**
+ * @defgroup lv_nuttx_image_cache
+ * @brief    lv_nuttx_image_cache Firmware
+ * @{
  */
 
 #ifndef LV_NUTTX_IMAGE_CACHE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../lv_conf_internal.h"
-#include LV_STDBOOL_INCLUDE
 
 /*********************
  *      DEFINES
@@ -42,3 +59,5 @@ void lv_nuttx_image_cache_deinit(void);
 #endif
 
 #endif /*LV_NUTTX_IMAGE_CACHE_H*/
+
+/** @} */

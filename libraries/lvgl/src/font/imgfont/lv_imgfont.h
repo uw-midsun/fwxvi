@@ -1,6 +1,26 @@
-/**
- * @file lv_imgfont.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_imgfont.h
  *
+ * @brief   Lv Imgfont
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../font/lv_font.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_imgfont
+ * @brief    lv_imgfont Firmware
+ * @{
  */
 
 #ifndef LV_IMGFONT_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../font/lv_font.h"
 
 #if LV_USE_IMGFONT
 
@@ -61,3 +79,5 @@ void lv_imgfont_destroy(lv_font_t * font);
 #endif
 
 #endif /* LV_IMGFONT_H */
+
+/** @} */

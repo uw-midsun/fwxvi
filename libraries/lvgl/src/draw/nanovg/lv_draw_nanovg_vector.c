@@ -1,22 +1,30 @@
-/**
- * @file lv_draw_nanovg_vector.c
+/************************************************************************************************
+ * @file    lv_draw_nanovg_vector.c
  *
- */
+ * @brief   Lv Draw Nanovg Vector
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../lv_draw_vector_private.h"
+#include "../lv_image_decoder_private.h"
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_image_cache.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_nanovg_private.h"
-
 #if LV_USE_DRAW_NANOVG && LV_USE_VECTOR_GRAPHIC
-
-#include "lv_nanovg_utils.h"
-#include "lv_nanovg_image_cache.h"
-#include "../lv_draw_vector_private.h"
-#include "../lv_image_decoder_private.h"
-#include <float.h>
-#include <math.h>
 
 /*********************
 *      DEFINES

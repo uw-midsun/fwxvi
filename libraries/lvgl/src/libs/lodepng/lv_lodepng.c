@@ -1,19 +1,28 @@
-/**
- * @file lv_lodepng.c
+/************************************************************************************************
+ * @file    lv_lodepng.c
  *
- */
+ * @brief   Lv Lodepng
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lodepng.h"
+#include "lv_lodepng.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
-#include "../../core/lv_global.h"
 #if LV_USE_LODEPNG
-
-#include "lv_lodepng.h"
-#include "lodepng.h"
-#include <stdlib.h>
 
 /*********************
  *      DEFINES

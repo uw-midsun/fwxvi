@@ -1,3 +1,21 @@
+/************************************************************************************************
+ * @file    vg_lite_matrix.c
+ *
+ * @brief   Vg Lite Matrix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <math.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_context.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,13 +43,7 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include <math.h>
-#include <string.h>
-#include "vg_lite_context.h"
-
 
 vg_lite_error_t vg_lite_identity(vg_lite_matrix_t * matrix)
 {

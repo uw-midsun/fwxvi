@@ -1,18 +1,27 @@
-/**
- * @file lv_gltf_model_loader.c
+/************************************************************************************************
+ * @file    lv_gltf_model_loader.c
  *
- */
+ * @brief   Lv Gltf Model Loader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../misc/lv_rb.h"
+#include "../../../stdlib/lv_sprintf.h"
+#include "lv_gltf_data_internal.h"
+#include "lv_gltf_model_loader.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_gltf_model_loader.h"
 #if LV_USE_GLTF
-
-#include "lv_gltf_data_internal.h"
-#include "../../../misc/lv_rb.h"
-#include "../../../stdlib/lv_sprintf.h"
 
 /*********************
  *      DEFINES
@@ -83,7 +92,6 @@ void lv_gltf_model_loader_store_texture(lv_gltf_model_loader_t * loader, uint32_
     lv_memcpy(node->data, &key, sizeof(key));
 }
 
-
 uint32_t lv_gltf_model_loader_get_texture(lv_gltf_model_loader_t * loader, uint32_t texture_hash)
 {
     lv_opengl_texture_t key = { .hash = texture_hash };
@@ -99,6 +107,5 @@ uint32_t lv_gltf_model_loader_get_texture(lv_gltf_model_loader_t * loader, uint3
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 #endif /*LV_USE_GLTF*/

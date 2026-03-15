@@ -1,6 +1,37 @@
-/**
- * @file lv_draw_nanovg_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_nanovg_private.h
  *
+ * @brief   Lv Draw Nanovg Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../draw/lv_draw_3d.h"
+#include "../../draw/lv_draw_arc.h"
+#include "../../draw/lv_draw_image.h"
+#include "../../draw/lv_draw_label.h"
+#include "../../draw/lv_draw_line.h"
+#include "../../draw/lv_draw_rect.h"
+#include "../../draw/lv_draw_triangle.h"
+#include "../../draw/lv_draw_vector.h"
+#include "../../libs/nanovg/nanovg.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area_private.h"
+#include "../lv_draw.h"
+#include "../lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_nanovg_private
+ * @brief    lv_draw_nanovg_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_NANOVG_PRIVATE_H
@@ -14,20 +45,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_NANOVG
-#include "../lv_draw.h"
-#include "../lv_draw_private.h"
-#include "../../draw/lv_draw_vector.h"
-#include "../../draw/lv_draw_arc.h"
-#include "../../draw/lv_draw_rect.h"
-#include "../../draw/lv_draw_3d.h"
-#include "../../draw/lv_draw_image.h"
-#include "../../draw/lv_draw_label.h"
-#include "../../draw/lv_draw_line.h"
-#include "../../draw/lv_draw_triangle.h"
-#include "../../misc/lv_area_private.h"
 
 #if !LV_USE_NANOVG
 #error "Require LV_USE_NANOVG = 1"
@@ -36,8 +54,6 @@ extern "C" {
 #if !LV_USE_MATRIX
 #error "Require LV_USE_MATRIX = 1"
 #endif
-
-#include "../../libs/nanovg/nanovg.h"
 
 /*********************
  *      DEFINES
@@ -258,3 +274,5 @@ void lv_nanovg_draw_grad_helper(
 #endif /*LV_USE_DRAW_NANOVG*/
 
 #endif /*LV_DRAW_NANOVG_PRIVATE_H*/
+
+/** @} */

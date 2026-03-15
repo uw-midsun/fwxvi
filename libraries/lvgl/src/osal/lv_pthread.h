@@ -1,6 +1,28 @@
-/**
- * @file lv_pthread.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_pthread.h
  *
+ * @brief   Lv Pthread
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdbool.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_pthread
+ * @brief    lv_pthread Firmware
+ * @{
  */
 
 #ifndef LV_PTHREAD_H
@@ -14,11 +36,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 #if LV_USE_OS == LV_OS_PTHREAD
-
-#include <unistd.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdbool.h>
 
 /*********************
  *      DEFINES
@@ -56,3 +73,5 @@ typedef struct {
 #endif
 
 #endif /*LV_PTHREAD_H*/
+
+/** @} */

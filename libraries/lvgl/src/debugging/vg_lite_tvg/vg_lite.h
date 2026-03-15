@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite.h
+ *
+ * @brief   Vg Lite
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite
+ * @brief    vg_lite Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -42,10 +67,6 @@ extern "C" {
 #define inline __inline
 #endif
 */
-
-#include <stddef.h>
-#include <stdint.h>
-
 
 /*  VGLite API Constants *******************************************************************************************************************/
 
@@ -105,7 +126,6 @@ extern "C" {
 #define VLC_MAX_GRADIENT_STOPS      16              /*! The max number of gradient stops. */
 #define VLC_GRADIENT_BUFFER_WIDTH   1024            /*! The internal gradient buffer width.*/
 
-
 /* API name defines for backward compatibility to VGLite 2.0 APIs */
 #define vg_lite_buffer_upload                   vg_lite_upload_buffer
 #define vg_lite_path_append                     vg_lite_append_path
@@ -138,7 +158,6 @@ extern "C" {
 #define vg_lite_linear_gradient_ext_t           vg_lite_ext_linear_gradient_t
 #define vg_lite_buffer_transparency_mode_t      vg_lite_transparency_t
 
-
 /* VGLite API Types ***********************************************************************************************************************/
 
 typedef unsigned char       vg_lite_uint8_t;
@@ -155,7 +174,6 @@ typedef char        *       vg_lite_string;
 typedef void        *       vg_lite_pointer;
 typedef void                vg_lite_void;
 typedef unsigned int        vg_lite_color_t;
-
 
 /* VGLite API Enumerations ****************************************************************************************************************/
 
@@ -1350,3 +1368,5 @@ vg_lite_error_t vg_lite_get_parameter(vg_lite_param_type_t type,
 }
 #endif
 #endif /* _vg_lite_h_ */
+
+/** @} */

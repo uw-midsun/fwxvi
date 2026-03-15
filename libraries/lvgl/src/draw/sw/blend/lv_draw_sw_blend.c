@@ -1,41 +1,51 @@
-/**
- * @file lv_draw_sw_blend.c
+/************************************************************************************************
+ * @file    lv_draw_sw_blend.c
  *
- */
+ * @brief   Lv Draw Sw Blend
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "lv_draw_sw_blend_to_a8.h"
+    #include "lv_draw_sw_blend_to_al88.h"
+    #include "lv_draw_sw_blend_to_argb8888.h"
+    #include "lv_draw_sw_blend_to_argb8888_premultiplied.h"
+    #include "lv_draw_sw_blend_to_i1.h"
+    #include "lv_draw_sw_blend_to_l8.h"
+    #include "lv_draw_sw_blend_to_rgb565.h"
+    #include "lv_draw_sw_blend_to_rgb565_swapped.h"
+    #include "lv_draw_sw_blend_to_rgb888.h"
+#include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_private.h"
+#include "../lv_draw_sw.h"
+#include "lv_draw_sw_blend_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../misc/lv_area_private.h"
-#include "lv_draw_sw_blend_private.h"
-#include "../../lv_draw_private.h"
-#include "../lv_draw_sw.h"
 #if LV_DRAW_SW_SUPPORT_A8
-    #include "lv_draw_sw_blend_to_a8.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_L8
-    #include "lv_draw_sw_blend_to_l8.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_AL88
-    #include "lv_draw_sw_blend_to_al88.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_RGB565
-    #include "lv_draw_sw_blend_to_rgb565.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_RGB565_SWAPPED
-    #include "lv_draw_sw_blend_to_rgb565_swapped.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_ARGB8888
-    #include "lv_draw_sw_blend_to_argb8888.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_ARGB8888_PREMULTIPLIED
-    #include "lv_draw_sw_blend_to_argb8888_premultiplied.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_RGB888 || LV_DRAW_SW_SUPPORT_XRGB8888
-    #include "lv_draw_sw_blend_to_rgb888.h"
 #endif
 #if LV_DRAW_SW_SUPPORT_I1
-    #include "lv_draw_sw_blend_to_i1.h"
 #endif
 #if LV_USE_DRAW_SW
 
@@ -56,7 +66,6 @@ static inline void /* LV_ATTRIBUTE_FAST_MEM */ lv_draw_sw_blend_color(lv_color_f
 
 static inline void /* LV_ATTRIBUTE_FAST_MEM */ lv_draw_sw_blend_image(lv_color_format_t layer_cf,
                                                                       lv_draw_sw_blend_image_dsc_t * image_dsc);
-
 
 /**********************
  *  STATIC VARIABLES
@@ -102,7 +111,6 @@ void lv_draw_sw_blend(lv_draw_task_t * t, const lv_draw_sw_blend_dsc_t * blend_d
         if(blend_dsc->mask_buf == NULL) fill_dsc.mask_buf = NULL;
         else if(blend_dsc->mask_res == LV_DRAW_SW_MASK_RES_FULL_COVER) fill_dsc.mask_buf = NULL;
         else fill_dsc.mask_buf = blend_dsc->mask_buf;
-
 
         fill_dsc.relative_area  = blend_area;
         lv_area_move(&fill_dsc.relative_area, -layer->buf_area.x1, -layer->buf_area.y1);

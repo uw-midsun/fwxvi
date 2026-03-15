@@ -1,7 +1,20 @@
-/**
- * @file lv_g2d_utils.c
+/************************************************************************************************
+ * @file    lv_g2d_utils.c
  *
- */
+ * @brief   Lv G2D Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_g2d.h"
+#include "lv_g2d_buf_map.h"
+#include "lv_g2d_utils.h"
+
+/* Intra-component Headers */
 
 /**
  * Copyright 2024 NXP
@@ -13,12 +26,8 @@
  *      INCLUDES
  *********************/
 
-#include "lv_g2d_utils.h"
-
 #if LV_USE_G2D
 #if LV_USE_DRAW_G2D || LV_USE_ROTATE_G2D
-#include "lv_g2d_buf_map.h"
-#include "lv_draw_g2d.h"
 
 /*********************
  *      DEFINES

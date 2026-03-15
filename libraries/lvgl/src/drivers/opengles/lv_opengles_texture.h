@@ -1,6 +1,26 @@
-/**
- * @file lv_opengles_texture.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_texture.h
  *
+ * @brief   Lv Opengles Texture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_texture
+ * @brief    lv_opengles_texture Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_TEXTURE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_OPENGLES
-
-#include "../../display/lv_display.h"
 
 /*********************
  *      DEFINES
@@ -77,3 +94,5 @@ lv_display_t * lv_opengles_texture_get_from_texture_id(unsigned int texture_id);
 #endif
 
 #endif /*LV_OPENGLES_TEXTURE_H*/
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_image_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_image_private.h
  *
+ * @brief   Lv Image Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_image.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_image_private
+ * @brief    lv_image_private Firmware
+ * @{
  */
 
 #ifndef LV_IMAGE_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_image.h"
 
 #if LV_USE_IMAGE != 0
 
@@ -63,3 +80,5 @@ struct _lv_image_t {
 #endif
 
 #endif /*LV_IMAGE_PRIVATE_H*/
+
+/** @} */

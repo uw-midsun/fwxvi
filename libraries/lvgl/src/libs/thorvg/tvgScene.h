@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgScene.h
+ *
+ * @brief   Tvgscene
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgMath.h"
+#include "tvgPaint.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgScene
+ * @brief    tvgScene Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,14 +46,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SCENE_H_
 #define _TVG_SCENE_H_
-
-#include "tvgMath.h"
-#include "tvgPaint.h"
 
 using std::list;
 
@@ -266,3 +288,5 @@ struct Scene::Impl
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

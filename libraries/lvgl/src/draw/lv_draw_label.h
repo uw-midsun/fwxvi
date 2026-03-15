@@ -1,6 +1,30 @@
-/**
- * @file lv_draw_label.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_label.h
  *
+ * @brief   Lv Draw Label
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_bidi.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_style.h"
+#include "../misc/lv_text.h"
+#include "lv_draw.h"
+#include "lv_draw_rect.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_label
+ * @brief    lv_draw_label Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_LABEL_H
@@ -13,12 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw.h"
-#include "lv_draw_rect.h"
-#include "../misc/lv_bidi.h"
-#include "../misc/lv_text.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_style.h"
 
 /*********************
  *      DEFINES
@@ -250,3 +268,5 @@ void lv_draw_unit_draw_letter(lv_draw_task_t * t, lv_draw_glyph_dsc_t * dsc,  co
 #endif
 
 #endif /*LV_DRAW_LABEL_H*/
+
+/** @} */

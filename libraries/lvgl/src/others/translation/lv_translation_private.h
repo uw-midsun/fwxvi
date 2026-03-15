@@ -1,6 +1,27 @@
-/**
- * @file lv_translation_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_translation_private.h
  *
+ * @brief   Lv Translation Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_array.h"
+
+/* Intra-component Headers */
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup lv_translation_private
+ * @brief    lv_translation_private Firmware
+ * @{
  */
 
 #ifndef LV_TRANSLATION_PRIVATE_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_TRANSLATION
-
-#include LV_STDINT_INCLUDE
-#include "../../misc/lv_array.h"
 
 /*********************
  *      DEFINES
@@ -57,3 +74,5 @@ struct _lv_translation_pack_t {
 #endif
 
 #endif /* LV_TRANSLATION_PRIVATE_H */
+
+/** @} */

@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLoadModule.h
+ *
+ * @brief   Tvgloadmodule
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgInlist.h"
+#include "tvgRender.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLoadModule
+ * @brief    tvgLoadModule Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +46,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOAD_MODULE_H_
 #define _TVG_LOAD_MODULE_H_
-
-#include "tvgRender.h"
-#include "tvgInlist.h"
-
 
 struct LoadModule
 {
@@ -77,7 +98,6 @@ struct LoadModule
     }
 };
 
-
 struct ImageLoader : LoadModule
 {
     static ColorSpace cs;                           //desired value
@@ -97,7 +117,6 @@ struct ImageLoader : LoadModule
     }
 };
 
-
 struct FontLoader : LoadModule
 {
     float scale = 1.0f;
@@ -112,3 +131,5 @@ struct FontLoader : LoadModule
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

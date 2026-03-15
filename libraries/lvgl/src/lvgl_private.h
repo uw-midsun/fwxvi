@@ -1,6 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lvgl_private.h
+ *
+ * @brief   Lvgl Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lvgl_private.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lvgl_private.h
- * This file exists only to be compatible with Arduino's library structure
+ * @defgroup lvgl_private
+ * @brief    lvgl_private Firmware
+ * @{
  */
 
 #ifndef LVGL_PRIVATE_SRC_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lvgl_private.h"
 
 /*********************
  *      DEFINES
@@ -36,3 +54,5 @@ extern "C" {
 #endif
 
 #endif /* LVGL_PRIVATE_SRC_H */
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_wl_keyboard.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wl_keyboard.h
  *
+ * @brief   Lv Wl Keyboard
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev.h"
+#include "../../indev/lv_indev_gesture.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_wl_keyboard
+ * @brief    lv_wl_keyboard Firmware
+ * @{
  */
 
 #ifndef LV_WL_KEYBOARD_H
@@ -14,8 +34,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../indev/lv_indev.h"
-#include "../../indev/lv_indev_gesture.h"
 #if LV_USE_WAYLAND
 
 /*********************
@@ -50,3 +68,5 @@ lv_indev_t * lv_wayland_get_keyboard(lv_display_t * display);
 #endif
 
 #endif /*LV_WL_KEYBOARD_H*/
+
+/** @} */

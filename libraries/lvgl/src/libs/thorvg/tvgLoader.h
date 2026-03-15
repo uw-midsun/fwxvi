@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLoader.h
+ *
+ * @brief   Tvgloader
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgLoadModule.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLoader
+ * @brief    tvgLoader Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,13 +45,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOADER_H_
 #define _TVG_LOADER_H_
-
-#include "tvgLoadModule.h"
 
 struct LoaderMgr
 {
@@ -45,3 +67,5 @@ struct LoaderMgr
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

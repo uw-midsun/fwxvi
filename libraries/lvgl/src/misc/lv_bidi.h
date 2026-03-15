@@ -1,6 +1,27 @@
-/**
- * @file lv_bidi.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_bidi.h
  *
+ * @brief   Lv Bidi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_text.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_bidi
+ * @brief    lv_bidi Firmware
+ * @{
  */
 
 #ifndef LV_BIDI_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
-#include "lv_text.h"
 
 /*********************
  *      DEFINES
@@ -81,3 +99,5 @@ static inline void lv_bidi_calculate_align(lv_text_align_t * align, lv_base_dir_
 #endif
 
 #endif /*LV_BIDI_H*/
+
+/** @} */

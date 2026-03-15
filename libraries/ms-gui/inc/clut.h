@@ -30,7 +30,7 @@ typedef struct {
   uint8_t red;
 } ClutEntry;
 
-#define CLUT_RGB565_RED_SHIFT   11U
+#define CLUT_RGB565_RED_SHIFT 11U
 #define CLUT_RGB565_GREEN_SHIFT 5U
 
 /**

@@ -1,13 +1,22 @@
-/**
- * @file lv_lcd_generic_mipi.c
+/************************************************************************************************
+ * @file    lv_lcd_generic_mipi.c
  *
- */
+ * @brief   Lv Lcd Generic Mipi
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_lcd_generic_mipi.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_lcd_generic_mipi.h"
 
 #if LV_USE_GENERIC_MIPI
 

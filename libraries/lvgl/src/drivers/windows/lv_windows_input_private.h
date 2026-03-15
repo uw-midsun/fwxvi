@@ -1,6 +1,26 @@
-/**
- * @file lv_windows_input_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_windows_input_private.h
  *
+ * @brief   Lv Windows Input Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+#include <windows.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_windows_input_private
+ * @brief    lv_windows_input_private Firmware
+ * @{
  */
 
 #ifndef LV_WINDOWS_INPUT_PRIVATE_H
@@ -15,9 +35,6 @@ extern "C" {
  *********************/
 
 #if LV_USE_WINDOWS
-
-#include <stdbool.h>
-#include <windows.h>
 
 /*********************
  *      DEFINES
@@ -63,3 +80,5 @@ bool lv_windows_encoder_device_window_message_handler(
 #endif
 
 #endif /*LV_WINDOWS_INPUT_PRIVATE_H*/
+
+/** @} */

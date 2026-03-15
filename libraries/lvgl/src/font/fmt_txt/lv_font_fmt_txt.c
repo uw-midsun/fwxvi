@@ -1,19 +1,29 @@
-/**
- * @file lv_font_fmt_txt.c
+/************************************************************************************************
+ * @file    lv_font_fmt_txt.c
  *
- */
+ * @brief   Lv Font Fmt Txt
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_types.h"
+#include "../../misc/lv_utils.h"
+#include "../../stdlib/lv_mem.h"
+#include "../lv_font.h"
+#include "lv_font_fmt_txt_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_font.h"
-#include "lv_font_fmt_txt_private.h"
-#include "../../core/lv_global.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_utils.h"
-#include "../../stdlib/lv_mem.h"
 
 /*********************
  *      DEFINES
@@ -104,7 +114,6 @@ const void * lv_font_get_bitmap_fmt_txt(lv_font_glyph_dsc_t * g_dsc, lv_draw_buf
     if(gsize == 0) return NULL;
 
     uint32_t stride_in = g_dsc->stride;
-
 
     if(fdsc->bitmap_format == LV_FONT_FMT_TXT_PLAIN) {
         const uint8_t * bitmap_in = &fdsc->glyph_bitmap[gdsc->bitmap_index];

@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_label_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_label_private.h
  *
+ * @brief   Lv Draw Label Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_label.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_label_private
+ * @brief    lv_draw_label_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_LABEL_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw_label.h"
 
 /*********************
  *      DEFINES
@@ -58,7 +75,6 @@ struct _lv_draw_glyph_dsc_t {
     lv_draw_buf_t * _draw_buf; /**< a shared draw buf for get_bitmap, do not use it directly, use glyph_data instead */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -72,3 +88,5 @@ struct _lv_draw_glyph_dsc_t {
 #endif
 
 #endif /*LV_DRAW_LABEL_PRIVATE_H*/
+
+/** @} */

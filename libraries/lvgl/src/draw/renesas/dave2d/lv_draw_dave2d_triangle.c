@@ -1,7 +1,20 @@
-#include "lv_draw_dave2d.h"
-#if LV_USE_DRAW_DAVE2D
+/************************************************************************************************
+ * @file    lv_draw_dave2d_triangle.c
+ *
+ * @brief   Lv Draw Dave2D Triangle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "../../../misc/lv_area_private.h"
+#include "lv_draw_dave2d.h"
+
+/* Intra-component Headers */
+#if LV_USE_DRAW_DAVE2D
 
 void lv_draw_dave2d_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t * dsc)
 {
@@ -123,7 +136,6 @@ void lv_draw_dave2d_triangle(lv_draw_task_t * t, const lv_draw_triangle_dsc_t * 
 
             d2_setalphagradient(u->d2_handle, 0, D2_FIX4(0),  D2_FIX4(y0_i), D2_FIX4(0), D2_FIX4((y3_i - y0_i)));
         }
-
 
         d2_setcolor(u->d2_handle, 0, lv_draw_dave2d_lv_colour_to_d2_colour(dsc->grad.stops[0].color));
         d2_setalphamode(u->d2_handle, d2_am_gradient1);

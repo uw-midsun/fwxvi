@@ -1,6 +1,26 @@
-/**
- * @file lv_log.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_log.h
  *
+ * @brief   Lv Log
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_log
+ * @brief    lv_log Firmware
+ * @{
  */
 
 #ifndef LV_LOG_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -160,3 +177,5 @@ void lv_log_add(lv_log_level_t level, const char * file, int line,
 #endif
 
 #endif /*LV_LOG_H*/
+
+/** @} */

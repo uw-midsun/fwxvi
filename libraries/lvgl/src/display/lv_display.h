@@ -1,6 +1,29 @@
-/**
- * @file lv_display.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_display.h
  *
+ * @brief   Lv Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_area.h"
+#include "../misc/lv_color.h"
+#include "../misc/lv_event.h"
+#include "../misc/lv_timer.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_display
+ * @brief    lv_display Firmware
+ * @{
  */
 
 #ifndef LV_DISPLAY_H
@@ -13,11 +36,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../misc/lv_timer.h"
-#include "../misc/lv_event.h"
-#include "../misc/lv_color.h"
-#include "../misc/lv_area.h"
 
 /*********************
  *      DEFINES
@@ -484,7 +502,6 @@ lv_obj_t * lv_display_get_layer_sys(lv_display_t * disp);
  */
 lv_obj_t * lv_display_get_layer_bottom(lv_display_t * disp);
 
-
 #if LV_USE_OBJ_NAME
 
 /**
@@ -799,3 +816,5 @@ void lv_display_set_external_data(lv_display_t * disp, void * data, void (* free
 #endif
 
 #endif /*LV_DISPLAY_H*/
+
+/** @} */

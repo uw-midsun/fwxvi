@@ -1,6 +1,27 @@
-/**
- * @file lv_test_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_test_private.h
  *
+ * @brief   Lv Test Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../indev/lv_indev_gesture.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_test_private
+ * @brief    lv_test_private Firmware
+ * @{
  */
 
 #ifndef LV_TEST_PRIVATE_H
@@ -13,11 +34,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST
-
-#include "../../misc/lv_types.h"
-#include "../../indev/lv_indev_gesture.h"
 
 /*********************
  *      DEFINES
@@ -63,5 +80,6 @@ typedef struct {
 } /*extern "C"*/
 #endif
 
-
 #endif /*LV_TEST_PRIVATE_H*/
+
+/** @} */

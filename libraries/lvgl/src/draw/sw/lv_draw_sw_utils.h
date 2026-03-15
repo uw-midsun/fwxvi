@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_sw_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_utils.h
  *
+ * @brief   Lv Draw Sw Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_color.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_utils
+ * @brief    lv_draw_sw_utils Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_UTILS_H
@@ -13,13 +35,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_color.h"
-#include "../../display/lv_display.h"
-
 
 /*********************
  *      DEFINES
@@ -62,7 +78,6 @@ void lv_draw_sw_rgb565_swap(void * buf, uint32_t buf_size_px);
  * @param buf_size     size of the buffer in bytes
  */
 void lv_draw_sw_i1_invert(void * buf, uint32_t buf_size);
-
 
 /**
  * Convert a draw buffer in I1 color format from htiled (row-wise)
@@ -109,3 +124,5 @@ void lv_draw_sw_rotate(const void * src, void * dest, int32_t src_width, int32_t
 #endif
 
 #endif /*LV_DRAW_SW_UTILS_H*/
+
+/** @} */

@@ -1,6 +1,33 @@
-/**
- * @file lv_obj_draw.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_draw.h
  *
+ * @brief   Lv Obj Draw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../draw/lv_draw_arc.h"
+#include "../draw/lv_draw_blur.h"
+#include "../draw/lv_draw_image.h"
+#include "../draw/lv_draw_label.h"
+#include "../draw/lv_draw_line.h"
+#include "../draw/lv_draw_rect.h"
+#include "../draw/lv_draw_triangle.h"
+#include "../misc/lv_types.h"
+#include "lv_obj_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_draw
+ * @brief    lv_obj_draw Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_DRAW_H
@@ -13,15 +40,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../misc/lv_types.h"
-#include "../draw/lv_draw_rect.h"
-#include "../draw/lv_draw_label.h"
-#include "../draw/lv_draw_image.h"
-#include "../draw/lv_draw_line.h"
-#include "../draw/lv_draw_arc.h"
-#include "../draw/lv_draw_triangle.h"
-#include "../draw/lv_draw_blur.h"
-#include "lv_obj_style.h"
 
 /*********************
  *      DEFINES
@@ -104,7 +122,6 @@ void lv_obj_init_draw_line_dsc(lv_obj_t * obj, lv_part_t part, lv_draw_line_dsc_
  */
 void lv_obj_init_draw_arc_dsc(lv_obj_t * obj, lv_part_t part, lv_draw_arc_dsc_t * draw_dsc);
 
-
 /**
  * Initialize a blur draw descriptor from an object's styles in its current state.
  * draw_dsc->radius will only be calculated if it's 0 initially. Radius can be set before calling this function
@@ -140,3 +157,5 @@ void lv_obj_refresh_ext_draw_size(lv_obj_t * obj);
 #endif
 
 #endif /*LV_OBJ_DRAW_H*/
+
+/** @} */

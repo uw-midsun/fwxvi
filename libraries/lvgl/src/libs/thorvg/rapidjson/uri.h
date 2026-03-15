@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    uri.h
+ *
+ * @brief   Uri
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "internal/strfunc.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup uri
+ * @brief    uri Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // (C) Copyright IBM Corporation 2021
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_URI_H_
 #define RAPIDJSON_URI_H_
-
-#include "internal/strfunc.h"
 
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
@@ -479,3 +501,5 @@ RAPIDJSON_DIAG_POP
 #endif
 
 #endif // RAPIDJSON_URI_H_
+
+/** @} */

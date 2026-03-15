@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_image_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_image_private.h
  *
+ * @brief   Lv Draw Image Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_image.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_image_private
+ * @brief    lv_draw_image_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_IMAGE_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_draw_image.h"
 
 /*********************
  *      DEFINES
@@ -33,7 +50,6 @@ struct _lv_draw_image_sup_t {
     const lv_color32_t * palette;
     uint32_t palette_size   : 9;
 };
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -87,3 +103,5 @@ void lv_image_buf_get_transformed_area(lv_area_t * res, int32_t w, int32_t h, in
 #endif
 
 #endif /*LV_DRAW_IMAGE_PRIVATE_H*/
+
+/** @} */

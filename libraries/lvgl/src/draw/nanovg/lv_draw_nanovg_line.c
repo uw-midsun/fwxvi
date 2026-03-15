@@ -1,18 +1,26 @@
-/**
- * @file lv_draw_nanovg_line.c
+/************************************************************************************************
+ * @file    lv_draw_nanovg_line.c
  *
- */
+ * @brief   Lv Draw Nanovg Line
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_math.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_nanovg_private.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "lv_nanovg_utils.h"
-#include "lv_nanovg_math.h"
 
 /*********************
 *      DEFINES

@@ -1,28 +1,35 @@
-/**
- * @file lv_opengles_glfw.c
+/************************************************************************************************
+ * @file    lv_opengles_glfw.c
  *
- */
+ * @brief   Lv Opengles Glfw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_refr.h"
+#include "../../indev/lv_indev.h"
+#include "../../lv_init.h"
+#include "../../misc/lv_area_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_opengles_debug.h"
+#include "lv_opengles_driver.h"
+#include "lv_opengles_glfw.h"
+#include "lv_opengles_private.h"
+#include "lv_opengles_texture.h"
+#include "lv_opengles_window.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_opengles_glfw.h"
 #if LV_USE_GLFW
-
-#include "lv_opengles_window.h"
-#include "lv_opengles_driver.h"
-#include "lv_opengles_texture.h"
-#include "lv_opengles_private.h"
-#include "lv_opengles_debug.h"
-
-#include "../../core/lv_refr.h"
-#include "../../stdlib/lv_string.h"
-#include "../../indev/lv_indev.h"
-#include "../../lv_init.h"
-#include "../../misc/lv_area_private.h"
-
-#include <stdlib.h>
 
 /*********************
  *      DEFINES
@@ -398,7 +405,6 @@ static lv_result_t lv_glad_init(void)
     if(glad_inited) {
         return LV_RESULT_OK;
     }
-
 
     if(!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
         LV_LOG_ERROR("Failed to load OpenGL functions");

@@ -1,6 +1,26 @@
-/**
- * @file lv_gstreamer.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_gstreamer.h
  *
+ * @brief   Lv Gstreamer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_gstreamer
+ * @brief    lv_gstreamer Firmware
+ * @{
  */
 
 #ifndef LV_GSTREAMER_H
@@ -13,16 +33,12 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_GSTREAMER
-#include "../../core/lv_obj.h"
-
 
 /*********************
  *      DEFINES
  *********************/
-
 
 /* Using the `URI` "factory", we can specify various URI schemes as media sources including
  * - local files (file://)
@@ -185,7 +201,6 @@ void lv_gstreamer_set_rate(lv_obj_t * gstreamer, uint32_t rate);
  */
 lv_gstreamer_stream_state_t lv_gstreamer_get_stream_state(lv_event_t * e);
 
-
 /**********************
  *      MACROS
  **********************/
@@ -197,3 +212,5 @@ lv_gstreamer_stream_state_t lv_gstreamer_get_stream_state(lv_event_t * e);
 #endif
 
 #endif /*LV_GSTREAMER_H*/
+
+/** @} */

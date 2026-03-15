@@ -1,6 +1,25 @@
-/**
- * @file lv_linux_fbdev.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_linux_fbdev.h
  *
+ * @brief   Lv Linux Fbdev
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_linux_fbdev
+ * @brief    lv_linux_fbdev Firmware
+ * @{
  */
 
 #ifndef LV_LINUX_FBDEV_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../../display/lv_display.h"
 
 #if LV_USE_LINUX_FBDEV
 
@@ -50,3 +67,5 @@ void lv_linux_fbdev_set_force_refresh(lv_display_t * disp, bool enabled);
 #endif
 
 #endif /* LV_LINUX_FBDEV_H */
+
+/** @} */

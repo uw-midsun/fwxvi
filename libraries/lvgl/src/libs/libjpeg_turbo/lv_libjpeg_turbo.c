@@ -1,21 +1,30 @@
-/**
- * @file lv_libjpeg_turbo.c
+/************************************************************************************************
+ * @file    lv_libjpeg_turbo.c
  *
- */
+ * @brief   Lv Libjpeg Turbo
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <jpegint.h>
+#include <jpeglib.h>
+#include <setjmp.h>
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+#include "../../draw/lv_image_decoder_private.h"
+#include "lv_libjpeg_turbo.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../draw/lv_image_decoder_private.h"
-#include "../../../lvgl.h"
 #if LV_USE_LIBJPEG_TURBO
-
-#include "lv_libjpeg_turbo.h"
-#include <stdio.h>
-#include <jpeglib.h>
-#include <jpegint.h>
-#include <setjmp.h>
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

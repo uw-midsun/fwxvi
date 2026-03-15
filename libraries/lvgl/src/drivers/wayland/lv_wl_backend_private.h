@@ -1,6 +1,26 @@
-/**
- * @file lv_wl_backend_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_wl_backend_private.h
  *
+ * @brief   Lv Wl Backend Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_wayland.h"
+
+/* Intra-component Headers */
+#include <wayland-client.h>
+
+/**
+ * @defgroup lv_wl_backend_private
+ * @brief    lv_wl_backend_private Firmware
+ * @{
  */
 
 #ifndef LV_WL_BACKEND_PRIVATE_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_wayland.h"
-
 #if LV_USE_WAYLAND
-
-#include <wayland-client.h>
 
 /*********************
  *      DEFINES
@@ -215,3 +231,5 @@ struct wl_surface * lv_wayland_get_window_surface(lv_display_t * display);
 #endif
 
 #endif /*LV_WL_BACKEND_PRIVATE_H*/
+
+/** @} */

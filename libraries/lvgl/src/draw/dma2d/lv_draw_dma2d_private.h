@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_dma2d_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_dma2d_private.h
  *
+ * @brief   Lv Draw Dma2D Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_private.h"
+#include "../sw/lv_draw_sw.h"
+#include "lv_draw_dma2d.h"
+
+/* Intra-component Headers */
+#include LV_DRAW_DMA2D_HAL_INCLUDE
+
+/**
+ * @defgroup lv_draw_dma2d_private
+ * @brief    lv_draw_dma2d_private Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_DMA2D_PRIVATE_H
@@ -14,12 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_draw_dma2d.h"
 #if LV_USE_DRAW_DMA2D
-
-#include "../lv_draw_private.h"
-#include "../sw/lv_draw_sw.h"
-#include LV_DRAW_DMA2D_HAL_INCLUDE
 
 /*********************
  *      DEFINES
@@ -153,3 +170,5 @@ void lv_draw_dma2d_clean_cache(const lv_draw_dma2d_cache_area_t * mem_area);
 #endif
 
 #endif /*LV_DRAW_DMA2D_PRIVATE_H*/
+
+/** @} */

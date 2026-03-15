@@ -1,17 +1,26 @@
-/**
- * @file lv_draw_dma2d.c
+/************************************************************************************************
+ * @file    lv_draw_dma2d.c
  *
- */
+ * @brief   Lv Draw Dma2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../sw/lv_draw_sw.h"
+#include "lv_draw_dma2d_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_draw_dma2d_private.h"
 #if LV_USE_DRAW_DMA2D
-
-#include "../sw/lv_draw_sw.h"
-#include "../../misc/lv_area_private.h"
 
 #if !LV_DRAW_DMA2D_ASYNC && LV_USE_DRAW_DMA2D_INTERRUPT
     #warning LV_USE_DRAW_DMA2D_INTERRUPT is 1 but has no effect because LV_USE_OS is LV_OS_NONE

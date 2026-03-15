@@ -1,7 +1,28 @@
-/**
- * @file lv_ffmpeg.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ffmpeg.h
  *
+ * @brief   Lv Ffmpeg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_ffmpeg
+ * @brief    lv_ffmpeg Firmware
+ * @{
  */
+
 #ifndef LV_FFMPEG_H
 #define LV_FFMPEG_H
 
@@ -12,9 +33,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_FFMPEG != 0
-#include "../../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -106,3 +125,5 @@ void lv_ffmpeg_player_set_decoder(lv_obj_t * obj, const char * decoder_name);
 #endif
 
 #endif /*LV_FFMPEG_H*/
+
+/** @} */

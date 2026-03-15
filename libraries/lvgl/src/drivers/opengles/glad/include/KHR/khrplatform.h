@@ -1,7 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    khrplatform.h
+ *
+ * @brief   Khrplatform
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <inttypes.h>
+#include <stdint.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "../../../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup khrplatform
+ * @brief    khrplatform Firmware
+ * @{
+ */
+
 #ifndef __khrplatform_h_
 #define __khrplatform_h_
 
-#include "../../../../../lv_conf_internal.h"
 #if LV_USE_OPENGLES
 /*
 ** Copyright (c) 2008-2018 The Khronos Group Inc.
@@ -144,11 +170,9 @@
  *-----------------------------------------------------------------------*/
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || defined(__GNUC__) || defined(__SCO__) || defined(__USLC__)
 
-
 /*
  * Using <stdint.h>
  */
-#include <stdint.h>
 typedef int32_t                 khronos_int32_t;
 typedef uint32_t                khronos_uint32_t;
 typedef int64_t                 khronos_int64_t;
@@ -175,7 +199,6 @@ typedef uint64_t                khronos_uint64_t;
 /*
  * Using <inttypes.h>
  */
-#include <inttypes.h>
 typedef int32_t                 khronos_int32_t;
 typedef uint32_t                khronos_uint32_t;
 typedef int64_t                 khronos_int64_t;
@@ -227,7 +250,6 @@ typedef unsigned int            khronos_uint32_t;
 /*
  * Generic fallback
  */
-#include <stdint.h>
 typedef int32_t                 khronos_int32_t;
 typedef uint32_t                khronos_uint32_t;
 typedef int64_t                 khronos_int64_t;
@@ -236,7 +258,6 @@ typedef uint64_t                khronos_uint64_t;
 #define KHRONOS_SUPPORT_FLOAT   1
 
 #endif
-
 
 /*
  * Types that are (so far) the same on all platforms
@@ -312,3 +333,5 @@ typedef enum {
 
 #endif /*LV_USE_OPENGLES*/
 #endif /* __khrplatform_h_ */
+
+/** @} */

@@ -1,6 +1,27 @@
-/**
- * @file lv_refr.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_refr.h
  *
+ * @brief   Lv Refr
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../misc/lv_types.h"
+#include "lv_obj.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_refr
+ * @brief    lv_refr Firmware
+ * @{
  */
 
 #ifndef LV_REFR_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_obj.h"
-#include "../display/lv_display.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -72,3 +90,5 @@ void lv_display_refr_timer(lv_timer_t * timer);
 #endif
 
 #endif /*LV_REFR_H*/
+
+/** @} */

@@ -1,25 +1,32 @@
-/**
- * @file lv_opengles_texture.c
+/************************************************************************************************
+ * @file    lv_opengles_texture.c
  *
- */
+ * @brief   Lv Opengles Texture
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_mem.h"
+#include "lv_opengles_debug.h"
+#include "lv_opengles_driver.h"
+#include "lv_opengles_private.h"
+#include "lv_opengles_texture.h"
+#include "lv_opengles_texture_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_opengles_texture.h"
 #if LV_USE_OPENGLES
-
-#include "lv_opengles_debug.h"
-#include "lv_opengles_driver.h"
-
-#include "../../misc/lv_types.h"
-#include "../../stdlib/lv_mem.h"
-#include "lv_opengles_private.h"
-#include "lv_opengles_texture_private.h"
-#include "../../display/lv_display_private.h"
-
-#include <stdlib.h>
 
 /*********************
  *      DEFINES

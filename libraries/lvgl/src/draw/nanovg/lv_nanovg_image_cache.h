@@ -1,6 +1,26 @@
-/**
- * @file lv_nanovg_image_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nanovg_image_cache.h
  *
+ * @brief   Lv Nanovg Image Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../lv_draw_image_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nanovg_image_cache
+ * @brief    lv_nanovg_image_cache Firmware
+ * @{
  */
 
 #ifndef LV_NANOVG_IMAGE_CACHE_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "../lv_draw_image_private.h"
 
 /*********************
  *      DEFINES
@@ -79,3 +95,5 @@ void lv_nanovg_image_cache_drop(struct _lv_draw_nanovg_unit_t * u, const void * 
 #endif
 
 #endif /*LV_NANOVG_IMAGE_CACHE_H*/
+
+/** @} */

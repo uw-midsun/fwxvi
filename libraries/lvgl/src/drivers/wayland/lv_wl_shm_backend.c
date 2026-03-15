@@ -1,24 +1,32 @@
-/**
- * @file lv_wl_shm_backend.c
+/************************************************************************************************
+ * @file    lv_wl_shm_backend.c
  *
- */
+ * @brief   Lv Wl Shm Backend
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../draw/sw/lv_draw_sw_utils.h"
+#include "lv_wayland_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_wayland_private.h"
-
 #if LV_WAYLAND_USE_SHM
-
-#include "../../draw/sw/lv_draw_sw_utils.h"
-#include "../../display/lv_display_private.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/mman.h>
 
 /*********************
  *      DEFINES
@@ -95,7 +103,6 @@ const lv_wayland_backend_ops_t wl_backend_ops = {
     .deinit_display = shm_deinit_display,
     .resize_display = shm_resize_display,
 };
-
 
 /**********************
  *      MACROS
@@ -278,7 +285,6 @@ static void shm_delete_display_data(lv_wl_shm_display_data_t * ddata)
         ddata->pool = NULL;
     }
 
-
     if(ddata->mmap_ptr != MAP_FAILED) {
         munmap(ddata->mmap_ptr, ddata->mmap_size);
         ddata->mmap_ptr = MAP_FAILED;
@@ -342,7 +348,6 @@ static void * shm_resize_display(void * backend_ctx, lv_display_t * display)
     shm_delete_display_data(curr_ddata);
     return ddata;
 }
-
 
 static void shm_deinit_display(void * backend_ctx, lv_display_t * display)
 {

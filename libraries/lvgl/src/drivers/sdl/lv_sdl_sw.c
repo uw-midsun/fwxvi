@@ -1,7 +1,23 @@
-/**
- * @file lv_sdl_sw.c
+/************************************************************************************************
+ * @file    lv_sdl_sw.c
  *
- */
+ * @brief   Lv Sdl Sw
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <malloc.h>
+    #include <stdlib.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display_private.h"
+#include "../../draw/sw/lv_draw_sw_utils.h"
+#include "../../misc/lv_types.h"
+#include "lv_sdl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
@@ -12,20 +28,11 @@
     #define _ISOC11_SOURCE
 #endif
 
-#include "lv_sdl_private.h"
-
 #if LV_USE_SDL && !LV_SDL_USE_EGL && !LV_USE_DRAW_SDL
 
 #ifndef _WIN32
-    #include <stdlib.h>
 #else
-    #include <malloc.h>
 #endif /* _WIN32 */
-
-#include "../../display/lv_display_private.h"
-#include "../../misc/lv_types.h"
-#include "../../draw/sw/lv_draw_sw_utils.h"
-
 
 /*********************
  *      DEFINES
@@ -222,7 +229,6 @@ static SDL_Renderer * get_renderer(lv_display_t * display)
     LV_ASSERT_NULL(ddata);
     return ddata->renderer;
 }
-
 
 static void * sdl_draw_buf_realloc_aligned(void * ptr, size_t new_size)
 {

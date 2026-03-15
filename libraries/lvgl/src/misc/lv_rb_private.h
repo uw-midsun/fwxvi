@@ -1,6 +1,25 @@
-/**
- * @file lv_rb_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_rb_private.h
  *
+ * @brief   Lv Rb Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_rb.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_rb_private
+ * @brief    lv_rb_private Firmware
+ * @{
  */
 
 #ifndef LV_RB_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_rb.h"
 
 /*********************
  *      DEFINES
@@ -38,7 +55,6 @@ struct _lv_rb_t {
     size_t size;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -52,3 +68,5 @@ struct _lv_rb_t {
 #endif
 
 #endif /*LV_RB_PRIVATE_H*/
+
+/** @} */

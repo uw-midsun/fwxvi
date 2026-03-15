@@ -1,20 +1,27 @@
-/**
- * @file lv_draw_ppa_img.c
+/************************************************************************************************
+ * @file    lv_draw_ppa_img.c
  *
- */
+ * @brief   Lv Draw Ppa Img
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "lv_draw_ppa_private.h"
-#include "lv_draw_ppa.h"
+/* Standard library Headers */
 
-#if LV_USE_PPA
-
+/* Inter-component Headers */
 #include "../../lv_draw_image_private.h"
 #include "../../lv_image_decoder_private.h"
+#include "lv_draw_ppa.h"
+#include "lv_draw_ppa_private.h"
+
+/* Intra-component Headers */
+
+#if LV_USE_PPA
 
 static void lv_draw_img_ppa_core(lv_draw_task_t * t, const lv_draw_image_dsc_t * draw_dsc,
                                  const lv_image_decoder_dsc_t * decoder_dsc, lv_draw_image_sup_t * sup,
                                  const lv_area_t * img_coords, const lv_area_t * clipped_img_area);
-
 
 void lv_draw_ppa_img(lv_draw_task_t * t, const lv_draw_image_dsc_t * dsc,
                      const lv_area_t * coords)

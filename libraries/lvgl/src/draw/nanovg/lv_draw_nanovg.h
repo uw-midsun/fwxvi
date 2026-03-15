@@ -1,6 +1,25 @@
-/**
- * @file lv_draw_nanovg.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_nanovg.h
  *
+ * @brief   Lv Draw Nanovg
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_nanovg
+ * @brief    lv_draw_nanovg Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_NANOVG_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../misc/lv_types.h"
 
 #if LV_USE_DRAW_NANOVG
 
@@ -46,3 +63,5 @@ void lv_draw_nanovg_init(void);
 #endif
 
 #endif /*LV_DRAW_NANOVG_H*/
+
+/** @} */

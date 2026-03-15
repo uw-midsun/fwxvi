@@ -1,6 +1,29 @@
-/**
- * @file lv_scale.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_scale.h
  *
+ * @brief   Lv Scale
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_observer.h"
+#include "../../lv_conf_internal.h"
+#include "../image/lv_image.h"
+#include "../line/lv_line.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_scale
+ * @brief    lv_scale Firmware
+ * @{
  */
 
 #ifndef LV_SCALE_H
@@ -13,14 +36,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_SCALE != 0
-
-#include "../../core/lv_obj.h"
-#include "../line/lv_line.h"
-#include "../image/lv_image.h"
-#include "../../core/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -396,3 +413,5 @@ lv_observer_t * lv_scale_bind_section_max_value(lv_obj_t * obj, lv_scale_section
 #endif
 
 #endif /*LV_SCALE_H*/
+
+/** @} */

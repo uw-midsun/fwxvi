@@ -1,6 +1,30 @@
-/**
- * @file lv_anim.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_anim.h
  *
+ * @brief   Lv Anim
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_ext_data.h"
+#include "lv_ll.h"
+#include "lv_math.h"
+#include "lv_timer.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_anim
+ * @brief    lv_anim Firmware
+ * @{
  */
 
 #ifndef LV_ANIM_H
@@ -13,12 +37,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_ext_data.h"
-#include "lv_types.h"
-#include "lv_math.h"
-#include "lv_timer.h"
-#include "lv_ll.h"
 
 /*********************
  *      DEFINES
@@ -493,7 +511,6 @@ uint32_t lv_anim_resolve_speed(uint32_t speed, int32_t start, int32_t end);
  */
 uint32_t lv_anim_speed_to_time(uint32_t speed, int32_t start, int32_t end);
 
-
 /**
  * Manually refresh the state of the animations.
  * Useful to make the animations running in a blocking process where
@@ -591,3 +608,5 @@ void lv_anim_set_external_data(lv_anim_t * anim, void * data, void (* free_cb)(v
 #endif
 
 #endif /*LV_ANIM_H*/
+
+/** @} */

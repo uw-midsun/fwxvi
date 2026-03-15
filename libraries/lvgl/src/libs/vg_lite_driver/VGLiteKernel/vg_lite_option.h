@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_option.h
+ *
+ * @brief   Vg Lite Option
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_option
+ * @brief    vg_lite_option Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    The MIT License (MIT)
@@ -55,7 +79,6 @@
 #ifndef VG_LITE_KERNEL_OPTION_H
 #define VG_LITE_KERNEL_OPTION_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
 #ifdef __cplusplus
@@ -141,3 +164,5 @@ extern "C" {
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_KERNEL_OPTION_H */
+
+/** @} */

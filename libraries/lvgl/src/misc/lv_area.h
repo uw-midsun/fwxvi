@@ -1,6 +1,27 @@
-/**
- * @file lv_area.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_area.h
  *
+ * @brief   Lv Area
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_math.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_area
+ * @brief    lv_area Firmware
+ * @{
  */
 
 #ifndef LV_AREA_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
-#include "lv_math.h"
 
 /*********************
  *      DEFINES
@@ -252,3 +270,5 @@ int32_t lv_pct_to_px(int32_t v, int32_t base);
 #endif
 
 #endif
+
+/** @} */

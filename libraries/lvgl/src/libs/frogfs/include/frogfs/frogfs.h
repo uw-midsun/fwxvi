@@ -1,17 +1,33 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 #pragma once
+
+/************************************************************************************************
+ * @file    frogfs.h
+ *
+ * @brief   Frogfs
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "frogfs_types.h"
+
+/* Intra-component Headers */
+#include LV_STDDEF_INCLUDE
+#include LV_STDINT_INCLUDE
+
+/**
+ * @defgroup frogfs
+ * @brief    frogfs Firmware
+ * @{
+ */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../../../lv_conf_internal.h"
-#include LV_STDDEF_INCLUDE
-#include LV_STDINT_INCLUDE
-#include "frogfs_types.h"
 
 /**
  * \brief       Magic number used in the frogfs file header
@@ -258,3 +274,5 @@ long frogfs_telldir(frogfs_dh_t *dh);
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
+
+/** @} */

@@ -1,14 +1,31 @@
-/**
- * @file lv_uefi_std_wrapper.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi_std_wrapper.h
  *
+ * @brief   Lv Uefi Std Wrapper
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+    #include LV_USE_UEFI_INCLUDE
+
+/**
+ * @defgroup lv_uefi_std_wrapper
+ * @brief    lv_uefi_std_wrapper Firmware
+ * @{
  */
 
 #ifndef LV_UEFI_STD_WRAPPER_H
 #define LV_UEFI_STD_WRAPPER_H
 
 #if LV_USE_UEFI
-
-    #include LV_USE_UEFI_INCLUDE
 
     /*************************************
     * TYPES
@@ -153,3 +170,4 @@
 #endif
 
 #endif
+/** @} */

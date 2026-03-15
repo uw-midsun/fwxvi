@@ -1,18 +1,26 @@
-/**
- * @file lv_vg_lite_path.c
+/************************************************************************************************
+ * @file    lv_vg_lite_path.c
  *
- */
+ * @brief   Lv Vg Lite Path
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_draw_vg_lite_type.h"
+#include "lv_vg_lite_math.h"
+#include "lv_vg_lite_path.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_vg_lite_path.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "lv_draw_vg_lite_type.h"
-#include "lv_vg_lite_math.h"
 
 /*********************
  *      DEFINES

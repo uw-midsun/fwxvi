@@ -1,6 +1,28 @@
-/**
- * @file lv_draw_ppa.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_ppa.h
  *
+ * @brief   Lv Draw Ppa
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../display/lv_display_private.h"
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_area_private.h"
+#include "../../lv_draw_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_ppa
+ * @brief    lv_draw_ppa Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_PPA_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_PPA
-
-#include "../../lv_draw_private.h"
-#include "../../../display/lv_display_private.h"
-#include "../../../misc/lv_area_private.h"
 
 /*********************
  *      DEFINES
@@ -55,3 +71,5 @@ void lv_draw_ppa_img(lv_draw_task_t * t, const lv_draw_image_dsc_t * dsc,
 #endif
 
 #endif /* LV_DRAW_PPA_H */
+
+/** @} */

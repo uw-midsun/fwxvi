@@ -1,28 +1,38 @@
-/**
- * @file lv_refr.c
+/************************************************************************************************
+ * @file    lv_refr.c
  *
- */
+ * @brief   Lv Refr
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../display/lv_display.h"
+#include "../display/lv_display_private.h"
+#include "../draw/lv_draw_mask.h"
+#include "../draw/lv_draw_private.h"
+#include "../draw/sw/lv_draw_sw_mask_private.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_math.h"
+#include "../misc/lv_profiler.h"
+#include "../misc/lv_timer_private.h"
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_string.h"
+#include "../tick/lv_tick.h"
+#include "lv_global.h"
+#include "lv_obj_draw_private.h"
+#include "lv_obj_event_private.h"
+#include "lv_obj_private.h"
+#include "lv_refr_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_refr_private.h"
-#include "lv_obj_draw_private.h"
-#include "../misc/lv_area_private.h"
-#include "../draw/sw/lv_draw_sw_mask_private.h"
-#include "../draw/lv_draw_mask.h"
-#include "lv_obj_private.h"
-#include "lv_obj_event_private.h"
-#include "../display/lv_display.h"
-#include "../display/lv_display_private.h"
-#include "../tick/lv_tick.h"
-#include "../misc/lv_timer_private.h"
-#include "../misc/lv_math.h"
-#include "../misc/lv_profiler.h"
-#include "../misc/lv_types.h"
-#include "../draw/lv_draw_private.h"
-#include "../stdlib/lv_string.h"
-#include "lv_global.h"
 
 /*********************
  *      DEFINES
@@ -493,7 +503,6 @@ lv_obj_t * lv_refr_get_top_obj(const lv_area_t * area_p, lv_obj_t * obj)
     return found_p;
 }
 
-
 void lv_obj_refr(lv_layer_t * layer, lv_obj_t * obj)
 {
     LV_ASSERT_NULL(layer);
@@ -955,7 +964,6 @@ static void refr_area(const lv_area_t * area_p, int32_t y_offset)
             refr_configured_layer(tile_layer);
             tile_layer->all_tasks_added = true;
         }
-
 
         /*Wait until all tiles are ready and destroy remove them*/
         for(i = 0; i < tile_cnt; i++) {

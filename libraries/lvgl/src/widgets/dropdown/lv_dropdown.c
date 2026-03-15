@@ -1,29 +1,38 @@
-/**
- * @file lv_dropdown.c
+/************************************************************************************************
+ * @file    lv_dropdown.c
  *
- */
+ * @brief   Lv Dropdown
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_group.h"
+#include "../../core/lv_obj.h"
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_observer_private.h"
+#include "../../display/lv_display.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../font/lv_symbol_def.h"
+#include "../../indev/lv_indev.h"
+#include "../../misc/lv_anim.h"
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_text_ap.h"
+#include "../../misc/lv_text_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_dropdown_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_dropdown_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include "../../core/lv_obj.h"
 #if LV_USE_DROPDOWN != 0
-
-#include "../../misc/lv_assert.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_group.h"
-#include "../../indev/lv_indev.h"
-#include "../../display/lv_display.h"
-#include "../../font/lv_symbol_def.h"
-#include "../../misc/lv_anim.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_text_ap.h"
-#include "../../misc/lv_text_private.h"
-#include "../../core/lv_observer_private.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES
@@ -682,8 +691,6 @@ lv_observer_t * lv_dropdown_bind_value(lv_obj_t * obj, lv_subject_t * subject)
     return observer;
 }
 #endif /*LV_USE_OBSERVER*/
-
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -1399,6 +1406,5 @@ static void dropdown_value_observer_cb(lv_observer_t * observer, lv_subject_t * 
 }
 
 #endif /*LV_USE_OBSERVER*/
-
 
 #endif

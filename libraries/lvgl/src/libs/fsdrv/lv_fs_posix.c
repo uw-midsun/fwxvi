@@ -1,22 +1,31 @@
-/**
- * @file lv_fs_posix.c
+/************************************************************************************************
+ * @file    lv_fs_posix.c
  *
- */
+ * @brief   Lv Fs Posix
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lvgl.h"
 
 #if LV_USE_FS_POSIX
-
-#include <fcntl.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <unistd.h>
-#include <errno.h>
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

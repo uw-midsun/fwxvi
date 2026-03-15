@@ -1,6 +1,28 @@
-/**
- * @file lv_color_op.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_color_op.h
  *
+ * @brief   Lv Color Op
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_assert.h"
+#include "lv_color.h"
+#include "lv_math.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_color_op
+ * @brief    lv_color_op Firmware
+ * @{
  */
 
 #ifndef LV_COLOR_OP_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_assert.h"
-#include "lv_math.h"
-#include "lv_color.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -103,3 +121,5 @@ lv_color32_t lv_color_over32(lv_color32_t fg, lv_color32_t bg);
 #endif
 
 #endif /*LV_COLOR_OP_H*/
+
+/** @} */

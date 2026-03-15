@@ -1,6 +1,25 @@
-/**
- * @file lv_symbol_def.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_symbol_def.h
  *
+ * @brief   Lv Symbol Def
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_symbol_def
+ * @brief    lv_symbol_def Firmware
+ * @{
  */
 
 #ifndef LV_SYMBOL_DEF_H
@@ -9,8 +28,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../lv_conf_internal.h"
 
 /*-------------------------------
  * Symbols from "normal" font
@@ -355,3 +372,5 @@ enum _lv_str_symbol_id_t {
 #endif
 
 #endif /*LV_SYMBOL_DEF_H*/
+
+/** @} */

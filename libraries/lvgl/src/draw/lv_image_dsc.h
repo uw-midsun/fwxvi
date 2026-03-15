@@ -1,6 +1,25 @@
-/**
- * @file lv_image_dsc.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_image_dsc.h
  *
+ * @brief   Lv Image Dsc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_image_dsc
+ * @brief    lv_image_dsc Firmware
+ * @{
  */
 
 #ifndef LV_IMAGE_DSC_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
 
 /*********************
  *      DEFINES
@@ -150,3 +168,5 @@ typedef struct {
 #endif
 
 #endif /*LV_IMAGE_DSC_H*/
+
+/** @} */

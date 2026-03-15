@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSwRasterTexmap.h
+ *
+ * @brief   Tvgswrastertexmap
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSwRasterTexmap
+ * @brief    tvgSwRasterTexmap Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2021 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,7 +44,6 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 struct Vertex
@@ -53,7 +76,6 @@ static float dudx, dvdx;
 static float dxdya, dxdyb, dudya, dvdya;
 static float xa, xb, ua, va;
 
-
 //Y Range exception handling
 static bool _arrange(const SwImage* image, const SwBBox* region, int& yStart, int& yEnd)
 {
@@ -74,7 +96,6 @@ static bool _arrange(const SwImage* image, const SwBBox* region, int& yStart, in
 
     return true;
 }
-
 
 static bool _rasterMaskedPolygonImageSegment(SwSurface* surface, const SwImage* image, const SwBBox* region, int yStart, int yEnd, AASpans* aaSpans, uint8_t opacity, uint8_t dirFlag = 0)
 {
@@ -271,7 +292,6 @@ static bool _rasterMaskedPolygonImageSegment(SwSurface* surface, const SwImage* 
 #endif
 }
 
-
 static void _rasterBlendingPolygonImageSegment(SwSurface* surface, const SwImage* image, const SwBBox* region, int yStart, int yEnd, AASpans* aaSpans, uint8_t opacity)
 {
     float _dudx = dudx, _dvdx = dvdx;
@@ -447,7 +467,6 @@ static void _rasterBlendingPolygonImageSegment(SwSurface* surface, const SwImage
     ua = _ua;
     va = _va;
 }
-
 
 static void _rasterPolygonImageSegment(SwSurface* surface, const SwImage* image, const SwBBox* region, int yStart, int yEnd, AASpans* aaSpans, uint8_t opacity, bool matting)
 {
@@ -645,7 +664,6 @@ static void _rasterPolygonImageSegment(SwSurface* surface, const SwImage* image,
     va = _va;
 }
 
-
 /* This mapping algorithm is based on Mikael Kalms's. */
 static void _rasterPolygonImage(SwSurface* surface, const SwImage* image, const SwBBox* region, Polygon& polygon, AASpans* aaSpans, uint8_t opacity)
 {
@@ -823,7 +841,6 @@ static void _rasterPolygonImage(SwSurface* surface, const SwImage* image, const 
     }
 }
 
-
 static AASpans* _AASpans(float ymin, float ymax, const SwImage* image, const SwBBox* region)
 {
     auto yStart = static_cast<int>(ymin);
@@ -851,7 +868,6 @@ static AASpans* _AASpans(float ymin, float ymax, const SwImage* image, const SwB
     return aaSpans;
 }
 
-
 static void _calcIrregularCoverage(AALine* lines, int32_t eidx, int32_t y, int32_t diagonal, int32_t edgeDist, bool reverse)
 {
     if (eidx == 1) reverse = !reverse;
@@ -865,7 +881,6 @@ static void _calcIrregularCoverage(AALine* lines, int32_t eidx, int32_t y, int32
         else lines[tmp].coverage[eidx] = (coverage * ry);
     }
 }
-
 
 static void _calcVertCoverage(AALine *lines, int32_t eidx, int32_t y, int32_t rewind, bool reverse)
 {
@@ -881,13 +896,11 @@ static void _calcVertCoverage(AALine *lines, int32_t eidx, int32_t y, int32_t re
     }
 }
 
-
 static void _calcHorizCoverage(AALine *lines, int32_t eidx, int32_t y, int32_t x, int32_t x2)
 {
     lines[y].length[eidx] = abs(x - x2);
     lines[y].coverage[eidx] = (255 / (lines[y].length[eidx] + 1));
 }
-
 
 /*
  * This Anti-Aliasing mechanism is originated from Hermet Park's idea.
@@ -1040,7 +1053,6 @@ static void _calcAAEdge(AASpans *aaSpans, int32_t eidx)
     }
 }
 
-
 static bool _apply(SwSurface* surface, AASpans* aaSpans)
 {
     auto end = surface->buf32 + surface->h * surface->stride;
@@ -1101,7 +1113,6 @@ static bool _apply(SwSurface* surface, AASpans* aaSpans)
 
     return true;
 }
-
 
 /*
     2 triangles constructs 1 mesh.
@@ -1167,3 +1178,5 @@ static bool _rasterTexmapPolygon(SwSurface* surface, const SwImage* image, const
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

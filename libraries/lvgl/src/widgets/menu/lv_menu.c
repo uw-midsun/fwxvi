@@ -1,13 +1,29 @@
-/**
- * @file lv_menu.c
+/************************************************************************************************
+ * @file    lv_menu.c
  *
- */
+ * @brief   Lv Menu
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../layouts/lv_layout.h"
+#include "../../stdlib/lv_string.h"
+#include "../button/lv_button.h"
+#include "../image/lv_image.h"
+#include "../label/lv_label.h"
+#include "lv_menu_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_menu_private.h"
-#include "../../core/lv_obj_class_private.h"
 
 #if LV_USE_MENU
 
@@ -15,13 +31,6 @@
  *      DEFINES
  *********************/
 #define MY_CLASS (&lv_menu_class)
-
-#include "../../core/lv_obj_private.h"
-#include "../../layouts/lv_layout.h"
-#include "../../stdlib/lv_string.h"
-#include "../label/lv_label.h"
-#include "../button/lv_button.h"
-#include "../image/lv_image.h"
 
 /**********************
  *      TYPEDEFS

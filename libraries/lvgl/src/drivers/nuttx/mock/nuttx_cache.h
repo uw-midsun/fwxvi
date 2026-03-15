@@ -1,6 +1,25 @@
-/**
- * @file nuttx_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    nuttx_cache.h
  *
+ * @brief   Nuttx Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup nuttx_cache
+ * @brief    nuttx_cache Firmware
+ * @{
  */
 
 #ifndef NUTTX_CACHE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include <stdint.h>
 
 /*********************
  *      DEFINES
@@ -49,3 +66,5 @@ static inline void up_flush_dcache(uintptr_t start, uintptr_t end)
 #endif
 
 #endif /*NUTTX_CACHE_H*/
+
+/** @} */

@@ -1,7 +1,25 @@
-/**
-* @file lv_cache_lru_rb.c
-*
-*/
+/************************************************************************************************
+ * @file    lv_cache_lru_rb.c
+ *
+ * @brief   Lv Cache Lru Rb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../stdlib/lv_sprintf.h"
+#include "../../../stdlib/lv_string.h"
+#include "../../lv_iter.h"
+#include "../../lv_ll.h"
+#include "../../lv_rb.h"
+#include "../../lv_rb_private.h"
+#include "../lv_cache_entry.h"
+#include "lv_cache_lru_rb.h"
+
+/* Intra-component Headers */
 
 /***************************************************************************\
 *                                                                           *
@@ -43,15 +61,6 @@
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_cache_lru_rb.h"
-#include "../lv_cache_entry.h"
-#include "../../../stdlib/lv_sprintf.h"
-#include "../../../stdlib/lv_string.h"
-#include "../../lv_ll.h"
-#include "../../lv_rb_private.h"
-#include "../../lv_rb.h"
-#include "../../lv_iter.h"
 
 /*********************
  *      DEFINES

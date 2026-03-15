@@ -1,6 +1,26 @@
-/**
- * @file lv_table_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_table_private.h
  *
+ * @brief   Lv Table Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_table.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_table_private
+ * @brief    lv_table_private Firmware
+ * @{
  */
 
 #ifndef LV_TABLE_PRIVATE_H
@@ -14,10 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_table.h"
-
 #if LV_USE_TABLE != 0
-#include "../../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES
@@ -46,7 +63,6 @@ struct _lv_table_t {
     uint32_t row_act;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -62,3 +78,5 @@ struct _lv_table_t {
 #endif
 
 #endif /*LV_TABLE_PRIVATE_H*/
+
+/** @} */

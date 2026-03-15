@@ -1,22 +1,32 @@
-/**
- * @file lv_draw_image.c
+/************************************************************************************************
+ * @file    lv_draw_image.c
  *
- */
+ * @brief   Lv Draw Image
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj_private.h"
+#include "../core/lv_refr.h"
+#include "../display/lv_display.h"
+#include "../misc/lv_area_private.h"
+#include "../misc/lv_log.h"
+#include "../misc/lv_math.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_draw_image_private.h"
+#include "lv_draw_private.h"
+#include "lv_image_decoder_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_image_private.h"
-#include "../misc/lv_area_private.h"
-#include "lv_image_decoder_private.h"
-#include "lv_draw_private.h"
-#include "../display/lv_display.h"
-#include "../misc/lv_log.h"
-#include "../misc/lv_math.h"
-#include "../core/lv_refr.h"
-#include "../core/lv_obj_private.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

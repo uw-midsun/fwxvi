@@ -1,6 +1,26 @@
-/**
- * @file lv_calendar_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_calendar_private.h
  *
+ * @brief   Lv Calendar Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_calendar.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_calendar_private
+ * @brief    lv_calendar_private Firmware
+ * @{
  */
 
 #ifndef LV_CALENDAR_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_calendar.h"
 
 #if LV_USE_CALENDAR
 
@@ -52,7 +69,6 @@ struct _lv_calendar_t {
 #endif
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -68,3 +84,5 @@ struct _lv_calendar_t {
 #endif
 
 #endif /*LV_CALENDAR_PRIVATE_H*/
+
+/** @} */

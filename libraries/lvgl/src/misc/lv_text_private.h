@@ -1,6 +1,25 @@
-/**
- * @file lv_text_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_text_private.h
  *
+ * @brief   Lv Text Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_text.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_text_private
+ * @brief    lv_text_private Firmware
+ * @{
  */
 
 #ifndef LV_TEXT_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_text.h"
 
 /*********************
  *      DEFINES
@@ -46,7 +63,6 @@ typedef struct {
     int32_t max_width;      /**< Max width of the text (break the lines to fit this size). Set COORD_MAX to avoid*/
     lv_text_flag_t text_flags;
 } lv_text_attributes_t;
-
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -328,3 +344,5 @@ extern uint32_t (*const lv_text_get_encoded_length)(const char * txt);
 #endif
 
 #endif /*LV_TEXT_PRIVATE_H*/
+
+/** @} */

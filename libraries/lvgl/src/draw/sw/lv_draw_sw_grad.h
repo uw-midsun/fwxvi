@@ -1,6 +1,26 @@
-/**
- * @file lv_draw_sw_grad.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_sw_grad.h
  *
+ * @brief   Lv Draw Sw Grad
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_style.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_sw_grad
+ * @brief    lv_draw_sw_grad Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_SW_GRAD_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../misc/lv_color.h"
-#include "../../misc/lv_style.h"
 
 #if LV_USE_DRAW_SW
 
@@ -31,7 +49,6 @@ typedef struct {
     lv_opa_t   *  opa_map;
     uint32_t size;
 } lv_draw_sw_grad_calc_t;
-
 
 /**********************
  *      PROTOTYPES
@@ -59,7 +76,6 @@ lv_draw_sw_grad_calc_t * lv_draw_sw_grad_get(const lv_grad_dsc_t * gradient, int
 void lv_draw_sw_grad_cleanup(lv_draw_sw_grad_calc_t * grad);
 
 #if LV_USE_DRAW_SW_COMPLEX_GRADIENTS
-
 
 /**
  * Calculate constants from the given parameters that are used during rendering
@@ -145,3 +161,5 @@ void /* LV_ATTRIBUTE_FAST_MEM */ lv_draw_sw_grad_conical_get_line(lv_grad_dsc_t 
 #endif
 
 #endif /*LV_DRAW_SW_GRAD_H*/
+
+/** @} */

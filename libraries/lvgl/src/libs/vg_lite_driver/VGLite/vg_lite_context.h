@@ -1,3 +1,38 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_context.h
+ *
+ * @brief   Vg Lite Context
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+        #include <unistd.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+    #include "dumpAPI.h"
+#include "../../../lv_conf_internal.h"
+#include "../VGLiteKernel/vg_lite_kernel.h"
+#include "../VGLiteKernel/vg_lite_option.h"
+#include "../inc/vg_lite.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_context
+ * @brief    vg_lite_context Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,18 +60,7 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <math.h>
-#include "../inc/vg_lite.h"
-#include "../VGLiteKernel/vg_lite_kernel.h"
-#include "../VGLiteKernel/vg_lite_option.h"
 
 #define DUMP_CAPTURE                            0
 #define DUMP_COMMAND_CAPTURE                    0
@@ -45,7 +69,6 @@
 #define DUMP_LAST_CAPTURE                       0
 
 #if DUMP_API
-    #include "dumpAPI.h"
 #endif
 
 #define VGLITE_LOG    printf
@@ -272,7 +295,6 @@ extern vg_lite_void setup_lvgl_image(vg_lite_buffer_t * dst, vg_lite_buffer_t * 
 
 #if DUMP_COMMAND || DUMP_IMAGE
     #ifdef __linux__
-        #include <unistd.h>
     #endif
     FILE * fp;
     char filename[30];
@@ -311,3 +333,5 @@ static inline void __dummy_dump_buffer(char * Tag, size_t Physical, void * Logic
 
 #endif /* LV_USE_VG_LITE_DRIVER */
 
+
+/** @} */

@@ -1,13 +1,23 @@
-/**
- * @file lv_rb.c
+/************************************************************************************************
+ * @file    lv_rb.c
  *
- */
+ * @brief   Lv Rb
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../stdlib/lv_string.h"
+#include "lv_rb_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_rb_private.h"
-#include "../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

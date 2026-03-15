@@ -1,3 +1,29 @@
+/************************************************************************************************
+ * @file    frogfs.c
+ *
+ * @brief   Frogfs
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../../../misc/lv_assert.h"
+#include "../../../misc/lv_fs.h"
+#include "../../../misc/lv_log.h"
+#include "../../../stdlib/lv_mem.h"
+#include "../../../stdlib/lv_string.h"
+#include "../include/frogfs/frogfs.h"
+#include "frogfs_format.h"
+#include "frogfs_priv.h"
+
+/* Intra-component Headers */
+#include LV_INTTYPES_INCLUDE
+#include LV_LIMITS_INCLUDE
+#include LV_STDINT_INCLUDE
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -8,22 +34,7 @@
  * tool that comes with this source distribution.
  */
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_FS_FROGFS
-
-#include LV_INTTYPES_INCLUDE
-#include LV_LIMITS_INCLUDE
-#include LV_STDINT_INCLUDE
-#include "../../../stdlib/lv_string.h"
-#include "../../../stdlib/lv_mem.h"
-#include "../../../misc/lv_log.h"
-#include "../../../misc/lv_assert.h"
-#include "../../../misc/lv_fs.h"
-
-#include "frogfs_priv.h"
-#include "frogfs_format.h"
-#include "../include/frogfs/frogfs.h"
-
 
 typedef struct frogfs_fs_t {
     const frogfs_head_t *head; /**< fs header pointer */

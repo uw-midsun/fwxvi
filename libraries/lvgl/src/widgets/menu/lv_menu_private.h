@@ -1,6 +1,26 @@
-/**
- * @file lv_menu_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_menu_private.h
  *
+ * @brief   Lv Menu Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_private.h"
+#include "lv_menu.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_menu_private
+ * @brief    lv_menu_private Firmware
+ * @{
  */
 
 #ifndef LV_MENU_PRIVATE_H
@@ -13,9 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "../../core/lv_obj_private.h"
-#include "lv_menu.h"
 
 #if LV_USE_MENU
 
@@ -66,7 +83,6 @@ struct _lv_menu_page_t {
     bool     static_title;
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -82,3 +98,5 @@ struct _lv_menu_page_t {
 #endif
 
 #endif /*LV_MENU_PRIVATE_H*/
+
+/** @} */

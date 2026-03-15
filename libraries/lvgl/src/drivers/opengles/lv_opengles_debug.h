@@ -1,6 +1,25 @@
-/**
- * @file lv_opengles_debug.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_opengles_debug.h
  *
+ * @brief   Lv Opengles Debug
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_opengles_debug
+ * @brief    lv_opengles_debug Firmware
+ * @{
  */
 
 #ifndef LV_OPENGLES_DEBUG_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_OPENGLES
 
 /*********************
@@ -58,3 +76,5 @@ void GLLogCall(const char * function, const char * file, int line);
 #endif
 
 #endif /* LV_OPENGLES_DEBUG_H */
+
+/** @} */

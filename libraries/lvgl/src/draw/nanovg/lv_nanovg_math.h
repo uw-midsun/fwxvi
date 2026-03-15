@@ -1,6 +1,28 @@
-/**
- * @file lv_nanovg_math.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_nanovg_math.h
  *
+ * @brief   Lv Nanovg Math
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_nanovg_math
+ * @brief    lv_nanovg_math Firmware
+ * @{
  */
 
 #ifndef LV_NANOVG_MATH_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include <math.h>
-#include <stdbool.h>
-#include <float.h>
 
 /*********************
  *      DEFINES
@@ -100,3 +116,5 @@ static inline float nvg_math_inv_sqrtf(float number)
 #endif
 
 #endif /*LV_NANOVG_MATH_H*/
+
+/** @} */

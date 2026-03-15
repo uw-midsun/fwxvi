@@ -1,6 +1,25 @@
-/**
- * @file lv_sdl_mouse.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_sdl_mouse.h
  *
+ * @brief   Lv Sdl Mouse
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_sdl_window.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_sdl_mouse
+ * @brief    lv_sdl_mouse Firmware
+ * @{
  */
 
 #ifndef LV_SDL_MOUSE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_sdl_window.h"
 #if LV_USE_SDL
 
 /*********************
@@ -41,3 +59,5 @@ lv_indev_t * lv_sdl_mouse_create(void);
 #endif
 
 #endif /* LV_SDL_MOUSE_H */
+
+/** @} */

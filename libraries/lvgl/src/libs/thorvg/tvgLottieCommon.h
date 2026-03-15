@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieCommon.h
+ *
+ * @brief   Tvglottiecommon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <cmath>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgArray.h"
+#include "tvgCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieCommon
+ * @brief    tvgLottieCommon Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,15 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_COMMON_
 #define _TVG_LOTTIE_COMMON_
-
-#include <cmath>
-#include "tvgCommon.h"
-#include "tvgArray.h"
 
 struct PathSet
 {
@@ -38,19 +60,16 @@ struct PathSet
     uint16_t cmdsCnt = 0;
 };
 
-
 struct RGB24
 {
     int32_t rgb[3];
 };
-
 
 struct ColorStop
 {
     Fill::ColorStop* data = nullptr;
     Array<float>* input = nullptr;
 };
-
 
 struct TextDocument
 {
@@ -73,32 +92,29 @@ struct TextDocument
     uint8_t justify;
 };
 
-
 static inline int32_t REMAP255(float val)
 {
     return (int32_t)nearbyintf(val * 255.0f);
 }
-
 
 static inline RGB24 operator-(const RGB24& lhs, const RGB24& rhs)
 {
     return {lhs.rgb[0] - rhs.rgb[0], lhs.rgb[1] - rhs.rgb[1], lhs.rgb[2] - rhs.rgb[2]};
 }
 
-
 static inline RGB24 operator+(const RGB24& lhs, const RGB24& rhs)
 {
     return {lhs.rgb[0] + rhs.rgb[0], lhs.rgb[1] + rhs.rgb[1], lhs.rgb[2] + rhs.rgb[2]};
 }
-
 
 static inline RGB24 operator*(const RGB24& lhs, float rhs)
 {
     return {(int32_t)nearbyintf(lhs.rgb[0] * rhs), (int32_t)nearbyintf(lhs.rgb[1] * rhs), (int32_t)nearbyintf(lhs.rgb[2] * rhs)};
 }
 
-
 #endif //_TVG_LOTTIE_COMMON_
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

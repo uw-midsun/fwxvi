@@ -1,6 +1,25 @@
-/**
- * @file lv_tiny_ttf.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tiny_ttf.h
  *
+ * @brief   Lv Tiny Ttf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tiny_ttf
+ * @brief    lv_tiny_ttf Firmware
+ * @{
  */
 
 #ifndef LV_TINY_TTF_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_TINY_TTF
 
@@ -105,3 +123,5 @@ void lv_tiny_ttf_destroy(lv_font_t * font);
 #endif
 
 #endif /*LV_TINY_TTF_H*/
+
+/** @} */

@@ -1,6 +1,27 @@
-/**
- * @file lv_tabview.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_tabview.h
  *
+ * @brief   Lv Tabview
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_obj_property.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_tabview
+ * @brief    lv_tabview Firmware
+ * @{
  */
 
 #ifndef LV_TABVIEW_H
@@ -13,9 +34,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
-#include "../../core/lv_obj.h"
-#include "../../core/lv_obj_property.h"
 
 #if LV_USE_TABVIEW
 
@@ -150,3 +168,5 @@ lv_dir_t lv_tabview_get_tab_bar_position(lv_obj_t * obj);
 #endif
 
 #endif /*LV_TABVIEW_H*/
+
+/** @} */

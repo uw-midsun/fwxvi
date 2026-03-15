@@ -1,6 +1,28 @@
-/**
- *@file lv_theme.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_theme.h
  *
+ * @brief   Lv Theme
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj.h"
+#include "default/lv_theme_default.h"
+#include "mono/lv_theme_mono.h"
+
+/* Intra-component Headers */
+#include "simple/lv_theme_simple.h"
+
+/**
+ * @defgroup lv_theme
+ * @brief    lv_theme Firmware
+ * @{
  */
 
 #ifndef LV_THEME_H
@@ -13,7 +35,6 @@ extern "C" {
 /*********************
  *    INCLUDES
  *********************/
-#include "../core/lv_obj.h"
 
 /*********************
  *    DEFINES
@@ -106,7 +127,6 @@ lv_color_t lv_theme_get_color_primary(lv_obj_t * obj);
  */
 lv_color_t lv_theme_get_color_secondary(lv_obj_t * obj);
 
-
 /**
  * Delete a theme
  * @param   theme the theme to destroy
@@ -133,12 +153,10 @@ void lv_theme_set_external_data(lv_theme_t * theme, void * data, void (* free_cb
  *    MACROS
  **********************/
 
-#include "default/lv_theme_default.h"
-#include "mono/lv_theme_mono.h"
-#include "simple/lv_theme_simple.h"
-
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif
 
 #endif /*LV_THEME_H*/
+
+/** @} */

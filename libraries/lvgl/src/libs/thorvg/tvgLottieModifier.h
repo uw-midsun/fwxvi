@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgLottieModifier.h
+ *
+ * @brief   Tvglottiemodifier
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgArray.h"
+#include "tvgCommon.h"
+#include "tvgMath.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgLottieModifier
+ * @brief    tvgLottieModifier Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2024 the ThorVG project. All rights reserved.
 
@@ -20,16 +47,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_LOTTIE_MODIFIER_H_
 #define _TVG_LOTTIE_MODIFIER_H_
-
-#include "tvgCommon.h"
-#include "tvgArray.h"
-#include "tvgMath.h"
-
 
 struct LottieRoundnessModifier
 {
@@ -42,7 +63,6 @@ struct LottieRoundnessModifier
     bool modifyPolystar(const Array<PathCommand>& inCmds, const Array<Point>& inPts, Array<PathCommand>& outCmds, Array<Point>& outPts, float outerRoundness, bool hasRoundness) const;
     bool modifyRect(const Point& size, float& r) const;
 };
-
 
 struct LottieOffsetModifier
 {
@@ -75,3 +95,5 @@ private:
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

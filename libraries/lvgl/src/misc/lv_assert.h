@@ -1,6 +1,28 @@
-/**
- * @file lv_assert.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_assert.h
  *
+ * @brief   Lv Assert
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../stdlib/lv_mem.h"
+#include "lv_log.h"
+
+/* Intra-component Headers */
+#include LV_ASSERT_HANDLER_INCLUDE
+
+/**
+ * @defgroup lv_assert
+ * @brief    lv_assert Firmware
+ * @{
  */
 
 #ifndef LV_ASSERT_H
@@ -13,10 +35,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_log.h"
-#include "../stdlib/lv_mem.h"
-#include LV_ASSERT_HANDLER_INCLUDE
 
 /*********************
  *      DEFINES
@@ -85,3 +103,5 @@ extern "C" {
 #endif
 
 #endif /*LV_ASSERT_H*/
+
+/** @} */

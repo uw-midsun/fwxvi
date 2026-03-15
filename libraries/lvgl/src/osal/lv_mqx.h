@@ -1,6 +1,27 @@
-/**
- * @file lv_mqx.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_mqx.h
  *
+ * @brief   Lv Mqx
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_os_private.h"
+#include "mqx.h"
+#include "mutex.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_mqx
+ * @brief    lv_mqx Firmware
+ * @{
  */
 
 #ifndef LV_MQX_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_MQX
-
-#include "mqx.h"
-#include "mutex.h"
 
 /*********************
  *      DEFINES
@@ -49,3 +66,5 @@ typedef LWSEM_STRUCT lv_thread_sync_t;
 #endif
 
 #endif /*LV_MQX_H*/
+
+/** @} */

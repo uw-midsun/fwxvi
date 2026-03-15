@@ -1,21 +1,29 @@
-/**
- * @file lv_nanovg_utils.c
+/************************************************************************************************
+ * @file    lv_nanovg_utils.c
  *
- */
+ * @brief   Lv Nanovg Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <math.h>
+
+/* Inter-component Headers */
+#include "../../misc/lv_pending.h"
+#include "lv_draw_nanovg_private.h"
+#include "lv_nanovg_math.h"
+#include "lv_nanovg_utils.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "lv_nanovg_utils.h"
-
 #if LV_USE_DRAW_NANOVG
-
-#include "../../misc/lv_pending.h"
-#include "lv_draw_nanovg_private.h"
-#include "lv_nanovg_math.h"
-#include <float.h>
-#include <math.h>
 
 /*********************
 *      DEFINES

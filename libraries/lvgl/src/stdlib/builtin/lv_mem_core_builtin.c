@@ -1,24 +1,34 @@
-/**
- * @file lv_mem_core_builtin.c
- */
+/************************************************************************************************
+ * @file    lv_mem_core_builtin.c
+ *
+ * @brief   Lv Mem Core Builtin
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_ll.h"
+#include "../../misc/lv_log.h"
+#include "../../misc/lv_math.h"
+#include "../../osal/lv_os_private.h"
+#include "../lv_mem.h"
+#include "../lv_string.h"
+#include "lv_tlsf.h"
+
+/* Intra-component Headers */
+    #include LV_MEM_POOL_INCLUDE
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_mem.h"
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
 
-#include "lv_tlsf.h"
-#include "../lv_string.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_log.h"
-#include "../../misc/lv_ll.h"
-#include "../../misc/lv_math.h"
-#include "../../osal/lv_os_private.h"
-#include "../../core/lv_global.h"
-
 #ifdef LV_MEM_POOL_INCLUDE
-    #include LV_MEM_POOL_INCLUDE
 #endif
 
 /*********************

@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_options.h
+ *
+ * @brief   Vg Lite Options
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup vg_lite_options
+ * @brief    vg_lite_options Firmware
+ * @{
+ */
+
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -28,7 +52,6 @@
 #ifndef VG_LITE_OPTIONS_H
 #define VG_LITE_OPTIONS_H
 
-#include "../../../../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
 
     #define CHIPID          0x355
@@ -115,3 +138,5 @@
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_OPTIONS_H */
+
+/** @} */

@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    tvgSvgLoaderCommon.h
+ *
+ * @brief   Tvgsvgloadercommon
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "tvgArray.h"
+#include "tvgCommon.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup tvgSvgLoaderCommon
+ * @brief    tvgSvgLoaderCommon Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2020 - 2024 the ThorVG project. All rights reserved.
 
@@ -20,14 +46,10 @@
  * SOFTWARE.
  */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_THORVG_INTERNAL
 
 #ifndef _TVG_SVG_LOADER_COMMON_H_
 #define _TVG_SVG_LOADER_COMMON_H_
-
-#include "tvgCommon.h"
-#include "tvgArray.h"
 
 struct SvgNode;
 struct SvgStyleGradient;
@@ -116,7 +138,6 @@ constexpr SvgStrokeFlags operator |(SvgStrokeFlags a, SvgStrokeFlags b)
 {
     return SvgStrokeFlags(int(a) | int(b));
 }
-
 
 enum class SvgGradientType
 {
@@ -592,3 +613,5 @@ struct Box
 
 #endif /* LV_USE_THORVG_INTERNAL */
 
+
+/** @} */

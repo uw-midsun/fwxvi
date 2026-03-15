@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    lz4.c
+ *
+ * @brief   Lz4
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <limits.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "lz4.h"
+
+/* Intra-component Headers */
 /*
    LZ4 - Fast LZ compression algorithm
    Copyright (C) 2011-2023, Yann Collet.
@@ -32,7 +49,6 @@
     - LZ4 source repository : https://github.com/lz4/lz4
 */
 
-#include "../../lv_conf_internal.h"
 #if LV_USE_LZ4_INTERNAL
 
 /*-************************************
@@ -59,7 +75,6 @@
  * get treated as LZ4_ACCELERATION_MAX instead (fix #876)
  */
 #define LZ4_ACCELERATION_MAX 65537
-
 
 /*-************************************
 *  CPU Feature Detection
@@ -96,8 +111,6 @@
 #  define LZ4_FORCE_SW_BITCOUNT
 #endif
 
-
-
 /*-************************************
 *  Dependency
 **************************************/
@@ -116,9 +129,7 @@
 #ifndef LZ4_STATIC_LINKING_ONLY
 #  define LZ4_STATIC_LINKING_ONLY
 #endif
-#include "lz4.h"
 /* see also "memory routines" below */
-
 
 /*-************************************
 *  Compiler Options
@@ -189,7 +200,6 @@
 # define LZ4_ALIGN_TEST 1
 #endif
 
-
 /*-************************************
 *  Memory routines
 **************************************/
@@ -238,7 +248,6 @@ void  LZ4_free(void* p);
 #endif
 #define MEM_INIT(p,v,s)   LZ4_memset((p),(v),(s))
 
-
 /*-************************************
 *  Common Constants
 **************************************/
@@ -264,7 +273,6 @@ static const int LZ4_minLength = (MFLIMIT+1);
 #define ML_MASK  ((1U<<ML_BITS)-1)
 #define RUN_BITS (8-ML_BITS)
 #define RUN_MASK ((1U<<RUN_BITS)-1)
-
 
 /*-************************************
 *  Error detection
@@ -297,11 +305,9 @@ static int LZ4_isAligned(const void* ptr, size_t alignment)
     return ((size_t)ptr & (alignment -1)) == 0;
 }
 
-
 /*-************************************
 *  Types
 **************************************/
-#include <limits.h>
 #if defined(__cplusplus) || (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */)
 # include <stdint.h>
   typedef  uint8_t BYTE;
@@ -333,7 +339,6 @@ typedef enum {
     limitedOutput = 1,
     fillOutput = 2
 } limitedOutput_directive;
-
 
 /*-************************************
 *  Reading and writing into memory
@@ -429,7 +434,6 @@ static void LZ4_write32(void* memPtr, U32 value)
 
 #endif /* LZ4_FORCE_MEMORY_ACCESS */
 
-
 static U16 LZ4_readLE16(const void* memPtr)
 {
     if (LZ4_isLittleEndian()) {
@@ -476,7 +480,6 @@ void LZ4_wildCopy8(void* dstPtr, const void* srcPtr, void* dstEnd)
 
 static const unsigned inc32table[8] = {0, 1, 2,  1,  0,  4, 4, 4};
 static const int      dec64table[8] = {0, 0, 0, -1, -4,  1, 2, 3};
-
 
 #ifndef LZ4_FAST_DEC_LOOP
 #  if defined __i386__ || defined _M_IX86 || defined __x86_64__ || defined _M_X64
@@ -574,7 +577,6 @@ LZ4_memcpy_using_offset(BYTE* dstPtr, const BYTE* srcPtr, BYTE* dstEnd, const si
     }
 }
 #endif
-
 
 /*-************************************
 *  Common functions
@@ -677,7 +679,6 @@ static unsigned LZ4_NbCommonBytes (reg_t val)
     }
 }
 
-
 #define STEPSIZE sizeof(reg_t)
 LZ4_FORCE_INLINE
 unsigned LZ4_count(const BYTE* pIn, const BYTE* pMatch, const BYTE* pInLimit)
@@ -705,14 +706,12 @@ unsigned LZ4_count(const BYTE* pIn, const BYTE* pMatch, const BYTE* pInLimit)
     return (unsigned)(pIn - pStart);
 }
 
-
 #ifndef LZ4_COMMONDEFS_ONLY
 /*-************************************
 *  Local Constants
 **************************************/
 static const int LZ4_64Klimit = ((64 KB) + (MFLIMIT-1));
 static const U32 LZ4_skipTrigger = 6;  /* Increase this value ==> compression run slower on incompressible data */
-
 
 /*-************************************
 *  Local Structures and types
@@ -745,7 +744,6 @@ typedef enum { clearedTable = 0, byPtr, byU32, byU16 } tableType_t;
 typedef enum { noDict = 0, withPrefix64k, usingExtDict, usingDictCtx } dict_directive;
 typedef enum { noDictIssue = 0, dictSmall } dictIssue_directive;
 
-
 /*-************************************
 *  Local Utils
 **************************************/
@@ -753,7 +751,6 @@ int LZ4_versionNumber (void) { return LZ4_VERSION_NUMBER; }
 const char* LZ4_versionString(void) { return LZ4_VERSION_STRING; }
 int LZ4_compressBound(int isize)  { return LZ4_COMPRESSBOUND(isize); }
 int LZ4_sizeofState(void) { return sizeof(LZ4_stream_t); }
-
 
 /*-****************************************
 *  Internal Definitions, used only in Tests
@@ -1381,7 +1378,6 @@ LZ4_FORCE_INLINE int LZ4_compress_generic(
                 tableType, dictDirective, dictIssue, acceleration);
 }
 
-
 int LZ4_compress_fast_extState(void* state, const char* source, char* dest, int inputSize, int maxOutputSize, int acceleration)
 {
     LZ4_stream_t_internal* const ctx = & LZ4_initStream(state, sizeof(LZ4_stream_t)) -> internal_donotuse;
@@ -1452,7 +1448,6 @@ int LZ4_compress_fast_extState_fastReset(void* state, const char* src, char* dst
     }
 }
 
-
 int LZ4_compress_fast(const char* src, char* dest, int srcSize, int dstCapacity, int acceleration)
 {
     int result;
@@ -1471,12 +1466,10 @@ int LZ4_compress_fast(const char* src, char* dest, int srcSize, int dstCapacity,
     return result;
 }
 
-
 int LZ4_compress_default(const char* src, char* dst, int srcSize, int dstCapacity)
 {
     return LZ4_compress_fast(src, dst, srcSize, dstCapacity, 1);
 }
-
 
 /* Note!: This function leaves the stream in an unclean/broken state!
  * It is not safe to subsequently use the same state with a _fastReset() or
@@ -1505,7 +1498,6 @@ int LZ4_compress_destSize_extState(void* state, const char* src, char* dst, int*
     return r;
 }
 
-
 int LZ4_compress_destSize(const char* src, char* dst, int* srcSizePtr, int targetDstSize)
 {
 #if (LZ4_HEAPMODE)
@@ -1523,8 +1515,6 @@ int LZ4_compress_destSize(const char* src, char* dst, int* srcSizePtr, int targe
 #endif
     return result;
 }
-
-
 
 /*-******************************
 *  Streaming functions
@@ -1583,7 +1573,6 @@ int LZ4_freeStream (LZ4_stream_t* LZ4_stream)
     return (0);
 }
 #endif
-
 
 typedef enum { _ld_fast, _ld_slow } LoadDict_mode_e;
 #define HASH_UNIT sizeof(reg_t)
@@ -1686,7 +1675,6 @@ void LZ4_attach_dictionary(LZ4_stream_t* workingStream, const LZ4_stream_t* dict
     workingStream->internal_donotuse.dictCtx = dictCtx;
 }
 
-
 static void LZ4_renormDictT(LZ4_stream_t_internal* LZ4_dict, int nextSize)
 {
     assert(nextSize >= 0);
@@ -1705,7 +1693,6 @@ static void LZ4_renormDictT(LZ4_stream_t_internal* LZ4_dict, int nextSize)
         LZ4_dict->dictionary = dictEnd - LZ4_dict->dictSize;
     }
 }
-
 
 int LZ4_compress_fast_continue (LZ4_stream_t* LZ4_stream,
                                 const char* source, char* dest,
@@ -1785,7 +1772,6 @@ int LZ4_compress_fast_continue (LZ4_stream_t* LZ4_stream,
     }
 }
 
-
 /* Hidden debug function, to force-test external dictionary mode */
 int LZ4_compress_forceExtDict (LZ4_stream_t* LZ4_dict, const char* source, char* dest, int srcSize)
 {
@@ -1805,7 +1791,6 @@ int LZ4_compress_forceExtDict (LZ4_stream_t* LZ4_dict, const char* source, char*
 
     return result;
 }
-
 
 /*! LZ4_saveDict() :
  *  If previously compressed data block is not guaranteed to remain available at its memory location,
@@ -1836,8 +1821,6 @@ int LZ4_saveDict (LZ4_stream_t* LZ4_dict, char* safeBuffer, int dictSize)
     return dictSize;
 }
 
-
-
 /*-*******************************
  *  Decompression functions
  ********************************/
@@ -1846,7 +1829,6 @@ typedef enum { decode_full_block = 0, partial_decode = 1 } earlyEnd_directive;
 
 #undef MIN
 #define MIN(a,b)    ( (a) < (b) ? (a) : (b) )
-
 
 /* variant for decompress_unsafe()
  * does not know end of input
@@ -1968,7 +1950,6 @@ LZ4_decompress_unsafe_generic(
     return (int)(ip - istart);
 }
 
-
 /* Read the variable-length literal or match length.
  *
  * @ip : input pointer
@@ -2049,7 +2030,6 @@ LZ4_decompress_generic(
 
         const int checkOffset = (dictSize < (int)(64 KB));
 
-
         /* Set up the "end" pointers for the shortcut. */
         const BYTE* const shortiend = iend - 14 /*maxLL*/ - 2 /*offset*/;
         const BYTE* const shortoend = oend - 14 /*maxLL*/ - 18 /*maxML*/;
@@ -2058,7 +2038,6 @@ LZ4_decompress_generic(
         size_t offset;
         unsigned token;
         size_t length;
-
 
         DEBUGLOG(5, "LZ4_decompress_generic (srcSize:%i, dstSize:%i)", srcSize, outputSize);
 
@@ -2447,7 +2426,6 @@ LZ4_decompress_generic(
     }
 }
 
-
 /*===== Instantiate the API decoding functions. =====*/
 
 LZ4_FORCE_O2
@@ -2711,7 +2689,6 @@ LZ4_decompress_fast_continue (LZ4_streamDecode_t* LZ4_streamDecode,
     return result;
 }
 
-
 /*
 Advanced decoding functions :
 *_usingDict() :
@@ -2758,7 +2735,6 @@ int LZ4_decompress_fast_usingDict(const char* source, char* dest, int originalSi
     assert(dictSize >= 0);
     return LZ4_decompress_fast_extDict(source, dest, originalSize, dictStart, (size_t)dictSize);
 }
-
 
 /*=*************************************************
 *  Obsolete Functions

@@ -1,15 +1,37 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    vg_lite_platform.h
+ *
+ * @brief   Vg Lite Platform
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdio.h>
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "../VGLiteKernel/vg_lite_debug.h"
+#include "../VGLiteKernel/vg_lite_option.h"
+#include "../VGLiteKernel/vg_lite_type.h"
+
+/* Intra-component Headers */
+#include "stdint.h"
+#include "stdlib.h"
+
+/**
+ * @defgroup vg_lite_platform
+ * @brief    vg_lite_platform Firmware
+ * @{
+ */
+
 #ifndef VG_LITE_PLATFORM_H
 #define VG_LITE_PLATFORM_H
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "stdint.h"
-#include "stdlib.h"
-#include <stdio.h>
-#include "../VGLiteKernel/vg_lite_debug.h"
-#include "../VGLiteKernel/vg_lite_type.h"
-#include "../VGLiteKernel/vg_lite_option.h"
 
 #define VG_SYSTEM_RESERVE_COUNT 2
 
@@ -50,3 +72,4 @@ void vg_lite_IRQHandler(void);
 #endif /* LV_USE_VG_LITE_DRIVER */
 
 #endif /* VG_LITE_PLATFORM_H */
+/** @} */

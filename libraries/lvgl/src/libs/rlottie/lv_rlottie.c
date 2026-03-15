@@ -1,18 +1,27 @@
-/**
- * @file lv_rlottie.c
+/************************************************************************************************
+ * @file    lv_rlottie.c
  *
- */
+ * @brief   Lv Rlottie
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <rlottie_capi.h>
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../lvgl.h"
+#include "lv_rlottie_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lvgl.h"
 #if LV_USE_RLOTTIE
-
-#include "lv_rlottie_private.h"
-#include "../../core/lv_obj_class_private.h"
-#include <rlottie_capi.h>
-#include <string.h>
 
 /*********************
 *      DEFINES

@@ -1,18 +1,27 @@
-/**
- * @file lv_gridnav.c
+/************************************************************************************************
+ * @file    lv_gridnav.c
  *
- */
+ * @brief   Lv Gridnav
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../core/lv_obj_private.h"
+#include "../indev/lv_indev.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_math.h"
+#include "lv_gridnav.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_gridnav.h"
 #if LV_USE_GRIDNAV
-
-#include "../misc/lv_assert.h"
-#include "../misc/lv_math.h"
-#include "../indev/lv_indev.h"
-#include "../core/lv_obj_private.h"
 
 /*********************
  *      DEFINES

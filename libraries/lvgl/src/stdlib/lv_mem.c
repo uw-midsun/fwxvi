@@ -1,18 +1,29 @@
-/**
- * @file lv_mem.c
- */
+/************************************************************************************************
+ * @file    lv_mem.c
+ *
+ * @brief   Lv Mem
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+    #include <pthread.h>
+
+/* Inter-component Headers */
+#include "../core/lv_global.h"
+#include "../misc/lv_assert.h"
+#include "../misc/lv_log.h"
+#include "lv_mem_private.h"
+#include "lv_string.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_mem_private.h"
-#include "lv_string.h"
-#include "../misc/lv_assert.h"
-#include "../misc/lv_log.h"
-#include "../core/lv_global.h"
 
 #if LV_USE_OS == LV_OS_PTHREAD
-    #include <pthread.h>
 #endif
 
 /*********************

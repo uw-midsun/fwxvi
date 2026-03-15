@@ -1,6 +1,25 @@
-/**
- * @file lv_linux.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_linux.h
  *
+ * @brief   Lv Linux
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_os.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_linux
+ * @brief    lv_linux Firmware
+ * @{
  */
 
 #ifndef LV_LINUX_H
@@ -14,7 +33,6 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_os.h"
 #ifdef __linux__
 /*********************
  *      DEFINES
@@ -54,3 +72,5 @@ typedef union {
 #endif
 
 #endif /*LV_LINUX_H*/
+
+/** @} */

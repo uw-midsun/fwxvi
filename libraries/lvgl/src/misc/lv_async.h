@@ -1,6 +1,25 @@
-/**
- * @file lv_async.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_async.h
  *
+ * @brief   Lv Async
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_async
+ * @brief    lv_async Firmware
+ * @{
  */
 
 #ifndef LV_ASYNC_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -59,3 +76,5 @@ lv_result_t lv_async_call_cancel(lv_async_cb_t async_xcb, void * user_data);
 #endif
 
 #endif /*LV_ASYNC_H*/
+
+/** @} */

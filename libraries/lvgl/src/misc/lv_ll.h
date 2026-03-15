@@ -1,6 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_ll.h
+ *
+ * @brief   Lv Ll
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
 /**
- * @file lv_ll.h
- * Handle linked lists. The nodes are dynamically allocated by the 'lv_mem' module.
+ * @defgroup lv_ll
+ * @brief    lv_ll Firmware
+ * @{
  */
 
 #ifndef LV_LL_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -167,3 +185,5 @@ bool lv_ll_is_empty(lv_ll_t * ll_p);
 #endif
 
 #endif
+
+/** @} */

@@ -1,6 +1,26 @@
-/**
- * @file lv_libinput_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_libinput_private.h
  *
+ * @brief   Lv Libinput Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_libinput.h"
+#include "lv_xkb_private.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_libinput_private
+ * @brief    lv_libinput_private Firmware
+ * @{
  */
 
 #ifndef LV_LIBINPUT_PRIVATE_H
@@ -14,12 +34,9 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "lv_libinput.h"
-
 #if LV_USE_LIBINPUT
 
 #if LV_LIBINPUT_XKB
-#include "lv_xkb_private.h"
 #endif
 
 /*********************
@@ -65,7 +82,6 @@ struct _lv_libinput_t {
 #endif /* LV_LIBINPUT_XKB */
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -81,3 +97,5 @@ struct _lv_libinput_t {
 #endif
 
 #endif /*LV_LIBINPUT_PRIVATE_H*/
+
+/** @} */

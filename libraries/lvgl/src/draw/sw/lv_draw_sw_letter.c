@@ -1,33 +1,41 @@
-/**
- * @file lv_draw_sw_letter.c
+/************************************************************************************************
+ * @file    lv_draw_sw_letter.c
  *
- */
+ * @brief   Lv Draw Sw Letter
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "../../libs/freetype/lv_freetype_private.h"
+    #include "../lv_draw_vector_private.h"
+#include "../../core/lv_refr_private.h"
+#include "../../display/lv_display.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../font/lv_font.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_assert.h"
+#include "../../misc/lv_math.h"
+#include "../../misc/lv_style.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_label_private.h"
+#include "blend/lv_draw_sw_blend_private.h"
+#include "lv_draw_sw.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "blend/lv_draw_sw_blend_private.h"
-#include "../lv_draw_label_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "lv_draw_sw.h"
 
 #if LV_USE_FREETYPE && LV_USE_VECTOR_GRAPHIC && LV_USE_THORVG
-
-    #include "../../libs/freetype/lv_freetype_private.h"
-    #include "../lv_draw_vector_private.h"
 
 #endif
 
 #if LV_USE_DRAW_SW
-
-#include "../../display/lv_display.h"
-#include "../../misc/lv_math.h"
-#include "../../misc/lv_assert.h"
-#include "../../misc/lv_area.h"
-#include "../../misc/lv_style.h"
-#include "../../font/lv_font.h"
-#include "../../core/lv_refr_private.h"
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

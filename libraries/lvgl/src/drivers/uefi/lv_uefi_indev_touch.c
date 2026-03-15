@@ -1,21 +1,29 @@
-/**
- * @file lv_uefi_indev_touch.c
+/************************************************************************************************
+ * @file    lv_uefi_indev_touch.c
  *
- */
+ * @brief   Lv Uefi Indev Touch
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "../../misc/lv_text_private.h"
+#include "../../misc/lv_types.h"
+#include "../../stdlib/lv_mem.h"
+#include "lv_uefi_indev.h"
+#include "lv_uefi_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../misc/lv_types.h"
-#include "../../misc/lv_text_private.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi_indev.h"
-#include "lv_uefi_private.h"
 
 /*********************
  *      DEFINES

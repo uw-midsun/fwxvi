@@ -1,6 +1,26 @@
-/**
- * @file lv_uefi_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi_private.h
  *
+ * @brief   Lv Uefi Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lvgl.h"
+#include "lv_uefi.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_uefi_private
+ * @brief    lv_uefi_private Firmware
+ * @{
  */
 
 #ifndef __LV_UEFI_PRIVATE_H__
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lvgl.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi.h"
 
 /*********************
  *      DEFINES
@@ -105,3 +121,4 @@ size_t lv_uefi_ascii_to_ucs2(const char * ascii, CHAR16 * ucs2, size_t ucs2_len)
 #endif
 
 #endif //__LV_UEFI_PRIVATE_H__
+/** @} */

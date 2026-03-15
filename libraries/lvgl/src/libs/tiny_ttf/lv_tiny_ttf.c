@@ -1,15 +1,27 @@
-/**
-* @file lv_tiny_ttf.c
-*
-*/
+/************************************************************************************************
+ * @file    lv_tiny_ttf.c
+ *
+ * @brief   Lv Tiny Ttf
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../lvgl.h"
+
+/* Intra-component Headers */
+#include "stb_rect_pack.h"
+#include "stb_truetype_htcw.h"
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lvgl.h"
 
 #if LV_USE_TINY_TTF != 0
-#include "../../core/lv_global.h"
 
 #define font_draw_buf_handlers &(LV_GLOBAL_DEFAULT()->font_draw_buf_handlers)
 
@@ -44,9 +56,6 @@ typedef struct ttf_cb_stream {
 static void ttf_cb_stream_read(ttf_cb_stream_t * stream, void * data, size_t to_read);
 static void ttf_cb_stream_seek(ttf_cb_stream_t * stream, size_t position);
 #endif
-
-#include "stb_rect_pack.h"
-#include "stb_truetype_htcw.h"
 
 /**********************
  *      TYPEDEFS
@@ -295,7 +304,6 @@ static bool ttf_get_glyph_dsc_cb(const lv_font_t * font, lv_font_glyph_dsc_t * d
     tiny_ttf_glyph_cache_data_t search_key = {
         .unicode = unicode_letter,
     };
-
 
     int adv_w;
     lv_cache_entry_t * entry = lv_cache_acquire_or_create(dsc->glyph_cache, &search_key, (void *)dsc);

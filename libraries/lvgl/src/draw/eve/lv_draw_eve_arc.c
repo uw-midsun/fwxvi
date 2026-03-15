@@ -1,7 +1,20 @@
-/**
- * @file lv_draw_eve_arc.c
+/************************************************************************************************
+ * @file    lv_draw_eve_arc.c
  *
- */
+ * @brief   Lv Draw Eve Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_draw_arc.h"
+#include "lv_draw_eve_private.h"
+#include "lv_eve.h"
+
+/* Intra-component Headers */
 
 /*  Created on: 11 dic 2023
  *      Author: juanj
@@ -12,11 +25,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_eve_private.h"
 #if LV_USE_DRAW_EVE
-
-#include "../lv_draw_arc.h"
-#include "lv_eve.h"
 
 /*********************
  *      DEFINES
@@ -47,7 +56,6 @@ void lv_draw_eve_arc(lv_draw_task_t * t, const lv_draw_arc_dsc_t * dsc, const lv
  *   STATIC FUNCTIONS
  **********************/
 
-
 static int32_t chord_length(int16_t radius, int16_t angle_degrees)
 {
     angle_degrees %= 360;
@@ -56,7 +64,6 @@ static int32_t chord_length(int16_t radius, int16_t angle_degrees)
     int64_t chord_length = 2 * radius * sin_value / 32768.0;
     return (int32_t)chord_length ;
 }
-
 
 static lv_eve_primitive_t get_mask_direction(int16_t angle)
 {
@@ -75,15 +82,12 @@ static lv_eve_primitive_t get_mask_direction(int16_t angle)
     return 0;
 }
 
-
 static void draw_rounded_end(lv_point_t center, int32_t radius, int32_t angle, int32_t width)
 {
     int32_t rounded_y  = center.y + ((lv_trigo_sin(angle) * radius) >> LV_TRIGO_SHIFT);
     int32_t rounded_x  = center.x + ((lv_trigo_cos(angle) * radius) >> LV_TRIGO_SHIFT);
     lv_eve_draw_circle_simple(rounded_x, rounded_y, width);
 }
-
-
 
 static bool is_same_quadrant(int16_t start_angle, int16_t end_angle)
 {
@@ -109,14 +113,11 @@ static bool is_same_quadrant(int16_t start_angle, int16_t end_angle)
     }
 }
 
-
-
 static void lv_draw_eve_mask_angle(const lv_draw_arc_dsc_t * dsc, int32_t vertex_x, int32_t vertex_y,
                                    int32_t start_angle, int32_t end_angle)
 {
 
     /*Constrain the input angles*/
-
 
     if(start_angle < 0)
         start_angle = 0;
@@ -237,8 +238,6 @@ static void lv_draw_eve_mask_angle(const lv_draw_arc_dsc_t * dsc, int32_t vertex
 
 }
 
-
-
 static void draw_eve_arc(lv_draw_task_t * t, const lv_draw_arc_dsc_t * dsc, const lv_area_t * coords)
 {
 
@@ -319,7 +318,5 @@ static void draw_eve_arc(lv_draw_task_t * t, const lv_draw_arc_dsc_t * dsc, cons
 
     lv_eve_restore_context();
 }
-
-
 
 #endif /*LV_USE_DRAW_EVE*/

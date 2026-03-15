@@ -1,6 +1,26 @@
-/**
- * @file lv_pxp_osa.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_pxp_osa.h
  *
+ * @brief   Lv Pxp Osa
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "lv_pxp_cfg.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_pxp_osa
+ * @brief    lv_pxp_osa Firmware
+ * @{
  */
 
 /**
@@ -20,11 +40,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../lv_conf_internal.h"
-
 #if LV_USE_PXP
 #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-#include "lv_pxp_cfg.h"
 
 /*********************
  *      DEFINES
@@ -60,3 +77,5 @@ pxp_cfg_t * pxp_get_default_cfg(void);
 #endif
 
 #endif /*LV_PXP_OSA_H*/
+
+/** @} */

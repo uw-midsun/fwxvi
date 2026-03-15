@@ -1,6 +1,26 @@
-/**
- * @file lv_string.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_string.h
  *
+ * @brief   Lv String
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "../misc/lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_string
+ * @brief    lv_string Firmware
+ * @{
  */
 
 #ifndef LV_STRING_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES
@@ -202,3 +220,5 @@ char * lv_strchr(const char * str, int c);
 #endif
 
 #endif /*LV_STRING_H*/
+
+/** @} */

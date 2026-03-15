@@ -1,6 +1,25 @@
-/**
- * @file lv_obj_class_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_obj_class_private.h
  *
+ * @brief   Lv Obj Class Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_obj_class.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_obj_class_private
+ * @brief    lv_obj_class_private Firmware
+ * @{
  */
 
 #ifndef LV_OBJ_CLASS_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_obj_class.h"
 
 /*********************
  *      DEFINES
@@ -60,7 +77,6 @@ struct _lv_obj_class_t {
     uint32_t theme_inheritable : 1;    /**< Value from ::lv_obj_class_theme_inheritable_t*/
 };
 
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -76,3 +92,5 @@ void lv_obj_destruct(lv_obj_t * obj);
 #endif
 
 #endif /*LV_OBJ_CLASS_PRIVATE_H*/
+
+/** @} */

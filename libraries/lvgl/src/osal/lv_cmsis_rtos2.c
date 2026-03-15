@@ -1,7 +1,20 @@
-/**
- * @file lv_cmsis_rtos2.c
+/************************************************************************************************
+ * @file    lv_cmsis_rtos2.c
  *
- */
+ * @brief   Lv Cmsis Rtos2
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_log.h"
+#include "../misc/lv_timer.h"
+#include "lv_os_private.h"
+
+/* Intra-component Headers */
 
 /*
  * Copyright (C) 2023 Arm Limited or its affiliates. All rights reserved.
@@ -12,12 +25,8 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_os_private.h"
 
 #if LV_USE_OS == LV_OS_CMSIS_RTOS2
-
-#include "../misc/lv_log.h"
-#include "../misc/lv_timer.h"
 
 /*********************
  *      DEFINES

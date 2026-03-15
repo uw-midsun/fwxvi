@@ -1,3 +1,19 @@
+/************************************************************************************************
+ * @file    vg_lite_path.c
+ *
+ * @brief   Vg Lite Path
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lv_conf_internal.h"
+#include "vg_lite_context.h"
+
+/* Intra-component Headers */
 /****************************************************************************
 *
 *    Copyright 2012 - 2023 Vivante Corporation, Santa Clara, California.
@@ -25,16 +41,12 @@
 *
 *****************************************************************************/
 
-#include "../../../lv_conf_internal.h"
 #if LV_USE_VG_LITE_DRIVER
-
-#include "vg_lite_context.h"
 
 /* Path data operations. */
 #define CDALIGN(value, by) (((value) + (by) - 1) & ~((by) - 1))
 #define CDMIN(x, y) ((x) > (y) ? (y) : (x))
 #define CDMAX(x, y) ((x) > (y) ? (x) : (y))
-
 
 extern uint32_t transform(vg_lite_point_t * result, vg_lite_float_t x, vg_lite_float_t y, vg_lite_matrix_t * matrix);
 extern uint32_t convert_blend(vg_lite_blend_t blend);
@@ -348,7 +360,6 @@ vg_lite_error_t vg_lite_clear_path(vg_lite_path_t * path)
         vg_lite_os_free(path->stroke);
         path->stroke = NULL;
         path->stroke_valid = 0;
-
 
         path->stroke_size = 0;
     }

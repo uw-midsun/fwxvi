@@ -1,6 +1,25 @@
-/**
- * @file lv_evdev_private.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_evdev_private.h
  *
+ * @brief   Lv Evdev Private
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_evdev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_evdev_private
+ * @brief    lv_evdev_private Firmware
+ * @{
  */
 
 #ifndef LV_EVDEV_PRIVATE_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_evdev.h"
 
 #if LV_USE_EVDEV
 
@@ -43,3 +60,5 @@ void lv_evdev_deinit(void);
 #endif
 
 #endif /*LV_EVDEV_PRIVATE_H*/
+
+/** @} */

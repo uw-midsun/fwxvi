@@ -1,6 +1,26 @@
-/**
- * @file lv_uefi_display.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_uefi_display.h
  *
+ * @brief   Lv Uefi Display
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "lv_uefi.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_uefi_display
+ * @brief    lv_uefi_display Firmware
+ * @{
  */
 
 #ifndef __LV_UEFI_DISPLAY_H__
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../display/lv_display.h"
-
 #if LV_USE_UEFI
-
-#include "lv_uefi.h"
 
 /*********************
  *      DEFINES
@@ -64,3 +80,5 @@ void * lv_uefi_display_get_any(void);
 
 #endif //__LV_UEFI_DISPLAY_H__
 
+
+/** @} */

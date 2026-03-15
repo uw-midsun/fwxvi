@@ -1,6 +1,25 @@
-/**
- * @file lv_test_screenshot_compare.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_test_screenshot_compare.h
  *
+ * @brief   Lv Test Screenshot Compare
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_test_screenshot_compare
+ * @brief    lv_test_screenshot_compare Firmware
+ * @{
  */
 
 #ifndef LV_TEST_SCREENSHOT_COMPARE_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_TEST && defined(LV_USE_TEST_SCREENSHOT_COMPARE) && LV_USE_TEST_SCREENSHOT_COMPARE
 
 /*********************
@@ -77,3 +95,5 @@ lv_test_screenshot_result_t lv_test_screenshot_compare(const char * fn_ref);
 #endif
 
 #endif /*LV_TEST_SCREENSHOT_COMPARE_H*/
+
+/** @} */

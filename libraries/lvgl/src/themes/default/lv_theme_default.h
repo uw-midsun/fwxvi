@@ -1,6 +1,25 @@
-/**
- * @file lv_theme_default.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_theme_default.h
  *
+ * @brief   Lv Theme Default
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_theme.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_theme_default
+ * @brief    lv_theme_default Firmware
+ * @{
  */
 
 #ifndef LV_THEME_DEFAULT_H
@@ -13,7 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_theme.h"
 
 #if LV_USE_THEME_DEFAULT
 
@@ -69,3 +87,5 @@ void lv_theme_default_deinit(void);
 #endif
 
 #endif /*LV_THEME_DEFAULT_H*/
+
+/** @} */

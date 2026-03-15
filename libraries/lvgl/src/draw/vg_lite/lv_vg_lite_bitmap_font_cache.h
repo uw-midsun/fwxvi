@@ -1,6 +1,26 @@
-/**
- * @file lv_vg_lite_bitmap_font_cache.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_bitmap_font_cache.h
  *
+ * @brief   Lv Vg Lite Bitmap Font Cache
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../font/lv_font.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_bitmap_font_cache
+ * @brief    lv_vg_lite_bitmap_font_cache Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_BITMAP_FONT_CACHE_H
@@ -14,11 +34,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_VG_LITE
-
-#include "../../font/lv_font.h"
 
 /*********************
  *      DEFINES
@@ -67,3 +83,5 @@ lv_draw_buf_t * lv_vg_lite_bitmap_font_cache_get(struct _lv_draw_vg_lite_unit_t 
 #endif
 
 #endif /*LV_VG_LITE_BITMAP_FONT_CACHE_H*/
+
+/** @} */

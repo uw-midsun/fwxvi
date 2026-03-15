@@ -1,6 +1,24 @@
-/**
- * @file lv_draw_dave2d_utils.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_draw_dave2d_utils.h
  *
+ * @brief   Lv Draw Dave2D Utils
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_draw_dave2d_utils
+ * @brief    lv_draw_dave2d_utils Firmware
+ * @{
  */
 
 #ifndef LV_DRAW_DAVE2D_UTILS_H
@@ -43,3 +61,5 @@ bool lv_draw_dave2d_is_dest_cf_supported(lv_color_format_t cf);
 #endif
 
 #endif /*LV_DRAW_DAVE2D_UTILS_H*/
+
+/** @} */

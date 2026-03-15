@@ -1,18 +1,27 @@
-/**
- * @file lv_theme_simple.c
+/************************************************************************************************
+ * @file    lv_theme_simple.c
  *
- */
+ * @brief   Lv Theme Simple
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../lvgl.h" /*To see all the widgets*/
+#include "../../core/lv_global.h"
+#include "../lv_theme_private.h"
+#include "lv_theme_simple.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_theme_private.h"
-#include "../../../lvgl.h" /*To see all the widgets*/
 
 #if LV_USE_THEME_SIMPLE
-
-#include "lv_theme_simple.h"
-#include "../../core/lv_global.h"
 
 /*********************
  *      DEFINES

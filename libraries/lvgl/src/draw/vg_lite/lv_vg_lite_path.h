@@ -1,6 +1,25 @@
-/**
- * @file lv_vg_lite_path.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_vg_lite_path.h
  *
+ * @brief   Lv Vg Lite Path
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "lv_vg_lite_utils.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_vg_lite_path
+ * @brief    lv_vg_lite_path Firmware
+ * @{
  */
 
 #ifndef LV_VG_LITE_PATH_H
@@ -13,8 +32,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-
-#include "lv_vg_lite_utils.h"
 
 #if LV_USE_DRAW_VG_LITE
 
@@ -131,3 +148,5 @@ void lv_vg_lite_path_for_each_data(const vg_lite_path_t * path, lv_vg_lite_path_
 #endif
 
 #endif /*LV_VG_LITE_PATH_H*/
+
+/** @} */

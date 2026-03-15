@@ -1,6 +1,26 @@
-/**
- * @file lv_math.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_math.h
  *
+ * @brief   Lv Math
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../lv_conf_internal.h"
+#include "lv_types.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_math
+ * @brief    lv_math Firmware
+ * @{
  */
 
 #ifndef LV_MATH_H
@@ -13,8 +33,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../lv_conf_internal.h"
-#include "lv_types.h"
 
 /*********************
  *      DEFINES
@@ -75,7 +93,6 @@ int32_t lv_cubic_bezier(int32_t x, int32_t x1, int32_t y1, int32_t x2, int32_t y
  * @return the value calculated from the given parameters in range of [0..LV_BEZIER_VAL_MAX]
  */
 int32_t lv_bezier3(int32_t t, int32_t u0, uint32_t u1, int32_t u2, int32_t u3);
-
 
 /**
  * Calculate the atan2 of a vector.
@@ -172,3 +189,5 @@ uint32_t lv_rand(uint32_t min, uint32_t max);
 #endif
 
 #endif
+
+/** @} */

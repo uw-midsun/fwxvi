@@ -1,6 +1,28 @@
-/**
+#pragma once
+
+/************************************************************************************************
  * @file    lv_qnx.h
+ *
  * @brief   LVGL driver for the QNX Screen compositing window manager
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <screen/screen.h>
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "../../display/lv_display.h"
+#include "../../indev/lv_indev.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_qnx
+ * @brief    lv_qnx Firmware
+ * @{
  */
 
 #ifndef LV_QNX_H
@@ -14,13 +36,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../display/lv_display.h"
-#include "../../indev/lv_indev.h"
-
 #if LV_USE_QNX
-
-#include <stdbool.h>
-#include <screen/screen.h>
 
 /*********************
  *      DEFINES
@@ -84,3 +100,5 @@ int lv_qnx_event_loop(lv_display_t * disp);
 #endif
 
 #endif /* LV_QNX_H */
+
+/** @} */

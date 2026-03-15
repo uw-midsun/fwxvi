@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 @file    EVE_supplemental.h
 @brief   prototypes for supplemental functions
@@ -35,11 +37,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef EVE_SUPPLEMENTAL_H
-#define EVE_SUPPLEMENTAL_H
+/* Standard library Headers */
 
+/* Inter-component Headers */
 #include "EVE.h"
 #include "EVE_commands.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup EVE_suppplemental
+ * @brief    EVE_suppplemental Firmware
+ * @{
+ */
+
+#ifndef EVE_SUPPLEMENTAL_H
+#define EVE_SUPPLEMENTAL_H
 
 #ifdef __cplusplus
 extern "C"
@@ -51,3 +64,5 @@ void EVE_widget_rectangle(int16_t xc0, int16_t yc0, int16_t wid, int16_t hgt, in
 void EVE_polar_cartesian(uint16_t length, uint16_t angle, int16_t *p_xc0, int16_t *p_yc0);
 
 #endif /* EVE_SUPPLEMENTAL_H */
+
+/** @} */

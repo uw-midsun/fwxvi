@@ -1,35 +1,42 @@
-/**
- * @file lv_linux_drm_egl.c
+/************************************************************************************************
+ * @file    lv_linux_drm_egl.c
  *
- */
+ * @brief   Lv Linux Drm Egl
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <drm_fourcc.h>
+#include <fcntl.h>
+#include <gbm.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <xf86drm.h>
+#include <xf86drmMode.h>
+
+/* Inter-component Headers */
+#include "../../../display/lv_display.h"
+#include "../../../draw/lv_draw_buf.h"
+#include "../../../stdlib/lv_string.h"
+#include "../../opengles/lv_opengles_debug.h"
+#include "../../opengles/lv_opengles_driver.h"
+#include "../../opengles/lv_opengles_private.h"
+#include "../../opengles/lv_opengles_texture.h"
+#include "lv_linux_drm.h"
+#include "lv_linux_drm_egl_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_linux_drm.h"
 
 #if LV_USE_LINUX_DRM && LV_LINUX_DRM_USE_EGL
-
-#include <fcntl.h>
-#include <string.h>
-#include <xf86drmMode.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <gbm.h>
-#include <drm_fourcc.h>
-#include <xf86drm.h>
-#include <time.h>
-#include <unistd.h>
-#include "lv_linux_drm_egl_private.h"
-#include "../../../draw/lv_draw_buf.h"
-#include "../../opengles/lv_opengles_debug.h"
-
-#include "../../opengles/lv_opengles_driver.h"
-#include "../../opengles/lv_opengles_texture.h"
-#include "../../opengles/lv_opengles_private.h"
-
-#include "../../../stdlib/lv_string.h"
-#include "../../../display/lv_display.h"
 
 /**********************
  *      TYPEDEFS
@@ -464,7 +471,6 @@ static void drm_flip_cb(void * driver_data, bool vsync)
             return;
         }
 
-
         uint32_t flip_flags = DRM_MODE_PAGE_FLIP_EVENT;
         int status = drmModePageFlip(ctx->fd, ctx->drm_encoder->crtc_id, pending_fb->fb_id, flip_flags, ctx);
         if(status < 0) {
@@ -584,7 +590,6 @@ static size_t drm_egl_select_config_cb(void * driver_data, const lv_egl_config_t
 #error("Unsupported color format")
 #endif
 
-
     for(size_t i = 0; i < config_count; ++i) {
         LV_LOG_TRACE("Got config %zu %#x %dx%d %d %d %d %d buffer size %d depth %d  samples %d stencil %d surface type %d",
                      i, configs[i].id,
@@ -605,7 +610,6 @@ static size_t drm_egl_select_config_cb(void * driver_data, const lv_egl_config_t
     }
     return config_count;
 }
-
 
 /**********************
  *   STATIC FUNCTIONS
@@ -754,6 +758,5 @@ static void drm_destroy_window(void * driver_data, void * native_window)
     gbm_surface_destroy(ctx->gbm_surface);
     ctx->gbm_surface = NULL;
 }
-
 
 #endif /*LV_USE_LINUX_DRM && LV_LINUX_DRM_USE_EGL*/

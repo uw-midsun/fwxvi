@@ -1,24 +1,33 @@
-/**
- * @file lv_draw_sw_triangle.c
+/************************************************************************************************
+ * @file    lv_draw_sw_triangle.c
  *
- */
+ * @brief   Lv Draw Sw Triangle
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../misc/lv_area_private.h"
+#include "../../misc/lv_color.h"
+#include "../../misc/lv_math.h"
+#include "../../stdlib/lv_mem.h"
+#include "../../stdlib/lv_string.h"
+#include "../lv_draw_private.h"
+#include "../lv_draw_triangle_private.h"
+#include "blend/lv_draw_sw_blend_private.h"
+#include "lv_draw_sw.h"
+#include "lv_draw_sw_grad.h"
+#include "lv_draw_sw_mask_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_draw_sw_mask_private.h"
-#include "blend/lv_draw_sw_blend_private.h"
-#include "../lv_draw_private.h"
-#include "lv_draw_sw.h"
 #if LV_USE_DRAW_SW
-
-#include "../../misc/lv_math.h"
-#include "../../stdlib/lv_mem.h"
-#include "../../misc/lv_area_private.h"
-#include "../../misc/lv_color.h"
-#include "../../stdlib/lv_string.h"
-#include "../lv_draw_triangle_private.h"
-#include "lv_draw_sw_grad.h"
 
 /*********************
  *      DEFINES

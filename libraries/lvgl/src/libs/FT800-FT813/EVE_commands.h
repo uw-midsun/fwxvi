@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 @file    EVE_commands.h
 @brief   contains FT8xx / BT8xx function prototypes
@@ -87,10 +89,21 @@ EVE_cmd_animstartram_burst()
 
 */
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "EVE.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup EVE_commands
+ * @brief    EVE_commands Firmware
+ * @{
+ */
+
 #ifndef EVE_COMMANDS_H
 #define EVE_COMMANDS_H
-
-#include "EVE.h"
 
 #if !defined E_OK
 #define E_OK 0U
@@ -337,3 +350,5 @@ void EVE_color_a_burst(uint8_t alpha);
 void EVE_calibrate_manual(uint16_t width, uint16_t height);
 
 #endif /* EVE_COMMANDS_H */
+
+/** @} */

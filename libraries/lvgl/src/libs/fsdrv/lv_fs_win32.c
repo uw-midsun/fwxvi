@@ -1,19 +1,28 @@
-/**
- * @file lv_fs_win32.c
+/************************************************************************************************
+ * @file    lv_fs_win32.c
  *
- */
+ * @brief   Lv Fs Win32
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <limits.h>
+#include <stdio.h>
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "../../../lvgl.h"
+#include "../../core/lv_global.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../../lvgl.h"
 #if LV_USE_FS_WIN32
 
-#include <windows.h>
-#include <stdio.h>
-#include <limits.h>
-
-#include "../../core/lv_global.h"
 /*********************
  *      DEFINES
  *********************/

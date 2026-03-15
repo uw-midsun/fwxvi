@@ -1,6 +1,27 @@
-/**
- * @file lv_blend_arm2d.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_blend_arm2d.h
  *
+ * @brief   Lv Blend Arm2D
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../../../lv_conf_internal.h"
+#include "__arm_2d_impl.h"
+#include "arm_2d.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_blend_arm2d
+ * @brief    lv_blend_arm2d Firmware
+ * @{
  */
 
 #ifndef LV_BLEND_ARM2D_H
@@ -14,13 +35,9 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "../../../../lv_conf_internal.h"
-
 #if LV_USE_DRAW_ARM2D_SYNC
 
 #define __ARM_2D_IMPL__
-#include "arm_2d.h"
-#include "__arm_2d_impl.h"
 
 #if defined(__IS_COMPILER_ARM_COMPILER_5__)
 #pragma diag_suppress 174,177,188,68,513,144,1296
@@ -29,7 +46,6 @@ extern "C" {
 #elif defined(__IS_COMPILER_GCC__)
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #endif
-
 
 #if ARM_2D_VERSION < 10106ul
 #error Please upgrade to Arm-2D v1.1.6 or above
@@ -935,3 +951,5 @@ static inline lv_result_t lv_argb8888_blend_normal_to_rgb888_mix_mask_opa_arm2d(
 #endif
 
 #endif /*LV_BLEND_ARM2D_H*/
+
+/** @} */

@@ -1,19 +1,29 @@
-/**
- * @file lv_text.c
+/************************************************************************************************
+ * @file    lv_text.c
  *
- */
+ * @brief   Lv Text
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../misc/lv_types.h"
+#include "../stdlib/lv_mem.h"
+#include "../stdlib/lv_string.h"
+#include "lv_assert.h"
+#include "lv_log.h"
+#include "lv_math.h"
+#include "lv_text_ap.h"
+#include "lv_text_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_text_private.h"
-#include "lv_text_ap.h"
-#include "lv_math.h"
-#include "lv_log.h"
-#include "lv_assert.h"
-#include "../stdlib/lv_mem.h"
-#include "../stdlib/lv_string.h"
-#include "../misc/lv_types.h"
 
 /*********************
  *      DEFINES

@@ -1,6 +1,27 @@
-/**
- * @file lv_arc.h
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_arc.h
  *
+ * @brief   Lv Arc
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj.h"
+#include "../../core/lv_observer.h"
+#include "../../lv_conf_internal.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup lv_arc
+ * @brief    lv_arc Firmware
+ * @{
  */
 
 #ifndef LV_ARC_H
@@ -13,12 +34,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 
 #if LV_USE_ARC != 0
-
-#include "../../core/lv_obj.h"
-#include "../../core/lv_observer.h"
 
 /*********************
  *      DEFINES
@@ -271,7 +288,6 @@ uint32_t lv_arc_get_change_rate(lv_obj_t * obj);
 lv_observer_t * lv_arc_bind_value(lv_obj_t * obj, lv_subject_t * subject);
 #endif
 
-
 /**
  * Align an object to the current position of the arc (knob)
  * @param obj           pointer to an arc object
@@ -299,3 +315,5 @@ void lv_arc_rotate_obj_to_angle(const lv_obj_t * obj, lv_obj_t * obj_to_rotate, 
 #endif
 
 #endif /*LV_ARC_H*/
+
+/** @} */

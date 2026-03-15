@@ -1,10 +1,32 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    EVE_target.h
+ *
+ * @brief   Eve Target
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_global.h"
+#include "../../draw/eve/lv_draw_eve_private.h"
+#include "../../misc/lv_utils.h"
+#include "../../tick/lv_tick.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup EVE_target
+ * @brief    EVE_target Firmware
+ * @{
+ */
+
 #ifndef EVE_TARGET_H
 #define EVE_TARGET_H
-
-#include "../../draw/eve/lv_draw_eve_private.h"
-#include "../../tick/lv_tick.h"
-#include "../../misc/lv_utils.h"
-#include "../../core/lv_global.h"
 
 #define lv_eve_write_buf (LV_GLOBAL_DEFAULT()->draw_eve_unit->lv_eve_write_buf)
 #define lv_eve_write_buf_len (LV_GLOBAL_DEFAULT()->draw_eve_unit->lv_eve_write_buf_len)
@@ -109,3 +131,5 @@ static inline uint8_t fetch_flash_byte(const uint8_t *p_data)
 }
 
 #endif /* EVE_TARGET_H_ */
+
+/** @} */

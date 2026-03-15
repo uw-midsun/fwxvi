@@ -1,19 +1,27 @@
-/**
- * @file lv_wl_pointer.c
+/************************************************************************************************
+ * @file    lv_wl_pointer.c
  *
- */
+ * @brief   Lv Wl Pointer
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-#include "lv_wl_pointer.h"
-
-#if LV_USE_WAYLAND
-
+/* Standard library Headers */
 #include <sys/mman.h>
 #include <unistd.h>
+#include <xkbcommon/xkbcommon.h>
+
+/* Inter-component Headers */
+#include "lv_wayland_private.h"
+#include "lv_wl_pointer.h"
+
+/* Intra-component Headers */
+#include <linux/input-event-codes.h>
 #include <wayland-client-protocol.h>
 #include <wayland-cursor.h>
-#include <xkbcommon/xkbcommon.h>
-#include <linux/input-event-codes.h>
-#include "lv_wayland_private.h"
+
+#if LV_USE_WAYLAND
 
 /*********************
  *      INCLUDES
@@ -30,7 +38,6 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-
 
 static void pointer_read(lv_indev_t * indev, lv_indev_data_t * data);
 static void pointeraxis_read(lv_indev_t * indev, lv_indev_data_t * data);
@@ -201,7 +208,6 @@ static void pointer_handle_enter(void * data, struct wl_pointer * pointer, uint3
     wl_surface_damage(seat_pointer->cursor_surface, 0, 0, cursor_image->width, cursor_image->height);
     wl_surface_commit(seat_pointer->cursor_surface);
 }
-
 
 static void pointer_handle_leave(void * data, struct wl_pointer * pointer, uint32_t serial, struct wl_surface * surface)
 {

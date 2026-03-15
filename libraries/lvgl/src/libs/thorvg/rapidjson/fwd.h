@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    fwd.h
+ *
+ * @brief   Fwd
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "rapidjson.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup fwd
+ * @brief    fwd Firmware
+ * @{
+ */
+
 // Tencent is pleased to support the open source community by making RapidJSON available.
 //
 // Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
@@ -14,8 +38,6 @@
 
 #ifndef RAPIDJSON_FWD_H_
 #define RAPIDJSON_FWD_H_
-
-#include "rapidjson.h"
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -149,3 +171,5 @@ typedef GenericSchemaValidator<SchemaDocument, BaseReaderHandler<UTF8<char>, voi
 RAPIDJSON_NAMESPACE_END
 
 #endif // RAPIDJSON_RAPIDJSONFWD_H_
+
+/** @} */

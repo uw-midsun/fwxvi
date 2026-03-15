@@ -1,22 +1,30 @@
-/**
- * @file lv_imagebutton.c
+/************************************************************************************************
+ * @file    lv_imagebutton.c
  *
- */
+ * @brief   Lv Imagebutton
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "../../core/lv_obj_class_private.h"
+#include "../../core/lv_obj_event_private.h"
+#include "../../core/lv_obj_private.h"
+#include "../../draw/lv_draw_private.h"
+#include "../../misc/lv_area_private.h"
+#include "../../stdlib/lv_string.h"
+#include "lv_imagebutton_private.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_imagebutton_private.h"
-#include "../../misc/lv_area_private.h"
-#include "../../draw/lv_draw_private.h"
-#include "../../core/lv_obj_private.h"
-#include "../../core/lv_obj_event_private.h"
-#include "../../core/lv_obj_class_private.h"
-
 
 #if LV_USE_IMAGEBUTTON != 0
-
-#include "../../stdlib/lv_string.h"
 
 /*********************
  *      DEFINES

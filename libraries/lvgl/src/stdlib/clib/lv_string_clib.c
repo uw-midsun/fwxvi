@@ -1,15 +1,26 @@
-/**
- * @file lv_string_clib.c
- */
+/************************************************************************************************
+ * @file    lv_string_clib.c
+ *
+ * @brief   Lv String Clib
+ *
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>
+
+/* Inter-component Headers */
+#include "../../lv_conf_internal.h"
+#include "../lv_mem.h" /*Need lv_malloc*/
+#include "../lv_string.h"
+
+/* Intra-component Headers */
 
 /*********************
  *      INCLUDES
  *********************/
-#include "../../lv_conf_internal.h"
 #if LV_USE_STDLIB_STRING == LV_STDLIB_CLIB
-#include "../lv_string.h"
-#include "../lv_mem.h" /*Need lv_malloc*/
-#include <string.h>
 
 /*********************
  *      DEFINES
