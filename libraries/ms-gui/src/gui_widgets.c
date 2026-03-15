@@ -75,11 +75,11 @@ static StatusCode s_create_brake_bar(lv_obj_t *screen) {
 
 StatusCode gui_widgets_init(void) {
   GuiScreen *screen = lvgl_get_active_screen();
-  
+
   if (screen == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  
+
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
   /* Create widgets */
