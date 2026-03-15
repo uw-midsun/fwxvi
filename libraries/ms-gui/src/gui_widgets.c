@@ -116,5 +116,3 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   (void)soc_percent;
   return STATUS_CODE_UNIMPLEMENTED;
 }
-
-// }

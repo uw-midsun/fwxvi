@@ -15,15 +15,15 @@
 #include "clut.h"
 #include "lvgl_widgets.h"
 
-/* Intra-component Headers */
-
+/* Speedometer style objects */
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
 static lv_style_t s_speedometer_needle_style;
 static bool s_speedometer_styles_initialized;
 
-static lv_style_t s_vertical_bar_bg_style;
-static bool s_vertical_bar_styles_initialized;
+/* Bar style objects */
+static lv_style_t s_bar_bg_style;
+static bool s_bar_styles_initialized;
 
 static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   ClutEntry color = clut_get_gui_color(color_id);
@@ -74,21 +74,21 @@ static void s_init_speedometer_styles(void) {
   s_speedometer_styles_initialized = true;
 }
 
-static void s_init_vertical_bar_styles(void) {
-  if (s_vertical_bar_styles_initialized) {
+static void s_init_bar_styles(void) {
+  if (s_bar_styles_initialized) {
     return;
   }
 
-  lv_style_init(&s_vertical_bar_bg_style);
-  lv_style_set_radius(&s_vertical_bar_bg_style, 0);
-  lv_style_set_bg_color(&s_vertical_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BACKGROUND));
-  lv_style_set_border_color(&s_vertical_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BORDER));
-  lv_style_set_border_width(&s_vertical_bar_bg_style, 1);
+  lv_style_init(&s_bar_bg_style);
+  lv_style_set_radius(&s_bar_bg_style, 0);
+  lv_style_set_bg_color(&s_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BACKGROUND));
+  lv_style_set_border_color(&s_bar_bg_style, s_gui_palette_color(GUI_COLOR_BAR_BORDER));
+  lv_style_set_border_width(&s_bar_bg_style, 1);
 
-  s_vertical_bar_styles_initialized = true;
+  s_bar_styles_initialized = true;
 }
 
-static void s_vertical_bar_draw_event_cb(lv_event_t *e) {
+static void s_bar_draw_event_cb(lv_event_t *e) {
   lv_obj_t *obj = lv_event_get_target(e);
   lv_draw_label_dsc_t label_dsc;
   lv_draw_label_dsc_init(&label_dsc);
@@ -184,7 +184,7 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   }
 
   *bar_widget = (BarWidget){ 0 };
-  s_init_vertical_bar_styles();
+  s_init_bar_styles();
 
   bar_widget->bar = lv_bar_create(parent);
   lv_obj_set_size(bar_widget->bar, config->size.width, config->size.height);
@@ -193,10 +193,10 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   lv_bar_set_value(bar_widget->bar, BAR_MIN_VALUE, LV_ANIM_OFF);
   lv_bar_set_orientation(bar_widget->bar, config->orientation);
 
-  lv_obj_add_style(bar_widget->bar, &s_vertical_bar_bg_style, LV_PART_MAIN);
+  lv_obj_add_style(bar_widget->bar, &s_bar_bg_style, LV_PART_MAIN);
   lv_obj_set_style_bg_color(bar_widget->bar, s_gui_palette_color(config->indicator_color_id), LV_PART_INDICATOR);
   lv_obj_set_style_radius(bar_widget->bar, 0, LV_PART_INDICATOR);
-  lv_obj_add_event_cb(bar_widget->bar, s_vertical_bar_draw_event_cb, LV_EVENT_DRAW_MAIN_END, NULL);
+  lv_obj_add_event_cb(bar_widget->bar, s_bar_draw_event_cb, LV_EVENT_DRAW_MAIN_END, NULL);
 
   bar_widget->label = lv_label_create(parent);
   lv_label_set_text(bar_widget->label, config->label_text);
