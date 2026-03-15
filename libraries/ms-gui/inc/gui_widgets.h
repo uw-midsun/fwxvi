@@ -27,6 +27,7 @@
  * @brief   Initialize the widget layer and create the main screen
  * @details Sets up common LVGL styles, creates the speedometer (round scale)
  *          and vertical percentage bar. Must be called after lvgl_driver_init().
+ * @note    Already called by gui_init
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_init(void);

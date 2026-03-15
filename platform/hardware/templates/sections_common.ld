@@ -35,13 +35,28 @@ SECTIONS
 
     /* Necessary KEEP sections (see http://sourceware.org/ml/newlib/2005/msg00255.html) */
     KEEP (*(.init))
-    KEEP (*(.fini))
+        KEEP (*(.fini))
 
         . = ALIGN(4);
         _etext = .;
-        /* This is used by the startup in order to initialize the .data section */
-        _sidata = _etext;
     } >_flash_target_region_
+
+    .ARM.extab :
+    {
+        . = ALIGN(4);
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+    } >_flash_target_region_
+
+    .ARM.exidx :
+    {
+        . = ALIGN(4);
+        __exidx_start = .;
+        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+        __exidx_end = .;
+    } >_flash_target_region_
+
+    /* This is used by the startup in order to initialize the .data section */
+    _sidata = .;
 
     /* This is the initialized data section
     The program executes knowing that the data is in the RAM
@@ -64,7 +79,7 @@ SECTIONS
     } >RAM
 
     /* This is the uninitialized data section */
-    .bss :
+    .bss (NOLOAD) :
     {
       . = ALIGN(4);
         /* This is used by the startup in order to initialize the .bss secion */
@@ -81,19 +96,16 @@ SECTIONS
      __bss_end__ = .;
     } >RAM
 
-    .eh_frame :
-    {
-        . = ALIGN(4);
-        KEEP (*(.eh_frame))
-    } >RAM
-
     PROVIDE ( end = _ebss );
     PROVIDE ( _end = _ebss );
 
-    __exidx_start = .;
-    __exidx_end = .;
-
     /* after that it's only debugging information. */
+
+    /DISCARD/ :
+    {
+        *(.eh_frame)
+        *(.eh_frame.*)
+    }
 
     /* remove the debugging information from the standard libraries */
     /* /DISCARD/ :

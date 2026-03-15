@@ -29,6 +29,7 @@
  * @details Creates an LVGL display, registers the flush callback,
  *          and configures the tick provider using FreeRTOS.
  *          Must be called after ltdc_init().
+ * @note    Already called by gui_init
  * @param   settings Pointer to the LTDC settings (used for width/height/framebuffer)
  * @return  STATUS_CODE_OK on success, error otherwise
  */

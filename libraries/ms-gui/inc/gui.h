@@ -30,6 +30,7 @@
 
 /**
  * @brief   Initialize the GUI subsystem
+ * @details Calls ltdc_init, lvgl_driver_init, gui_widgets_init
  * @param   settings Pointer to LTDC/display configuration
  * @return  STATUS_CODE_OK on success, error otherwise
  */

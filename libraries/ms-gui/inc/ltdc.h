@@ -70,6 +70,7 @@ typedef struct {
 /**
  * @brief   Initialize LTDC with settings
  * @param   settings Pointer to the LTDC settings
+ * @note    Already called by gui_init
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
 StatusCode ltdc_init(LtdcSettings *settings);
