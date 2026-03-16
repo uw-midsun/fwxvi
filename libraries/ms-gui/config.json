@@ -4,6 +4,7 @@
       "lvgl"
     ],
     "x86_libs": [
-        "SDL2"
+        "SDL2",
+        "lvgl"
     ]
 }

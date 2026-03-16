@@ -10,7 +10,6 @@ TARGET = VARS.get("TARGET")
 PLATFORM = VARS.get("PLATFORM")
 HARDWARE_TYPE = VARS.get("HARDWARE_TYPE")
 env = VARS.get("env")
-env['LIBDUPES'] = 1  # Keep duplicate library names for correct link order resolution
 
 # Clone the C env and clear C flags
 cxx_env = env.Clone()
@@ -471,7 +470,7 @@ if HARDWARE_TYPE == 'STM32L4P5VET6':
 
 # 3. Build all other non-MPXE libraries
 for entry in LIB_DIR.glob('*'):
-    if entry.name not in ['ms-common', 'ms-mpxe', 'ms-drivers', 'lvgl', 'lvgl9']:
+    if entry.name not in ['ms-common', 'ms-mpxe', 'ms-drivers', 'lvgl9']:
         build_library(entry.name)
     
 # 4. Build MPXE common and client libraries

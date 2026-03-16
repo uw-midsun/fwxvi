@@ -24,15 +24,14 @@ static LtdcSettings *s_ltdc_settings;
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
 #define LV_DRAW_BUF_LINES 20
 #define NUMBER_OF_BYTES_PER_PIXEL 2                                                       /* Since RGB565 = 2 bytes per pixel*/
-static uint8_t s_draw_buf[DISPLAY_WIDTH * LV_DRAW_BUF_LINES * NUMBER_OF_BYTES_PER_PIXEL]; /* RGB565 = 2 bytes/pixel */
+static uint8_t s_draw_buf[DISPLAY_WIDTH * LV_DRAW_BUF_LINES * NUMBER_OF_BYTES_PER_PIXEL];
 
 /**
  * @brief   LVGL display flush callback
+ * @details Copies the rendered area from LVGL's draw buffer into the LTDC framebuffer.
  * @param   display   lvgl display object
  * @param   area      Area we want to update
  * @param   px_map    Pixels of the new area
- * @details Copies the rendered area from LVGL's draw buffer into the LTDC framebuffer.
- *          For RGB565, each pixel is 2 bytes.
  */
 static void s_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
   // TODO Kind of a slow approach could optimize with DMA2d
@@ -52,7 +51,7 @@ static void s_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px
 }
 
 /**
- * @brief   LVGL tick provider using FreeRTOS
+ * @brief   LVGL tick provider
  * @return  Elapsed milliseconds since boot
  */
 static uint32_t s_tick_get_cb(void) {
