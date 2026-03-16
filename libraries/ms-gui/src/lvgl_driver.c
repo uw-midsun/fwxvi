@@ -23,7 +23,7 @@ static LtdcSettings *s_ltdc_settings;
 
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
 #define LV_DRAW_BUF_LINES 20
-#define NUMBER_OF_BYTES_PER_PIXEL 2                                                       /* Since RGB565 = 2 bytes per pixel*/
+#define NUMBER_OF_BYTES_PER_PIXEL 2 /* Since RGB565 = 2 bytes per pixel*/
 static uint8_t s_draw_buf[DISPLAY_WIDTH * LV_DRAW_BUF_LINES * NUMBER_OF_BYTES_PER_PIXEL];
 
 /**
