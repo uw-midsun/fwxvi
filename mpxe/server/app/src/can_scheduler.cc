@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the CanScheduler class
  *
- * @date   2026-03-15
+ * @date   2026-03-16
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -61,9 +61,9 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG;
   canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].can_dlc = 4U;
   memset(canMediumCycleBCM.frame[MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL;
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].can_dlc = 5U;
-  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS;
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].can_dlc = 5U;
+  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_VELOCITY;
   canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].can_dlc = 8U;
   memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
@@ -249,28 +249,28 @@ void CanScheduler::update_slow_one_shot_msg_sig2(uint16_t sig2_value) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_pedal_percentage(uint32_t percentage_value) {
+void CanScheduler::update_drive_status_pedal_percentage(uint32_t pedal_percentage_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data[start_byte + 0U] = (percentage_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data[start_byte + 1U] = (percentage_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data[start_byte + 2U] = (percentage_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data[start_byte + 3U] = (percentage_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data[start_byte + 0U] = (pedal_percentage_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data[start_byte + 1U] = (pedal_percentage_value >> 8U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data[start_byte + 2U] = (pedal_percentage_value >> 16U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data[start_byte + 3U] = (pedal_percentage_value >> 24U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update pedal percentage}");
+      throw std::runtime_error("Failed to update drive_status pedal_percentage}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_pedal_data(uint8_t data_value) {
+void CanScheduler::update_drive_status_state_data(uint8_t state_data_value) {
   try {
     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_PEDAL_FRAME_INDEX].data[start_byte + 0U] = (data_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data[start_byte + 0U] = (state_data_value >> 0U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update pedal data}");
+      throw std::runtime_error("Failed to update drive_status state_data}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;

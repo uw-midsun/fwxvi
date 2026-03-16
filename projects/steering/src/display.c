@@ -98,10 +98,10 @@ StatusCode display_rx_slow() {
 
 StatusCode display_rx_medium() {
   display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
-  display_data->brake_enabled = get_pedal_data_brake_enabled();
-  display_data->regen_enabled = get_pedal_data_regen_enabled();
-  display_data->pedal_percentage = (uint8_t)get_pedal_percentage();
-  display_data->drive_state = (VehicleDriveState)get_pedal_data_drive_state();
+  display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
+  display_data->regen_enabled = get_drive_status_state_data_regen_enabled();
+  display_data->pedal_percentage = (uint8_t)get_drive_status_pedal_percentage();
+  display_data->drive_state = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
 

@@ -50,7 +50,7 @@ StatusCode brake_pedal_run() {
 #if (DEBUG_BRAKE_PEDAL == 1)
   LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | ENABLED %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
 #endif
-  set_pedal_data_brake_enabled(front_controller_storage->brake_enabled);
+  set_drive_status_state_data_brake_enabled(front_controller_storage->brake_enabled);
   return STATUS_CODE_OK;
 }
 

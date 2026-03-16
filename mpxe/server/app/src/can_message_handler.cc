@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the Can Message Handler function
  *
- * @date   2026-03-15
+ * @date   2026-03-16
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -175,14 +175,14 @@ struct slow_one_shot_msg {
   }
 };
 /**
- * @brief   Storage class for pedal CAN message
+ * @brief   Storage class for drive_status CAN message
  */
-struct pedal {
-  uint32_t percentage; /**< CAN signal 'percentage' defined in *.yaml */
-  uint8_t data; /**< CAN signal 'data' defined in *.yaml */
+struct drive_status {
+  uint32_t pedal_percentage; /**< CAN signal 'pedal_percentage' defined in *.yaml */
+  uint8_t state_data; /**< CAN signal 'state_data' defined in *.yaml */
 
   /**
-   * @brief   Decode new CAN data and update the storage for pedal
+   * @brief   Decode new CAN data and update the storage for drive_status
    * @param   data Pointer to the CAN message to be decoded
    */
   void decode(const uint8_t *data) {
@@ -196,33 +196,33 @@ struct pedal {
       raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
       
-      percentage = raw_val;
+      pedal_percentage = raw_val;
     }
     {
       raw_val = 0U;
       start_byte = 4;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       
-      data = raw_val;
+      state_data = raw_val;
     }
   }
 
   /**
-   * @brief   Create a JSON object for pedal using the storage
+   * @brief   Create a JSON object for drive_status using the storage
    */
   nlohmann::json to_json() const {
     return {
-      {"percentage", percentage},
-      {"data", data}
+      {"pedal_percentage", pedal_percentage},
+      {"state_data", state_data}
     };
   }
 
   /**
-   * @brief   Get the message name: pedal
+   * @brief   Get the message name: drive_status
    * @return  Returns the message name
    */
   std::string get_message_name() const {
-    return "pedal";
+    return "drive_status";
   }
 };
 /**
@@ -1399,8 +1399,8 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t* data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL: {
-      pedal *message = new pedal();
+    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS: {
+      drive_status *message = new drive_status();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;

@@ -6,7 +6,7 @@
 
 ---
 Messages:
-  pedal:
+  drive_status:
     id: 21
     cycle: "medium"
     critical: false
@@ -18,9 +18,9 @@ Messages:
       rear_controller:
         watchdog: 0
     signals:
-      percentage:
+      pedal_percentage:
         length: 32
-      data:
+      state_data:
         type: bitfield
         flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]
         length: 8
