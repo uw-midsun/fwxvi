@@ -1,10 +1,10 @@
 /************************************************************************************************
- * @file   main.c
+ * @file    main.c
  *
- * @brief  Smoke test for the gui library (Draws a blue box, a progress bar and writes all text)
+ * @brief   Main
  *
- * @date   2026-01-22
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "delay.h"
+#include "display.h"
 #include "framebuffer.h"
 #include "gpio.h"
 #include "gui.h"
@@ -19,11 +20,10 @@
 #include "ltdc.h"
 #include "mcu.h"
 #include "status.h"
+#include "steering_hw_defs.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "display.h"
-#include "steering_hw_defs.h"
 
 #ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
 #define DISPLAY_WIDTH 480  /**< Width of the display */
@@ -105,9 +105,9 @@ TASK(sc_gui_api, TASK_STACK_1024) {
   while (true) {
     LOG_DEBUG("testing if gui_draw_line works\r\n");
     draw_grid();
-    status = gui_render();
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw after draw_grid failed: %d\r\n", status);
     }
     delay_ms(3000);
 
@@ -119,9 +119,9 @@ TASK(sc_gui_api, TASK_STACK_1024) {
       delay_ms(10);
     }
 
-    status = gui_render();
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw after draw_grid failed: %d\r\n", status);
     }
     delay_ms(1000);
 
@@ -133,48 +133,13 @@ TASK(sc_gui_api, TASK_STACK_1024) {
     }
     delay_ms(1000);
 
-    LOG_DEBUG("testing if gui_render works\r\n");
-    status = gui_render();
+    LOG_DEBUG("testing if ltdc_draw works\r\n");
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw failed: %d\r\n", status);
       delay_ms(10);
     } else {
-      LOG_DEBUG("gui_render succeeded\r\n");
-      delay_ms(10);
-    }
-
-    LOG_DEBUG("testing if percentage bar works\r\n");
-    for (uint16_t i = 0; i <= 100; i++) {
-      status = gui_progress_bar(50, 50, 200, 30, i, COLOR_INDEX_WHITE, COLOR_INDEX_GREEN);
-      if (status != STATUS_CODE_OK) {
-        LOG_DEBUG("gui_progress_bar failed: %d\r\n", status);
-        break;
-      }
-      delay_ms(10);
-    }
-
-    LOG_DEBUG("Testing whether gui_display_text with hello world works\r\n");
-    status = gui_display_text(250, 250, "abcdefghijklmnopqrstuvwxyz", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_display_text(250, 200, "ABCDEFGHIJKLMNOPQRSTUVWXTZ", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_display_text(250, 150, "1234567890!@#$^&*()", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_render();
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after gui_display_text failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw succeeded\r\n");
       delay_ms(10);
     }
 
