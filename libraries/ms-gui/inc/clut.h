@@ -47,7 +47,7 @@ static inline uint16_t clut_entry_rgb565(ClutEntry color) {
 }
 
 /**
- * @brief   Legacy color indices used by indexed LTDC helpers and tests
+ * @brief   Legacy color indices used by indexed LTDC helpers and tests (Not used by LVGL)
  */
 typedef enum {
   COLOR_INDEX_BLACK = 0,

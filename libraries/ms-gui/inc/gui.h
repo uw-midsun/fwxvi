@@ -41,4 +41,35 @@ StatusCode gui_init(LtdcSettings *settings);
  */
 StatusCode gui_render();
 
+/**
+ * @brief   Draw a single pixel at (x, y)
+ * @param   x X coordinate
+ * @param   y Y coordinate
+ * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_draw_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
+
+/**
+ * @brief   Draw a filled rectangle
+ * @param   x X coordinate of the top left corner of the rectangle
+ * @param   y Y coordinate of the top left corner of the rectangle
+ * @param   width Width in pixels
+ * @param   height Height in pixels
+ * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ColorIndex color_index);
+
+/**
+ * @brief   Draw a line
+ * @param   x0 X coordinate start location
+ * @param   y0 Y coordinate start location
+ * @param   x1 X coordinate end location
+ * @param   y1 Y coordinate end location
+ * @param   color_index CLUT color index
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ColorIndex color_index);
+
 /** @} */
