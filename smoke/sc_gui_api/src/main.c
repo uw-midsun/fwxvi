@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "delay.h"
+#include "display.h"
 #include "framebuffer.h"
 #include "gpio.h"
 #include "gui.h"
@@ -19,9 +20,8 @@
 #include "ltdc.h"
 #include "mcu.h"
 #include "status.h"
-#include "tasks.h"
-#include "display.h"
 #include "steering_hw_defs.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 
