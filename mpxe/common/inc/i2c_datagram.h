@@ -46,6 +46,8 @@ class I2C {
     NUM_I2C_PORTS /**< Number of I2C ports */
   };
 
+
+
   /**
    * @brief   I2C Datagram payload storage
    */
@@ -53,6 +55,7 @@ class I2C {
     Port i2cPort;                        /**< I2C port */
     size_t bufferLength;                 /**< Data buffer length */
     uint8_t buffer[I2C_MAX_BUFFER_SIZE]; /**< Data buffer */
+    static constexpr uint8_t* slaveAddress = 0x0000; /**< Slave Address */
   };
 
   /**

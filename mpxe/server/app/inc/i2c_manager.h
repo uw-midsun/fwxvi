@@ -32,7 +32,44 @@
  */
 class I2CManager {
  private:
+
+  /**
+   * @brief   Save cached ADC readings for a project to JSON storage
+   * @param   projectName Name of the project whose ADC info should be saved
+   */
+  void loadI2CInfo(std::string &projectName);
+
+  /**
+   * @brief   Save cached ADC readings for a project to JSON storage
+   * @param   projectName Name of the project whose ADC info should be saved
+   */
+  void saveI2CInfo(std::string &projectName);
+
+  /**
+   * @brief   Save cached ADC readings for a project to JSON storage
+   * @param   projectName Name of the project whose ADC info should be saved
+   */
+  void loadAdcInfo(std::string &projectName);
+
+  //P
  public:
+
+  /**
+   * @brief   Constructs a I2CManager object
+   * @details Default constructor
+   */
+
+   void updateSetData(std::string &projectName, std::string &payload);
+
+   /**
+   * @brief   Constructs a I2CManager object
+   * @details Default constructor
+   */
+
+   void updateReceiveData(std::string &projectName, std::string &payload);
+
+
+
   /**
    * @brief   Constructs a I2CManager object
    * @details Default constructor

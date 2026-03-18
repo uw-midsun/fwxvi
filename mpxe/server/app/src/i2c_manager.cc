@@ -16,3 +16,12 @@
 /* Intra-component Headers */
 #include "app.h"
 #include "i2c_manager.h"
+
+void I2CManager::updateSetData(std::string &projectName, std::string &payload){
+    m_I2CDatagram.deserialize(payload);
+    
+
+
+}
+
+
