@@ -27,10 +27,10 @@ class CanSimulatorDataCache:
                 "sig2": 0,
             },
 
-            "front_controller_pedal": {
-                # pedal cache definitions
-                "percentage": 0,
-                "data": 0,
+            "front_controller_drive_status": {
+                # drive_status cache definitions
+                "pedal_percentage": 0,
+                "state_data": 0,
             },
 
             "front_controller_motor_velocity": {

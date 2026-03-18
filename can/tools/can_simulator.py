@@ -63,11 +63,11 @@ data = bytearray(pack(can_data_cache.get("can_communication_slow_one_shot_msg", 
 
 messages_slow.append(system_can_message_can_communication_slow_one_shot_msg)
 
-system_can_message_front_controller_pedal = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_pedal", "percentage"), 32) + pack(can_data_cache.get("front_controller_pedal", "data"), 8)))
+system_can_message_front_controller_drive_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("front_controller_drive_status", "pedal_percentage"), 32) + pack(can_data_cache.get("front_controller_drive_status", "state_data"), 8)))
 
-messages_medium.append(system_can_message_front_controller_pedal)
+messages_medium.append(system_can_message_front_controller_drive_status)
 
 system_can_message_front_controller_motor_velocity = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_VELOCITY_ID,
