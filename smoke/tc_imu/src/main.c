@@ -61,7 +61,7 @@ Bmi323Storage bmi323_storage = {
 TASK(IMU_RUN, 1024){
   imu_init(&bmi323_storage, &bmi323_settings);
   
-  telemetry_storage.bmi323_storage = &bmi323_storage; // do we need this? / when do we use this again
+  telemetry_storage.bmi323_storage = &bmi323_storage; 
   while(true){
     LOG_DEBUG("Starting IMU run\n");
     StatusCode status = imu_run(); 
@@ -82,7 +82,6 @@ TASK(IMU_RUN, 1024){
 #include "mpxe.h"
 int main(int argc, char *argv[]){
   mpxe_init(argc, argv);
-}
 #else
 int main(){
 #endif
