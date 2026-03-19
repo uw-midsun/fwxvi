@@ -13,11 +13,11 @@
 #include "delay.h"
 #include "ff.h"
 #include "gpio.h"
+#include "imu.h"
 #include "log.h"
 #include "mcu.h"
 #include "status.h"
 #include "tasks.h"
-#include "imu.h"
 
 /* Intra-component Headers */
 #include "datagram.h"
@@ -58,32 +58,31 @@ Bmi323Storage bmi323_storage = {
   .settings = &bmi323_settings,
 };
 
-TASK(IMU_RUN, 1024){
+TASK(IMU_RUN, 1024) {
   imu_init(&bmi323_storage, &bmi323_settings);
-  
-  telemetry_storage.bmi323_storage = &bmi323_storage; 
-  while(true){
+
+  telemetry_storage.bmi323_storage = &bmi323_storage;
+  while (true) {
     LOG_DEBUG("Starting IMU run\n");
-    StatusCode status = imu_run(); 
-    
-    if(status != STATUS_CODE_OK){
+    StatusCode status = imu_run();
+
+    if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Error occurred");
       delay_ms(1000U);
-    } else if(status == STATUS_CODE_OK){
+    } else if (status == STATUS_CODE_OK) {
       LOG_DEBUG("IMU gx=%.3f gy=%.3f gz=%.3f ax=%.3f ay=%.3f az=%.3f\n", (double)bmi323_storage.gyro.x, (double)bmi323_storage.gyro.y, (double)bmi323_storage.gyro.z, (double)bmi323_storage.accel.x,
-            (double)bmi323_storage.accel.y, (double)bmi323_storage.accel.z);
+                (double)bmi323_storage.accel.y, (double)bmi323_storage.accel.z);
       delay_ms(1000U);
     }
   }
 }
 
-
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
 #else
-int main(){
+int main() {
 #endif
   mcu_init();
   tasks_init();
