@@ -27,6 +27,7 @@
 typedef struct {
   uint16_t lower_value; /**< ADC reading when the pedal is considered fully released */
   uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
+  bool reversed;
 } AccelPedalCalibrationData;
 
 typedef struct AccelPedalStorage {
