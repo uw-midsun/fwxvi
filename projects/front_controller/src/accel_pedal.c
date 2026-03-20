@@ -58,7 +58,7 @@ StatusCode accel_pedal_run() {
     calculated_reading = front_controller_storage->config->accel_input_remap_min + ((1.0f - front_controller_storage->config->accel_input_remap_min) * calculated_reading);
   }
 
-  if(s_accel_pedal_storage.calibration_data.reversed){
+  if (s_accel_pedal_storage.calibration_data.reversed) {
     calculated_reading = 1.0f - calculated_reading;
   }
 
@@ -82,7 +82,7 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   front_controller_storage = storage;
   front_controller_storage->accel_pedal_storage = &s_accel_pedal_storage;
 
-  if (s_accel_pedal_storage.calibration_data.lower_value > s_accel_pedal_storage.calibration_data.upper_value){
+  if (s_accel_pedal_storage.calibration_data.lower_value > s_accel_pedal_storage.calibration_data.upper_value) {
     uint16_t tmp = s_accel_pedal_storage.calibration_data.lower_value;
     s_accel_pedal_storage.calibration_data.lower_value = s_accel_pedal_storage.calibration_data.upper_value;
     s_accel_pedal_storage.calibration_data.upper_value = tmp;

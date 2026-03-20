@@ -21,7 +21,7 @@
 #include "front_controller_hw_defs.h"
 #include "front_controller_setters.h"
 
-#define DEBUG_BRAKE_PEDAL 1U
+#define DEBUG_BRAKE_PEDAL 0U
 
 static GpioAddress s_brake_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
 static FrontControllerStorage *front_controller_storage = NULL;
