@@ -18,6 +18,7 @@
         "projects/front_controller/src/ws22_motor_can.o",
         "projects/front_controller/src/pedal_calib_reader.o",
         "projects/front_controller/src/motor_can.o",
+        "projects/front_controller/src/cruise_control.o",
         "projects/front_controller/src/front_lights_signal.o",
         "projects/front_controller/src/power_manager.o",
         "projects/front_controller/src/front_controller_state_manager.o"
