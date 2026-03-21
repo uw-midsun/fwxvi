@@ -95,7 +95,7 @@
  ************************************************************************************************/
 
 /** @brief  Front Controller accelerator pedal input */
-#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 3)
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 0)
 
 /** @brief  Front Controller brake pedal input */
 #define GPIO_FRONT_CONTROLLER_BRAKE_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 5)

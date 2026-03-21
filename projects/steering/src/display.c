@@ -43,6 +43,9 @@ TASK(display_lvgl_task, TASK_STACK_1024) {
     gui_widgets_set_speed(display_data->vehicle_velocity);
     gui_widgets_set_throttle_bar(display_data->pedal_percentage);
     gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
+    gui_widgets_set_temperature_bar(display_data->motor_heatsink_temp);
+    gui_widgets_set_speed_bar(display_data->motor_velocity);
+
     gui_render();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
   }
@@ -98,10 +101,10 @@ StatusCode display_rx_slow() {
 
 StatusCode display_rx_medium() {
   display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
-  display_data->brake_enabled = get_pedal_data_brake_enabled();
-  display_data->regen_enabled = get_pedal_data_regen_enabled();
-  display_data->pedal_percentage = (uint8_t)get_pedal_percentage();
-  display_data->drive_state = (VehicleDriveState)get_pedal_data_drive_state();
+  display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
+  display_data->regen_enabled = get_drive_status_state_data_regen_enabled();
+  display_data->pedal_percentage = (uint8_t)get_drive_status_pedal_percentage();
+  display_data->drive_state = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
 
@@ -109,7 +112,7 @@ StatusCode display_rx_medium() {
   display_data->motor_temp = (int16_t)get_motor_temperature_motor_temp();
 
   display_data->vehicle_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
-  display_data->motor_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
+  display_data->motor_velocity = (int16_t)get_motor_velocity_motor_velocity();
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();

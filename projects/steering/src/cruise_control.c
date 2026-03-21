@@ -111,7 +111,7 @@ StatusCode cruise_control_run_medium_cycle() {
   // #endif
 
   // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
-  VehicleDriveState drive_state_from_front = (VehicleDriveState)get_pedal_data_drive_state();
+  VehicleDriveState drive_state_from_front = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
     LOG_DEBUG("BRAKE from front\r\n");

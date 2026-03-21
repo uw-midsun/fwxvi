@@ -9,23 +9,81 @@ class CanSimulatorDataCache:
     def __init__(self):
         self.data = {
 
-            "telemetry_telemetry": {
-                # telemetry cache definitions
-                "telemetry_data": 0,
+            "can_communication_fast_one_shot_msg": {
+                # fast_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
             },
 
-            "front_controller_front_controller_pedal_data": {
-                # front_controller_pedal_data cache definitions
-                "percentage": 0,
-                "brake_enabled": 0,
+            "can_communication_medium_one_shot_msg": {
+                # medium_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
+            },
+
+            "can_communication_slow_one_shot_msg": {
+                # slow_one_shot_msg cache definitions
+                "sig1": 0,
+                "sig2": 0,
+            },
+
+            "front_controller_drive_status": {
+                # drive_status cache definitions
+                "pedal_percentage": 0,
+                "state_data": 0,
+            },
+
+            "front_controller_motor_velocity": {
+                # motor_velocity cache definitions
+                "vehicle_velocity": 0,
+                "motor_velocity": 0,
+            },
+
+            "front_controller_motor_temperature": {
+                # motor_temperature cache definitions
+                "heat_sink_temp": 0,
+                "motor_temp": 0,
+            },
+
+            "front_controller_fc_power_group_a": {
+                # fc_power_group_a cache definitions
+                "rev_cam_current": 0,
+                "telem_current": 0,
+                "steering_current": 0,
+                "driver_fan_current": 0,
+            },
+
+            "front_controller_fc_power_group_b": {
+                # fc_power_group_b cache definitions
+                "horn_current": 0,
+                "spare_current": 0,
+            },
+
+            "front_controller_fc_power_lights_group": {
+                # fc_power_lights_group cache definitions
+                "brake_light_sig_current": 0,
+                "bps_light_sig_current": 0,
+                "right_sig_current": 0,
+                "left_sig_current": 0,
+            },
+
+            "imu_gyro_data": {
+                # gyro_data cache definitions
+                "x_axis": 0,
+                "y_axis": 0,
+                "z_axis": 0,
+            },
+
+            "imu_accel_data": {
+                # accel_data cache definitions
+                "x_axis": 0,
+                "y_axis": 0,
+                "z_axis": 0,
             },
 
             "rear_controller_rear_controller_status": {
                 # rear_controller_status cache definitions
-                "bps_fault": 0,
-                "relay_state": 0,
-                "power_state": 0,
-                "afe_status": 0,
+                "triggers": 0,
             },
 
             "rear_controller_battery_stats_a": {
@@ -40,7 +98,6 @@ class CanSimulatorDataCache:
                 "max_cell_voltage": 0,
                 "min_cell_voltage": 0,
                 "max_temperature": 0,
-                "motor_precharge_complete": 0,
             },
 
             "rear_controller_power_input_stats": {
@@ -95,50 +152,18 @@ class CanSimulatorDataCache:
                 "temperature_6": 0,
             },
 
-            "imu_gyro_data": {
-                # gyro_data cache definitions
-                "x_axis": 0,
-                "y_axis": 0,
-                "z_axis": 0,
+            "steering_steering": {
+                # steering cache definitions
+                "cruise_control_target_velocity": 0,
+                "buttons": 0,
             },
 
-            "imu_accel_data": {
-                # accel_data cache definitions
-                "x_axis": 0,
-                "y_axis": 0,
-                "z_axis": 0,
-            },
-
-            "can_communication_fast_one_shot_msg": {
-                # fast_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_medium_one_shot_msg": {
-                # medium_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_slow_one_shot_msg": {
-                # slow_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "steering_steering_buttons": {
-                # steering_buttons cache definitions
-                "drive_state": 0,
-                "cruise_control": 0,
-                "regen_braking": 0,
-                "hazard_enabled": 0,
-                "horn_enabled": 0,
-            },
-
-            "steering_steering_target_velocity": {
-                # steering_target_velocity cache definitions
-                "target_velocity": 0,
+            "telemetry_imu_data": {
+                # imu_data cache definitions
+                "g_force": 0,
+                "roll": 0,
+                "pitch": 0,
+                "yaw": 0,
             }
 
         }

@@ -26,7 +26,7 @@ static GpioAddress s_accel_pedal_gpio = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL;
 
 static FrontControllerStorage *front_controller_storage;
 
-static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.lower_value = 0, .calibration_data.upper_value = 4096 };
+static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.lower_value = 855, .calibration_data.upper_value = 582 };
 
 #define DEBUG_ACCEL_PEDAL 0U
 
@@ -58,6 +58,10 @@ StatusCode accel_pedal_run() {
     calculated_reading = front_controller_storage->config->accel_input_remap_min + ((1.0f - front_controller_storage->config->accel_input_remap_min) * calculated_reading);
   }
 
+  if (s_accel_pedal_storage.calibration_data.reversed) {
+    calculated_reading = 1.0f - calculated_reading;
+  }
+
   s_accel_pedal_storage.accel_percentage = front_controller_storage->config->accel_low_pass_filter_alpha * calculated_reading +
                                            (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
   s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
@@ -77,6 +81,13 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
 
   front_controller_storage = storage;
   front_controller_storage->accel_pedal_storage = &s_accel_pedal_storage;
+
+  if (s_accel_pedal_storage.calibration_data.lower_value > s_accel_pedal_storage.calibration_data.upper_value) {
+    uint16_t tmp = s_accel_pedal_storage.calibration_data.lower_value;
+    s_accel_pedal_storage.calibration_data.lower_value = s_accel_pedal_storage.calibration_data.upper_value;
+    s_accel_pedal_storage.calibration_data.upper_value = tmp;
+    s_accel_pedal_storage.calibration_data.reversed = true;
+  }
 
   // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
 

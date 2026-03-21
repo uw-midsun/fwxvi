@@ -487,19 +487,19 @@ TASK(telemetry_reader, TASK_STACK_1024) {
   delay_ms(10U);
 
   while (true) {
-    if (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) == STATUS_CODE_OK) {
-      LOG_DEBUG("Received message\n");
-      decode_can_message(&datagram, &message);
-      msg_count++;
-      LOG_DEBUG("[MSG #%u] ID: 0x%04X | DLC: %d\r\n", msg_count, datagram.id, datagram.dlc);
-      delay_ms(10U);
-      /* Wait for new data to be in the queue */
+    while (queue_receive(&s_can_storage.rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
+    }
+    LOG_DEBUG("Received message\n");
+    decode_can_message(&datagram, &message);
+    msg_count++;
+    LOG_DEBUG("[MSG #%u] ID: 0x%04X | DLC: %d\r\n", msg_count, datagram.id, datagram.dlc);
+    delay_ms(10U);
+    /* Wait for new data to be in the queue */
 
-      update_board_data(&datagram);
+    update_board_data(&datagram);
 
-      if (msg_count % 50U == 0U) {
-        print_all_boards();
-      }
+    if (msg_count % 50U == 0U) {
+      print_all_boards();
     }
   }
 }

@@ -67,7 +67,7 @@ StatusCode motor_can_update_target_current_velocity() {
   }
 
   front_controller_storage->current_drive_state = current_drive_state;
-  set_pedal_data_drive_state(front_controller_storage->current_drive_state);
+  set_drive_status_state_data_drive_state(front_controller_storage->current_drive_state);
 
   switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
