@@ -14,6 +14,7 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "global_enums.h"
 #include "rear_controller_safety_limits.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
@@ -117,4 +118,13 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
 RearControllerState rear_controller_state_manager_get_state(void) {
   return s_current_state;
+}
+
+StatusCode rear_controller_update_state_manager_medium_cycle() {
+  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
+  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
+    if (rear_controller_storage->precharge_complete) {
+      rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
+    }
+  }
 }
