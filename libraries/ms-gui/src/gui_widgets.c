@@ -62,8 +62,8 @@ static StatusCode s_create_throttle_bar(lv_obj_t *screen) {
 static StatusCode s_create_brake_bar(lv_obj_t *screen) {
   const BarWidgetConfig s_brake_bar_config = {
     .size = { .width = 40, .height = 100 },
-    .position = { 
-      .type = WIDGET_POSITION_ALIGN, 
+    .position = {
+      .type = WIDGET_POSITION_ALIGN,
       .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_LEFT, .x_offset = 15, .y_offset = -35 },
      },
     .label_text = "Brake",
@@ -93,8 +93,8 @@ static StatusCode s_create_temperature_bar(lv_obj_t *screen) {
 static StatusCode s_create_speed_bar(lv_obj_t *screen) {
   const BarWidgetConfig s_speed_bar_config = {
     .size = { .width = 40, .height = 100 },
-    .position = { 
-      .type = WIDGET_POSITION_ALIGN, 
+    .position = {
+      .type = WIDGET_POSITION_ALIGN,
       .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT, .x_offset = -15, .y_offset = -35 },
      },
     .label_text = "Motor speed",
