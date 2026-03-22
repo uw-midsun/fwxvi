@@ -108,11 +108,11 @@ StatusCode display_rx_medium() {
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
 
-  display_data->motor_heatsink_temp = (int16_t)get_motor_temperature_heat_sink_temp();
-  display_data->motor_temp = (int16_t)get_motor_temperature_motor_temp();
+  display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
+  display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
 
-  display_data->vehicle_velocity = (int16_t)get_motor_velocity_vehicle_velocity();
-  display_data->motor_velocity = (int16_t)get_motor_velocity_motor_velocity();
+  display_data->vehicle_velocity = (int16_t)get_motor_stats_B_vehicle_velocity();
+  display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
