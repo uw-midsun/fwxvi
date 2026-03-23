@@ -62,7 +62,7 @@ StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amp
 
   // 16 bits upper
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
-  *out_current_amps = (float)(current_raw)*CURRENT_SCALE;
+  *out_current_amps = (float)(current_raw)*ACS37800_CURRENT_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -81,7 +81,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
 
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
-  *out_voltage_mV = (float)(voltage_raw)*VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -100,7 +100,7 @@ StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_
 
   // active power signed 16bit lower
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
-  *out_power_mW = (float)(power_raw)*POWER_SCALE;
+  *out_power_mW = (float)(power_raw)*ACS37800_POWER_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -196,7 +196,7 @@ void acs37800_set_register(ACS37800_Registers reg, uint32_t value) {
 
 void acs37800_set_current(float current_amps) {
   // Encode into upper 16 bits of VCODES_ICODES register
-  int16_t current_raw = (int16_t)(current_amps / CURRENT_SCALE);
+  int16_t current_raw = (int16_t)(current_amps / ACS37800_CURRENT_SCALE);
   // Clear upper 16 bits
   s_registers[ACS37800_REG_VCODES_ICODES] &= 0x0000FFFF;
   s_registers[ACS37800_REG_VCODES_ICODES] |= ((uint32_t)current_raw << 16);
@@ -204,7 +204,7 @@ void acs37800_set_current(float current_amps) {
 
 void acs37800_set_voltage(float voltage_mV) {
   // Encode into lower 16 bits of VCODES_ICODES register
-  int16_t voltage_raw = (int16_t)(voltage_mV / VOLTAGE_SCALE);
+  int16_t voltage_raw = (int16_t)(voltage_mV / ACS37800_VOLTAGE_SCALE);
   // Clear lower 16 bits
   s_registers[ACS37800_REG_VCODES_ICODES] &= 0xFFFF0000;
   s_registers[ACS37800_REG_VCODES_ICODES] |= ((uint32_t)voltage_raw & 0xFFFF);
@@ -212,7 +212,7 @@ void acs37800_set_voltage(float voltage_mV) {
 
 void acs37800_set_power(float power_mW) {
   // Encode into lower 16 bits of PACTIVE_PIMAGE register
-  int16_t power_raw = (int16_t)(power_mW / POWER_SCALE);
+  int16_t power_raw = (int16_t)(power_mW / ACS37800_POWER_SCALE);
   // Clear lower 16 bits
   s_registers[ACS37800_REG_PACTIVE_PIMAGE] &= 0xFFFF0000;
   s_registers[ACS37800_REG_PACTIVE_PIMAGE] |= ((uint32_t)power_raw & 0xFFFF);

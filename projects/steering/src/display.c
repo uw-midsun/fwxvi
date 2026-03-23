@@ -12,8 +12,9 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#include "clut.h"
 #include "gpio.h"
+#include "gui.h"
+#include "gui_widgets.h"
 #include "ltdc.h"
 #include "pwm.h"
 
@@ -29,11 +30,23 @@ static DisplayData *display_data = NULL;
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
-static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
+static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((aligned(32))); /* RGB565 */
 
 #define NUMBER_OF_RED_BITS 8
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
+
+TASK(display_lvgl_task, TASK_STACK_1024) {
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
+  while (true) {
+    gui_widgets_set_speed(display_data->vehicle_velocity);
+    gui_widgets_set_throttle_bar(display_data->pedal_percentage);
+    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
+    gui_render();
+    xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
+  }
+}
 
 StatusCode display_init(SteeringStorage *storage) {
   if (storage == NULL) {
@@ -68,7 +81,15 @@ StatusCode display_init(SteeringStorage *storage) {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
-  return ltdc_init(&settings);
+  status_ok_or_return(gui_init(&settings));
+  status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
+
+  LOG_DEBUG("LVGL display initialized\r\n");
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_run() {
+  return STATUS_CODE_OK;
 }
 
 StatusCode display_rx_slow() {

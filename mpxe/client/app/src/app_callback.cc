@@ -22,6 +22,7 @@ GpioManager clientGpioManager;
 AfeManager clientAfeManager;
 AdcManager clientAdcManager;
 SPIManager clientSpiManager;
+I2CManager clientI2CManager;
 
 void applicationMessageCallback(Client *client, std::string &message) {
   std::string data = message;
@@ -162,6 +163,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::SPI_WRITE_DATA: {
+      std::cout << "BRKPT2: Is write called?" << std::endl;
       client->sendMessage(clientSpiManager.writeSpiData(payload));
       break;
     }
@@ -178,6 +180,18 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
 
+    case CommandCode::I2C_WRITE_DATA: {
+      clientI2CManager.writeI2CData(payload);
+      break;
+    }
+    case CommandCode::I2C_READ_DATA: {
+      client->sendMessage(clientI2CManager.readI2CData(payload));
+      break;
+    }
+    case CommandCode::I2C_CLEAR_BUFFER: {
+      clientI2CManager.clearI2CBuffers(payload);
+      break;
+    }
     default: {
       break;
     }

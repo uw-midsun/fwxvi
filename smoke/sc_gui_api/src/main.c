@@ -1,10 +1,10 @@
 /************************************************************************************************
- * @file   main.c
+ * @file    main.c
  *
- * @brief  Smoke test for the gui library (Draws a blue box, a progress bar and writes all text)
+ * @brief   Main
  *
- * @date   2026-01-22
- * @author Midnight Sun Team #24 - MSXVI
+ * @date    2026-03-15
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "delay.h"
+#include "display.h"
 #include "framebuffer.h"
 #include "gpio.h"
 #include "gui.h"
@@ -19,6 +20,7 @@
 #include "ltdc.h"
 #include "mcu.h"
 #include "status.h"
+#include "steering_hw_defs.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -31,10 +33,20 @@
 #define DISPLAY_HEIGHT 1 /**< Height of the display */
 #endif
 
+#define NUMBER_OF_RED_BITS 8
+#define NUMBER_OF_GREEN_BITS 8
+#define NUMBER_OF_BLUE_BITS 8
+
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT] __attribute__((aligned(32)));
-static GpioAddress s_display_ctrl = { .port = GPIO_PORT_A, .pin = 0 };
-static GpioAddress s_display_current_ctrl = { .port = GPIO_PORT_A, .pin = 1 };
+static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
+static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
+static Framebuffer framebuffer_cfg = { 0 };
+
+static GuiSettings gui_cfg = {
+  .framebuffer = &framebuffer_cfg,
+  .ltdc = &settings,
+};
 
 static void draw_grid(void) {
   // 1) Border frame
@@ -55,47 +67,20 @@ static void draw_grid(void) {
 }
 
 TASK(sc_gui_api, TASK_STACK_1024) {
-  const LtdcTimingConfig timing_config = { .hsync = 4, .vsync = 4, .hbp = 43, .vbp = 12, .hfp = 8, .vfp = 8 };
-
-  const LtdcGpioConfig gpio_config = {
-    .clk = { .port = GPIO_PORT_A, .pin = 4 },
-    .hsync = { .port = GPIO_PORT_C, .pin = 2 },
-    .vsync = { .port = GPIO_PORT_B, .pin = 11 },
-    .de = { .port = GPIO_PORT_C, .pin = 0 },
-    .r = {
-      {},
-      {},
-      { .port = GPIO_PORT_E, .pin = 15 }, /* R2 */
-      { .port = GPIO_PORT_D, .pin = 8 },  /* R3 */
-      { .port = GPIO_PORT_D, .pin = 9 },  /* R4 */
-      { .port = GPIO_PORT_D, .pin = 10 }, /* R5 */
-      { .port = GPIO_PORT_D, .pin = 11 }, /* R6 */
-      { .port = GPIO_PORT_D, .pin = 12 }, /* R7 */
-    },
-    .g = {
-      {},
-      {},
-      { .port = GPIO_PORT_E, .pin = 9 },  /* G2 */
-      { .port = GPIO_PORT_E, .pin = 10 }, /* G3 */
-      { .port = GPIO_PORT_E, .pin = 11 }, /* G4 */
-      { .port = GPIO_PORT_E, .pin = 12 }, /* G5 */
-      { .port = GPIO_PORT_E, .pin = 13 }, /* G6 */
-      { .port = GPIO_PORT_E, .pin = 14 }, /* G7 */
-    },
-    .b = {
-      {},
-      {},
-      { .port = GPIO_PORT_D, .pin = 14 }, /* B2 */
-      { .port = GPIO_PORT_D, .pin = 15 }, /* B3 */
-      { .port = GPIO_PORT_D, .pin = 0 },  /* B4 */
-      { .port = GPIO_PORT_D, .pin = 1 },  /* B5 */
-      { .port = GPIO_PORT_B, .pin = 0 },  /* B6 */
-      { .port = GPIO_PORT_E, .pin = 4 },  /* B7 */
-    },
-    .num_red_bits = 8,
-    .num_green_bits = 8,
-    .num_blue_bits = 8,
+  LtdcTimingConfig timing_config = {
+    .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
   };
+
+  LtdcGpioConfig gpio_config = { .clk = GPIO_STEERING_DISPLAY_LTDC_CLOCK,
+                                 .hsync = GPIO_STEERING_DISPLAY_LTDC_HSYNC,
+                                 .vsync = GPIO_STEERING_DISPLAY_LTDC_VSYNC,
+                                 .de = GPIO_STEERING_DISPLAY_LTDC_DE,
+                                 .r = GPIO_STEERING_DISPLAY_LTDC_RED_PINS,
+                                 .g = GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS,
+                                 .b = GPIO_STEERING_DISPLAY_LTDC_BLUE_PINS,
+                                 .num_red_bits = NUMBER_OF_RED_BITS,
+                                 .num_green_bits = NUMBER_OF_GREEN_BITS,
+                                 .num_blue_bits = NUMBER_OF_BLUE_BITS };
 
   settings.width = DISPLAY_WIDTH;
   settings.height = DISPLAY_HEIGHT;
@@ -106,29 +91,9 @@ TASK(sc_gui_api, TASK_STACK_1024) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_current_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
   StatusCode status = STATUS_CODE_OK;
-
-  status = ltdc_init(&settings);
-  if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("ltdc initialized\r\n");
-  } else {
-    LOG_DEBUG("ltdc cannot be initialized: %d\r\n", status);
-  }
-
-  Framebuffer framebuffer_cfg = { 0 };
-  status = framebuffer_init(&framebuffer_cfg, DISPLAY_WIDTH, DISPLAY_HEIGHT, framebuffer);
-  if (status == STATUS_CODE_OK) {
-    LOG_DEBUG("framebuffer initialized\r\n");
-  } else {
-    LOG_DEBUG("framebuffer cannot be initialized: %d\r\n", status);
-  }
-
-  GuiSettings gui_cfg = {
-    .framebuffer = framebuffer_cfg,
-    .ltdc = settings,
-  };
 
   status = gui_init(&gui_cfg);
   if (status == STATUS_CODE_OK) {
@@ -140,9 +105,9 @@ TASK(sc_gui_api, TASK_STACK_1024) {
   while (true) {
     LOG_DEBUG("testing if gui_draw_line works\r\n");
     draw_grid();
-    status = gui_render();
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw after draw_grid failed: %d\r\n", status);
     }
     delay_ms(3000);
 
@@ -154,9 +119,9 @@ TASK(sc_gui_api, TASK_STACK_1024) {
       delay_ms(10);
     }
 
-    status = gui_render();
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after draw_grid failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw after draw_grid failed: %d\r\n", status);
     }
     delay_ms(1000);
 
@@ -168,48 +133,13 @@ TASK(sc_gui_api, TASK_STACK_1024) {
     }
     delay_ms(1000);
 
-    LOG_DEBUG("testing if gui_render works\r\n");
-    status = gui_render();
+    LOG_DEBUG("testing if ltdc_draw works\r\n");
+    status = ltdc_draw();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw failed: %d\r\n", status);
       delay_ms(10);
     } else {
-      LOG_DEBUG("gui_render succeeded\r\n");
-      delay_ms(10);
-    }
-
-    LOG_DEBUG("testing if percentage bar works\r\n");
-    for (uint16_t i = 0; i <= 100; i++) {
-      status = gui_progress_bar(50, 50, 200, 30, i, COLOR_INDEX_WHITE, COLOR_INDEX_GREEN);
-      if (status != STATUS_CODE_OK) {
-        LOG_DEBUG("gui_progress_bar failed: %d\r\n", status);
-        break;
-      }
-      delay_ms(10);
-    }
-
-    LOG_DEBUG("Testing whether gui_display_text with hello world works\r\n");
-    status = gui_display_text(250, 250, "abcdefghijklmnopqrstuvwxyz", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_display_text(250, 200, "ABCDEFGHIJKLMNOPQRSTUVWXTZ", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_display_text(250, 150, "1234567890!@#$^&*()", COLOR_INDEX_RED);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_display_text failed: %d\r\n", status);
-      delay_ms(10);
-    }
-
-    status = gui_render();
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("gui_render after gui_display_text failed: %d\r\n", status);
+      LOG_DEBUG("ltdc_draw succeeded\r\n");
       delay_ms(10);
     }
 

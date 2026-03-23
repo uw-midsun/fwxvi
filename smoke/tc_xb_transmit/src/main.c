@@ -34,12 +34,15 @@ static TelemetryConfig s_telemetry_config = {
   .message_transmit_frequency_hz = 10U,
 };
 
-uint8_t datagram_data[] = { 0, 1, 2, 3, 4 };
+static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
+static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
+
+uint8_t datagram_data[] = "HELLO\r\n";
 
 static Datagram tx_datagram = {
   .start_frame = 0xAA,
   .id = 0x01,
-  .dlc = 5,
+  .dlc = sizeof(datagram_data) - 1,
 };
 
 static size_t datagram_length = 0;
@@ -50,19 +53,22 @@ TASK(xb_transmit, TASK_STACK_1024) {
   uint16_t msg_count = 0;
   StatusCode status = STATUS_CODE_OK;
 
+  gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+
   LOG_DEBUG("Telemetry smoke test");
   delay_ms(1000U);
 
   while (true) {
     datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-    for (int i = 0; i < 5; i++) {
-      tx_datagram.data[i] = i;
+    for (uint8_t i = 0; i < sizeof(datagram_data); i++) {
+      tx_datagram.data[i] = datagram_data[i];
     }
 
-    status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-
-    printf("uart_tx with return code %d\r\n", status);
+    LOG_DEBUG("uart_tx %s with return code %d\r\n", tx_datagram.data, status);
     delay_ms(10U);
+    LOG_DEBUG("uart_tx with return code %d\r\n", status);
+    delay_ms(1000U);
   }
 }
 

@@ -7,5 +7,6 @@
     "x86_libs": [
         "ms-mpxe"
     ],
-    "can": false
+    "can": false, 
+    "selected_preset": "STM32L496RGT6_legacy_debug"
 }

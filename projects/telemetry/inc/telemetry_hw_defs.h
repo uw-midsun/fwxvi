@@ -42,16 +42,22 @@
  ************************************************************************************************/
 
 /** @brief  Telemetry UART RX Port */
-#define GPIO_TELEMETRY_UART_RX TELEMETRY_GPIO_DEF(A, 2)
+#define GPIO_TELEMETRY_UART_RX TELEMETRY_GPIO_DEF(A, 3)
 
 /** @brief  Telemetry UART TX Port */
-#define GPIO_TELEMETRY_UART_TX TELEMETRY_GPIO_DEF(A, 3)
+#define GPIO_TELEMETRY_UART_TX TELEMETRY_GPIO_DEF(A, 2)
 
 /** @brief  Telemetry XBee XRST Pin */
 #define GPIO_TELEMETRY_XBEE_XRST TELEMETRY_GPIO_DEF(A, 5)
 
 /** @brief  Telemetry XBee SLEEP_RQ Pin */
 #define GPIO_TELEMETRY_XBEE_SLEEP_RQ TELEMETRY_GPIO_DEF(A, 11)
+
+#define TELEMETRY_XBEE_UART_BAUDRATE 115200
+
+#define TELEMETRY_XBEE_UART_FLOW_CONTROL UART_FLOW_CONTROL_NONE
+
+#define TELEMETRY_XBEE_UART_PORT UART_PORT_2
 
 /************************************************************************************************
  * Telemetry SPI definitions - for SD card & IMU
@@ -78,6 +84,12 @@
 
 /** @brief  Telemetry IMU INTL2 Pin */
 #define GPIO_TELEMETRY_IMU_INTL2 TELEMETRY_GPIO_DEF(B, 1)
+
+#define TELEMETRY_IMU_SPI_BAUDRATE SPI_BAUDRATE_5MHZ
+
+#define TELEMETRY_IMU_SPI_MODE SPI_MODE_3
+
+#define TELEMETRY_IMU_SPI_PORT SPI_PORT_2
 
 /************************************************************************************************
  * Telemetry SD-card-specific Definitions
