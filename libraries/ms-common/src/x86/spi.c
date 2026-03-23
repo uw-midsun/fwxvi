@@ -73,17 +73,61 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  // Send Out Data
-  if (tx_len > 0) {
-    if (spi_set_rx(spi, rx_data, rx_len) != STATUS_CODE_OK) {
+  status_ok_or_return(spi_write(spi, tx_data, tx_len));
+  status_ok_or_return(spi_read(spi, rx_data, rx_len));
+
+  // Send Out Data to Tx_Buf
+  // if (tx_len > 0) {
+  //   if (spi_write(spi, tx_data, tx_len) != STATUS_CODE_OK) {
+  //     return STATUS_CODE_RESOURCE_EXHAUSTED;
+  //   }
+  //   //   for (size_t i = 0; i < tx_len; i++) {
+  //   //     if (queue_send(&s_port[spi].spi_tx_buf.queue, &tx_data[i], 0)) {
+  //   //       printf("FAH - tx\n");
+  //   //     }
+  //   //   }
+  //   // } else {
+  //   //   spi_get_tx_data(spi, rx_data, rx_len);
+  // }
+
+  // // Receive Data
+  // if (rx_len > 0) {
+  //   if (spi_read(spi, rx_data, rx_len) != STATUS_CODE_OK) {
+  //     return STATUS_CODE_INTERNAL_ERROR;
+  //   }
+  //   //   for (size_t i = 0; i < rx_len; i++) {
+  //   //     if (queue_receive(&s_port[spi].spi_rx_buf.queue, rx_data, 0)) {
+  //   //       printf("FAH - rx\n");
+  //   //     }
+  //   //   }
+  //   // } else {
+  //   //   spi_set_rx(spi, tx_data, tx_len);
+  // }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len) {
+  if (spi >= NUM_SPI_PORTS) return STATUS_CODE_INVALID_ARGS;
+
+  s_port[spi].num_rx_bytes = rx_len;
+
+  for (size_t i = 0; i < rx_len; i++) {
+    if (queue_receive(&s_port[spi].spi_rx_buf.queue, &rx_data[i], 0)) {
+      queue_reset(&s_port[spi].spi_rx_buf.queue);
       return STATUS_CODE_INTERNAL_ERROR;
     }
   }
+  return STATUS_CODE_OK;
+}
 
-  // Receive Data
-  if (rx_len > 0) {
-    if (spi_get_tx_data(spi, tx_data, tx_len) != STATUS_CODE_OK) {
-      return STATUS_CODE_INTERNAL_ERROR;
+StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len) {
+  if (spi >= NUM_SPI_PORTS) return STATUS_CODE_INVALID_ARGS;
+
+  for (size_t i = 0; i < tx_len; i++) {
+    if (queue_send(&s_port[spi].spi_tx_buf.queue, &tx_data[i], 0)) {
+      queue_reset(&s_port[spi].spi_tx_buf.queue);
+      return STATUS_CODE_RESOURCE_EXHAUSTED;
     }
   }
 
@@ -104,14 +148,6 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len) {
       queue_reset(&s_port[spi].spi_tx_buf.queue);
       return STATUS_CODE_INTERNAL_ERROR;
     }
-    // if (queue_receive(&s_port[spi].spi_tx_buf.queue, &data[i], 0) == STATUS_CODE_OK) {
-    //   queue_send(&s_port[spi].spi_rx_buf.queue, &data[i], 0);
-    //   printf("tx_buf pulled: %d\n", data[len - 1]);
-    // } else {
-    //   printf("tx_buf pull FAILED:\n");
-    //   queue_reset(&s_port[spi].spi_tx_buf.queue);
-    //   return STATUS_CODE_INTERNAL_ERROR;
-    // }
   }
 
   return STATUS_CODE_OK;
@@ -133,16 +169,7 @@ StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len) {
       queue_reset(&s_port[spi].spi_rx_buf.queue);
       return STATUS_CODE_RESOURCE_EXHAUSTED;
     }
-    // if (queue_receive(&s_port[spi].spi_rx_buf.queue, &data[i], 0) == STATUS_CODE_OK) {
-    //   queue_send(&s_port[spi].spi_tx_buf.queue, &data[i], 0);
-    //   printf("rx_buf sent: %d\n", data[len - 1]);
-    // } else {
-    //   queue_reset(&s_port[spi].spi_rx_buf.queue);
-    //   return STATUS_CODE_INTERNAL_ERROR;
-    // }
   }
-
-  // printf("queue: %d\n", s_port[spi].spi_rx_buf.buf[0]);
 
   return STATUS_CODE_OK;
 }

@@ -45,6 +45,8 @@ void SPI::deserialize(std::string &spiDatagramPayload) {
     throw std::runtime_error("Deserialized SPI buffer length exceeds maximum allowed size");
   }
 
+  std::cout << "BRKPT4 - IS DESERIALIZE RUNNING" << std::endl;
+
   std::memcpy(m_spiDatagram.buffer, spiDatagramPayload.data() + offset, m_spiDatagram.bufferLength);
 }
 

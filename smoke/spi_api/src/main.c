@@ -35,7 +35,7 @@ TASK(spi_api, TASK_STACK_1024) {
   spi_init(SPI_PORT_2, &spi_test_settings);
 
   uint8_t tx_data[TEST_DATA_SIZE] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
-  uint8_t rx_data[TEST_DATA_SIZE];
+  uint8_t rx_data[TEST_DATA_SIZE] = { 0x00 };
 
   while (true) {
     // LOG_DEBUG("Exchanging data\n");

@@ -132,6 +132,10 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
 
 #ifdef MS_PLATFORM_X86
 
+StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len);
+
+StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len);
+
 /**
  * @brief   Gets data from the spi TX queue
  * @param   spi Specifies which SPI port to read from
