@@ -17,6 +17,7 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "rear_controller.h"
 
 /**
  * @defgroup Rear_Controller

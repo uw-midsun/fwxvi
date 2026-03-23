@@ -134,6 +134,8 @@ StatusCode motor_can_forward_can_data() {
   set_motor_stats_B_motor_velocity((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
   set_motor_stats_B_heat_sink_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.heat_sink_temp);
   set_motor_stats_B_motor_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_temp);
+
+  return STATUS_CODE_OK;
 }
 
 StatusCode motor_can_init(FrontControllerStorage *storage) {
