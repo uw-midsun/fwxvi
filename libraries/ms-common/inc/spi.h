@@ -152,6 +152,13 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
  */
 StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len);
 
+/**
+ * @brief   Gets the number of queued TX bytes available to read
+ * @param   spi Specifies which Spi port to inspect
+ * @return  Number of queued bytes on the TX buffer
+ */
+size_t spi_get_tx_num_bytes(SpiPort spi);
+
 #endif
 
 /** @} */

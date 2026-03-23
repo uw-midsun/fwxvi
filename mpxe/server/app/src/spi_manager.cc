@@ -129,6 +129,8 @@ std::string SPIManager::createSpiCommand(CommandCode commandCode, std::string &s
           throw std::runtime_error("Data exceeds maximum SPI buffer size.");
         }
 
+        std::cout << "BRKPT3" << std::endl;
+        
         m_spiDatagram.setSPIPort(port);
         m_spiDatagram.setBuffer(bytes.data(), bytes.size());
         break;

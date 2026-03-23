@@ -14,6 +14,7 @@
 
 /* Intra-component Headers */
 #include "log.h"
+#include "ms_semaphore.h"
 #include "queues.h"
 #include "spi.h"
 #include "status.h"
@@ -21,6 +22,7 @@
 typedef struct {
   uint8_t buf[SPI_MAX_NUM_DATA];
   Queue queue;
+  Mutex mutex;
 } SpiBuffer;
 
 typedef struct {
@@ -63,7 +65,7 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
 }
 
 StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
-  if (spi >= NUM_SPI_PORTS) { 
+  if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -102,6 +104,14 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len) {
       queue_reset(&s_port[spi].spi_tx_buf.queue);
       return STATUS_CODE_INTERNAL_ERROR;
     }
+    // if (queue_receive(&s_port[spi].spi_tx_buf.queue, &data[i], 0) == STATUS_CODE_OK) {
+    //   queue_send(&s_port[spi].spi_rx_buf.queue, &data[i], 0);
+    //   printf("tx_buf pulled: %d\n", data[len - 1]);
+    // } else {
+    //   printf("tx_buf pull FAILED:\n");
+    //   queue_reset(&s_port[spi].spi_tx_buf.queue);
+    //   return STATUS_CODE_INTERNAL_ERROR;
+    // }
   }
 
   return STATUS_CODE_OK;
@@ -116,12 +126,31 @@ StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  // printf("DEBUG: spi_set_rx called. Len: %d, First Byte: 0x%02X\n", len, data[0]);
+
   for (uint8_t i = 0; i < len; i++) {
     if (queue_send(&s_port[spi].spi_rx_buf.queue, &data[i], 0)) {
       queue_reset(&s_port[spi].spi_rx_buf.queue);
-      return STATUS_CODE_INTERNAL_ERROR;
+      return STATUS_CODE_RESOURCE_EXHAUSTED;
     }
+    // if (queue_receive(&s_port[spi].spi_rx_buf.queue, &data[i], 0) == STATUS_CODE_OK) {
+    //   queue_send(&s_port[spi].spi_tx_buf.queue, &data[i], 0);
+    //   printf("rx_buf sent: %d\n", data[len - 1]);
+    // } else {
+    //   queue_reset(&s_port[spi].spi_rx_buf.queue);
+    //   return STATUS_CODE_INTERNAL_ERROR;
+    // }
   }
 
+  // printf("queue: %d\n", s_port[spi].spi_rx_buf.buf[0]);
+
   return STATUS_CODE_OK;
+}
+
+size_t spi_get_tx_num_bytes(SpiPort spi) {
+  if (spi >= NUM_SPI_PORTS) {
+    return 0U;
+  }
+
+  return s_port[spi].spi_tx_buf.queue.num_items - queue_get_spaces_available(&s_port[spi].spi_tx_buf.queue);
 }
