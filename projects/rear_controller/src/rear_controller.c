@@ -80,7 +80,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   relays_init(rear_controller_storage);
   rear_controller_state_manager_init(rear_controller_storage);
   killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
-  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task());
+  precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task(), rear_controller_storage);
   power_path_manager_init(rear_controller_storage);
   current_sense_init(rear_controller_storage);
   bps_fault_init(rear_controller_storage);
