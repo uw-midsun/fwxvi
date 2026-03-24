@@ -38,11 +38,11 @@ TASK(spi_api, TASK_STACK_1024) {
   uint8_t rx_data[TEST_DATA_SIZE] = { 0x00 };
 
   while (true) {
-    // LOG_DEBUG("Exchanging data\n");
+    LOG_DEBUG("Exchanging data\n");
     spi_exchange(SPI_PORT_2, tx_data, sizeof(tx_data), rx_data, sizeof(rx_data));
 
     for (size_t i = 0U; i < TEST_DATA_SIZE; i++) {
-      // LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data[i]);
+      LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data[i]);
       delay_ms(5);
     }
 

@@ -76,34 +76,6 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
   status_ok_or_return(spi_write(spi, tx_data, tx_len));
   status_ok_or_return(spi_read(spi, rx_data, rx_len));
 
-  // Send Out Data to Tx_Buf
-  // if (tx_len > 0) {
-  //   if (spi_write(spi, tx_data, tx_len) != STATUS_CODE_OK) {
-  //     return STATUS_CODE_RESOURCE_EXHAUSTED;
-  //   }
-  //   //   for (size_t i = 0; i < tx_len; i++) {
-  //   //     if (queue_send(&s_port[spi].spi_tx_buf.queue, &tx_data[i], 0)) {
-  //   //       printf("FAH - tx\n");
-  //   //     }
-  //   //   }
-  //   // } else {
-  //   //   spi_get_tx_data(spi, rx_data, rx_len);
-  // }
-
-  // // Receive Data
-  // if (rx_len > 0) {
-  //   if (spi_read(spi, rx_data, rx_len) != STATUS_CODE_OK) {
-  //     return STATUS_CODE_INTERNAL_ERROR;
-  //   }
-  //   //   for (size_t i = 0; i < rx_len; i++) {
-  //   //     if (queue_receive(&s_port[spi].spi_rx_buf.queue, rx_data, 0)) {
-  //   //       printf("FAH - rx\n");
-  //   //     }
-  //   //   }
-  //   // } else {
-  //   //   spi_set_rx(spi, tx_data, tx_len);
-  // }
-
   return STATUS_CODE_OK;
 }
 

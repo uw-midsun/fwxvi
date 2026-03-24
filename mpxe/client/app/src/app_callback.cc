@@ -172,7 +172,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::SPI_TRANSFER_DATA: {
-      // clientSpiManager.transferSpiData();
+      client->sendMessage(clientSpiManager.transferSpiData(payload));
       break;
     }
     case CommandCode::SPI_CLEAR_BUFFER: {

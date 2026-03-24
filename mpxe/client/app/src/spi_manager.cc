@@ -66,9 +66,15 @@ std::string SPIManager::transferSpiData(std::string &payload) {
 
   // Get Spi Port and Data
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
-  size_t len = m_spiDatagram.getBufferLength(); 
+  size_t len = m_spiDatagram.getBufferLength();
 
-  spi_exchange(port, )
+  // Get Buffers
+  const uint8_t *tx_data = m_spiDatagram.getBuffer();
+  std::vector<uint8_t> rx_data(len);
+
+  spi_exchange(port, const_cast<uint8_t *>(tx_data), len, rx_data.data(), len);
+  std::cout << "Transfer Len: " << len << std::endl;
+  return m_spiDatagram.serialize(CommandCode::SPI_TRANSFER_DATA);
 }
 
 void SPIManager::clearBuffer(std::string &payload) {
