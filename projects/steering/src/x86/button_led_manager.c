@@ -3,7 +3,7 @@
  *
  * @brief   Button LED manager source file
  *
- * @date    2025-09-27
+ * @date    2026-3-25
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -23,6 +23,8 @@ static SteeringStorage *steering_storage;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
 static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
+static GpioAddress s_button_left_turn_led_ctrl = GPIO_STEERING_LEFT_TURN_LED;
+static GpioAddress s_button_right_turn_led_ctrl = GPIO_STEERING_RIGHT_TURN_LED;
 
 StatusCode button_led_manager_init(SteeringStorage *storage) {
   if (storage == NULL) {
@@ -33,7 +35,9 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
   steering_storage->button_led_manager = &s_button_led_manager;
 
   /* Clear all LEDs initially */
-  memset(&s_button_led_manager.led_pixels, 0, sizeof(s_button_led_manager.led_pixels));
+  memset(&s_button_led_manager.left_led_pixels, 0, sizeof(s_button_led_manager.left_led_pixels));
+  memset(&s_button_led_manager.main_led_pixels, 0, sizeof(s_button_led_manager.main_led_pixels));
+  memset(&s_button_led_manager.right_led_pixels, 0, sizeof(s_button_led_manager.right_led_pixels));
   s_button_led_manager.needs_update = false;
   s_button_led_manager.is_transmitting = false;
 
@@ -43,7 +47,35 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
     return status;
   }
 
+  /* Initialize left and right turn signal LED GPIO pins as regular outputs */
+  status = gpio_init_pin(&s_button_left_turn_led_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  status = gpio_init_pin(&s_button_right_turn_led_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
   return STATUS_CODE_OK;
+}
+
+static LEDPixels* button_led_manager_get_led_pixel(uint32_t button) {
+  switch (button) {
+    case 0: return &steering_storage->button_led_manager->left_led_pixels[0];
+    case 1: return &steering_storage->button_led_manager->left_led_pixels[1];
+    case 2: return &steering_storage->button_led_manager->left_led_pixels[2];
+    case 3: return &steering_storage->button_led_manager->main_led_pixels[0];
+    case 4: return &steering_storage->button_led_manager->main_led_pixels[1];
+    case 5: return &steering_storage->button_led_manager->main_led_pixels[2];
+    case 6: return &steering_storage->button_led_manager->main_led_pixels[3];
+    case 7: return &steering_storage->button_led_manager->main_led_pixels[4];
+    case 8: return &steering_storage->button_led_manager->right_led_pixels[0];
+    case 9: return &steering_storage->button_led_manager->right_led_pixels[1];
+    case 10: return &steering_storage->button_led_manager->right_led_pixels[2];
+    default: return NULL;
+  }
 }
 
 StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_code) {
@@ -55,7 +87,11 @@ StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  memcpy(&steering_storage->button_led_manager->led_pixels[button], &color_code, sizeof(LEDPixels));
+  /* Get the appropriate LED pixel based on button type */
+  LEDPixels *led = button_led_manager_get_led_pixel(button);
+  if (led == NULL) return STATUS_CODE_INVALID_ARGS;
+
+  memcpy(led, &color_code, sizeof(LEDPixels));
   steering_storage->button_led_manager->needs_update = true;
 
   return STATUS_CODE_OK;
@@ -87,7 +123,9 @@ StatusCode button_led_manager_clear_all(void) {
   }
 
   /* Set all LEDs to black (off) */
-  memset(steering_storage->button_led_manager->led_pixels, 0U, sizeof(steering_storage->button_led_manager->led_pixels));
+  memset(steering_storage->button_led_manager->left_led_pixels, 0U, sizeof(steering_storage->button_led_manager->left_led_pixels));
+  memset(steering_storage->button_led_manager->main_led_pixels, 0U, sizeof(steering_storage->button_led_manager->main_led_pixels));
+  memset(steering_storage->button_led_manager->right_led_pixels, 0U, sizeof(steering_storage->button_led_manager->right_led_pixels));
   steering_storage->button_led_manager->needs_update = true;
 
   return STATUS_CODE_OK;

@@ -3,7 +3,7 @@
  *
  * @brief   Button LED manager source file - SK6812 Implementation (Fixed for STM32L4P5VET6)
  *
- * @date    2025-11-10
+ * @date    2026-3-25
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -59,6 +59,8 @@ static SteeringStorage *steering_storage = NULL;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
 static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
+static GpioAddress s_button_left_turn_led_ctrl = GPIO_STEERING_LEFT_TURN_LED;
+static GpioAddress s_button_right_turn_led_ctrl = GPIO_STEERING_RIGHT_TURN_LED;
 
 void DMA1_Channel2_IRQHandler(void) {
   HAL_DMA_IRQHandler(&s_dma_tim2_ch3_handle);
@@ -203,14 +205,34 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   return STATUS_CODE_OK;
 }
 
+static LEDPixels* button_led_manager_get_led_pixel(uint32_t button) {
+  switch (button) {
+    case 0: return &steering_storage->button_led_manager->left_led_pixels[0];
+    case 1: return &steering_storage->button_led_manager->left_led_pixels[1];
+    case 2: return &steering_storage->button_led_manager->left_led_pixels[2];
+    case 3: return &steering_storage->button_led_manager->main_led_pixels[0];
+    case 4: return &steering_storage->button_led_manager->main_led_pixels[1];
+    case 5: return &steering_storage->button_led_manager->main_led_pixels[2];
+    case 6: return &steering_storage->button_led_manager->main_led_pixels[3];
+    case 7: return &steering_storage->button_led_manager->main_led_pixels[4];
+    case 8: return &steering_storage->button_led_manager->right_led_pixels[0];
+    case 9: return &steering_storage->button_led_manager->right_led_pixels[1];
+    case 10: return &steering_storage->button_led_manager->right_led_pixels[2];
+    default: return NULL;
+  }
+}
+
 static void button_led_manager_build_dma_buffer(void) {
   uint32_t idx = 0U;
 
   /* Build DMA buffer with GRB data for each LED (SK6812 expects GRB) */
   for (uint32_t i = 0; i < NUM_STEERING_BUTTONS && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; ++i) {
-    uint8_t g = steering_storage->button_led_manager->led_pixels[i].g;
-    uint8_t r = steering_storage->button_led_manager->led_pixels[i].r;
-    uint8_t b = steering_storage->button_led_manager->led_pixels[i].b;
+    LEDPixels *led = button_led_manager_get_led_pixel(i);
+    if (led == NULL) continue;
+    
+    uint8_t g = led->g;
+    uint8_t r = led->r;
+    uint8_t b = led->b;
 
     uint32_t grb = ((uint32_t)g << 16U) | ((uint32_t)r << 8U) | (uint32_t)b;
 
@@ -238,12 +260,25 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
   steering_storage->button_led_manager = &s_button_led_manager;
 
   /* Clear all LEDs initially */
-  memset(&s_button_led_manager.led_pixels, 0, sizeof(s_button_led_manager.led_pixels));
+  memset(&s_button_led_manager.left_led_pixels, 0, sizeof(s_button_led_manager.left_led_pixels));
+  memset(&s_button_led_manager.main_led_pixels, 0, sizeof(s_button_led_manager.main_led_pixels));
+  memset(&s_button_led_manager.right_led_pixels, 0, sizeof(s_button_led_manager.right_led_pixels));
   s_button_led_manager.needs_update = false;
   s_button_led_manager.is_transmitting = false;
 
   /* Initialize GPIO pin for PWM output - TIM2_CH3 can be PA2 or PB10 */
   StatusCode status = gpio_init_pin_af(&s_button_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  /* Initialize left and right turn signal LED GPIO pins as regular outputs */
+  status = gpio_init_pin(&s_button_left_turn_led_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  status = gpio_init_pin(&s_button_right_turn_led_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
   if (status != STATUS_CODE_OK) {
     return status;
   }
@@ -260,7 +295,10 @@ StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  memcpy(&steering_storage->button_led_manager->led_pixels[button], &color_code, sizeof(LEDPixels));
+  if (button_led_manager_get_led_pixel(button) == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+ 
   steering_storage->button_led_manager->needs_update = true;
 
   return STATUS_CODE_OK;
@@ -306,7 +344,9 @@ StatusCode button_led_manager_clear_all(void) {
   }
 
   /* Set all LEDs to black (off) */
-  memset(steering_storage->button_led_manager->led_pixels, 0U, sizeof(steering_storage->button_led_manager->led_pixels));
+  memset(steering_storage->button_led_manager->left_led_pixels, 0U, sizeof(steering_storage->button_led_manager->left_led_pixels));
+  memset(steering_storage->button_led_manager->main_led_pixels, 0U, sizeof(steering_storage->button_led_manager->main_led_pixels));
+  memset(steering_storage->button_led_manager->right_led_pixels, 0U, sizeof(steering_storage->button_led_manager->right_led_pixels));
   steering_storage->button_led_manager->needs_update = true;
 
   return STATUS_CODE_OK;
