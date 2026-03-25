@@ -69,10 +69,6 @@ typedef struct {
   lv_obj_t *needle;                    /**< LVGL line object used as the speedometer needle */
   lv_obj_t *label;                     /**< LVGL label object showing the current speed */
   lv_point_precise_t needle_points[2]; /**< Line endpoints used to draw the needle */
-  int32_t min_value;                   /**< Minimum speed represented by the widget */
-  int32_t max_value;                   /**< Maximum speed represented by the widget */
-  int32_t angle_range;                 /**< Sweep angle of the dial in degrees */
-  int32_t rotation;                    /**< Rotation offset applied to the dial in degrees */
 } SpeedometerWidget;
 
 /** @brief   Configuration used when creating a speedometer widget */
@@ -88,8 +84,8 @@ typedef struct {
 
 /** @brief   Runtime handles for a labeled bar widget */
 typedef struct {
-  lv_obj_t *bar;   /**< LVGL bar object */
-  lv_obj_t *label; /**< LVGL label associated with the bar */
+  lv_obj_t *bar;            /**< LVGL bar object */
+  lv_obj_t *label;          /**< LVGL label associated with the bar */
 } BarWidget;
 
 /** @brief   Configuration used when creating a labeled bar widget */

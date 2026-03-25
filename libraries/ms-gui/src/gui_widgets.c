@@ -23,7 +23,7 @@ static SpeedometerWidget s_speedometer;
 static BarWidget s_throttle_bar;
 static BarWidget s_brake_bar;
 static BarWidget s_temperature_bar;
-static BarWidget s_speed_bar;
+static BarWidget s_motor_speed_bar;
 static bool s_widgets_initialized;
 
 static StatusCode s_create_speedometer(lv_obj_t *screen) {
@@ -82,7 +82,7 @@ static StatusCode s_create_temperature_bar(lv_obj_t *screen) {
       .type = WIDGET_POSITION_ALIGN,
       .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -15, .y_offset = 35 },
     },
-    .label_text = "Motor temp",
+    .label_text = "M Temp",
     .label_text_alignment = WIDGET_ALIGN_OUT_TOP_MID,
     .orientation = WIDGET_ORIENTATION_VERTICAL,
     .indicator_color_id = GUI_COLOR_THROTTLE_FILL,
@@ -91,19 +91,19 @@ static StatusCode s_create_temperature_bar(lv_obj_t *screen) {
   return lvgl_widgets_create_bar(&s_temperature_bar, &s_temperature_bar_config, screen);
 }
 static StatusCode s_create_speed_bar(lv_obj_t *screen) {
-  const BarWidgetConfig s_speed_bar_config = {
+  const BarWidgetConfig s_motor_speed_bar_config = {
     .size = { .width = 40, .height = 100 },
     .position = {
       .type = WIDGET_POSITION_ALIGN,
       .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT, .x_offset = -15, .y_offset = -35 },
      },
-    .label_text = "Motor speed",
+    .label_text = "M Speed",
     .label_text_alignment = WIDGET_ALIGN_OUT_BOTTOM_MID,
     .orientation = WIDGET_ORIENTATION_VERTICAL,
     .indicator_color_id = GUI_COLOR_BRAKE_FILL,
   };
 
-  return lvgl_widgets_create_bar(&s_speed_bar, &s_speed_bar_config, screen);
+  return lvgl_widgets_create_bar(&s_motor_speed_bar, &s_motor_speed_bar_config, screen);
 }
 
 StatusCode gui_widgets_init(void) {
@@ -168,5 +168,5 @@ StatusCode gui_widgets_set_speed_bar(uint16_t percent) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  return lvgl_widgets_set_bar_value(&s_speed_bar, percent);
+  return lvgl_widgets_set_bar_value(&s_motor_speed_bar, percent);
 }
