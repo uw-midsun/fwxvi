@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_sd_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of SD HAL extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_sd_ex.h
+ *
+ * @brief   Header file of SD HAL extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_SD_EX_H
@@ -27,7 +27,6 @@
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -52,7 +51,6 @@ typedef enum
   SD_DMA_BUFFER1      = 0x01U,    /*!< selects SD internal DMA Buffer 1     */
 
 }HAL_SDEx_DMABuffer_MemoryTypeDef;
-
 
 /**
   * @}
@@ -121,6 +119,5 @@ void HAL_SDEx_Write_DMADoubleBuffer1CpltCallback(SD_HandleTypeDef *hsd);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_SDEx_H */

@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rtc.h
-  * @author  MCD Application Team
-  * @brief   Header file of RTC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rtc.h
+ *
+ * @brief   Header file of RTC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_rtc_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_RTC_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -467,7 +467,6 @@ typedef  void (*pRTC_CallbackTypeDef)(RTC_HandleTypeDef *hrtc);  /*!< pointer to
   * @}
   */
 
-
 /** @defgroup RTC_Alarm_Sub_Seconds_Masks_Definitions RTC Alarm Sub Seconds Masks Definitions
   * @{
   */
@@ -900,7 +899,6 @@ typedef  void (*pRTC_CallbackTypeDef)(RTC_HandleTypeDef *hrtc);  /*!< pointer to
   */
 
 /* Include RTC HAL Extended module */
-#include "stm32l4xx_hal_rtc_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup RTC_Exported_Functions RTC Exported Functions
@@ -1135,7 +1133,6 @@ uint8_t            RTC_Bcd2ToByte(uint8_t Value);
 /**
   * @}
   */
-
 
 /**
   * @}

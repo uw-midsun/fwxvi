@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    port.c
+ *
+ * @brief   Port
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "task.h"
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 /*
  * FreeRTOS Kernel V10.3.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
@@ -30,9 +47,6 @@
  *----------------------------------------------------------*/
 
 /* Scheduler includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stm32l4xx_hal.h"
 
 #ifndef __VFP_FP__
 	#error This port can only be used when the project options are configured to enable hardware floating point support.

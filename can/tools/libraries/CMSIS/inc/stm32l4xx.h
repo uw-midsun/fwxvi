@@ -1,30 +1,51 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx.h
+ *
+ * @brief   CMSIS STM32L4xx Device Peripheral Access Layer Header File.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+  #include "stm32l412xx.h"
+  #include "stm32l422xx.h"
+  #include "stm32l431xx.h"
+  #include "stm32l432xx.h"
+  #include "stm32l433xx.h"
+  #include "stm32l442xx.h"
+  #include "stm32l443xx.h"
+  #include "stm32l451xx.h"
+  #include "stm32l452xx.h"
+  #include "stm32l462xx.h"
+  #include "stm32l471xx.h"
+  #include "stm32l475xx.h"
+  #include "stm32l476xx.h"
+  #include "stm32l485xx.h"
+  #include "stm32l486xx.h"
+  #include "stm32l496xx.h"
+  #include "stm32l4a6xx.h"
+  #include "stm32l4p5xx.h"
+  #include "stm32l4q5xx.h"
+  #include "stm32l4r5xx.h"
+  #include "stm32l4r7xx.h"
+  #include "stm32l4r9xx.h"
+  #include "stm32l4s5xx.h"
+  #include "stm32l4s7xx.h"
+  #include "stm32l4s9xx.h"
+ #include "stm32l4xx_hal.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx.h
-  * @author  MCD Application Team
-  * @brief   CMSIS STM32L4xx Device Peripheral Access Layer Header File.
-  *
-  *          The file is the unique include file that the application programmer
-  *          is using in the C source code, usually in main.c. This file contains:
-  *           - Configuration section that allows to select:
-  *              - The STM32L4xx device used in the target application
-  *              - To use or not the peripheral's drivers in application code(i.e.
-  *                code will be based on direct access to peripheral's registers
-  *                rather than drivers API), this option is controlled by
-  *                "#define USE_HAL_DRIVER"
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx
+ * @brief    stm32l4xx Firmware
+ * @{
+ */
 
 /** @addtogroup CMSIS
   * @{
@@ -122,55 +143,30 @@
   */
 
 #if defined(STM32L412xx)
-  #include "stm32l412xx.h"
 #elif defined(STM32L422xx)
-  #include "stm32l422xx.h"
 #elif defined(STM32L431xx)
-  #include "stm32l431xx.h"
 #elif defined(STM32L432xx)
-  #include "stm32l432xx.h"
 #elif defined(STM32L433xx)
-  #include "stm32l433xx.h"
 #elif defined(STM32L442xx)
-  #include "stm32l442xx.h"
 #elif defined(STM32L443xx)
-  #include "stm32l443xx.h"
 #elif defined(STM32L451xx)
-  #include "stm32l451xx.h"
 #elif defined(STM32L452xx)
-  #include "stm32l452xx.h"
 #elif defined(STM32L462xx)
-  #include "stm32l462xx.h"
 #elif defined(STM32L471xx)
-  #include "stm32l471xx.h"
 #elif defined(STM32L475xx)
-  #include "stm32l475xx.h"
 #elif defined(STM32L476xx)
-  #include "stm32l476xx.h"
 #elif defined(STM32L485xx)
-  #include "stm32l485xx.h"
 #elif defined(STM32L486xx)
-  #include "stm32l486xx.h"
 #elif defined(STM32L496xx)
-  #include "stm32l496xx.h"
 #elif defined(STM32L4A6xx)
-  #include "stm32l4a6xx.h"
 #elif defined(STM32L4P5xx)
-  #include "stm32l4p5xx.h"
 #elif defined(STM32L4Q5xx)
-  #include "stm32l4q5xx.h"
 #elif defined(STM32L4R5xx)
-  #include "stm32l4r5xx.h"
 #elif defined(STM32L4R7xx)
-  #include "stm32l4r7xx.h"
 #elif defined(STM32L4R9xx)
-  #include "stm32l4r9xx.h"
 #elif defined(STM32L4S5xx)
-  #include "stm32l4s5xx.h"
 #elif defined(STM32L4S7xx)
-  #include "stm32l4s7xx.h"
 #elif defined(STM32L4S9xx)
-  #include "stm32l4s9xx.h"
 #else
  #error "Please select first the target STM32L4xx device used in your application (in stm32l4xx.h file)"
 #endif
@@ -204,7 +200,6 @@ typedef enum
 /**
   * @}
   */
-
 
 /** @addtogroup Exported_macros
   * @{
@@ -285,7 +280,6 @@ typedef enum
   */
 
 #if defined (USE_HAL_DRIVER)
- #include "stm32l4xx_hal.h"
 #endif /* USE_HAL_DRIVER */
 
 #ifdef __cplusplus
@@ -301,3 +295,5 @@ typedef enum
   * @}
   */
 
+
+/** @} */

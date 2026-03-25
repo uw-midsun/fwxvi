@@ -1,20 +1,22 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_mmc.h
-  * @author  MCD Application Team
-  * @brief   Header file of MMC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_mmc.h
+ *
+ * @brief   Header file of MMC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_mmc_ex.h"
+#include "stm32l4xx_ll_sdmmc.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_MMC_H
@@ -25,8 +27,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
-#include "stm32l4xx_ll_sdmmc.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -169,7 +169,6 @@ typedef struct
   void (* MspDeInitCallback)              (struct __MMC_HandleTypeDef *hmmc);
 #endif
 }MMC_HandleTypeDef;
-
 
 /**
   * @}
@@ -405,7 +404,6 @@ typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
 #define HAL_MMC_SRT_WRITE_CHAR_ERASE        0x00000002U  /*!< Information removed by an overwriting with a character followed by an erase                    */
 #define HAL_MMC_SRT_WRITE_CHAR_COMPL_RANDOM 0x00000004U  /*!< Information removed by an overwriting with a character, its complement then a random character */
 #define HAL_MMC_SRT_VENDOR_DEFINED          0x00000008U  /*!< Information removed using a vendor defined                                                     */
-
 
 #define IS_MMC_SRT_TYPE(TYPE) (((TYPE) == HAL_MMC_SRT_ERASE)                   || \
                                ((TYPE) == HAL_MMC_SRT_WRITE_CHAR_ERASE)        || \
@@ -692,7 +690,6 @@ typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
 
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 /* Include MMC HAL Extension module */
-#include "stm32l4xx_hal_mmc_ex.h"
 #endif
 
 /* Exported functions --------------------------------------------------------*/
@@ -873,7 +870,6 @@ HAL_StatusTypeDef HAL_MMC_AwakeDevice(MMC_HandleTypeDef *hmmc);
   * @}
   */
 
-
 /**
   * @}
   */
@@ -891,6 +887,5 @@ HAL_StatusTypeDef HAL_MMC_AwakeDevice(MMC_HandleTypeDef *hmmc);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_MMC_H */

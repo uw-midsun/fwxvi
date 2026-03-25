@@ -1,3 +1,18 @@
+/************************************************************************************************
+ * @file    ffunicode.c
+ *
+ * @brief   Ffunicode
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "ff.h"
+
+/* Intra-component Headers */
 /*------------------------------------------------------------------------*/
 /* Unicode Handling Functions for FatFs R0.13 and Later                   */
 /*------------------------------------------------------------------------*/
@@ -22,14 +37,10 @@
 / by use of this software.
 */
 
-
-#include "ff.h"
-
 #if FF_USE_LFN != 0	/* This module will be blanked if in non-LFN configuration */
 
 #define MERGE2(a, b) a ## b
 #define CVTBL(tbl, cp) MERGE2(tbl, cp)
-
 
 /*------------------------------------------------------------------------*/
 /* Code Conversion Tables                                                 */
@@ -15210,9 +15221,6 @@ static const WCHAR uc869[] = {	/*  CP869(Greek 2) to Unicode conversion table */
 };
 #endif
 
-
-
-
 /*------------------------------------------------------------------------*/
 /* OEM <==> Unicode Conversions for Static Code Page Configuration with   */
 /* SBCS Fixed Code Page                                                   */
@@ -15226,7 +15234,6 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 {
 	WCHAR c = 0;
 	const WCHAR* p = CVTBL(uc, FF_CODE_PAGE);
-
 
 	if (uni < 0x80) {	/* ASCII? */
 		c = (WCHAR)uni;
@@ -15249,7 +15256,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	WCHAR c = 0;
 	const WCHAR* p = CVTBL(uc, FF_CODE_PAGE);
 
-
 	if (oem < 0x80) {	/* ASCII? */
 		c = oem;
 
@@ -15263,8 +15269,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 }
 
 #endif
-
-
 
 /*------------------------------------------------------------------------*/
 /* OEM <==> Unicode Conversions for Static Code Page Configuration with   */
@@ -15280,7 +15284,6 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	const WCHAR* p;
 	WCHAR c = 0, uc;
 	UINT i = 0, n, li, hi;
-
 
 	if (uni < 0x80) {	/* ASCII? */
 		c = (WCHAR)uni;
@@ -15307,7 +15310,6 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	return c;
 }
 
-
 WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	WCHAR	oem,	/* OEM code to be converted */
 	WORD	cp		/* Code page for the conversion */
@@ -15316,7 +15318,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	const WCHAR* p;
 	WCHAR c = 0;
 	UINT i = 0, n, li, hi;
-
 
 	if (oem < 0x80) {	/* ASCII? */
 		c = oem;
@@ -15343,8 +15344,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 }
 #endif
 
-
-
 /*------------------------------------------------------------------------*/
 /* OEM <==> Unicode Conversions for Dynamic Code Page Configuration       */
 /*------------------------------------------------------------------------*/
@@ -15354,7 +15353,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 static const WORD cp_code[]          = {  437,   720,   737,   771,   775,   850,   852,   855,   857,   860,   861,   862,   863,   864,   865,   866,   869, 0};
 static const WCHAR* const cp_table[] = {uc437, uc720, uc737, uc771, uc775, uc850, uc852, uc855, uc857, uc860, uc861, uc862, uc863, uc864, uc865, uc866, uc869, 0};
 
-
 WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	DWORD	uni,	/* UTF-16 encoded character to be converted */
 	WORD	cp		/* Code page for the conversion */
@@ -15363,7 +15361,6 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	const WCHAR* p;
 	WCHAR c = 0, uc;
 	UINT i, n, li, hi;
-
 
 	if (uni < 0x80) {	/* ASCII? */
 		c = (WCHAR)uni;
@@ -15406,7 +15403,6 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 	return c;
 }
 
-
 WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	WCHAR	oem,	/* OEM code to be converted (DBC if >=0x100) */
 	WORD	cp		/* Code page for the conversion */
@@ -15415,7 +15411,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	const WCHAR* p;
 	WCHAR c = 0;
 	UINT i, n, li, hi;
-
 
 	if (oem < 0x80) {	/* ASCII? */
 		c = oem;
@@ -15454,8 +15449,6 @@ WCHAR ff_oem2uni (	/* Returns Unicode character in UTF-16, zero on error */
 	return c;
 }
 #endif
-
-
 
 /*------------------------------------------------------------------------*/
 /* Unicode Up-case Conversion                                             */
@@ -15559,7 +15552,6 @@ DWORD ff_wtoupper (	/* Returns up-converted code point */
 		0x0000	/* EOT */
 	};
 
-
 	if (uni < 0x10000) {	/* Is it in BMP? */
 		uc = (WORD)uni;
 		p = uc < 0x1000 ? cvt1 : cvt2;
@@ -15588,6 +15580,5 @@ DWORD ff_wtoupper (	/* Returns up-converted code point */
 
 	return uni;
 }
-
 
 #endif /* #if FF_USE_LFN != 0 */

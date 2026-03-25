@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    diskio.h
+ *
+ * @brief   Diskio
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "ff.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup diskio
+ * @brief    diskio Firmware
+ * @{
+ */
+
 /*-----------------------------------------------------------------------/
 /  Low level disk interface modlue include file   (C)ChaN, 2019          /
 /-----------------------------------------------------------------------*/
@@ -8,8 +32,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ff.h"
 
 /* Status of Disk Functions */
 typedef BYTE	DSTATUS;
@@ -23,10 +45,8 @@ typedef enum {
 	RES_PARERR		/* 4: Invalid Parameter */
 } DRESULT;
 
-
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
-
 
 DSTATUS disk_initialize (BYTE pdrv);
 DSTATUS disk_status (BYTE pdrv);
@@ -34,13 +54,11 @@ DRESULT disk_read (BYTE pdrv, BYTE* buff, LBA_t sector, UINT count);
 DRESULT disk_write (BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count);
 DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 
-
 /* Disk Status Bits (DSTATUS) */
 
 #define STA_NOINIT		0x01	/* Drive not initialized */
 #define STA_NODISK		0x02	/* No medium in the drive */
 #define STA_PROTECT		0x04	/* Write protected */
-
 
 /* Command code for disk_ioctrl fucntion */
 
@@ -77,3 +95,5 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 #endif
 
 #endif
+
+/** @} */

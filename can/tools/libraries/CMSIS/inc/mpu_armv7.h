@@ -1,9 +1,26 @@
-/******************************************************************************
- * @file     mpu_armv7.h
- * @brief    CMSIS MPU API for Armv7-M MPU
- * @version  V5.1.0
- * @date     08. March 2019
- ******************************************************************************/
+#pragma once
+
+/************************************************************************************************
+ * @file    mpu_armv7.h
+ *
+ * @brief   CMSIS MPU API for Armv7-M MPU
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup mpu_armv7
+ * @brief    mpu_armv7 Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2017-2019 Arm Limited. All rights reserved.
  *
@@ -176,7 +193,6 @@
 */
 #define ARM_MPU_CACHEP_WB_NWA 3U
 
-
 /**
 * Struct for a single MPU Region
 */
@@ -270,3 +286,5 @@ __STATIC_INLINE void ARM_MPU_Load(ARM_MPU_Region_t const* table, uint32_t cnt)
 }
 
 #endif
+
+/** @} */

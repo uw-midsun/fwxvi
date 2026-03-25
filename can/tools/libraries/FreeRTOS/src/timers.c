@@ -1,3 +1,22 @@
+/************************************************************************************************
+ * @file    timers.c
+ *
+ * @brief   Timers
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "task.h"
+#include "timers.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -27,17 +46,11 @@
  */
 
 /* Standard includes. */
-#include <stdlib.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers.  That should only be done when
  * task.h is included from an application file. */
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "timers.h"
 
 #if ( INCLUDE_xTimerPendFunctionCall == 1 ) && ( configUSE_TIMERS == 0 )
     #error configUSE_TIMERS must be set to 1 to make the xTimerPendFunctionCall() function available.
@@ -47,7 +60,6 @@
  * for the header files above, but not in this file, in order to generate the
  * correct privileged Vs unprivileged linkage and placement. */
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
-
 
 /* This entire source file will be skipped if the application is not configured
  * to include software timer functionality.  This #if is closed at the very bottom
@@ -107,7 +119,6 @@
         TickType_t xMessageValue; /**< An optional value used by a subset of commands, for example, when changing the period of a timer. */
         Timer_t * pxTimer;        /**< The timer to which the command will be applied. */
     } TimerParameter_t;
-
 
     typedef struct tmrCallbackParameters
     {

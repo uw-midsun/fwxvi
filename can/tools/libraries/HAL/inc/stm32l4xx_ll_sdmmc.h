@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_sdmmc.h
-  * @author  MCD Application Team
-  * @brief   Header file of SDMMC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_sdmmc.h
+ *
+ * @brief   Header file of SDMMC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_SDMMC_H
@@ -27,7 +27,6 @@
 #if defined(SDMMC1)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_Driver
   * @{
@@ -76,7 +75,6 @@ typedef struct
 
 }SDMMC_InitTypeDef;
 
-
 /**
   * @brief  SDMMC Command Control structure
   */
@@ -101,7 +99,6 @@ typedef struct
                                      is enabled or disabled.
                                      This parameter can be a value of @ref SDMMC_LL_CPSM_State            */
 }SDMMC_CmdInitTypeDef;
-
 
 /**
   * @brief  SDMMC Data Control structure
@@ -982,7 +979,6 @@ typedef struct
   * @retval The new state of SDMMC_FLAG (SET or RESET).
   */
 #define __SDMMC_GET_FLAG(__INSTANCE__, __FLAG__)  (((__INSTANCE__)->STA &(__FLAG__)) != 0U)
-
 
 /**
   * @brief  Clears the SDMMC pending flags.

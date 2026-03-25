@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_ospi.h
-  * @author  MCD Application Team
-  * @brief   Header file of OSPI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_ospi.h
+ *
+ * @brief   Header file of OSPI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_OSPI_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined(OCTOSPI) || defined(OCTOSPI1) || defined(OCTOSPI2)
 
@@ -701,7 +700,6 @@ typedef void (*pOSPI_CallbackTypeDef)(OSPI_HandleTypeDef *hospi);
   * @retval None
   */
 #define __HAL_OSPI_ENABLE_IT(__HANDLE__, __INTERRUPT__)     SET_BIT((__HANDLE__)->Instance->CR, (__INTERRUPT__))
-
 
 /** @brief  Disable the specified OSPI interrupt.
   * @param  __HANDLE__ specifies the OSPI Handle.

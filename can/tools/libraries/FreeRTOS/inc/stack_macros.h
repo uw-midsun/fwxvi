@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stack_macros.h
+ *
+ * @brief   Stack Macros
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup stack_macros
+ * @brief    stack_macros Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -136,6 +159,6 @@
     #define taskCHECK_FOR_STACK_OVERFLOW()
 #endif
 
-
-
 #endif /* STACK_MACROS_H */
+
+/** @} */

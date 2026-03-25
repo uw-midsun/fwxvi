@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pwr.h
-  * @author  MCD Application Team
-  * @brief   Header file of PWR HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pwr.h
+ *
+ * @brief   Header file of PWR HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_pwr_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PWR_H
@@ -25,7 +26,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -53,7 +53,6 @@ typedef struct
                            This parameter can be a value of @ref PWR_PVD_Mode. */
 }PWR_PVDTypeDef;
 
-
 /**
   * @}
   */
@@ -63,7 +62,6 @@ typedef struct
 /** @defgroup PWR_Exported_Constants PWR Exported Constants
   * @{
   */
-
 
 /** @defgroup PWR_PVD_detection_level Programmable Voltage Detection levels
   * @{
@@ -94,9 +92,6 @@ typedef struct
   * @}
   */
 
-
-
-
 /** @defgroup PWR_Regulator_state_in_SLEEP_STOP_mode  PWR regulator mode
   * @{
   */
@@ -123,7 +118,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup PWR_PVD_EXTI_LINE  PWR PVD external interrupt line
   * @{
@@ -258,13 +252,11 @@ typedef struct
   */
 #define __HAL_PWR_PVD_EXTI_ENABLE_FALLING_EDGE()   SET_BIT(EXTI->FTSR1, PWR_EXTI_LINE_PVD)
 
-
 /**
   * @brief Disable the PVD Extended Interrupt Falling Trigger.
   * @retval None
   */
 #define __HAL_PWR_PVD_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR1, PWR_EXTI_LINE_PVD)
-
 
 /**
   * @brief  Enable the PVD Extended Interrupt Rising & Falling Trigger.
@@ -308,7 +300,6 @@ typedef struct
   * @}
   */
 
-
 /* Private macros --------------------------------------------------------*/
 /** @addtogroup  PWR_Private_Macros   PWR Private Macros
   * @{
@@ -339,7 +330,6 @@ typedef struct
   */
 
 /* Include PWR HAL Extended module */
-#include "stm32l4xx_hal_pwr_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 
@@ -369,7 +359,6 @@ HAL_StatusTypeDef HAL_PWR_ConfigPVD(PWR_PVDTypeDef *sConfigPVD);
 void HAL_PWR_EnablePVD(void);
 void HAL_PWR_DisablePVD(void);
 
-
 /* WakeUp pins configuration functions ****************************************/
 void HAL_PWR_EnableWakeUpPin(uint32_t WakeUpPinPolarity);
 void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx);
@@ -385,7 +374,6 @@ void HAL_PWR_EnableSEVOnPend(void);
 void HAL_PWR_DisableSEVOnPend(void);
 
 void HAL_PWR_PVDCallback(void);
-
 
 /**
   * @}
@@ -406,6 +394,5 @@ void HAL_PWR_PVDCallback(void);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_PWR_H */

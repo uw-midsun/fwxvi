@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    picolibc-freertos.h
+ *
+ * @brief   Picolibc-Freertos
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <picotls.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup picolibc-freertos
+ * @brief    picolibc-freertos Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -36,8 +60,6 @@
  * See the picolibc TLS docs:
  * https://github.com/picolibc/picolibc/blob/main/doc/tls.md
  * for additional information. */
-
-#include <picotls.h>
 
 #define configUSE_C_RUNTIME_TLS_SUPPORT    1
 
@@ -89,3 +111,5 @@
 #define configDEINIT_TLS_BLOCK( xTLSBlock )
 
 #endif /* INC_PICOLIBC_FREERTOS_H */
+
+/** @} */

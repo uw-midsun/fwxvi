@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_adc.h
-  * @author  MCD Application Team
-  * @brief   Header file of ADC LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_adc.h
+ *
+ * @brief   Header file of ADC LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_ADC_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -81,8 +80,6 @@ extern "C" {
 #define ADC_REG_RANK_15_SQRX_BITOFFSET_POS ( 0UL) /* Equivalent to bitfield "ADC_SQR4_SQ15" position in register */
 #define ADC_REG_RANK_16_SQRX_BITOFFSET_POS ( 6UL) /* Equivalent to bitfield "ADC_SQR4_SQ16" position in register */
 
-
-
 /* Internal mask for ADC group injected sequencer:                            */
 /* To select into literal LL_ADC_INJ_RANK_x the relevant bits for:            */
 /* - data register offset                                                     */
@@ -106,8 +103,6 @@ extern "C" {
 #define ADC_INJ_RANK_2_JSQR_BITOFFSET_POS  (14UL) /* Equivalent to bitfield "ADC_JSQR_JSQ2" position in register */
 #define ADC_INJ_RANK_3_JSQR_BITOFFSET_POS  (20UL) /* Equivalent to bitfield "ADC_JSQR_JSQ3" position in register */
 #define ADC_INJ_RANK_4_JSQR_BITOFFSET_POS  (26UL) /* Equivalent to bitfield "ADC_JSQR_JSQ4" position in register */
-
-
 
 /* Internal mask for ADC group regular trigger:                               */
 /* To select into literal LL_ADC_REG_TRIG_x the relevant bits for:            */
@@ -137,8 +132,6 @@ extern "C" {
 #define ADC_REG_TRIG_EXTSEL_BITOFFSET_POS  ( 6UL) /* Equivalent to bitfield "ADC_CFGR_EXTSEL" position in register */
 #define ADC_REG_TRIG_EXTEN_BITOFFSET_POS   (10UL) /* Equivalent to bitfield "ADC_CFGR_EXTEN" position in register */
 
-
-
 /* Internal mask for ADC group injected trigger:                              */
 /* To select into literal LL_ADC_INJ_TRIG_x the relevant bits for:            */
 /* - injected trigger source                                                  */
@@ -166,11 +159,6 @@ extern "C" {
 /* Definition of ADC group injected trigger bits information.                 */
 #define ADC_INJ_TRIG_EXTSEL_BITOFFSET_POS  ( 2UL) /* Equivalent to bitfield "ADC_JSQR_JEXTSEL" position in register */
 #define ADC_INJ_TRIG_EXTEN_BITOFFSET_POS   ( 6UL) /* Equivalent to bitfield "ADC_JSQR_JEXTEN" position in register */
-
-
-
-
-
 
 /* Internal mask for ADC channel:                                             */
 /* To select into literal LL_ADC_CHANNEL_x the relevant bits for:             */
@@ -278,7 +266,6 @@ extern "C" {
 #define ADC_CHANNEL_17_SMP                 (ADC_SMPR2_REGOFFSET | ((21UL) << ADC_CHANNEL_SMPx_BITOFFSET_POS))
 #define ADC_CHANNEL_18_SMP                 (ADC_SMPR2_REGOFFSET | ((24UL) << ADC_CHANNEL_SMPx_BITOFFSET_POS))
 
-
 /* Internal mask for ADC mode single or differential ended:                   */
 /* To select into literals LL_ADC_SINGLE_ENDED or LL_ADC_SINGLE_DIFFERENTIAL  */
 /* the relevant bits for:                                                     */
@@ -349,7 +336,6 @@ extern "C" {
 #define ADC_OFRx_REGOFFSET_MASK            (ADC_OFR1_REGOFFSET | ADC_OFR2_REGOFFSET \
                                             | ADC_OFR3_REGOFFSET | ADC_OFR4_REGOFFSET)
 
-
 /* ADC registers bits positions */
 #define ADC_CFGR_RES_BITOFFSET_POS         ( 3UL) /* Equivalent to bitfield "ADC_CFGR_RES" position in register */
 #define ADC_CFGR_AWD1SGL_BITOFFSET_POS     (22UL) /* Equivalent to bitfield "ADC_CFGR_AWD1SGL" position in register */
@@ -357,14 +343,12 @@ extern "C" {
 #define ADC_CFGR_JAWD1EN_BITOFFSET_POS     (24UL) /* Equivalent to bitfield "ADC_CFGR_JAWD1EN" position in register */
 #define ADC_TR1_HT1_BITOFFSET_POS          (16UL) /* Equivalent to bitfield "ADC_TR1_HT1" position in register */
 
-
 /* ADC registers bits groups */
 #define ADC_CR_BITS_PROPERTY_RS            (ADC_CR_ADCAL | ADC_CR_ADEN | ADC_CR_ADDIS \
                                             | ADC_CR_JADSTART | ADC_CR_JADSTP \
                                             | ADC_CR_ADSTART | ADC_CR_ADSTP)            /* ADC register CR bits with
                                            HW property "rs": Software can read as well as set this bit.
                                            Writing '0' has no effect on the bit value. */
-
 
 /* ADC internal channels related definitions */
 /* Internal voltage reference VrefInt */
@@ -401,7 +385,6 @@ extern "C" {
   * @}
   */
 
-
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup ADC_LL_Private_Macros ADC Private Macros
   * @{
@@ -421,7 +404,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /* Exported types ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
@@ -2110,7 +2092,6 @@ typedef struct
   * @}
   */
 
-
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup ADC_LL_Exported_Macros ADC Exported Macros
   * @{
@@ -3068,7 +3049,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup ADC_LL_Exported_Functions ADC Exported Functions

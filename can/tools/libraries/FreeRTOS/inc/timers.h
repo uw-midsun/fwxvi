@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    timers.h
+ *
+ * @brief   Timers
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "task.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup timers
+ * @brief    timers Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,16 +50,12 @@
  *
  */
 
-
 #ifndef TIMERS_H
 #define TIMERS_H
 
 #ifndef INC_FREERTOS_H
     #error "include FreeRTOS.h must appear in source files before include timers.h"
 #endif
-
-#include "task.h"
-
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -66,7 +86,6 @@
 #define tmrCOMMAND_RESET_FROM_ISR               ( ( BaseType_t ) 7 )
 #define tmrCOMMAND_STOP_FROM_ISR                ( ( BaseType_t ) 8 )
 #define tmrCOMMAND_CHANGE_PERIOD_FROM_ISR       ( ( BaseType_t ) 9 )
-
 
 /**
  * Type by which software timers are referenced.  For example, a call to
@@ -1107,7 +1126,6 @@ TaskHandle_t xTimerGetTimerDaemonTaskHandle( void ) PRIVILEGED_FUNCTION;
 #define xTimerResetFromISR( xTimer, pxHigherPriorityTaskWoken ) \
     xTimerGenericCommand( ( xTimer ), tmrCOMMAND_RESET_FROM_ISR, ( xTaskGetTickCountFromISR() ), ( pxHigherPriorityTaskWoken ), 0U )
 
-
 /**
  * BaseType_t xTimerPendFunctionCallFromISR( PendedFunction_t xFunctionToPend,
  *                                          void *pvParameter1,
@@ -1429,3 +1447,5 @@ void vTimerResetState( void ) PRIVILEGED_FUNCTION;
 #endif
 /* *INDENT-ON* */
 #endif /* TIMERS_H */
+
+/** @} */

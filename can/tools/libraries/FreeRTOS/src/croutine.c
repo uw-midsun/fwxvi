@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    croutine.c
+ *
+ * @brief   Croutine
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "croutine.h"
+#include "task.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,10 +43,6 @@
  *
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "croutine.h"
-
 /* Remove the whole file if co-routines are not being used. */
 #if ( configUSE_CO_ROUTINES != 0 )
 
@@ -40,7 +53,6 @@
     #ifdef portREMOVE_STATIC_QUALIFIER
         #define static
     #endif
-
 
 /* Lists for ready and blocked co-routines. --------------------*/
     static List_t pxReadyCoRoutineLists[ configMAX_CO_ROUTINE_PRIORITIES ]; /**< Prioritised ready co-routines. */

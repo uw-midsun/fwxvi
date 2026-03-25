@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    croutine.h
+ *
+ * @brief   Croutine
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "list.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup croutine
+ * @brief    croutine Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -32,8 +56,6 @@
 #ifndef INC_FREERTOS_H
     #error "include FreeRTOS.h must appear in source files before include croutine.h"
 #endif
-
-#include "list.h"
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -136,7 +158,6 @@ typedef struct corCoRoutineControlBlock
 BaseType_t xCoRoutineCreate( crCOROUTINE_CODE pxCoRoutineCode,
                              UBaseType_t uxPriority,
                              UBaseType_t uxIndex );
-
 
 /**
  * croutine. h
@@ -609,7 +630,6 @@ void vCoRoutineSchedule( void );
 #define crQUEUE_SEND_FROM_ISR( pxQueue, pvItemToQueue, xCoRoutinePreviouslyWoken ) \
     xQueueCRSendFromISR( ( pxQueue ), ( pvItemToQueue ), ( xCoRoutinePreviouslyWoken ) )
 
-
 /**
  * croutine. h
  * @code{c}
@@ -746,7 +766,6 @@ void vCoRoutineAddToDelayedList( TickType_t xTicksToDelay,
  */
 BaseType_t xCoRoutineRemoveFromEventList( const List_t * pxEventList );
 
-
 /*
  * This function resets the internal state of the coroutine module. It must be
  * called by the application before restarting the scheduler.
@@ -760,3 +779,5 @@ void vCoRoutineResetState( void ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* CO_ROUTINE_H */
+
+/** @} */

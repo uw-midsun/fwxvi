@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_tim.h
-  * @author  MCD Application Team
-  * @brief   Header file of TIM HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_tim.h
+ *
+ * @brief   Header file of TIM HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_tim_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_TIM_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -94,7 +94,6 @@ typedef struct
   uint32_t OCFastMode;    /*!< Specifies the Fast mode state.
                                This parameter can be a value of @ref TIM_Output_Fast_State
                                @note This parameter is valid only in PWM1 and PWM2 mode. */
-
 
   uint32_t OCIdleState;   /*!< Specifies the TIM Output Compare pin state during Idle state.
                                This parameter can be a value of @ref TIM_Output_Compare_Idle_State
@@ -2114,7 +2113,6 @@ mode.
 /* End of private macros -----------------------------------------------------*/
 
 /* Include TIM HAL Extended module */
-#include "stm32l4xx_hal_tim_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup TIM_Exported_Functions TIM Exported Functions

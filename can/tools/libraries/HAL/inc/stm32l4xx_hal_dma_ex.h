@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dma_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of DMA HAL extension module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dma_ex.h
+ *
+ * @brief   Header file of DMA HAL extension module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DMA_EX_H
@@ -27,7 +27,6 @@ extern "C" {
 #if defined(DMAMUX1)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -46,7 +45,6 @@ extern "C" {
   * @brief  HAL DMA Synchro definition
   */
 
-
 /**
   * @brief  HAL DMAMUX Synchronization configuration structure definition
   */
@@ -61,16 +59,13 @@ typedef struct
   FunctionalState SyncEnable;  /*!< Specifies if the synchronization shall be enabled or disabled
                                     This parameter can take the value ENABLE or DISABLE*/
 
-
   FunctionalState EventEnable;    /*!< Specifies if an event shall be generated once the RequestNumber is reached.
                                        This parameter can take the value ENABLE or DISABLE */
 
   uint32_t RequestNumber; /*!< Specifies the number of DMA request that will be authorized after a sync event
                                This parameter must be a number between Min_Data = 1 and Max_Data = 32 */
 
-
 } HAL_DMA_MuxSyncConfigTypeDef;
-
 
 /**
   * @brief  HAL DMAMUX request generator parameters structure definition
@@ -231,7 +226,6 @@ void HAL_DMAEx_MUX_IRQHandler(DMA_HandleTypeDef *hdma);
   * @}
   */
 
-
 /* Private defines -----------------------------------------------------------*/
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup DMAEx_Private_Macros DMAEx Private Macros
@@ -265,7 +259,6 @@ void HAL_DMAEx_MUX_IRQHandler(DMA_HandleTypeDef *hdma);
 /**
   * @}
   */
-
 
 /**
   * @}

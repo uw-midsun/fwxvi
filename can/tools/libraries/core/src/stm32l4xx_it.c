@@ -1,26 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    Templates/Src/stm32l4xx_it.c 
-  * @author  MCD Application Team
-  * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    Templates/Src/stm32l4xx_it.c
+ *
+ * @brief   Main Interrupt Service Routines.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-/* Includes ------------------------------------------------------------------*/
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_it.h"
+
+/* Includes ------------------------------------------------------------------*/
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -155,7 +150,6 @@ void SysTick_Handler(void)
 /*void PPP_IRQHandler(void)
 {
 }*/
-
 
 /**
   * @}

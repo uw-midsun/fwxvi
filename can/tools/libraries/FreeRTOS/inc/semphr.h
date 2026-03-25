@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    semphr.h
+ *
+ * @brief   Semphr
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "queue.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup semphr
+ * @brief    semphr Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -33,14 +57,11 @@
     #error "include FreeRTOS.h" must appear in source files before "include semphr.h"
 #endif
 
-#include "queue.h"
-
 typedef QueueHandle_t SemaphoreHandle_t;
 
 #define semBINARY_SEMAPHORE_QUEUE_LENGTH    ( ( uint8_t ) 1U )
 #define semSEMAPHORE_QUEUE_ITEM_LENGTH      ( ( uint8_t ) 0U )
 #define semGIVE_BLOCK_TIME                  ( ( TickType_t ) 0U )
-
 
 /**
  * semphr. h
@@ -798,7 +819,6 @@ typedef QueueHandle_t SemaphoreHandle_t;
     #define xSemaphoreCreateMutexStatic( pxMutexBuffer )    xQueueCreateMutexStatic( queueQUEUE_TYPE_MUTEX, ( pxMutexBuffer ) )
 #endif
 
-
 /**
  * semphr. h
  * @code{c}
@@ -1213,3 +1233,5 @@ typedef QueueHandle_t SemaphoreHandle_t;
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 
 #endif /* SEMAPHORE_H */
+
+/** @} */

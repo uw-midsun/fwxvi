@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    unity.h
+ *
+ * @brief   Unity
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "unity_internals.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup unity
+ * @brief    unity Firmware
+ * @{
+ */
+
 /* ==========================================
     Unity Project - A Test Framework for C
     Copyright (c) 2007-21 Mike Karlesky, Mark VanderVoord, Greg Williams
@@ -19,8 +43,6 @@
 extern "C"
 {
 #endif
-
-#include "unity_internals.h"
 
 /*-------------------------------------------------------
  * Test Setup / Teardown
@@ -286,7 +308,6 @@ void verifyTest(void);
 #define TEST_ASSERT_HEX64_ARRAY_WITHIN(delta, expected, actual, num_elements)                      UNITY_TEST_ASSERT_HEX64_ARRAY_WITHIN((delta), (expected), (actual), num_elements, __LINE__, NULL)
 #define TEST_ASSERT_CHAR_ARRAY_WITHIN(delta, expected, actual, num_elements)                       UNITY_TEST_ASSERT_CHAR_ARRAY_WITHIN((delta), (expected), (actual), num_elements, __LINE__, NULL)
 
-
 /* Structs and Strings */
 #define TEST_ASSERT_EQUAL_PTR(expected, actual)                                                    UNITY_TEST_ASSERT_EQUAL_PTR((expected), (actual), __LINE__, NULL)
 #define TEST_ASSERT_EQUAL_STRING(expected, actual)                                                 UNITY_TEST_ASSERT_EQUAL_STRING((expected), (actual), __LINE__, NULL)
@@ -443,7 +464,6 @@ void verifyTest(void);
 #define TEST_ASSERT_NOT_EQUAL_HEX64_MESSAGE(threshold, actual, message)                            UNITY_TEST_ASSERT_NOT_EQUAL_HEX64((threshold), (actual), __LINE__, (message))
 #define TEST_ASSERT_NOT_EQUAL_CHAR_MESSAGE(threshold, actual, message)                             UNITY_TEST_ASSERT_NOT_EQUAL_CHAR((threshold), (actual), __LINE__, (message))
 
-
 /* Integer Greater Than/ Less Than (of all sizes) */
 #define TEST_ASSERT_GREATER_THAN_MESSAGE(threshold, actual, message)                               UNITY_TEST_ASSERT_GREATER_THAN_INT((threshold), (actual), __LINE__, (message))
 #define TEST_ASSERT_GREATER_THAN_INT_MESSAGE(threshold, actual, message)                           UNITY_TEST_ASSERT_GREATER_THAN_INT((threshold), (actual), __LINE__, (message))
@@ -555,7 +575,6 @@ void verifyTest(void);
 #define TEST_ASSERT_HEX64_ARRAY_WITHIN_MESSAGE(delta, expected, actual, num_elements, message)     UNITY_TEST_ASSERT_HEX64_ARRAY_WITHIN((delta), (expected), (actual), num_elements, __LINE__, (message))
 #define TEST_ASSERT_CHAR_ARRAY_WITHIN_MESSAGE(delta, expected, actual, num_elements, message)      UNITY_TEST_ASSERT_CHAR_ARRAY_WITHIN((delta), (expected), (actual), num_elements, __LINE__, (message))
 
-
 /* Structs and Strings */
 #define TEST_ASSERT_EQUAL_PTR_MESSAGE(expected, actual, message)                                   UNITY_TEST_ASSERT_EQUAL_PTR((expected), (actual), __LINE__, (message))
 #define TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual, message)                                UNITY_TEST_ASSERT_EQUAL_STRING((expected), (actual), __LINE__, (message))
@@ -661,3 +680,5 @@ void verifyTest(void);
 }
 #endif
 #endif
+
+/** @} */

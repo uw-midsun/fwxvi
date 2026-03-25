@@ -1,3 +1,30 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    ff.h
+ *
+ * @brief   Ff
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <float.h>
+#include <stdint.h>
+#include <windows.h>
+
+/* Inter-component Headers */
+#include "ffconf.h"		/* FatFs configuration options */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup ff
+ * @brief    ff Firmware
+ * @{
+ */
+
 /*----------------------------------------------------------------------------/
 /  FatFs - Generic FAT Filesystem module  R0.15                               /
 /-----------------------------------------------------------------------------/
@@ -18,7 +45,6 @@
 /
 /----------------------------------------------------------------------------*/
 
-
 #ifndef FF_DEFINED
 #define FF_DEFINED	80286	/* Revision ID */
 
@@ -26,26 +52,20 @@
 extern "C" {
 #endif
 
-#include "ffconf.h"		/* FatFs configuration options */
-
 #if FF_DEFINED != FFCONF_DEF
 #error Wrong configuration file (ffconf.h).
 #endif
-
 
 /* Integer types used for FatFs API */
 
 #if defined(_WIN32)		/* Windows VC++ (for development only) */
 #define FF_INTDEF 2
-#include <windows.h>
 typedef unsigned __int64 QWORD;
-#include <float.h>
 #define isnan(v) _isnan(v)
 #define isinf(v) (!_finite(v))
 
 #elif (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || defined(__cplusplus)	/* C99 or later */
 #define FF_INTDEF 2
-#include <stdint.h>
 typedef unsigned int	UINT;	/* int must be 16-bit or 32-bit */
 typedef unsigned char	BYTE;	/* char must be 8-bit */
 typedef uint16_t		WORD;	/* 16-bit unsigned integer */
@@ -61,7 +81,6 @@ typedef unsigned short	WORD;	/* 16-bit unsigned integer */
 typedef unsigned long	DWORD;	/* 32-bit unsigned integer */
 typedef WORD			WCHAR;	/* UTF-16 character type */
 #endif
-
 
 /* Type of file size and LBA variables */
 
@@ -82,8 +101,6 @@ typedef DWORD LBA_t;
 typedef DWORD FSIZE_t;
 typedef DWORD LBA_t;
 #endif
-
-
 
 /* Type of path name strings on FatFs API (TCHAR) */
 
@@ -107,8 +124,6 @@ typedef char TCHAR;
 #define _TEXT(x) x
 #endif
 
-
-
 /* Definitions of volume management */
 
 #if FF_MULTI_PARTITION		/* Multiple partition configuration */
@@ -124,8 +139,6 @@ extern PARTITION VolToPart[];	/* Volume - Partition mapping table */
 extern const char* VolumeStr[FF_VOLUMES];	/* User defied volume ID */
 #endif
 #endif
-
-
 
 /* Filesystem object structure (FATFS) */
 
@@ -173,8 +186,6 @@ typedef struct {
 	BYTE	win[FF_MAX_SS];	/* Disk access window for Directory, FAT (and file data at tiny cfg) */
 } FATFS;
 
-
-
 /* Object ID and allocation information (FFOBJID) */
 
 typedef struct {
@@ -195,8 +206,6 @@ typedef struct {
 	UINT	lockid;			/* File lock ID origin from 1 (index of file semaphore table Files[]) */
 #endif
 } FFOBJID;
-
-
 
 /* File object structure (FIL) */
 
@@ -219,8 +228,6 @@ typedef struct {
 #endif
 } FIL;
 
-
-
 /* Directory object structure (DIR) */
 
 typedef struct {
@@ -238,8 +245,6 @@ typedef struct {
 #endif
 } DIR;
 
-
-
 /* File information structure (FILINFO) */
 
 typedef struct {
@@ -255,8 +260,6 @@ typedef struct {
 #endif
 } FILINFO;
 
-
-
 /* Format parameter structure (MKFS_PARM) */
 
 typedef struct {
@@ -266,8 +269,6 @@ typedef struct {
 	UINT n_root;		/* Number of root directory entries */
 	DWORD au_size;		/* Cluster size (byte) */
 } MKFS_PARM;
-
-
 
 /* File function return code (FRESULT) */
 
@@ -293,9 +294,6 @@ typedef enum {
 	FR_TOO_MANY_OPEN_FILES,	/* (18) Number of open files > FF_FS_LOCK */
 	FR_INVALID_PARAMETER	/* (19) Given parameter is invalid */
 } FRESULT;
-
-
-
 
 /*--------------------------------------------------------------*/
 /* FatFs Module Application Interface                           */
@@ -347,9 +345,6 @@ TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);						/* Get a string from the fil
 #define f_rmdir(path) f_unlink(path)
 #define f_unmount(path) f_mount(0, path, 0)
 
-
-
-
 /*--------------------------------------------------------------*/
 /* Additional Functions                                         */
 /*--------------------------------------------------------------*/
@@ -359,7 +354,6 @@ TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);						/* Get a string from the fil
 DWORD get_fattime (void);	/* Get current time */
 #endif
 
-
 /* LFN support functions (defined in ffunicode.c) */
 
 #if FF_USE_LFN >= 1
@@ -367,7 +361,6 @@ WCHAR ff_oem2uni (WCHAR oem, WORD cp);	/* OEM code to Unicode conversion */
 WCHAR ff_uni2oem (DWORD uni, WORD cp);	/* Unicode to OEM code conversion */
 DWORD ff_wtoupper (DWORD uni);			/* Unicode upper-case conversion */
 #endif
-
 
 /* O/S dependent functions (samples available in ffsystem.c) */
 
@@ -381,9 +374,6 @@ void ff_mutex_delete (int vol);		/* Delete a sync object */
 int ff_mutex_take (int vol);		/* Lock sync object */
 void ff_mutex_give (int vol);		/* Unlock sync object */
 #endif
-
-
-
 
 /*--------------------------------------------------------------*/
 /* Flags and Offset Address                                     */
@@ -421,9 +411,10 @@ void ff_mutex_give (int vol);		/* Unlock sync object */
 #define AM_DIR	0x10	/* Directory */
 #define AM_ARC	0x20	/* Archive */
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* FF_DEFINED */
+
+/** @} */

@@ -1,49 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_crc.c
-  * @author  MCD Application Team
-  * @brief   CRC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Cyclic Redundancy Check (CRC) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                     ##### How to use this driver #####
- ===============================================================================
-    [..]
-         (+) Enable CRC AHB clock using __HAL_RCC_CRC_CLK_ENABLE();
-         (+) Initialize CRC calculator
-             (++) specify generating polynomial (peripheral default or non-default one)
-             (++) specify initialization value (peripheral default or non-default one)
-             (++) specify input data format
-             (++) specify input or output data inversion mode if any
-         (+) Use HAL_CRC_Accumulate() function to compute the CRC value of the
-             input data buffer starting with the previously computed CRC as
-             initialization value
-         (+) Use HAL_CRC_Calculate() function to compute the CRC value of the
-             input data buffer starting with the defined initialization value
-             (default or non-default) to initiate CRC calculation
+/************************************************************************************************
+ * @file    stm32l4xx_hal_crc.c
+ *
+ * @brief   CRC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  @endverbatim
-  ******************************************************************************
-  */
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -150,7 +121,6 @@ HAL_StatusTypeDef HAL_CRC_Init(CRC_HandleTypeDef *hcrc)
   {
     WRITE_REG(hcrc->Instance->INIT, hcrc->Init.InitValue);
   }
-
 
   /* set input data inversion mode */
   assert_param(IS_CRC_INPUTDATA_INVERSION_MODE(hcrc->Init.InputDataInversionMode));

@@ -1,167 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dma2d.c
-  * @author  MCD Application Team
-  * @brief   DMA2D HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the DMA2D peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Errors functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      (#) Program the required configuration through the following parameters:
-          the transfer mode, the output color mode and the output offset using
-          HAL_DMA2D_Init() function.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dma2d.c
+ *
+ * @brief   DMA2D HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#) Program the required configuration through the following parameters:
-          the input color mode, the input color, the input alpha value, the alpha mode,
-          the red/blue swap mode, the inverted alpha mode and the input offset using
-          HAL_DMA2D_ConfigLayer() function for foreground or/and background layer.
+/* Standard library Headers */
 
-     *** Polling mode IO operation ***
-     =================================
-    [..]
-       (#) Configure pdata parameter (explained hereafter), destination and data length
-           and enable the transfer using HAL_DMA2D_Start().
-       (#) Wait for end of transfer using HAL_DMA2D_PollForTransfer(), at this stage
-           user can specify the value of timeout according to his end application.
+/* Inter-component Headers */
 
-     *** Interrupt mode IO operation ***
-     ===================================
-     [..]
-       (#) Configure pdata parameter, destination and data length and enable
-           the transfer using HAL_DMA2D_Start_IT().
-       (#) Use HAL_DMA2D_IRQHandler() called under DMA2D_IRQHandler() interrupt subroutine.
-       (#) At the end of data transfer HAL_DMA2D_IRQHandler() function is executed and user can
-           add his own function by customization of function pointer XferCpltCallback (member
-           of DMA2D handle structure).
-       (#) In case of error, the HAL_DMA2D_IRQHandler() function calls the callback
-           XferErrorCallback.
-
-         -@-   In Register-to-Memory transfer mode, pdata parameter is the register
-               color, in Memory-to-memory or Memory-to-Memory with pixel format
-               conversion pdata is the source address.
-
-         -@-   Configure the foreground source address, the background source address,
-               the destination and data length then Enable the transfer using
-               HAL_DMA2D_BlendingStart() in polling mode and HAL_DMA2D_BlendingStart_IT()
-               in interrupt mode.
-
-         -@-   HAL_DMA2D_BlendingStart() and HAL_DMA2D_BlendingStart_IT() functions
-               are used if the memory to memory with blending transfer mode is selected.
-
-      (#) Optionally, configure and enable the CLUT using HAL_DMA2D_CLUTLoad() in polling
-          mode or HAL_DMA2D_CLUTLoad_IT() in interrupt mode.
-
-      (#) Optionally, configure the line watermark in using the API HAL_DMA2D_ProgramLineEvent().
-
-      (#) Optionally, configure the dead time value in the AHB clock cycle inserted between two
-          consecutive accesses on the AHB master port in using the API HAL_DMA2D_ConfigDeadTime()
-          and enable/disable the functionality  with the APIs HAL_DMA2D_EnableDeadTime() or
-          HAL_DMA2D_DisableDeadTime().
-
-      (#) The transfer can be suspended, resumed and aborted using the following
-          functions: HAL_DMA2D_Suspend(), HAL_DMA2D_Resume(), HAL_DMA2D_Abort().
-
-      (#) The CLUT loading can be suspended, resumed and aborted using the following
-          functions: HAL_DMA2D_CLUTLoading_Suspend(), HAL_DMA2D_CLUTLoading_Resume(),
-          HAL_DMA2D_CLUTLoading_Abort().
-
-      (#) To control the DMA2D state, use the following function: HAL_DMA2D_GetState().
-
-      (#) To read the DMA2D error code, use the following function: HAL_DMA2D_GetError().
-
-     *** DMA2D HAL driver macros list ***
-     =============================================
-     [..]
-       Below the list of most used macros in DMA2D HAL driver :
-
-      (+) __HAL_DMA2D_ENABLE: Enable the DMA2D peripheral.
-      (+) __HAL_DMA2D_GET_FLAG: Get the DMA2D pending flags.
-      (+) __HAL_DMA2D_CLEAR_FLAG: Clear the DMA2D pending flags.
-      (+) __HAL_DMA2D_ENABLE_IT: Enable the specified DMA2D interrupts.
-      (+) __HAL_DMA2D_DISABLE_IT: Disable the specified DMA2D interrupts.
-      (+) __HAL_DMA2D_GET_IT_SOURCE: Check whether the specified DMA2D interrupt is enabled or not.
-
-     *** Callback registration ***
-     ===================================
-     [..]
-      (#) The compilation define  USE_HAL_DMA2D_REGISTER_CALLBACKS when set to 1
-          allows the user to configure dynamically the driver callbacks.
-          Use function @ref HAL_DMA2D_RegisterCallback() to register a user callback.
-
-      (#) Function @ref HAL_DMA2D_RegisterCallback() allows to register following callbacks:
-            (+) XferCpltCallback : callback for transfer complete.
-            (+) XferErrorCallback : callback for transfer error.
-            (+) LineEventCallback : callback for line event.
-            (+) CLUTLoadingCpltCallback : callback for CLUT loading completion.
-            (+) MspInitCallback    : DMA2D MspInit.
-            (+) MspDeInitCallback  : DMA2D MspDeInit.
-          This function takes as parameters the HAL peripheral handle, the Callback ID
-          and a pointer to the user callback function.
-
-      (#) Use function @ref HAL_DMA2D_UnRegisterCallback() to reset a callback to the default
-          weak (surcharged) function.
-          @ref HAL_DMA2D_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-          and the Callback ID.
-          This function allows to reset following callbacks:
-            (+) XferCpltCallback : callback for transfer complete.
-            (+) XferErrorCallback : callback for transfer error.
-            (+) LineEventCallback : callback for line event.
-            (+) CLUTLoadingCpltCallback : callback for CLUT loading completion.
-            (+) MspInitCallback    : DMA2D MspInit.
-            (+) MspDeInitCallback  : DMA2D MspDeInit.
-
-      (#) By default, after the @ref HAL_DMA2D_Init and if the state is HAL_DMA2D_STATE_RESET
-          all callbacks are reset to the corresponding legacy weak (surcharged) functions:
-          examples @ref HAL_DMA2D_LineEventCallback(), @ref HAL_DMA2D_CLUTLoadingCpltCallback()
-          Exception done for MspInit and MspDeInit callbacks that are respectively
-          reset to the legacy weak (surcharged) functions in the @ref HAL_DMA2D_Init
-          and @ref HAL_DMA2D_DeInit only when these callbacks are null (not registered beforehand)
-          If not, MspInit or MspDeInit are not null, the @ref HAL_DMA2D_Init and @ref HAL_DMA2D_DeInit
-          keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-          Exception as well for Transfer Completion and Transfer Error callbacks that are not defined
-          as weak (surcharged) functions. They must be defined by the user to be resorted to.
-
-          Callbacks can be registered/unregistered in READY state only.
-          Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-          in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-          during the Init/DeInit.
-          In that case first register the MspInit/MspDeInit user callbacks
-          using @ref HAL_DMA2D_RegisterCallback before calling @ref HAL_DMA2D_DeInit
-          or @ref HAL_DMA2D_Init function.
-
-          When The compilation define USE_HAL_DMA2D_REGISTER_CALLBACKS is set to 0 or
-          not defined, the callback registering feature is not available
-          and weak (surcharged) callbacks are used.
-
-     [..]
-      (@) You can refer to the DMA2D HAL driver header file for more useful macros
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #ifdef HAL_DMA2D_MODULE_ENABLED
 #if defined (DMA2D)
@@ -305,7 +158,6 @@ HAL_StatusTypeDef HAL_DMA2D_Init(DMA2D_HandleTypeDef *hdma2d)
   MODIFY_REG(hdma2d->Instance->OPFCCR, (DMA2D_OPFCCR_AI | DMA2D_OPFCCR_RBS),
              ((hdma2d->Init.AlphaInverted << DMA2D_OPFCCR_AI_Pos) | \
               (hdma2d->Init.RedBlueSwap << DMA2D_OPFCCR_RBS_Pos)));
-
 
   /* Update error code */
   hdma2d->ErrorCode = HAL_DMA2D_ERROR_NONE;
@@ -636,7 +488,6 @@ HAL_StatusTypeDef HAL_DMA2D_UnRegisterCallback(DMA2D_HandleTypeDef *hdma2d, HAL_
   * @}
   */
 
-
 /** @defgroup DMA2D_Exported_Functions_Group2 IO operation functions
   *  @brief   IO operation functions
   *
@@ -666,7 +517,6 @@ HAL_StatusTypeDef HAL_DMA2D_UnRegisterCallback(DMA2D_HandleTypeDef *hdma2d, HAL_
       (+) handle DMA2D interrupt request.
       (+) Transfer watermark callback.
       (+) CLUT Transfer Complete callback.
-
 
 @endverbatim
   * @{
@@ -997,7 +847,6 @@ HAL_StatusTypeDef HAL_DMA2D_Resume(DMA2D_HandleTypeDef *hdma2d)
   return HAL_OK;
 }
 
-
 /**
   * @brief  Enable the DMA2D CLUT Transfer.
   * @param  hdma2d   Pointer to a DMA2D_HandleTypeDef structure that contains
@@ -1291,7 +1140,6 @@ HAL_StatusTypeDef HAL_DMA2D_CLUTLoading_Abort(DMA2D_HandleTypeDef *hdma2d, uint3
     reg  = &(hdma2d->Instance->FGPFCCR);
   }
 
-
   /* Get tick */
   tickstart = HAL_GetTick();
 
@@ -1432,7 +1280,6 @@ HAL_StatusTypeDef HAL_DMA2D_CLUTLoading_Resume(DMA2D_HandleTypeDef *hdma2d, uint
 
   return HAL_OK;
 }
-
 
 /**
 
@@ -1784,7 +1631,6 @@ __weak void HAL_DMA2D_CLUTLoadingCpltCallback(DMA2D_HandleTypeDef *hdma2d)
       (+) Configure the dead time value.
       (+) Enable or disable the dead time value functionality.
 
-
 @endverbatim
   * @{
   */
@@ -1832,7 +1678,6 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigLayer(DMA2D_HandleTypeDef *hdma2d, uint32_t La
              (pLayerCfg->AlphaInverted << DMA2D_BGPFCCR_AI_Pos) | (pLayerCfg->RedBlueSwap << DMA2D_BGPFCCR_RBS_Pos);
   regMask  = (DMA2D_BGPFCCR_CM | DMA2D_BGPFCCR_AM | DMA2D_BGPFCCR_ALPHA | DMA2D_BGPFCCR_AI | DMA2D_BGPFCCR_RBS);
 
-
   if ((pLayerCfg->InputColorMode == DMA2D_INPUT_A4) || (pLayerCfg->InputColorMode == DMA2D_INPUT_A8))
   {
     regValue |= (pLayerCfg->InputAlpha & DMA2D_BGPFCCR_ALPHA);
@@ -1861,7 +1706,6 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigLayer(DMA2D_HandleTypeDef *hdma2d, uint32_t La
   /* Configure the foreground DMA2D layer */
   else
   {
-
 
     /* Write DMA2D FGPFCCR register */
     MODIFY_REG(hdma2d->Instance->FGPFCCR, regMask, regValue);
@@ -1941,7 +1785,6 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigCLUT(DMA2D_HandleTypeDef *hdma2d, DMA2D_CLUTCf
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  Configure the line watermark.
@@ -2060,7 +1903,6 @@ HAL_StatusTypeDef HAL_DMA2D_ConfigDeadTime(DMA2D_HandleTypeDef *hdma2d, uint8_t 
   * @}
   */
 
-
 /** @defgroup DMA2D_Exported_Functions_Group4 Peripheral State and Error functions
   *  @brief    Peripheral State functions
   *
@@ -2106,7 +1948,6 @@ uint32_t HAL_DMA2D_GetError(const DMA2D_HandleTypeDef *hdma2d)
 /**
   * @}
   */
-
 
 /** @defgroup DMA2D_Private_Functions DMA2D Private Functions
   * @{

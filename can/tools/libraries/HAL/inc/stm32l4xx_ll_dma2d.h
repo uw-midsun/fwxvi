@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_dma2d.h
-  * @author  MCD Application Team
-  * @brief   Header file of DMA2D LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_dma2d.h
+ *
+ * @brief   Header file of DMA2D LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_DMA2D_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -292,7 +291,6 @@ typedef struct
                                       - @ref LL_DMA2D_FGND_SetRBSwapMode() for foreground layer,
                                       - @ref LL_DMA2D_BGND_SetRBSwapMode() for background layer. */
 
-
 } LL_DMA2D_LayerCfgTypeDef;
 
 /**
@@ -494,7 +492,6 @@ typedef struct
   * @}
   */
 
-
 #if defined(DMA2D_LINE_OFFSET_MODE_SUPPORT)
 /** @defgroup DMA2D_LL_EC_LINE_OFFSET_MODE Line Offset Mode
   * @{
@@ -514,7 +511,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /**
   * @}
@@ -771,7 +767,6 @@ __STATIC_INLINE uint32_t LL_DMA2D_GetOutputAlphaInvMode(const DMA2D_TypeDef *DMA
 {
   return (uint32_t)(READ_BIT(DMA2Dx->OPFCCR, DMA2D_OPFCCR_AI));
 }
-
 
 #if defined(DMA2D_OUTPUT_TWO_BY_TWO_SWAP_SUPPORT)
 /**
@@ -1823,7 +1818,6 @@ __STATIC_INLINE uint32_t  LL_DMA2D_BGND_GetCLUTColorMode(const DMA2D_TypeDef *DM
   * @}
   */
 
-
 /** @defgroup DMA2D_LL_EF_FLAG_MANAGEMENT Flag Management
   * @{
   */
@@ -2165,8 +2159,6 @@ __STATIC_INLINE uint32_t LL_DMA2D_IsEnabledIT_TE(const DMA2D_TypeDef *DMA2Dx)
 {
   return ((READ_BIT(DMA2Dx->CR, DMA2D_CR_TEIE) == (DMA2D_CR_TEIE)) ? 1UL : 0UL);
 }
-
-
 
 /**
   * @}

@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pwr_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of PWR HAL Extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pwr_ex.h
+ *
+ * @brief   Header file of PWR HAL Extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PWR_EX_H
@@ -25,7 +25,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -35,13 +34,11 @@
   * @{
   */
 
-
 /* Exported types ------------------------------------------------------------*/
 
 /** @defgroup PWREx_Exported_Types PWR Extended Exported Types
   * @{
   */
-
 
 /**
   * @brief  PWR PVM configuration structure definition
@@ -78,7 +75,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup PWREx_WakeUp_Pins  PWR wake-up pins
   * @{
@@ -131,8 +127,6 @@ typedef struct
   * @}
   */
 
-
-
 /** @defgroup PWREx_Regulator_Voltage_Scale  PWR Regulator voltage scale
   * @{
   */
@@ -144,7 +138,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup PWREx_VBAT_Battery_Charging_Selection PWR battery charging resistor selection
   * @{
@@ -347,13 +340,11 @@ typedef struct
   */
 #define __HAL_PWR_PVM1_EXTI_ENABLE_FALLING_EDGE()   SET_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM1)
 
-
 /**
   * @brief Disable the PVM1 Extended Interrupt Falling Trigger.
   * @retval None
   */
 #define __HAL_PWR_PVM1_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM1)
-
 
 /**
   * @brief  PVM1 EXTI line configuration: set rising & falling edge trigger.
@@ -394,7 +385,6 @@ typedef struct
 #define __HAL_PWR_PVM1_EXTI_CLEAR_FLAG()  WRITE_REG(EXTI->PR2, PWR_EXTI_LINE_PVM1)
 
 #endif /* PWR_CR2_PVME1 */
-
 
 #if defined(PWR_CR2_PVME2)
 /**
@@ -439,13 +429,11 @@ typedef struct
   */
 #define __HAL_PWR_PVM2_EXTI_ENABLE_FALLING_EDGE()   SET_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM2)
 
-
 /**
   * @brief Disable the PVM2 Extended Interrupt Falling Trigger.
   * @retval None
   */
 #define __HAL_PWR_PVM2_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM2)
-
 
 /**
   * @brief  PVM2 EXTI line configuration: set rising & falling edge trigger.
@@ -486,7 +474,6 @@ typedef struct
 #define __HAL_PWR_PVM2_EXTI_CLEAR_FLAG()  WRITE_REG(EXTI->PR2, PWR_EXTI_LINE_PVM2)
 
 #endif /* PWR_CR2_PVME2 */
-
 
 /**
   * @brief Enable the PVM3 Extended Interrupt Line.
@@ -530,13 +517,11 @@ typedef struct
   */
 #define __HAL_PWR_PVM3_EXTI_ENABLE_FALLING_EDGE()   SET_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM3)
 
-
 /**
   * @brief Disable the PVM3 Extended Interrupt Falling Trigger.
   * @retval None
   */
 #define __HAL_PWR_PVM3_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM3)
-
 
 /**
   * @brief  PVM3 EXTI line configuration: set rising & falling edge trigger.
@@ -575,9 +560,6 @@ typedef struct
   * @retval None
   */
 #define __HAL_PWR_PVM3_EXTI_CLEAR_FLAG()  WRITE_REG(EXTI->PR2, PWR_EXTI_LINE_PVM3)
-
-
-
 
 /**
   * @brief Enable the PVM4 Extended Interrupt Line.
@@ -621,13 +603,11 @@ typedef struct
   */
 #define __HAL_PWR_PVM4_EXTI_ENABLE_FALLING_EDGE()   SET_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM4)
 
-
 /**
   * @brief Disable the PVM4 Extended Interrupt Falling Trigger.
   * @retval None
   */
 #define __HAL_PWR_PVM4_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR2, PWR_EXTI_LINE_PVM4)
-
 
 /**
   * @brief  PVM4 EXTI line configuration: set rising & falling edge trigger.
@@ -666,7 +646,6 @@ typedef struct
   * @retval None
   */
 #define __HAL_PWR_PVM4_EXTI_CLEAR_FLAG()  WRITE_REG(EXTI->PR2, PWR_EXTI_LINE_PVM4)
-
 
 /**
   * @brief Configure the main internal regulator output voltage.
@@ -757,7 +736,6 @@ typedef struct
                                              ((RANGE) == PWR_REGULATOR_VOLTAGE_SCALE2))
 #endif
 
-
 #define IS_PWR_BATTERY_RESISTOR_SELECT(RESISTOR) (((RESISTOR) == PWR_BATTERY_CHARGING_RESISTOR_5) ||\
                                                   ((RESISTOR) == PWR_BATTERY_CHARGING_RESISTOR_1_5))
 
@@ -765,7 +743,6 @@ typedef struct
                                            ((CHARGING) == PWR_BATTERY_CHARGING_ENABLE))
 
 #define IS_PWR_GPIO_BIT_NUMBER(BIT_NUMBER) (((BIT_NUMBER) & GPIO_PIN_MASK) != (uint32_t)0x00)
-
 
 #if defined (STM32L412xx) || defined (STM32L422xx)
 #define IS_PWR_GPIO(GPIO) (((GPIO) == PWR_GPIO_A) ||\
@@ -822,7 +799,6 @@ typedef struct
   * @}
   */
 
-
 /** @addtogroup PWREx_Exported_Functions PWR Extended Exported Functions
   * @{
   */
@@ -830,7 +806,6 @@ typedef struct
 /** @addtogroup PWREx_Exported_Functions_Group1 Extended Peripheral Control functions
   * @{
   */
-
 
 /* Peripheral Control functions  **********************************************/
 uint32_t HAL_PWREx_GetVoltageRange(void);
@@ -886,7 +861,6 @@ void HAL_PWREx_EnableExtSMPS_0V95(void);
 void HAL_PWREx_DisableExtSMPS_0V95(void);
 #endif /* PWR_CR4_EXT_SMPS_ON */
 
-
 /* Low Power modes configuration functions ************************************/
 void HAL_PWREx_EnableLowPowerRunMode(void);
 HAL_StatusTypeDef HAL_PWREx_DisableLowPowerRunMode(void);
@@ -924,6 +898,5 @@ void HAL_PWREx_PVM4Callback(void);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_PWR_EX_H */

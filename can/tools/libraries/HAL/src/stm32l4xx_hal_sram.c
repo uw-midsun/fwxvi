@@ -1,119 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_sram.c
-  * @author  MCD Application Team
-  * @brief   SRAM HAL module driver.
-  *          This file provides a generic firmware to drive SRAM memories
-  *          mounted as external device.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                          ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    This driver is a generic layered driver which contains a set of APIs used to
-    control SRAM memories. It uses the FMC layer functions to interface
-    with SRAM devices.
-    The following sequence should be followed to configure the FMC to interface
-    with SRAM/PSRAM memories:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_sram.c
+ *
+ * @brief   SRAM HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-   (#) Declare a SRAM_HandleTypeDef handle structure, for example:
-          SRAM_HandleTypeDef  hsram; and:
+/* Standard library Headers */
 
-       (++) Fill the SRAM_HandleTypeDef handle "Init" field with the allowed
-            values of the structure member.
+/* Inter-component Headers */
 
-       (++) Fill the SRAM_HandleTypeDef handle "Instance" field with a predefined
-            base register instance for NOR or SRAM device
-
-       (++) Fill the SRAM_HandleTypeDef handle "Extended" field with a predefined
-            base register instance for NOR or SRAM extended mode
-
-   (#) Declare two FMC_NORSRAM_TimingTypeDef structures, for both normal and extended
-       mode timings; for example:
-          FMC_NORSRAM_TimingTypeDef  Timing and FMC_NORSRAM_TimingTypeDef  ExTiming;
-      and fill its fields with the allowed values of the structure member.
-
-   (#) Initialize the SRAM Controller by calling the function HAL_SRAM_Init(). This function
-       performs the following sequence:
-
-       (##) MSP hardware layer configuration using the function HAL_SRAM_MspInit()
-       (##) Control register configuration using the FMC NORSRAM interface function
-            FMC_NORSRAM_Init()
-       (##) Timing register configuration using the FMC NORSRAM interface function
-            FMC_NORSRAM_Timing_Init()
-       (##) Extended mode Timing register configuration using the FMC NORSRAM interface function
-            FMC_NORSRAM_Extended_Timing_Init()
-       (##) Enable the SRAM device using the macro __FMC_NORSRAM_ENABLE()
-
-   (#) At this stage you can perform read/write accesses from/to the memory connected
-       to the NOR/SRAM Bank. You can perform either polling or DMA transfer using the
-       following APIs:
-       (++) HAL_SRAM_Read()/HAL_SRAM_Write() for polling read/write access
-       (++) HAL_SRAM_Read_DMA()/HAL_SRAM_Write_DMA() for DMA read/write transfer
-
-   (#) You can also control the SRAM device by calling the control APIs HAL_SRAM_WriteOperation_Enable()/
-       HAL_SRAM_WriteOperation_Disable() to respectively enable/disable the SRAM write operation
-
-   (#) You can continuously monitor the SRAM device HAL state by calling the function
-       HAL_SRAM_GetState()
-
-       *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_SRAM_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
-
-      Use Functions HAL_SRAM_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) MspInitCallback    : SRAM MspInit.
-        (+) MspDeInitCallback  : SRAM MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
-
-      Use function HAL_SRAM_UnRegisterCallback() to reset a callback to the default
-      weak (overridden) function. It allows to reset following callbacks:
-        (+) MspInitCallback    : SRAM MspInit.
-        (+) MspDeInitCallback  : SRAM MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
-
-      By default, after the HAL_SRAM_Init and if the state is HAL_SRAM_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (overridden) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (overridden) functions in the HAL_SRAM_Init
-      and  HAL_SRAM_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the HAL_SRAM_Init and HAL_SRAM_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using HAL_SRAM_RegisterCallback before calling HAL_SRAM_DeInit
-      or HAL_SRAM_Init function.
-
-      When The compilation define USE_HAL_SRAM_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (overridden) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(FMC_BANK1)
 

@@ -1,9 +1,26 @@
-/**************************************************************************//**
- * @file     cmsis_gcc.h
- * @brief    CMSIS compiler GCC header file
- * @version  V5.2.0
- * @date     08. May 2019
- ******************************************************************************/
+#pragma once
+
+/************************************************************************************************
+ * @file    cmsis_gcc.h
+ *
+ * @brief   CMSIS compiler GCC header file
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup cmsis_gcc
+ * @brief    cmsis_gcc Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
  *
@@ -198,7 +215,6 @@ __STATIC_FORCEINLINE void __enable_irq(void)
   __ASM volatile ("cpsie i" : : : "memory");
 }
 
-
 /**
   \brief   Disable IRQ Interrupts
   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
@@ -208,7 +224,6 @@ __STATIC_FORCEINLINE void __disable_irq(void)
 {
   __ASM volatile ("cpsid i" : : : "memory");
 }
-
 
 /**
   \brief   Get Control Register
@@ -222,7 +237,6 @@ __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
   __ASM volatile ("MRS %0, control" : "=r" (result) );
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -239,7 +253,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Control Register
   \details Writes the given value to the Control Register.
@@ -249,7 +262,6 @@ __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
 {
   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -262,7 +274,6 @@ __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
 }
 #endif
-
 
 /**
   \brief   Get IPSR Register
@@ -277,7 +288,6 @@ __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
   return(result);
 }
 
-
 /**
   \brief   Get APSR Register
   \details Returns the content of the APSR Register.
@@ -290,7 +300,6 @@ __STATIC_FORCEINLINE uint32_t __get_APSR(void)
   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
   return(result);
 }
-
 
 /**
   \brief   Get xPSR Register
@@ -305,7 +314,6 @@ __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
   return(result);
 }
 
-
 /**
   \brief   Get Process Stack Pointer
   \details Returns the current value of the Process Stack Pointer (PSP).
@@ -318,7 +326,6 @@ __STATIC_FORCEINLINE uint32_t __get_PSP(void)
   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -335,7 +342,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Process Stack Pointer
   \details Assigns the given value to the Process Stack Pointer (PSP).
@@ -345,7 +351,6 @@ __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
 {
   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -359,7 +364,6 @@ __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
 }
 #endif
 
-
 /**
   \brief   Get Main Stack Pointer
   \details Returns the current value of the Main Stack Pointer (MSP).
@@ -372,7 +376,6 @@ __STATIC_FORCEINLINE uint32_t __get_MSP(void)
   __ASM volatile ("MRS %0, msp" : "=r" (result) );
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -389,7 +392,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Main Stack Pointer
   \details Assigns the given value to the Main Stack Pointer (MSP).
@@ -399,7 +401,6 @@ __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
 {
   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -412,7 +413,6 @@ __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
 }
 #endif
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -428,7 +428,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
   return(result);
 }
 
-
 /**
   \brief   Set Stack Pointer (non-secure)
   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
@@ -439,7 +438,6 @@ __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
 }
 #endif
-
 
 /**
   \brief   Get Priority Mask
@@ -453,7 +451,6 @@ __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -470,7 +467,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Priority Mask
   \details Assigns the given value to the Priority Mask Register.
@@ -480,7 +476,6 @@ __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
 {
   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -493,7 +488,6 @@ __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
   __ASM volatile ("MSR primask_ns, %0" : : "r" (priMask) : "memory");
 }
 #endif
-
 
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
@@ -508,7 +502,6 @@ __STATIC_FORCEINLINE void __enable_fault_irq(void)
   __ASM volatile ("cpsie f" : : : "memory");
 }
 
-
 /**
   \brief   Disable FIQ
   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
@@ -518,7 +511,6 @@ __STATIC_FORCEINLINE void __disable_fault_irq(void)
 {
   __ASM volatile ("cpsid f" : : : "memory");
 }
-
 
 /**
   \brief   Get Base Priority
@@ -532,7 +524,6 @@ __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
   __ASM volatile ("MRS %0, basepri" : "=r" (result) );
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -549,7 +540,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Base Priority
   \details Assigns the given value to the Base Priority register.
@@ -559,7 +549,6 @@ __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
 {
   __ASM volatile ("MSR basepri, %0" : : "r" (basePri) : "memory");
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -573,7 +562,6 @@ __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
 }
 #endif
 
-
 /**
   \brief   Set Base Priority with condition
   \details Assigns the given value to the Base Priority register only if BASEPRI masking is disabled,
@@ -584,7 +572,6 @@ __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
 {
   __ASM volatile ("MSR basepri_max, %0" : : "r" (basePri) : "memory");
 }
-
 
 /**
   \brief   Get Fault Mask
@@ -598,7 +585,6 @@ __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
   return(result);
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -615,7 +601,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Fault Mask
   \details Assigns the given value to the Fault Mask register.
@@ -625,7 +610,6 @@ __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
 {
   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) : "memory");
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
@@ -642,7 +626,6 @@ __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
 #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
-
 
 #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
@@ -691,7 +674,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Process Stack Pointer Limit
   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
@@ -712,7 +694,6 @@ __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
 #endif
 }
 
-
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
   \brief   Set Process Stack Pointer (non-secure)
@@ -732,7 +713,6 @@ __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
 #endif
 }
 #endif
-
 
 /**
   \brief   Get Main Stack Pointer Limit
@@ -756,7 +736,6 @@ __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
 #endif
 }
 
-
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
   \brief   Get Main Stack Pointer Limit (non-secure)
@@ -779,7 +758,6 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
 }
 #endif
 
-
 /**
   \brief   Set Main Stack Pointer Limit
   Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
@@ -799,7 +777,6 @@ __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
   __ASM volatile ("MSR msplim, %0" : : "r" (MainStackPtrLimit));
 #endif
 }
-
 
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
@@ -823,7 +800,6 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 
 #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
-
 
 /**
   \brief   Get FPSCR
@@ -850,7 +826,6 @@ __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
 #endif
 }
 
-
 /**
   \brief   Set FPSCR
   \details Assigns the given value to the Floating Point Status/Control register.
@@ -873,9 +848,7 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
 #endif
 }
 
-
 /*@} end of CMSIS_Core_RegAccFunctions */
-
 
 /* ##########################  Core Instruction Access  ######################### */
 /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
@@ -908,7 +881,6 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
  */
 #define __WFI()                             __ASM volatile ("wfi")
 
-
 /**
   \brief   Wait For Event
   \details Wait For Event is a hint instruction that permits the processor to enter
@@ -916,13 +888,11 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
  */
 #define __WFE()                             __ASM volatile ("wfe")
 
-
 /**
   \brief   Send Event
   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
  */
 #define __SEV()                             __ASM volatile ("sev")
-
 
 /**
   \brief   Instruction Synchronization Barrier
@@ -935,7 +905,6 @@ __STATIC_FORCEINLINE void __ISB(void)
   __ASM volatile ("isb 0xF":::"memory");
 }
 
-
 /**
   \brief   Data Synchronization Barrier
   \details Acts as a special kind of Data Memory Barrier.
@@ -946,7 +915,6 @@ __STATIC_FORCEINLINE void __DSB(void)
   __ASM volatile ("dsb 0xF":::"memory");
 }
 
-
 /**
   \brief   Data Memory Barrier
   \details Ensures the apparent order of the explicit memory operations before
@@ -956,7 +924,6 @@ __STATIC_FORCEINLINE void __DMB(void)
 {
   __ASM volatile ("dmb 0xF":::"memory");
 }
-
 
 /**
   \brief   Reverse byte order (32 bit)
@@ -976,7 +943,6 @@ __STATIC_FORCEINLINE uint32_t __REV(uint32_t value)
 #endif
 }
 
-
 /**
   \brief   Reverse byte order (16 bit)
   \details Reverses the byte order within each halfword of a word. For example, 0x12345678 becomes 0x34127856.
@@ -990,7 +956,6 @@ __STATIC_FORCEINLINE uint32_t __REV16(uint32_t value)
   __ASM volatile ("rev16 %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
   return result;
 }
-
 
 /**
   \brief   Reverse byte order (16 bit)
@@ -1010,7 +975,6 @@ __STATIC_FORCEINLINE int16_t __REVSH(int16_t value)
 #endif
 }
 
-
 /**
   \brief   Rotate Right in unsigned value (32 bit)
   \details Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
@@ -1028,7 +992,6 @@ __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
   return (op1 >> op2) | (op1 << (32U - op2));
 }
 
-
 /**
   \brief   Breakpoint
   \details Causes the processor to enter Debug state.
@@ -1037,7 +1000,6 @@ __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
                  If required, a debugger can use it to store additional information about the breakpoint.
  */
 #define __BKPT(value)                       __ASM volatile ("bkpt "#value)
-
 
 /**
   \brief   Reverse bit order of value
@@ -1068,7 +1030,6 @@ __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
   return result;
 }
 
-
 /**
   \brief   Count leading zeros
   \details Counts the number of leading zeros of a data value.
@@ -1092,7 +1053,6 @@ __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t value)
   }
   return __builtin_clz(value);
 }
-
 
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
@@ -1119,7 +1079,6 @@ __STATIC_FORCEINLINE uint8_t __LDREXB(volatile uint8_t *addr)
    return ((uint8_t) result);    /* Add explicit type cast here */
 }
 
-
 /**
   \brief   LDR Exclusive (16 bit)
   \details Executes a exclusive LDR instruction for 16 bit values.
@@ -1141,7 +1100,6 @@ __STATIC_FORCEINLINE uint16_t __LDREXH(volatile uint16_t *addr)
    return ((uint16_t) result);    /* Add explicit type cast here */
 }
 
-
 /**
   \brief   LDR Exclusive (32 bit)
   \details Executes a exclusive LDR instruction for 32 bit values.
@@ -1155,7 +1113,6 @@ __STATIC_FORCEINLINE uint32_t __LDREXW(volatile uint32_t *addr)
    __ASM volatile ("ldrex %0, %1" : "=r" (result) : "Q" (*addr) );
    return(result);
 }
-
 
 /**
   \brief   STR Exclusive (8 bit)
@@ -1173,7 +1130,6 @@ __STATIC_FORCEINLINE uint32_t __STREXB(uint8_t value, volatile uint8_t *addr)
    return(result);
 }
 
-
 /**
   \brief   STR Exclusive (16 bit)
   \details Executes a exclusive STR instruction for 16 bit values.
@@ -1189,7 +1145,6 @@ __STATIC_FORCEINLINE uint32_t __STREXH(uint16_t value, volatile uint16_t *addr)
    __ASM volatile ("strexh %0, %2, %1" : "=&r" (result), "=Q" (*addr) : "r" ((uint32_t)value) );
    return(result);
 }
-
 
 /**
   \brief   STR Exclusive (32 bit)
@@ -1207,7 +1162,6 @@ __STATIC_FORCEINLINE uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
    return(result);
 }
 
-
 /**
   \brief   Remove the exclusive lock
   \details Removes the exclusive lock which is created by LDREX.
@@ -1221,7 +1175,6 @@ __STATIC_FORCEINLINE void __CLREX(void)
            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
-
 
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
@@ -1241,7 +1194,6 @@ __extension__ \
   __RES; \
  })
 
-
 /**
   \brief   Unsigned Saturate
   \details Saturates an unsigned value.
@@ -1257,7 +1209,6 @@ __extension__ \
   __RES; \
  })
 
-
 /**
   \brief   Rotate Right with Extend (32 bit)
   \details Moves each bit of a bitstring right by one bit.
@@ -1272,7 +1223,6 @@ __STATIC_FORCEINLINE uint32_t __RRX(uint32_t value)
   __ASM volatile ("rrx %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
   return(result);
 }
-
 
 /**
   \brief   LDRT Unprivileged (8 bit)
@@ -1295,7 +1245,6 @@ __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
    return ((uint8_t) result);    /* Add explicit type cast here */
 }
 
-
 /**
   \brief   LDRT Unprivileged (16 bit)
   \details Executes a Unprivileged LDRT instruction for 16 bit values.
@@ -1317,7 +1266,6 @@ __STATIC_FORCEINLINE uint16_t __LDRHT(volatile uint16_t *ptr)
    return ((uint16_t) result);    /* Add explicit type cast here */
 }
 
-
 /**
   \brief   LDRT Unprivileged (32 bit)
   \details Executes a Unprivileged LDRT instruction for 32 bit values.
@@ -1332,7 +1280,6 @@ __STATIC_FORCEINLINE uint32_t __LDRT(volatile uint32_t *ptr)
    return(result);
 }
 
-
 /**
   \brief   STRT Unprivileged (8 bit)
   \details Executes a Unprivileged STRT instruction for 8 bit values.
@@ -1344,7 +1291,6 @@ __STATIC_FORCEINLINE void __STRBT(uint8_t value, volatile uint8_t *ptr)
    __ASM volatile ("strbt %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
 }
 
-
 /**
   \brief   STRT Unprivileged (16 bit)
   \details Executes a Unprivileged STRT instruction for 16 bit values.
@@ -1355,7 +1301,6 @@ __STATIC_FORCEINLINE void __STRHT(uint16_t value, volatile uint16_t *ptr)
 {
    __ASM volatile ("strht %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
 }
-
 
 /**
   \brief   STRT Unprivileged (32 bit)
@@ -1425,7 +1370,6 @@ __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
 
-
 #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
 /**
@@ -1442,7 +1386,6 @@ __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
    return ((uint8_t) result);
 }
 
-
 /**
   \brief   Load-Acquire (16 bit)
   \details Executes a LDAH instruction for 16 bit values.
@@ -1456,7 +1399,6 @@ __STATIC_FORCEINLINE uint16_t __LDAH(volatile uint16_t *ptr)
    __ASM volatile ("ldah %0, %1" : "=r" (result) : "Q" (*ptr) );
    return ((uint16_t) result);
 }
-
 
 /**
   \brief   Load-Acquire (32 bit)
@@ -1472,7 +1414,6 @@ __STATIC_FORCEINLINE uint32_t __LDA(volatile uint32_t *ptr)
    return(result);
 }
 
-
 /**
   \brief   Store-Release (8 bit)
   \details Executes a STLB instruction for 8 bit values.
@@ -1483,7 +1424,6 @@ __STATIC_FORCEINLINE void __STLB(uint8_t value, volatile uint8_t *ptr)
 {
    __ASM volatile ("stlb %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
 }
-
 
 /**
   \brief   Store-Release (16 bit)
@@ -1496,7 +1436,6 @@ __STATIC_FORCEINLINE void __STLH(uint16_t value, volatile uint16_t *ptr)
    __ASM volatile ("stlh %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
 }
 
-
 /**
   \brief   Store-Release (32 bit)
   \details Executes a STL instruction for 32 bit values.
@@ -1507,7 +1446,6 @@ __STATIC_FORCEINLINE void __STL(uint32_t value, volatile uint32_t *ptr)
 {
    __ASM volatile ("stl %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
 }
-
 
 /**
   \brief   Load-Acquire Exclusive (8 bit)
@@ -1523,7 +1461,6 @@ __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
    return ((uint8_t) result);
 }
 
-
 /**
   \brief   Load-Acquire Exclusive (16 bit)
   \details Executes a LDAH exclusive instruction for 16 bit values.
@@ -1538,7 +1475,6 @@ __STATIC_FORCEINLINE uint16_t __LDAEXH(volatile uint16_t *ptr)
    return ((uint16_t) result);
 }
 
-
 /**
   \brief   Load-Acquire Exclusive (32 bit)
   \details Executes a LDA exclusive instruction for 32 bit values.
@@ -1552,7 +1488,6 @@ __STATIC_FORCEINLINE uint32_t __LDAEX(volatile uint32_t *ptr)
    __ASM volatile ("ldaex %0, %1" : "=r" (result) : "Q" (*ptr) );
    return(result);
 }
-
 
 /**
   \brief   Store-Release Exclusive (8 bit)
@@ -1570,7 +1505,6 @@ __STATIC_FORCEINLINE uint32_t __STLEXB(uint8_t value, volatile uint8_t *ptr)
    return(result);
 }
 
-
 /**
   \brief   Store-Release Exclusive (16 bit)
   \details Executes a STLH exclusive instruction for 16 bit values.
@@ -1586,7 +1520,6 @@ __STATIC_FORCEINLINE uint32_t __STLEXH(uint16_t value, volatile uint16_t *ptr)
    __ASM volatile ("stlexh %0, %2, %1" : "=&r" (result), "=Q" (*ptr) : "r" ((uint32_t)value) );
    return(result);
 }
-
 
 /**
   \brief   Store-Release Exclusive (32 bit)
@@ -1608,7 +1541,6 @@ __STATIC_FORCEINLINE uint32_t __STLEX(uint32_t value, volatile uint32_t *ptr)
            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
 
 /*@}*/ /* end of group CMSIS_Core_InstructionInterface */
-
 
 /* ###################  Compiler specific Intrinsics  ########################### */
 /** \defgroup CMSIS_SIMD_intrinsics CMSIS SIMD Intrinsics
@@ -1666,7 +1598,6 @@ __STATIC_FORCEINLINE uint32_t __UHADD8(uint32_t op1, uint32_t op2)
   return(result);
 }
 
-
 __STATIC_FORCEINLINE uint32_t __SSUB8(uint32_t op1, uint32_t op2)
 {
   uint32_t result;
@@ -1714,7 +1645,6 @@ __STATIC_FORCEINLINE uint32_t __UHSUB8(uint32_t op1, uint32_t op2)
   __ASM volatile ("uhsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
   return(result);
 }
-
 
 __STATIC_FORCEINLINE uint32_t __SADD16(uint32_t op1, uint32_t op2)
 {
@@ -2162,7 +2092,8 @@ __STATIC_FORCEINLINE int32_t __SMMLA (int32_t op1, int32_t op2, int32_t op3)
 #endif /* (__ARM_FEATURE_DSP == 1) */
 /*@} end of group CMSIS_SIMD_intrinsics */
 
-
 #pragma GCC diagnostic pop
 
 #endif /* __CMSIS_GCC_H */
+
+/** @} */

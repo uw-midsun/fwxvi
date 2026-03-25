@@ -1,113 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_nand.c
-  * @author  MCD Application Team
-  * @brief   NAND HAL module driver.
-  *          This file provides a generic firmware to drive NAND memories mounted
-  *          as external device.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                         ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      This driver is a generic layered driver which contains a set of APIs used to
-      control NAND flash memories. It uses the FMC layer functions to interface
-      with NAND devices. This driver is used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_nand.c
+ *
+ * @brief   NAND HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (+) NAND flash memory configuration sequence using the function HAL_NAND_Init()
-          with control and timing parameters for both common and attribute spaces.
+/* Standard library Headers */
 
-      (+) Read NAND flash memory maker and device IDs using the function
-          HAL_NAND_Read_ID(). The read information is stored in the NAND_ID_TypeDef
-          structure declared by the function caller.
+/* Inter-component Headers */
 
-      (+) Access NAND flash memory by read/write operations using the functions
-          HAL_NAND_Read_Page_8b()/HAL_NAND_Read_SpareArea_8b(),
-          HAL_NAND_Write_Page_8b()/HAL_NAND_Write_SpareArea_8b(),
-          HAL_NAND_Read_Page_16b()/HAL_NAND_Read_SpareArea_16b(),
-          HAL_NAND_Write_Page_16b()/HAL_NAND_Write_SpareArea_16b()
-          to read/write page(s)/spare area(s). These functions use specific device
-          information (Block, page size..) predefined by the user in the NAND_DeviceConfigTypeDef
-          structure. The read/write address information is contained by the Nand_Address_Typedef
-          structure passed as parameter.
-
-      (+) Perform NAND flash Reset chip operation using the function HAL_NAND_Reset().
-
-      (+) Perform NAND flash erase block operation using the function HAL_NAND_Erase_Block().
-          The erase block address information is contained in the Nand_Address_Typedef
-          structure passed as parameter.
-
-      (+) Read the NAND flash status operation using the function HAL_NAND_Read_Status().
-
-      (+) You can also control the NAND device by calling the control APIs HAL_NAND_ECC_Enable()/
-          HAL_NAND_ECC_Disable() to respectively enable/disable the ECC code correction
-          feature or the function HAL_NAND_GetECC() to get the ECC correction code.
-
-      (+) You can monitor the NAND device HAL state by calling the function
-          HAL_NAND_GetState()
-
-    [..]
-      (@) This driver is a set of generic APIs which handle standard NAND flash operations.
-          If a NAND flash device contains different operations and/or implementations,
-          it should be implemented separately.
-
-    *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_NAND_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
-
-      Use Functions HAL_NAND_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) MspInitCallback    : NAND MspInit.
-        (+) MspDeInitCallback  : NAND MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
-
-      Use function HAL_NAND_UnRegisterCallback() to reset a callback to the default
-      weak (overridden) function. It allows to reset following callbacks:
-        (+) MspInitCallback    : NAND MspInit.
-        (+) MspDeInitCallback  : NAND MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
-
-      By default, after the HAL_NAND_Init and if the state is HAL_NAND_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (overridden) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (overridden) functions in the HAL_NAND_Init
-      and  HAL_NAND_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the HAL_NAND_Init and HAL_NAND_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using HAL_NAND_RegisterCallback before calling HAL_NAND_DeInit
-      or HAL_NAND_Init function.
-
-      When The compilation define USE_HAL_NAND_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (overridden) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(FMC_BANK3)
 
@@ -267,7 +174,6 @@ __weak void HAL_NAND_MspDeInit(NAND_HandleTypeDef *hnand)
             the HAL_NAND_MspDeInit could be implemented in the user file
    */
 }
-
 
 /**
   * @brief  This function handles NAND device interrupt request.
@@ -606,7 +512,6 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
 
       *(__IO uint8_t *)((uint32_t)(deviceaddress | CMD_AREA))  = NAND_CMD_AREA_TRUE1;
       __DSB();
-
 
       if (hnand->Config.ExtraCommandEnable == ENABLE)
       {
@@ -2042,7 +1947,6 @@ HAL_StatusTypeDef HAL_NAND_UnRegisterCallback(NAND_HandleTypeDef *hnand, HAL_NAN
   * @{
   */
 
-
 /**
   * @brief  Enables dynamically NAND ECC feature.
   * @param  hnand pointer to a NAND_HandleTypeDef structure that contains
@@ -2146,7 +2050,6 @@ HAL_StatusTypeDef  HAL_NAND_GetECC(NAND_HandleTypeDef *hnand, uint32_t *ECCval, 
 /**
   * @}
   */
-
 
 /** @defgroup NAND_Exported_Functions_Group4 Peripheral State functions
   *  @brief   Peripheral State functions

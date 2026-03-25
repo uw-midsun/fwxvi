@@ -1,61 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pcd.c
-  * @author  MCD Application Team
-  * @brief   PCD HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      The PCD HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pcd.c
+ *
+ * @brief   PCD HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-     (#) Declare a PCD_HandleTypeDef handle structure, for example:
-         PCD_HandleTypeDef  hpcd;
+/* Standard library Headers */
 
-     (#) Fill parameters of Init structure in HCD handle
+/* Inter-component Headers */
 
-     (#) Call HAL_PCD_Init() API to initialize the PCD peripheral (Core, Device core, ...)
-
-     (#) Initialize the PCD low level resources through the HAL_PCD_MspInit() API:
-         (##) Enable the PCD/USB Low Level interface clock using
-              (+++) __HAL_RCC_USB_CLK_ENABLE(); For USB Device FS peripheral
-              (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-
-         (##) Initialize the related GPIO clocks
-         (##) Configure PCD pin-out
-         (##) Configure PCD NVIC interrupt
-
-     (#)Associate the Upper USB device stack to the HAL PCD Driver:
-         (##) hpcd.pData = pdev;
-
-     (#)Enable PCD transmission and reception:
-         (##) HAL_PCD_Start();
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -1989,7 +1948,6 @@ HAL_StatusTypeDef HAL_PCD_EP_Close(PCD_HandleTypeDef *hpcd, uint8_t ep_addr)
   return HAL_OK;
 }
 
-
 /**
   * @brief  Receive an amount of data.
   * @param  hpcd PCD handle
@@ -2305,7 +2263,6 @@ static HAL_StatusTypeDef PCD_WriteEmptyTxFifo(PCD_HandleTypeDef *hpcd, uint32_t 
   return HAL_OK;
 }
 
-
 /**
   * @brief  process EP OUT transfer complete interrupt.
   * @param  hpcd PCD handle
@@ -2351,7 +2308,6 @@ static HAL_StatusTypeDef PCD_EP_OutXfrComplete_int(PCD_HandleTypeDef *hpcd, uint
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  process EP OUT setup packet received interrupt.
@@ -2658,7 +2614,6 @@ static HAL_StatusTypeDef PCD_EP_ISR_Handler(PCD_HandleTypeDef *hpcd)
   return HAL_OK;
 }
 
-
 #if (USE_USB_DOUBLE_BUFFER == 1U)
 /**
   * @brief  Manage double buffer bulk out transaction from ISR
@@ -2739,7 +2694,6 @@ static uint16_t HAL_PCD_EP_DB_Receive(PCD_HandleTypeDef *hpcd,
 
   return count;
 }
-
 
 /**
   * @brief  Manage double buffer bulk IN transaction from ISR

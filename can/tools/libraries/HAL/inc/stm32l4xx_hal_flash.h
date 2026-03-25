@@ -1,19 +1,22 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_flash.h
-  * @author  MCD Application Team
-  * @brief   Header file of FLASH HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_flash.h
+ *
+ * @brief   Header file of FLASH HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_flash_ex.h"
+#include "stm32l4xx_hal_flash_ramfunc.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_FLASH_H
@@ -24,7 +27,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -191,7 +193,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup FLASH_Type_Program FLASH Program Type
   * @{
@@ -768,8 +769,6 @@ typedef struct
   */
 
 /* Include FLASH HAL Extended module */
-#include "stm32l4xx_hal_flash_ex.h"
-#include "stm32l4xx_hal_flash_ramfunc.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup FLASH_Exported_Functions

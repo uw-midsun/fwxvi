@@ -1,80 +1,18 @@
-/**
-  ******************************************************************************
-  * @file    system_stm32l4xx.c
-  * @author  MCD Application Team
-  * @brief   CMSIS Cortex-M4 Device Peripheral Access Layer System Source File
-  *
-  *   This file provides two functions and one global variable to be called from
-  *   user application:
-  *      - SystemInit(): This function is called at startup just after reset and
-  *                      before branch to main program. This call is made inside
-  *                      the "startup_stm32l4xx.s" file.
-  *
-  *      - SystemCoreClock variable: Contains the core clock (HCLK), it can be used
-  *                                  by the user application to setup the SysTick
-  *                                  timer or configure other parameters.
-  *
-  *      - SystemCoreClockUpdate(): Updates the variable SystemCoreClock and must
-  *                                 be called whenever the core clock is changed
-  *                                 during program execution.
-  *
-  *   After each device reset the MSI (4 MHz) is used as system clock source.
-  *   Then SystemInit() function is called, in "startup_stm32l4xx.s" file, to
-  *   configure the system clock before to branch to main program.
-  *
-  *   This file configures the system clock as follows:
-  *=============================================================================
-  *-----------------------------------------------------------------------------
-  *        System Clock source                    | MSI
-  *-----------------------------------------------------------------------------
-  *        SYSCLK(Hz)                             | 4000000
-  *-----------------------------------------------------------------------------
-  *        HCLK(Hz)                               | 4000000
-  *-----------------------------------------------------------------------------
-  *        AHB Prescaler                          | 1
-  *-----------------------------------------------------------------------------
-  *        APB1 Prescaler                         | 1
-  *-----------------------------------------------------------------------------
-  *        APB2 Prescaler                         | 1
-  *-----------------------------------------------------------------------------
-  *        PLL_M                                  | 1
-  *-----------------------------------------------------------------------------
-  *        PLL_N                                  | 8
-  *-----------------------------------------------------------------------------
-  *        PLL_P                                  | 7
-  *-----------------------------------------------------------------------------
-  *        PLL_Q                                  | 2
-  *-----------------------------------------------------------------------------
-  *        PLL_R                                  | 2
-  *-----------------------------------------------------------------------------
-  *        PLLSAI1_P                              | NA
-  *-----------------------------------------------------------------------------
-  *        PLLSAI1_Q                              | NA
-  *-----------------------------------------------------------------------------
-  *        PLLSAI1_R                              | NA
-  *-----------------------------------------------------------------------------
-  *        PLLSAI2_P                              | NA
-  *-----------------------------------------------------------------------------
-  *        PLLSAI2_Q                              | NA
-  *-----------------------------------------------------------------------------
-  *        PLLSAI2_R                              | NA
-  *-----------------------------------------------------------------------------
-  *        Require 48MHz for USB OTG FS,          | Disabled
-  *        SDIO and RNG clock                     |
-  *-----------------------------------------------------------------------------
-  *=============================================================================
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    system_stm32l4xx.c
+ *
+ * @brief   CMSIS Cortex-M4 Device Peripheral Access Layer System Source File
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /** @addtogroup CMSIS
   * @{
@@ -87,8 +25,6 @@
 /** @addtogroup STM32L4xx_System_Private_Includes
   * @{
   */
-
-#include "stm32l4xx.h"
 
 /**
   * @}
@@ -315,7 +251,6 @@ void SystemCoreClockUpdate(void)
   /* HCLK clock frequency */
   SystemCoreClock >>= tmp;
 }
-
 
 /**
   * @}

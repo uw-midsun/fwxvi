@@ -9,10 +9,7 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
-#include <map>
-
-/* Qt library headers */
+/* Standard library Headers */
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
@@ -20,6 +17,15 @@
 #include <QStringList>
 #include <QVariant>
 #include <QWidget>
+#include <map>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/* Standard library headers */
+
+/* Qt library headers */
 
 /* Inter-component headers */
 

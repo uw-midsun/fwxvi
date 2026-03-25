@@ -1,28 +1,25 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_tim.c
-  * @author  MCD Application Team
-  * @brief   TIM LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_tim.c
+ *
+ * @brief   TIM LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32_assert.h"
+#include "stm32l4xx_ll_bus.h"
+#include "stm32l4xx_ll_tim.h"
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_tim.h"
-#include "stm32l4xx_ll_bus.h"
 
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
 #else
 #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */
@@ -177,7 +174,6 @@
 /**
   * @}
   */
-
 
 /* Private function prototypes -----------------------------------------------*/
 /** @defgroup TIM_LL_Private_Functions TIM Private Functions
@@ -1333,7 +1329,6 @@ static ErrorStatus IC4Config(TIM_TypeDef *TIMx, const LL_TIM_IC_InitTypeDef *TIM
 
   return SUCCESS;
 }
-
 
 /**
   * @}

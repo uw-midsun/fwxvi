@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_tsc.h
-  * @author  MCD Application Team
-  * @brief   Header file of TSC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_tsc.h
+ *
+ * @brief   Header file of TSC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_TSC_H
@@ -25,8 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
-
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -755,7 +753,6 @@ when the selected signal is detected on the SYNC input pin) */
 
 #define IS_TSC_GROUP_INDEX(__VALUE__)   (((__VALUE__) == 0UL)\
                                          || (((__VALUE__) > 0UL) && ((__VALUE__) < (uint32_t)TSC_NB_OF_GROUPS)))
-
 
 #define IS_TSC_GROUP(__VALUE__)        ((((__VALUE__) & TSC_GROUPX_NOT_SUPPORTED) != TSC_GROUPX_NOT_SUPPORTED) && \
                                         (((__VALUE__) == 0UL)                               ||\

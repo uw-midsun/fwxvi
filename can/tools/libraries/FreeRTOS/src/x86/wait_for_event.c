@@ -1,3 +1,21 @@
+/************************************************************************************************
+ * @file    wait_for_event.c
+ *
+ * @brief   Wait For Event
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+#include <pthread.h>
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "wait_for_event.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
@@ -25,12 +43,6 @@
  * https://github.com/FreeRTOS
  *
  */
-
-#include <pthread.h>
-#include <stdlib.h>
-#include <errno.h>
-
-#include "wait_for_event.h"
 
 struct event
 {

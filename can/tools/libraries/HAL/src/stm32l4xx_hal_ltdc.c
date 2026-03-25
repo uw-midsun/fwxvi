@@ -1,166 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_ltdc.c
-  * @author  MCD Application Team
-  * @brief   LTDC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the LTDC peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Errors functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-     [..]
-     The LTDC HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_ltdc.c
+ *
+ * @brief   LTDC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-     (#) Declare a LTDC_HandleTypeDef handle structure, for example: LTDC_HandleTypeDef  hltdc;
+/* Standard library Headers */
 
-     (#) Initialize the LTDC low level resources by implementing the HAL_LTDC_MspInit() API:
-         (##) Enable the LTDC interface clock
-         (##) NVIC configuration if you need to use interrupt process
-             (+++) Configure the LTDC interrupt priority
-             (+++) Enable the NVIC LTDC IRQ Channel
+/* Inter-component Headers */
 
-     (#) Initialize the required configuration through the following parameters:
-         the LTDC timing, the horizontal and vertical polarity, the pixel clock polarity,
-         Data Enable polarity and the LTDC background color value using HAL_LTDC_Init() function
-
-     *** Configuration ***
-     =========================
-     [..]
-     (#) Program the required configuration through the following parameters:
-         the pixel format, the blending factors, input alpha value, the window size
-         and the image size using HAL_LTDC_ConfigLayer() function for foreground
-         or/and background layer.
-
-     (#) Optionally, configure and enable the CLUT using HAL_LTDC_ConfigCLUT() and
-         HAL_LTDC_EnableCLUT functions.
-
-     (#) Optionally, enable the Dither using HAL_LTDC_EnableDither().
-
-     (#) Optionally, configure and enable the Color keying using HAL_LTDC_ConfigColorKeying()
-         and HAL_LTDC_EnableColorKeying functions.
-
-     (#) Optionally, configure LineInterrupt using HAL_LTDC_ProgramLineEvent()
-         function
-
-     (#) If needed, reconfigure and change the pixel format value, the alpha value
-         value, the window size, the window position and the layer start address
-         for foreground or/and background layer using respectively the following
-         functions: HAL_LTDC_SetPixelFormat(), HAL_LTDC_SetAlpha(), HAL_LTDC_SetWindowSize(),
-         HAL_LTDC_SetWindowPosition() and HAL_LTDC_SetAddress().
-
-     (#) Variant functions with _NoReload suffix allows to set the LTDC configuration/settings without immediate reload.
-         This is useful in case when the program requires to modify serval LTDC settings (on one or both layers)
-         then applying(reload) these settings in one shot by calling the function HAL_LTDC_Reload().
-
-         After calling the _NoReload functions to set different color/format/layer settings,
-         the program shall call the function HAL_LTDC_Reload() to apply(reload) these settings.
-         Function HAL_LTDC_Reload() can be called with the parameter ReloadType set to LTDC_RELOAD_IMMEDIATE if
-         an immediate reload is required.
-         Function HAL_LTDC_Reload() can be called with the parameter ReloadType set to LTDC_RELOAD_VERTICAL_BLANKING if
-         the reload should be done in the next vertical blanking period,
-         this option allows to avoid display flicker by applying the new settings during the vertical blanking period.
-
-
-     (#) To control LTDC state you can use the following function: HAL_LTDC_GetState()
-
-     *** LTDC HAL driver macros list ***
-     =============================================
-     [..]
-       Below the list of most used macros in LTDC HAL driver.
-
-      (+) __HAL_LTDC_ENABLE: Enable the LTDC.
-      (+) __HAL_LTDC_DISABLE: Disable the LTDC.
-      (+) __HAL_LTDC_LAYER_ENABLE: Enable an LTDC Layer.
-      (+) __HAL_LTDC_LAYER_DISABLE: Disable an LTDC Layer.
-      (+) __HAL_LTDC_RELOAD_IMMEDIATE_CONFIG: Reload  Layer Configuration.
-      (+) __HAL_LTDC_GET_FLAG: Get the LTDC pending flags.
-      (+) __HAL_LTDC_CLEAR_FLAG: Clear the LTDC pending flags.
-      (+) __HAL_LTDC_ENABLE_IT: Enable the specified LTDC interrupts.
-      (+) __HAL_LTDC_DISABLE_IT: Disable the specified LTDC interrupts.
-      (+) __HAL_LTDC_GET_IT_SOURCE: Check whether the specified LTDC interrupt has occurred or not.
-
-     [..]
-       (@) You can refer to the LTDC HAL driver header file for more useful macros
-
-
-     *** Callback registration ***
-     =============================================
-     [..]
-     The compilation define  USE_HAL_LTDC_REGISTER_CALLBACKS when set to 1
-     allows the user to configure dynamically the driver callbacks.
-     Use function HAL_LTDC_RegisterCallback() to register a callback.
-
-    [..]
-    Function HAL_LTDC_RegisterCallback() allows to register following callbacks:
-      (+) LineEventCallback   : LTDC Line Event Callback.
-      (+) ReloadEventCallback : LTDC Reload Event Callback.
-      (+) ErrorCallback       : LTDC Error Callback
-      (+) MspInitCallback     : LTDC MspInit.
-      (+) MspDeInitCallback   : LTDC MspDeInit.
-    [..]
-    This function takes as parameters the HAL peripheral handle, the callback ID
-    and a pointer to the user callback function.
-
-    [..]
-    Use function HAL_LTDC_UnRegisterCallback() to reset a callback to the default
-    weak function.
-    HAL_LTDC_UnRegisterCallback() takes as parameters the HAL peripheral handle
-    and the callback ID.
-    [..]
-    This function allows to reset following callbacks:
-      (+) LineEventCallback   : LTDC Line Event Callback
-      (+) ReloadEventCallback : LTDC Reload Event Callback
-      (+) ErrorCallback       : LTDC Error Callback
-      (+) MspInitCallback     : LTDC MspInit
-      (+) MspDeInitCallback   : LTDC MspDeInit.
-
-    [..]
-    By default, after the HAL_LTDC_Init and when the state is HAL_LTDC_STATE_RESET
-    all callbacks are set to the corresponding weak functions:
-    examples HAL_LTDC_LineEventCallback(), HAL_LTDC_ErrorCallback().
-    Exception done for MspInit and MspDeInit functions that are
-    reset to the legacy weak (surcharged) functions in the HAL_LTDC_Init() and HAL_LTDC_DeInit()
-    only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_LTDC_Init() and HAL_LTDC_DeInit()
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    [..]
-    Callbacks can be registered/unregistered in HAL_LTDC_STATE_READY state only.
-    Exception done MspInit/MspDeInit that can be registered/unregistered
-    in HAL_LTDC_STATE_READY or HAL_LTDC_STATE_RESET state,
-    thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_LTDC_RegisterCallback() before calling HAL_LTDC_DeInit()
-    or HAL_LTDC_Init() function.
-
-    [..]
-    When the compilation define USE_HAL_LTDC_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registration feature is not available and all callbacks
-    are set to the corresponding weak functions.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -174,7 +28,6 @@
   * @brief LTDC HAL module driver
   * @{
   */
-
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -1895,7 +1748,6 @@ HAL_StatusTypeDef HAL_LTDC_SetPitch_NoReload(LTDC_HandleTypeDef *hltdc, uint32_t
   return HAL_OK;
 }
 
-
 /**
   * @brief  Configure the color keying without reloading.
   *         Variant of the function HAL_LTDC_ConfigColorKeying without immediate reload.
@@ -2199,7 +2051,6 @@ static void LTDC_SetConfig(LTDC_HandleTypeDef *hltdc, LTDC_LayerCfgTypeDef *pLay
 /**
   * @}
   */
-
 
 /**
   * @}

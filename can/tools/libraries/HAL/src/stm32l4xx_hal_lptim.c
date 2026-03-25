@@ -1,163 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_lptim.c
-  * @author  MCD Application Team
-  * @brief   LPTIM HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Low Power Timer (LPTIM) peripheral:
-  *           + Initialization and de-initialization functions.
-  *           + Start/Stop operation functions in polling mode.
-  *           + Start/Stop operation functions in interrupt mode.
-  *           + Reading operation functions.
-  *           + Peripheral State functions.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      The LPTIM HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_lptim.c
+ *
+ * @brief   LPTIM HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#)Initialize the LPTIM low level resources by implementing the
-        HAL_LPTIM_MspInit():
-         (++) Enable the LPTIM interface clock using __HAL_RCC_LPTIMx_CLK_ENABLE().
-         (++) In case of using interrupts (e.g. HAL_LPTIM_PWM_Start_IT()):
-             (+++) Configure the LPTIM interrupt priority using HAL_NVIC_SetPriority().
-             (+++) Enable the LPTIM IRQ handler using HAL_NVIC_EnableIRQ().
-             (+++) In LPTIM IRQ handler, call HAL_LPTIM_IRQHandler().
+/* Standard library Headers */
 
-      (#)Initialize the LPTIM HAL using HAL_LPTIM_Init(). This function
-         configures mainly:
-         (++) The instance: LPTIM1 or LPTIM2.
-         (++) Clock: the counter clock.
-             (+++) Source   : it can be either the ULPTIM input (IN1) or one of
-                              the internal clock; (APB, LSE, LSI or MSI).
-             (+++) Prescaler: select the clock divider.
-         (++)  UltraLowPowerClock : To be used only if the ULPTIM is selected
-               as counter clock source.
-             (+++) Polarity:   polarity of the active edge for the counter unit
-                               if the ULPTIM input is selected.
-             (+++) SampleTime: clock sampling time to configure the clock glitch
-                               filter.
-         (++) Trigger: How the counter start.
-             (+++) Source: trigger can be software or one of the hardware triggers.
-             (+++) ActiveEdge : only for hardware trigger.
-             (+++) SampleTime : trigger sampling time to configure the trigger
-                                glitch filter.
-         (++) OutputPolarity : 2 opposite polarities are possible.
-         (++) UpdateMode: specifies whether the update of the autoreload and
-              the compare values is done immediately or after the end of current
-              period.
-         (++) Input1Source: Source selected for input1 (GPIO or comparator output).
-         (++) Input2Source: Source selected for input2 (GPIO or comparator output).
-              Input2 is used only for encoder feature so is used only for LPTIM1 instance.
+/* Inter-component Headers */
 
-      (#)Six modes are available:
-
-         (++) PWM Mode: To generate a PWM signal with specified period and pulse,
-         call HAL_LPTIM_PWM_Start() or HAL_LPTIM_PWM_Start_IT() for interruption
-         mode.
-
-         (++) One Pulse Mode: To generate pulse with specified width in response
-         to a stimulus, call HAL_LPTIM_OnePulse_Start() or
-         HAL_LPTIM_OnePulse_Start_IT() for interruption mode.
-
-         (++) Set once Mode: In this mode, the output changes the level (from
-         low level to high level if the output polarity is configured high, else
-         the opposite) when a compare match occurs. To start this mode, call
-         HAL_LPTIM_SetOnce_Start() or HAL_LPTIM_SetOnce_Start_IT() for
-         interruption mode.
-
-         (++) Encoder Mode: To use the encoder interface call
-         HAL_LPTIM_Encoder_Start() or HAL_LPTIM_Encoder_Start_IT() for
-         interruption mode. Only available for LPTIM1 instance.
-
-         (++) Time out Mode: an active edge on one selected trigger input rests
-         the counter. The first trigger event will start the timer, any
-         successive trigger event will reset the counter and the timer will
-         restart. To start this mode call HAL_LPTIM_TimeOut_Start_IT() or
-         HAL_LPTIM_TimeOut_Start_IT() for interruption mode.
-
-         (++) Counter Mode: counter can be used to count external events on
-         the LPTIM Input1 or it can be used to count internal clock cycles.
-         To start this mode, call HAL_LPTIM_Counter_Start() or
-         HAL_LPTIM_Counter_Start_IT() for interruption mode.
-
-
-      (#) User can stop any process by calling the corresponding API:
-          HAL_LPTIM_Xxx_Stop() or HAL_LPTIM_Xxx_Stop_IT() if the process is
-          already started in interruption mode.
-
-      (#) De-initialize the LPTIM peripheral using HAL_LPTIM_DeInit().
-
-    *** Callback registration ***
-  =============================================
-  [..]
-  The compilation define  USE_HAL_LPTIM_REGISTER_CALLBACKS when set to 1
-  allows the user to configure dynamically the driver callbacks.
-  [..]
-  Use Function HAL_LPTIM_RegisterCallback() to register a callback.
-  HAL_LPTIM_RegisterCallback() takes as parameters the HAL peripheral handle,
-  the Callback ID and a pointer to the user callback function.
-  [..]
-  Use function HAL_LPTIM_UnRegisterCallback() to reset a callback to the
-  default weak function.
-  HAL_LPTIM_UnRegisterCallback takes as parameters the HAL peripheral handle,
-  and the Callback ID.
-  [..]
-  These functions allow to register/unregister following callbacks:
-
-    (+) MspInitCallback         : LPTIM Base Msp Init Callback.
-    (+) MspDeInitCallback       : LPTIM Base Msp DeInit Callback.
-    (+) CompareMatchCallback    : Compare match Callback.
-    (+) AutoReloadMatchCallback : Auto-reload match Callback.
-    (+) TriggerCallback         : External trigger event detection Callback.
-    (+) CompareWriteCallback    : Compare register write complete Callback.
-    (+) AutoReloadWriteCallback : Auto-reload register write complete Callback.
-    (+) DirectionUpCallback     : Up-counting direction change Callback.
-    (+) DirectionDownCallback   : Down-counting direction change Callback.
-
-  [..]
-  By default, after the Init and when the state is HAL_LPTIM_STATE_RESET
-  all interrupt callbacks are set to the corresponding weak functions:
-  examples HAL_LPTIM_TriggerCallback(), HAL_LPTIM_CompareMatchCallback().
-
-  [..]
-  Exception done for MspInit and MspDeInit functions that are reset to the legacy weak
-  functionalities in the Init/DeInit only when these callbacks are null
-  (not registered beforehand). If not, MspInit or MspDeInit are not null, the Init/DeInit
-  keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-  [..]
-  Callbacks can be registered/unregistered in HAL_LPTIM_STATE_READY state only.
-  Exception done MspInit/MspDeInit that can be registered/unregistered
-  in HAL_LPTIM_STATE_READY or HAL_LPTIM_STATE_RESET state,
-  thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-  In that case first register the MspInit/MspDeInit user callbacks
-  using HAL_LPTIM_RegisterCallback() before calling DeInit or Init function.
-
-  [..]
-  When The compilation define USE_HAL_LPTIM_REGISTER_CALLBACKS is set to 0 or
-  not defined, the callback registration feature is not available and all callbacks
-  are set to the corresponding weak functions.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -503,7 +360,6 @@ __weak void HAL_LPTIM_MspDeInit(LPTIM_HandleTypeDef *hlptim)
       (+) Stop the Timeout mode.
       (+) Start the Counter mode.
       (+) Stop the Counter mode.
-
 
 @endverbatim
   * @{
@@ -944,7 +800,6 @@ HAL_StatusTypeDef HAL_LPTIM_OnePulse_Stop_IT(LPTIM_HandleTypeDef *hlptim)
 
   /* Set the LPTIM state */
   hlptim->State = HAL_LPTIM_STATE_BUSY;
-
 
   /* Disable the Peripheral */
   __HAL_LPTIM_DISABLE(hlptim);
@@ -1599,7 +1454,6 @@ HAL_StatusTypeDef HAL_LPTIM_TimeOut_Stop_IT(LPTIM_HandleTypeDef *hlptim)
   /* Check the parameters */
   assert_param(IS_LPTIM_INSTANCE(hlptim->Instance));
 
-
   /* Disable EXTI Line interrupt on the LPTIM Wake-up Timer */
   __HAL_LPTIM_WAKEUPTIMER_EXTI_DISABLE_IT(hlptim->Instance);
 
@@ -1794,7 +1648,6 @@ HAL_StatusTypeDef HAL_LPTIM_Counter_Stop_IT(LPTIM_HandleTypeDef *hlptim)
 {
   /* Check the parameters */
   assert_param(IS_LPTIM_INSTANCE(hlptim->Instance));
-
 
   /* Disable EXTI Line interrupt on the LPTIM Wake-up Timer */
   __HAL_LPTIM_WAKEUPTIMER_EXTI_DISABLE_IT(hlptim->Instance);
@@ -2482,7 +2335,6 @@ HAL_LPTIM_StateTypeDef HAL_LPTIM_GetState(const LPTIM_HandleTypeDef *hlptim)
 /**
   * @}
   */
-
 
 /**
   * @}

@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_usb.h
-  * @author  MCD Application Team
-  * @brief   Header file of USB Low Layer HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_usb.h
+ *
+ * @brief   Header file of USB Low Layer HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_USB_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined (USB) || defined (USB_OTG_FS)
 /** @addtogroup STM32L4xx_HAL_Driver
@@ -85,7 +84,6 @@ typedef enum
   HC_BBLERR,
   HC_DATATGLERR
 } USB_HCStateTypeDef;
-
 
 /**
   * @brief  USB Instance Initialization Structure definition
@@ -471,7 +469,6 @@ typedef USB_HCTypeDef       USB_OTG_HCTypeDef;
                                                         + USB_OTG_HOST_CHANNEL_BASE\
                                                         + ((i) * USB_OTG_HOST_CHANNEL_SIZE)))
 
-
 #define EP_ADDR_MSK                            0xFU
 #endif /* defined (USB_OTG_FS) */
 
@@ -636,6 +633,5 @@ void              USB_ReadPMA(USB_TypeDef const *USBx, uint8_t *pbUsrBuf,
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
 
 #endif /* STM32L4xx_LL_USB_H */

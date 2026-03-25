@@ -1,25 +1,23 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_rcc.c
-  * @author  MCD Application Team
-  * @brief   RCC LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_rcc.c
+ *
+ * @brief   RCC LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+  #include "stm32_assert.h"
+#include "stm32l4xx_ll_rcc.h"
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_rcc.h"
 #ifdef  USE_FULL_ASSERT
-  #include "stm32_assert.h"
 #else
   #define assert_param(expr) ((void)0U)
 #endif
@@ -163,7 +161,6 @@ static uint32_t RCC_PLLSAI2_GetFreqDomain_DSI(void);
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup RCC_LL_Exported_Functions
@@ -681,7 +678,6 @@ uint32_t LL_RCC_GetI2CClockFreq(uint32_t I2CxSource)
   return i2c_frequency;
 }
 
-
 /**
   * @brief  Return LPUARTx clock frequency
   * @param  LPUARTxSource This parameter can be one of the following values:
@@ -1119,7 +1115,6 @@ uint32_t LL_RCC_GetRNGClockFreq(uint32_t RNGxSource)
       }
       break;
 
-
 #if defined(RCC_HSI48_SUPPORT)
     case LL_RCC_RNG_CLKSOURCE_HSI48:      /* HSI48 used as RNG clock source */
       if (LL_RCC_HSI48_IsReady() != 0U)
@@ -1138,7 +1133,6 @@ uint32_t LL_RCC_GetRNGClockFreq(uint32_t RNGxSource)
 
   return rng_frequency;
 }
-
 
 #if   defined(USB_OTG_FS)||defined(USB)
 /**

@@ -1,36 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_bus.h
-  * @author  MCD Application Team
-  * @brief   Header file of BUS LL module.
+#pragma once
 
-  @verbatim
-                      ##### RCC Limitations #####
-  ==============================================================================
-    [..]
-      A delay between an RCC peripheral clock enable and the effective peripheral
-      enabling should be taken into account in order to manage the peripheral read/write
-      from/to registers.
-      (+) This delay depends on the peripheral mapping.
-        (++) AHB & APB peripherals, 1 dummy read is necessary
+/************************************************************************************************
+ * @file    stm32l4xx_ll_bus.h
+ *
+ * @brief   Header file of BUS LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    [..]
-      Workarounds:
-      (#) For AHB & APB peripherals, a dummy read to the peripheral register has been
-          inserted in each LL_{BUS}_GRP{x}_EnableClock() function.
+/* Standard library Headers */
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_BUS_H
@@ -41,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -222,7 +205,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup BUS_LL_EC_APB1_GRP2_PERIPH  APB1 GRP2 PERIPH
   * @{
@@ -1930,7 +1912,6 @@ __STATIC_INLINE void LL_APB2_GRP1_DisableClockStopSleep(uint32_t Periphs)
 /**
   * @}
   */
-
 
 /**
   * @}

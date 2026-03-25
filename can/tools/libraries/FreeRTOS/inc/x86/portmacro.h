@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    portmacro.h
+ *
+ * @brief   Portmacro
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <limits.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup portmacro
+ * @brief    portmacro Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
  * Copyright 2020 Cambridge Consultants Ltd.
@@ -32,8 +56,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <limits.h>
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -134,3 +156,5 @@ extern unsigned long ulPortGetRunTime(void);
 #endif
 
 #endif /* PORTMACRO_H */
+
+/** @} */

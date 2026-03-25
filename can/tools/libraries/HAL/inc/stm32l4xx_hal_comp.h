@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_comp.h
-  * @author  MCD Application Team
-  * @brief   Header file of COMP HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_comp.h
+ *
+ * @brief   Header file of COMP HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_ll_exti.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_COMP_H
@@ -25,8 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
-#include "stm32l4xx_ll_exti.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -154,7 +153,6 @@ typedef  void (*pCOMP_CallbackTypeDef)(COMP_HandleTypeDef *hcomp); /*!< pointer 
   * @}
   */
 
-
 #if defined(COMP2)
 /** @defgroup COMP_WindowMode COMP Window Mode
   * @{
@@ -172,8 +170,6 @@ typedef  void (*pCOMP_CallbackTypeDef)(COMP_HandleTypeDef *hcomp); /*!< pointer 
   * @}
   */
 #endif /* COMP2 */
-
-
 
 /** @defgroup COMP_PowerMode COMP power mode
   * @{
@@ -538,7 +534,6 @@ typedef  void (*pCOMP_CallbackTypeDef)(COMP_HandleTypeDef *hcomp); /*!< pointer 
   * @}
   */
 
-
 /* Private types -------------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /** @defgroup COMP_Private_Constants COMP Private Constants
@@ -744,7 +739,6 @@ typedef  void (*pCOMP_CallbackTypeDef)(COMP_HandleTypeDef *hcomp); /*!< pointer 
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup COMP_Exported_Functions

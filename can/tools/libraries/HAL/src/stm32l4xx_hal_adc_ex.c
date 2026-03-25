@@ -1,36 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_adc_ex.c
-  * @author  MCD Application Team
-  * @brief   This file provides firmware functions to manage the following
-  *          functionalities of the Analog to Digital Converter (ADC)
-  *          peripheral:
-  *           + Peripheral Control functions
-  *          Other functions (generic functions) are available in file
-  *          "stm32l4xx_hal_adc.c".
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  [..]
-  (@) Sections "ADC peripheral features" and "How to use this driver" are
-      available in file of generic functions "stm32l4xx_hal_adc.c".
-  [..]
-  @endverbatim
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_hal_adc_ex.c
+ *
+ * @brief   This file provides firmware functions to manage the following
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -1235,7 +1219,6 @@ __weak void HAL_ADCEx_LevelOutOfWindow3Callback(ADC_HandleTypeDef *hadc)
   */
 }
 
-
 /**
   * @brief  End Of Sampling callback in non-blocking mode.
   * @param hadc ADC handle
@@ -1306,7 +1289,6 @@ HAL_StatusTypeDef HAL_ADCEx_RegularStop(ADC_HandleTypeDef *hadc)
   /* Return function status */
   return tmp_hal_status;
 }
-
 
 /**
   * @brief  Stop ADC conversion of ADC groups regular and injected,
@@ -1476,7 +1458,6 @@ HAL_StatusTypeDef HAL_ADCEx_RegularMultiModeStop_DMA(ADC_HandleTypeDef *hadc)
 
   /* Process locked */
   __HAL_LOCK(hadc);
-
 
   /* 1. Stop potential multimode conversion on going, on regular groups */
   tmp_hal_status = ADC_ConversionStop(hadc, ADC_REGULAR_GROUP);
@@ -1679,7 +1660,6 @@ HAL_StatusTypeDef HAL_ADCEx_InjectedConfigChannel(ADC_HandleTypeDef *hadc,
     assert_param(IS_ADC_INJECTED_NB_CONV(pConfigInjected->InjectedNbrOfConversion));
     assert_param(IS_FUNCTIONAL_STATE(pConfigInjected->InjectedDiscontinuousConvMode));
   }
-
 
   /* if JOVSE is set, the value of the OFFSETy_EN bit in ADCx_OFRy register is
      ignored (considered as reset) */

@@ -1,53 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dac_ex.c
-  * @author  MCD Application Team
-  * @brief   DAC HAL module driver.
-  *          This file provides firmware functions to manage the extended
-  *          functionalities of the DAC peripheral.
-  *
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                      ##### How to use this driver #####
-  ==============================================================================
-    [..]
-     *** Dual mode IO operation ***
-     ==============================
-      (+) When Dual mode is enabled (i.e. DAC Channel1 and Channel2 are used simultaneously) :
-          Use HAL_DACEx_DualGetValue() to get digital data to be converted and use
-          HAL_DACEx_DualSetValue() to set digital value to converted simultaneously in
-          Channel 1 and Channel 2.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dac_ex.c
+ *
+ * @brief   DAC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-     *** Signal generation operation ***
-     ===================================
-      (+) Use HAL_DACEx_TriangleWaveGenerate() to generate Triangle signal.
-      (+) Use HAL_DACEx_NoiseWaveGenerate() to generate Noise signal.
+/* Standard library Headers */
 
-      (+) HAL_DACEx_SelfCalibrate to calibrate one DAC channel.
-      (+) HAL_DACEx_SetUserTrimming to set user trimming value.
-      (+) HAL_DACEx_GetTrimOffset to retrieve trimming value (factory setting
-          after reset, user setting if HAL_DACEx_SetUserTrimming have been used
-          at least one time after reset).
+/* Inter-component Headers */
 
- @endverbatim
-  ******************************************************************************
-  */
-
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{

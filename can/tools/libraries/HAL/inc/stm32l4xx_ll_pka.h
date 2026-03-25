@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_pka.h
-  * @author  MCD Application Team
-  * @brief   Header file of PKA LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_pka.h
+ *
+ * @brief   Header file of PKA LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_PKA_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -328,7 +327,6 @@ __STATIC_INLINE void LL_PKA_EnableIT_RAMERR(PKA_TypeDef *PKAx)
   SET_BIT(PKAx->CR, PKA_CR_RAMERRIE);
 }
 
-
 /**
   * @brief  Enable end of operation interrupt.
   * @rmtoll CR           PROCENDIE     LL_PKA_EnableIT_PROCEND
@@ -395,7 +393,6 @@ __STATIC_INLINE uint32_t LL_PKA_IsEnabledIT_RAMERR(const PKA_TypeDef *PKAx)
   return ((READ_BIT(PKAx->CR, PKA_CR_RAMERRIE) == (PKA_CR_RAMERRIE)) ? 1UL : 0UL);
 }
 
-
 /**
   * @brief  Check if end of operation interrupt is enabled.
   * @rmtoll CR           PROCENDIE     LL_PKA_IsEnabledIT_PROCEND
@@ -436,7 +433,6 @@ __STATIC_INLINE uint32_t LL_PKA_IsActiveFlag_RAMERR(const PKA_TypeDef *PKAx)
 {
   return ((READ_BIT(PKAx->SR, PKA_SR_RAMERRF) == (PKA_SR_RAMERRF)) ? 1UL : 0UL);
 }
-
 
 /**
   * @brief  Get PKA end of operation flag.
@@ -481,7 +477,6 @@ __STATIC_INLINE void LL_PKA_ClearFlag_RAMERR(PKA_TypeDef *PKAx)
 {
   SET_BIT(PKAx->CLRFR, PKA_CLRFR_RAMERRFC);
 }
-
 
 /**
   * @brief  Clear PKA end of operation flag.

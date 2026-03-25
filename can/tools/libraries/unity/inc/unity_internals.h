@@ -1,3 +1,38 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    unity_internals.h
+ *
+ * @brief   Unity Internals
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+      #include <time.h>
+      #include <time.h>
+    #include <stdio.h>
+    #include <stdnoreturn.h>
+  #include <stdio.h>
+#include <limits.h>
+#include <math.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "unity_config.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup unity_internals
+ * @brief    unity_internals Firmware
+ * @{
+ */
+
 /* ==========================================
     Unity Project - A Test Framework for C
     Copyright (c) 2007-21 Mike Karlesky, Mark VanderVoord, Greg Williams
@@ -8,23 +43,18 @@
 #define UNITY_INTERNALS_H
 
 #ifdef UNITY_INCLUDE_CONFIG_H
-#include "unity_config.h"
 #endif
 
 #ifndef UNITY_EXCLUDE_SETJMP_H
-#include <setjmp.h>
 #endif
 
 #ifndef UNITY_EXCLUDE_MATH_H
-#include <math.h>
 #endif
 
 #ifndef UNITY_EXCLUDE_STDDEF_H
-#include <stddef.h>
 #endif
 
 #ifdef UNITY_INCLUDE_PRINT_FORMATTED
-#include <stdarg.h>
 #endif
 
 /* Unity Attempts to Auto-Detect Integer Types
@@ -33,11 +63,9 @@
  * The user may override any of these derived constants:
  * UNITY_INT_WIDTH, UNITY_LONG_WIDTH, UNITY_POINTER_WIDTH */
 #ifndef UNITY_EXCLUDE_STDINT_H
-#include <stdint.h>
 #endif
 
 #ifndef UNITY_EXCLUDE_LIMITS_H
-#include <limits.h>
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -52,7 +80,6 @@
       #define UNITY_NORETURN [[ noreturn ]]
     #endif
   #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
-    #include <stdnoreturn.h>
     #define UNITY_NORETURN noreturn
   #endif
 #endif
@@ -274,7 +301,6 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
  *-------------------------------------------------------*/
 #ifndef UNITY_OUTPUT_CHAR
   /* Default to using putchar, which is defined in stdio.h */
-  #include <stdio.h>
   #define UNITY_OUTPUT_CHAR(a) (void)putchar(a)
 #else
   /* If defined as something else, make sure we declare it here so it's ready for use */
@@ -286,7 +312,6 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
 #ifndef UNITY_OUTPUT_FLUSH
   #ifdef UNITY_USE_FLUSH_STDOUT
     /* We want to use the stdout flush utility */
-    #include <stdio.h>
     #define UNITY_OUTPUT_FLUSH()    (void)fflush(stdout)
   #else
     /* We've specified nothing, therefore flush should just be ignored */
@@ -336,7 +361,6 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
         UnityPrint(" ms)"); \
         }
     #elif defined(_WIN32)
-      #include <time.h>
       #define UNITY_TIME_TYPE clock_t
       #define UNITY_GET_TIME(t) t = (clock_t)((clock() * 1000) / CLOCKS_PER_SEC)
       #define UNITY_EXEC_TIME_START() UNITY_GET_TIME(Unity.CurrentTestStartTime)
@@ -348,7 +372,6 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
         UnityPrint(" ms)"); \
         }
     #elif defined(__unix__) || defined(__APPLE__)
-      #include <time.h>
       #define UNITY_TIME_TYPE struct timespec
       #define UNITY_GET_TIME(t) clock_gettime(CLOCK_MONOTONIC, &t)
       #define UNITY_EXEC_TIME_START() UNITY_GET_TIME(Unity.CurrentTestStartTime)
@@ -897,7 +920,6 @@ int UnityTestMatches(void);
 #define UNITY_TEST_ASSERT_HEX32_ARRAY_WITHIN(delta, expected, actual, num_elements, line, message)   UnityAssertNumbersArrayWithin((UNITY_UINT32)(delta), (UNITY_INTERNAL_PTR)(expected), (UNITY_INTERNAL_PTR)(actual), ((UNITY_UINT32)(num_elements)), (message), (UNITY_LINE_TYPE)(line), UNITY_DISPLAY_STYLE_HEX32, UNITY_ARRAY_TO_ARRAY)
 #define UNITY_TEST_ASSERT_CHAR_ARRAY_WITHIN(delta, expected, actual, num_elements, line, message)    UnityAssertNumbersArrayWithin((UNITY_UINT8 )(delta), (UNITY_INTERNAL_PTR)(expected), (UNITY_INTERNAL_PTR)(actual), ((UNITY_UINT32)(num_elements)), (message), (UNITY_LINE_TYPE)(line), UNITY_DISPLAY_STYLE_CHAR, UNITY_ARRAY_TO_ARRAY)
 
-
 #define UNITY_TEST_ASSERT_EQUAL_PTR(expected, actual, line, message)                             UnityAssertEqualNumber((UNITY_PTR_TO_INT)(expected), (UNITY_PTR_TO_INT)(actual), (message), (UNITY_LINE_TYPE)(line), UNITY_DISPLAY_STYLE_POINTER)
 #define UNITY_TEST_ASSERT_EQUAL_STRING(expected, actual, line, message)                          UnityAssertEqualString((const char*)(expected), (const char*)(actual), (message), (UNITY_LINE_TYPE)(line))
 #define UNITY_TEST_ASSERT_EQUAL_STRING_LEN(expected, actual, len, line, message)                 UnityAssertEqualStringLen((const char*)(expected), (const char*)(actual), (UNITY_UINT32)(len), (message), (UNITY_LINE_TYPE)(line))
@@ -1051,3 +1073,5 @@ int UnityTestMatches(void);
 
 /* End of UNITY_INTERNALS_H */
 #endif
+
+/** @} */

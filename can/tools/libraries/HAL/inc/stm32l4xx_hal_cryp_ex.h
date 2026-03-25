@@ -1,19 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_cryp_ex.h
+ *
+ * @brief   Header file of CRYPEx HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_cryp_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of CRYPEx HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_cryp_ex
+ * @brief    stm32l4xx_hal_cryp_ex Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_CRYP_EX_H
@@ -26,7 +33,6 @@
 #if defined(AES)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -92,7 +98,6 @@ void HAL_CRYPEx_ProcessSuspend(CRYP_HandleTypeDef *hcryp);
   * @}
   */
 
-
 /**
   * @}
   */
@@ -106,7 +111,6 @@ HAL_StatusTypeDef CRYP_AES_Auth_IT(CRYP_HandleTypeDef *hcryp);
 /**
   * @}
   */
-
 
 /**
   * @}
@@ -123,3 +127,5 @@ HAL_StatusTypeDef CRYP_AES_Auth_IT(CRYP_HandleTypeDef *hcryp);
 #endif
 
 #endif /* STM32L4xx_HAL_CRYP_EX_H */
+
+/** @} */

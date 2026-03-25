@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_sai.h
-  * @author  MCD Application Team
-  * @brief   Header file of SAI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_sai.h
+ *
+ * @brief   Header file of SAI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_sai_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_SAI_H
@@ -27,7 +28,6 @@ extern "C" {
 #if !defined(STM32L412xx) && !defined(STM32L422xx)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -758,7 +758,6 @@ typedef void (*pSAI_CallbackTypeDef)(SAI_HandleTypeDef *hsai);
 #if defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx) || \
     defined(STM32L4P5xx) || defined(STM32L4Q5xx)
 /* Include SAI HAL Extension module */
-#include "stm32l4xx_hal_sai_ex.h"
 #endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx || */
 /* STM32L4P5xx || STM32L4Q5xx */
 

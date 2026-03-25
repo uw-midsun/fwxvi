@@ -1,126 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_gfxmmu.c
-  * @author  MCD Application Team
-  * @brief   This file provides firmware functions to manage the following 
-  *          functionalities of the Graphic MMU (GFXMMU) peripheral:
-  *           + Initialization and De-initialization.
-  *           + LUT configuration.
-  *           + Modify physical buffer addresses.
-  *           + Error management.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    *** Initialization ***
-    ======================
-    [..]
-      (#) As prerequisite, fill in the HAL_GFXMMU_MspInit() :
-        (++) Enable GFXMMU clock interface with __HAL_RCC_GFXMMU_CLK_ENABLE().
-        (++) If interrupts are used, enable and configure GFXMMU global
-            interrupt with HAL_NVIC_SetPriority() and HAL_NVIC_EnableIRQ().
-      (#) Configure the number of blocks per line, default value, physical 
-          buffer addresses and interrupts using the HAL_GFXMMU_Init() function.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_gfxmmu.c
+ *
+ * @brief   This file provides firmware functions to manage the following
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    *** LUT configuration ***
-    =========================
-    [..]
-      (#) Use HAL_GFXMMU_DisableLutLines() to deactivate all LUT lines (or a
-          range of lines).
-      (#) Use HAL_GFXMMU_ConfigLut() to copy LUT from flash to look up RAM.
-      (#) Use HAL_GFXMMU_ConfigLutLine() to configure one line of LUT.
+/* Standard library Headers */
 
-    *** Modify physical buffer addresses ***
-    =======================================
-    [..]    
-      (#) Use HAL_GFXMMU_ModifyBuffers() to modify physical buffer addresses.
+/* Inter-component Headers */
 
-    *** Error management ***
-    ========================
-    [..]
-      (#) If interrupts are used, HAL_GFXMMU_IRQHandler() will be called when
-          an error occurs. This function will call HAL_GFXMMU_ErrorCallback().
-          Use HAL_GFXMMU_GetError() to get the error code.
-
-    *** De-initialization ***
-    =========================
-    [..]    
-      (#) As prerequisite, fill in the HAL_GFXMMU_MspDeInit() :
-        (++) Disable GFXMMU clock interface with __HAL_RCC_GFXMMU_CLK_ENABLE().
-        (++) If interrupts has been used, disable GFXMMU global interrupt with
-             HAL_NVIC_DisableIRQ().
-      (#) De-initialize GFXMMU using the HAL_GFXMMU_DeInit() function.
-
-    *** Callback registration ***
-    =============================
-    [..]
-    The compilation define USE_HAL_GFXMMU_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-    Use functions HAL_GFXMMU_RegisterCallback() to register a user callback.
-
-    [..]
-    Function HAL_GFXMMU_RegisterCallback() allows to register following callbacks:
-      (+) ErrorCallback      : GFXMMU error.
-      (+) MspInitCallback    : GFXMMU MspInit.
-      (+) MspDeInitCallback  : GFXMMU MspDeInit.
-    [..]
-    This function takes as parameters the HAL peripheral handle, the callback ID
-    and a pointer to the user callback function.
-
-    [..]
-    Use function HAL_GFXMMU_UnRegisterCallback() to reset a callback to the default
-    weak (surcharged) function.
-    HAL_GFXMMU_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the callback ID.
-    [..]
-    This function allows to reset following callbacks:
-      (+) ErrorCallback      : GFXMMU error.
-      (+) MspInitCallback    : GFXMMU MspInit.
-      (+) MspDeInitCallback  : GFXMMU MspDeInit.
-
-    [..]
-    By default, after the HAL_GFXMMU_Init and if the state is HAL_GFXMMU_STATE_RESET
-    all callbacks are reset to the corresponding legacy weak (surcharged) functions:
-    examples HAL_GFXMMU_ErrorCallback().
-    Exception done for MspInit and MspDeInit callbacks that are respectively
-    reset to the legacy weak (surcharged) functions in the HAL_GFXMMU_Init
-    and HAL_GFXMMU_DeInit only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_GFXMMU_Init and HAL_GFXMMU_DeInit
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    [..]
-    Callbacks can be registered/unregistered in READY state only.
-    Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-    in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-    during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_GFXMMU_RegisterCallback before calling HAL_GFXMMU_DeInit
-    or HAL_GFXMMU_Init function.
-
-    [..]
-    When the compilation define USE_HAL_GFXMMU_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registering feature is not available
-    and weak (surcharged) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{

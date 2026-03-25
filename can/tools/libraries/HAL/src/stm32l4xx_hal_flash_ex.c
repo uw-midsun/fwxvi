@@ -1,64 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_flash_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended FLASH HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the FLASH extended peripheral:
-  *           + Extended programming operations functions
-  *
- @verbatim
- ==============================================================================
-                   ##### Flash Extended features #####
-  ==============================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_flash_ex.c
+ *
+ * @brief   Extended FLASH HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..] Comparing to other previous devices, the FLASH interface for STM32L4xx
-       devices contains the following additional features
+/* Standard library Headers */
 
-       (+) Capacity up to 2 Mbyte with dual bank architecture supporting read-while-write
-           capability (RWW)
-       (+) Dual bank memory organization
-       (+) PCROP protection for all banks
+/* Inter-component Headers */
 
-                        ##### How to use this driver #####
- ==============================================================================
-  [..] This driver provides functions to configure and program the FLASH memory
-       of all STM32L4xx devices. It includes
-      (#) Flash Memory Erase functions:
-           (++) Lock and Unlock the FLASH interface using HAL_FLASH_Unlock() and
-                HAL_FLASH_Lock() functions
-           (++) Erase function: Erase page, erase all sectors
-           (++) There are two modes of erase :
-             (+++) Polling Mode using HAL_FLASHEx_Erase()
-             (+++) Interrupt Mode using HAL_FLASHEx_Erase_IT()
-
-      (#) Option Bytes Programming function: Use HAL_FLASHEx_OBProgram() to :
-        (++) Set/Reset the write protection
-        (++) Set the Read protection Level
-        (++) Program the user Option Bytes
-        (++) Configure the PCROP protection
-
-      (#) Get Option Bytes Configuration function: Use HAL_FLASHEx_OBGetConfig() to :
-        (++) Get the value of a write protection area
-        (++) Know if the read protection is activated
-        (++) Get the value of the user Option Bytes
-        (++) Get the value of a PCROP area
-
- @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{

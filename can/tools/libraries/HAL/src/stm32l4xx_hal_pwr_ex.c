@@ -1,28 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pwr_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended PWR HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Power Controller (PWR) peripheral:
-  *           + Extended Initialization and de-initialization functions
-  *           + Extended Peripheral Control functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pwr_ex.c
+ *
+ * @brief   Extended PWR HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -75,13 +67,9 @@
   * @}
   */
 
-
-
 /**
   * @}
   */
-
-
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -104,7 +92,6 @@
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief Return Voltage Scaling Range.
@@ -131,8 +118,6 @@ uint32_t HAL_PWREx_GetVoltageRange(void)
   return  (PWR->CR1 & PWR_CR1_VOS);
 #endif
 }
-
-
 
 /**
   * @brief Configure the main internal regulator output voltage.
@@ -269,7 +254,6 @@ HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling)
   return HAL_OK;
 }
 
-
 /**
   * @brief Enable battery charging.
   *        When VDD is present, charge the external battery on VBAT through an internal resistor.
@@ -290,7 +274,6 @@ void HAL_PWREx_EnableBatteryCharging(uint32_t ResistorSelection)
   SET_BIT(PWR->CR4, PWR_CR4_VBE);
 }
 
-
 /**
   * @brief Disable battery charging.
   * @retval None
@@ -299,7 +282,6 @@ void HAL_PWREx_DisableBatteryCharging(void)
 {
   CLEAR_BIT(PWR->CR4, PWR_CR4_VBE);
 }
-
 
 #if defined(PWR_CR2_USV)
 /**
@@ -311,7 +293,6 @@ void HAL_PWREx_EnableVddUSB(void)
 {
   SET_BIT(PWR->CR2, PWR_CR2_USV);
 }
-
 
 /**
   * @brief Disable VDDUSB supply.
@@ -334,7 +315,6 @@ void HAL_PWREx_EnableVddIO2(void)
   SET_BIT(PWR->CR2, PWR_CR2_IOSV);
 }
 
-
 /**
   * @brief Disable VDDIO2 supply.
   * @retval None
@@ -345,7 +325,6 @@ void HAL_PWREx_DisableVddIO2(void)
 }
 #endif /* PWR_CR2_IOSV */
 
-
 /**
   * @brief Enable Internal Wake-up Line.
   * @retval None
@@ -355,7 +334,6 @@ void HAL_PWREx_EnableInternalWakeUpLine(void)
   SET_BIT(PWR->CR3, PWR_CR3_EIWF);
 }
 
-
 /**
   * @brief Disable Internal Wake-up Line.
   * @retval None
@@ -364,8 +342,6 @@ void HAL_PWREx_DisableInternalWakeUpLine(void)
 {
   CLEAR_BIT(PWR->CR3, PWR_CR3_EIWF);
 }
-
-
 
 /**
   * @brief Enable GPIO pull-up state in Standby and Shutdown modes.
@@ -455,7 +431,6 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber)
   return status;
 }
 
-
 /**
   * @brief Disable GPIO pull-up state in Standby mode and Shutdown modes.
   * @note  Reset the relevant PUy bits of PWR_PUCRx register used to configure the I/O
@@ -524,8 +499,6 @@ HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber
 
   return status;
 }
-
-
 
 /**
   * @brief Enable GPIO pull-down state in Standby and Shutdown modes.
@@ -615,7 +588,6 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumbe
   return status;
 }
 
-
 /**
   * @brief Disable GPIO pull-down state in Standby and Shutdown modes.
   * @note  Reset the relevant PDy bits of PWR_PDCRx register used to configure the I/O
@@ -689,8 +661,6 @@ HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumb
   return status;
 }
 
-
-
 /**
   * @brief Enable pull-up and pull-down configuration.
   * @note  When APC bit is set, the I/O pull-up and pull-down configurations defined in
@@ -706,7 +676,6 @@ void HAL_PWREx_EnablePullUpPullDownConfig(void)
   SET_BIT(PWR->CR3, PWR_CR3_APC);
 }
 
-
 /**
   * @brief Disable pull-up and pull-down configuration.
   * @note  When APC bit is cleared, the I/O pull-up and pull-down configurations defined in
@@ -717,8 +686,6 @@ void HAL_PWREx_DisablePullUpPullDownConfig(void)
 {
   CLEAR_BIT(PWR->CR3, PWR_CR3_APC);
 }
-
-
 
 /**
   * @brief Enable Full SRAM2 content retention in Standby mode.
@@ -773,7 +740,6 @@ HAL_StatusTypeDef HAL_PWREx_SetSRAM2ContentRetention(uint32_t SRAM2Size)
   return HAL_OK;
 }
 
-
 #if defined(PWR_CR3_ENULP)
 /**
   * @brief Enable Ultra Low Power BORL, BORH and PVD for STOP2 and Standby modes.
@@ -785,7 +751,6 @@ void HAL_PWREx_EnableBORPVD_ULP(void)
   SET_BIT(PWR->CR3, PWR_CR3_ENULP);
 }
 
-
 /**
   * @brief Disable Ultra Low Power BORL, BORH and PVD for STOP2 and Standby modes.
   * @note  All the other modes are not affected by this bit
@@ -796,7 +761,6 @@ void HAL_PWREx_DisableBORPVD_ULP(void)
   CLEAR_BIT(PWR->CR3, PWR_CR3_ENULP);
 }
 #endif /* PWR_CR3_ENULP */
-
 
 #if defined(PWR_CR4_EXT_SMPS_ON)
 /**
@@ -823,7 +787,6 @@ void HAL_PWREx_DisableExtSMPS_0V95(void)
 }
 #endif /* PWR_CR4_EXT_SMPS_ON */
 
-
 #if defined(PWR_CR1_RRSTP)
 /**
   * @brief Enable SRAM3 content retention in Stop 2 mode.
@@ -835,7 +798,6 @@ void HAL_PWREx_EnableSRAM3ContentRetention(void)
 {
   SET_BIT(PWR->CR1, PWR_CR1_RRSTP);
 }
-
 
 /**
   * @brief Disable SRAM3 content retention in Stop 2 mode.
@@ -858,7 +820,6 @@ void HAL_PWREx_EnableDSIPinsPDActivation(void)
 {
   SET_BIT(PWR->CR3, PWR_CR3_DSIPDEN);
 }
-
 
 /**
   * @brief Disable pull-down activation on DSI pins.
@@ -890,7 +851,6 @@ void HAL_PWREx_DisablePVM1(void)
 }
 #endif /* PWR_CR2_PVME1 */
 
-
 #if defined(PWR_CR2_PVME2)
 /**
   * @brief Enable the Power Voltage Monitoring 2: VDDIO2 versus 0.9V.
@@ -911,7 +871,6 @@ void HAL_PWREx_DisablePVM2(void)
 }
 #endif /* PWR_CR2_PVME2 */
 
-
 /**
   * @brief Enable the Power Voltage Monitoring 3: VDDA versus 1.62V.
   * @retval None
@@ -930,7 +889,6 @@ void HAL_PWREx_DisablePVM3(void)
   CLEAR_BIT(PWR->CR2, PWR_PVM_3);
 }
 
-
 /**
   * @brief Enable the Power Voltage Monitoring 4:  VDDA versus 2.2V.
   * @retval None
@@ -948,9 +906,6 @@ void HAL_PWREx_DisablePVM4(void)
 {
   CLEAR_BIT(PWR->CR2, PWR_PVM_4);
 }
-
-
-
 
 /**
   * @brief Configure the Peripheral Voltage Monitoring (PVM).
@@ -971,7 +926,6 @@ HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
   /* Check the parameters */
   assert_param(IS_PWR_PVM_TYPE(sConfigPVM->PVMType));
   assert_param(IS_PWR_PVM_MODE(sConfigPVM->Mode));
-
 
   /* Configure EXTI 35 to 38 interrupts if so required:
      scan through PVMType to detect which PVMx is set and
@@ -1114,8 +1068,6 @@ HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
   return status;
 }
 
-
-
 /**
   * @brief Enter Low-power Run mode
   * @note  In Low-power Run mode, all I/O pins keep the same state as in Run mode.
@@ -1131,7 +1083,6 @@ void HAL_PWREx_EnableLowPowerRunMode(void)
   /* Set Regulator parameter */
   SET_BIT(PWR->CR1, PWR_CR1_LPR);
 }
-
 
 /**
   * @brief Exit Low-power Run mode.
@@ -1161,7 +1112,6 @@ HAL_StatusTypeDef HAL_PWREx_DisableLowPowerRunMode(void)
 
   return HAL_OK;
 }
-
 
 /**
   * @brief Enter Stop 0 mode.
@@ -1214,7 +1164,6 @@ void HAL_PWREx_EnterSTOP0Mode(uint8_t STOPEntry)
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
 
-
 /**
   * @brief Enter Stop 1 mode.
   * @note  In Stop 1 mode, only low power voltage regulator is ON.
@@ -1264,7 +1213,6 @@ void HAL_PWREx_EnterSTOP1Mode(uint8_t STOPEntry)
   /* Reset SLEEPDEEP bit of Cortex System Control Register */
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
-
 
 /**
   * @brief Enter Stop 2 mode.
@@ -1318,10 +1266,6 @@ void HAL_PWREx_EnterSTOP2Mode(uint8_t STOPEntry)
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
 
-
-
-
-
 /**
   * @brief Enter Shutdown mode.
   * @note  In Shutdown mode, the PLL, the HSI, the MSI, the LSI and the HSE oscillators are switched
@@ -1347,9 +1291,6 @@ void HAL_PWREx_EnterSHUTDOWNMode(void)
   /* Request Wait For Interrupt */
   __WFI();
 }
-
-
-
 
 /**
   * @brief This function handles the PWR PVD/PVMx interrupt request.
@@ -1406,7 +1347,6 @@ void HAL_PWREx_PVD_PVM_IRQHandler(void)
   }
 }
 
-
 #if defined(PWR_CR2_PVME1)
 /**
   * @brief PWR PVM1 interrupt callback
@@ -1454,7 +1394,6 @@ __weak void HAL_PWREx_PVM4Callback(void)
             HAL_PWREx_PVM4Callback() API can be implemented in the user file
    */
 }
-
 
 /**
   * @}

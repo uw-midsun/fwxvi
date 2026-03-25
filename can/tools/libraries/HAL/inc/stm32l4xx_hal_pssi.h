@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pssi.h
-  * @author  MCD Application Team
-  * @brief   Header file of PSSI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pssi.h
+ *
+ * @brief   Header file of PSSI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PSSI_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -47,7 +46,6 @@ extern "C" {
   * @{
   */
 
-
 /**
   * @brief PSSI Init structure definition
   */
@@ -67,7 +65,6 @@ typedef struct
                                       This parameter can be a value of @ref Ready_Polarity. */
 
 } PSSI_InitTypeDef;
-
 
 /**
   * @brief  HAL PSSI State structures definition
@@ -213,7 +210,6 @@ typedef enum
   * @}
   */
 
-
 /** @defgroup Data_Enable_Polarity Data Enable Polarity
   * @{
   */
@@ -240,7 +236,6 @@ typedef enum
   * @}
   */
 
-
 /** @defgroup PSSI_DEFINITION PSSI definitions
   * @{
   */
@@ -260,8 +255,6 @@ typedef enum
 #define PSSI_FLAG_RTT1B             PSSI_SR_RTT1B    /*!< 1 Byte Fifo Flag */
 #define PSSI_FLAG_RTT4B             PSSI_SR_RTT4B    /*!< 4 Bytes Fifo Flag*/
 
-
-
 /**
   * @}
   */
@@ -276,8 +269,6 @@ typedef enum
 /**
   * @}
   */
-
-
 
 /**
   * @}
@@ -300,7 +291,6 @@ typedef enum
 #else
 #define HAL_PSSI_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_PSSI_STATE_RESET)
 #endif /* USE_HAL_PSSI_REGISTER_CALLBACKS */
-
 
 /**
   * @brief  Enable the PSSI.
@@ -327,8 +317,6 @@ typedef enum
   */
 
 #define HAL_PSSI_GET_STATUS(__HANDLE__, __FLAG__) ((__HANDLE__)->Instance->SR & (__FLAG__))
-
-
 
 /* Interrupt & Flag management */
 /**
@@ -381,7 +369,6 @@ typedef enum
   */
 #define HAL_PSSI_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__) ((__HANDLE__)->Instance->IER & (__INTERRUPT__))
 
-
 /**
   * @brief  Check whether the PSSI Control signal is valid.
   * @param  __CONTROL__ Control signals configuration
@@ -396,8 +383,6 @@ typedef enum
                                              ((__CONTROL__) == HAL_PSSI_RDY_MAP_ENABLE        ) || \
                                              ((__CONTROL__) == HAL_PSSI_DE_MAP_ENABLE         ) || \
                                              ((__CONTROL__) == HAL_PSSI_MAP_DE_BIDIR_ENABLE   ))
-
-
 
 /**
   * @brief  Check whether the PSSI Bus Width is valid.
@@ -417,7 +402,6 @@ typedef enum
 
 #define IS_PSSI_CLOCK_POLARITY(__CLOCKPOL__) (((__CLOCKPOL__) == HAL_PSSI_FALLING_EDGE   ) || \
                                               ((__CLOCKPOL__) == HAL_PSSI_RISING_EDGE    ))
-
 
 /**
   * @brief  Check whether the PSSI Data Enable Polarity is valid.
@@ -440,7 +424,6 @@ typedef enum
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup PSSI_Exported_Functions PSSI Exported Functions
@@ -466,7 +449,6 @@ HAL_StatusTypeDef HAL_PSSI_UnRegisterCallback(PSSI_HandleTypeDef *hpssi, HAL_PSS
 /**
   * @}
   */
-
 
 /** @addtogroup PSSI_Exported_Functions_Group2 Input and Output operation functions
   * @{
@@ -511,17 +493,13 @@ void HAL_PSSI_AbortCpltCallback(PSSI_HandleTypeDef *hpssi);
   * @}
   */
 
-
-
 /**
   * @}
   */
 
 /* Private constants ---------------------------------------------------------*/
 
-
 /* Private macros ------------------------------------------------------------*/
-
 
 /**
   * @}
@@ -531,7 +509,6 @@ void HAL_PSSI_AbortCpltCallback(PSSI_HandleTypeDef *hpssi);
 /**
   * @}
   */
-
 
 #ifdef __cplusplus
 }

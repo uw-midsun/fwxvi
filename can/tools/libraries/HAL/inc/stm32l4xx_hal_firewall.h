@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_firewall.h
-  * @author  MCD Application Team
-  * @brief   Header file of FIREWALL HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_firewall.h
+ *
+ * @brief   Header file of FIREWALL HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_FIREWALL_H
@@ -25,7 +25,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -73,11 +72,9 @@ typedef struct
 
 }FIREWALL_InitTypeDef;
 
-
 /**
   * @}
   */
-
 
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup FIREWALL_Exported_Constants FIREWALL Exported Constants
@@ -129,7 +126,6 @@ typedef struct
 #define IS_FIREWALL_VOLATILEDATA_SEGMENT_ADDRESS(ADDRESS)        (((ADDRESS) >= SRAM1_BASE) && ((ADDRESS) < (SRAM1_BASE + SRAM1_SIZE_MAX)))
 #define IS_FIREWALL_VOLATILEDATA_SEGMENT_LENGTH(ADDRESS, LENGTH) (((ADDRESS) + (LENGTH)) <= (SRAM1_BASE + SRAM1_SIZE_MAX))
 
-
 #define IS_FIREWALL_VOLATILEDATA_SHARE(SHARE) (((SHARE) == FIREWALL_VOLATILEDATA_NOT_SHARED) || \
                                                ((SHARE) == FIREWALL_VOLATILEDATA_SHARED))
 
@@ -138,7 +134,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported macros -----------------------------------------------------------*/
 /** @defgroup FIREWALL_Exported_Macros FIREWALL Exported Macros
@@ -149,7 +144,6 @@ typedef struct
   * @retval FIREWALL enabling status (TRUE or FALSE).
   */
 #define  __HAL_FIREWALL_IS_ENABLED()  HAL_IS_BIT_CLR(SYSCFG->CFGR1, SYSCFG_CFGR1_FWDIS)
-
 
 /** @brief Enable FIREWALL pre arm.
   * @note When FPA bit is set, any code executed outside the protected segment
@@ -170,8 +164,6 @@ typedef struct
                   tmpreg = READ_BIT(FIREWALL->CR, FW_CR_FPA) ;                         \
                   UNUSED(tmpreg);                                                      \
                 } while(0)
-
-
 
 /** @brief Disable FIREWALL pre arm.
   * @note When FPA bit is set, any code executed outside the protected segment
@@ -274,7 +266,6 @@ typedef struct
                   UNUSED(tmpreg);                                                      \
                 } while(0)
 
-
 /** @brief Check whether or not the volatile data segment is shared.
   * @note This macro can be executed inside a code area protected by the Firewall.
   * @note This macro can be executed whatever the Firewall state (opened or closed) when
@@ -304,7 +295,6 @@ typedef struct
   * @retval FPA bit setting status (TRUE or FALSE).
   */
 #define __HAL_FIREWALL_GET_PREARM() ((FIREWALL->CR & FW_CR_FPA) == FW_CR_FPA)
-
 
 /**
   * @}

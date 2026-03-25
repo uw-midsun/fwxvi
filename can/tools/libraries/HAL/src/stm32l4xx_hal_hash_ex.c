@@ -1,92 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_hash_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended HASH HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the HASH peripheral for SHA-224 and SHA-256
-  *          algorithms:
-  *           + HASH or HMAC processing in polling mode
-  *           + HASH or HMAC processing in interrupt mode
-  *           + HASH or HMAC processing in DMA mode
-  *         Additionally, this file provides functions to manage HMAC
-  *         multi-buffer DMA-based processing for MD-5, SHA-1, SHA-224
-  *         and SHA-256.
-  *
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                     ##### HASH peripheral extended features  #####
- ===============================================================================
-    [..]
-    The SHA-224 and SHA-256 HASH and HMAC processing can be carried out exactly
-    the same way as for SHA-1 or MD-5 algorithms.
-    (#) Three modes are available.
-        (##) Polling mode: processing APIs are blocking functions
-             i.e. they process the data and wait till the digest computation is finished,
-             e.g. HAL_HASHEx_xxx_Start()
-        (##) Interrupt mode: processing APIs are not blocking functions
-                i.e. they process the data under interrupt,
-                e.g. HAL_HASHEx_xxx_Start_IT()
-        (##) DMA mode: processing APIs are not blocking functions and the CPU is
-             not used for data transfer i.e. the data transfer is ensured by DMA,
-                e.g. HAL_HASHEx_xxx_Start_DMA(). Note that in DMA mode, a call to
-                HAL_HASHEx_xxx_Finish() is then required to retrieve the digest.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_hash_ex.c
+ *
+ * @brief   Extended HASH HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-   (#)Multi-buffer processing is possible in polling, interrupt and DMA modes.
-        (##) In polling mode, only multi-buffer HASH processing is possible.
-             API HAL_HASHEx_xxx_Accumulate() must be called for each input buffer, except for the last one.
-             User must resort to HAL_HASHEx_xxx_Accumulate_End() to enter the last one and retrieve as
-             well the computed digest.
+/* Standard library Headers */
 
-        (##) In interrupt mode, API HAL_HASHEx_xxx_Accumulate_IT() must be called for each input buffer,
-             except for the last one.
-             User must resort to HAL_HASHEx_xxx_Accumulate_End_IT() to enter the last one and retrieve as
-             well the computed digest.
+/* Inter-component Headers */
 
-        (##) In DMA mode, multi-buffer HASH and HMAC processing are possible.
-
-              (+++) HASH processing: once initialization is done, MDMAT bit must be set through
-               __HAL_HASH_SET_MDMAT() macro.
-             From that point, each buffer can be fed to the Peripheral through HAL_HASHEx_xxx_Start_DMA() API.
-             Before entering the last buffer, reset the MDMAT bit with __HAL_HASH_RESET_MDMAT()
-             macro then wrap-up the HASH processing in feeding the last input buffer through the
-             same API HAL_HASHEx_xxx_Start_DMA(). The digest can then be retrieved with a call to
-             API HAL_HASHEx_xxx_Finish().
-
-             (+++) HMAC processing (MD-5, SHA-1, SHA-224 and SHA-256 must all resort to
-             extended functions): after initialization, the key and the first input buffer are entered
-             in the Peripheral with the API HAL_HMACEx_xxx_Step1_2_DMA(). This carries out HMAC step 1 and
-             starts step 2.
-             The following buffers are next entered with the API  HAL_HMACEx_xxx_Step2_DMA(). At this
-             point, the HMAC processing is still carrying out step 2.
-             Then, step 2 for the last input buffer and step 3 are carried out by a single call
-             to HAL_HMACEx_xxx_Step2_3_DMA().
-
-             The digest can finally be retrieved with a call to API HAL_HASH_xxx_Finish() for
-             MD-5 and SHA-1, to HAL_HASHEx_xxx_Finish() for SHA-224 and SHA-256.
-
-
-  @endverbatim
-  ******************************************************************************
-  */
-
-/* Includes ------------------------------------------------------------------*/
+/* Intra-component Headers */
 #include "stm32l4xx_hal.h"
 
-
-
+/* Includes ------------------------------------------------------------------*/
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -135,7 +63,6 @@
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Initialize the HASH peripheral in SHA224 mode, next process pInBuffer then
@@ -279,7 +206,6 @@ HAL_StatusTypeDef HAL_HASHEx_SHA256_Accmlt_End(HASH_HandleTypeDef *hhash, uint8_
   * @{
   */
 
-
 /**
   * @brief  Initialize the HASH peripheral in SHA224 mode, next process pInBuffer then
   *         read the computed digest in interruption mode.
@@ -421,9 +347,6 @@ HAL_StatusTypeDef HAL_HASHEx_SHA256_Accmlt_End_IT(HASH_HandleTypeDef *hhash, uin
   * @{
   */
 
-
-
-
 /**
   * @brief  Initialize the HASH peripheral in SHA224 mode then initiate a DMA transfer
   *         to feed the input buffer to the Peripheral.
@@ -506,8 +429,6 @@ HAL_StatusTypeDef HAL_HASHEx_SHA256_Finish(HASH_HandleTypeDef *hhash, uint8_t *p
   * @{
   */
 
-
-
 /**
   * @brief  Initialize the HASH peripheral in HMAC SHA224 mode, next process pInBuffer then
   *         read the computed digest.
@@ -550,7 +471,6 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Start(HASH_HandleTypeDef *hhash, uint8_t *pI
   * @}
   */
 
-
 /** @defgroup HASHEx_Exported_Functions_Group5 HMAC extended processing functions in interrupt mode
   *  @brief   HMAC extended processing functions using interruption mode.
   *
@@ -568,8 +488,6 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Start(HASH_HandleTypeDef *hhash, uint8_t *pI
 @endverbatim
   * @{
   */
-
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC SHA224 mode, next process pInBuffer then
@@ -607,13 +525,9 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Start_IT(HASH_HandleTypeDef *hhash, uint8_t 
   return  HMAC_Start_IT(hhash, pInBuffer, Size, pOutBuffer, HASH_ALGOSELECTION_SHA256);
 }
 
-
-
-
 /**
   * @}
   */
-
 
 /** @defgroup HASHEx_Exported_Functions_Group6 HMAC extended processing functions in DMA mode
   *  @brief   HMAC extended processing functions using DMA mode.
@@ -633,12 +547,9 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Start_IT(HASH_HandleTypeDef *hhash, uint8_t 
           user must resort to  HAL_HMACEx_xxx_Start_DMA() then read the resulting digest
           with HAL_HASHEx_xxx_Finish().
 
-
 @endverbatim
   * @{
   */
-
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC SHA224 mode then initiate the required
@@ -687,7 +598,6 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t
 {
   return  HMAC_Start_DMA(hhash, pInBuffer, Size, HASH_ALGOSELECTION_SHA256);
 }
-
 
 /**
   * @}
@@ -811,7 +721,6 @@ HAL_StatusTypeDef HAL_HMACEx_MD5_Step2_3_DMA(HASH_HandleTypeDef *hhash, uint8_t 
   hhash->DigestCalculationDisable = RESET;
   return  HMAC_Start_DMA(hhash, pInBuffer, Size, HASH_ALGOSELECTION_MD5);
 }
-
 
 /**
   * @brief  SHA1 HMAC step 1 completion and step 2 start in multi-buffer DMA mode.

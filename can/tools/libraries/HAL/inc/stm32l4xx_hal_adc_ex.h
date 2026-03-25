@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_adc_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of ADC HAL extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_adc_ex.h
+ *
+ * @brief   Header file of ADC HAL extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_ADC_EX_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -803,7 +802,6 @@ typedef struct
 #endif /* defined (STM32L412xx) || defined (STM32L422xx) || defined (STM32L471xx) || defined (STM32L475xx) ||
           defined (STM32L476xx) || defined (STM32L485xx) || defined (STM32L486xx) */
 
-
 /**
   * @brief Verify the ADC instance connected to the temperature sensor.
   * @param __HANDLE__ ADC handle.
@@ -862,7 +860,6 @@ typedef struct
   * @retval SET (__CALIBRATION_FACTOR__ is within the authorized size) or RESET (__CALIBRATION_FACTOR__ is too large)
   */
 #define IS_ADC_CALFACT(__CALIBRATION_FACTOR__) ((__CALIBRATION_FACTOR__) <= (0x7FU))
-
 
 /**
   * @brief Verify the ADC channel setting.
@@ -1328,7 +1325,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup ADCEx_Exported_Functions

@@ -1,20 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pcd_ex.h
+ *
+ * @brief   Header file of PCD HAL Extension module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pcd_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of PCD HAL Extension module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_pcd_ex
+ * @brief    stm32l4xx_hal_pcd_ex Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PCD_EX_H
@@ -25,7 +31,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined (USB) || defined (USB_OTG_FS)
 /** @addtogroup STM32L4xx_HAL_Driver
@@ -58,7 +63,6 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd, uint16_t ep_addr
 HAL_StatusTypeDef HAL_PCDEx_ActivateLPM(PCD_HandleTypeDef *hpcd);
 HAL_StatusTypeDef HAL_PCDEx_DeActivateLPM(PCD_HandleTypeDef *hpcd);
 
-
 HAL_StatusTypeDef HAL_PCDEx_ActivateBCD(PCD_HandleTypeDef *hpcd);
 HAL_StatusTypeDef HAL_PCDEx_DeActivateBCD(PCD_HandleTypeDef *hpcd);
 void HAL_PCDEx_BCD_VBUSDetect(PCD_HandleTypeDef *hpcd);
@@ -87,5 +91,6 @@ void HAL_PCDEx_BCD_Callback(PCD_HandleTypeDef *hpcd, PCD_BCD_MsgTypeDef msg);
 }
 #endif /* __cplusplus */
 
-
 #endif /* STM32L4xx_HAL_PCD_EX_H */
+
+/** @} */

@@ -1,99 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rng.c
-  * @author  MCD Application Team
-  * @brief   RNG HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Random Number Generator (RNG) peripheral:
-  *           + Initialization and configuration functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-  [..]
-      The RNG HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rng.c
+ *
+ * @brief   RNG HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#) Enable the RNG controller clock using __HAL_RCC_RNG_CLK_ENABLE() macro
-          in HAL_RNG_MspInit().
-      (#) Activate the RNG peripheral using HAL_RNG_Init() function.
-      (#) Wait until the 32 bit Random Number Generator contains a valid
-          random data using (polling/interrupt) mode.
-      (#) Get the 32 bit random number using HAL_RNG_GenerateRandomNumber() function.
+/* Standard library Headers */
 
-    ##### Callback registration #####
-    ==================================
+/* Inter-component Headers */
 
-    [..]
-    The compilation define USE_HAL_RNG_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-
-    [..]
-    Use Function HAL_RNG_RegisterCallback() to register a user callback.
-    Function HAL_RNG_RegisterCallback() allows to register following callbacks:
-    (+) ErrorCallback             : RNG Error Callback.
-    (+) MspInitCallback           : RNG MspInit.
-    (+) MspDeInitCallback         : RNG MspDeInit.
-    This function takes as parameters the HAL peripheral handle, the Callback ID
-    and a pointer to the user callback function.
-
-    [..]
-    Use function HAL_RNG_UnRegisterCallback() to reset a callback to the default
-    weak (overridden) function.
-    HAL_RNG_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the Callback ID.
-    This function allows to reset following callbacks:
-    (+) ErrorCallback             : RNG Error Callback.
-    (+) MspInitCallback           : RNG MspInit.
-    (+) MspDeInitCallback         : RNG MspDeInit.
-
-    [..]
-    For specific callback ReadyDataCallback, use dedicated register callbacks:
-    respectively HAL_RNG_RegisterReadyDataCallback() , HAL_RNG_UnRegisterReadyDataCallback().
-
-    [..]
-    By default, after the HAL_RNG_Init() and when the state is HAL_RNG_STATE_RESET
-    all callbacks are set to the corresponding weak (overridden) functions:
-    example HAL_RNG_ErrorCallback().
-    Exception done for MspInit and MspDeInit functions that are respectively
-    reset to the legacy weak (overridden) functions in the HAL_RNG_Init()
-    and HAL_RNG_DeInit() only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_RNG_Init() and HAL_RNG_DeInit()
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    [..]
-    Callbacks can be registered/unregistered in HAL_RNG_STATE_READY state only.
-    Exception done MspInit/MspDeInit that can be registered/unregistered
-    in HAL_RNG_STATE_READY or HAL_RNG_STATE_RESET state, thus registered (user)
-    MspInit/DeInit callbacks can be used during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_RNG_RegisterCallback() before calling HAL_RNG_DeInit()
-    or HAL_RNG_Init() function.
-
-    [..]
-    When The compilation define USE_HAL_RNG_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registration feature is not available
-    and weak (overridden) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -503,7 +424,6 @@ HAL_StatusTypeDef HAL_RNG_RegisterCallback(RNG_HandleTypeDef *hrng, HAL_RNG_Call
 HAL_StatusTypeDef HAL_RNG_UnRegisterCallback(RNG_HandleTypeDef *hrng, HAL_RNG_CallbackIDTypeDef CallbackID)
 {
   HAL_StatusTypeDef status = HAL_OK;
-
 
   if (HAL_RNG_STATE_READY == hrng->State)
   {
@@ -985,7 +905,6 @@ __weak void HAL_RNG_ErrorCallback(RNG_HandleTypeDef *hrng)
   * @}
   */
 
-
 /** @addtogroup RNG_Exported_Functions_Group3
   *  @brief   Peripheral State functions
   *
@@ -1117,7 +1036,6 @@ HAL_StatusTypeDef RNG_RecoverSeedError(RNG_HandleTypeDef *hrng)
   * @}
   */
 #endif /* RNG_CR_CONDRST */
-
 
 #endif /* HAL_RNG_MODULE_ENABLED */
 /**

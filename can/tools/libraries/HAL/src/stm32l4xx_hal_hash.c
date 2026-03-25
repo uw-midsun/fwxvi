@@ -1,213 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_hash.c
-  * @author  MCD Application Team
-  * @brief   HASH HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the HASH peripheral:
-  *           + Initialization and de-initialization methods
-  *           + HASH or HMAC processing in polling mode
-  *           + HASH or HMAC processing in interrupt mode
-  *           + HASH or HMAC processing in DMA mode
-  *           + Peripheral State methods
-  *           + HASH or HMAC processing suspension/resumption
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                     ##### How to use this driver #####
- ===============================================================================
-    [..]
-    The HASH HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_hash.c
+ *
+ * @brief   HASH HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#)Initialize the HASH low level resources by implementing the HAL_HASH_MspInit():
-        (##) Enable the HASH interface clock using __HASH_CLK_ENABLE()
-        (##) When resorting to interrupt-based APIs (e.g. HAL_HASH_xxx_Start_IT())
-            (+++) Configure the HASH interrupt priority using HAL_NVIC_SetPriority()
-            (+++) Enable the HASH IRQ handler using HAL_NVIC_EnableIRQ()
-            (+++) In HASH IRQ handler, call HAL_HASH_IRQHandler() API
-        (##) When resorting to DMA-based APIs  (e.g. HAL_HASH_xxx_Start_DMA())
-            (+++) Enable the DMAx interface clock using
-                   __DMAx_CLK_ENABLE()
-            (+++) Configure and enable one DMA channel to manage data transfer from
-                memory to peripheral (input channel). Managing data transfer from
-                peripheral to memory can be performed only using CPU.
-            (+++) Associate the initialized DMA handle to the HASH DMA handle
-                using  __HAL_LINKDMA()
-            (+++) Configure the priority and enable the NVIC for the transfer complete
-                interrupt on the DMA channel: use
-                 HAL_NVIC_SetPriority() and
-                 HAL_NVIC_EnableIRQ()
+/* Standard library Headers */
 
-    (#)Initialize the HASH HAL using HAL_HASH_Init(). This function:
-        (##) resorts to HAL_HASH_MspInit() for low-level initialization,
-        (##) configures the data type: 1-bit, 8-bit, 16-bit or 32-bit.
+/* Inter-component Headers */
 
-    (#)Three processing schemes are available:
-        (##) Polling mode: processing APIs are blocking functions
-             i.e. they process the data and wait till the digest computation is finished,
-             e.g. HAL_HASH_xxx_Start() for HASH or HAL_HMAC_xxx_Start() for HMAC
-        (##) Interrupt mode: processing APIs are not blocking functions
-                i.e. they process the data under interrupt,
-                e.g. HAL_HASH_xxx_Start_IT() for HASH or HAL_HMAC_xxx_Start_IT() for HMAC
-        (##) DMA mode: processing APIs are not blocking functions and the CPU is
-             not used for data transfer i.e. the data transfer is ensured by DMA,
-                e.g. HAL_HASH_xxx_Start_DMA() for HASH or HAL_HMAC_xxx_Start_DMA()
-                for HMAC. Note that in DMA mode, a call to HAL_HASH_xxx_Finish()
-                is then required to retrieve the digest.
-
-    (#)When the processing function is called after HAL_HASH_Init(), the HASH peripheral is
-       initialized and processes the buffer fed in input. When the input data have all been
-       fed to the Peripheral, the digest computation can start.
-
-    (#)Multi-buffer processing is possible in polling, interrupt and DMA modes.
-        (##) In polling mode, only multi-buffer HASH processing is possible.
-             API HAL_HASH_xxx_Accumulate() must be called for each input buffer, except for the last one.
-             User must resort to HAL_HASH_xxx_Accumulate_End() to enter the last one and retrieve as
-             well the computed digest.
-
-        (##) In interrupt mode, API HAL_HASH_xxx_Accumulate_IT() must be called for each input buffer,
-             except for the last one.
-             User must resort to HAL_HASH_xxx_Accumulate_End_IT() to enter the last one and retrieve as
-             well the computed digest.
-
-        (##) In DMA mode, multi-buffer HASH and HMAC processing are possible.
-              (+++) HASH processing: once initialization is done, MDMAT bit must be set
-               through __HAL_HASH_SET_MDMAT() macro.
-             From that point, each buffer can be fed to the Peripheral through HAL_HASH_xxx_Start_DMA() API.
-             Before entering the last buffer, reset the MDMAT bit with __HAL_HASH_RESET_MDMAT()
-             macro then wrap-up the HASH processing in feeding the last input buffer through the
-             same API HAL_HASH_xxx_Start_DMA(). The digest can then be retrieved with a call to
-             API HAL_HASH_xxx_Finish().
-             (+++) HMAC processing (requires to resort to extended functions):
-             after initialization, the key and the first input buffer are entered
-             in the Peripheral with the API HAL_HMACEx_xxx_Step1_2_DMA(). This carries out HMAC step 1 and
-             starts step 2.
-             The following buffers are next entered with the API  HAL_HMACEx_xxx_Step2_DMA(). At this
-             point, the HMAC processing is still carrying out step 2.
-             Then, step 2 for the last input buffer and step 3 are carried out by a single call
-             to HAL_HMACEx_xxx_Step2_3_DMA().
-
-             The digest can finally be retrieved with a call to API HAL_HASH_xxx_Finish().
-
-
-    (#)Context swapping.
-        (##) Two APIs are available to suspend HASH or HMAC processing:
-             (+++) HAL_HASH_SwFeed_ProcessSuspend() when data are entered by software (polling or IT mode),
-             (+++) HAL_HASH_DMAFeed_ProcessSuspend() when data are entered by DMA.
-
-        (##) When HASH or HMAC processing is suspended, HAL_HASH_ContextSaving() allows
-            to save in memory the Peripheral context. This context can be restored afterwards
-            to resume the HASH processing thanks to HAL_HASH_ContextRestoring().
-
-        (##) Once the HASH Peripheral has been restored to the same configuration as that at suspension
-             time, processing can be restarted with the same API call (same API, same handle,
-             same parameters) as done before the suspension. Relevant parameters to restart at
-             the proper location are internally saved in the HASH handle.
-
-    (#)Call HAL_HASH_DeInit() to deinitialize the HASH peripheral.
-
-     *** Remarks on message length ***
-     ===================================
-     [..]
-      (#) HAL in interruption mode (interruptions driven)
-
-        (##)Due to HASH peripheral hardware design, the peripheral interruption is triggered every 64 bytes.
-        This is why, for driver implementation simplicity s sake, user is requested to enter a message the
-        length of which is a multiple of 4 bytes.
-
-        (##) When the message length (in bytes) is not a multiple of words, a specific field exists in HASH_STR
-        to specify which bits to discard at the end of the complete message to process only the message bits
-        and not extra bits.
-
-        (##) If user needs to perform a hash computation of a large input buffer that is spread around various places
-        in memory and where each piece of this input buffer is not necessarily a multiple of 4 bytes in size, it becomes
-        necessary to use a temporary buffer to format the data accordingly before feeding them to the Peripheral.
-        It is advised to the user to
-       (+++) achieve the first formatting operation by software then enter the data
-       (+++) while the Peripheral is processing the first input set, carry out the second formatting
-        operation by software, to be ready when DINIS occurs.
-       (+++) repeat step 2 until the whole message is processed.
-
-     [..]
-      (#) HAL in DMA mode
-
-        (##) Again, due to hardware design, the DMA transfer to feed the data can only be done on a word-basis.
-        The same field described above in HASH_STR is used to specify which bits to discard at the end of the
-        DMA transfer to process only the message bits and not extra bits. Due to hardware implementation,
-        this is possible only at the end of the complete message. When several DMA transfers are needed to
-        enter the message, this is not applicable at the end of the intermediary transfers.
-
-        (##) Similarly to the interruption-driven mode, it is suggested to the user to format the consecutive
-        chunks of data by software while the DMA transfer and processing is on-going for the first parts of
-        the message. Due to the 32-bit alignment required for the DMA transfer, it is underlined that the
-        software formatting operation is more complex than in the IT mode.
-
-     *** Callback registration ***
-     ===================================
-     [..]
-      (#) The compilation define  USE_HAL_HASH_REGISTER_CALLBACKS when set to 1
-          allows the user to configure dynamically the driver callbacks.
-          Use function HAL_HASH_RegisterCallback() to register a user callback.
-
-      (#) Function HAL_HASH_RegisterCallback() allows to register following callbacks:
-            (+) InCpltCallback    : callback for input completion.
-            (+) DgstCpltCallback  : callback for digest computation completion.
-            (+) ErrorCallback     : callback for error.
-            (+) MspInitCallback   : HASH MspInit.
-            (+) MspDeInitCallback : HASH MspDeInit.
-          This function takes as parameters the HAL peripheral handle, the Callback ID
-          and a pointer to the user callback function.
-
-      (#) Use function HAL_HASH_UnRegisterCallback() to reset a callback to the default
-          weak (surcharged) function.
-          HAL_HASH_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-          and the Callback ID.
-          This function allows to reset following callbacks:
-            (+) InCpltCallback    : callback for input completion.
-            (+) DgstCpltCallback  : callback for digest computation completion.
-            (+) ErrorCallback     : callback for error.
-            (+) MspInitCallback   : HASH MspInit.
-            (+) MspDeInitCallback : HASH MspDeInit.
-
-      (#) By default, after the HAL_HASH_Init and if the state is HAL_HASH_STATE_RESET
-          all callbacks are reset to the corresponding legacy weak (surcharged) functions:
-          examples HAL_HASH_InCpltCallback(), HAL_HASH_DgstCpltCallback()
-          Exception done for MspInit and MspDeInit callbacks that are respectively
-          reset to the legacy weak (surcharged) functions in the HAL_HASH_Init
-          and HAL_HASH_DeInit only when these callbacks are null (not registered beforehand)
-          If not, MspInit or MspDeInit are not null, the HAL_HASH_Init and HAL_HASH_DeInit
-          keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-          Callbacks can be registered/unregistered in READY state only.
-          Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-          in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-          during the Init/DeInit.
-          In that case first register the MspInit/MspDeInit user callbacks
-          using HAL_HASH_RegisterCallback before calling HAL_HASH_DeInit
-          or HAL_HASH_Init function.
-
-          When The compilation define USE_HAL_HASH_REGISTER_CALLBACKS is set to 0 or
-          not defined, the callback registering feature is not available
-          and weak (surcharged) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
-
-/* Includes ------------------------------------------------------------------*/
+/* Intra-component Headers */
 #include "stm32l4xx_hal.h"
 
+/* Includes ------------------------------------------------------------------*/
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -306,8 +113,6 @@ static HAL_StatusTypeDef HMAC_Processing(HASH_HandleTypeDef *hhash, uint32_t Tim
       (+) Input data transfer to Peripheral completion
       (+) Calculated digest retrieval completion
       (+) Error management
-
-
 
 @endverbatim
   * @{
@@ -436,7 +241,6 @@ HAL_StatusTypeDef HAL_HASH_DeInit(HASH_HandleTypeDef *hhash)
   /* DeInit the low level hardware: CLOCK, NVIC */
   HAL_HASH_MspDeInit(hhash);
 #endif /* (USE_HAL_HASH_REGISTER_CALLBACKS) */
-
 
   /* Reset HASH handle status */
   hhash->Status = HAL_OK;
@@ -896,7 +700,6 @@ HAL_StatusTypeDef HAL_HASH_SHA1_Accmlt_End(HASH_HandleTypeDef *hhash, uint8_t *p
     [..] Note that HAL_HASH_IRQHandler() manages as well HASH Peripheral interruptions when in
          HMAC processing mode.
 
-
 @endverbatim
   * @{
   */
@@ -970,7 +773,6 @@ HAL_StatusTypeDef HAL_HASH_SHA1_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pIn
 {
   return HASH_Start_IT(hhash, pInBuffer, Size, pOutBuffer, HASH_ALGOSELECTION_SHA1);
 }
-
 
 /**
   * @brief  If not already done, initialize the HASH peripheral in SHA1 mode then
@@ -1112,7 +914,6 @@ HAL_StatusTypeDef HAL_HASH_SHA1_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pI
   return HASH_Start_DMA(hhash, pInBuffer, Size, HASH_ALGOSELECTION_SHA1);
 }
 
-
 /**
   * @brief  Return the computed digest in SHA1 mode.
   * @note   The API waits for DCIS to be set then reads the computed digest.
@@ -1145,7 +946,6 @@ HAL_StatusTypeDef HAL_HASH_SHA1_Finish(HASH_HandleTypeDef *hhash, uint8_t *pOutB
          (++) HAL_HMAC_MD5_Start()
       (+) SHA1
          (++) HAL_HMAC_SHA1_Start()
-
 
 @endverbatim
   * @{
@@ -1193,7 +993,6 @@ HAL_StatusTypeDef HAL_HMAC_SHA1_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuf
   * @}
   */
 
-
 /** @defgroup HASH_Exported_Functions_Group6 HMAC processing functions in interrupt mode
   *  @brief   HMAC processing functions using interrupt mode.
   *
@@ -1211,7 +1010,6 @@ HAL_StatusTypeDef HAL_HMAC_SHA1_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuf
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC MD5 mode, next process pInBuffer then
@@ -1253,8 +1051,6 @@ HAL_StatusTypeDef HAL_HMAC_SHA1_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pIn
   * @}
   */
 
-
-
 /** @defgroup HASH_Exported_Functions_Group7 HMAC processing functions in DMA mode
   *  @brief   HMAC processing functions using DMA modes.
   *
@@ -1276,7 +1072,6 @@ HAL_StatusTypeDef HAL_HMAC_SHA1_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pIn
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC MD5 mode then initiate the required
@@ -1301,7 +1096,6 @@ HAL_StatusTypeDef HAL_HMAC_MD5_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pIn
 {
   return  HMAC_Start_DMA(hhash, pInBuffer, Size, HASH_ALGOSELECTION_MD5);
 }
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC SHA1 mode then initiate the required
@@ -1357,8 +1151,6 @@ HAL_StatusTypeDef HAL_HMAC_SHA1_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pI
       (+) when input are fed to the Peripheral by DMA
           (++) HAL_HASH_DMAFeed_ProcessSuspend()
 
-
-
 @endverbatim
   * @{
   */
@@ -1373,7 +1165,6 @@ HAL_HASH_StateTypeDef HAL_HASH_GetState(HASH_HandleTypeDef *hhash)
 {
   return hhash->State;
 }
-
 
 /**
   * @brief Return the HASH HAL status.
@@ -1428,7 +1219,6 @@ void HAL_HASH_ContextSaving(HASH_HandleTypeDef *hhash, uint8_t *pMemBuffer)
   }
 }
 
-
 /**
   * @brief  Restore the HASH context in case of processing resumption.
   * @param  hhash HASH handle.
@@ -1472,7 +1262,6 @@ void HAL_HASH_ContextRestoring(HASH_HandleTypeDef *hhash, uint8_t *pMemBuffer)
     csr_ptr += 4U;
   }
 }
-
 
 /**
   * @brief  Initiate HASH processing suspension when in polling or interruption mode.
@@ -1629,7 +1418,6 @@ uint32_t HAL_HASH_GetError(HASH_HandleTypeDef *hhash)
   * @}
   */
 
-
 /**
   * @}
   */
@@ -1678,7 +1466,6 @@ static void HASH_DMAXferCplt(DMA_HandleTypeDef *hdma)
       /* HMAC processing: depending on the current HMAC step and whether or
       not multi-buffer processing is on-going, the next step is initiated
       and MDMAT bit is set.  */
-
 
       if (hhash->Phase == HAL_HASH_PHASE_HMAC_STEP_3)
       {
@@ -1930,7 +1717,6 @@ static HAL_StatusTypeDef HASH_WriteData(HASH_HandleTypeDef *hhash, uint8_t *pInB
     /*hhash->HashInCount += 4U;*/
   }
 
-
   return  HAL_OK;
 }
 
@@ -2004,8 +1790,6 @@ static void HASH_GetDigest(uint8_t *pMsgDigest, uint8_t Size)
   }
 }
 
-
-
 /**
   * @brief  Handle HASH processing Timeout.
   * @param  hhash HASH handle.
@@ -2066,7 +1850,6 @@ static HAL_StatusTypeDef HASH_WaitOnFlagUntilTimeout(HASH_HandleTypeDef *hhash, 
   }
   return HAL_OK;
 }
-
 
 /**
   * @brief  HASH processing in interruption mode.
@@ -2210,7 +1993,6 @@ static HAL_StatusTypeDef HASH_IT(HASH_HandleTypeDef *hhash)
     return HAL_BUSY;
   }
 }
-
 
 /**
   * @brief  Write a block of data in HASH Peripheral in interruption mode.
@@ -2423,7 +2205,6 @@ static HAL_StatusTypeDef HMAC_Processing(HASH_HandleTypeDef *hhash, uint32_t Tim
     hhash->HashKeyCount    = hhash->Init.KeySize;
   }
 
-
   /* HMAC Step 3 processing.
       After phase check, HMAC_Processing() may
       - directly start up from this point in resumption case
@@ -2478,7 +2259,6 @@ static HAL_StatusTypeDef HMAC_Processing(HASH_HandleTypeDef *hhash, uint32_t Tim
   return HAL_OK;
 }
 
-
 /**
   * @brief  Initialize the HASH peripheral, next process pInBuffer then
   *         read the computed digest.
@@ -2497,7 +2277,6 @@ HAL_StatusTypeDef HASH_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint
   uint8_t *pInBuffer_tmp;  /* input data address, input parameter of HASH_WriteData()         */
   uint32_t Size_tmp; /* input data size (in bytes), input parameter of HASH_WriteData() */
   HAL_HASH_StateTypeDef State_tmp = hhash->State;
-
 
   /* Initiate HASH processing in case of start or resumption */
   if ((State_tmp == HAL_HASH_STATE_READY) || (State_tmp == HAL_HASH_STATE_SUSPENDED))
@@ -2570,7 +2349,6 @@ HAL_StatusTypeDef HASH_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint
       return HAL_ERROR;
     }
 
-
     /* Write input buffer in Data register */
     hhash->Status = HASH_WriteData(hhash, pInBuffer_tmp, Size_tmp);
     if (hhash->Status != HAL_OK)
@@ -2613,7 +2391,6 @@ HAL_StatusTypeDef HASH_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint
     return HAL_BUSY;
   }
 }
-
 
 /**
   * @brief  If not already done, initialize the HASH peripheral then
@@ -2714,9 +2491,7 @@ HAL_StatusTypeDef HASH_Accumulate(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer,
     return HAL_BUSY;
   }
 
-
 }
-
 
 /**
   * @brief  If not already done, initialize the HASH peripheral then
@@ -2840,8 +2615,6 @@ HAL_StatusTypeDef HASH_Accumulate_IT(HASH_HandleTypeDef *hhash, uint8_t *pInBuff
 
 }
 
-
-
 /**
   * @brief  Initialize the HASH peripheral, next process pInBuffer then
   *         read the computed digest in interruption mode.
@@ -2889,7 +2662,6 @@ HAL_StatusTypeDef HASH_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, u
 
       /* Configure the number of valid bits in last word of the message */
       __HAL_HASH_SET_NBVALIDBITS(SizeVar);
-
 
       hhash->HashInCount = SizeVar;            /* Counter used to keep track of number of data
                                                   to be fed to the Peripheral */
@@ -2978,7 +2750,6 @@ HAL_StatusTypeDef HASH_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, u
       }
     } /*  if (polling_step == 1) */
 
-
     /* Process Unlock */
     __HAL_UNLOCK(hhash);
 
@@ -2994,7 +2765,6 @@ HAL_StatusTypeDef HASH_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, u
   }
 
 }
-
 
 /**
   * @brief  Initialize the HASH peripheral then initiate a DMA transfer
@@ -3036,7 +2806,6 @@ HAL_StatusTypeDef HASH_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, 
       hhash->State = HAL_HASH_STATE_READY;
       return  HAL_ERROR;
     }
-
 
     /* Process Locked */
     __HAL_LOCK(hhash);
@@ -3173,7 +2942,6 @@ HAL_StatusTypeDef HASH_Finish(HASH_HandleTypeDef *hhash, uint8_t *pOutBuffer, ui
 
 }
 
-
 /**
   * @brief  Initialize the HASH peripheral in HMAC mode, next process pInBuffer then
   *         read the computed digest.
@@ -3250,8 +3018,6 @@ HAL_StatusTypeDef HMAC_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint
     return HAL_BUSY;
   }
 }
-
-
 
 /**
   * @brief  Initialize the HASH peripheral in HMAC mode, next process pInBuffer then
@@ -3360,8 +3126,6 @@ HAL_StatusTypeDef HMAC_Start_IT(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, u
 
 }
 
-
-
 /**
   * @brief  Initialize the HASH peripheral in HMAC mode then initiate the required
   *         DMA transfers to feed the key and the input buffer to the Peripheral.
@@ -3399,7 +3163,6 @@ HAL_StatusTypeDef HMAC_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, 
       hhash->State = HAL_HASH_STATE_READY;
       return  HAL_ERROR;
     }
-
 
     /* Process Locked */
     __HAL_LOCK(hhash);
@@ -3488,7 +3251,6 @@ HAL_StatusTypeDef HMAC_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, 
       inputaddr = (uint32_t)(hhash->pHashInBuffPtr);  /* Input message address       */
       inputSize = hhash->HashInCount;                 /* Input message size in bytes */
     }
-
 
     /* Set the HASH DMA transfer complete callback */
     hhash->hdmain->XferCpltCallback = HASH_DMAXferCplt;

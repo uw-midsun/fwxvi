@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dma2d.h
-  * @author  MCD Application Team
-  * @brief   Header file of DMA2D HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dma2d.h
+ *
+ * @brief   Header file of DMA2D HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DMA2D_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -79,7 +78,6 @@ typedef struct
                                                for the output pixel format converter.
                                                This parameter can be one value of @ref DMA2D_RB_Swap. */
 
-
 #if defined(DMA2D_OUTPUT_TWO_BY_TWO_SWAP_SUPPORT)
   uint32_t             BytesSwap;         /*!< Select byte regular mode or bytes swap mode (two by two).
                                                This parameter can be one value of @ref DMA2D_Bytes_Swap. */
@@ -92,7 +90,6 @@ typedef struct
 #endif /* DMA2D_LINE_OFFSET_MODE_SUPPORT */
 
 } DMA2D_InitTypeDef;
-
 
 /**
   * @brief DMA2D Layer structure definition
@@ -125,7 +122,6 @@ typedef struct
 
   uint32_t             RedBlueSwap;       /*!< Select regular mode (RGB or ARGB) or swap mode (BGR or ABGR).
                                                This parameter can be one value of @ref DMA2D_RB_Swap. */
-
 
 } DMA2D_LayerCfgTypeDef;
 
@@ -280,8 +276,6 @@ typedef void (*pDMA2D_CallbackTypeDef)(DMA2D_HandleTypeDef *hdma2d); /*!< Pointe
   * @}
   */
 
-
-
 #if defined(DMA2D_LINE_OFFSET_MODE_SUPPORT)
 /** @defgroup DMA2D_Line_Offset_Mode DMA2D Line Offset Mode
   * @{
@@ -303,7 +297,6 @@ typedef void (*pDMA2D_CallbackTypeDef)(DMA2D_HandleTypeDef *hdma2d); /*!< Pointe
   * @}
   */
 #endif /* DMA2D_OUTPUT_TWO_BY_TWO_SWAP_SUPPORT */
-
 
 /** @defgroup DMA2D_CLUT_CM DMA2D CLUT Color Mode
   * @{
@@ -355,7 +348,6 @@ typedef enum
 } HAL_DMA2D_CallbackIDTypeDef;
 #endif /* USE_HAL_DMA2D_REGISTER_CALLBACKS */
 
-
 /**
   * @}
   */
@@ -378,14 +370,12 @@ typedef enum
 #define __HAL_DMA2D_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_DMA2D_STATE_RESET)
 #endif /* USE_HAL_DMA2D_REGISTER_CALLBACKS */
 
-
 /**
   * @brief  Enable the DMA2D.
   * @param  __HANDLE__ DMA2D handle
   * @retval None.
   */
 #define __HAL_DMA2D_ENABLE(__HANDLE__)        ((__HANDLE__)->Instance->CR |= DMA2D_CR_START)
-
 
 /* Interrupt & Flag management */
 /**
@@ -491,7 +481,6 @@ HAL_StatusTypeDef HAL_DMA2D_UnRegisterCallback(DMA2D_HandleTypeDef *hdma2d, HAL_
 /**
   * @}
   */
-
 
 /** @addtogroup DMA2D_Exported_Functions_Group2 IO operation functions
   * @{
@@ -628,7 +617,6 @@ uint32_t               HAL_DMA2D_GetError(const DMA2D_HandleTypeDef *hdma2d);
   * @}
   */
 
-
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup DMA2D_Private_Macros DMA2D Private Macros
   * @{
@@ -687,7 +675,6 @@ uint32_t               HAL_DMA2D_GetError(const DMA2D_HandleTypeDef *hdma2d);
 #define IS_DMA2D_BYTES_SWAP(BYTES_SWAP) (((BYTES_SWAP) == DMA2D_BYTES_REGULAR) || \
                                          ((BYTES_SWAP) == DMA2D_BYTES_SWAP))
 #endif /* DMA2D_OUTPUT_TWO_BY_TWO_SWAP_SUPPORT */
-
 
 #define IS_DMA2D_CLUT_CM(CLUT_CM)             (((CLUT_CM) == DMA2D_CCM_ARGB8888) || ((CLUT_CM) == DMA2D_CCM_RGB888))
 #define IS_DMA2D_CLUT_SIZE(CLUT_SIZE)         ((CLUT_SIZE) <= DMA2D_CLUT_SIZE)

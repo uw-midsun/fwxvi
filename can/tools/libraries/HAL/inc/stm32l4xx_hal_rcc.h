@@ -1,19 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rcc.h
-  * @author  MCD Application Team
-  * @brief   Header file of RCC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rcc.h
+ *
+ * @brief   Header file of RCC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_rcc_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_RCC_H
@@ -24,7 +26,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -704,7 +705,6 @@ typedef struct
                                                } while(0)
 #endif /* GFXMMU */
 
-
 #define __HAL_RCC_DMA1_CLK_DISABLE()           CLEAR_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA1EN)
 
 #define __HAL_RCC_DMA2_CLK_DISABLE()           CLEAR_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA2EN)
@@ -916,7 +916,6 @@ typedef struct
                                                  UNUSED(tmpreg); \
                                                } while(0)
 #endif /* SDMMC2 */
-
 
 #define __HAL_RCC_GPIOA_CLK_DISABLE()          CLEAR_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOAEN)
 
@@ -1340,7 +1339,6 @@ typedef struct
                                                  UNUSED(tmpreg); \
                                                } while(0)
 
-
 #define __HAL_RCC_TIM2_CLK_DISABLE()           CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN)
 
 #if defined(TIM3)
@@ -1509,7 +1507,6 @@ typedef struct
                                                  UNUSED(tmpreg); \
                                                } while(0)
 
-
 #define __HAL_RCC_TIM15_CLK_ENABLE()           do { \
                                                  __IO uint32_t tmpreg; \
                                                  SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM15EN); \
@@ -1585,7 +1582,6 @@ typedef struct
                                                  UNUSED(tmpreg); \
                                                } while(0)
 #endif /* DSI */
-
 
 #define __HAL_RCC_SYSCFG_CLK_DISABLE()         CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN)
 
@@ -1664,7 +1660,6 @@ typedef struct
 #if defined(GFXMMU)
 #define __HAL_RCC_GFXMMU_IS_CLK_ENABLED()      (READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GFXMMUEN) != 0U)
 #endif /* GFXMMU */
-
 
 #define __HAL_RCC_DMA1_IS_CLK_DISABLED()       (READ_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA1EN) == 0U)
 
@@ -1763,7 +1758,6 @@ typedef struct
 #if defined(SDMMC2)
 #define __HAL_RCC_SDMMC2_IS_CLK_ENABLED()      (READ_BIT(RCC->AHB2ENR, RCC_AHB2ENR_SDMMC2EN) != 0U)
 #endif /* SDMMC2 */
-
 
 #define __HAL_RCC_GPIOA_IS_CLK_DISABLED()      (READ_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOAEN) == 0U)
 
@@ -1983,7 +1977,6 @@ typedef struct
 
 #define __HAL_RCC_LPTIM2_IS_CLK_ENABLED()      (READ_BIT(RCC->APB1ENR2, RCC_APB1ENR2_LPTIM2EN) != 0U)
 
-
 #define __HAL_RCC_TIM2_IS_CLK_DISABLED()       (READ_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN) == 0U)
 
 #if defined(TIM3)
@@ -2140,7 +2133,6 @@ typedef struct
 #define __HAL_RCC_DSI_IS_CLK_ENABLED()         (READ_BIT(RCC->APB2ENR, RCC_APB2ENR_DSIEN) != 0U)
 #endif /* DSI */
 
-
 #define __HAL_RCC_SYSCFG_IS_CLK_DISABLED()     (READ_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN) == 0U)
 
 #if defined(SDMMC1) && defined(RCC_APB2ENR_SDMMC1EN)
@@ -2216,7 +2208,6 @@ typedef struct
 #if defined(GFXMMU)
 #define __HAL_RCC_GFXMMU_FORCE_RESET()         SET_BIT(RCC->AHB1RSTR, RCC_AHB1RSTR_GFXMMURST)
 #endif /* GFXMMU */
-
 
 #define __HAL_RCC_AHB1_RELEASE_RESET()         WRITE_REG(RCC->AHB1RSTR, 0x00000000UL)
 
@@ -2315,7 +2306,6 @@ typedef struct
 #if defined(SDMMC2)
 #define __HAL_RCC_SDMMC2_FORCE_RESET()         SET_BIT(RCC->AHB2RSTR, RCC_AHB2RSTR_SDMMC2RST)
 #endif /* SDMMC2 */
-
 
 #define __HAL_RCC_AHB2_RELEASE_RESET()         WRITE_REG(RCC->AHB2RSTR, 0x00000000UL)
 
@@ -2532,7 +2522,6 @@ typedef struct
 
 #define __HAL_RCC_LPTIM2_FORCE_RESET()         SET_BIT(RCC->APB1RSTR2, RCC_APB1RSTR2_LPTIM2RST)
 
-
 #define __HAL_RCC_APB1_RELEASE_RESET()         do { \
                                                  WRITE_REG(RCC->APB1RSTR1, 0x00000000UL); \
                                                  WRITE_REG(RCC->APB1RSTR2, 0x00000000UL); \
@@ -2684,7 +2673,6 @@ typedef struct
 #define __HAL_RCC_DSI_FORCE_RESET()            SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_DSIRST)
 #endif /* DSI */
 
-
 #define __HAL_RCC_APB2_RELEASE_RESET()         WRITE_REG(RCC->APB2RSTR, 0x00000000UL)
 
 #define __HAL_RCC_SYSCFG_RELEASE_RESET()       CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_SYSCFGRST)
@@ -2767,7 +2755,6 @@ typedef struct
 #if defined(GFXMMU)
 #define __HAL_RCC_GFXMMU_CLK_SLEEP_ENABLE()    SET_BIT(RCC->AHB1SMENR, RCC_AHB1SMENR_GFXMMUSMEN)
 #endif /* GFXMMU */
-
 
 #define __HAL_RCC_DMA1_CLK_SLEEP_DISABLE()     CLEAR_BIT(RCC->AHB1SMENR, RCC_AHB1SMENR_DMA1SMEN)
 
@@ -2875,7 +2862,6 @@ typedef struct
 #if defined(SDMMC2)
 #define __HAL_RCC_SDMMC2_CLK_SLEEP_ENABLE()    SET_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_SDMMC2SMEN)
 #endif /* SDMMC2 */
-
 
 #define __HAL_RCC_GPIOA_CLK_SLEEP_DISABLE()    CLEAR_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_GPIOASMEN)
 
@@ -3103,7 +3089,6 @@ typedef struct
 
 #define __HAL_RCC_LPTIM2_CLK_SLEEP_ENABLE()    SET_BIT(RCC->APB1SMENR2, RCC_APB1SMENR2_LPTIM2SMEN)
 
-
 #define __HAL_RCC_TIM2_CLK_SLEEP_DISABLE()     CLEAR_BIT(RCC->APB1SMENR1, RCC_APB1SMENR1_TIM2SMEN)
 
 #if defined(TIM3)
@@ -3259,7 +3244,6 @@ typedef struct
 #define __HAL_RCC_DSI_CLK_SLEEP_ENABLE()       SET_BIT(RCC->APB2SMENR, RCC_APB2SMENR_DSISMEN)
 #endif /* DSI */
 
-
 #define __HAL_RCC_SYSCFG_CLK_SLEEP_DISABLE()   CLEAR_BIT(RCC->APB2SMENR, RCC_APB2SMENR_SYSCFGSMEN)
 
 #if defined(SDMMC1) && defined(RCC_APB2SMENR_SDMMC1SMEN)
@@ -3340,7 +3324,6 @@ typedef struct
 #if defined(GFXMMU)
 #define __HAL_RCC_GFXMMU_IS_CLK_SLEEP_ENABLED()  (READ_BIT(RCC->AHB1SMENR, RCC_AHB1SMENR_GFXMMUSMEN) != 0U)
 #endif /* GFXMMU */
-
 
 #define __HAL_RCC_DMA1_IS_CLK_SLEEP_DISABLED()   (READ_BIT(RCC->AHB1SMENR, RCC_AHB1SMENR_DMA1SMEN) == 0U)
 
@@ -3449,7 +3432,6 @@ typedef struct
 #define __HAL_RCC_SDMMC2_IS_CLK_SLEEP_ENABLED()  (READ_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_SDMMC2SMEN) != 0U)
 #endif /* SDMMC2 */
 
-
 #define __HAL_RCC_GPIOA_IS_CLK_SLEEP_DISABLED()  (READ_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_GPIOASMEN) == 0U)
 
 #define __HAL_RCC_GPIOB_IS_CLK_SLEEP_DISABLED()  (READ_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_GPIOBSMEN) == 0U)
@@ -3548,7 +3530,6 @@ typedef struct
 #if defined(FMC_BANK1)
 #define __HAL_RCC_FMC_IS_CLK_SLEEP_ENABLED()     (READ_BIT(RCC->AHB3SMENR, RCC_AHB3SMENR_FMCSMEN) != 0U)
 #endif /* FMC_BANK1 */
-
 
 #if defined(QUADSPI)
 #define __HAL_RCC_QSPI_IS_CLK_SLEEP_DISABLED()   (READ_BIT(RCC->AHB3SMENR, RCC_AHB3SMENR_QSPISMEN) == 0U)
@@ -3676,7 +3657,6 @@ typedef struct
 #endif /* SWPMI1 */
 
 #define __HAL_RCC_LPTIM2_IS_CLK_SLEEP_ENABLED()    (READ_BIT(RCC->APB1SMENR2, RCC_APB1SMENR2_LPTIM2SMEN) != 0U)
-
 
 #define __HAL_RCC_TIM2_IS_CLK_SLEEP_DISABLED()     (READ_BIT(RCC->APB1SMENR1, RCC_APB1SMENR1_TIM2SMEN) == 0U)
 
@@ -3832,7 +3812,6 @@ typedef struct
 #if defined(DSI)
 #define __HAL_RCC_DSI_IS_CLK_SLEEP_ENABLED()       (READ_BIT(RCC->APB2SMENR, RCC_APB2SMENR_DSISMEN) != 0U)
 #endif /* DSI */
-
 
 #define __HAL_RCC_SYSCFG_IS_CLK_SLEEP_DISABLED()   (READ_BIT(RCC->APB2SMENR, RCC_APB2SMENR_SYSCFGSMEN) == 0U)
 
@@ -4211,7 +4190,6 @@ typedef struct
 #define __HAL_RCC_RTC_CONFIG(__RTC_CLKSOURCE__)  \
                   MODIFY_REG( RCC->BDCR, RCC_BDCR_RTCSEL, (__RTC_CLKSOURCE__))
 
-
 /** @brief  Macro to get the RTC clock source.
   * @retval The returned value can be one of the following:
   *            @arg @ref RCC_RTCCLKSOURCE_NONE  No clock selected as RTC clock.
@@ -4432,7 +4410,6 @@ typedef struct
   */
 #define __HAL_RCC_WAKEUPSTOP_CLK_CONFIG(__STOPWUCLK__) \
                   MODIFY_REG(RCC->CFGR, RCC_CFGR_STOPWUCK, (__STOPWUCLK__))
-
 
 /** @brief  Macro to configure the MCO clock.
   * @param  __MCOCLKSOURCE__ specifies the MCO clock source.
@@ -4819,13 +4796,11 @@ typedef struct
   */
 
 /* Include RCC HAL Extended module */
-#include "stm32l4xx_hal_rcc_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup RCC_Exported_Functions
   * @{
   */
-
 
 /** @addtogroup RCC_Exported_Functions_Group1
   * @{

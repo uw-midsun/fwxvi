@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_rtc.h
-  * @author  MCD Application Team
-  * @brief   Header file of RTC LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_rtc.h
+ *
+ * @brief   Header file of RTC LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_RTC_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -1133,7 +1132,6 @@ __STATIC_INLINE void LL_RTC_DisableInitMode(RTC_TypeDef *RTCx)
 }
 #endif /* #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
 
-
 #if defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /**
   * @brief  Set Binary mode (Sub Second Register)
@@ -1209,7 +1207,6 @@ __STATIC_INLINE uint32_t LL_RTC_GetBinMixBCDU(RTC_TypeDef *RTCx)
   return (uint32_t)(READ_BIT(RTCx->ICSR, RTC_ICSR_BCDU));
 }
 #endif /* #if defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
-
 
 /**
   * @brief  Set Output polarity (pin is low when ALRAF/ALRBF/WUTF is asserted)
@@ -3426,7 +3423,6 @@ __STATIC_INLINE uint32_t LL_RTC_CAL_LowPower_IsEnabled(RTC_TypeDef *RTCx)
   * @}
   */
 
-
 #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /**
   * @brief  Activate timestamp on tamper detection event
@@ -3938,7 +3934,6 @@ __STATIC_INLINE void LL_RTC_ClearFlag_SSRU(RTC_TypeDef *RTCx)
 }
 #endif /* #if defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
 
-
 /**
   * @brief  Get Initialization flag
   * @rmtoll RTC_ICSR          INITF         LL_RTC_IsActiveFlag_INIT
@@ -4153,7 +4148,6 @@ __STATIC_INLINE uint32_t LL_RTC_IsActiveFlag_TAMP3M(TAMP_TypeDef *TAMPx)
   return (READ_BIT(TAMPx->MISR, TAMP_MISR_TAMP3MF) == (TAMP_MISR_TAMP3MF));
 }
 #endif
-
 
 /**
   * @brief  Clear tamper 1 detection flag.
@@ -5325,7 +5319,6 @@ __STATIC_INLINE void LL_RTC_DisableIT_ALRA(RTC_TypeDef *RTCx)
 {
   CLEAR_BIT(RTCx->CR, RTC_CR_ALRAIE);
 }
-
 
 #if defined(RTC_TAMPER3_SUPPORT)
 /**

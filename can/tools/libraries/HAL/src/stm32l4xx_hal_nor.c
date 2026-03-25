@@ -1,110 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_nor.c
-  * @author  MCD Application Team
-  * @brief   NOR HAL module driver.
-  *          This file provides a generic firmware to drive NOR memories mounted
-  *          as external device.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      This driver is a generic layered driver which contains a set of APIs used to
-      control NOR flash memories. It uses the FMC layer functions to interface
-      with NOR devices. This driver is used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_nor.c
+ *
+ * @brief   NOR HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (+) NOR flash memory configuration sequence using the function HAL_NOR_Init()
-          with control and timing parameters for both normal and extended mode.
+/* Standard library Headers */
 
-      (+) Read NOR flash memory manufacturer code and device IDs using the function
-          HAL_NOR_Read_ID(). The read information is stored in the NOR_ID_TypeDef
-          structure declared by the function caller.
+/* Inter-component Headers */
 
-      (+) Access NOR flash memory by read/write data unit operations using the functions
-          HAL_NOR_Read(), HAL_NOR_Program().
-
-      (+) Perform NOR flash erase block/chip operations using the functions
-          HAL_NOR_Erase_Block() and HAL_NOR_Erase_Chip().
-
-      (+) Read the NOR flash CFI (common flash interface) IDs using the function
-          HAL_NOR_Read_CFI(). The read information is stored in the NOR_CFI_TypeDef
-          structure declared by the function caller.
-
-      (+) You can also control the NOR device by calling the control APIs HAL_NOR_WriteOperation_Enable()/
-          HAL_NOR_WriteOperation_Disable() to respectively enable/disable the NOR write operation
-
-      (+) You can monitor the NOR device HAL state by calling the function
-          HAL_NOR_GetState()
-    [..]
-     (@) This driver is a set of generic APIs which handle standard NOR flash operations.
-         If a NOR flash device contains different operations and/or implementations,
-         it should be implemented separately.
-
-     *** NOR HAL driver macros list ***
-     =============================================
-     [..]
-       Below the list of most used macros in NOR HAL driver.
-
-      (+) NOR_WRITE : NOR memory write data to specified address
-
-    *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_NOR_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
-
-      Use Functions HAL_NOR_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) MspInitCallback    : NOR MspInit.
-        (+) MspDeInitCallback  : NOR MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
-
-      Use function HAL_NOR_UnRegisterCallback() to reset a callback to the default
-      weak (overridden) function. It allows to reset following callbacks:
-        (+) MspInitCallback    : NOR MspInit.
-        (+) MspDeInitCallback  : NOR MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
-
-      By default, after the HAL_NOR_Init and if the state is HAL_NOR_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (overridden) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (overridden) functions in the HAL_NOR_Init
-      and  HAL_NOR_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the HAL_NOR_Init and HAL_NOR_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using HAL_NOR_RegisterCallback before calling HAL_NOR_DeInit
-      or HAL_NOR_Init function.
-
-      When The compilation define USE_HAL_NOR_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (overridden) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if  defined(FMC_BANK1)
 

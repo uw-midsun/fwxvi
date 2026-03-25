@@ -1,91 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_flash.c
-  * @author  MCD Application Team
-  * @brief   FLASH HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the internal FLASH memory:
-  *           + Program operations functions
-  *           + Memory Control functions
-  *           + Peripheral Errors functions
-  *
- @verbatim
-  ==============================================================================
-                        ##### FLASH peripheral features #####
-  ==============================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_flash.c
+ *
+ * @brief   FLASH HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..] The Flash memory interface manages CPU AHB I-Code and D-Code accesses
-       to the Flash memory. It implements the erase and program Flash memory operations
-       and the read and write protection mechanisms.
+/* Standard library Headers */
 
-  [..] The Flash memory interface accelerates code execution with a system of instruction
-       prefetch and cache lines.
+/* Inter-component Headers */
 
-  [..] The FLASH main features are:
-      (+) Flash memory read operations
-      (+) Flash memory program/erase operations
-      (+) Read / write protections
-      (+) Option bytes programming
-      (+) Prefetch on I-Code
-      (+) 32 cache lines of 4*64 bits on I-Code
-      (+) 8 cache lines of 4*64 bits on D-Code
-      (+) Error code correction (ECC) : Data in flash are 72-bits word
-          (8 bits added per double word)
-
-
-                        ##### How to use this driver #####
- ==============================================================================
-    [..]
-      This driver provides functions and macros to configure and program the FLASH
-      memory of all STM32L4xx devices.
-
-      (#) Flash Memory IO Programming functions:
-           (++) Lock and Unlock the FLASH interface using HAL_FLASH_Unlock() and
-                HAL_FLASH_Lock() functions
-           (++) Program functions: double word and fast program (full row programming)
-           (++) There Two modes of programming :
-            (+++) Polling mode using HAL_FLASH_Program() function
-            (+++) Interrupt mode using HAL_FLASH_Program_IT() function
-
-      (#) Interrupts and flags management functions :
-           (++) Handle FLASH interrupts by calling HAL_FLASH_IRQHandler()
-           (++) Callback functions are called when the flash operations are finished :
-                HAL_FLASH_EndOfOperationCallback() when everything is ok, otherwise
-                HAL_FLASH_OperationErrorCallback()
-           (++) Get error flag status by calling HAL_GetError()
-
-      (#) Option bytes management functions :
-           (++) Lock and Unlock the option bytes using HAL_FLASH_OB_Unlock() and
-                HAL_FLASH_OB_Lock() functions
-           (++) Launch the reload of the option bytes using HAL_FLASH_Launch() function.
-                In this case, a reset is generated
-
-    [..]
-      In addition to these functions, this driver includes a set of macros allowing
-      to handle the following operations:
-       (+) Set the latency
-       (+) Enable/Disable the prefetch buffer
-       (+) Enable/Disable the Instruction cache and the Data cache
-       (+) Reset the Instruction cache and the Data cache
-       (+) Enable/Disable the Flash power-down during low-power run and sleep modes
-       (+) Enable/Disable the Flash interrupts
-       (+) Monitor the Flash flags status
-
- @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{

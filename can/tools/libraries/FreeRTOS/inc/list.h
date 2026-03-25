@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    list.h
+ *
+ * @brief   List
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup list
+ * @brief    list Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -53,7 +76,6 @@
  * \page ListIntroduction List Implementation
  * \ingroup FreeRTOSIntro
  */
-
 
 #ifndef LIST_H
 #define LIST_H
@@ -135,7 +157,6 @@
     #define listTEST_LIST_ITEM_INTEGRITY( pxItem )                      configASSERT( ( ( pxItem )->xListItemIntegrityValue1 == pdINTEGRITY_CHECK_VALUE ) && ( ( pxItem )->xListItemIntegrityValue2 == pdINTEGRITY_CHECK_VALUE ) )
     #define listTEST_LIST_INTEGRITY( pxList )                           configASSERT( ( ( pxList )->xListIntegrityValue1 == pdINTEGRITY_CHECK_VALUE ) && ( ( pxList )->xListIntegrityValue2 == pdINTEGRITY_CHECK_VALUE ) )
 #endif /* configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES */
-
 
 /*
  * Definition of the only type of object that a list can contain.
@@ -509,3 +530,5 @@ UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTIO
 /* *INDENT-ON* */
 
 #endif /* ifndef LIST_H */
+
+/** @} */

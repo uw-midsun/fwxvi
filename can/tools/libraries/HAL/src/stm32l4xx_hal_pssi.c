@@ -1,150 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pssi.c
-  * @author  MCD Application Team
-  * @brief   PSSI HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Parallel Synchronous Slave Interface (PSSI) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral State and Errors functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The PSSI HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pssi.c
+ *
+ * @brief   PSSI HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Declare a PSSI_HandleTypeDef handle structure, for example:
-        PSSI_HandleTypeDef  hpssi;
+/* Standard library Headers */
 
-    (#) Initialize the PSSI low level resources by implementing the @ref HAL_PSSI_MspInit() API:
-        (##) Enable the PSSIx interface clock
-        (##) PSSI pins configuration
-            (+++) Enable the clock for the PSSI GPIOs
-            (+++) Configure PSSI pins as alternate function open-drain
-        (##) NVIC configuration if you need to use interrupt process
-            (+++) Configure the PSSIx interrupt priority
-            (+++) Enable the NVIC PSSI IRQ Channel
-        (##) DMA Configuration if you need to use DMA process
-            (+++) Declare  DMA_HandleTypeDef handles structure for the transmit and receive
-            (+++) Enable the DMAx interface clock
-            (+++) Configure the DMA handle parameters
-            (+++) Configure the DMA Tx and Rx
-            (+++) Associate the initialized DMA handle to the hpssi DMA Tx and Rx handle
-            (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on
-                  the DMA Tx and Rx
+/* Inter-component Headers */
 
-    (#) Configure the Communication Bus Width,  Control Signals, Input Polarity and Output Polarity
-         in the hpssi Init structure.
-
-    (#) Initialize the PSSI registers by calling the @ref HAL_PSSI_Init(), configure also the low level Hardware
-        (GPIO, CLOCK, NVIC...etc) by calling the customized @ref HAL_PSSI_MspInit(&hpssi) API.
-
-    (#) For PSSI IO operations, two operation modes are available within this driver :
-
-    *** Polling mode IO operation ***
-    =================================
-    [..]
-      (+) Transmit an amount of data by byte in blocking mode using @ref HAL_PSSI_Transmit()
-      (+) Receive an amount of data by byte in blocking mode using @ref HAL_PSSI_Receive()
-
-    *** DMA mode IO operation ***
-    ==============================
-    [..]
-      (+) Transmit an amount of data in non-blocking mode (DMA) using
-          @ref HAL_PSSI_Transmit_DMA()
-      (+) At transmission end of transfer, @ref HAL_PSSI_TxCpltCallback() is executed and user can
-           add his own code by customization of function pointer @ref HAL_PSSI_TxCpltCallback()
-      (+) Receive an amount of data in non-blocking mode (DMA) using
-          @ref HAL_PSSI_Receive_DMA()
-      (+) At reception end of transfer, @ref HAL_PSSI_RxCpltCallback() is executed and user can
-           add his own code by customization of function pointer @ref HAL_PSSI_RxCpltCallback()
-      (+) In case of transfer Error, @ref HAL_PSSI_ErrorCallback() function is executed and user can
-           add his own code by customization of function pointer @ref HAL_PSSI_ErrorCallback()
-      (+) Abort a  PSSI process communication with Interrupt using @ref HAL_PSSI_Abort_IT()
-      (+) End of abort process, @ref HAL_PSSI_AbortCpltCallback() is executed and user can
-           add his own code by customization of function pointer @ref HAL_PSSI_AbortCpltCallback()
-
-     *** PSSI HAL driver macros list ***
-     ==================================
-     [..]
-       Below the list of most used macros in PSSI HAL driver.
-
-      (+) @ref HAL_PSSI_ENABLE     : Enable the PSSI peripheral
-      (+) @ref HAL_PSSI_DISABLE    : Disable the PSSI peripheral
-      (+) @ref HAL_PSSI_GET_FLAG   : Check whether the specified PSSI flag is set or not
-      (+) @ref HAL_PSSI_CLEAR_FLAG : Clear the specified PSSI pending flag
-      (+) @ref HAL_PSSI_ENABLE_IT  : Enable the specified PSSI interrupt
-      (+) @ref HAL_PSSI_DISABLE_IT : Disable the specified PSSI interrupt
-
-     *** Callback registration ***
-     =============================================
-     Use Functions @ref HAL_PSSI_RegisterCallback() or @ref HAL_PSSI_RegisterAddrCallback()
-     to register an interrupt callback.
-
-     Function @ref HAL_PSSI_RegisterCallback() allows to register following callbacks:
-       (+) TxCpltCallback       : callback for transmission end of transfer.
-       (+) RxCpltCallback       : callback for reception end of transfer.
-       (+) ErrorCallback        : callback for error detection.
-       (+) AbortCpltCallback    : callback for abort completion process.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-     This function takes as parameters the HAL peripheral handle, the Callback ID
-     and a pointer to the user callback function.
-
-
-     Use function @ref HAL_PSSI_UnRegisterCallback to reset a callback to the default
-     weak function.
-     @ref HAL_PSSI_UnRegisterCallback takes as parameters the HAL peripheral handle,
-     and the Callback ID.
-     This function allows to reset following callbacks:
-       (+) TxCpltCallback       : callback for transmission end of transfer.
-       (+) RxCpltCallback       : callback for reception end of transfer.
-       (+) ErrorCallback        : callback for error detection.
-       (+) AbortCpltCallback    : callback for abort completion process.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-
-
-     By default, after the @ref HAL_PSSI_Init() and when the state is @ref HAL_PSSI_STATE_RESET
-     all callbacks are set to the corresponding weak functions:
-     examples @ref HAL_PSSI_TxCpltCallback(), @ref HAL_PSSI_RxCpltCallback().
-     Exception done for MspInit and MspDeInit functions that are
-     reset to the legacy weak functions in the @ref HAL_PSSI_Init()/ @ref HAL_PSSI_DeInit() only when
-     these callbacks are null (not registered beforehand).
-     If MspInit or MspDeInit are not null, the @ref HAL_PSSI_Init()/ @ref HAL_PSSI_DeInit()
-     keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
-
-     Callbacks can be registered/unregistered in @ref HAL_PSSI_STATE_READY state only.
-     Exception done MspInit/MspDeInit functions that can be registered/unregistered
-     in @ref HAL_PSSI_STATE_READY or @ref HAL_PSSI_STATE_RESET state,
-     thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-     Then, the user first registers the MspInit/MspDeInit user callbacks
-     using @ref HAL_PSSI_RegisterCallback() before calling @ref HAL_PSSI_DeInit()
-     or @ref HAL_PSSI_Init() function.
-
-
-     [..]
-       (@) You can refer to the PSSI HAL driver header file for more useful macros
-
-  @endverbatim
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -163,8 +33,6 @@
 /** @defgroup PSSI_Private_Define PSSI Private Define
   * @{
   */
-
-
 
 /**
   * @}
@@ -188,16 +56,13 @@ void PSSI_DMAAbort(DMA_HandleTypeDef *hdma);
 /* Private functions to handle IT transfer */
 static void PSSI_Error(PSSI_HandleTypeDef *hpssi, uint32_t ErrorCode);
 
-
 /* Private functions for PSSI transfer IRQ handler */
-
 
 /* Private functions to handle flags during polling transfer */
 static HAL_StatusTypeDef PSSI_WaitOnStatusUntilTimeout(PSSI_HandleTypeDef *hpssi, uint32_t Flag, FlagStatus Status,
                                                        uint32_t Timeout, uint32_t Tickstart);
 
 /* Private functions to centralize the enable/disable of Interrupts */
-
 
 /**
   * @}
@@ -1805,7 +1670,6 @@ void PSSI_DMAError(DMA_HandleTypeDef *hdma)
   }
 }
 #endif /*HAL_DMA_MODULE_ENABLED*/
-
 
 /**
   * @}

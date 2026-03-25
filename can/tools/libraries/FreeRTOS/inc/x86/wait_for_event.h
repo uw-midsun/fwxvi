@@ -1,3 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    wait_for_event.h
+ *
+ * @brief   Wait For Event
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+#include <time.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup wait_for_event
+ * @brief    wait_for_event Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
@@ -29,9 +54,6 @@
 #ifndef _WAIT_FOR_EVENT_H_
 #define _WAIT_FOR_EVENT_H_
 
-#include <stdbool.h>
-#include <time.h>
-
 struct event;
 
 struct event * event_create( void );
@@ -41,6 +63,6 @@ bool event_wait_timed( struct event * ev,
                        time_t ms );
 void event_signal( struct event * ev );
 
-
-
 #endif /* ifndef _WAIT_FOR_EVENT_H_ */
+
+/** @} */

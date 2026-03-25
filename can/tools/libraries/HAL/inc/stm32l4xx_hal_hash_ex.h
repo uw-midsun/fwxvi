@@ -1,20 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_hash_ex.h
+ *
+ * @brief   Header file of HASH HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_hash_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of HASH HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_hash_ex
+ * @brief    stm32l4xx_hal_hash_ex Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_HASH_EX_H
@@ -25,7 +31,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -38,7 +43,6 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-
 
 /* Exported functions --------------------------------------------------------*/
 
@@ -165,11 +169,11 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Step2_3_DMA(HASH_HandleTypeDef *hhash, uint8
   * @}
   */
 
-
 #ifdef __cplusplus
 }
 #endif
 
-
 #endif /* STM32L4xx_HAL_HASH_EX_H */
 
+
+/** @} */

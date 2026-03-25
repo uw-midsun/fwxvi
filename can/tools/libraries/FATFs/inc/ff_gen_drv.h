@@ -1,20 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    ff_gen_drv.h
+ *
+ * @brief   Header for ff_gen_drv.c module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "diskio.h"
+#include "ff.h"
+
+/* Intra-component Headers */
+#include "stdint.h"
+
 /**
-  ******************************************************************************
-  * @file    ff_gen_drv.h
-  * @author  MCD Application Team
-  * @brief   Header for ff_gen_drv.c module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the st_license.txt
-  * file in the root directory of this software component.
-  * If no st_license.txt file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup ff_gen_drv
+ * @brief    ff_gen_drv Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __FF_GEN_DRV_H
@@ -25,10 +33,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "diskio.h"
-#include "ff.h"
-#include "stdint.h"
-
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -70,3 +74,5 @@ uint8_t FATFS_GetAttachedDriversNbr(void);
 #endif
 
 #endif /* __FF_GEN_DRV_H */
+
+/** @} */

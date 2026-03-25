@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    mpu_prototypes.h
+ *
+ * @brief   Mpu Prototypes
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup mpu_prototypes
+ * @brief    mpu_prototypes Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -33,7 +56,6 @@
  * which wraps the non-MPU version with privilege promoting then demoting code,
  * so the kernel code always runs will full privileges.
  */
-
 
 #ifndef MPU_PROTOTYPES_H
 #define MPU_PROTOTYPES_H
@@ -387,3 +409,5 @@ BaseType_t MPU_xStreamBufferReceiveCompletedFromISR( StreamBufferHandle_t xStrea
 BaseType_t MPU_xStreamBufferResetFromISR( StreamBufferHandle_t xStreamBuffer ) PRIVILEGED_FUNCTION;
 
 #endif /* MPU_PROTOTYPES_H */
+
+/** @} */

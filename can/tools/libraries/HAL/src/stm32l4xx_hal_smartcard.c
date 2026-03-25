@@ -1,187 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_smartcard.c
-  * @author  MCD Application Team
-  * @brief   SMARTCARD HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the SMARTCARD peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Error functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    The SMARTCARD HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_smartcard.c
+ *
+ * @brief   SMARTCARD HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Declare a SMARTCARD_HandleTypeDef handle structure (eg. SMARTCARD_HandleTypeDef hsmartcard).
-    (#) Associate a USART to the SMARTCARD handle hsmartcard.
-    (#) Initialize the SMARTCARD low level resources by implementing the HAL_SMARTCARD_MspInit() API:
-        (++) Enable the USARTx interface clock.
-        (++) USART pins configuration:
-             (+++) Enable the clock for the USART GPIOs.
-             (+++) Configure the USART pins (TX as alternate function pull-up, RX as alternate function Input).
-        (++) NVIC configuration if you need to use interrupt process (HAL_SMARTCARD_Transmit_IT()
-             and HAL_SMARTCARD_Receive_IT() APIs):
-             (+++) Configure the USARTx interrupt priority.
-             (+++) Enable the NVIC USART IRQ handle.
-        (++) DMA Configuration if you need to use DMA process (HAL_SMARTCARD_Transmit_DMA()
-             and HAL_SMARTCARD_Receive_DMA() APIs):
-             (+++) Declare a DMA handle structure for the Tx/Rx channel.
-             (+++) Enable the DMAx interface clock.
-             (+++) Configure the declared DMA handle structure with the required Tx/Rx parameters.
-             (+++) Configure the DMA Tx/Rx channel.
-             (+++) Associate the initialized DMA handle to the SMARTCARD DMA Tx/Rx handle.
-             (+++) Configure the priority and enable the NVIC for the transfer complete
-                   interrupt on the DMA Tx/Rx channel.
+/* Standard library Headers */
 
-    (#) Program the Baud Rate, Parity, Mode(Receiver/Transmitter), clock enabling/disabling and accordingly,
-        the clock parameters (parity, phase, last bit), prescaler value, guard time and NACK on transmission
-        error enabling or disabling in the hsmartcard handle Init structure.
+/* Inter-component Headers */
 
-    (#) If required, program SMARTCARD advanced features (TX/RX pins swap, TimeOut, auto-retry counter,...)
-        in the hsmartcard handle AdvancedInit structure.
-
-    (#) Initialize the SMARTCARD registers by calling the HAL_SMARTCARD_Init() API:
-        (++) This API configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
-             by calling the customized HAL_SMARTCARD_MspInit() API.
-        [..]
-        (@) The specific SMARTCARD interrupts (Transmission complete interrupt,
-             RXNE interrupt and Error Interrupts) will be managed using the macros
-             __HAL_SMARTCARD_ENABLE_IT() and __HAL_SMARTCARD_DISABLE_IT() inside the transmit and receive process.
-
-    [..]
-    [..] Three operation modes are available within this driver :
-
-     *** Polling mode IO operation ***
-     =================================
-     [..]
-       (+) Send an amount of data in blocking mode using HAL_SMARTCARD_Transmit()
-       (+) Receive an amount of data in blocking mode using HAL_SMARTCARD_Receive()
-
-     *** Interrupt mode IO operation ***
-     ===================================
-     [..]
-       (+) Send an amount of data in non-blocking mode using HAL_SMARTCARD_Transmit_IT()
-       (+) At transmission end of transfer HAL_SMARTCARD_TxCpltCallback() is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_TxCpltCallback()
-       (+) Receive an amount of data in non-blocking mode using HAL_SMARTCARD_Receive_IT()
-       (+) At reception end of transfer HAL_SMARTCARD_RxCpltCallback() is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_RxCpltCallback()
-       (+) In case of transfer Error, HAL_SMARTCARD_ErrorCallback() function is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_ErrorCallback()
-
-     *** DMA mode IO operation ***
-     ==============================
-     [..]
-       (+) Send an amount of data in non-blocking mode (DMA) using HAL_SMARTCARD_Transmit_DMA()
-       (+) At transmission end of transfer HAL_SMARTCARD_TxCpltCallback() is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_TxCpltCallback()
-       (+) Receive an amount of data in non-blocking mode (DMA) using HAL_SMARTCARD_Receive_DMA()
-       (+) At reception end of transfer HAL_SMARTCARD_RxCpltCallback() is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_RxCpltCallback()
-       (+) In case of transfer Error, HAL_SMARTCARD_ErrorCallback() function is executed and user can
-            add his own code by customization of function pointer HAL_SMARTCARD_ErrorCallback()
-
-     *** SMARTCARD HAL driver macros list ***
-     ========================================
-     [..]
-       Below the list of most used macros in SMARTCARD HAL driver.
-
-       (+) __HAL_SMARTCARD_GET_FLAG : Check whether or not the specified SMARTCARD flag is set
-       (+) __HAL_SMARTCARD_CLEAR_FLAG : Clear the specified SMARTCARD pending flag
-       (+) __HAL_SMARTCARD_ENABLE_IT: Enable the specified SMARTCARD interrupt
-       (+) __HAL_SMARTCARD_DISABLE_IT: Disable the specified SMARTCARD interrupt
-       (+) __HAL_SMARTCARD_GET_IT_SOURCE: Check whether or not the specified SMARTCARD interrupt is enabled
-
-     [..]
-       (@) You can refer to the SMARTCARD HAL driver header file for more useful macros
-
-    ##### Callback registration #####
-    ==================================
-
-    [..]
-    The compilation define USE_HAL_SMARTCARD_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-
-    [..]
-    Use Function HAL_SMARTCARD_RegisterCallback() to register a user callback.
-    Function HAL_SMARTCARD_RegisterCallback() allows to register following callbacks:
-    (+) TxCpltCallback            : Tx Complete Callback.
-    (+) RxCpltCallback            : Rx Complete Callback.
-    (+) ErrorCallback             : Error Callback.
-    (+) AbortCpltCallback         : Abort Complete Callback.
-    (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
-    (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
-    (+) RxFifoFullCallback        : Rx Fifo Full Callback.
-    (+) TxFifoEmptyCallback       : Tx Fifo Empty Callback.
-    (+) MspInitCallback           : SMARTCARD MspInit.
-    (+) MspDeInitCallback         : SMARTCARD MspDeInit.
-    This function takes as parameters the HAL peripheral handle, the Callback ID
-    and a pointer to the user callback function.
-
-    [..]
-    Use function HAL_SMARTCARD_UnRegisterCallback() to reset a callback to the default
-    weak function.
-    HAL_SMARTCARD_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the Callback ID.
-    This function allows to reset following callbacks:
-    (+) TxCpltCallback            : Tx Complete Callback.
-    (+) RxCpltCallback            : Rx Complete Callback.
-    (+) ErrorCallback             : Error Callback.
-    (+) AbortCpltCallback         : Abort Complete Callback.
-    (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
-    (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
-    (+) RxFifoFullCallback        : Rx Fifo Full Callback.
-    (+) TxFifoEmptyCallback       : Tx Fifo Empty Callback.
-    (+) MspInitCallback           : SMARTCARD MspInit.
-    (+) MspDeInitCallback         : SMARTCARD MspDeInit.
-
-    [..]
-    By default, after the HAL_SMARTCARD_Init() and when the state is HAL_SMARTCARD_STATE_RESET
-    all callbacks are set to the corresponding weak functions:
-    examples HAL_SMARTCARD_TxCpltCallback(), HAL_SMARTCARD_RxCpltCallback().
-    Exception done for MspInit and MspDeInit functions that are respectively
-    reset to the legacy weak functions in the HAL_SMARTCARD_Init()
-    and HAL_SMARTCARD_DeInit() only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_SMARTCARD_Init() and HAL_SMARTCARD_DeInit()
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    [..]
-    Callbacks can be registered/unregistered in HAL_SMARTCARD_STATE_READY state only.
-    Exception done MspInit/MspDeInit that can be registered/unregistered
-    in HAL_SMARTCARD_STATE_READY or HAL_SMARTCARD_STATE_RESET state, thus registered (user)
-    MspInit/DeInit callbacks can be used during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_SMARTCARD_RegisterCallback() before calling HAL_SMARTCARD_DeInit()
-    or HAL_SMARTCARD_Init() function.
-
-    [..]
-    When The compilation define USE_HAL_SMARTCARD_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registration feature is not available
-    and weak callbacks are used.
-
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -317,7 +150,6 @@ static void SMARTCARD_RxISR_FIFOEN(SMARTCARD_HandleTypeDef *hsmartcard);
     |-----------------------|---------------------------------------|
     |     01    |    1      |    | SB | 8 bit data | PB | STB |     |
     +---------------------------------------------------------------+
-
 
   * @{
   */
@@ -2602,7 +2434,6 @@ static HAL_StatusTypeDef SMARTCARD_SetConfig(SMARTCARD_HandleTypeDef *hsmartcard
   return ret;
 }
 
-
 /**
   * @brief Configure the SMARTCARD associated USART peripheral advanced features.
   * @param hsmartcard Pointer to a SMARTCARD_HandleTypeDef structure that contains
@@ -2757,7 +2588,6 @@ static HAL_StatusTypeDef SMARTCARD_WaitOnFlagUntilTimeout(SMARTCARD_HandleTypeDe
   return HAL_OK;
 }
 
-
 /**
   * @brief  End ongoing Tx transfer on SMARTCARD peripheral (following error detection or Transmit completion).
   * @param  hsmartcard Pointer to a SMARTCARD_HandleTypeDef structure that contains
@@ -2778,7 +2608,6 @@ static void SMARTCARD_EndTxTransfer(SMARTCARD_HandleTypeDef *hsmartcard)
   hsmartcard->gState = HAL_SMARTCARD_STATE_READY;
 }
 
-
 /**
   * @brief  End ongoing Rx transfer on UART peripheral (following error detection or Reception completion).
   * @param  hsmartcard Pointer to a SMARTCARD_HandleTypeDef structure that contains
@@ -2798,7 +2627,6 @@ static void SMARTCARD_EndRxTransfer(SMARTCARD_HandleTypeDef *hsmartcard)
   /* At end of Rx process, restore hsmartcard->RxState to Ready */
   hsmartcard->RxState = HAL_SMARTCARD_STATE_READY;
 }
-
 
 /**
   * @brief  DMA SMARTCARD transmit process complete callback.
@@ -2959,7 +2787,6 @@ static void SMARTCARD_DMATxAbortCallback(DMA_HandleTypeDef *hdma)
 #endif /* USE_HAL_SMARTCARD_REGISTER_CALLBACK */
 }
 
-
 /**
   * @brief  DMA SMARTCARD Rx communication abort callback, when initiated by user
   *         (To be called at end of DMA Rx Abort procedure following user abort request).
@@ -3007,7 +2834,6 @@ static void SMARTCARD_DMARxAbortCallback(DMA_HandleTypeDef *hdma)
   HAL_SMARTCARD_AbortCpltCallback(hsmartcard);
 #endif /* USE_HAL_SMARTCARD_REGISTER_CALLBACK */
 }
-
 
 /**
   * @brief  DMA SMARTCARD Tx communication abort callback, when initiated by user by a call to

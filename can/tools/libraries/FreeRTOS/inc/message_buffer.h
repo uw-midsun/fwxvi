@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    message_buffer.h
+ *
+ * @brief   Message Buffer
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stream_buffer.h"
+
+/**
+ * @defgroup message_buffer
+ * @brief    message_buffer Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -25,7 +49,6 @@
  * https://github.com/FreeRTOS
  *
  */
-
 
 /*
  * Message buffers build functionality on top of FreeRTOS stream buffers.
@@ -68,7 +91,6 @@
 #endif
 
 /* Message buffers are built onto of stream buffers. */
-#include "stream_buffer.h"
 
 /* *INDENT-OFF* */
 #if defined( __cplusplus )
@@ -587,7 +609,6 @@ typedef StreamBufferHandle_t MessageBufferHandle_t;
 #define xMessageBufferReceive( xMessageBuffer, pvRxData, xBufferLengthBytes, xTicksToWait ) \
     xStreamBufferReceive( ( xMessageBuffer ), ( pvRxData ), ( xBufferLengthBytes ), ( xTicksToWait ) )
 
-
 /**
  * message_buffer.h
  *
@@ -788,7 +809,6 @@ typedef StreamBufferHandle_t MessageBufferHandle_t;
 #define xMessageBufferReset( xMessageBuffer ) \
     xStreamBufferReset( xMessageBuffer )
 
-
 /**
  * message_buffer.h
  * @code{c}
@@ -965,3 +985,5 @@ typedef StreamBufferHandle_t MessageBufferHandle_t;
 /* *INDENT-ON* */
 
 #endif /* !defined( FREERTOS_MESSAGE_BUFFER_H ) */
+
+/** @} */

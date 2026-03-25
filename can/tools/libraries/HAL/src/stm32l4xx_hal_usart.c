@@ -1,143 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_usart.c
-  * @author  MCD Application Team
-  * @brief   USART HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Universal Synchronous/Asynchronous Receiver Transmitter
-  *          Peripheral (USART).
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Error functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                        ##### How to use this driver #####
- ===============================================================================
-    [..]
-      The USART HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_usart.c
+ *
+ * @brief   USART HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#) Declare a USART_HandleTypeDef handle structure (eg. USART_HandleTypeDef husart).
-      (#) Initialize the USART low level resources by implementing the HAL_USART_MspInit() API:
-          (++) Enable the USARTx interface clock.
-          (++) USART pins configuration:
-            (+++) Enable the clock for the USART GPIOs.
-            (+++) Configure these USART pins as alternate function pull-up.
-          (++) NVIC configuration if you need to use interrupt process (HAL_USART_Transmit_IT(),
-                HAL_USART_Receive_IT() and HAL_USART_TransmitReceive_IT() APIs):
-            (+++) Configure the USARTx interrupt priority.
-            (+++) Enable the NVIC USART IRQ handle.
-            (++) USART interrupts handling:
-              -@@-   The specific USART interrupts (Transmission complete interrupt,
-                  RXNE interrupt and Error Interrupts) will be managed using the macros
-                  __HAL_USART_ENABLE_IT() and __HAL_USART_DISABLE_IT() inside the transmit and receive process.
-          (++) DMA Configuration if you need to use DMA process (HAL_USART_Transmit_DMA()
-               HAL_USART_Receive_DMA() and HAL_USART_TransmitReceive_DMA() APIs):
-            (+++) Declare a DMA handle structure for the Tx/Rx channel.
-            (+++) Enable the DMAx interface clock.
-            (+++) Configure the declared DMA handle structure with the required Tx/Rx parameters.
-            (+++) Configure the DMA Tx/Rx channel.
-            (+++) Associate the initialized DMA handle to the USART DMA Tx/Rx handle.
-            (+++) Configure the priority and enable the NVIC for the transfer
-                  complete interrupt on the DMA Tx/Rx channel.
+/* Standard library Headers */
 
-      (#) Program the Baud Rate, Word Length, Stop Bit, Parity, and Mode
-          (Receiver/Transmitter) in the husart handle Init structure.
+/* Inter-component Headers */
 
-      (#) Initialize the USART registers by calling the HAL_USART_Init() API:
-          (++) This API configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
-               by calling the customized HAL_USART_MspInit(&husart) API.
-
-    [..]
-     (@) To configure and enable/disable the USART to wake up the MCU from stop mode, resort to UART API's
-        HAL_UARTEx_StopModeWakeUpSourceConfig(), HAL_UARTEx_EnableStopMode() and
-        HAL_UARTEx_DisableStopMode() in casting the USART handle to UART type UART_HandleTypeDef.
-
-    ##### Callback registration #####
-    ==================================
-
-    [..]
-    The compilation define USE_HAL_USART_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-
-    [..]
-    Use Function HAL_USART_RegisterCallback() to register a user callback.
-    Function HAL_USART_RegisterCallback() allows to register following callbacks:
-    (+) TxHalfCpltCallback        : Tx Half Complete Callback.
-    (+) TxCpltCallback            : Tx Complete Callback.
-    (+) RxHalfCpltCallback        : Rx Half Complete Callback.
-    (+) RxCpltCallback            : Rx Complete Callback.
-    (+) TxRxCpltCallback          : Tx Rx Complete Callback.
-    (+) ErrorCallback             : Error Callback.
-    (+) AbortCpltCallback         : Abort Complete Callback.
-    (+) RxFifoFullCallback        : Rx Fifo Full Callback.
-    (+) TxFifoEmptyCallback       : Tx Fifo Empty Callback.
-    (+) MspInitCallback           : USART MspInit.
-    (+) MspDeInitCallback         : USART MspDeInit.
-    This function takes as parameters the HAL peripheral handle, the Callback ID
-    and a pointer to the user callback function.
-
-    [..]
-    Use function HAL_USART_UnRegisterCallback() to reset a callback to the default
-    weak function.
-    HAL_USART_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the Callback ID.
-    This function allows to reset following callbacks:
-    (+) TxHalfCpltCallback        : Tx Half Complete Callback.
-    (+) TxCpltCallback            : Tx Complete Callback.
-    (+) RxHalfCpltCallback        : Rx Half Complete Callback.
-    (+) RxCpltCallback            : Rx Complete Callback.
-    (+) TxRxCpltCallback          : Tx Rx Complete Callback.
-    (+) ErrorCallback             : Error Callback.
-    (+) AbortCpltCallback         : Abort Complete Callback.
-    (+) RxFifoFullCallback        : Rx Fifo Full Callback.
-    (+) TxFifoEmptyCallback       : Tx Fifo Empty Callback.
-    (+) MspInitCallback           : USART MspInit.
-    (+) MspDeInitCallback         : USART MspDeInit.
-
-    [..]
-    By default, after the HAL_USART_Init() and when the state is HAL_USART_STATE_RESET
-    all callbacks are set to the corresponding weak functions:
-    examples HAL_USART_TxCpltCallback(), HAL_USART_RxHalfCpltCallback().
-    Exception done for MspInit and MspDeInit functions that are respectively
-    reset to the legacy weak functions in the HAL_USART_Init()
-    and HAL_USART_DeInit() only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_USART_Init() and HAL_USART_DeInit()
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    [..]
-    Callbacks can be registered/unregistered in HAL_USART_STATE_READY state only.
-    Exception done MspInit/MspDeInit that can be registered/unregistered
-    in HAL_USART_STATE_READY or HAL_USART_STATE_RESET state, thus registered (user)
-    MspInit/DeInit callbacks can be used during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_USART_RegisterCallback() before calling HAL_USART_DeInit()
-    or HAL_USART_Init() function.
-
-    [..]
-    When The compilation define USE_HAL_USART_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registration feature is not available
-    and weak callbacks are used.
-
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -215,7 +92,6 @@ static void USART_RxISR_16BIT(USART_HandleTypeDef *husart);
 static void USART_RxISR_8BIT_FIFOEN(USART_HandleTypeDef *husart);
 static void USART_RxISR_16BIT_FIFOEN(USART_HandleTypeDef *husart);
 #endif /* USART_CR1_FIFOEN */
-
 
 /**
   * @}
@@ -659,7 +535,6 @@ HAL_StatusTypeDef HAL_USART_UnRegisterCallback(USART_HandleTypeDef *husart, HAL_
   return status;
 }
 #endif /* USE_HAL_USART_REGISTER_CALLBACKS */
-
 
 /**
   * @}
@@ -2404,7 +2279,6 @@ void HAL_USART_IRQHandler(USART_HandleTypeDef *husart)
 
   } /* End if some error occurs */
 
-
   /* USART in mode Transmitter ------------------------------------------------*/
 #if defined(USART_CR1_FIFOEN)
   if (((isrflags & USART_ISR_TXE_TXFNF) != 0U)
@@ -2582,7 +2456,6 @@ __weak void HAL_USART_AbortCpltCallback(USART_HandleTypeDef *husart)
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief Return the USART handle state.
@@ -2907,7 +2780,6 @@ static void USART_DMATxAbortCallback(DMA_HandleTypeDef *hdma)
 
 }
 
-
 /**
   * @brief  DMA USART Rx communication abort callback, when initiated by user
   *         (To be called at end of DMA Rx Abort procedure following user abort request).
@@ -2953,7 +2825,6 @@ static void USART_DMARxAbortCallback(DMA_HandleTypeDef *hdma)
   HAL_USART_AbortCpltCallback(husart);
 #endif /* USE_HAL_USART_REGISTER_CALLBACKS */
 }
-
 
 /**
   * @brief  Handle USART Communication Timeout. It waits
@@ -3380,7 +3251,6 @@ static void USART_EndTransmit_IT(USART_HandleTypeDef *husart)
     /* Nothing to do */
   }
 }
-
 
 /**
   * @brief  Simplex receive an amount of data in non-blocking mode.

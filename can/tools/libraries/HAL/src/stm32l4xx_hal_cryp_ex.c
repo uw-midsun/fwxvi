@@ -1,25 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_cryp_ex.c
-  * @author  MCD Application Team
-  * @brief   CRYPEx HAL module driver.
-  *          This file provides firmware functions to manage the extended
-  *          functionalities of the Cryptography (CRYP) peripheral.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_hal_cryp_ex.c
+ *
+ * @brief   CRYPEx HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #ifdef HAL_CRYP_MODULE_ENABLED
 
@@ -81,7 +76,6 @@ static void CRYP_Padding(CRYP_HandleTypeDef *hcryp, uint32_t difflength, uint32_
   * @{
   */
 
-
 /** @defgroup CRYPEx_Exported_Functions_Group1 Extended callback function
  *  @brief    Extended callback functions.
  *
@@ -95,7 +89,6 @@ static void CRYP_Padding(CRYP_HandleTypeDef *hcryp, uint32_t difflength, uint32_
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Computation completed callbacks.
@@ -223,8 +216,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES(CRYP_HandleTypeDef *hcryp, uint8_t *pInputData,
   }
 }
 
-
-
 /**
   * @brief  Carry out in interrupt mode the ciphering or deciphering operation according to
   *         hcryp->Init structure fields, all operating modes (encryption, key derivation and/or decryption) and
@@ -291,7 +282,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_IT(CRYP_HandleTypeDef *hcryp,  uint8_t *pInputD
     /* Enable Computation Complete Flag and Error Interrupts */
     __HAL_CRYP_ENABLE_IT(hcryp, CRYP_IT_CCFIE|CRYP_IT_ERRIE);
 
-
     /* If operating mode is key derivation only, the input data have
        already been entered during the initialization process. For
        the other operating modes, they are fed to the CRYP hardware
@@ -322,10 +312,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_IT(CRYP_HandleTypeDef *hcryp,  uint8_t *pInputD
     return HAL_BUSY;
   }
 }
-
-
-
-
 
 /**
   * @brief  Carry out in DMA mode the ciphering or deciphering operation according to
@@ -368,7 +354,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_DMA(CRYP_HandleTypeDef *hcryp,  uint8_t *pInput
       }
     }
 
-
     /* Process Locked */
     __HAL_LOCK(hcryp);
 
@@ -392,11 +377,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_DMA(CRYP_HandleTypeDef *hcryp,  uint8_t *pInput
     return HAL_BUSY;
   }
 }
-
-
-
-
-
 
 /**
   * @brief  Carry out in polling mode the authentication tag generation as well as the ciphering or deciphering
@@ -493,7 +473,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth(CRYP_HandleTypeDef *hcryp, uint8_t *pInput
       /* Unspecified Phase */
       return  HAL_ERROR;
     }
-
 
     /* Process Locked */
     __HAL_LOCK(hcryp);
@@ -867,7 +846,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth(CRYP_HandleTypeDef *hcryp, uint8_t *pInput
        }
 #endif
 
-
       if(CRYP_WaitOnCCFlag(hcryp, Timeout) != HAL_OK)
       {
           hcryp->State = HAL_CRYP_STATE_READY;
@@ -883,7 +861,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth(CRYP_HandleTypeDef *hcryp, uint8_t *pInput
       *(uint32_t*)(tagaddr) = hcryp->Instance->DOUTR;
       tagaddr+=4U;
       *(uint32_t*)(tagaddr) = hcryp->Instance->DOUTR;
-
 
       /* Clear CCF Flag */
       __HAL_CRYP_CLEAR_FLAG(hcryp, CRYP_CCF_CLEAR);
@@ -906,9 +883,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth(CRYP_HandleTypeDef *hcryp, uint8_t *pInput
     return HAL_BUSY;
   }
 }
-
-
-
 
 /**
   * @brief  Carry out in interrupt mode the authentication tag generation as well as the ciphering or deciphering
@@ -1010,7 +984,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
       return  HAL_ERROR;
      }
 
-
     /* Process Locked */
     __HAL_LOCK(hcryp);
 
@@ -1022,8 +995,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
 
     /* Enable Computation Complete Flag and Error Interrupts */
     __HAL_CRYP_ENABLE_IT(hcryp, CRYP_IT_CCFIE|CRYP_IT_ERRIE);
-
-
 
     /*==============================================*/
     /* GCM/GMAC (or CCM when applicable) init phase */
@@ -1073,7 +1044,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
 
       inputaddr = (uint32_t)hcryp->pCrypInBuffPtr;
 
-
 #if !defined(AES_CR_NPBLB)
       /* Set header phase; for GCM or GMAC, set data-byte at this point */
       if (hcryp->Init.ChainingMode == CRYP_CHAINMODE_AES_GCM_GMAC)
@@ -1110,7 +1080,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
         hcryp->pCrypInBuffPtr += 16;
         hcryp->CrypInCount -= 16U;
       }
-
 
 #if defined(AES_CR_NPBLB)
       if (hcryp->Init.ChainingMode == CRYP_CHAINMODE_AES_CCM)
@@ -1224,7 +1193,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
           __HAL_CRYP_SET_CHAININGMODE(hcryp, CRYP_CHAINMODE_AES_CTR);
         }
 #endif
-
 
         /* Set hcryp->CrypInCount to 0 (no more data to enter) */
         hcryp->CrypInCount = 0;
@@ -1366,9 +1334,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_IT(CRYP_HandleTypeDef *hcryp, uint8_t *pIn
   }
 }
 
-
-
-
 /**
   * @brief  Carry out in DMA mode the authentication tag generation as well as the ciphering or deciphering
   *         operation according to hcryp->Init structure fields.
@@ -1406,7 +1371,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_DMA(CRYP_HandleTypeDef *hcryp, uint8_t *pI
   uint64_t headerlength   ;
   uint64_t inputlength    ;
   uint64_t payloadlength  ;
-
 
   if (hcryp->State == HAL_CRYP_STATE_READY)
   {
@@ -1465,7 +1429,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_DMA(CRYP_HandleTypeDef *hcryp, uint8_t *pI
       /* Unspecified Phase */
       return  HAL_ERROR;
     }
-
 
     /* Process Locked */
     __HAL_LOCK(hcryp);
@@ -1629,7 +1592,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_DMA(CRYP_HandleTypeDef *hcryp, uint8_t *pI
 
         return HAL_OK;
       }
-
 
       /* Specific handling to manage payload size less than 128 bits */
       if ((Size % 16U) != 0U)
@@ -1847,7 +1809,6 @@ HAL_StatusTypeDef HAL_CRYPEx_AES_Auth_DMA(CRYP_HandleTypeDef *hcryp, uint8_t *pI
   * @{
   */
 
-
 /**
   * @brief  In case of message processing suspension, read the Initialization Vector.
   * @param  hcryp pointer to a CRYP_HandleTypeDef structure that contains
@@ -1895,7 +1856,6 @@ void HAL_CRYPEx_Write_IVRegisters(CRYP_HandleTypeDef *hcryp, uint8_t* Input)
   ivaddr+=4U;
   hcryp->Instance->IVR0 = __REV(*(uint32_t*)(ivaddr));
 }
-
 
 /**
   * @brief  In case of message GCM/GMAC (CCM/CMAC when applicable) processing suspension,
@@ -1979,7 +1939,6 @@ void HAL_CRYPEx_Write_SuspendRegisters(CRYP_HandleTypeDef *hcryp, uint8_t* Input
   hcryp->Instance->SUSP0R = __REV(*(uint32_t*)(ivaddr));
 }
 
-
 /**
   * @brief  In case of message GCM/GMAC (CCM/CMAC when applicable) processing suspension, read the Key Registers.
   * @param  hcryp pointer to a CRYP_HandleTypeDef structure that contains
@@ -2049,7 +2008,6 @@ void HAL_CRYPEx_Write_KeyRegisters(CRYP_HandleTypeDef *hcryp, uint8_t* Input, ui
     keyaddr+=4U;
     hcryp->Instance->KEYR0 = __REV(*(uint32_t*)(keyaddr));
 }
-
 
 /**
   * @brief  In case of message GCM/GMAC (CCM/CMAC when applicable) processing suspension, read the Control Register.
@@ -2219,8 +2177,6 @@ static void CRYP_Authentication_DMAError(DMA_HandleTypeDef *hdma)
   /* Clear Error Flag */
   __HAL_CRYP_CLEAR_FLAG(hcryp, CRYP_ERR_CLEAR);
 }
-
-
 
 /**
   * @brief  Handle CRYP block input/output data handling under interruption
@@ -2639,7 +2595,6 @@ HAL_StatusTypeDef CRYP_AES_Auth_IT(CRYP_HandleTypeDef *hcryp)
           hcryp->Instance->DINR = *(uint32_t*)(inputaddr);
         }
 
-
         return HAL_OK;
       }
     }
@@ -2700,8 +2655,6 @@ HAL_StatusTypeDef CRYP_AES_Auth_IT(CRYP_HandleTypeDef *hcryp)
   }
 }
 
-
-
 /**
   * @brief  Set the DMA configuration and start the DMA transfer
   *         for GCM, GMAC, CCM  or CMAC chaining modes.
@@ -2745,7 +2698,6 @@ static void CRYP_Authentication_SetDMAConfig(CRYP_HandleTypeDef *hcryp, uint32_t
   /* Enable the DMA input request */
   SET_BIT(hcryp->Instance->CR, AES_CR_DMAINEN);
 
-
   if (outputaddr != 0U)
   {
     /* Enable the DMA output stream */
@@ -2763,8 +2715,6 @@ static void CRYP_Authentication_SetDMAConfig(CRYP_HandleTypeDef *hcryp, uint32_t
   }
 }
 
-
-
 /**
   * @brief  Write/read input/output data in polling mode.
   * @param  hcryp pointer to a CRYP_HandleTypeDef structure that contains
@@ -2780,7 +2730,6 @@ static HAL_StatusTypeDef CRYP_ProcessData(CRYP_HandleTypeDef *hcryp, uint8_t* In
   uint32_t index;
   uint32_t inputaddr  = (uint32_t)Input;
   uint32_t outputaddr = (uint32_t)Output;
-
 
   for(index=0U ; (index < Ilength); index += 16U)
   {
@@ -2834,16 +2783,11 @@ static HAL_StatusTypeDef CRYP_ProcessData(CRYP_HandleTypeDef *hcryp, uint8_t* In
       return HAL_OK;
     }
 
-
   }
   /* Return function status */
   return HAL_OK;
 
 }
-
-
-
-
 
 /**
   * @brief  Read derivative key in polling mode when CRYP hardware block is set
@@ -2888,7 +2832,6 @@ static HAL_StatusTypeDef CRYP_ReadKey(CRYP_HandleTypeDef *hcryp, uint8_t* Output
     *(uint32_t*)(outputaddr) = __REV(hcryp->Instance->KEYR1);
     outputaddr+=4U;
     *(uint32_t*)(outputaddr) = __REV(hcryp->Instance->KEYR0);
-
 
   /* Return function status */
   return HAL_OK;
@@ -2941,7 +2884,6 @@ static void CRYP_SetDMAConfig(CRYP_HandleTypeDef *hcryp, uint32_t inputaddr, uin
   /* Enable the CRYP peripheral */
   __HAL_CRYP_ENABLE(hcryp);
 }
-
 
 /**
   * @brief  Handle CRYP hardware block Timeout when waiting for CCF flag to be raised.
@@ -2998,7 +2940,6 @@ static HAL_StatusTypeDef CRYP_WaitOnBusyFlagReset(CRYP_HandleTypeDef const * con
   }
   return HAL_OK;
 }
-
 
 /**
   * @brief  DMA CRYP Input Data process complete callback.
@@ -3181,7 +3122,6 @@ static void CRYP_Padding(CRYP_HandleTypeDef *hcryp, uint32_t difflength, uint32_
       intermediate_data[difflength/4U] &= mask[mask_index][difflengthmod4-1U];
       *(uint32_t*)(outputaddr) = intermediate_data[difflength/4U];
     }
-
 
 #if !defined(AES_CR_NPBLB)
     /* Software workaround applied to GCM encryption only,

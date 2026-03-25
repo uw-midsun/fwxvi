@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pka.h
-  * @author  MCD Application Team
-  * @brief   Header file of PKA HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pka.h
+ *
+ * @brief   Header file of PKA HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PKA_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -223,7 +222,6 @@ typedef struct
   uint8_t *ptY;                        /*!< Pointer to point P coordinate yP     (Array of modulusSize elements) */
 } PKA_ECDSASignOutExtParamTypeDef, PKA_ECCMulOutTypeDef;
 
-
 typedef struct
 {
   uint32_t expSize;                    /*!< Number of element in pExp array */
@@ -232,7 +230,6 @@ typedef struct
   const uint8_t *pOp1;                 /*!< Pointer to Operand              (Array of OpSize elements) */
   const uint8_t *pMod;                 /*!< Pointer to modulus              (Array of OpSize elements) */
 } PKA_ModExpInTypeDef;
-
 
 typedef struct
 {
@@ -526,7 +523,6 @@ void HAL_PKA_Arithmetic_GetResult(PKA_HandleTypeDef *hpka, uint32_t *pRes);
 HAL_StatusTypeDef HAL_PKA_MontgomeryParam(PKA_HandleTypeDef *hpka, PKA_MontgomeryParamInTypeDef *in, uint32_t Timeout);
 HAL_StatusTypeDef HAL_PKA_MontgomeryParam_IT(PKA_HandleTypeDef *hpka, PKA_MontgomeryParamInTypeDef *in);
 void HAL_PKA_MontgomeryParam_GetResult(PKA_HandleTypeDef *hpka, uint32_t *pRes);
-
 
 HAL_StatusTypeDef HAL_PKA_Abort(PKA_HandleTypeDef *hpka);
 void HAL_PKA_RAMReset(PKA_HandleTypeDef *hpka);

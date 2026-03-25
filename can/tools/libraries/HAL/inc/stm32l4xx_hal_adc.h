@@ -1,20 +1,22 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_adc.h
-  * @author  MCD Application Team
-  * @brief   Header file of ADC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_adc.h
+ *
+ * @brief   Header file of ADC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_adc_ex.h"
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_ll_adc.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_ADC_H
@@ -25,10 +27,8 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /* Include low level driver */
-#include "stm32l4xx_ll_adc.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -515,7 +515,6 @@ typedef  void (*pADC_CallbackTypeDef)(ADC_HandleTypeDef *hadc); /*!< pointer to 
 /**
   * @}
   */
-
 
 /* Exported constants --------------------------------------------------------*/
 
@@ -1019,7 +1018,6 @@ typedef  void (*pADC_CallbackTypeDef)(ADC_HandleTypeDef *hadc); /*!< pointer to 
   */
 #define IS_ADC_REGULAR_NB_CONV(__LENGTH__) (((__LENGTH__) >= (1UL)) && ((__LENGTH__) <= (16UL)))
 
-
 /**
   * @brief Verify the number of scheduled regular conversions in discontinuous mode.
   * @param NUMBER number of scheduled regular conversions in discontinuous mode.
@@ -1027,7 +1025,6 @@ typedef  void (*pADC_CallbackTypeDef)(ADC_HandleTypeDef *hadc); /*!< pointer to 
   *         or RESET (NUMBER is null or too large)
   */
 #define IS_ADC_REGULAR_DISCONT_NUMBER(NUMBER) (((NUMBER) >= (1UL)) && ((NUMBER) <= (8UL)))
-
 
 /**
   * @brief Verify the ADC clock setting.
@@ -1185,7 +1182,6 @@ typedef  void (*pADC_CallbackTypeDef)(ADC_HandleTypeDef *hadc); /*!< pointer to 
 /**
   * @}
   */
-
 
 /* Private constants ---------------------------------------------------------*/
 
@@ -1898,7 +1894,6 @@ __LL_ADC_CALC_TEMPERATURE_TYP_PARAMS((__TEMPSENSOR_TYP_AVGSLOPE__),\
   */
 
 /* Include ADC HAL Extended module */
-#include "stm32l4xx_hal_adc_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup ADC_Exported_Functions
@@ -2012,6 +2007,5 @@ void ADC_DMAError(DMA_HandleTypeDef *hdma);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_ADC_H */

@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rtc_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of RTC HAL Extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rtc_ex.h
+ *
+ * @brief   Header file of RTC HAL Extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_RTC_EX_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -190,7 +189,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* ========================================================================== */
 /*                    ##### RTC Tamper exported constants #####               */
@@ -504,9 +502,6 @@ typedef struct
   * @}
   */
 
-
-
-
 /** @defgroup RTCEx_Tamper_Interrupt_Definitions RTC Tamper Interrupts Definitions
   * @{
   */
@@ -529,7 +524,6 @@ typedef struct
 #endif /* RTC_TAMPER3_SUPPORT */
 #define RTC_ALL_TAMPER_INTERRUPT           RTC_TAMPCR_TAMPIE
 #endif /* #if defined(STM32L412xx) || defined(STM32L422xx) */
-
 
 #if defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /** @defgroup RTCEx_Binary_Mode RTC Binary Mode (32-bit free-running counter configuration).
@@ -642,7 +636,6 @@ typedef struct
   */
 #endif /* #if defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
 
-
 /**
   * @}
   */
@@ -729,7 +722,6 @@ typedef struct
   */
 #define __HAL_RTC_WAKEUPTIMER_DISABLE_IT(__HANDLE__, __INTERRUPT__)   ((__HANDLE__)->Instance->CR &= ~(__INTERRUPT__))
 
-
 /**
   * @brief  Check whether the specified RTC WakeUpTimer interrupt has occurred or not.
   * @param  __HANDLE__ specifies the RTC handle.
@@ -782,7 +774,6 @@ typedef struct
 #else
 #define __HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(__HANDLE__, __FLAG__) ((__HANDLE__)->Instance->ISR) = (~((__FLAG__) | RTC_ISR_INIT)|((__HANDLE__)->Instance->ISR & RTC_ISR_INIT))
 #endif
-
 
 /* WAKE-UP TIMER EXTI */
 /* ------------------ */
@@ -1008,7 +999,6 @@ typedef struct
 #define __HAL_RTC_INTERNAL_TIMESTAMP_CLEAR_FLAG(__HANDLE__, __FLAG__)  ((__HANDLE__)->Instance->ISR) = (~((__FLAG__) | RTC_ISR_INIT)|((__HANDLE__)->Instance->ISR & RTC_ISR_INIT))
 #endif
 
-
 #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /**
   * @brief  Enable the RTC TimeStamp on Tamper detection.
@@ -1037,7 +1027,6 @@ typedef struct
   * @retval None
   */
 #define __HAL_RTC_TAMPOE_DISABLE(__HANDLE__)                      ((__HANDLE__)->Instance->CR &= ~(RTC_CR_TAMPOE))
-
 
 /**
   * @}
@@ -1094,7 +1083,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* ------------------------------Tamper----------------------------------*/
 /** @defgroup RTCEx_Tamper RTCEx tamper
@@ -1195,7 +1183,6 @@ typedef struct
 #else
 #define __HAL_RTC_TAMPER_DISABLE_IT(__HANDLE__, __INTERRUPT__)       ((__HANDLE__)->Instance->TAMPCR &= ~(__INTERRUPT__))
 #endif
-
 
 /**************************************************************************************************/
 /**
@@ -1375,7 +1362,6 @@ typedef struct
   * @retval None
   */
 #define __HAL_RTC_SSRU_DISABLE_IT(__HANDLE__, __INTERRUPT__)   (RTC->CR &= ~(__INTERRUPT__))
-
 
 /**
   * @brief  Check whether the specified RTC SSRU interrupt has occurred or not.
@@ -1569,7 +1555,6 @@ void              HAL_RTCEx_Tamper2EventCallback(RTC_HandleTypeDef *hrtc);
 void              HAL_RTCEx_Tamper3EventCallback(RTC_HandleTypeDef *hrtc);
 #endif /* RTC_TAMPER3_SUPPORT */
 
-
 /**
   * @}
   */
@@ -1649,7 +1634,6 @@ uint32_t          HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupReg
 #else
 #define IS_RTC_TAMPER(TAMPER) ((((TAMPER) & 0xFFFFFFD6U) == 0x00U) && ((TAMPER) != 0U))
 #endif
-
 
 #define IS_RTC_TAMPER_TRIGGER(__TRIGGER__)       (((__TRIGGER__) == RTC_TAMPERTRIGGER_RISINGEDGE)  || \
                                                   ((__TRIGGER__) == RTC_TAMPERTRIGGER_FALLINGEDGE) || \

@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    event_groups.h
+ *
+ * @brief   Event Groups
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "timers.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup event_groups
+ * @brief    event_groups Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -34,7 +58,6 @@
 #endif
 
 /* FreeRTOS includes. */
-#include "timers.h"
 
 /* The following bit fields convey control information in a task's event list
  * item value.  It is important they don't clash with the
@@ -86,8 +109,6 @@
  * used to create a synchronisation point between multiple tasks (a
  * 'rendezvous').
  */
-
-
 
 /**
  * event_groups.h
@@ -751,7 +772,6 @@ EventBits_t xEventGroupSync( EventGroupHandle_t xEventGroup,
                              const EventBits_t uxBitsToWaitFor,
                              TickType_t xTicksToWait ) PRIVILEGED_FUNCTION;
 
-
 /**
  * event_groups.h
  * @code{c}
@@ -841,7 +861,6 @@ void vEventGroupSetBitsCallback( void * pvEventGroup,
 void vEventGroupClearBitsCallback( void * pvEventGroup,
                                    uint32_t ulBitsToClear ) PRIVILEGED_FUNCTION;
 
-
 #if ( configUSE_TRACE_FACILITY == 1 )
     UBaseType_t uxEventGroupGetNumber( void * xEventGroup ) PRIVILEGED_FUNCTION;
     void vEventGroupSetNumber( void * xEventGroup,
@@ -855,3 +874,5 @@ void vEventGroupClearBitsCallback( void * pvEventGroup,
 /* *INDENT-ON* */
 
 #endif /* EVENT_GROUPS_H */
+
+/** @} */

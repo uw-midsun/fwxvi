@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dac.h
-  * @author  MCD Application Team
-  * @brief   Header file of DAC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dac.h
+ *
+ * @brief   Header file of DAC HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_dac_ex.h"
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DAC_H
@@ -29,7 +30,6 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined(DAC1)
 
@@ -232,7 +232,6 @@ typedef void (*pDAC_CallbackTypeDef)(DAC_HandleTypeDef *hdac);
 #define DAC_TRIGGER_SOFTWARE    (                                  DAC_CR_TSEL1   | DAC_CR_TEN1) /*!< Conversion started by software trigger for DAC channel */
 #endif     /* STM32L471xx STM32L475xx STM32L476xx STM32L485xx STM32L486xx STM32L496xx STM32L4A6xx*/
 
-
 #if defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined(STM32L4S9xx)
 #define DAC_TRIGGER_NONE        0x00000000U                                                                       /*!< conversion is automatic once the DAC_DHRxxxx register has been loaded, and not by external trigger */
 #define DAC_TRIGGER_SOFTWARE    (                                                                    DAC_CR_TEN1) /*!< conversion started by software trigger for DAC channel */
@@ -249,7 +248,6 @@ typedef void (*pDAC_CallbackTypeDef)(DAC_HandleTypeDef *hdac);
 #define DAC_TRIGGER_EXT_IT9     (DAC_CR_TSEL1_3 | DAC_CR_TSEL1_2                  | DAC_CR_TSEL1_0 | DAC_CR_TEN1) /*!< EXTI Line9 event selected as external conversion trigger for DAC channel */
 
 #endif /* STM32L4P5xx STM32L4Q5xx STM32L4R5xx STM32L4R7xx STM32L4R9xx STM32L4S5xx STM32L4S7xx STM32L4S9xx  */
-
 
 /**
   * @}
@@ -504,7 +502,6 @@ typedef void (*pDAC_CallbackTypeDef)(DAC_HandleTypeDef *hdac);
   */
 
 /* Include DAC HAL Extended module */
-#include "stm32l4xx_hal_dac_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 
@@ -605,7 +602,5 @@ void DAC_DMAHalfConvCpltCh1(DMA_HandleTypeDef *hdma);
 }
 #endif
 
-
 #endif /*STM32L4xx_HAL_DAC_H */
-
 

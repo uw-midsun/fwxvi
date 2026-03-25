@@ -1,214 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_qspi.c
-  * @author  MCD Application Team
-  * @brief   QSPI HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the QuadSPI interface (QSPI).
-  *           + Initialization and de-initialization functions
-  *           + Indirect functional mode management
-  *           + Memory-mapped functional mode management
-  *           + Auto-polling functional mode management
-  *           + Interrupts and flags management
-  *           + DMA channel configuration for indirect functional mode
-  *           + Errors management and abort functionality
-  *
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                        ##### How to use this driver #####
- ===============================================================================
-  [..]
-    *** Initialization ***
-    ======================
-    [..]
-      (#) As prerequisite, fill in the HAL_QSPI_MspInit() :
-        (++) Enable QuadSPI clock interface with __HAL_RCC_QSPI_CLK_ENABLE().
-        (++) Reset QuadSPI Peripheral with __HAL_RCC_QSPI_FORCE_RESET() and __HAL_RCC_QSPI_RELEASE_RESET().
-        (++) Enable the clocks for the QuadSPI GPIOS with __HAL_RCC_GPIOx_CLK_ENABLE().
-        (++) Configure these QuadSPI pins in alternate mode using HAL_GPIO_Init().
-        (++) If interrupt mode is used, enable and configure QuadSPI global
-            interrupt with HAL_NVIC_SetPriority() and HAL_NVIC_EnableIRQ().
-        (++) If DMA mode is used, enable the clocks for the QuadSPI DMA channel
-            with __HAL_RCC_DMAx_CLK_ENABLE(), configure DMA with HAL_DMA_Init(),
-            link it with QuadSPI handle using __HAL_LINKDMA(), enable and configure
-            DMA channel global interrupt with HAL_NVIC_SetPriority() and HAL_NVIC_EnableIRQ().
-      (#) Configure the flash size, the clock prescaler, the fifo threshold, the
-          clock mode, the sample shifting and the CS high time using the HAL_QSPI_Init() function.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_qspi.c
+ *
+ * @brief   QSPI HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    *** Indirect functional mode ***
-    ================================
-    [..]
-      (#) Configure the command sequence using the HAL_QSPI_Command() or HAL_QSPI_Command_IT()
-          functions :
-         (++) Instruction phase : the mode used and if present the instruction opcode.
-         (++) Address phase : the mode used and if present the size and the address value.
-         (++) Alternate-bytes phase : the mode used and if present the size and the alternate
-             bytes values.
-         (++) Dummy-cycles phase : the number of dummy cycles (mode used is same as data phase).
-         (++) Data phase : the mode used and if present the number of bytes.
-         (++) Double Data Rate (DDR) mode : the activation (or not) of this mode and the delay
-             if activated.
-         (++) Sending Instruction Only Once (SIOO) mode : the activation (or not) of this mode.
-      (#) If no data is required for the command, it is sent directly to the memory :
-         (++) In polling mode, the output of the function is done when the transfer is complete.
-         (++) In interrupt mode, HAL_QSPI_CmdCpltCallback() will be called when the transfer is complete.
-      (#) For the indirect write mode, use HAL_QSPI_Transmit(), HAL_QSPI_Transmit_DMA() or
-          HAL_QSPI_Transmit_IT() after the command configuration :
-         (++) In polling mode, the output of the function is done when the transfer is complete.
-         (++) In interrupt mode, HAL_QSPI_FifoThresholdCallback() will be called when the fifo threshold
-             is reached and HAL_QSPI_TxCpltCallback() will be called when the transfer is complete.
-         (++) In DMA mode, HAL_QSPI_TxHalfCpltCallback() will be called at the half transfer and
-             HAL_QSPI_TxCpltCallback() will be called when the transfer is complete.
-      (#) For the indirect read mode, use HAL_QSPI_Receive(), HAL_QSPI_Receive_DMA() or
-          HAL_QSPI_Receive_IT() after the command configuration :
-         (++) In polling mode, the output of the function is done when the transfer is complete.
-         (++) In interrupt mode, HAL_QSPI_FifoThresholdCallback() will be called when the fifo threshold
-             is reached and HAL_QSPI_RxCpltCallback() will be called when the transfer is complete.
-         (++) In DMA mode, HAL_QSPI_RxHalfCpltCallback() will be called at the half transfer and
-             HAL_QSPI_RxCpltCallback() will be called when the transfer is complete.
+/* Standard library Headers */
 
-    *** Auto-polling functional mode ***
-    ====================================
-    [..]
-      (#) Configure the command sequence and the auto-polling functional mode using the
-          HAL_QSPI_AutoPolling() or HAL_QSPI_AutoPolling_IT() functions :
-         (++) Instruction phase : the mode used and if present the instruction opcode.
-         (++) Address phase : the mode used and if present the size and the address value.
-         (++) Alternate-bytes phase : the mode used and if present the size and the alternate
-             bytes values.
-         (++) Dummy-cycles phase : the number of dummy cycles (mode used is same as data phase).
-         (++) Data phase : the mode used.
-         (++) Double Data Rate (DDR) mode : the activation (or not) of this mode and the delay
-             if activated.
-         (++) Sending Instruction Only Once (SIOO) mode : the activation (or not) of this mode.
-         (++) The size of the status bytes, the match value, the mask used, the match mode (OR/AND),
-             the polling interval and the automatic stop activation.
-      (#) After the configuration :
-         (++) In polling mode, the output of the function is done when the status match is reached. The
-             automatic stop is activated to avoid an infinite loop.
-         (++) In interrupt mode, HAL_QSPI_StatusMatchCallback() will be called each time the status match is reached.
+/* Inter-component Headers */
 
-    *** Memory-mapped functional mode ***
-    =====================================
-    [..]
-      (#) Configure the command sequence and the memory-mapped functional mode using the
-          HAL_QSPI_MemoryMapped() functions :
-         (++) Instruction phase : the mode used and if present the instruction opcode.
-         (++) Address phase : the mode used and the size.
-         (++) Alternate-bytes phase : the mode used and if present the size and the alternate
-             bytes values.
-         (++) Dummy-cycles phase : the number of dummy cycles (mode used is same as data phase).
-         (++) Data phase : the mode used.
-         (++) Double Data Rate (DDR) mode : the activation (or not) of this mode and the delay
-             if activated.
-         (++) Sending Instruction Only Once (SIOO) mode : the activation (or not) of this mode.
-         (++) The timeout activation and the timeout period.
-      (#) After the configuration, the QuadSPI will be used as soon as an access on the AHB is done on
-          the address range. HAL_QSPI_TimeOutCallback() will be called when the timeout expires.
-
-    *** Errors management and abort functionality ***
-    =================================================
-    [..]
-      (#) HAL_QSPI_GetError() function gives the error raised during the last operation.
-      (#) HAL_QSPI_Abort() and HAL_QSPI_Abort_IT() functions aborts any on-going operation and
-          flushes the fifo :
-         (++) In polling mode, the output of the function is done when the transfer
-              complete bit is set and the busy bit cleared.
-         (++) In interrupt mode, HAL_QSPI_AbortCpltCallback() will be called when
-              the transfer complete bit is set.
-
-    *** Control functions ***
-    =========================
-    [..]
-      (#) HAL_QSPI_GetState() function gives the current state of the HAL QuadSPI driver.
-      (#) HAL_QSPI_SetTimeout() function configures the timeout value used in the driver.
-      (#) HAL_QSPI_SetFifoThreshold() function configures the threshold on the Fifo of the QSPI IP.
-      (#) HAL_QSPI_GetFifoThreshold() function gives the current of the Fifo's threshold
-      (#) HAL_QSPI_SetFlashID() function configures the index of the flash memory to be accessed.
-
-    *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_QSPI_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
-
-      Use Functions HAL_QSPI_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) ErrorCallback : callback when error occurs.
-        (+) AbortCpltCallback : callback when abort is completed.
-        (+) FifoThresholdCallback : callback when the fifo threshold is reached.
-        (+) CmdCpltCallback : callback when a command without data is completed.
-        (+) RxCpltCallback : callback when a reception transfer is completed.
-        (+) TxCpltCallback : callback when a transmission transfer is completed.
-        (+) RxHalfCpltCallback : callback when half of the reception transfer is completed.
-        (+) TxHalfCpltCallback : callback when half of the transmission transfer is completed.
-        (+) StatusMatchCallback : callback when a status match occurs.
-        (+) TimeOutCallback : callback when the timeout perioed expires.
-        (+) MspInitCallback    : QSPI MspInit.
-        (+) MspDeInitCallback  : QSPI MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
-
-      Use function HAL_QSPI_UnRegisterCallback() to reset a callback to the default
-      weak (overridden) function. It allows to reset following callbacks:
-        (+) ErrorCallback : callback when error occurs.
-        (+) AbortCpltCallback : callback when abort is completed.
-        (+) FifoThresholdCallback : callback when the fifo threshold is reached.
-        (+) CmdCpltCallback : callback when a command without data is completed.
-        (+) RxCpltCallback : callback when a reception transfer is completed.
-        (+) TxCpltCallback : callback when a transmission transfer is completed.
-        (+) RxHalfCpltCallback : callback when half of the reception transfer is completed.
-        (+) TxHalfCpltCallback : callback when half of the transmission transfer is completed.
-        (+) StatusMatchCallback : callback when a status match occurs.
-        (+) TimeOutCallback : callback when the timeout perioed expires.
-        (+) MspInitCallback    : QSPI MspInit.
-        (+) MspDeInitCallback  : QSPI MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
-
-      By default, after the HAL_QSPI_Init and if the state is HAL_QSPI_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (overridden) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (overridden) functions in the HAL_QSPI_Init
-      and  HAL_QSPI_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the HAL_QSPI_Init and HAL_QSPI_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using HAL_QSPI_RegisterCallback before calling HAL_QSPI_DeInit
-      or HAL_QSPI_Init function.
-
-      When The compilation define USE_HAL_QSPI_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (overridden) callbacks are used.
-
-    *** Workarounds linked to Silicon Limitation ***
-    ====================================================
-    [..]
-      (#) Workarounds Implemented inside HAL Driver
-         (++) Extra data written in the FIFO at the end of a read transfer
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(QUADSPI)
 
@@ -1055,7 +861,6 @@ HAL_StatusTypeDef HAL_QSPI_Transmit(QSPI_HandleTypeDef *hqspi, uint8_t *pData, u
 
   return status;
 }
-
 
 /**
   * @brief Receive an amount of data in blocking mode.
@@ -2244,7 +2049,6 @@ HAL_StatusTypeDef HAL_QSPI_UnRegisterCallback (QSPI_HandleTypeDef *hqspi, HAL_QS
       (+) Check in run-time the state of the driver.
       (+) Check the error code set during last operation.
       (+) Abort any operation.
-
 
 @endverbatim
   * @{

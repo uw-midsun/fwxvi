@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_exti.h
-  * @author  MCD Application Team
-  * @brief   Header file of EXTI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_exti.h
+ *
+ * @brief   Header file of EXTI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_EXTI_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -47,7 +46,6 @@ typedef enum
   HAL_EXTI_RISING_CB_ID          = 0x01U,
   HAL_EXTI_FALLING_CB_ID         = 0x02U,
 } EXTI_CallbackIDTypeDef;
-
 
 /**
   * @brief  EXTI Handle structure definition
@@ -802,7 +800,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup EXTI_Exported_Functions EXTI Exported Functions

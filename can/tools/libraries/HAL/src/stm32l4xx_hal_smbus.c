@@ -1,176 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_smbus.c
-  * @author  MCD Application Team
-  * @brief   SMBUS HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the System Management Bus (SMBus) peripheral,
-  *          based on I2C principles of operation :
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral State and Errors functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The SMBUS HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_smbus.c
+ *
+ * @brief   SMBUS HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Declare a SMBUS_HandleTypeDef handle structure, for example:
-        SMBUS_HandleTypeDef  hsmbus;
+/* Standard library Headers */
 
-    (#)Initialize the SMBUS low level resources by implementing the HAL_SMBUS_MspInit() API:
-        (##) Enable the SMBUSx interface clock
-        (##) SMBUS pins configuration
-            (+++) Enable the clock for the SMBUS GPIOs
-            (+++) Configure SMBUS pins as alternate function open-drain
-        (##) NVIC configuration if you need to use interrupt process
-            (+++) Configure the SMBUSx interrupt priority
-            (+++) Enable the NVIC SMBUS IRQ Channel
+/* Inter-component Headers */
 
-    (#) Configure the Communication Clock Timing, Bus Timeout, Own Address1, Master Addressing mode,
-        Dual Addressing mode, Own Address2, Own Address2 Mask, General call, Nostretch mode,
-        Peripheral mode and Packet Error Check mode in the hsmbus Init structure.
-
-    (#) Initialize the SMBUS registers by calling the HAL_SMBUS_Init() API:
-        (++) These API's configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
-             by calling the customized HAL_SMBUS_MspInit(&hsmbus) API.
-
-    (#) To check if target device is ready for communication, use the function HAL_SMBUS_IsDeviceReady()
-
-    (#) For SMBUS IO operations, only one mode of operations is available within this driver
-
-    *** Interrupt mode IO operation ***
-    ===================================
-    [..]
-      (+) Transmit in master/host SMBUS mode an amount of data in non-blocking mode
-          using HAL_SMBUS_Master_Transmit_IT()
-      (++) At transmission end of transfer HAL_SMBUS_MasterTxCpltCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_MasterTxCpltCallback()
-      (+) Receive in master/host SMBUS mode an amount of data in non-blocking mode
-          using HAL_SMBUS_Master_Receive_IT()
-      (++) At reception end of transfer HAL_SMBUS_MasterRxCpltCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_MasterRxCpltCallback()
-      (+) Abort a master/host SMBUS process communication with Interrupt using HAL_SMBUS_Master_Abort_IT()
-      (++) The associated previous transfer callback is called at the end of abort process
-      (++) mean HAL_SMBUS_MasterTxCpltCallback() in case of previous state was master transmit
-      (++) mean HAL_SMBUS_MasterRxCpltCallback() in case of previous state was master receive
-      (+) Enable/disable the Address listen mode in slave/device or host/slave SMBUS mode
-           using HAL_SMBUS_EnableListen_IT() HAL_SMBUS_DisableListen_IT()
-      (++) When address slave/device SMBUS match, HAL_SMBUS_AddrCallback() is executed and users can
-           add their own code to check the Address Match Code and the transmission direction
-           request by master/host (Write/Read).
-      (++) At Listen mode end HAL_SMBUS_ListenCpltCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_ListenCpltCallback()
-      (+) Transmit in slave/device SMBUS mode an amount of data in non-blocking mode
-          using HAL_SMBUS_Slave_Transmit_IT()
-      (++) At transmission end of transfer HAL_SMBUS_SlaveTxCpltCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_SlaveTxCpltCallback()
-      (+) Receive in slave/device SMBUS mode an amount of data in non-blocking mode
-          using HAL_SMBUS_Slave_Receive_IT()
-      (++) At reception end of transfer HAL_SMBUS_SlaveRxCpltCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_SlaveRxCpltCallback()
-      (+) Enable/Disable the SMBUS alert mode using
-          HAL_SMBUS_EnableAlert_IT() or HAL_SMBUS_DisableAlert_IT()
-      (++) When SMBUS Alert is generated HAL_SMBUS_ErrorCallback() is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_ErrorCallback()
-           to check the Alert Error Code using function HAL_SMBUS_GetError()
-      (+) Get HAL state machine or error values using HAL_SMBUS_GetState() or HAL_SMBUS_GetError()
-      (+) In case of transfer Error, HAL_SMBUS_ErrorCallback() function is executed and users can
-           add their own code by customization of function pointer HAL_SMBUS_ErrorCallback()
-           to check the Error Code using function HAL_SMBUS_GetError()
-
-     *** SMBUS HAL driver macros list ***
-     ==================================
-     [..]
-       Below the list of most used macros in SMBUS HAL driver.
-
-      (+) __HAL_SMBUS_ENABLE:      Enable the SMBUS peripheral
-      (+) __HAL_SMBUS_DISABLE:     Disable the SMBUS peripheral
-      (+) __HAL_SMBUS_GET_FLAG:    Check whether the specified SMBUS flag is set or not
-      (+) __HAL_SMBUS_CLEAR_FLAG:  Clear the specified SMBUS pending flag
-      (+) __HAL_SMBUS_ENABLE_IT:   Enable the specified SMBUS interrupt
-      (+) __HAL_SMBUS_DISABLE_IT:  Disable the specified SMBUS interrupt
-
-     *** Callback registration ***
-     =============================================
-    [..]
-     The compilation flag USE_HAL_SMBUS_REGISTER_CALLBACKS when set to 1
-     allows the user to configure dynamically the driver callbacks.
-     Use Functions HAL_SMBUS_RegisterCallback() or HAL_SMBUS_RegisterAddrCallback()
-     to register an interrupt callback.
-    [..]
-     Function HAL_SMBUS_RegisterCallback() allows to register following callbacks:
-       (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
-       (+) MasterRxCpltCallback : callback for Master reception end of transfer.
-       (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
-       (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
-       (+) ListenCpltCallback   : callback for end of listen mode.
-       (+) ErrorCallback        : callback for error detection.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-     This function takes as parameters the HAL peripheral handle, the Callback ID
-     and a pointer to the user callback function.
-    [..]
-     For specific callback AddrCallback use dedicated register callbacks : HAL_SMBUS_RegisterAddrCallback.
-    [..]
-     Use function HAL_SMBUS_UnRegisterCallback to reset a callback to the default
-     weak function.
-     HAL_SMBUS_UnRegisterCallback takes as parameters the HAL peripheral handle,
-     and the Callback ID.
-     This function allows to reset following callbacks:
-       (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
-       (+) MasterRxCpltCallback : callback for Master reception end of transfer.
-       (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
-       (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
-       (+) ListenCpltCallback   : callback for end of listen mode.
-       (+) ErrorCallback        : callback for error detection.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-    [..]
-     For callback AddrCallback use dedicated register callbacks : HAL_SMBUS_UnRegisterAddrCallback.
-    [..]
-     By default, after the HAL_SMBUS_Init() and when the state is HAL_I2C_STATE_RESET
-     all callbacks are set to the corresponding weak functions:
-     examples HAL_SMBUS_MasterTxCpltCallback(), HAL_SMBUS_MasterRxCpltCallback().
-     Exception done for MspInit and MspDeInit functions that are
-     reset to the legacy weak functions in the HAL_SMBUS_Init()/ HAL_SMBUS_DeInit() only when
-     these callbacks are null (not registered beforehand).
-     If MspInit or MspDeInit are not null, the HAL_SMBUS_Init()/ HAL_SMBUS_DeInit()
-     keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
-    [..]
-     Callbacks can be registered/unregistered in HAL_I2C_STATE_READY state only.
-     Exception done MspInit/MspDeInit functions that can be registered/unregistered
-     in HAL_I2C_STATE_READY or HAL_I2C_STATE_RESET state,
-     thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-     Then, the user first registers the MspInit/MspDeInit user callbacks
-     using HAL_SMBUS_RegisterCallback() before calling HAL_SMBUS_DeInit()
-     or HAL_SMBUS_Init() function.
-    [..]
-     When the compilation flag USE_HAL_SMBUS_REGISTER_CALLBACKS is set to 0 or
-     not defined, the callback registration feature is not available and all callbacks
-     are set to the corresponding weak functions.
-
-     [..]
-       (@) You can refer to the SMBUS HAL driver header file for more useful macros
-
-  @endverbatim
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -267,7 +111,6 @@ static void SMBUS_ConvertOtherXferOptions(SMBUS_HandleTypeDef *hsmbus);
         (++) Nostretch mode
         (++) Packet Error Check mode
         (++) Peripheral mode
-
 
       (+) Call the function HAL_SMBUS_DeInit() to restore the default configuration
           of the selected SMBUSx peripheral.

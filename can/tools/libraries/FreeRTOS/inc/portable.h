@@ -1,3 +1,29 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    portable.h
+ *
+ * @brief   Portable
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+    #include "portmacro.h"
+#include "deprecated_definitions.h"
+#include "mpu_wrappers.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup portable
+ * @brief    portable Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -43,14 +69,12 @@
  * to make it clear that new projects should not use it, support for the port
  * specific constants has been moved into the deprecated_definitions.h header
  * file. */
-#include "deprecated_definitions.h"
 
 /* If portENTER_CRITICAL is not defined then including deprecated_definitions.h
  * did not result in a portmacro.h header file being included - and it should be
  * included here.  In this case the path to the correct portmacro.h header file
  * must be set in the compiler's include path. */
 #ifndef portENTER_CRITICAL
-    #include "portmacro.h"
 #endif
 
 #if portBYTE_ALIGNMENT == 32
@@ -99,8 +123,6 @@
     extern "C" {
 #endif
 /* *INDENT-ON* */
-
-#include "mpu_wrappers.h"
 
 /*
  * Setup the stack of a new task so it is ready to be placed under the
@@ -279,3 +301,5 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* PORTABLE_H */
+
+/** @} */

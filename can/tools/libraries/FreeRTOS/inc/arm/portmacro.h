@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    portmacro.h
+ *
+ * @brief   Portmacro
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup portmacro
+ * @brief    portmacro Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,10 +49,8 @@
  *
  */
 
-
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
-
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -491,3 +512,5 @@ portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
 /* *INDENT-ON* */
 
 #endif /* PORTMACRO_H */
+
+/** @} */

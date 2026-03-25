@@ -1,28 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rcc_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended RCC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities RCC extended peripheral:
-  *           + Extended Peripheral Control functions
-  *           + Extended Clock management functions
-  *           + Extended Clock Recovery System Control functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rcc_ex.c
+ *
+ * @brief   Extended RCC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -3530,7 +3522,6 @@ static uint32_t RCCEx_GetSAIxPeriphCLKFreq(uint32_t PeriphClk, uint32_t InputFre
     }
   }
 
-
   return frequency;
 }
 
@@ -3552,5 +3543,4 @@ static uint32_t RCCEx_GetSAIxPeriphCLKFreq(uint32_t PeriphClk, uint32_t InputFre
 /**
   * @}
   */
-
 

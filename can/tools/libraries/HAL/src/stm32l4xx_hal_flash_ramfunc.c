@@ -1,51 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_flash_ramfunc.c
-  * @author  MCD Application Team
-  * @brief   FLASH RAMFUNC driver.
-  *          This file provides a Flash firmware functions which should be
-  *          executed from internal SRAM
-  *            + FLASH HalfPage Programming
-  *            + FLASH Power Down in Run mode
-  *
-  *  @verbatim
-  ==============================================================================
-                   ##### Flash RAM functions #####
-  ==============================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_flash_ramfunc.c
+ *
+ * @brief   FLASH RAMFUNC driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    *** ARM Compiler ***
-    --------------------
-    [..] RAM functions are defined using the toolchain options.
-         Functions that are executed in RAM should reside in a separate
-         source module. Using the 'Options for File' dialog you can simply change
-         the 'Code / Const' area of a module to a memory space in physical RAM.
-         Available memory areas are declared in the 'Target' tab of the
-         Options for Target' dialog.
+/* Standard library Headers */
 
-    *** ICCARM Compiler ***
-    -----------------------
-    [..] RAM functions are defined using a specific toolchain keyword "__ramfunc".
+/* Inter-component Headers */
 
-    *** GNU Compiler ***
-    --------------------
-    [..] RAM functions are defined using a specific toolchain attribute
-         "__attribute__((section(".RamFunc")))".
-
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -236,8 +205,6 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
   */
 #endif /* HAL_FLASH_MODULE_ENABLED */
 
-
-
 /**
   * @}
   */
@@ -245,7 +212,4 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
 /**
   * @}
   */
-
-
-
 

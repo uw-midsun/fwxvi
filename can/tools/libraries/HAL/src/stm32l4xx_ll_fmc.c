@@ -1,59 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_fmc.c
-  * @author  MCD Application Team
-  * @brief   FMC Low Layer HAL module driver.
-  *
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Flexible Memory Controller (FMC) peripheral memories:
-  *           + Initialization/de-initialization functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### FMC peripheral features #####
-  ==============================================================================
-  [..] The Flexible memory controller (FMC) includes following memory controllers:
-       (+) The NOR/PSRAM memory controller
-     (+) The NAND memory controller
+/************************************************************************************************
+ * @file    stm32l4xx_ll_fmc.c
+ *
+ * @brief   FMC Low Layer HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..] The FMC functional block makes the interface with synchronous and asynchronous static
-       memories. Its main purposes are:
-       (+) to translate AHB transactions into the appropriate external device protocol
-       (+) to meet the access time requirements of the external memory devices
+/* Standard library Headers */
 
-  [..] All external memories share the addresses, data and control signals with the controller.
-       Each external device is accessed by means of a unique Chip Select. The FMC performs
-       only one access at a time to an external device.
-       The main features of the FMC controller are the following:
-        (+) Interface with static-memory mapped devices including:
-           (++) Static random access memory (SRAM)
-           (++) Read-only memory (ROM)
-           (++) NOR Flash memory/OneNAND Flash memory
-           (++) PSRAM (4 memory banks)
-           (++) Two banks of NAND Flash memory with ECC hardware to check up to 8 Kbytes of
-                data
-        (+) Independent Chip Select control for each memory bank
-        (+) Independent configuration for each memory bank
+/* Inter-component Headers */
 
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -753,7 +714,6 @@ HAL_StatusTypeDef FMC_NAND_DeInit(FMC_NAND_TypeDef *Device, uint32_t Bank)
   * @{
   */
 
-
 /**
   * @brief  Enables dynamically FMC_NAND ECC feature.
   * @param  Device Pointer to NAND device instance
@@ -774,7 +734,6 @@ HAL_StatusTypeDef FMC_NAND_ECC_Enable(FMC_NAND_TypeDef *Device, uint32_t Bank)
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  Disables dynamically FMC_NAND ECC feature.
@@ -843,7 +802,6 @@ HAL_StatusTypeDef FMC_NAND_GetECC(const FMC_NAND_TypeDef *Device, uint32_t *ECCv
   * @}
   */
 #endif /* FMC_BANK3 */
-
 
 /**
   * @}

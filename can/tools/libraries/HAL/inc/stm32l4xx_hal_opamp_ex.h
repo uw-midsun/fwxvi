@@ -1,20 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_opamp_ex.h
+ *
+ * @brief   Header file of OPAMP HAL Extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_opamp_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of OPAMP HAL Extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_opamp_ex
+ * @brief    stm32l4xx_hal_opamp_ex Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_OPAMP_EX_H
@@ -25,7 +31,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -46,7 +51,6 @@
     defined (STM32L496xx) || defined (STM32L4A6xx) || \
     defined (STM32L4P5xx) || defined (STM32L4Q5xx) || \
     defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
-
 
 /* I/O operation functions  *****************************************************/
 /** @addtogroup OPAMPEx_Exported_Functions_Group1 Extended Input and Output operation functions
@@ -86,3 +90,5 @@ HAL_StatusTypeDef HAL_OPAMPEx_Unlock(OPAMP_HandleTypeDef *hopamp);
 #endif
 
 #endif /* STM32L4xx_HAL_OPAMP_EX_H */
+
+/** @} */

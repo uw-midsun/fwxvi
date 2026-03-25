@@ -1,57 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_hcd.c
-  * @author  MCD Application Team
-  * @brief   HCD HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    (#)Declare a HCD_HandleTypeDef handle structure, for example:
-       HCD_HandleTypeDef  hhcd;
+/************************************************************************************************
+ * @file    stm32l4xx_hal_hcd.c
+ *
+ * @brief   HCD HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#)Fill parameters of Init structure in HCD handle
+/* Standard library Headers */
 
-    (#)Call HAL_HCD_Init() API to initialize the HCD peripheral (Core, Host core, ...)
+/* Inter-component Headers */
 
-    (#)Initialize the HCD low level resources through the HAL_HCD_MspInit() API:
-        (##) Enable the HCD/USB Low Level interface clock using the following macros
-             (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-        (##) Initialize the related GPIO clocks
-        (##) Configure HCD pin-out
-        (##) Configure HCD NVIC interrupt
-
-    (#)Associate the Upper USB Host stack to the HAL HCD Driver:
-        (##) hhcd.pData = phost;
-
-    (#)Enable HCD transmission and reception:
-        (##) HAL_HCD_Start();
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -605,7 +568,6 @@ void HAL_HCD_IRQHandler(HCD_HandleTypeDef *hhcd)
   }
 }
 
-
 /**
   * @brief  SOF callback.
   * @param  hhcd HCD handle
@@ -1098,7 +1060,6 @@ HCD_URBStateTypeDef HAL_HCD_HC_GetURBState(HCD_HandleTypeDef const *hhcd, uint8_
   return hhcd->hc[chnum].urb_state;
 }
 
-
 /**
   * @brief  Return the last host transfer size.
   * @param  hhcd HCD handle
@@ -1170,7 +1131,6 @@ HAL_StatusTypeDef HAL_HCD_HC_SetHubInfo(HCD_HandleTypeDef *hhcd, uint8_t ch_num,
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  Clear host channel hub information.

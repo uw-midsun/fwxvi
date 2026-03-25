@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dma.h
-  * @author  MCD Application Team
-  * @brief   Header file of DMA HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dma.h
+ *
+ * @brief   Header file of DMA HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_dma_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DMA_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -92,7 +92,6 @@ typedef enum
   HAL_DMA_FULL_TRANSFER      = 0x00U,    /*!< Full transfer     */
   HAL_DMA_HALF_TRANSFER      = 0x01U     /*!< Half Transfer     */
 } HAL_DMA_LevelCompleteTypeDef;
-
 
 /**
   * @brief  HAL DMA Callback ID structure definition
@@ -501,7 +500,6 @@ typedef struct __DMA_HandleTypeDef
   * @}
   */
 
-
 /** @defgroup DMA_interrupt_enable_definitions DMA interrupt enable definitions
   * @{
   */
@@ -575,7 +573,6 @@ typedef struct __DMA_HandleTypeDef
   * @retval None
   */
 #define __HAL_DMA_DISABLE(__HANDLE__)       ((__HANDLE__)->Instance->CCR &=  ~DMA_CCR_EN)
-
 
 /* Interrupt & Flag management */
 
@@ -739,7 +736,6 @@ typedef struct __DMA_HandleTypeDef
 
 #if defined(DMAMUX1)
 /* Include DMA HAL Extension module */
-#include "stm32l4xx_hal_dma_ex.h"
 #endif /* DMAMUX1 */
 
 /* Exported functions --------------------------------------------------------*/

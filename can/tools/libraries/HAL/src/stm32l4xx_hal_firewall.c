@@ -1,49 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_firewall.c
-  * @author  MCD Application Team
-  * @brief   FIREWALL HAL module driver.
-  *          This file provides firmware functions to manage the Firewall
-  *          Peripheral initialization and enabling.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                        ##### How to use this driver #####
- ===============================================================================
-  [..]
-    The FIREWALL HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_firewall.c
+ *
+ * @brief   FIREWALL HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Declare a FIREWALL_InitTypeDef initialization structure.
+/* Standard library Headers */
 
-    (#) Resort to HAL_FIREWALL_Config() API to initialize the Firewall
+/* Inter-component Headers */
 
-    (#) Enable the FIREWALL in calling HAL_FIREWALL_EnableFirewall() API
-
-    (#) To ensure that any code executed outside the protected segment closes the
-        FIREWALL, the user must set the flag FIREWALL_PRE_ARM_SET in calling
-        __HAL_FIREWALL_PREARM_ENABLE() macro if called within a protected code segment
-        or
-        HAL_FIREWALL_EnablePreArmFlag() API if called outside of protected code segment
-        after HAL_FIREWALL_Config() call.
-
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -61,7 +32,6 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
 
 /** @defgroup FIREWALL_Exported_Functions FIREWALL Exported Functions
   * @{
@@ -145,7 +115,6 @@ HAL_StatusTypeDef HAL_FIREWALL_Config(FIREWALL_InitTypeDef * fw_init)
   assert_param(IS_FIREWALL_VOLATILEDATA_EXECUTE(fw_init->VolatileDataExecution));
   assert_param(IS_FIREWALL_VOLATILEDATA_SHARE(fw_init->VolatileDataShared));
 
-
    /* Configuration */
 
   /* Protected code segment start address configuration */
@@ -208,8 +177,6 @@ void HAL_FIREWALL_GetConfig(FIREWALL_InitTypeDef * fw_config)
   return;
 }
 
-
-
 /**
   * @brief Enable FIREWALL.
   * @note Firewall is enabled in clearing FWDIS bit of SYSCFG CFGR1 register.
@@ -247,7 +214,6 @@ void HAL_FIREWALL_EnablePreArmFlag(void)
   /* Set FPA bit */
   SET_BIT(FIREWALL->CR, FW_CR_FPA);
 }
-
 
 /**
   * @brief Disable FIREWALL pre arm.

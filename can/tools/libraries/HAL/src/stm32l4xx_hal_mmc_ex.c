@@ -1,39 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_mmc_ex.c
-  * @author  MCD Application Team
-  * @brief   MMC card Extended HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Secure Digital (MMC) peripheral:
-  *           + Extended features functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-   The MMC Extension HAL driver can be used as follows:
-   (+) Configure Buffer0 and Buffer1 start address and Buffer size using HAL_MMCEx_ConfigDMAMultiBuffer() function.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_mmc_ex.c
+ *
+ * @brief   MMC card Extended HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-   (+) Start Read and Write for multibuffer mode using HAL_MMCEx_ReadBlocksDMAMultiBuffer() and HAL_MMCEx_WriteBlocksDMAMultiBuffer() functions.
+/* Standard library Headers */
 
-  @endverbatim
-  ******************************************************************************
-  */
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 
@@ -255,7 +236,6 @@ HAL_StatusTypeDef HAL_MMCEx_WriteBlocksDMAMultiBuffer(MMC_HandleTypeDef *hmmc, u
     return HAL_BUSY;
   }
 }
-
 
 /**
   * @brief  Change the DMA Buffer0 or Buffer1 address on the fly.

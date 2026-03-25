@@ -1,21 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_def.h
+ *
+ * @brief   This file contains HAL common defines, enumeration, macros and
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+
+/* Inter-component Headers */
+#include "Legacy/stm32_hal_legacy.h"  /* Aliases file for old names compatibility */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_def.h
-  * @author  MCD Application Team
-  * @brief   This file contains HAL common defines, enumeration, macros and
-  *          structures definitions.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_def
+ * @brief    stm32l4xx_hal_def Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DEF_H
@@ -26,9 +33,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
-#include "Legacy/stm32_hal_legacy.h"  /* Aliases file for old names compatibility */
-#include <stddef.h>
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -103,7 +107,6 @@ typedef enum
                                     (__HANDLE__)->Lock = HAL_UNLOCKED;    \
                                   }while (0)
 
-
 #if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
   #ifndef __weak
     #define __weak  __attribute__((weak))
@@ -119,7 +122,6 @@ typedef enum
     #define __packed __attribute__((__packed__))
   #endif /* __packed */
 #endif /* __GNUC__ */
-
 
 /* Macro to get variable aligned on 4-bytes, for __ICCARM__ the directive "#pragma data_alignment=4" must be used instead */
 #if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
@@ -198,9 +200,10 @@ typedef enum
 
 #endif
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* STM32L4xx_HAL_DEF_H */
+
+/** @} */

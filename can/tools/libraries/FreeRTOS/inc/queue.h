@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    queue.h
+ *
+ * @brief   Queue
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "task.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup queue
+ * @brief    queue Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,7 +50,6 @@
  *
  */
 
-
 #ifndef QUEUE_H
 #define QUEUE_H
 
@@ -39,8 +62,6 @@
     extern "C" {
 #endif
 /* *INDENT-ON* */
-
-#include "task.h"
 
 /**
  * Type by which queues are referenced.  For example, a call to xQueueCreate()
@@ -597,7 +618,6 @@ typedef struct QueueDefinition   * QueueSetMemberHandle_t;
 #define xQueueOverwrite( xQueue, pvItemToQueue ) \
     xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), 0, queueOVERWRITE )
 
-
 /**
  * queue. h
  * @code{c}
@@ -1036,7 +1056,6 @@ void vQueueDelete( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
  */
 #define xQueueSendToFrontFromISR( xQueue, pvItemToQueue, pxHigherPriorityTaskWoken ) \
     xQueueGenericSendFromISR( ( xQueue ), ( pvItemToQueue ), ( pxHigherPriorityTaskWoken ), queueSEND_TO_FRONT )
-
 
 /**
  * queue. h
@@ -1808,3 +1827,5 @@ UBaseType_t uxQueueGetQueueLength( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* QUEUE_H */
+
+/** @} */

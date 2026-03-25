@@ -1,3 +1,20 @@
+/************************************************************************************************
+ * @file    list.c
+ *
+ * @brief   List
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "list.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,16 +43,10 @@
  *
  */
 
-
-#include <stdlib.h>
-
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers.  That should only be done when
  * task.h is included from an application file. */
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
-
-#include "FreeRTOS.h"
-#include "list.h"
 
 /* The MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be
  * defined for the header files above, but not in this file, in order to
@@ -210,7 +221,6 @@ void vListInsert( List_t * const pxList,
     traceRETURN_vListInsert();
 }
 /*-----------------------------------------------------------*/
-
 
 UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove )
 {

@@ -1,26 +1,28 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l496xx.h
+ *
+ * @brief   CMSIS STM32L496xx Device Peripheral Access Layer Header File.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+#include "core_cm4.h"             /* Cortex-M4 processor and core peripherals */
+
+/* Intra-component Headers */
+#include "system_stm32l4xx.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l496xx.h
-  * @author  MCD Application Team
-  * @brief   CMSIS STM32L496xx Device Peripheral Access Layer Header File.
-  *
-  *          This file contains:
-  *           - Data structures and the address mapping for all peripherals
-  *           - Peripheral's registers declarations and bits definition
-  *           - Macros to access peripheral's registers hardware
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l496xx
+ * @brief    stm32l496xx Firmware
+ * @{
+ */
 
 /** @addtogroup CMSIS_Device
   * @{
@@ -171,10 +173,6 @@ typedef enum
   * @}
   */
 
-#include "core_cm4.h"             /* Cortex-M4 processor and core peripherals */
-#include "system_stm32l4xx.h"
-#include <stdint.h>
-
 /** @addtogroup Peripheral_registers_structures
   * @{
   */
@@ -316,7 +314,6 @@ typedef struct
   CAN_FilterRegister_TypeDef sFilterRegister[28]; /*!< CAN Filter Register,                 Address offset: 0x240-0x31C   */
 } CAN_TypeDef;
 
-
 /**
   * @brief Comparator
   */
@@ -434,7 +431,6 @@ typedef struct
   __IO uint32_t APB2FZ;      /*!< Debug MCU APB2 freeze register,     Address offset: 0x10 */
 } DBGMCU_TypeDef;
 
-
 /**
   * @brief DMA Controller
   */
@@ -460,7 +456,6 @@ typedef struct
 
 /* Legacy define */
 #define DMA_request_TypeDef  DMA_Request_TypeDef
-
 
 /**
   * @brief DMA2D Controller
@@ -515,7 +510,6 @@ typedef struct
   __IO uint32_t PR2;         /*!< EXTI Pending register 2,                    Address offset: 0x34 */
 } EXTI_TypeDef;
 
-
 /**
   * @brief Firewall
   */
@@ -532,7 +526,6 @@ typedef struct
   uint32_t      RESERVED2;   /*!< Reserved2,                                         Address offset: 0x1C */
   __IO uint32_t CR ;         /*!< Configuration  register,                           Address offset: 0x20 */
 } FIREWALL_TypeDef;
-
 
 /**
   * @brief FLASH Registers
@@ -559,7 +552,6 @@ typedef struct
   __IO uint32_t WRP2AR;           /*!< FLASH bank2 WRP area A address register,  Address offset: 0x4C */
   __IO uint32_t WRP2BR;           /*!< FLASH bank2 WRP area B address register,  Address offset: 0x50 */
 } FLASH_TypeDef;
-
 
 /**
   * @brief Flexible Memory Controller
@@ -611,7 +603,6 @@ typedef struct
   __IO uint32_t BRR;         /*!< GPIO Bit Reset register,               Address offset: 0x28      */
 
 } GPIO_TypeDef;
-
 
 /**
   * @brief Inter-integrated Circuit Interface
@@ -725,7 +716,6 @@ typedef struct
   __IO uint32_t PDCRI; /*!< Pull_Down control register of portI, Address offset: 0x64 */
 } PWR_TypeDef;
 
-
 /**
   * @brief QUAD Serial Peripheral Interface
   */
@@ -746,7 +736,6 @@ typedef struct
   __IO uint32_t PIR;         /*!< QUADSPI Polling Interval register,                  Address offset: 0x2C */
   __IO uint32_t LPTR;        /*!< QUADSPI Low Power Timeout register,                 Address offset: 0x30 */
 } QUADSPI_TypeDef;
-
 
 /**
   * @brief Reset and Clock Control
@@ -877,7 +866,6 @@ typedef struct
   __IO uint32_t DR;          /*!< SAI block x data register,                Address offset: 0x20 */
 } SAI_Block_TypeDef;
 
-
 /**
   * @brief Secure digital input/output Interface
   */
@@ -906,7 +894,6 @@ typedef struct
   __IO uint32_t FIFO;           /*!< SDMMC data FIFO register,        Address offset: 0x80 */
 } SDMMC_TypeDef;
 
-
 /**
   * @brief Serial Peripheral Interface
   */
@@ -921,7 +908,6 @@ typedef struct
   __IO uint32_t RXCRCR;      /*!< SPI Rx CRC register,                                 Address offset: 0x14 */
   __IO uint32_t TXCRCR;      /*!< SPI Tx CRC register,                                 Address offset: 0x18 */
 } SPI_TypeDef;
-
 
 /**
   * @brief Single Wire Protocol Master Interface SPWMI
@@ -941,7 +927,6 @@ typedef struct
   __IO uint32_t OR;          /*!< SWPMI Option register,                    Address offset: 0x24 */
 } SWPMI_TypeDef;
 
-
 /**
   * @brief System configuration controller
   */
@@ -957,7 +942,6 @@ typedef struct
   __IO uint32_t SKR;         /*!< SYSCFG SRAM2 key register,                         Address offset: 0x24      */
   __IO uint32_t SWPR2;       /*!< SYSCFG SRAM2 write protection register 2,          Address offset: 0x28      */
 } SYSCFG_TypeDef;
-
 
 /**
   * @brief TIM
@@ -992,7 +976,6 @@ typedef struct
   __IO uint32_t OR2;         /*!< TIM option register 2,                    Address offset: 0x60 */
   __IO uint32_t OR3;         /*!< TIM option register 3,                    Address offset: 0x64 */
 } TIM_TypeDef;
-
 
 /**
   * @brief Touch Sensing Controller (TSC)
@@ -1271,7 +1254,6 @@ typedef struct
 #define SWPMI1_BASE           (APB1PERIPH_BASE + 0x8800UL)
 #define LPTIM2_BASE           (APB1PERIPH_BASE + 0x9400UL)
 
-
 /*!< APB2 peripherals */
 #define SYSCFG_BASE           (APB2PERIPH_BASE + 0x0000UL)
 #define VREFBUF_BASE          (APB2PERIPH_BASE + 0x0030UL)
@@ -1316,7 +1298,6 @@ typedef struct
 #define TSC_BASE              (AHB1PERIPH_BASE + 0x4000UL)
 #define DMA2D_BASE            (AHB1PERIPH_BASE + 0xB000UL)
 
-
 #define DMA1_Channel1_BASE    (DMA1_BASE + 0x0008UL)
 #define DMA1_Channel2_BASE    (DMA1_BASE + 0x001CUL)
 #define DMA1_Channel3_BASE    (DMA1_BASE + 0x0030UL)
@@ -1326,7 +1307,6 @@ typedef struct
 #define DMA1_Channel7_BASE    (DMA1_BASE + 0x0080UL)
 #define DMA1_CSELR_BASE       (DMA1_BASE + 0x00A8UL)
 
-
 #define DMA2_Channel1_BASE    (DMA2_BASE + 0x0008UL)
 #define DMA2_Channel2_BASE    (DMA2_BASE + 0x001CUL)
 #define DMA2_Channel3_BASE    (DMA2_BASE + 0x0030UL)
@@ -1335,7 +1315,6 @@ typedef struct
 #define DMA2_Channel6_BASE    (DMA2_BASE + 0x006CUL)
 #define DMA2_Channel7_BASE    (DMA2_BASE + 0x0080UL)
 #define DMA2_CSELR_BASE       (DMA2_BASE + 0x00A8UL)
-
 
 /*!< AHB2 peripherals */
 #define GPIOA_BASE            (AHB2PERIPH_BASE + 0x0000UL)
@@ -1358,7 +1337,6 @@ typedef struct
 #define DCMI_BASE             (AHB2PERIPH_BASE + 0x08050000UL)
 
 #define RNG_BASE              (AHB2PERIPH_BASE + 0x08060800UL)
-
 
 /*!< FMC Banks registers base  address */
 #define FMC_Bank1_R_BASE      (FMC_R_BASE + 0x0000UL)
@@ -1383,7 +1361,6 @@ typedef struct
 #define USB_OTG_PCGCCTL_BASE                 (0x00000E00UL)
 #define USB_OTG_FIFO_BASE                    (0x00001000UL)
 #define USB_OTG_FIFO_SIZE                    (0x00001000UL)
-
 
 #define PACKAGE_BASE          (0x1FFF7500UL)        /*!< Package data register base address     */
 #define UID_BASE              (0x1FFF7590UL)        /*!< Unique device ID register base address */
@@ -1501,7 +1478,6 @@ typedef struct
 #define DMA2D               ((DMA2D_TypeDef *)DMA2D_BASE)
 #define RNG                 ((RNG_TypeDef *) RNG_BASE)
 
-
 #define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)
 #define DMA1_Channel2       ((DMA_Channel_TypeDef *) DMA1_Channel2_BASE)
 #define DMA1_Channel3       ((DMA_Channel_TypeDef *) DMA1_Channel3_BASE)
@@ -1511,7 +1487,6 @@ typedef struct
 #define DMA1_Channel7       ((DMA_Channel_TypeDef *) DMA1_Channel7_BASE)
 #define DMA1_CSELR          ((DMA_Request_TypeDef *) DMA1_CSELR_BASE)
 
-
 #define DMA2_Channel1       ((DMA_Channel_TypeDef *) DMA2_Channel1_BASE)
 #define DMA2_Channel2       ((DMA_Channel_TypeDef *) DMA2_Channel2_BASE)
 #define DMA2_Channel3       ((DMA_Channel_TypeDef *) DMA2_Channel3_BASE)
@@ -1520,7 +1495,6 @@ typedef struct
 #define DMA2_Channel6       ((DMA_Channel_TypeDef *) DMA2_Channel6_BASE)
 #define DMA2_Channel7       ((DMA_Channel_TypeDef *) DMA2_Channel7_BASE)
 #define DMA2_CSELR          ((DMA_Request_TypeDef *) DMA2_CSELR_BASE)
-
 
 #define FMC_Bank1_R         ((FMC_Bank1_TypeDef *) FMC_Bank1_R_BASE)
 #define FMC_Bank1E_R        ((FMC_Bank1E_TypeDef *) FMC_Bank1E_R_BASE)
@@ -7470,7 +7444,6 @@ typedef struct
 #define DMA_CMAR_MA_Msk        (0xFFFFFFFFUL << DMA_CMAR_MA_Pos)               /*!< 0xFFFFFFFF */
 #define DMA_CMAR_MA            DMA_CMAR_MA_Msk                                 /*!< Memory Address                      */
 
-
 /*******************  Bit definition for DMA_CSELR register  *******************/
 #define DMA_CSELR_C1S_Pos      (0U)
 #define DMA_CSELR_C1S_Msk      (0xFUL << DMA_CSELR_C1S_Pos)                    /*!< 0x0000000F */
@@ -8380,7 +8353,6 @@ typedef struct
 #define EXTI_PR2_PIF38_Msk       (0x1UL << EXTI_PR2_PIF38_Pos)                 /*!< 0x00000040 */
 #define EXTI_PR2_PIF38           EXTI_PR2_PIF38_Msk                            /*!< Pending bit for line 38 */
 
-
 /******************************************************************************/
 /*                                                                            */
 /*                                    FLASH                                   */
@@ -8631,7 +8603,6 @@ typedef struct
 #define FLASH_WRP2BR_WRP2B_END_Pos        (16U)
 #define FLASH_WRP2BR_WRP2B_END_Msk        (0xFFUL << FLASH_WRP2BR_WRP2B_END_Pos) /*!< 0x00FF0000 */
 #define FLASH_WRP2BR_WRP2B_END            FLASH_WRP2BR_WRP2B_END_Msk
-
 
 /******************************************************************************/
 /*                                                                            */
@@ -10004,8 +9975,6 @@ typedef struct
 #define GPIO_BRR_BR_14                      GPIO_BRR_BR14
 #define GPIO_BRR_BR_15                      GPIO_BRR_BR15
 
-
-
 /******************************************************************************/
 /*                                                                            */
 /*                      Inter-integrated Circuit Interface (I2C)              */
@@ -10398,7 +10367,6 @@ typedef struct
 #define PWR_CR1_LPMS_SHUTDOWN_Msk    (0x1UL << PWR_CR1_LPMS_SHUTDOWN_Pos)      /*!< 0x00000004 */
 #define PWR_CR1_LPMS_SHUTDOWN        PWR_CR1_LPMS_SHUTDOWN_Msk                 /*!< Shut-down mode */
 
-
 /********************  Bit definition for PWR_CR2 register  ********************/
 #define PWR_CR2_USV_Pos              (10U)
 #define PWR_CR2_USV_Msk              (0x1UL << PWR_CR2_USV_Pos)                /*!< 0x00000400 */
@@ -10485,7 +10453,6 @@ typedef struct
 #define PWR_CR3_EIWF_Pos             PWR_CR3_EIWUL_Pos
 #define PWR_CR3_EIWF_Msk             PWR_CR3_EIWUL_Msk
 #define PWR_CR3_EIWF                 PWR_CR3_EIWUL
-
 
 /********************  Bit definition for PWR_CR4 register  ********************/
 #define PWR_CR4_VBRS_Pos             (9U)
@@ -11448,7 +11415,6 @@ typedef struct
 #define PWR_PDCRI_PI0_Pos            (0U)
 #define PWR_PDCRI_PI0_Msk            (0x1UL << PWR_PDCRI_PI0_Pos)              /*!< 0x00000001 */
 #define PWR_PDCRI_PI0                PWR_PDCRI_PI0_Msk                         /*!< Port PI0 Pull-Down set  */
-
 
 /******************************************************************************/
 /*                                                                            */
@@ -12811,7 +12777,6 @@ typedef struct
 /******************** Number of backup registers ******************************/
 #define RTC_BKP_NUMBER                32U
 
-
 /********************  Bits definition for RTC_TR register  *******************/
 #define RTC_TR_PM_Pos                  (22U)
 #define RTC_TR_PM_Msk                  (0x1UL << RTC_TR_PM_Pos)                /*!< 0x00400000 */
@@ -13406,7 +13371,6 @@ typedef struct
 #define RTC_OR_ALARMOUTTYPE_Msk        (0x1UL << RTC_OR_ALARMOUTTYPE_Pos)      /*!< 0x00000001 */
 #define RTC_OR_ALARMOUTTYPE            RTC_OR_ALARMOUTTYPE_Msk
 
-
 /********************  Bits definition for RTC_BKP0R register  ****************/
 #define RTC_BKP0R_Pos                  (0U)
 #define RTC_BKP0R_Msk                  (0xFFFFFFFFUL << RTC_BKP0R_Pos)         /*!< 0xFFFFFFFF */
@@ -13663,7 +13627,6 @@ typedef struct
 #define SAI_xCR2_MUTEVAL_Msk       (0x1UL << SAI_xCR2_MUTEVAL_Pos)             /*!< 0x00000040 */
 #define SAI_xCR2_MUTEVAL           SAI_xCR2_MUTEVAL_Msk                        /*!<Muate value                      */
 
-
 #define SAI_xCR2_MUTECNT_Pos       (7U)
 #define SAI_xCR2_MUTECNT_Msk       (0x3FUL << SAI_xCR2_MUTECNT_Pos)            /*!< 0x00001F80 */
 #define SAI_xCR2_MUTECNT           SAI_xCR2_MUTECNT_Msk                        /*!<MUTECNT[5:0] (MUTE counter) */
@@ -13682,7 +13645,6 @@ typedef struct
 #define SAI_xCR2_COMP              SAI_xCR2_COMP_Msk                           /*!<COMP[1:0] (Companding mode) */
 #define SAI_xCR2_COMP_0            (0x1UL << SAI_xCR2_COMP_Pos)                /*!< 0x00004000 */
 #define SAI_xCR2_COMP_1            (0x2UL << SAI_xCR2_COMP_Pos)                /*!< 0x00008000 */
-
 
 /******************  Bit definition for SAI_xFRCR register  *******************/
 #define SAI_xFRCR_FRL_Pos          (0U)
@@ -15171,9 +15133,6 @@ typedef struct
 #define SYSCFG_SKR_KEY_Msk              (0xFFUL << SYSCFG_SKR_KEY_Pos)         /*!< 0x000000FF */
 #define SYSCFG_SKR_KEY                  SYSCFG_SKR_KEY_Msk                     /*!<  SRAM2 write protection key for software erase  */
 
-
-
-
 /******************************************************************************/
 /*                                                                            */
 /*                                    TIM                                     */
@@ -15415,7 +15374,6 @@ typedef struct
 #define TIM_SR_CC6IF_Msk          (0x1UL << TIM_SR_CC6IF_Pos)                  /*!< 0x00020000 */
 #define TIM_SR_CC6IF              TIM_SR_CC6IF_Msk                             /*!<Capture/Compare 6 interrupt Flag */
 
-
 /*******************  Bit definition for TIM_EGR register  ********************/
 #define TIM_EGR_UG_Pos            (0U)
 #define TIM_EGR_UG_Msk            (0x1UL << TIM_EGR_UG_Pos)                    /*!< 0x00000001 */
@@ -15444,7 +15402,6 @@ typedef struct
 #define TIM_EGR_B2G_Pos           (8U)
 #define TIM_EGR_B2G_Msk           (0x1UL << TIM_EGR_B2G_Pos)                   /*!< 0x00000100 */
 #define TIM_EGR_B2G               TIM_EGR_B2G_Msk                              /*!<Break 2 Generation */
-
 
 /******************  Bit definition for TIM_CCMR1 register  *******************/
 #define TIM_CCMR1_CC1S_Pos        (0U)
@@ -17677,7 +17634,6 @@ typedef struct
 #define WWDG_SR_EWIF_Msk        (0x1UL << WWDG_SR_EWIF_Pos)                    /*!< 0x00000001 */
 #define WWDG_SR_EWIF            WWDG_SR_EWIF_Msk                               /*!<Early Wakeup Interrupt Flag */
 
-
 /******************************************************************************/
 /*                                                                            */
 /*                                 Debug MCU                                  */
@@ -19101,7 +19057,6 @@ typedef struct
 #define USB_OTG_HCSPLT_SPLITEN_Msk               (0x1UL << USB_OTG_HCSPLT_SPLITEN_Pos) /*!< 0x80000000 */
 #define USB_OTG_HCSPLT_SPLITEN                   USB_OTG_HCSPLT_SPLITEN_Msk    /*!< Split enable */
 
-
 /**
   * @}
   */
@@ -19697,7 +19652,6 @@ typedef struct
   * @}
   */
 
-
 /******************************************************************************/
 /*  For a painless codes migration between the STM32L4xx device product       */
 /*  lines, the aliases defined below are put in place to overcome the         */
@@ -19746,3 +19700,5 @@ typedef struct
   * @}
   */
 
+
+/** @} */

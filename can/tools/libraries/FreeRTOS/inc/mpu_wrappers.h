@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    mpu_wrappers.h
+ *
+ * @brief   Mpu Wrappers
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup mpu_wrappers
+ * @brief    mpu_wrappers Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -272,5 +295,6 @@
 
 #endif /* portUSING_MPU_WRAPPERS */
 
-
 #endif /* MPU_WRAPPERS_H */
+
+/** @} */

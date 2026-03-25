@@ -1,9 +1,34 @@
-/**************************************************************************//**
- * @file     cmsis_compiler.h
- * @brief    CMSIS compiler generic header file
- * @version  V5.1.0
- * @date     09. October 2018
- ******************************************************************************/
+#pragma once
+
+/************************************************************************************************
+ * @file    cmsis_compiler.h
+ *
+ * @brief   CMSIS compiler generic header file
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+   #include <cmsis_csm.h>
+  #include <cmsis_ccs.h>
+  #include <cmsis_iccarm.h>
+#include <stdint.h>
+
+/* Inter-component Headers */
+  #include "cmsis_armcc.h"
+  #include "cmsis_armclang.h"
+  #include "cmsis_armclang_ltm.h"
+  #include "cmsis_gcc.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup cmsis_compiler
+ * @brief    cmsis_compiler Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
  *
@@ -25,47 +50,35 @@
 #ifndef __CMSIS_COMPILER_H
 #define __CMSIS_COMPILER_H
 
-#include <stdint.h>
-
 /*
  * Arm Compiler 4/5
  */
 #if   defined ( __CC_ARM )
-  #include "cmsis_armcc.h"
-
 
 /*
  * Arm Compiler 6.6 LTM (armclang)
  */
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) && (__ARMCC_VERSION < 6100100)
-  #include "cmsis_armclang_ltm.h"
 
   /*
  * Arm Compiler above 6.10.1 (armclang)
  */
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6100100)
-  #include "cmsis_armclang.h"
-
 
 /*
  * GNU Compiler
  */
 #elif defined ( __GNUC__ )
-  #include "cmsis_gcc.h"
-
 
 /*
  * IAR Compiler
  */
 #elif defined ( __ICCARM__ )
-  #include <cmsis_iccarm.h>
-
 
 /*
  * TI Arm Compiler
  */
 #elif defined ( __TI_ARM__ )
-  #include <cmsis_ccs.h>
 
   #ifndef   __ASM
     #define __ASM                                  __asm
@@ -127,7 +140,6 @@
     #warning No compiler specific solution for __COMPILER_BARRIER. __COMPILER_BARRIER is ignored.
     #define __COMPILER_BARRIER()                   (void)0
   #endif
-
 
 /*
  * TASKING Compiler
@@ -201,12 +213,10 @@
     #define __COMPILER_BARRIER()                   (void)0
   #endif
 
-
 /*
  * COSMIC Compiler
  */
 #elif defined ( __CSMC__ )
-   #include <cmsis_csm.h>
 
  #ifndef   __ASM
     #define __ASM                                  _asm
@@ -273,11 +283,11 @@
     #define __COMPILER_BARRIER()                   (void)0
   #endif
 
-
 #else
   #error Unknown compiler.
 #endif
 
-
 #endif /* __CMSIS_COMPILER_H */
 
+
+/** @} */

@@ -1,54 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rcc.c
-  * @author  MCD Application Team
-  * @brief   RCC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Reset and Clock Control (RCC) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + Peripheral Control functions
-  *
-  @verbatim
-  ==============================================================================
-                      ##### RCC specific features #####
-  ==============================================================================
-    [..]
-      After reset the device is running from Multiple Speed Internal oscillator
-      (4 MHz) with Flash 0 wait state. Flash prefetch buffer, D-Cache
-      and I-Cache are disabled, and all peripherals are off except internal
-      SRAM, Flash and JTAG.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rcc.c
+ *
+ * @brief   RCC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (+) There is no prescaler on High speed (AHBs) and Low speed (APBs) busses:
-          all peripherals mapped on these busses are running at MSI speed.
-      (+) The clock for all peripherals is switched off, except the SRAM and FLASH.
-      (+) All GPIOs are in analog mode, except the JTAG pins which
-          are assigned to be used for debug purpose.
+/* Standard library Headers */
 
-    [..]
-      Once the device started from reset, the user application has to:
-      (+) Configure the clock source to be used to drive the System clock
-          (if the application needs higher frequency/performance)
-      (+) Configure the System clock frequency and Flash settings
-      (+) Configure the AHB and APB busses prescalers
-      (+) Enable the clock for the peripheral(s) to be used
-      (+) Configure the clock source(s) for peripherals which clocks are not
-          derived from the System clock (SAIx, RTC, ADC, USB OTG FS/SDMMC1/RNG)
+/* Inter-component Headers */
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -200,7 +166,6 @@ static uint32_t          RCC_GetSysClockFreqFromPLLSource(void);
                 through PLLQ divider. You have to enable the peripheral clock and use
                 HAL_RCCEx_PeriphCLKConfig() function to configure this clock.
            (+@) IWDG clock which is always the LSI clock.
-
 
          (+) The maximum frequency of the SYSCLK, HCLK, PCLK1 and PCLK2 is 80 MHz.
              The clock source frequency should be adapted depending on the device voltage range

@@ -1,3 +1,22 @@
+/************************************************************************************************
+ * @file    event_groups.c
+ *
+ * @brief   Event Groups
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "event_groups.h"
+#include "task.h"
+#include "timers.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -27,7 +46,6 @@
  */
 
 /* Standard includes. */
-#include <stdlib.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers. That should only be done when
@@ -35,10 +53,6 @@
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 /* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-#include "event_groups.h"
 
 /* The MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
  * for the header files above, but not in this file, in order to generate the

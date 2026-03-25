@@ -1,19 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_cryp.h
-  * @author  MCD Application Team
-  * @brief   Header file of CRYP HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_cryp.h
+ *
+ * @brief   Header file of CRYP HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_cryp_ex.h"
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_CRYP_H
@@ -24,7 +26,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -118,7 +119,6 @@ typedef enum
   HAL_CRYP_SUSPEND                 = 0x01     /*!< CRYP peripheral suspension requested     */
 }HAL_SuspendTypeDef;
 
-
 /**
   * @brief  HAL CRYP Error Codes definition
   */
@@ -201,7 +201,6 @@ typedef struct
 #endif /* (USE_HAL_CRYP_REGISTER_CALLBACKS) */
 }CRYP_HandleTypeDef;
 
-
 #if (USE_HAL_CRYP_REGISTER_CALLBACKS == 1)
 /**
   * @brief  HAL CRYP Callback pointer definition
@@ -211,7 +210,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
 /**
   * @}
   */
-
 
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup CRYP_Exported_Constants CRYP Exported Constants
@@ -301,7 +299,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
 /**
   * @}
   */
-
 
 /** @defgroup CRYP_GCM_CMAC_Phase GCM/GMAC and CCM/CMAC (when applicable) processing phase selection
   * @{
@@ -411,7 +408,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 #define __HAL_CRYP_SET_OPERATINGMODE(__HANDLE__, __OPERATING_MODE__) MODIFY_REG((__HANDLE__)->Instance->CR, AES_CR_MODE, (__OPERATING_MODE__))
 
-
 /**
   * @brief  Set the algorithm chaining mode.
   * @param  __HANDLE__ specifies the CRYP handle.
@@ -426,8 +422,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 #define __HAL_CRYP_SET_CHAININGMODE(__HANDLE__, __CHAINING_MODE__) MODIFY_REG((__HANDLE__)->Instance->CR, AES_CR_CHMOD, (__CHAINING_MODE__))
 
-
-
 /** @brief  Check whether the specified CRYP status flag is set or not.
   * @param  __HANDLE__ specifies the CRYP handle.
   * @param  __FLAG__ specifies the flag to check.
@@ -440,7 +434,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 #define __HAL_CRYP_GET_FLAG(__HANDLE__, __FLAG__) (((__HANDLE__)->Instance->SR & (__FLAG__)) == (__FLAG__))
 
-
 /** @brief  Clear the CRYP pending status flag.
   * @param  __HANDLE__ specifies the CRYP handle.
   * @param  __FLAG__ specifies the flag to clear.
@@ -451,8 +444,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 #define __HAL_CRYP_CLEAR_FLAG(__HANDLE__, __FLAG__) SET_BIT((__HANDLE__)->Instance->CR, (__FLAG__))
 
-
-
 /** @brief  Check whether the specified CRYP interrupt source is enabled or not.
   * @param  __HANDLE__ specifies the CRYP handle.
   * @param __INTERRUPT__ CRYP interrupt source to check
@@ -462,7 +453,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   * @retval State of interruption (TRUE or FALSE).
   */
 #define __HAL_CRYP_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__) (((__HANDLE__)->Instance->CR & (__INTERRUPT__)) == (__INTERRUPT__))
-
 
 /** @brief  Check whether the specified CRYP interrupt is set or not.
   * @param  __HANDLE__ specifies the CRYP handle.
@@ -475,8 +465,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 #define __HAL_CRYP_GET_IT(__HANDLE__, __INTERRUPT__) (((__HANDLE__)->Instance->SR & (__INTERRUPT__)) == (__INTERRUPT__))
 
-
-
 /** @brief  Clear the CRYP pending interrupt.
   * @param  __HANDLE__ specifies the CRYP handle.
   * @param  __INTERRUPT__ specifies the IT to clear.
@@ -486,7 +474,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   * @retval None
   */
 #define __HAL_CRYP_CLEAR_IT(__HANDLE__, __INTERRUPT__) SET_BIT((__HANDLE__)->Instance->CR, (__INTERRUPT__))
-
 
 /**
   * @brief  Enable the CRYP interrupt.
@@ -498,7 +485,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   * @retval None
   */
 #define __HAL_CRYP_ENABLE_IT(__HANDLE__, __INTERRUPT__) (((__HANDLE__)->Instance->CR) |= (__INTERRUPT__))
-
 
 /**
   * @brief  Disable the CRYP interrupt.
@@ -615,7 +601,6 @@ typedef  void (*pCRYP_CallbackTypeDef)(CRYP_HandleTypeDef * hcryp); /*!< pointer
   */
 
 /* Include CRYP HAL Extended module */
-#include "stm32l4xx_hal_cryp_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup CRYP_Exported_Functions CRYP Exported Functions

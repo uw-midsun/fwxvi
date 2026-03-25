@@ -1,115 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rtc_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended RTC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Real Time Clock (RTC) Extended peripheral:
-  *           + RTC Time Stamp functions
-  *           + RTC Tamper functions
-  *           + RTC Wake-up functions
-  *           + Extended Control functions
-  *           + Extended RTC features functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                  ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    (+) Enable the RTC domain access.
-    (+) Configure the RTC Prescaler (Asynchronous and Synchronous) and RTC hour
-        format using the HAL_RTC_Init() function.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rtc_ex.c
+ *
+ * @brief   Extended RTC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  *** RTC Wakeup configuration ***
-  ================================
-  [..]
-    (+) To configure the RTC Wakeup Clock source and Counter use the HAL_RTCEx_SetWakeUpTimer()
-        function. You can also configure the RTC Wakeup timer with interrupt mode
-        using the HAL_RTCEx_SetWakeUpTimer_IT() function.
-    (+) To read the RTC WakeUp Counter register, use the HAL_RTCEx_GetWakeUpTimer()
-        function.
+/* Standard library Headers */
 
-  *** Outputs configuration ***
-  =============================
-  [..]  The RTC has 2 different outputs:
-    (+) RTC_ALARM: this output is used to manage the RTC Alarm A, Alarm B
-        and WaKeUp signals.
-        To output the selected RTC signal, use the HAL_RTC_Init() function.
-    (+) RTC_CALIB: this output is 512Hz signal or 1Hz.
-        To enable the RTC_CALIB, use the HAL_RTCEx_SetCalibrationOutPut() function.
-    (+) Two pins can be used as RTC_ALARM or RTC_CALIB (PC13, PB2) managed on
-        the RTC_OR register.
-    (+) When the RTC_CALIB or RTC_ALARM output is selected, the RTC_OUT pin is
-        automatically configured in output alternate function.
+/* Inter-component Headers */
 
-  *** Smooth digital Calibration configuration ***
-  ================================================
-  [..]
-    (+) Configure the RTC Original Digital Calibration Value and the corresponding
-        calibration cycle period (32s,16s and 8s) using the HAL_RTCEx_SetSmoothCalib()
-        function.
-
-  *** TimeStamp configuration ***
-  ===============================
-  [..]
-    (+) Enable the RTC TimeStamp using the HAL_RTCEx_SetTimeStamp() function.
-        You can also configure the RTC TimeStamp with interrupt mode using the
-        HAL_RTCEx_SetTimeStamp_IT() function.
-    (+) To read the RTC TimeStamp Time and Date register, use the HAL_RTCEx_GetTimeStamp()
-        function.
-
-  *** Internal TimeStamp configuration ***
-  ===============================
-  [..]
-    (+) Enable the RTC internal TimeStamp using the HAL_RTCEx_SetInternalTimeStamp() function.
-        User has to check internal timestamp occurrence using __HAL_RTC_INTERNAL_TIMESTAMP_GET_FLAG.
-    (+) To read the RTC TimeStamp Time and Date register, use the HAL_RTCEx_GetTimeStamp()
-        function.
-
-   *** Tamper configuration ***
-   ============================
-   [..]
-     (+) Enable the RTC Tamper and configure the Tamper filter count, trigger Edge
-         or Level according to the Tamper filter (if equal to 0 Edge else Level)
-         value, sampling frequency, NoErase, MaskFlag,  precharge or discharge and
-         Pull-UP using the HAL_RTCEx_SetTamper() function. You can configure RTC Tamper
-         with interrupt mode using HAL_RTCEx_SetTamper_IT() function.
-     (+) The default configuration of the Tamper erases the backup registers. To avoid
-         erase, enable the NoErase field on the RTC_TAMPCR register.
-     (+) STM32L412xx and STM32L422xx only : With new RTC tamper configuration, you have to call HAL_RTC_Init() in order to
-         perform TAMP base address offset calculation.
-     (+) STM32L412xx and STM32L422xx only : If you don't intend to have tamper using RTC clock, you can bypass its initialization
-         by setting ClockEnable inti field to RTC_CLOCK_DISABLE.
-     (+) STM32L412xx and STM32L422xx only : Enable Internal tamper using HAL_RTCEx_SetInternalTamper. IT mode can be chosen using
-         setting Interrupt field.
-
-   *** Backup Data Registers configuration ***
-   ===========================================
-   [..]
-     (+) To write to the RTC Backup Data registers, use the HAL_RTCEx_BKUPWrite()
-         function.
-     (+) To read the RTC Backup Data registers, use the HAL_RTCEx_BKUPRead()
-         function.
-     (+) STM32L412xx and STM32L422xx only : Before calling these functions you have to call HAL_RTC_Init() in order to
-         perform TAMP base address offset calculation.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -132,7 +37,6 @@
 /** @addtogroup RTCEx_Exported_Functions
   * @{
   */
-
 
 /** @addtogroup RTCEx_Exported_Functions_Group1
   * @brief   RTC TimeStamp and Tamper functions
@@ -995,7 +899,6 @@ void HAL_RTCEx_WakeUpTimerIRQHandler(RTC_HandleTypeDef *hrtc)
   /* Clear the EXTI's line Flag for RTC WakeUpTimer */
   __HAL_RTC_WAKEUPTIMER_EXTI_CLEAR_FLAG();
 
-
 #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
   if ((hrtc->Instance->MISR & RTC_MISR_WUTMF) != 0u)
   {
@@ -1037,7 +940,6 @@ __weak void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
    */
 }
 
-
 /**
   * @brief  Handle Wake Up Timer Polling.
   * @param  hrtc RTC handle
@@ -1073,7 +975,6 @@ HAL_StatusTypeDef HAL_RTCEx_PollForWakeUpTimerEvent(RTC_HandleTypeDef *hrtc, uin
   * @}
   */
 
-
 /** @addtogroup RTCEx_Exported_Functions_Group3
   * @brief    Extended Peripheral Control functions
   *
@@ -1100,7 +1001,6 @@ HAL_StatusTypeDef HAL_RTCEx_PollForWakeUpTimerEvent(RTC_HandleTypeDef *hrtc, uin
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Set the Smooth calibration parameters.
@@ -1898,8 +1798,6 @@ HAL_StatusTypeDef HAL_RTCEx_SetTamper(RTC_HandleTypeDef *hrtc, RTC_TamperTypeDef
 }
 #endif /* #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
 
-
-
 #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /**
   * @brief  Set Tamper with interrupt.
@@ -2067,7 +1965,6 @@ HAL_StatusTypeDef HAL_RTCEx_SetTamper_IT(RTC_HandleTypeDef *hrtc, RTC_TamperType
 }
 #endif /* #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
 
-
 #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 /**
   * @brief  Deactivate Tamper.
@@ -2150,7 +2047,6 @@ HAL_StatusTypeDef HAL_RTCEx_DeactivateTamper(RTC_HandleTypeDef *hrtc, uint32_t T
   return HAL_OK;
 }
 #endif /* #if defined(STM32L412xx) || defined(STM32L422xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) */
-
 
 #if defined(RTC_TAMPER1_SUPPORT)
 /**
@@ -2252,8 +2148,6 @@ HAL_StatusTypeDef HAL_RTCEx_PollForTamper3Event(RTC_HandleTypeDef *hrtc, uint32_
 }
 #endif /* RTC_TAMPER3_SUPPORT */
 
-
-
 #if defined(RTC_TAMPER1_SUPPORT)
 /**
   * @brief  Tamper 1 callback.
@@ -2307,7 +2201,6 @@ __weak void HAL_RTCEx_Tamper3EventCallback(RTC_HandleTypeDef *hrtc)
   * @}
   */
 
-
 /** @addtogroup RTCEx_Exported_Functions_Group6
   * @brief      Extended RTC Backup register functions
   *
@@ -2326,7 +2219,6 @@ __weak void HAL_RTCEx_Tamper3EventCallback(RTC_HandleTypeDef *hrtc)
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Write a data in a specified RTC Backup data register.
@@ -2361,7 +2253,6 @@ void HAL_RTCEx_BKUPWrite(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister, uint3
   *(__IO uint32_t *)tmp = (uint32_t)Data;
 }
 
-
 /**
   * @brief  Read data from the specified RTC Backup data Register.
   * @param  hrtc RTC handle
@@ -2393,7 +2284,6 @@ uint32_t HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, uint32_t BackupRegister)
   /* Read the specified register */
   return (*(__IO uint32_t *)tmp);
 }
-
 
 /**
   * @}

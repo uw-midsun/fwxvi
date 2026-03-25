@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_hash.h
-  * @author  MCD Application Team
-  * @brief   Header file of HASH HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_hash.h
+ *
+ * @brief   Header file of HASH HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_hash_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_HASH_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -104,7 +104,6 @@ typedef enum
   HAL_HASH_ERROR_CB_ID             = 0x04U,    /*!< HASH error callback ID     */
 } HAL_HASH_CallbackIDTypeDef;
 #endif /* USE_HAL_HASH_REGISTER_CALLBACKS */
-
 
 /**
   * @brief  HASH Handle Structure definition
@@ -283,7 +282,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
                                         ((HASH->CR & (__FLAG__)) == (__FLAG__)) :\
                                         ((HASH->SR & (__FLAG__)) == (__FLAG__)) )
 
-
 /** @brief  Clear the specified HASH flag.
   * @param  __FLAG__ specifies the flag to clear.
   *        This parameter can be one of the following values:
@@ -292,7 +290,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
   * @retval None
   */
 #define __HAL_HASH_CLEAR_FLAG(__FLAG__) CLEAR_BIT(HASH->SR, (__FLAG__))
-
 
 /** @brief  Enable the specified HASH interrupt.
   * @param  __INTERRUPT__ specifies the HASH interrupt source to enable.
@@ -327,7 +324,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
 #define __HAL_HASH_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_HASH_STATE_RESET)
 #endif /* USE_HAL_HASH_REGISTER_CALLBACKS */
 
-
 /** @brief Reset HASH handle status.
   * @param  __HANDLE__ HASH handle.
   * @retval None
@@ -346,7 +342,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
   * @retval None
   */
 #define __HAL_HASH_RESET_MDMAT()        CLEAR_BIT(HASH->CR, HASH_CR_MDMAT)
-
 
 /**
   * @brief Start the digest computation.
@@ -370,7 +365,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
 /**
   * @}
   */
-
 
 /* Private macros --------------------------------------------------------*/
 /** @defgroup HASH_Private_Macros   HASH Private Macros
@@ -439,7 +433,6 @@ typedef  void (*pHASH_CallbackTypeDef)(HASH_HandleTypeDef *hhash);  /*!< pointer
   */
 
 /* Include HASH HAL Extended module */
-#include "stm32l4xx_hal_hash_ex.h"
 /* Exported functions --------------------------------------------------------*/
 
 /** @addtogroup HASH_Exported_Functions HASH Exported Functions
@@ -465,7 +458,6 @@ HAL_StatusTypeDef HAL_HASH_RegisterCallback(HASH_HandleTypeDef *hhash, HAL_HASH_
 HAL_StatusTypeDef HAL_HASH_UnRegisterCallback(HASH_HandleTypeDef *hhash, HAL_HASH_CallbackIDTypeDef CallbackID);
 #endif /* USE_HAL_HASH_REGISTER_CALLBACKS */
 
-
 /**
   * @}
   */
@@ -473,7 +465,6 @@ HAL_StatusTypeDef HAL_HASH_UnRegisterCallback(HASH_HandleTypeDef *hhash, HAL_HAS
 /** @addtogroup HASH_Exported_Functions_Group2 HASH processing functions in polling mode
   * @{
   */
-
 
 /* HASH processing using polling  *********************************************/
 HAL_StatusTypeDef HAL_HASH_SHA1_Start(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint32_t Size, uint8_t *pOutBuffer,
@@ -486,7 +477,6 @@ HAL_StatusTypeDef HAL_HASH_MD5_Accmlt_End(HASH_HandleTypeDef *hhash, uint8_t *pI
                                           uint8_t *pOutBuffer, uint32_t Timeout);
 HAL_StatusTypeDef HAL_HASH_SHA1_Accmlt_End(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, uint32_t Size,
                                            uint8_t *pOutBuffer, uint32_t Timeout);
-
 
 /**
   * @}
@@ -569,7 +559,6 @@ HAL_StatusTypeDef HAL_HMAC_MD5_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pIn
   * @{
   */
 
-
 /* Peripheral State methods  **************************************************/
 HAL_HASH_StateTypeDef HAL_HASH_GetState(HASH_HandleTypeDef *hhash);
 HAL_StatusTypeDef HAL_HASH_GetStatus(HASH_HandleTypeDef *hhash);
@@ -620,11 +609,9 @@ HAL_StatusTypeDef HMAC_Start_DMA(HASH_HandleTypeDef *hhash, uint8_t *pInBuffer, 
   * @}
   */
 
-
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_HASH_H */
 

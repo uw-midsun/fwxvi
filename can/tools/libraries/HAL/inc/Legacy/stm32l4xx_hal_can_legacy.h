@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_can_legacy.h
-  * @author  MCD Application Team
-  * @brief   Header file of CAN HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_can_legacy.h
+ *
+ * @brief   Header file of CAN HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32L4xx_CAN_LEGACY_H
@@ -26,7 +26,6 @@
 
 #if defined(CAN1)
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -265,7 +264,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup CAN_synchronisation_jump_width CAN Synchronization Jump Width
   * @{
@@ -547,7 +545,6 @@ typedef struct
  (((__FLAG__) >> 8U) == 4)? (((__HANDLE__)->Instance->RF1R) = (1U << ((__FLAG__) & CAN_FLAG_MASK))): \
  (((__FLAG__) >> 8U) == 1)? (((__HANDLE__)->Instance->MSR) = (1U << ((__FLAG__) & CAN_FLAG_MASK))): 0)
 
-
 /** @brief  Check whether the specified CAN interrupt source is enabled or not.
   * @param  __HANDLE__: specifies the CAN Handle.
   * @param  __INTERRUPT__: specifies the CAN interrupt source to check.
@@ -569,8 +566,6 @@ typedef struct
 (((__TRANSMITMAILBOX__) == CAN_TXMAILBOX_0)? ((((__HANDLE__)->Instance->TSR) & (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0)) == (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0)) :\
  ((__TRANSMITMAILBOX__) == CAN_TXMAILBOX_1)? ((((__HANDLE__)->Instance->TSR) & (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1)) == (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1)) :\
  ((((__HANDLE__)->Instance->TSR) & (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2)) == (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2)))
-
-
 
 /**
   * @brief  Release the specified receive FIFO.
@@ -674,7 +669,6 @@ HAL_CAN_StateTypeDef HAL_CAN_GetState(CAN_HandleTypeDef* hcan);
   * @}
   */
 #define CAN_FLAG_MASK     ((uint32_t)0x000000FF)
-
 
 /**
   * @}

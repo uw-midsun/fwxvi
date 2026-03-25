@@ -1,36 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_crc_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended CRC HAL module driver.
-  *          This file provides firmware functions to manage the extended
-  *          functionalities of the CRC peripheral.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-================================================================================
-            ##### How to use this driver #####
-================================================================================
-    [..]
-         (+) Set user-defined generating polynomial through HAL_CRCEx_Polynomial_Set()
-         (+) Configure Input or Output data inversion
+/************************************************************************************************
+ * @file    stm32l4xx_hal_crc_ex.c
+ *
+ * @brief   Extended CRC HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  @endverbatim
-  ******************************************************************************
-  */
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -69,7 +53,6 @@
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Initialize the CRC polynomial if different from default one.
@@ -209,16 +192,13 @@ HAL_StatusTypeDef HAL_CRCEx_Output_Data_Reverse(CRC_HandleTypeDef *hcrc, uint32_
   return HAL_OK;
 }
 
-
 /**
   * @}
   */
 
-
 /**
   * @}
   */
-
 
 #endif /* HAL_CRC_MODULE_ENABLED */
 /**

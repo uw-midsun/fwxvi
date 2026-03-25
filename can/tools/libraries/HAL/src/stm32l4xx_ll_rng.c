@@ -1,28 +1,25 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_rng.c
-  * @author  MCD Application Team
-  * @brief   RNG LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_rng.c
+ *
+ * @brief   RNG LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32_assert.h"
+#include "stm32l4xx_ll_bus.h"
+#include "stm32l4xx_ll_rng.h"
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_rng.h"
-#include "stm32l4xx_ll_bus.h"
 
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
 #else
 #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */
@@ -50,7 +47,6 @@
 
 #if defined(RNG_CR_CONDRST)
 #define IS_LL_RNG_CLOCK_DIVIDER(__CLOCK_DIV__) ((__CLOCK_DIV__) <=0x0Fu)
-
 
 #define IS_LL_RNG_NIST_COMPLIANCE(__NIST_COMPLIANCE__) (((__NIST_COMPLIANCE__) == LL_RNG_NIST_COMPLIANT) || \
                                                         ((__NIST_COMPLIANCE__) == LL_RNG_NOTNIST_COMPLIANT))

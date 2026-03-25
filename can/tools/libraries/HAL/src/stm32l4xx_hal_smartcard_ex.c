@@ -1,47 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_smartcard_ex.c
-  * @author  MCD Application Team
-  * @brief   SMARTCARD HAL module driver.
-  *          This file provides extended firmware functions to manage the following
-  *          functionalities of the SmartCard.
-  *           + Initialization and de-initialization functions
-  *           + Peripheral Control functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  =============================================================================
-               ##### SMARTCARD peripheral extended features  #####
-  =============================================================================
-  [..]
-  The Extended SMARTCARD HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_smartcard_ex.c
+ *
+ * @brief   SMARTCARD HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) After having configured the SMARTCARD basic features with HAL_SMARTCARD_Init(),
-        then program SMARTCARD advanced features if required (TX/RX pins swap, TimeOut,
-        auto-retry counter,...) in the hsmartcard AdvancedInit structure.
+/* Standard library Headers */
 
-    (#) FIFO mode enabling/disabling and RX/TX FIFO threshold programming.
+/* Inter-component Headers */
 
-        -@- When SMARTCARD operates in FIFO mode, FIFO mode must be enabled prior
-            starting RX/TX transfers. Also RX/TX FIFO thresholds must be
-            configured prior starting RX/TX transfers.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{

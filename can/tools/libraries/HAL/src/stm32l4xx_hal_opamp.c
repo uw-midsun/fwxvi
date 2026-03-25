@@ -1,209 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_opamp.c
-  * @author  MCD Application Team
-  * @brief   OPAMP HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the operational amplifier(s) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-================================================================================
-          ##### OPAMP Peripheral Features #####
-================================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_opamp.c
+ *
+ * @brief   OPAMP HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..] The device integrates 1 or 2 operational amplifiers OPAMP1 & OPAMP2
+/* Standard library Headers */
 
-       (#) The OPAMP(s) provide(s) several exclusive running modes.
-       (++) 1 OPAMP: STM32L412xx STM32L422xx STM32L431xx STM32L432xx STM32L433xx STM32L442xx STM32L443xx
-       (++) 2 OPAMP: STM32L471xx STM32L475xx STM32L476xx STM32L485xx STM32L486xx
+/* Inter-component Headers */
 
-       (#) The OPAMP(s) provide(s) several exclusive running modes.
-       (++) Standalone mode
-       (++) Programmable Gain Amplifier (PGA) mode (Resistor feedback output)
-       (++) Follower mode
-
-       (#) All OPAMP (same for all OPAMPs) can operate in
-       (++) Either Low range (VDDA < 2.4V) power supply
-       (++) Or High range (VDDA > 2.4V) power supply
-
-       (#) Each OPAMP(s) can be configured in normal and low power mode.
-
-       (#) The OPAMP(s) provide(s) calibration capabilities.
-       (++) Calibration aims at correcting some offset for running mode.
-       (++) The OPAMP uses either factory calibration settings OR user defined
-           calibration (trimming) settings (i.e. trimming mode).
-       (++) The user defined settings can be figured out using self calibration
-           handled by HAL_OPAMP_SelfCalibrate, HAL_OPAMPEx_SelfCalibrateAll
-       (++) HAL_OPAMP_SelfCalibrate:
-       (+++) Runs automatically the calibration.
-       (+++) Enables the user trimming mode
-       (+++) Updates the init structure with trimming values with fresh calibration
-            results.
-            The user may store the calibration results for larger
-            (ex monitoring the trimming as a function of temperature
-            for instance)
-       (+++) HAL_OPAMPEx_SelfCalibrateAll
-            runs calibration of all OPAMPs in parallel to save search time.
-
-       (#) Running mode: Standalone mode
-       (++) Gain is set externally (gain depends on external loads).
-       (++) Follower mode also possible externally by connecting the inverting input to
-           the output.
-
-       (#) Running mode: Follower mode
-       (++) No Inverting Input is connected.
-
-       (#) Running mode: Programmable Gain Amplifier (PGA) mode
-           (Resistor feedback output)
-       (++) The OPAMP(s) output(s) can be internally connected to resistor feedback
-           output.
-       (++) OPAMP gain is either 2, 4, 8 or 16.
-
-       (#) The OPAMPs inverting input can be selected according to the Reference Manual
-           "OPAMP function description" chapter.
-
-       (#) The OPAMPs non inverting input can be selected according to the Reference Manual
-           "OPAMP function description" chapter.
-
-
-            ##### How to use this driver #####
-================================================================================
-  [..]
-
-    *** Power supply range ***
-    ============================================
-    [..] To run in low power mode:
-
-      (#) Configure the OPAMP using HAL_OPAMP_Init() function:
-      (++) Select OPAMP_POWERSUPPLY_LOW (VDDA lower than 2.4V)
-      (++) Otherwise select OPAMP_POWERSUPPLY_HIGH (VDDA higher than 2.4V)
-
-    *** Low / normal power mode ***
-    ============================================
-    [..] To run in low power mode:
-
-      (#) Configure the OPAMP using HAL_OPAMP_Init() function:
-      (++) Select OPAMP_POWERMODE_LOWPOWER
-      (++) Otherwise select OPAMP_POWERMODE_NORMALPOWER
-
-    *** Calibration ***
-    ============================================
-    [..] To run the OPAMP calibration self calibration:
-
-      (#) Start calibration using HAL_OPAMP_SelfCalibrate.
-           Store the calibration results.
-
-    *** Running mode ***
-    ============================================
-
-    [..] To use the OPAMP, perform the following steps:
-
-      (#) Fill in the HAL_OPAMP_MspInit() to
-      (++) Enable the OPAMP Peripheral clock using macro __HAL_RCC_OPAMP_CLK_ENABLE()
-      (++) Configure the OPAMP input AND output in analog mode using
-           HAL_GPIO_Init() to map the OPAMP output to the GPIO pin.
-
-      (#) Registrate Callbacks
-      (++) The compilation define  USE_HAL_OPAMP_REGISTER_CALLBACKS when set to 1
-           allows the user to configure dynamically the driver callbacks.
-
-      (++) Use Functions HAL_OPAMP_RegisterCallback() to register a user callback,
-           it allows to register following callbacks:
-      (+++) MspInitCallback         : OPAMP MspInit.
-      (+++) MspDeInitCallback       : OPAMP MspFeInit.
-           This function takes as parameters the HAL peripheral handle, the Callback ID
-           and a pointer to the user callback function.
-
-      (++) Use function HAL_OPAMP_UnRegisterCallback() to reset a callback to the default
-           weak (overridden) function. It allows to reset following callbacks:
-      (+++) MspInitCallback         : OPAMP MspInit.
-      (+++) MspDeInitCallback       : OPAMP MspdeInit.
-      (+++) All Callbacks
-
-      (#) Configure the OPAMP using HAL_OPAMP_Init() function:
-      (++) Select the mode
-      (++) Select the inverting input
-      (++) Select the non-inverting input
-      (++) If PGA mode is enabled, Select if inverting input is connected.
-      (++) Select either factory or user defined trimming mode.
-      (++) If the user-defined trimming mode is enabled, select PMOS & NMOS trimming values
-          (typically values set by HAL_OPAMP_SelfCalibrate function).
-
-      (#) Enable the OPAMP using HAL_OPAMP_Start() function.
-
-      (#) Disable the OPAMP using HAL_OPAMP_Stop() function.
-
-      (#) Lock the OPAMP in running mode using HAL_OPAMP_Lock() function.
-          Caution: On STM32L4, HAL OPAMP lock is software lock only (not
-          hardware lock as on some other STM32 devices)
-
-      (#) If needed, unlock the OPAMP using HAL_OPAMPEx_Unlock() function.
-
-    *** Running mode: change of configuration while OPAMP ON  ***
-    ============================================
-    [..] To Re-configure OPAMP when OPAMP is ON (change on the fly)
-      (#) If needed, fill in the HAL_OPAMP_MspInit()
-      (++) This is the case for instance if you wish to use new OPAMP I/O
-
-      (#) Configure the OPAMP using HAL_OPAMP_Init() function:
-      (++) As in configure case, select first the parameters you wish to modify.
-
-      (#) Change from low power mode to normal power mode (& vice versa) requires
-          first HAL_OPAMP_DeInit() (force OPAMP OFF) and then HAL_OPAMP_Init().
-          In other words, of OPAMP is ON, HAL_OPAMP_Init can NOT change power mode
-          alone.
-
-  @endverbatim
-  ******************************************************************************
-
-      Table 1.  OPAMPs inverting/non-inverting inputs for the STM32L4 devices:
-      +------------------------------------------------------------------------|
-      |                 |         | OPAMP1               | OPAMP2              |
-      |-----------------|---------|----------------------|---------------------|
-      | Inverting Input | VM_SEL  |                      |                     |
-      |                 |         |  IO0-> PA1           | IO0-> PA7           |
-      |                 |         |  LOW LEAKAGE IO (2)  | LOW LEAKAGE IO (2)  |
-      |                 |         |  Not connected       | Not connected       |
-      | (1)             |         |    PGA mode only     |   PGA mode only     |
-      |-----------------|---------|----------------------|---------------------|
-      |  Non Inverting  | VP_SEL  |                      |                     |
-      |                 |         |  IO0-> PA0 (GPIO)    | IO0-> PA6  (GPIO)   |
-      |    Input        |         |  DAC1_OUT1 internal  | DAC1_OUT2 internal  |
-      +------------------------------------------------------------------------|
-       (1): NA in follower mode.
-       (2): Available on some package only (ex. BGA132).
-
-
-      Table 2.  OPAMPs outputs for the STM32L4 devices:
-
-      +-------------------------------------------------------------------------
-      |                 |        | OPAMP1                | OPAMP2              |
-      |-----------------|--------|-----------------------|---------------------|
-      | Output          |  VOUT  |  PA3                  |  PB0                |
-      |                 |        |  & (1) ADC12_IN if    | & (1) ADC12_IN if   |
-      |                 |        |  connected internally | connected internally|
-      |-----------------|--------|-----------------------|---------------------|
-       (1): ADC1 or ADC2 shall select IN15.
-
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -239,7 +50,6 @@
 
 #define OPAMP_CSR_INIT_MASK_STANDALONE (OPAMP_CSR_OPALPM | OPAMP_CSR_OPAMODE| OPAMP_CSR_VPSEL \
                                       | OPAMP_CSR_VMSEL | OPAMP_CSR_USERTRIM)
-
 
 /**
   * @}
@@ -515,7 +325,6 @@ __weak void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef *hopamp)
 /**
   * @}
   */
-
 
 /** @defgroup OPAMP_Exported_Functions_Group2 IO operation functions
  *  @brief   IO operation functions
@@ -849,8 +658,6 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
     This subsection provides a set of functions allowing to control the OPAMP data
     transfers.
 
-
-
 @endverbatim
   * @{
   */
@@ -978,7 +785,6 @@ HAL_OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset (OPAMP_HandleTypeDef *hop
 /**
   * @}
   */
-
 
 /** @defgroup OPAMP_Exported_Functions_Group4 Peripheral State functions
  *  @brief   Peripheral State functions
@@ -1152,7 +958,6 @@ HAL_StatusTypeDef HAL_OPAMP_UnRegisterCallback (OPAMP_HandleTypeDef *hopamp, HAL
 }
 
 #endif /* USE_HAL_OPAMP_REGISTER_CALLBACKS */
-
 
 /**
   * @}

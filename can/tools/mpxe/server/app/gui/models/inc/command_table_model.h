@@ -9,13 +9,19 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
-
-/* Qt library headers */
+/* Standard library Headers */
 #include <QAbstractTableModel>
 #include <QString>
 #include <QVariant>
 #include <QVector>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/* Standard library headers */
+
+/* Qt library headers */
 
 /* Inter-component headers */
 

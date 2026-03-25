@@ -13,8 +13,16 @@
 #include <cstdint>
 #include <string>
 
-/* Intra-component Headers */
+/* Inter-component Headers */
 #include "command_code.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup adbms_afe_datagram
+ * @brief    adbms_afe_datagram Firmware
+ * @{
+ */
 
 namespace Datagram {
 

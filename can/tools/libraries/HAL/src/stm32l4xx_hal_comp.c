@@ -1,192 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_comp.c
-  * @author  MCD Application Team
-  * @brief   COMP HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the COMP peripheral:
-  *           + Initialization and de-initialization functions
-  *           + Peripheral control functions
-  *           + Peripheral state functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-          ##### COMP Peripheral features #####
-  ==============================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_comp.c
+ *
+ * @brief   COMP HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..]
-      The STM32L4xx device family integrates two analog comparators instances:
-      COMP1, COMP2 except for the STM32L412xx/STM32L422xx products featuring only
-      one instance: COMP1 (in this case, all comments related to pair of comparators are not applicable)
-      (#) Comparators input minus (inverting input) and input plus (non inverting input)
-          can be set to internal references or to GPIO pins
-          (refer to GPIO list in reference manual).
+/* Standard library Headers */
 
-      (#) Comparators output level is available using HAL_COMP_GetOutputLevel()
-          and can be redirected to other peripherals: GPIO pins (in mode
-          alternate functions for comparator), timers.
-          (refer to GPIO list in reference manual).
+/* Inter-component Headers */
 
-      (#) The comparators have interrupt capability through the EXTI controller
-          with wake-up from sleep and stop modes.
-
-      (#) Pairs of comparators instances can be combined in window mode
-          (2 consecutive instances odd and even COMP<x> and COMP<x+1>).
-
-          From the corresponding IRQ handler, the right interrupt source can be retrieved
-          using macro __HAL_COMP_COMPx_EXTI_GET_FLAG().
-
-            ##### How to use this driver #####
-  ==============================================================================
-  [..]
-      This driver provides functions to configure and program the comparator instances
-      of STM32L4xx devices.
-
-      To use the comparator, perform the following steps:
-
-      (#)  Initialize the COMP low level resources by implementing the HAL_COMP_MspInit():
-      (++) Configure the GPIO connected to comparator inputs plus and minus in analog mode
-           using HAL_GPIO_Init().
-      (++) If needed, configure the GPIO connected to comparator output in alternate function mode
-           using HAL_GPIO_Init().
-      (++) If required enable the COMP interrupt by configuring and enabling EXTI line in Interrupt mode and
-           selecting the desired sensitivity level using HAL_GPIO_Init() function. After that enable the comparator
-           interrupt vector using HAL_NVIC_EnableIRQ() function.
-
-      (#) Configure the comparator using HAL_COMP_Init() function:
-      (++) Select the input minus (inverting input)
-      (++) Select the input plus (non-inverting input)
-      (++) Select the hysteresis
-      (++) Select the blanking source
-      (++) Select the output polarity
-      (++) Select the power mode
-      (++) Select the window mode
-
-      -@@- HAL_COMP_Init() calls internally __HAL_RCC_SYSCFG_CLK_ENABLE()
-          to enable internal control clock of the comparators.
-          However, this is a legacy strategy. In future STM32 families,
-          COMP clock enable must be implemented by user in "HAL_COMP_MspInit()".
-          Therefore, for compatibility anticipation, it is recommended to
-          implement __HAL_RCC_SYSCFG_CLK_ENABLE() in "HAL_COMP_MspInit()".
-
-      (#) Reconfiguration on-the-fly of comparator can be done by calling again
-          function HAL_COMP_Init() with new input structure parameters values.
-
-      (#) Enable the comparator using HAL_COMP_Start() function.
-
-      (#) Use HAL_COMP_TriggerCallback() or HAL_COMP_GetOutputLevel() functions
-          to manage comparator outputs (events and output level).
-
-      (#) Disable the comparator using HAL_COMP_Stop() function.
-
-      (#) De-initialize the comparator using HAL_COMP_DeInit() function.
-
-      (#) For safety purpose, comparator configuration can be locked using HAL_COMP_Lock() function.
-          The only way to unlock the comparator is a device hardware reset.
-
-    *** Callback registration ***
-    =============================================
-    [..]
-
-     The compilation flag USE_HAL_COMP_REGISTER_CALLBACKS, when set to 1,
-     allows the user to configure dynamically the driver callbacks.
-     Use Functions HAL_COMP_RegisterCallback()
-     to register an interrupt callback.
-    [..]
-
-     Function HAL_COMP_RegisterCallback() allows to register following callbacks:
-       (+) TriggerCallback       : callback for COMP trigger.
-       (+) MspInitCallback       : callback for Msp Init.
-       (+) MspDeInitCallback     : callback for Msp DeInit.
-     This function takes as parameters the HAL peripheral handle, the Callback ID
-     and a pointer to the user callback function.
-    [..]
-
-     Use function HAL_COMP_UnRegisterCallback to reset a callback to the default
-     weak function.
-    [..]
-
-     HAL_COMP_UnRegisterCallback takes as parameters the HAL peripheral handle,
-     and the Callback ID.
-     This function allows to reset following callbacks:
-       (+) TriggerCallback       : callback for COMP trigger.
-       (+) MspInitCallback       : callback for Msp Init.
-       (+) MspDeInitCallback     : callback for Msp DeInit.
-     [..]
-
-     By default, after the HAL_COMP_Init() and when the state is HAL_COMP_STATE_RESET
-     all callbacks are set to the corresponding weak functions:
-     example HAL_COMP_TriggerCallback().
-     Exception done for MspInit and MspDeInit functions that are
-     reset to the legacy weak functions in the HAL_COMP_Init()/ HAL_COMP_DeInit() only when
-     these callbacks are null (not registered beforehand).
-    [..]
-
-     If MspInit or MspDeInit are not null, the HAL_COMP_Init()/ HAL_COMP_DeInit()
-     keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
-     [..]
-
-     Callbacks can be registered/unregistered in HAL_COMP_STATE_READY state only.
-     Exception done MspInit/MspDeInit functions that can be registered/unregistered
-     in HAL_COMP_STATE_READY or HAL_COMP_STATE_RESET state,
-     thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-    [..]
-
-     Then, the user first registers the MspInit/MspDeInit user callbacks
-     using HAL_COMP_RegisterCallback() before calling HAL_COMP_DeInit()
-     or HAL_COMP_Init() function.
-     [..]
-
-     When the compilation flag USE_HAL_COMP_REGISTER_CALLBACKS is set to 0 or
-     not defined, the callback registration feature is not available and all callbacks
-     are set to the corresponding weak functions.
-
-  @endverbatim
-  ******************************************************************************
-  Table 1. COMP inputs and output for STM32L4xx devices
-  +-----------------------------------------------------------------+
-  |                |                |     COMP1     |   COMP2 (4)   |
-  |----------------|----------------|---------------|---------------+
-  |                | IO1            |      PC5      |      PB4      |
-  | Input plus     | IO2            |      PB2      |      PB6      |
-  |                | IO3 (3)        |      PA1      |      PA3      |
-  |----------------|----------------|---------------|---------------+
-  |                | 1/4 VrefInt    |   Available   |   Available   |
-  |                | 1/2 VrefInt    |   Available   |   Available   |
-  |                | 3/4 VrefInt    |   Available   |   Available   |
-  | Input minus    | VrefInt        |   Available   |   Available   |
-  |                | DAC1 channel 1 |   Available   | Available (4) |
-  |                | DAC1 channel 2 |   Available   | Available (4) |
-  |                | IO1            |      PB1      |      PB3      |
-  |                | IO2            |      PC4      |      PB7      |
-  |                | IO3 (3)        |      PA0      |      PA2      |
-  |                | IO4 (3)        |      PA4      |      PA4      |
-  |                | IO5 (3)        |      PA5      |      PA5      |
-  +----------------|----------------|---------------|---------------+
-  | Output         |                |    PB0  (1)   |    PB5  (1)   |
-  |                |                |    PB10 (1)   |    PB11 (1)   |
-  |                |                |    TIM  (2)   |    TIM  (2)   |
-  +-----------------------------------------------------------------+
-  (1) GPIO must be set to alternate function for comparator
-  (2) Comparators output to timers is set in timers instances.
-  (3) Only STM32L43x/L44x
-  (4) Not applicable to STM32L412x/L422x
-
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -289,7 +117,6 @@ HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp)
     assert_param(IS_COMP_WINDOWMODE(hcomp->Init.WindowMode));
 #endif /* COMP2 */
 
-
     if (hcomp->State == HAL_COMP_STATE_RESET)
     {
       /* Allocate lock resource and initialize it */
@@ -365,7 +192,6 @@ HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp)
               );
 #endif /* COMP_CSR_INMESEL */
 
-
 #if defined(COMP2)
     /* Set window mode */
     /* Note: Window mode bit is located into 1 out of the 2 pairs of COMP     */
@@ -380,7 +206,6 @@ HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp)
       CLEAR_BIT(COMP12_COMMON->CSR, COMP_CSR_WINMODE);
     }
 #endif /* COMP2 */
-
 
     /* Delay for COMP scaler bridge voltage stabilization */
     /* Apply the delay if voltage scaler bridge is required and not already enabled */
@@ -972,7 +797,6 @@ __weak void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp)
             the HAL_COMP_TriggerCallback should be implemented in the user file
    */
 }
-
 
 /**
   * @}

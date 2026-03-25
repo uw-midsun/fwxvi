@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    newlib-freertos.h
+ *
+ * @brief   Newlib-Freertos
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <reent.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup newlib-freertos
+ * @brief    newlib-freertos Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -39,8 +63,6 @@
  * See the third party link http://www.nadler.com/embedded/newlibAndFreeRTOS.html
  * for additional information. */
 
-#include <reent.h>
-
 #define configUSE_C_RUNTIME_TLS_SUPPORT    1
 
 #ifndef configTLS_BLOCK_TYPE
@@ -60,3 +82,5 @@
 #endif
 
 #endif /* INC_NEWLIB_FREERTOS_H */
+
+/** @} */

@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    projdefs.h
+ *
+ * @brief   Projdefs
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup projdefs
+ * @brief    projdefs Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -134,5 +157,6 @@ typedef void (* TaskFunction_t)( void * arg );
 #define pdLITTLE_ENDIAN                   pdFREERTOS_LITTLE_ENDIAN
 #define pdBIG_ENDIAN                      pdFREERTOS_BIG_ENDIAN
 
-
 #endif /* PROJDEFS_H */
+
+/** @} */

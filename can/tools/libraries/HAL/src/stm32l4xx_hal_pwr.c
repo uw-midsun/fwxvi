@@ -1,28 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pwr.c
-  * @author  MCD Application Team
-  * @brief   PWR HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Power Controller (PWR) peripheral:
-  *           + Initialization/de-initialization functions
-  *           + Peripheral Control functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pwr.c
+ *
+ * @brief   PWR HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -116,14 +108,9 @@ void HAL_PWR_DisableBkUpAccess(void)
   CLEAR_BIT(PWR->CR1, PWR_CR1_DBP);
 }
 
-
-
-
 /**
   * @}
   */
-
-
 
 /** @defgroup PWR_Exported_Functions_Group2 Peripheral Control functions
   *  @brief Low Power modes configuration functions
@@ -147,15 +134,12 @@ void HAL_PWR_DisableBkUpAccess(void)
           __HAL_PVD_EXTI_ENABLE_IT() macro.
       (+) The PVD is stopped in Standby mode.
 
-
     *** WakeUp pin configuration ***
     ================================
     [..]
       (+) WakeUp pins are used to wakeup the system from Standby mode or Shutdown mode.
           The polarity of these pins can be set to configure event detection on high
           level (rising edge) or low level (falling edge).
-
-
 
     *** Low Power modes configuration ***
     =====================================
@@ -171,7 +155,6 @@ void HAL_PWR_DisableBkUpAccess(void)
       (+) Standby mode without SRAM2: all clocks are stopped except LSI and LSE, main and low power regulators off.
       (+) Shutdown mode: all clocks are stopped except LSE, main and low power regulators off.
 
-
    *** Low-power run mode ***
    ==========================
     [..]
@@ -181,7 +164,6 @@ void HAL_PWR_DisableBkUpAccess(void)
       (+) Exit:
         (++) clear LPR bit then wait for REGLP bit to be reset with HAL_PWREx_DisableLowPowerRunMode() API. Only
              then can the system clock frequency be increased above 2 MHz.
-
 
    *** Sleep mode / Low-power sleep mode ***
    =========================================
@@ -255,7 +237,6 @@ void HAL_PWR_DisableBkUpAccess(void)
 
       [..]    After waking up from Standby mode, program execution restarts in the same way as after a Reset.
 
-
     *** Shutdown mode ***
    ======================
      [..]
@@ -272,7 +253,6 @@ void HAL_PWR_DisableBkUpAccess(void)
 
          [..] After waking up from Shutdown mode, program execution restarts in the same way as after a Reset.
 
-
    *** Auto-wakeup (AWU) from low-power mode ***
    =============================================
     [..]
@@ -281,7 +261,6 @@ void HAL_PWR_DisableBkUpAccess(void)
       an external interrupt (Auto-wakeup mode).
 
       (+) RTC auto-wakeup (AWU) from the Stop, Standby and Shutdown modes
-
 
         (++) To wake up from the Stop mode with an RTC alarm event, it is necessary to
              configure the RTC to generate the RTC alarm using the HAL_RTC_SetAlarm_IT() function.
@@ -296,8 +275,6 @@ void HAL_PWR_DisableBkUpAccess(void)
 @endverbatim
   * @{
   */
-
-
 
 /**
   * @brief Configure the voltage threshold detected by the Power Voltage Detector (PVD).
@@ -349,7 +326,6 @@ HAL_StatusTypeDef HAL_PWR_ConfigPVD(PWR_PVDTypeDef *sConfigPVD)
   return HAL_OK;
 }
 
-
 /**
   * @brief Enable the Power Voltage Detector (PVD).
   * @retval None
@@ -367,9 +343,6 @@ void HAL_PWR_DisablePVD(void)
 {
   CLEAR_BIT(PWR->CR2, PWR_CR2_PVDE);
 }
-
-
-
 
 /**
   * @brief Enable the WakeUp PINx functionality.
@@ -399,7 +372,6 @@ void HAL_PWR_EnableWakeUpPin(uint32_t WakeUpPinPolarity)
   /* Enable wake-up pin */
   SET_BIT(PWR->CR3, (PWR_CR3_EWUP & WakeUpPinPolarity));
 
-
 }
 
 /**
@@ -415,7 +387,6 @@ void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx)
 
   CLEAR_BIT(PWR->CR3, (PWR_CR3_EWUP & WakeUpPinx));
 }
-
 
 /**
   * @brief Enter Sleep or Low-power Sleep mode.
@@ -488,7 +459,6 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   }
 
 }
-
 
 /**
   * @brief Enter Stop mode
@@ -569,8 +539,6 @@ void HAL_PWR_EnterSTANDBYMode(void)
   __WFI();
 }
 
-
-
 /**
   * @brief Indicate Sleep-On-Exit when returning from Handler mode to Thread mode.
   * @note Set SLEEPONEXIT bit of SCR register. When this bit is set, the processor
@@ -585,7 +553,6 @@ void HAL_PWR_EnableSleepOnExit(void)
   SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
 }
 
-
 /**
   * @brief Disable Sleep-On-Exit feature when returning from Handler mode to Thread mode.
   * @note Clear SLEEPONEXIT bit of SCR register. When this bit is set, the processor
@@ -597,8 +564,6 @@ void HAL_PWR_DisableSleepOnExit(void)
   /* Clear SLEEPONEXIT bit of Cortex System Control Register */
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
 }
-
-
 
 /**
   * @brief Enable CORTEX M4 SEVONPEND bit.
@@ -612,7 +577,6 @@ void HAL_PWR_EnableSEVOnPend(void)
   SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SEVONPEND_Msk));
 }
 
-
 /**
   * @brief Disable CORTEX M4 SEVONPEND bit.
   * @note Clear SEVONPEND bit of SCR register. When this bit is set, this causes
@@ -624,10 +588,6 @@ void HAL_PWR_DisableSEVOnPend(void)
   /* Clear SEVONPEND bit of Cortex System Control Register */
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SEVONPEND_Msk));
 }
-
-
-
-
 
 /**
   * @brief PWR PVD interrupt callback

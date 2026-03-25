@@ -1,23 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    ff_gen_drv.c
-  * @author  MCD Application Team
-  * @brief   FatFs generic low level driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the st_license.txt
-  * file in the root directory of this software component.
-  * If no st_license.txt file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    ff_gen_drv.c
+ *
+ * @brief   FatFs generic low level driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "ff_gen_drv.h"
+
+/* Intra-component Headers */
 
 /* Includes ------------------------------------------------------------------*/
-#include "ff_gen_drv.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

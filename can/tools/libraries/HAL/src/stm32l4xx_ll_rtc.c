@@ -1,27 +1,24 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_rtc.c
-  * @author  MCD Application Team
-  * @brief   RTC LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_rtc.c
+ *
+ * @brief   RTC LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32_assert.h"
+#include "stm32l4xx_ll_cortex.h"
+#include "stm32l4xx_ll_rtc.h"
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_rtc.h"
-#include "stm32l4xx_ll_cortex.h"
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
 #else
 #define assert_param(expr) ((void)0U)
 #endif
@@ -104,13 +101,11 @@
                                      || ((__VALUE__) == LL_RTC_ALMB_MASK_SECONDS) \
                                      || ((__VALUE__) == LL_RTC_ALMB_MASK_ALL))
 
-
 #define IS_LL_RTC_ALMA_DATE_WEEKDAY_SEL(__SEL__) (((__SEL__) == LL_RTC_ALMA_DATEWEEKDAYSEL_DATE) || \
                                                   ((__SEL__) == LL_RTC_ALMA_DATEWEEKDAYSEL_WEEKDAY))
 
 #define IS_LL_RTC_ALMB_DATE_WEEKDAY_SEL(__SEL__) (((__SEL__) == LL_RTC_ALMB_DATEWEEKDAYSEL_DATE) || \
                                                   ((__SEL__) == LL_RTC_ALMB_DATEWEEKDAYSEL_WEEKDAY))
-
 
 /**
   * @}

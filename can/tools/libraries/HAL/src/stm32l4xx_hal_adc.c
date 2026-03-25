@@ -1,298 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_adc.c
-  * @author  MCD Application Team
-  * @brief   This file provides firmware functions to manage the following
-  *          functionalities of the Analog to Digital Converter (ADC)
-  *          peripheral:
-  *           + Initialization and de-initialization functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *          Other functions (extended functions) are available in file
-  *          "stm32l4xx_hal_adc_ex.c".
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### ADC peripheral features #####
-  ==============================================================================
-  [..]
-  (+) 12-bit, 10-bit, 8-bit or 6-bit configurable resolution.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_adc.c
+ *
+ * @brief   This file provides firmware functions to manage the following
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  (+) Interrupt generation at the end of regular conversion and in case of
-      analog watchdog or overrun events.
+/* Standard library Headers */
 
-  (+) Single and continuous conversion modes.
+/* Inter-component Headers */
 
-  (+) Scan mode for conversion of several channels sequentially.
-
-  (+) Data alignment with in-built data coherency.
-
-  (+) Programmable sampling time (channel wise)
-
-  (+) External trigger (timer or EXTI) with configurable polarity
-
-  (+) DMA request generation for transfer of conversions data of regular group.
-
-  (+) Configurable delay between conversions in Dual interleaved mode.
-
-  (+) ADC channels selectable single/differential input.
-
-  (+) ADC offset shared on 4 offset instances.
-  (+) ADC calibration
-
-  (+) ADC conversion of regular group.
-
-  (+) ADC supply requirements: 1.62 V to 3.6 V.
-
-  (+) ADC input range: from Vref- (connected to Vssa) to Vref+ (connected to
-      Vdda or to an external voltage reference).
-
-
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-
-     *** Configuration of top level parameters related to ADC ***
-     ============================================================
-     [..]
-
-    (#) Enable the ADC interface
-        (++) As prerequisite, ADC clock must be configured at RCC top level.
-
-        (++) Two clock settings are mandatory:
-             (+++) ADC clock (core clock, also possibly conversion clock).
-
-             (+++) ADC clock (conversions clock).
-                   Two possible clock sources: synchronous clock derived from APB clock
-                   or asynchronous clock derived from system clock, PLLSAI1 or the PLLSAI2
-                   running up to 80MHz.
-
-             (+++) Example:
-                   Into HAL_ADC_MspInit() (recommended code location) or with
-                   other device clock parameters configuration:
-               (+++) __HAL_RCC_ADC_CLK_ENABLE();                  (mandatory)
-
-               RCC_ADCCLKSOURCE_PLL enable:                       (optional: if asynchronous clock selected)
-               (+++) RCC_PeriphClkInitTypeDef   RCC_PeriphClkInit;
-               (+++) PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-               (+++) PeriphClkInit.AdcClockSelection    = RCC_ADCCLKSOURCE_PLL;
-               (+++) HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-
-        (++) ADC clock source and clock prescaler are configured at ADC level with
-             parameter "ClockPrescaler" using function HAL_ADC_Init().
-
-    (#) ADC pins configuration
-         (++) Enable the clock for the ADC GPIOs
-              using macro __HAL_RCC_GPIOx_CLK_ENABLE()
-         (++) Configure these ADC pins in analog mode
-              using function HAL_GPIO_Init()
-
-    (#) Optionally, in case of usage of ADC with interruptions:
-         (++) Configure the NVIC for ADC
-              using function HAL_NVIC_EnableIRQ(ADCx_IRQn)
-         (++) Insert the ADC interruption handler function HAL_ADC_IRQHandler()
-              into the function of corresponding ADC interruption vector
-              ADCx_IRQHandler().
-
-    (#) Optionally, in case of usage of DMA:
-         (++) Configure the DMA (DMA channel, mode normal or circular, ...)
-              using function HAL_DMA_Init().
-         (++) Configure the NVIC for DMA
-              using function HAL_NVIC_EnableIRQ(DMAx_Channelx_IRQn)
-         (++) Insert the ADC interruption handler function HAL_ADC_IRQHandler()
-              into the function of corresponding DMA interruption vector
-              DMAx_Channelx_IRQHandler().
-
-     *** Configuration of ADC, group regular, channels parameters ***
-     ================================================================
-     [..]
-
-    (#) Configure the ADC parameters (resolution, data alignment, ...)
-        and regular group parameters (conversion trigger, sequencer, ...)
-        using function HAL_ADC_Init().
-
-    (#) Configure the channels for regular group parameters (channel number,
-        channel rank into sequencer, ..., into regular group)
-        using function HAL_ADC_ConfigChannel().
-
-    (#) Optionally, configure the analog watchdog parameters (channels
-        monitored, thresholds, ...)
-        using function HAL_ADC_AnalogWDGConfig().
-
-     *** Execution of ADC conversions ***
-     ====================================
-     [..]
-
-    (#) Optionally, perform an automatic ADC calibration to improve the
-        conversion accuracy
-        using function HAL_ADCEx_Calibration_Start().
-
-    (#) ADC driver can be used among three modes: polling, interruption,
-        transfer by DMA.
-
-        (++) ADC conversion by polling:
-          (+++) Activate the ADC peripheral and start conversions
-                using function HAL_ADC_Start()
-          (+++) Wait for ADC conversion completion
-                using function HAL_ADC_PollForConversion()
-          (+++) Retrieve conversion results
-                using function HAL_ADC_GetValue()
-          (+++) Stop conversion and disable the ADC peripheral
-                using function HAL_ADC_Stop()
-
-        (++) ADC conversion by interruption:
-          (+++) Activate the ADC peripheral and start conversions
-                using function HAL_ADC_Start_IT()
-          (+++) Wait for ADC conversion completion by call of function
-                HAL_ADC_ConvCpltCallback()
-                (this function must be implemented in user program)
-          (+++) Retrieve conversion results
-                using function HAL_ADC_GetValue()
-          (+++) Stop conversion and disable the ADC peripheral
-                using function HAL_ADC_Stop_IT()
-
-        (++) ADC conversion with transfer by DMA:
-          (+++) Activate the ADC peripheral and start conversions
-                using function HAL_ADC_Start_DMA()
-          (+++) Wait for ADC conversion completion by call of function
-                HAL_ADC_ConvCpltCallback() or HAL_ADC_ConvHalfCpltCallback()
-                (these functions must be implemented in user program)
-          (+++) Conversion results are automatically transferred by DMA into
-                destination variable address.
-          (+++) Stop conversion and disable the ADC peripheral
-                using function HAL_ADC_Stop_DMA()
-
-     [..]
-
-    (@) Callback functions must be implemented in user program:
-      (+@) HAL_ADC_ErrorCallback()
-      (+@) HAL_ADC_LevelOutOfWindowCallback() (callback of analog watchdog)
-      (+@) HAL_ADC_ConvCpltCallback()
-      (+@) HAL_ADC_ConvHalfCpltCallback
-
-     *** Deinitialization of ADC ***
-     ============================================================
-     [..]
-
-    (#) Disable the ADC interface
-      (++) ADC clock can be hard reset and disabled at RCC top level.
-        (++) Hard reset of ADC peripherals
-             using macro __ADCx_FORCE_RESET(), __ADCx_RELEASE_RESET().
-        (++) ADC clock disable
-             using the equivalent macro/functions as configuration step.
-             (+++) Example:
-                   Into HAL_ADC_MspDeInit() (recommended code location) or with
-                   other device clock parameters configuration:
-               (+++) RCC_OscInitStructure.OscillatorType = RCC_OSCILLATORTYPE_HSI14;
-               (+++) RCC_OscInitStructure.HSI14State = RCC_HSI14_OFF; (if not used for system clock)
-               (+++) HAL_RCC_OscConfig(&RCC_OscInitStructure);
-
-    (#) ADC pins configuration
-         (++) Disable the clock for the ADC GPIOs
-              using macro __HAL_RCC_GPIOx_CLK_DISABLE()
-
-    (#) Optionally, in case of usage of ADC with interruptions:
-         (++) Disable the NVIC for ADC
-              using function HAL_NVIC_EnableIRQ(ADCx_IRQn)
-
-    (#) Optionally, in case of usage of DMA:
-         (++) Deinitialize the DMA
-              using function HAL_DMA_Init().
-         (++) Disable the NVIC for DMA
-              using function HAL_NVIC_EnableIRQ(DMAx_Channelx_IRQn)
-
-    [..]
-
-    *** Callback registration ***
-    =============================================
-    [..]
-
-     The compilation flag USE_HAL_ADC_REGISTER_CALLBACKS, when set to 1,
-     allows the user to configure dynamically the driver callbacks.
-     Use Functions @ref HAL_ADC_RegisterCallback()
-     to register an interrupt callback.
-    [..]
-
-     Function @ref HAL_ADC_RegisterCallback() allows to register following callbacks:
-       (+) ConvCpltCallback               : ADC conversion complete callback
-       (+) ConvHalfCpltCallback           : ADC conversion DMA half-transfer callback
-       (+) LevelOutOfWindowCallback       : ADC analog watchdog 1 callback
-       (+) ErrorCallback                  : ADC error callback
-       (+) InjectedConvCpltCallback       : ADC group injected conversion complete callback
-       (+) InjectedQueueOverflowCallback  : ADC group injected context queue overflow callback
-       (+) LevelOutOfWindow2Callback      : ADC analog watchdog 2 callback
-       (+) LevelOutOfWindow3Callback      : ADC analog watchdog 3 callback
-       (+) EndOfSamplingCallback          : ADC end of sampling callback
-       (+) MspInitCallback                : ADC Msp Init callback
-       (+) MspDeInitCallback              : ADC Msp DeInit callback
-     This function takes as parameters the HAL peripheral handle, the Callback ID
-     and a pointer to the user callback function.
-    [..]
-
-     Use function @ref HAL_ADC_UnRegisterCallback to reset a callback to the default
-     weak function.
-    [..]
-
-     @ref HAL_ADC_UnRegisterCallback takes as parameters the HAL peripheral handle,
-     and the Callback ID.
-     This function allows to reset following callbacks:
-       (+) ConvCpltCallback               : ADC conversion complete callback
-       (+) ConvHalfCpltCallback           : ADC conversion DMA half-transfer callback
-       (+) LevelOutOfWindowCallback       : ADC analog watchdog 1 callback
-       (+) ErrorCallback                  : ADC error callback
-       (+) InjectedConvCpltCallback       : ADC group injected conversion complete callback
-       (+) InjectedQueueOverflowCallback  : ADC group injected context queue overflow callback
-       (+) LevelOutOfWindow2Callback      : ADC analog watchdog 2 callback
-       (+) LevelOutOfWindow3Callback      : ADC analog watchdog 3 callback
-       (+) EndOfSamplingCallback          : ADC end of sampling callback
-       (+) MspInitCallback                : ADC Msp Init callback
-       (+) MspDeInitCallback              : ADC Msp DeInit callback
-     [..]
-
-     By default, after the @ref HAL_ADC_Init() and when the state is @ref HAL_ADC_STATE_RESET
-     all callbacks are set to the corresponding weak functions:
-     examples @ref HAL_ADC_ConvCpltCallback(), @ref HAL_ADC_ErrorCallback().
-     Exception done for MspInit and MspDeInit functions that are
-     reset to the legacy weak functions in the @ref HAL_ADC_Init()/ @ref HAL_ADC_DeInit() only when
-     these callbacks are null (not registered beforehand).
-    [..]
-
-     If MspInit or MspDeInit are not null, the @ref HAL_ADC_Init()/ @ref HAL_ADC_DeInit()
-     keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
-     [..]
-
-     Callbacks can be registered/unregistered in @ref HAL_ADC_STATE_READY state only.
-     Exception done MspInit/MspDeInit functions that can be registered/unregistered
-     in @ref HAL_ADC_STATE_READY or @ref HAL_ADC_STATE_RESET state,
-     thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-    [..]
-
-     Then, the user first registers the MspInit/MspDeInit user callbacks
-     using @ref HAL_ADC_RegisterCallback() before calling @ref HAL_ADC_DeInit()
-     or @ref HAL_ADC_Init() function.
-     [..]
-
-     When the compilation flag USE_HAL_ADC_REGISTER_CALLBACKS is set to 0 or
-     not defined, the callback registration feature is not available and all callbacks
-     are set to the corresponding weak functions.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -334,7 +56,6 @@
 /*   Calculation: 653 * 4096 * 256 CPU clock cycles max                       */
 /* Unit: cycles of CPU clock.                                                 */
 #define ADC_CONVERSION_TIME_MAX_CPU_CYCLES (653UL * 4096UL * 256UL)  /*!< ADC conversion completion time-out value */
-
 
 /**
   * @}
@@ -832,7 +553,6 @@ HAL_StatusTypeDef HAL_ADC_DeInit(ADC_HandleTypeDef *hadc)
 
   /* Reset register CALFACT */
   CLEAR_BIT(hadc->Instance->CALFACT, ADC_CALFACT_CALFACT_D | ADC_CALFACT_CALFACT_S);
-
 
   /* ========== Reset common ADC registers ========== */
 
@@ -2056,7 +1776,6 @@ HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef *hadc, uint32_t *pData, ui
         /* Set the DMA error callback */
         hadc->DMA_Handle->XferErrorCallback = ADC_DMAError;
 
-
         /* Manage ADC and DMA start: ADC overrun interruption, DMA start,     */
         /* ADC start (in case of SW start):                                   */
 
@@ -3188,7 +2907,6 @@ HAL_StatusTypeDef HAL_ADC_AnalogWDGConfig(ADC_HandleTypeDef *hadc, const ADC_Ana
   /* Return function status */
   return tmp_hal_status;
 }
-
 
 /**
   * @}

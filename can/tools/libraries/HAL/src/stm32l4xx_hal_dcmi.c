@@ -1,165 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dcmi.c
-  * @author  MCD Application Team
-  * @brief   DCMI HAL module driver
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Digital Camera Interface (DCMI) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Error functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-      The sequence below describes how to use this driver to capture images
-      from a camera module connected to the DCMI Interface.
-      This sequence does not take into account the configuration of the
-      camera module, which should be made before configuring and enabling
-      the DCMI to capture images.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dcmi.c
+ *
+ * @brief   DCMI HAL module driver
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Program the required configuration through the following parameters:
-        horizontal and vertical polarity, pixel clock polarity, capture rate,
-        synchronization mode, frame delimiter codes, data width, byte and line
-        selection using HAL_DCMI_Init() function.
+/* Standard library Headers */
 
-    (#) Optionally select JPEG mode; in that case, only the polarity
-        and the capture mode parameters need to be set.
+/* Inter-component Headers */
 
-    (#) Capture mode can be either snapshot or continuous mode.
-
-    (#) Configure the DMA_Handle to transfer data from DCMI DR
-        register to the destination memory buffer.
-
-    -@- In snapshot mode, the interface transfers a single frame through DMA. In
-       continuous mode, the DMA must be set in circular mode to ensure a continuous
-       flow of images data samples.
-
-    (#) Program the transfer configuration through the following parameters:
-        DCMI mode, destination memory buffer address and data length then
-        enable capture using HAL_DCMI_Start_DMA() function.
-
-    (#) Whether in continuous or snapshot mode, data length parameter must be
-        equal to the frame size.
-
-    (#) When the frame size is unknown beforehand (e.g. JPEG case), data length must
-        be large enough to ensure the capture of a frame.
-
-    (#) If the frame size is larger than the maximum DMA transfer length (i.e. 65535),
-        (++) the DMA must be configured in circular mode, either for snapshot or continuous
-             capture mode,
-        (++) during capture, the driver copies the image data samples from DCMI DR register
-             at the end of the final destination buffer used as a work buffer,
-        (++) at each DMA half (respectively complete) transfer interrupt, the first
-             (resp. second) half of the work buffer is copied to the final destination through
-             a second DMA channel.
-        (++) Parameters of this second DMA channel are contained in the memory to memory DMA
-             handle "DMAM2M_Handle", itself field of the DCMI handle structure.
-        (++) This memory to memory transfer has length half that of the work buffer and is
-             carried out in normal mode (not in circular mode).
-
-    (#) Optionally, configure and enable the CROP feature to select a
-        rectangular window from the received image using HAL_DCMI_ConfigCrop()
-        and HAL_DCMI_EnableCrop() functions. Use HAL_DCMI_DisableCrop() to
-        disable this feature.
-
-    (#) The capture can be stopped with HAL_DCMI_Stop() function.
-
-    (#) To control the DCMI state, use the function HAL_DCMI_GetState().
-
-    (#) To read the DCMI error code, use the function HAL_DCMI_GetError().
-
-    [..]
-    (@) When the frame size is less than the maximum DMA transfer length (i.e. 65535)
-        and when in snapshot mode, user must make sure the FRAME interrupt is disabled.
-        This allows to avoid corner cases where the FRAME interrupt might be triggered
-        before the DMA transfer completion interrupt. In this specific configuration,
-        the driver checks the FRAME capture flag after the DMA transfer end and calls
-        HAL_DCMI_FrameEventCallback() if the flag is set.
-
-     *** DCMI HAL driver macros list ***
-     =============================================
-     [..]
-       Below the list of most used macros in DCMI HAL driver.
-
-      (+) __HAL_DCMI_ENABLE: Enable the DCMI peripheral.
-      (+) __HAL_DCMI_DISABLE: Disable the DCMI peripheral.
-      (+) __HAL_DCMI_GET_FLAG: Get the DCMI pending flags.
-      (+) __HAL_DCMI_CLEAR_FLAG: Clear the DCMI pending flags.
-      (+) __HAL_DCMI_ENABLE_IT: Enable the specified DCMI interrupts.
-      (+) __HAL_DCMI_DISABLE_IT: Disable the specified DCMI interrupts.
-      (+) __HAL_DCMI_GET_IT_SOURCE: Check whether the specified DCMI interrupt has occurred or not.
-
-    *** Callback registration ***
-    =============================
-
-    The compilation define USE_HAL_DCMI_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-    Use functions @ref HAL_DCMI_RegisterCallback() to register a user callback.
-
-    Function @ref HAL_DCMI_RegisterCallback() allows to register following callbacks:
-      (+) FrameEventCallback : DCMI Frame Event.
-      (+) VsyncEventCallback : DCMI Vsync Event.
-      (+) LineEventCallback  : DCMI Line Event.
-      (+) ErrorCallback      : DCMI error.
-      (+) MspInitCallback    : DCMI MspInit.
-      (+) MspDeInitCallback  : DCMI MspDeInit.
-    This function takes as parameters the HAL peripheral handle, the callback ID
-    and a pointer to the user callback function.
-
-    Use function @ref HAL_DCMI_UnRegisterCallback() to reset a callback to the default
-    weak (surcharged) function.
-    @ref HAL_DCMI_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the callback ID.
-    This function allows to reset following callbacks:
-      (+) FrameEventCallback : DCMI Frame Event.
-      (+) VsyncEventCallback : DCMI Vsync Event.
-      (+) LineEventCallback  : DCMI Line Event.
-      (+) ErrorCallback      : DCMI error.
-      (+) MspInitCallback    : DCMI MspInit.
-      (+) MspDeInitCallback  : DCMI MspDeInit.
-
-    By default, after the @ref HAL_DCMI_Init and if the state is HAL_DCMI_STATE_RESET
-    all callbacks are reset to the corresponding legacy weak (surcharged) functions:
-    examples @ref FrameEventCallback(), @ref HAL_DCMI_ErrorCallback().
-    Exception done for MspInit and MspDeInit callbacks that are respectively
-    reset to the legacy weak (surcharged) functions in the @ref HAL_DCMI_Init
-    and @ref  HAL_DCMI_DeInit only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the @ref HAL_DCMI_Init and @ref HAL_DCMI_DeInit
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-
-    Callbacks can be registered/unregistered in READY state only.
-    Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-    in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-    during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using @ref HAL_DCMI_RegisterCallback before calling @ref HAL_DCMI_DeInit
-    or @ref HAL_DCMI_Init function.
-
-    When the compilation define USE_HAL_DCMI_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registering feature is not available
-    and weak (surcharged) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #ifdef HAL_DCMI_MODULE_ENABLED
 #if defined (DCMI)
@@ -436,7 +291,6 @@ __weak void HAL_DCMI_MspDeInit(DCMI_HandleTypeDef* hdcmi)
         (+) HAL_DCMI_LineEventCallback()
         (+) HAL_DCMI_VsyncEventCallback()
         (+) HAL_DCMI_FrameEventCallback()
-
 
 @endverbatim
   * @{
@@ -876,7 +730,6 @@ __weak void HAL_DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi)
   * @}
   */
 
-
 /** @defgroup DCMI_Exported_Functions_Group3 Peripheral Control functions
  *  @brief    Peripheral Control functions
  *
@@ -1016,9 +869,6 @@ HAL_StatusTypeDef  HAL_DCMI_ConfigSyncUnmask(DCMI_HandleTypeDef *hdcmi, DCMI_Syn
 
   return HAL_OK;
 }
-
-
-
 
 /**
   * @}
@@ -1259,7 +1109,6 @@ static void DCMI_DMAXferCplt(DMA_HandleTypeDef *hdma)
 
   DCMI_HandleTypeDef* hdcmi = ( DCMI_HandleTypeDef* )((DMA_HandleTypeDef* )hdma)->Parent;
 
-
   if(hdcmi->XferCount != 0U)
   {
     if (hdcmi->XferCount == 0xBEBE)
@@ -1295,7 +1144,6 @@ static void DCMI_DMAXferCplt(DMA_HandleTypeDef *hdma)
         {
           hdcmi->XferCount = 0xBEBE;
         }
-
 
       /* Data copy from work buffer to final destination buffer */
       /* Enable the DMA Channel */
@@ -1354,7 +1202,6 @@ static void DCMI_DMAXferCplt(DMA_HandleTypeDef *hdma)
     }
   }
 }
-
 
 /**
   * @brief  DMA Half Transfer complete callback.
@@ -1470,7 +1317,6 @@ static uint32_t DCMI_TransferSize(uint32_t InputSize)
                                19UL, 23UL, 29UL, 31UL,
                                37UL, 41UL, 43UL, 47UL};
 
-
   /* Develop InputSize in product of prime numbers */
 
   while (j < NPRIME)
@@ -1510,11 +1356,8 @@ static uint32_t DCMI_TransferSize(uint32_t InputSize)
     j--;
   }
 
-
-
   return output;
 }
-
 
 /**
   * @}

@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_exti.h
-  * @author  MCD Application Team
-  * @brief   Header file of EXTI LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_exti.h
+ *
+ * @brief   Header file of EXTI LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_EXTI_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -173,7 +172,6 @@ typedef struct
 #endif
 #define LL_EXTI_LINE_ALL_32_63         EXTI_IMR2_IM            /*!< All Extended line not reserved*/
 
-
 #define LL_EXTI_LINE_ALL               (0xFFFFFFFFU)  /*!< All Extended line */
 
 #if defined(USE_FULL_LL_DRIVER)
@@ -183,7 +181,6 @@ typedef struct
 /**
   * @}
   */
-
 
 #if defined(USE_FULL_LL_DRIVER)
 
@@ -209,9 +206,7 @@ typedef struct
   * @}
   */
 
-
 #endif /*USE_FULL_LL_DRIVER*/
-
 
 /**
   * @}
@@ -244,12 +239,9 @@ typedef struct
   * @}
   */
 
-
 /**
   * @}
   */
-
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup EXTI_LL_Exported_Functions EXTI Exported Functions
@@ -1317,7 +1309,6 @@ __STATIC_INLINE void LL_EXTI_ClearFlag_32_63(uint32_t ExtiLine)
   WRITE_REG(EXTI->PR2, ExtiLine);
 }
 
-
 /**
   * @}
   */
@@ -1330,7 +1321,6 @@ __STATIC_INLINE void LL_EXTI_ClearFlag_32_63(uint32_t ExtiLine)
 uint32_t LL_EXTI_Init(LL_EXTI_InitTypeDef *EXTI_InitStruct);
 uint32_t LL_EXTI_DeInit(void);
 void LL_EXTI_StructInit(LL_EXTI_InitTypeDef *EXTI_InitStruct);
-
 
 /**
   * @}

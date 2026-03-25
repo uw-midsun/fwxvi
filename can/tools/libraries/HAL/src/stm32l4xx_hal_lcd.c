@@ -1,85 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_lcd.c
-  * @author  MCD Application Team
-  * @brief   LCD Controller HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the LCD Controller (LCD) peripheral:
-  *           + Initialization/de-initialization methods
-  *           + I/O operation methods
-  *           + Peripheral State methods
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-      [..] The LCD HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_lcd.c
+ *
+ * @brief   LCD Controller HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#) Declare a LCD_HandleTypeDef handle structure.
+/* Standard library Headers */
 
-      -@- The frequency generator allows you to achieve various LCD frame rates
-          starting from an LCD input clock frequency (LCDCLK) which can vary
-          from 32 kHz up to 1 MHz.
+/* Inter-component Headers */
 
-      (#) Initialize the LCD low level resources by implementing the HAL_LCD_MspInit() API:
-
-          (++) Enable the LCDCLK (same as RTCCLK): to configure the RTCCLK/LCDCLK, proceed as follows:
-               (+++) Use RCC function HAL_RCCEx_PeriphCLKConfig in indicating RCC_PERIPHCLK_LCD and
-                  selected clock source (HSE, LSI or LSE)
-
-          (++) LCD pins configuration:
-              (+++) Enable the clock for the LCD GPIOs.
-              (+++) Configure these LCD pins as alternate function no-pull.
-          (++) Enable the LCD interface clock.
-
-
-      (#) Program the Prescaler, Divider, Blink mode, Blink Frequency Duty, Bias,
-          Voltage Source, Dead Time, Pulse On Duration, Contrast, High drive and Multiplexer
-          Segment in the Init structure of the LCD handle.
-
-      (#) Initialize the LCD registers by calling the HAL_LCD_Init() API.
-
-      -@- The HAL_LCD_Init() API configures also the low level Hardware GPIO, CLOCK, ...etc)
-          by calling the customized HAL_LCD_MspInit() API.
-      -@- After calling the HAL_LCD_Init() the LCD RAM memory is cleared
-
-      (#) Optionally you can update the LCD configuration using these macros:
-              (++) LCD High Drive using the __HAL_LCD_HIGHDRIVER_ENABLE() and __HAL_LCD_HIGHDRIVER_DISABLE() macros
-              (++) Voltage output buffer using __HAL_LCD_VOLTAGE_BUFFER_ENABLE() and __HAL_LCD_VOLTAGE_BUFFER_DISABLE() macros
-              (++) LCD Pulse ON Duration using the __HAL_LCD_PULSEONDURATION_CONFIG() macro
-              (++) LCD Dead Time using the __HAL_LCD_DEADTIME_CONFIG() macro
-              (++) The LCD Blink mode and frequency using the __HAL_LCD_BLINK_CONFIG() macro
-              (++) The LCD Contrast using the __HAL_LCD_CONTRAST_CONFIG() macro
-
-      (#) Write to the LCD RAM memory using the HAL_LCD_Write() API, this API can be called
-          more time to update the different LCD RAM registers before calling
-          HAL_LCD_UpdateDisplayRequest() API.
-
-      (#) The HAL_LCD_Clear() API can be used to clear the LCD RAM memory.
-
-      (#) When LCD RAM memory is updated enable the update display request using
-          the HAL_LCD_UpdateDisplayRequest() API.
-
-      [..] LCD and low power modes:
-           (#) The LCD remain active during Sleep, Low Power run, Low Power Sleep and
-               STOP modes.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(STM32L433xx) || defined(STM32L443xx) || defined(STM32L476xx) || defined(STM32L486xx) || defined(STM32L496xx) || defined(STM32L4A6xx)
 

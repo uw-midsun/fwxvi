@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_i2c.h
-  * @author  MCD Application Team
-  * @brief   Header file of I2C HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_i2c.h
+ *
+ * @brief   Header file of I2C HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_i2c_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_I2C_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -204,7 +204,6 @@ typedef struct __I2C_HandleTypeDef
   DMA_HandleTypeDef          *hdmatx;        /*!< I2C Tx DMA handle parameters              */
 
   DMA_HandleTypeDef          *hdmarx;        /*!< I2C Rx DMA handle parameters              */
-
 
   HAL_LockTypeDef            Lock;           /*!< I2C locking object                        */
 
@@ -587,7 +586,6 @@ typedef  void (*pI2C_AddrCallbackTypeDef)(I2C_HandleTypeDef *hi2c, uint8_t Trans
   */
 
 /* Include I2C HAL Extended module */
-#include "stm32l4xx_hal_i2c_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup I2C_Exported_Functions
@@ -833,6 +831,5 @@ uint32_t             HAL_I2C_GetError(const I2C_HandleTypeDef *hi2c);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_I2C_H */

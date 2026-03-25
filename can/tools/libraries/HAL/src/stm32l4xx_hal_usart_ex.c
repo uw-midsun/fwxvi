@@ -1,46 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_usart_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended USART HAL module driver.
-  *          This file provides firmware functions to manage the following extended
-  *          functionalities of the Universal Synchronous Receiver Transmitter Peripheral (USART).
-  *           + Peripheral Control functions
-  *
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-               ##### USART peripheral extended features  #####
-  ==============================================================================
+/************************************************************************************************
+ * @file    stm32l4xx_hal_usart_ex.c
+ *
+ * @brief   Extended USART HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) FIFO mode enabling/disabling and RX/TX FIFO threshold programming.
+/* Standard library Headers */
 
-        -@- When USART operates in FIFO mode, FIFO mode must be enabled prior
-            starting RX/TX transfers. Also RX/TX FIFO thresholds must be
-            configured prior starting RX/TX transfers.
+/* Inter-component Headers */
 
-    (#) Slave mode enabling/disabling and NSS pin configuration.
-
-        -@- When USART operates in Slave mode, Slave mode must be enabled prior
-            starting RX/TX transfers.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -156,7 +130,6 @@ __weak void HAL_USARTEx_TxFifoEmptyCallback(USART_HandleTypeDef *husart)
      (+) HAL_USARTEx_DisableFifoMode() API disables the FIFO mode
      (+) HAL_USARTEx_SetTxFifoThreshold() API sets the TX FIFO threshold
      (+) HAL_USARTEx_SetRxFifoThreshold() API sets the RX FIFO threshold
-
 
 @endverbatim
   * @{

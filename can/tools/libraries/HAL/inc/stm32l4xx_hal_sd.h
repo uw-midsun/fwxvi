@@ -1,20 +1,22 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_sd.h
-  * @author  MCD Application Team
-  * @brief   Header file of SD HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_sd.h
+ *
+ * @brief   Header file of SD HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_sd_ex.h"
+#include "stm32l4xx_ll_sdmmc.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_SD_H
@@ -25,10 +27,8 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined(SDMMC1)
-#include "stm32l4xx_ll_sdmmc.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -679,7 +679,6 @@ typedef void (*pSD_TransceiverCallbackTypeDef)(FlagStatus status);
 
 #if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || defined(STM32L4S9xx)
 /* Include SD HAL Extension module */
-#include "stm32l4xx_hal_sd_ex.h"
 #endif /* STM32L4P5xx || STM32L4Q5xx || STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
 
 /* Exported functions --------------------------------------------------------*/
@@ -840,7 +839,6 @@ uint32_t SD_HighSpeed(SD_HandleTypeDef *hsd);
   * @}
   */
 
-
 /**
   * @}
   */
@@ -858,6 +856,5 @@ uint32_t SD_HighSpeed(SD_HandleTypeDef *hsd);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_SD_H */

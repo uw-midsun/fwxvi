@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_opamp.h
-  * @author  MCD Application Team
-  * @brief   Header file of OPAMP HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_opamp.h
+ *
+ * @brief   Header file of OPAMP HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_opamp_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_OPAMP_H
@@ -25,7 +26,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -165,7 +165,6 @@ typedef enum
 typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 #endif /* USE_HAL_OPAMP_REGISTER_CALLBACKS */
 
-
 /* Exported constants --------------------------------------------------------*/
 
 /** @defgroup OPAMP_Exported_Constants OPAMP Exported Constants
@@ -302,8 +301,6 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 #define __HAL_OPAMP_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_OPAMP_STATE_RESET)
 #endif /* USE_HAL_OPAMP_REGISTER_CALLBACKS */
 
-
-
 /**
   * @}
   */
@@ -391,7 +388,6 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 #define IS_OPAMP_TRIMMING(TRIMMING) (((TRIMMING) == OPAMP_TRIMMING_FACTORY) || \
                                      ((TRIMMING) == OPAMP_TRIMMING_USER))
 
-
 #define IS_OPAMP_TRIMMINGVALUE(TRIMMINGVALUE) ((TRIMMINGVALUE) <= 31U)
 
 #define IS_OPAMP_FACTORYTRIMMING(TRIMMING) (((TRIMMING) == OPAMP_FACTORYTRIMMING_N) || \
@@ -402,7 +398,6 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
   */
 
 /* Include OPAMP HAL Extended module */
-#include "stm32l4xx_hal_opamp_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup OPAMP_Exported_Functions

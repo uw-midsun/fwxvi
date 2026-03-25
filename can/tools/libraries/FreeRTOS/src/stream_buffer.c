@@ -1,3 +1,21 @@
+/************************************************************************************************
+ * @file    stream_buffer.c
+ *
+ * @brief   Stream Buffer
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <string.h>
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "task.h"
+
+/* Intra-component Headers */
+#include "stream_buffer.h"
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -27,7 +45,6 @@
  */
 
 /* Standard includes. */
-#include <string.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers.  That should only be done when
@@ -35,9 +52,6 @@
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 /* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stream_buffer.h"
 
 #if ( configUSE_TASK_NOTIFICATIONS != 1 )
     #error configUSE_TASK_NOTIFICATIONS must be set to 1 to build stream_buffer.c
@@ -178,7 +192,6 @@
         #define prvSEND_COMPLETED( pxStreamBuffer )    sbSEND_COMPLETED( ( pxStreamBuffer ) )
     #endif /* if ( configUSE_SB_COMPLETED_CALLBACK == 1 ) */
 
-
     #ifndef sbSEND_COMPLETE_FROM_ISR
         #define sbSEND_COMPLETE_FROM_ISR( pxStreamBuffer, pxHigherPriorityTaskWoken )          \
     do {                                                                                       \
@@ -199,7 +212,6 @@
         taskEXIT_CRITICAL_FROM_ISR( uxSavedInterruptStatus );                                  \
     } while( 0 )
     #endif /* sbSEND_COMPLETE_FROM_ISR */
-
 
     #if ( configUSE_SB_COMPLETED_CALLBACK == 1 )
         #define prvSEND_COMPLETE_FROM_ISR( pxStreamBuffer, pxHigherPriorityTaskWoken )                                \

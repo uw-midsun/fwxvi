@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_dac.h
-  * @author  MCD Application Team
-  * @brief   Header file of DAC LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_dac.h
+ *
+ * @brief   Header file of DAC LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_DAC_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -117,7 +116,6 @@ extern "C" {
   * @}
   */
 
-
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup DAC_LL_Private_Macros DAC Private Macros
   * @{
@@ -137,7 +135,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /* Exported types ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
@@ -407,7 +404,6 @@ typedef struct
 /* Unit: us                                                                   */
 #define LL_DAC_DELAY_STARTUP_VOLTAGE_SETTLING_US             8U  /*!< Delay for DAC channel voltage settling time from DAC channel startup (transition from disable to enable) */
 
-
 /* Delay for DAC channel voltage settling time.                               */
 /* Note: DAC channel startup time depends on board application environment:   */
 /*       impedance connected to DAC channel output.                           */
@@ -568,7 +564,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup DAC_LL_Exported_Functions DAC Exported Functions

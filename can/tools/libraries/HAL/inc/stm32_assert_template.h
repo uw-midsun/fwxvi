@@ -1,22 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32_assert.h
+ *
+ * @brief   STM32 assert template file.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
-  ******************************************************************************
-  * @file    stm32_assert.h
-  * @author  MCD Application Team
-  * @brief   STM32 assert template file.
-  *          This file should be copied to the application folder and renamed
-  *          to stm32_assert.h.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32_assert_template
+ * @brief    stm32_assert_template Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32_ASSERT_H
@@ -51,3 +54,5 @@
 #endif
 
 #endif /* STM32_ASSERT_H */
+
+/** @} */

@@ -1,3 +1,23 @@
+/************************************************************************************************
+ * @file    queue.c
+ *
+ * @brief   Queue
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdlib.h>
+#include <string.h>
+
+/* Inter-component Headers */
+    #include "croutine.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "task.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,27 +46,18 @@
  *
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers.  That should only be done when
  * task.h is included from an application file. */
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
 #if ( configUSE_CO_ROUTINES == 1 )
-    #include "croutine.h"
 #endif
 
 /* The MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
  * for the header files above, but not in this file, in order to generate the
  * correct privileged Vs unprivileged linkage and placement. */
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
-
 
 /* Constants used with the cRxLock and cTxLock structure members. */
 #define queueUNLOCKED             ( ( int8_t ) -1 )

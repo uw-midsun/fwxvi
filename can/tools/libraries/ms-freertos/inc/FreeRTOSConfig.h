@@ -1,10 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    FreeRTOSConfig.h
+ *
+ * @brief   Freertosconfig
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup FreeRTOSConfig
+ * @brief    FreeRTOSConfig Firmware
+ * @{
+ */
+
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
 #endif
-#include <stdint.h>
 extern uint32_t SystemCoreClock;
 
 #define configUSE_PREEMPTION 1
@@ -116,3 +139,5 @@ standard names. */
 #define xPortSysTickHandler SysTick_Handler
 
 #endif /* FREERTOS_CONFIG_H */
+
+/** @} */

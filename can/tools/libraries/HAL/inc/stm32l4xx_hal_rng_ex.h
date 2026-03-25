@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rng_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of RNG HAL Extension module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rng_ex.h
+ *
+ * @brief   Header file of RNG HAL Extension module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_RNG_EX_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -171,7 +170,6 @@ typedef struct
                                              ((__CLOCK_DIV__) == RNG_CLKDIV_BY_16384) || \
                                              ((__CLOCK_DIV__) == RNG_CLKDIV_BY_32768))
 
-
 #define IS_RNG_NIST_COMPLIANCE(__NIST_COMPLIANCE__) (((__NIST_COMPLIANCE__) == RNG_NIST_COMPLIANT) || \
                                                      ((__NIST_COMPLIANCE__) == RNG_CUSTOM_NIST))
 
@@ -180,7 +178,6 @@ typedef struct
 #define IS_RNG_CONFIG2(__CONFIG2__) ((__CONFIG2__) <= 0x07UL)
 
 #define IS_RNG_CONFIG3(__CONFIG3__) ((__CONFIG3__) <= 0xFUL)
-
 
 /**
   * @}
@@ -242,7 +239,6 @@ HAL_StatusTypeDef HAL_RNGEx_RecoverSeedError(RNG_HandleTypeDef *hrng);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_RNG_EX_H */
 

@@ -7,13 +7,18 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/fcntl.h>
-#include <sys/times.h>
-#include <sys/errno.h>
-#include <sys/time.h>
+/* Standard library Headers */
 #include <stdio.h>
+#include <sys/errno.h>
+#include <sys/fcntl.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <sys/types.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 
 #undef errno
 extern int errno;

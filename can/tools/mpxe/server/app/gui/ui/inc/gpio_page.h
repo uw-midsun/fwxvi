@@ -9,16 +9,22 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
-#include <map>
-
-/* Qt library headers */
+/* Standard library Headers */
 #include <QPointer>
 #include <QSortFilterProxyModel>
 #include <QString>
 #include <QTabWidget>
 #include <QVariant>
 #include <QWidget>
+#include <map>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/* Standard library headers */
+
+/* Qt library headers */
 
 /* Inter-component headers */
 

@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_tim.h
-  * @author  MCD Application Team
-  * @brief   Header file of TIM LL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_ll_tim.h
+ *
+ * @brief   Header file of TIM LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32L4xx_LL_TIM_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -211,7 +210,6 @@ static const uint8_t SHIFT_TAB_OISx[] =
   * @}
   */
 
-
 /* Exported types ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
 /** @defgroup TIM_LL_ES_INIT TIM Exported Init structure
@@ -306,7 +304,6 @@ typedef struct
                                This feature can be modified afterwards using unitary function
                                @ref LL_TIM_OC_SetPolarity().*/
 
-
   uint32_t OCIdleState;   /*!< Specifies the TIM Output Compare pin state during Idle state.
                                This parameter can be a value of @ref TIM_LL_EC_OCIDLESTATE.
 
@@ -351,7 +348,6 @@ typedef struct
                                This feature can be modified afterwards using unitary function
                                @ref LL_TIM_IC_SetFilter().*/
 } LL_TIM_IC_InitTypeDef;
-
 
 /**
   * @brief  TIM Encoder interface configuration structure definition.
@@ -1464,7 +1460,6 @@ typedef struct
   */
 #define __LL_TIM_GET_ICPSC_RATIO(__ICPSC__)  \
   ((uint32_t)(0x01U << (((__ICPSC__) >> 16U) >> TIM_CCMR1_IC1PSC_Pos)))
-
 
 /**
   * @}

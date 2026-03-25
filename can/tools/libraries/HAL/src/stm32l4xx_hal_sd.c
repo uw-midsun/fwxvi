@@ -1,275 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_sd.c
-  * @author  MCD Application Team
-  * @brief   SD card HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Secure Digital (SD) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    This driver implements a high level communication layer for read and write from/to
-    this memory. The needed STM32 hardware resources (SDMMC and GPIO) are performed by
-    the user in HAL_SD_MspInit() function (MSP layer).
-    Basically, the MSP layer configuration should be the same as we provide in the
-    examples.
-    You can easily tailor this configuration according to hardware resources.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_sd.c
+ *
+ * @brief   SD card HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  [..]
-    This driver is a generic layered driver for SDMMC memories which uses the HAL
-    SDMMC driver functions to interface with SD and uSD cards devices.
-    It is used as follows:
+/* Standard library Headers */
 
-    (#)Initialize the SDMMC low level resources by implementing the HAL_SD_MspInit() API:
-        (##) Call the function HAL_RCCEx_PeriphCLKConfig with RCC_PERIPHCLK_SDMMC1 for
-        PeriphClockSelection and select SDMMC1 clock source (MSI, main PLL or PLLSAI1)
-        (##) Enable the SDMMC interface clock using __HAL_RCC_SDMMC1_CLK_ENABLE();
-        (##) SDMMC pins configuration for SD card
-            (+++) Enable the clock for the SDMMC GPIOs using the functions __HAL_RCC_GPIOx_CLK_ENABLE();
-            (+++) Configure these SDMMC pins as alternate function pull-up using HAL_GPIO_Init()
-                  and according to your pin assignment;
-        (##) On STM32L4Rx/STM32L4Sxx devices, no DMA configuration is need, an internal DMA for SDMMC Peripheral is used.
-        (##) On other devices, perform DMA configuration if you need to use DMA process (HAL_SD_ReadBlocks_DMA()
-             and HAL_SD_WriteBlocks_DMA() APIs).
-            (+++) Enable the DMAx interface clock using __HAL_RCC_DMAx_CLK_ENABLE();
-            (+++) Configure the DMA using the function HAL_DMA_Init() with predeclared and filled.
-        (##) NVIC configuration if you need to use interrupt process when using DMA transfer.
-            (+++) Configure the SDMMC and DMA interrupt priorities using functions
-                  HAL_NVIC_SetPriority(); DMA priority is superior to SDMMC's priority
-            (+++) Enable the NVIC DMA and SDMMC IRQs using function HAL_NVIC_EnableIRQ()
-            (+++) SDMMC interrupts are managed using the macros __HAL_SD_ENABLE_IT()
-                  and __HAL_SD_DISABLE_IT() inside the communication process.
-            (+++) SDMMC interrupts pending bits are managed using the macros __HAL_SD_GET_IT()
-                  and __HAL_SD_CLEAR_IT()
-        (##) NVIC configuration if you need to use interrupt process (HAL_SD_ReadBlocks_IT()
-             and HAL_SD_WriteBlocks_IT() APIs).
-            (+++) Configure the SDMMC interrupt priorities using function HAL_NVIC_SetPriority();
-            (+++) Enable the NVIC SDMMC IRQs using function HAL_NVIC_EnableIRQ()
-            (+++) SDMMC interrupts are managed using the macros __HAL_SD_ENABLE_IT()
-                  and __HAL_SD_DISABLE_IT() inside the communication process.
-            (+++) SDMMC interrupts pending bits are managed using the macros __HAL_SD_GET_IT()
-                  and __HAL_SD_CLEAR_IT()
-    (#) At this stage, you can perform SD read/write/erase operations after SD card initialization
+/* Inter-component Headers */
 
-
-  *** SD Card Initialization and configuration ***
-  ================================================
-  [..]
-    To initialize the SD Card, use the HAL_SD_Init() function. It Initializes
-    SDMMC Peripheral(STM32 side) and the SD Card, and put it into StandBy State (Ready for data transfer).
-    This function provide the following operations:
-
-    (#) Apply the SD Card initialization process at 400KHz and check the SD Card
-        type (Standard Capacity or High Capacity). You can change or adapt this
-        frequency by adjusting the "ClockDiv" field.
-        The SD Card frequency (SDMMC_CK) is computed as follows:
-
-           SDMMC_CK = SDMMCCLK / (2 * ClockDiv) on STM32L4Rx/STM32L4Sxx devices
-           SDMMC_CK = SDMMCCLK / (ClockDiv + 2) on other devices
-
-        In initialization mode and according to the SD Card standard,
-        make sure that the SDMMC_CK frequency doesn't exceed 400KHz.
-
-        This phase of initialization is done through SDMMC_Init() and
-        SDMMC_PowerState_ON() SDMMC low level APIs.
-
-    (#) Initialize the SD card. The API used is HAL_SD_InitCard().
-        This phase allows the card initialization and identification
-        and check the SD Card type (Standard Capacity or High Capacity)
-        The initialization flow is compatible with SD standard.
-
-        This API (HAL_SD_InitCard()) could be used also to reinitialize the card in case
-        of plug-off plug-in.
-
-    (#) Configure the SD Card Data transfer frequency. You can change or adapt this
-        frequency by adjusting the "ClockDiv" field.
-        In transfer mode and according to the SD Card standard, make sure that the
-        SDMMC_CK frequency doesn't exceed 25MHz and 100MHz in High-speed mode switch.
-
-    (#) Select the corresponding SD Card according to the address read with the step 2.
-
-    (#) Configure the SD Card in wide bus mode: 4-bits data.
-
-  *** SD Card Read operation ***
-  ==============================
-  [..]
-    (+) You can read from SD card in polling mode by using function HAL_SD_ReadBlocks().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-
-    (+) You can read from SD card in DMA mode by using function HAL_SD_ReadBlocks_DMA().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-        You could also check the DMA transfer process through the SD Rx interrupt event.
-
-    (+) You can read from SD card in Interrupt mode by using function HAL_SD_ReadBlocks_IT().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-        You could also check the IT transfer process through the SD Rx interrupt event.
-
-  *** SD Card Write operation ***
-  ===============================
-  [..]
-    (+) You can write to SD card in polling mode by using function HAL_SD_WriteBlocks().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-
-    (+) You can write to SD card in DMA mode by using function HAL_SD_WriteBlocks_DMA().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-        You could also check the DMA transfer process through the SD Tx interrupt event.
-
-    (+) You can write to SD card in Interrupt mode by using function HAL_SD_WriteBlocks_IT().
-        This function support only 512-bytes block length (the block size should be
-        chosen as 512 bytes).
-        You can choose either one block read operation or multiple block read operation
-        by adjusting the "NumberOfBlocks" parameter.
-        After this, you have to ensure that the transfer is done correctly. The check is done
-        through HAL_SD_GetCardState() function for SD card state.
-        You could also check the IT transfer process through the SD Tx interrupt event.
-
-  *** SD card status ***
-  ======================
-  [..]
-    (+) The SD Status contains status bits that are related to the SD Memory
-        Card proprietary features. To get SD card status use the HAL_SD_GetCardStatus().
-
-  *** SD card information ***
-  ===========================
-  [..]
-    (+) To get SD card information, you can use the function HAL_SD_GetCardInfo().
-        It returns useful information about the SD card such as block size, card type,
-        block number ...
-
-  *** SD card CSD register ***
-  ============================
-    (+) The HAL_SD_GetCardCSD() API allows to get the parameters of the CSD register.
-        Some of the CSD parameters are useful for card initialization and identification.
-
-  *** SD card CID register ***
-  ============================
-    (+) The HAL_SD_GetCardCID() API allows to get the parameters of the CID register.
-        Some of the CSD parameters are useful for card initialization and identification.
-
-  *** SD HAL driver macros list ***
-  ==================================
-  [..]
-    Below the list of most used macros in SD HAL driver.
-
-    (+) __HAL_SD_ENABLE : Enable the SD device
-    (+) __HAL_SD_DISABLE : Disable the SD device
-    (+) __HAL_SD_DMA_ENABLE: Enable the SDMMC DMA transfer
-    (+) __HAL_SD_DMA_DISABLE: Disable the SDMMC DMA transfer
-    (+) __HAL_SD_ENABLE_IT: Enable the SD device interrupt
-    (+) __HAL_SD_DISABLE_IT: Disable the SD device interrupt
-    (+) __HAL_SD_GET_FLAG:Check whether the specified SD flag is set or not
-    (+) __HAL_SD_CLEAR_FLAG: Clear the SD's pending flags
-
-    (@) You can refer to the SD HAL driver header file for more useful macros
-
-  *** Callback registration ***
-  =============================================
-  [..]
-    The compilation define USE_HAL_SD_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-
-    Use Functions HAL_SD_RegisterCallback() to register a user callback,
-    it allows to register following callbacks:
-      (+) TxCpltCallback : callback when a transmission transfer is completed.
-      (+) RxCpltCallback : callback when a reception transfer is completed.
-      (+) ErrorCallback : callback when error occurs.
-      (+) AbortCpltCallback : callback when abort is completed.
-      (+) Read_DMADblBuf0CpltCallback : callback when the DMA reception of first buffer is completed.
-      (+) Read_DMADblBuf1CpltCallback : callback when the DMA reception of second buffer is completed.
-      (+) Write_DMADblBuf0CpltCallback : callback when the DMA transmission of first buffer is completed.
-      (+) Write_DMADblBuf1CpltCallback : callback when the DMA transmission of second buffer is completed.
-      (+) MspInitCallback    : SD MspInit.
-      (+) MspDeInitCallback  : SD MspDeInit.
-    This function takes as parameters the HAL peripheral handle, the Callback ID
-    and a pointer to the user callback function.
-    For specific callbacks TransceiverCallback use dedicated register callbacks:
-    respectively HAL_SD_RegisterTransceiverCallback().
-
-    Use function HAL_SD_UnRegisterCallback() to reset a callback to the default
-    weak (surcharged) function. It allows to reset following callbacks:
-      (+) TxCpltCallback : callback when a transmission transfer is completed.
-      (+) RxCpltCallback : callback when a reception transfer is completed.
-      (+) ErrorCallback : callback when error occurs.
-      (+) AbortCpltCallback : callback when abort is completed.
-      (+) Read_DMADblBuf0CpltCallback : callback when the DMA reception of first buffer is completed.
-      (+) Read_DMADblBuf1CpltCallback : callback when the DMA reception of second buffer is completed.
-      (+) Write_DMADblBuf0CpltCallback : callback when the DMA transmission of first buffer is completed.
-      (+) Write_DMADblBuf1CpltCallback : callback when the DMA transmission of second buffer is completed.
-      (+) MspInitCallback    : SD MspInit.
-      (+) MspDeInitCallback  : SD MspDeInit.
-    This function) takes as parameters the HAL peripheral handle and the Callback ID.
-    For specific callbacks TransceiverCallback use dedicated unregister callbacks:
-    respectively HAL_SD_UnRegisterTransceiverCallback().
-
-    By default, after the HAL_SD_Init and if the state is HAL_SD_STATE_RESET
-    all callbacks are reset to the corresponding legacy weak (surcharged) functions.
-    Exception done for MspInit and MspDeInit callbacks that are respectively
-    reset to the legacy weak (surcharged) functions in the HAL_SD_Init
-    and HAL_SD_DeInit only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_SD_Init and HAL_SD_DeInit
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
-
-    Callbacks can be registered/unregistered in READY state only.
-    Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-    in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-    during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_SD_RegisterCallback before calling HAL_SD_DeInit
-    or HAL_SD_Init function.
-
-    When The compilation define USE_HAL_SD_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registering feature is not available
-    and weak (surcharged) callbacks are used.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(SDMMC1)
 
@@ -636,7 +381,6 @@ HAL_StatusTypeDef HAL_SD_DeInit(SD_HandleTypeDef *hsd)
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  Initializes the SD MSP.
@@ -3645,7 +3389,6 @@ static uint32_t SD_PowerON(SD_HandleTypeDef *hsd)
     hsd->SdCard.CardType = CARD_SDSC;
   }
 
-
   return HAL_SD_ERROR_NONE;
 }
 
@@ -3897,7 +3640,6 @@ static uint32_t SD_WideBus_Disable(SD_HandleTypeDef *hsd)
   }
 }
 
-
 /**
   * @brief  Finds the SD card SCR register value.
   * @param  hsd Pointer to SD handle
@@ -3951,7 +3693,6 @@ static uint32_t SD_FindSCR(SD_HandleTypeDef *hsd, uint32_t *pSCR)
       tempscr[1] = SDMMC_ReadFIFO(hsd->Instance);
       index++;
     }
-
 
     if((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
     {

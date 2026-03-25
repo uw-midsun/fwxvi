@@ -1,9 +1,26 @@
-/**************************************************************************//**
- * @file     cmsis_version.h
- * @brief    CMSIS Core(M) Version definitions
- * @version  V5.0.3
- * @date     24. June 2019
- ******************************************************************************/
+#pragma once
+
+/************************************************************************************************
+ * @file    cmsis_version.h
+ *
+ * @brief   CMSIS Core(M) Version definitions
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup cmsis_version
+ * @brief    cmsis_version Firmware
+ * @{
+ */
+
 /*
  * Copyright (c) 2009-2019 ARM Limited. All rights reserved.
  *
@@ -37,3 +54,5 @@
 #define __CM_CMSIS_VERSION       ((__CM_CMSIS_VERSION_MAIN << 16U) | \
                                    __CM_CMSIS_VERSION_SUB           )       /*!< CMSIS Core(M) version number */
 #endif
+
+/** @} */

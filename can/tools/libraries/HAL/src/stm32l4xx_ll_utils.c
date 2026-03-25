@@ -1,28 +1,25 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_utils.c
-  * @author  MCD Application Team
-  * @brief   UTILS LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* Includes ------------------------------------------------------------------*/
+/************************************************************************************************
+ * @file    stm32l4xx_ll_utils.c
+ *
+ * @brief   UTILS LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
 #include <stdint.h>
-#include "stm32l4xx_ll_utils.h"
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32_assert.h"
+#include "stm32l4xx_ll_pwr.h"
 #include "stm32l4xx_ll_rcc.h"
 #include "stm32l4xx_ll_system.h"
-#include "stm32l4xx_ll_pwr.h"
+#include "stm32l4xx_ll_utils.h"
+/* Includes ------------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
 #else
 #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */

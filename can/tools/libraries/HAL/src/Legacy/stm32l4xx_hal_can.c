@@ -1,96 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_can.c
-  * @author  MCD Application Team
-  * @brief   CAN HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Controller Area Network (CAN) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Error functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                                 ##### User NOTE #####
-  ==============================================================================
-    [..]
-      (#) This HAL CAN driver is deprecated, it contains some CAN Tx/Rx FIFO management limitations.
-          Another HAL CAN driver version has been designed with new API's, to fix these limitations.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_can.c
+ *
+ * @brief   CAN HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      (#) Enable the CAN controller interface clock using
-          __HAL_RCC_CAN1_CLK_ENABLE() for CAN1.
+/* Standard library Headers */
 
-      (#) CAN pins configuration
-        (++) Enable the clock for the CAN GPIOs using the following function:
-             __HAL_RCC_GPIOx_CLK_ENABLE();
-        (++) Connect and configure the involved CAN pins using the
-              following function HAL_GPIO_Init();
+/* Inter-component Headers */
 
-      (#) Initialize and configure the CAN using HAL_CAN_Init() function.
-
-      (#) Transmit the desired CAN frame using HAL_CAN_Transmit() or
-          HAL_CAN_Transmit_IT() function.
-
-      (#) Receive a CAN frame using HAL_CAN_Receive() or HAL_CAN_Receive_IT() function.
-
-     *** Polling mode IO operation ***
-     =================================
-     [..]
-       (+) Start the CAN peripheral transmission and wait the end of this operation
-           using HAL_CAN_Transmit(), at this stage user can specify the value of timeout
-           according to his end application
-       (+) Start the CAN peripheral reception and wait the end of this operation
-           using HAL_CAN_Receive(), at this stage user can specify the value of timeout
-           according to his end application
-
-     *** Interrupt mode IO operation ***
-     ===================================
-     [..]
-       (+) Start the CAN peripheral transmission using HAL_CAN_Transmit_IT()
-       (+) Start the CAN peripheral reception using HAL_CAN_Receive_IT()
-       (+) Use HAL_CAN_IRQHandler() called under the used CAN Interrupt subroutine
-       (+) At CAN end of transmission HAL_CAN_TxCpltCallback() function is executed and user can
-            add his own code by customization of function pointer HAL_CAN_TxCpltCallback
-       (+) In case of CAN Error, HAL_CAN_ErrorCallback() function is executed and user can
-            add his own code by customization of function pointer HAL_CAN_ErrorCallback
-
-     *** CAN HAL driver macros list ***
-     =============================================
-     [..]
-       Below the list of most used macros in CAN HAL driver.
-
-      (+) __HAL_CAN_ENABLE_IT: Enable the specified CAN interrupts
-      (+) __HAL_CAN_DISABLE_IT: Disable the specified CAN interrupts
-      (+) __HAL_CAN_GET_IT_SOURCE: Check if the specified CAN interrupt source is enabled or disabled
-      (+) __HAL_CAN_CLEAR_FLAG: Clear the CAN's pending flags
-      (+) __HAL_CAN_GET_FLAG: Get the selected CAN's flag status
-
-     [..]
-      (@) You can refer to the CAN Legacy HAL driver header file for more useful macros
-
-  @endverbatim
-
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -112,7 +36,6 @@
   * @brief CAN driver modules
   * @{
   */
-
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

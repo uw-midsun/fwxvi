@@ -1,20 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    system_stm32l4xx.h
+ *
+ * @brief   CMSIS Cortex-M4 Device System Source File for STM32L4xx devices.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
-  ******************************************************************************
-  * @file    system_stm32l4xx.h
-  * @author  MCD Application Team
-  * @brief   CMSIS Cortex-M4 Device System Source File for STM32L4xx devices.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup system_stm32l4xx
+ * @brief    system_stm32l4xx Firmware
+ * @{
+ */
 
 /** @addtogroup CMSIS
   * @{
@@ -41,7 +46,6 @@
 /**
   * @}
   */
-
 
 /** @addtogroup STM32L4xx_System_Exported_Variables
   * @{
@@ -104,3 +108,5 @@ extern void SystemCoreClockUpdate(void);
   * @}
   */
 
+
+/** @} */

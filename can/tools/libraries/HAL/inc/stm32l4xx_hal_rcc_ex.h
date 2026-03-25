@@ -1,19 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_rcc_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of RCC HAL Extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_rcc_ex.h
+ *
+ * @brief   Header file of RCC HAL Extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_RCC_EX_H
@@ -24,7 +25,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -398,7 +398,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup RCCEx_USART1_Clock_Source USART1 Clock Source
   * @{
@@ -1210,7 +1209,6 @@ typedef struct
 
 #endif /* RCC_PLLSAI2M_DIV_1_16_SUPPORT */
 
-
 /**
   * @brief  Macro to configure the PLLSAI2 clock multiplication factor N.
   *
@@ -1539,7 +1537,6 @@ typedef struct
 #define __HAL_RCC_GET_I2C4_SOURCE() (READ_BIT(RCC->CCIPR2, RCC_CCIPR2_I2C4SEL))
 
 #endif /* I2C4 */
-
 
 /** @brief  Macro to configure the USART1 clock (USART1CLK).
   *
@@ -2124,7 +2121,6 @@ typedef struct
 
 #endif /* RCC_PLLSAI2_SUPPORT */
 
-
 /**
   * @brief Enable the RCC LSE CSS Extended Interrupt Line.
   * @retval None
@@ -2149,20 +2145,17 @@ typedef struct
   */
 #define __HAL_RCC_LSECSS_EXTI_DISABLE_EVENT()  CLEAR_BIT(EXTI->EMR1, RCC_EXTI_LINE_LSECSS)
 
-
 /**
   * @brief  Enable the RCC LSE CSS Extended Interrupt Falling Trigger.
   * @retval None.
   */
 #define __HAL_RCC_LSECSS_EXTI_ENABLE_FALLING_EDGE()  SET_BIT(EXTI->FTSR1, RCC_EXTI_LINE_LSECSS)
 
-
 /**
   * @brief Disable the RCC LSE CSS Extended Interrupt Falling Trigger.
   * @retval None.
   */
 #define __HAL_RCC_LSECSS_EXTI_DISABLE_FALLING_EDGE()  CLEAR_BIT(EXTI->FTSR1, RCC_EXTI_LINE_LSECSS)
-
 
 /**
   * @brief  Enable the RCC LSE CSS Extended Interrupt Rising Trigger.
@@ -2213,7 +2206,6 @@ typedef struct
   * @retval None.
   */
 #define __HAL_RCC_LSECSS_EXTI_GENERATE_SWIT()  SET_BIT(EXTI->SWIER1, RCC_EXTI_LINE_LSECSS)
-
 
 #if defined(CRS)
 

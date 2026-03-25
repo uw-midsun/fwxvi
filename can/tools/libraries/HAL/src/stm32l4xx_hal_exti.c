@@ -1,89 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_exti.c
-  * @author  MCD Application Team
-  * @brief   EXTI HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Extended Interrupts and events controller (EXTI) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                    ##### EXTI Peripheral features #####
-  ==============================================================================
-  [..]
-    (+) Each Exti line can be configured within this driver.
+/************************************************************************************************
+ * @file    stm32l4xx_hal_exti.c
+ *
+ * @brief   EXTI HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (+) Exti line can be configured in 3 different modes
-        (++) Interrupt
-        (++) Event
-        (++) Both of them
+/* Standard library Headers */
 
-    (+) Configurable Exti lines can be configured with 3 different triggers
-        (++) Rising
-        (++) Falling
-        (++) Both of them
+/* Inter-component Headers */
 
-    (+) When set in interrupt mode, configurable Exti lines have two different
-        interrupts pending registers which allow to distinguish which transition
-        occurs:
-        (++) Rising edge pending interrupt
-        (++) Falling
-
-    (+) Exti lines 0 to 15 are linked to gpio pin number 0 to 15. Gpio port can
-        be selected through multiplexer.
-
-                     ##### How to use this driver #####
-  ==============================================================================
-  [..]
-
-    (#) Configure the EXTI line using HAL_EXTI_SetConfigLine().
-        (++) Choose the interrupt line number by setting "Line" member from
-             EXTI_ConfigTypeDef structure.
-        (++) Configure the interrupt and/or event mode using "Mode" member from
-             EXTI_ConfigTypeDef structure.
-        (++) For configurable lines, configure rising and/or falling trigger
-             "Trigger" member from EXTI_ConfigTypeDef structure.
-        (++) For Exti lines linked to gpio, choose gpio port using "GPIOSel"
-             member from GPIO_InitTypeDef structure.
-
-    (#) Get current Exti configuration of a dedicated line using
-        HAL_EXTI_GetConfigLine().
-        (++) Provide exiting handle as parameter.
-        (++) Provide pointer on EXTI_ConfigTypeDef structure as second parameter.
-
-    (#) Clear Exti configuration of a dedicated line using HAL_EXTI_ClearConfigLine().
-        (++) Provide exiting handle as parameter.
-
-    (#) Register callback to treat Exti interrupts using HAL_EXTI_RegisterCallback().
-        (++) Provide exiting handle as first parameter.
-        (++) Provide which callback will be registered using one value from
-             EXTI_CallbackIDTypeDef.
-        (++) Provide callback function pointer.
-
-    (#) Get interrupt pending bit using HAL_EXTI_GetPending().
-
-    (#) Clear interrupt pending bit using HAL_EXTI_ClearPending().
-
-    (#) Generate software interrupt using HAL_EXTI_GenerateSWI().
-
-  @endverbatim
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -258,7 +189,6 @@ HAL_StatusTypeDef HAL_EXTI_SetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
   return HAL_OK;
 }
 
-
 /**
   * @brief  Get configuration of a dedicated Exti line.
   * @param  hexti Exti handle.
@@ -353,7 +283,6 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
   return HAL_OK;
 }
 
-
 /**
   * @brief  Clear whole configuration of a dedicated Exti line.
   * @param  hexti Exti handle.
@@ -416,7 +345,6 @@ HAL_StatusTypeDef HAL_EXTI_ClearConfigLine(EXTI_HandleTypeDef *hexti)
   return HAL_OK;
 }
 
-
 /**
   * @brief  Register callback for a dedicated Exti line.
   * @param  hexti Exti handle.
@@ -443,7 +371,6 @@ HAL_StatusTypeDef HAL_EXTI_RegisterCallback(EXTI_HandleTypeDef *hexti, EXTI_Call
   return status;
 }
 
-
 /**
   * @brief  Store line number as handle private field.
   * @param  hexti Exti handle.
@@ -469,7 +396,6 @@ HAL_StatusTypeDef HAL_EXTI_GetHandle(EXTI_HandleTypeDef *hexti, uint32_t ExtiLin
     return HAL_OK;
   }
 }
-
 
 /**
   * @}
@@ -520,7 +446,6 @@ void HAL_EXTI_IRQHandler(EXTI_HandleTypeDef *hexti)
   }
 }
 
-
 /**
   * @brief  Get interrupt pending bit of a dedicated line.
   * @param  hexti Exti handle.
@@ -559,7 +484,6 @@ uint32_t HAL_EXTI_GetPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
   return regval;
 }
 
-
 /**
   * @brief  Clear interrupt pending bit of a dedicated line.
   * @param  hexti Exti handle.
@@ -594,7 +518,6 @@ void HAL_EXTI_ClearPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
   *regaddr =  maskline;
 }
 
-
 /**
   * @brief  Generate a software interrupt for a dedicated line.
   * @param  hexti Exti handle.
@@ -617,7 +540,6 @@ void HAL_EXTI_GenerateSWI(EXTI_HandleTypeDef *hexti)
   regaddr = (&EXTI->SWIER1 + (EXTI_CONFIG_OFFSET * offset));
   *regaddr = maskline;
 }
-
 
 /**
   * @}

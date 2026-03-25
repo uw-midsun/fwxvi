@@ -1,45 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_usb.c
-  * @author  MCD Application Team
-  * @brief   USB Low Layer HAL module driver.
-  *
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization/de-initialization functions
-  *           + I/O operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      (#) Fill parameters of Init structure in USB_CfgTypeDef structure.
+/************************************************************************************************
+ * @file    stm32l4xx_ll_usb.c
+ *
+ * @brief   USB Low Layer HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-      (#) Call USB_CoreInit() API to initialize the USB Core peripheral.
+/* Standard library Headers */
 
-      (#) The upper HAL HCD/PCD driver will call the right routines for its internal processes.
+/* Inter-component Headers */
 
-  @endverbatim
-
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_LL_USB_DRIVER
   * @{
@@ -103,7 +78,6 @@ HAL_StatusTypeDef USB_CoreInit(USB_OTG_GlobalTypeDef *USBx, USB_OTG_CfgTypeDef c
 
   return ret;
 }
-
 
 /**
   * @brief  Set the USB turnaround time
@@ -808,7 +782,6 @@ HAL_StatusTypeDef USB_EPStartXfer(USB_OTG_GlobalTypeDef *USBx, USB_OTG_EPTypeDef
   return HAL_OK;
 }
 
-
 /**
    * @brief  USB_EPStoptXfer  Stop transfer on an EP
    * @param  USBx  usb device instance
@@ -864,7 +837,6 @@ HAL_StatusTypeDef USB_EPStopXfer(const USB_OTG_GlobalTypeDef *USBx, USB_OTG_EPTy
 
   return ret;
 }
-
 
 /**
   * @brief  USB_WritePacket : Writes a packet into the Tx FIFO associated
@@ -2105,7 +2077,6 @@ HAL_StatusTypeDef USB_FlushRxFifo(USB_TypeDef const *USBx)
   return HAL_OK;
 }
 
-
 #if defined (HAL_PCD_MODULE_ENABLED)
 /**
   * @brief  Activate and configure an endpoint
@@ -2515,7 +2486,6 @@ HAL_StatusTypeDef USB_EPStartXfer(USB_TypeDef *USBx, USB_EPTypeDef *ep)
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  USB_EPSetStall set a stall condition over an EP

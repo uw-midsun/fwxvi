@@ -1,35 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_cortex.h
-  * @author  MCD Application Team
-  * @brief   Header file of CORTEX LL module.
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The LL CORTEX driver contains a set of generic APIs that can be
-    used by user:
-      (+) SYSTICK configuration used by @ref LL_mDelay and @ref LL_Init1msTick
-          functions
-      (+) Low power mode configuration (SCB register of Cortex-MCU)
-      (+) MPU API to configure and enable regions
-      (+) API to access to MCU info (CPUID register)
-      (+) API to enable fault handler (SHCSR accesses)
+#pragma once
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_cortex.h
+ *
+ * @brief   Header file of CORTEX LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_CORTEX_H
@@ -40,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{

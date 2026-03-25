@@ -1,53 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dma_ex.c
-  * @author  MCD Application Team
-  * @brief   DMA Extension HAL module driver
-  *         This file provides firmware functions to manage the following
-  *         functionalities of the DMA Extension peripheral:
-  *           + Extended features functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-  The DMA Extension HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dma_ex.c
+ *
+ * @brief   DMA Extension HAL module driver
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-   (+) Configure the DMA_MUX Synchronization Block using HAL_DMAEx_ConfigMuxSync function.
-   (+) Configure the DMA_MUX Request Generator Block using HAL_DMAEx_ConfigMuxRequestGenerator function.
-       Functions HAL_DMAEx_EnableMuxRequestGenerator and HAL_DMAEx_DisableMuxRequestGenerator can then be used
-       to respectively enable/disable the request generator.
+/* Standard library Headers */
 
-   (+) To handle the DMAMUX Interrupts, the function  HAL_DMAEx_MUX_IRQHandler should be called from
-       the DMAMUX IRQ handler i.e DMAMUX1_OVR_IRQHandler.
-       As only one interrupt line is available for all DMAMUX channels and request generators , HAL_DMAEx_MUX_IRQHandler should be
-       called with, as parameter, the appropriate DMA handle as many as used DMAs in the user project
-      (exception done if a given DMA is not using the DMAMUX SYNC block neither a request generator)
+/* Inter-component Headers */
 
-     -@-  In Memory-to-Memory transfer mode, Multi (Double) Buffer mode is not allowed.
-     -@-  When Multi (Double) Buffer mode is enabled, the transfer is circular by default.
-     -@-  In Multi (Double) buffer mode, it is possible to update the base address for
-          the AHB memory port on the fly (DMA_CM0ARx or DMA_CM1ARx) when the channel is enabled.
-
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(DMAMUX1)
 
@@ -70,7 +37,6 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-
 /** @defgroup DMAEx_Exported_Functions DMAEx Exported Functions
   * @{
   */
@@ -92,7 +58,6 @@
 @endverbatim
   * @{
   */
-
 
 /**
   * @brief  Configure the DMAMUX synchronization parameters for a given DMA channel (instance).

@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    StackMacros.h
+ *
+ * @brief   Stackmacros
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stack_macros.h"
+
+/**
+ * @defgroup StackMacros
+ * @brief    StackMacros Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,9 +50,9 @@
  *
  */
 
-
 #ifndef _MSC_VER /* Visual Studio doesn't support #warning. */
     #warning The name of this file has changed to stack_macros.h.  Please update your code accordingly.  This source file (which has the original name) will be removed in a future release.
 #endif
 
-#include "stack_macros.h"
+
+/** @} */

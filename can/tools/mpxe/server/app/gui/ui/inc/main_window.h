@@ -9,10 +9,7 @@
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
-/* Standard library headers */
-#include <map>
-
-/* Qt library headers */
+/* Standard library Headers */
 #include <QListWidget>
 #include <QMainWindow>
 #include <QPointer>
@@ -21,11 +18,20 @@
 #include <QStringList>
 #include <QVariant>
 #include <QWidget>
+#include <map>
 
-/* Inter-component headers */
+/* Inter-component Headers */
 #include "afe_page.h"
 #include "gpio_page.h"
 #include "overview_page.h"
+
+/* Intra-component Headers */
+
+/* Standard library headers */
+
+/* Qt library headers */
+
+/* Inter-component headers */
 
 /* Intra-component headers */
 

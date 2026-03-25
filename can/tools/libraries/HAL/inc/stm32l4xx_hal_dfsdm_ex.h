@@ -1,20 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dfsdm_ex.h
+ *
+ * @brief   Header file of DFSDM HAL extended module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+
 /**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dfsdm_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of DFSDM HAL extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_hal_dfsdm_ex
+ * @brief    stm32l4xx_hal_dfsdm_ex Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DFSDM_EX_H
@@ -28,7 +34,6 @@ extern "C" {
     defined(STM32L4P5xx) || defined(STM32L4Q5xx)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -89,3 +94,5 @@ HAL_StatusTypeDef HAL_DFDSMEx_ChannelGetPulsesSkipping(const DFSDM_Channel_Handl
 #endif
 
 #endif /* STM32L4xx_HAL_DFSDM_EX_H */
+
+/** @} */

@@ -1,21 +1,19 @@
-/**
-  ******************************************************************************
-  * @file    stm32_hal_legacy.h
-  * @author  MCD Application Team
-  * @brief   This file contains aliases definition for the STM32Cube HAL constants
-  *          macros and functions maintained for legacy purpose.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32_hal_legacy.h
+ *
+ * @brief   This file contains aliases definition for the STM32Cube HAL constants
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32_HAL_LEGACY
@@ -700,11 +698,9 @@ extern "C" {
 
 #endif /* STM32H5 */
 
-
 /**
   * @}
   */
-
 
 /** @defgroup LL_FMC_Aliased_Defines LL FMC Aliased Defines maintained for compatibility purpose
   * @{
@@ -1087,7 +1083,6 @@ extern "C" {
 #define LPTIM_TRIGSAMPLETIME_4TRANSITION        LPTIM_TRIGSAMPLETIME_4TRANSITIONS
 #define LPTIM_TRIGSAMPLETIME_8TRANSITION        LPTIM_TRIGSAMPLETIME_8TRANSITIONS
 
-
 /** @defgroup HAL_LPTIM_Aliased_Defines HAL LPTIM Aliased Defines maintained for legacy purpose
   * @{
   */
@@ -1305,7 +1300,6 @@ extern "C" {
   * @}
   */
 
-
 /** @defgroup HAL_SMARTCARD_Aliased_Defines HAL SMARTCARD Aliased Defines maintained for legacy purpose
   * @{
   */
@@ -1325,7 +1319,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_SMBUS_Aliased_Defines HAL SMBUS Aliased Defines maintained for legacy purpose
   * @{
@@ -1512,7 +1505,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_USART_Aliased_Defines HAL USART Aliased Defines maintained for legacy purpose
   * @{
@@ -1981,7 +1973,6 @@ extern "C" {
 #define PWR_SRAM6_PAGE8_STOP_RETENTION                PWR_SRAM6_PAGE8_STOP
 #define PWR_SRAM6_FULL_STOP_RETENTION                 PWR_SRAM6_FULL_STOP
 
-
 #define PWR_ICACHE_FULL_STOP_RETENTION                PWR_ICACHE_FULL_STOP
 #define PWR_DCACHE1_FULL_STOP_RETENTION               PWR_DCACHE1_FULL_STOP
 #define PWR_DCACHE2_FULL_STOP_RETENTION               PWR_DCACHE2_FULL_STOP
@@ -1991,7 +1982,6 @@ extern "C" {
 #define PWR_GRAPHICPRAM_FULL_STOP_RETENTION           PWR_GRAPHICPRAM_FULL_STOP
 #define PWR_DSIRAM_FULL_STOP_RETENTION                PWR_DSIRAM_FULL_STOP
 #define PWR_JPEGRAM_FULL_STOP_RETENTION               PWR_JPEGRAM_FULL_STOP
-
 
 #define PWR_SRAM2_PAGE1_STANDBY_RETENTION             PWR_SRAM2_PAGE1_STANDBY
 #define PWR_SRAM2_PAGE2_STANDBY_RETENTION             PWR_SRAM2_PAGE2_STANDBY
@@ -2082,7 +2072,6 @@ extern "C" {
   * @}
   */
 
-
 /** @defgroup HAL_PPP_Aliased_Functions HAL PPP Aliased Functions maintained for legacy purpose
   * @{
   */
@@ -2130,7 +2119,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_ADC_Aliased_Macros HAL ADC Aliased Macros maintained for legacy purpose
   * @{
@@ -2262,7 +2250,6 @@ extern "C" {
 #define __HAL_UNFREEZE_TIM14_DBGMCU __HAL_DBGMCU_UNFREEZE_TIM14
 #define __HAL_FREEZE_CAN2_DBGMCU __HAL_DBGMCU_FREEZE_CAN2
 #define __HAL_UNFREEZE_CAN2_DBGMCU __HAL_DBGMCU_UNFREEZE_CAN2
-
 
 #define __HAL_FREEZE_TIM15_DBGMCU __HAL_DBGMCU_FREEZE_TIM15
 #define __HAL_UNFREEZE_TIM15_DBGMCU __HAL_DBGMCU_UNFREEZE_TIM15
@@ -2573,11 +2560,9 @@ extern "C" {
 
 #define IS_IRDA_ONEBIT_SAMPLE           IS_IRDA_ONE_BIT_SAMPLE
 
-
 /**
   * @}
   */
-
 
 /** @defgroup HAL_IWDG_Aliased_Macros HAL IWDG Aliased Macros maintained for legacy purpose
   * @{
@@ -2587,7 +2572,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_LPTIM_Aliased_Macros HAL LPTIM Aliased Macros maintained for legacy purpose
   * @{
@@ -2600,7 +2584,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_OPAMP_Aliased_Macros HAL OPAMP Aliased Macros maintained for legacy purpose
   * @{
@@ -2622,7 +2605,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_PWR_Aliased_Macros HAL PWR Aliased Macros maintained for legacy purpose
   * @{
@@ -2685,7 +2667,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /** @defgroup HAL_RCC_Aliased HAL RCC Aliased maintained for legacy purpose
   * @{
@@ -3202,7 +3183,6 @@ extern "C" {
 
 #define __HAL_RCC_WWDG_FORCE_RESET    ((void)0U)  /* Not available on the STM32H7*/
 #define __HAL_RCC_WWDG_RELEASE_RESET ((void)0U) /* Not available on the STM32H7*/
-
 
 #define  __HAL_RCC_WWDG_IS_CLK_ENABLED    __HAL_RCC_WWDG1_IS_CLK_ENABLED
 #define  __HAL_RCC_WWDG_IS_CLK_DISABLED  __HAL_RCC_WWDG1_IS_CLK_DISABLED
@@ -3910,7 +3890,6 @@ extern "C" {
 #define RCC_PLL3SOURCE_CSI              RCC_PLL3_SOURCE_CSI
 #define RCC_PLL3SOURCE_HSE              RCC_PLL3_SOURCE_HSE
 
-
 #endif /* STM32H5 */
 
 /**
@@ -4155,7 +4134,6 @@ extern "C" {
   * @}
   */
 
-
 /** @defgroup HAL_USART_Aliased_Macros HAL USART Aliased Macros maintained for legacy purpose
   * @{
   */
@@ -4370,5 +4348,4 @@ extern "C" {
 #endif
 
 #endif /* STM32_HAL_LEGACY */
-
 

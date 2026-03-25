@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_pcd.h
-  * @author  MCD Application Team
-  * @brief   Header file of PCD HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_pcd.h
+ *
+ * @brief   Header file of PCD HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_pcd_ex.h"
+#include "stm32l4xx_ll_usb.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_PCD_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_usb.h"
 
 #if defined (USB) || defined (USB_OTG_FS)
 
@@ -122,7 +122,6 @@ typedef struct
   uint32_t                BESL;
   uint32_t                FrameNumber; /*!< Store Current Frame number        */
 
-
   uint32_t lpm_active;                 /*!< Enable or disable the Link Power Management .
                                        This parameter can be set to ENABLE or DISABLE        */
 
@@ -156,7 +155,6 @@ typedef struct
   */
 
 /* Include PCD HAL Extended module */
-#include "stm32l4xx_hal_pcd_ex.h"
 
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup PCD_Exported_Constants PCD Exported Constants
@@ -486,7 +484,6 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
 /* GetENDPOINT */
 #define PCD_GET_ENDPOINT(USBx, bEpNum)             (*(__IO uint16_t *)(&(USBx)->EP0R + ((bEpNum) * 2U)))
 
-
 /**
   * @brief  sets the type in the endpoint register(bits EP_TYPE[1:0])
   * @param  USBx USB peripheral instance register address.
@@ -497,7 +494,6 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
 #define PCD_SET_EPTYPE(USBx, bEpNum, wType) \
   (PCD_SET_ENDPOINT((USBx), (bEpNum), \
                     ((PCD_GET_ENDPOINT((USBx), (bEpNum)) & USB_EP_T_MASK) | (wType) | USB_EP_CTR_TX | USB_EP_CTR_RX)))
-
 
 /**
   * @brief  gets the type in the endpoint register(bits EP_TYPE[1:0])
@@ -793,7 +789,6 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
 #define PCD_EP_RX_CNT(USBx, bEpNum) \
   ((uint16_t *)((((uint32_t)(USBx)->BTABLE + \
                   ((uint32_t)(bEpNum) * 8U) + 6U) * PMA_ACCESS) + ((uint32_t)(USBx) + 0x400U)))
-
 
 /**
   * @brief  sets address of the tx/rx buffer.

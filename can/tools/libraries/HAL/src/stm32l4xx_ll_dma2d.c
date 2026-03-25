@@ -1,27 +1,24 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_dma2d.c
-  * @author  MCD Application Team
-  * @brief   DMA2D LL module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_dma2d.c
+ *
+ * @brief   DMA2D LL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32_assert.h"
+#include "stm32l4xx_ll_bus.h"
+#include "stm32l4xx_ll_dma2d.h"
 #if defined(USE_FULL_LL_DRIVER)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_ll_dma2d.h"
-#include "stm32l4xx_ll_bus.h"
 #ifdef  USE_FULL_ASSERT
-#include "stm32_assert.h"
 #else
 #define assert_param(expr) ((void)0U)
 #endif  /* USE_FULL_ASSERT */
@@ -120,7 +117,6 @@
 #define IS_LL_DMA2D_ALPHAMODE(MODE)     (((MODE) == LL_DMA2D_ALPHA_MODE_NO_MODIF) || \
                                          ((MODE) == LL_DMA2D_ALPHA_MODE_REPLACE)  || \
                                          ((MODE) == LL_DMA2D_ALPHA_MODE_COMBINE))
-
 
 /**
   * @}
@@ -234,7 +230,6 @@ ErrorStatus LL_DMA2D_Init(DMA2D_TypeDef *DMA2Dx, LL_DMA2D_InitTypeDef *DMA2D_Ini
     regMask |= (DMA2D_OPFCCR_RBS | DMA2D_OPFCCR_AI);
     regValue |= (DMA2D_InitStruct->AlphaInversionMode | DMA2D_InitStruct->RBSwapMode);
 
-
     MODIFY_REG(DMA2Dx->OPFCCR, regMask, regValue);
 
     /* DMA2D OOR register configuration ------------------------------------------*/
@@ -315,7 +310,6 @@ void LL_DMA2D_ConfigLayer(DMA2D_TypeDef *DMA2Dx, LL_DMA2D_LayerCfgTypeDef *DMA2D
   assert_param(IS_LL_DMA2D_ALPHA(DMA2D_LayerCfg->Alpha));
   assert_param(IS_LL_DMA2D_ALPHAINV(DMA2D_LayerCfg->AlphaInversionMode));
   assert_param(IS_LL_DMA2D_RBSWAP(DMA2D_LayerCfg->RBSwapMode));
-
 
   if (LayerIdx == 0U)
   {

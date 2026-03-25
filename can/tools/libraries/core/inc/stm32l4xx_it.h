@@ -1,20 +1,25 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    Templates/Inc/stm32l4xx_it.h
+ *
+ * @brief   This file contains the headers of the interrupt handlers.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
-  ******************************************************************************
-  * @file    Templates/Inc/stm32l4xx_it.h 
-  * @author  MCD Application Team
-  * @brief   This file contains the headers of the interrupt handlers.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ * @defgroup stm32l4xx_it
+ * @brief    stm32l4xx_it Firmware
+ * @{
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32L4xx_IT_H
@@ -45,3 +50,4 @@ void SysTick_Handler(void);
 #endif
 
 #endif /* __STM32L4xx_IT_H */
+/** @} */

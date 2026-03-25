@@ -1,46 +1,25 @@
-/*
- * FreeRTOS Kernel V11.1.0
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#pragma once
+
+/************************************************************************************************
+ * @file    atomic.h
  *
- * SPDX-License-Identifier: MIT
+ * @brief   FreeRTOS atomic operation support.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * https://www.FreeRTOS.org
- * https://github.com/FreeRTOS
- *
- */
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdint.h>
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
 
 /**
- * @file atomic.h
- * @brief FreeRTOS atomic operation support.
- *
- * This file implements atomic functions by disabling interrupts globally.
- * Implementations with architecture specific atomic instructions can be
- * provided under each compiler directory.
- *
- * The atomic interface can be used in FreeRTOS tasks on all FreeRTOS ports. It
- * can also be used in Interrupt Service Routines (ISRs) on FreeRTOS ports that
- * support nested interrupts (i.e. portHAS_NESTED_INTERRUPTS is set to 1). The
- * atomic interface must not be used in ISRs on FreeRTOS ports that do not
- * support nested interrupts (i.e. portHAS_NESTED_INTERRUPTS is set to 0)
- * because ISRs on these ports cannot be interrupted and therefore, do not need
- * atomics in ISRs.
+ * @defgroup atomic
+ * @brief    atomic Firmware
+ * @{
  */
 
 #ifndef ATOMIC_H
@@ -51,7 +30,6 @@
 #endif
 
 /* Standard includes. */
-#include <stdint.h>
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -201,7 +179,6 @@ static portFORCE_INLINE uint32_t Atomic_CompareAndSwapPointers_p32( void * volat
 
     return ulReturnValue;
 }
-
 
 /*----------------------------- Arithmetic ------------------------------*/
 
@@ -425,3 +402,5 @@ static portFORCE_INLINE uint32_t Atomic_XOR_u32( uint32_t volatile * pulDestinat
 /* *INDENT-ON* */
 
 #endif /* ATOMIC_H */
+
+/** @} */

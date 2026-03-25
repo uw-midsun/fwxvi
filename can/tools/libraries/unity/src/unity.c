@@ -1,14 +1,27 @@
+/************************************************************************************************
+ * @file    unity.c
+ *
+ * @brief   Unity
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <avr/pgmspace.h>
+#include <stddef.h>
+
+/* Inter-component Headers */
+#include "unity.h"
+
+/* Intra-component Headers */
 /* =========================================================================
     Unity Project - A Test Framework for C
     Copyright (c) 2007-21 Mike Karlesky, Mark VanderVoord, Greg Williams
     [Released under MIT License. Please refer to license.txt for details]
 ============================================================================ */
 
-#include "unity.h"
-#include <stddef.h>
-
 #ifdef AVR
-#include <avr/pgmspace.h>
 #else
 #define PROGMEM
 #endif
@@ -967,7 +980,6 @@ void UnityAssertFloatsWithin(const UNITY_FLOAT delta,
 {
     RETURN_IF_FAIL_OR_IGNORE;
 
-
     if (!UnityFloatsWithin(delta, expected, actual))
     {
         UnityTestResultsFailBegin(lineNumber);
@@ -1757,7 +1769,6 @@ void UnityPrintF(const UNITY_LINE_TYPE line, const char* format, ...)
     UNITY_PRINT_EOL();
 }
 #endif /* ! UNITY_INCLUDE_PRINT_FORMATTED */
-
 
 /*-----------------------------------------------
  * Control Functions

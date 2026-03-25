@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    stream_buffer.h
+ *
+ * @brief   Stream Buffer
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup stream_buffer
+ * @brief    stream_buffer Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -1278,3 +1301,5 @@ size_t xStreamBufferNextMessageLengthBytes( StreamBufferHandle_t xStreamBuffer )
 /* *INDENT-ON* */
 
 #endif /* !defined( STREAM_BUFFER_H ) */
+
+/** @} */

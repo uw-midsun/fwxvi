@@ -1,19 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_lcd.h
-  * @author  MCD Application Team
-  * @brief   Header file of LCD Controller HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_lcd.h
+ *
+ * @brief   Header file of LCD Controller HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_LCD_H
@@ -26,7 +27,6 @@ extern "C" {
 #if defined(STM32L433xx) || defined(STM32L443xx) || defined(STM32L476xx) || defined(STM32L486xx) || defined(STM32L496xx) || defined(STM32L4A6xx)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -169,7 +169,6 @@ typedef struct
   * @}
   */
 
-
 /** @defgroup LCD_Duty LCD Duty
   * @{
   */
@@ -181,7 +180,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup LCD_Bias LCD Bias
   * @{
@@ -225,7 +223,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /** @defgroup LCD_DeadTime LCD Dead Time
   * @{
@@ -669,7 +666,6 @@ uint32_t             HAL_LCD_GetError(LCD_HandleTypeDef *hlcd);
 
 #define IS_LCD_VOLTAGE_SOURCE(SOURCE) (((SOURCE) == LCD_VOLTAGESOURCE_INTERNAL) || \
                                        ((SOURCE) == LCD_VOLTAGESOURCE_EXTERNAL))
-
 
 #define IS_LCD_PULSE_ON_DURATION(__DURATION__) (((__DURATION__) == LCD_PULSEONDURATION_0) || \
                                                 ((__DURATION__) == LCD_PULSEONDURATION_1) || \

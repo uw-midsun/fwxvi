@@ -1,3 +1,27 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    task.h
+ *
+ * @brief   Task
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+#include "list.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup task
+ * @brief    task Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -26,15 +50,12 @@
  *
  */
 
-
 #ifndef INC_TASK_H
 #define INC_TASK_H
 
 #ifndef INC_FREERTOS_H
     #error "include FreeRTOS.h must appear in source files before include task.h"
 #endif
-
-#include "list.h"
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -931,7 +952,6 @@ BaseType_t xTaskDelayUntil( TickType_t * const pxPreviousWakeTime,
     do {                                                                        \
         ( void ) xTaskDelayUntil( ( pxPreviousWakeTime ), ( xTimeIncrement ) ); \
     } while( 0 )
-
 
 /**
  * task. h
@@ -1964,7 +1984,6 @@ char * pcTaskGetName( TaskHandle_t xTaskToQuery ) PRIVILEGED_FUNCTION;
     void vApplicationIdleHook( void );
 
 #endif
-
 
 #if  ( configUSE_TICK_HOOK != 0 )
 
@@ -3453,7 +3472,6 @@ BaseType_t xTaskCatchUpTicks( TickType_t xTicksToCatchUp ) PRIVILEGED_FUNCTION;
  */
 void vTaskResetState( void ) PRIVILEGED_FUNCTION;
 
-
 /*-----------------------------------------------------------
 * SCHEDULER INTERNALS AVAILABLE FOR PORTING PURPOSES
 *----------------------------------------------------------*/
@@ -3745,7 +3763,6 @@ void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNC
 
 #endif /* portUSING_MPU_WRAPPERS */
 
-
 #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) && ( configENABLE_ACCESS_CONTROL_LIST == 1 ) )
 
 /*
@@ -3772,3 +3789,5 @@ void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNC
 #endif
 /* *INDENT-ON* */
 #endif /* INC_TASK_H */
+
+/** @} */

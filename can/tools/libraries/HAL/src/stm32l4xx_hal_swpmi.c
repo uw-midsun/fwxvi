@@ -1,172 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_swpmi.c
-  * @author  MCD Application Team
-  * @brief   SWPMI HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Single Wire Protocol Master Interface (SWPMI).
-  *           + Initialization and Configuration
-  *           + Data transfers functions
-  *           + DMA transfers management
-  *           + Interrupts and flags management
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
- ===============================================================================
-                        ##### How to use this driver #####
- ===============================================================================
-  [..]
-     The SWPMI HAL driver can be used as follows:
+/************************************************************************************************
+ * @file    stm32l4xx_hal_swpmi.c
+ *
+ * @brief   SWPMI HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    (#) Declare a SWPMI_HandleTypeDef handle structure (eg. SWPMI_HandleTypeDef hswpmi).
+/* Standard library Headers */
 
-    (#) Initialize the SWPMI low level resources by implementing the HAL_SWPMI_MspInit() API:
-        (##) Enable the SWPMIx interface clock with __HAL_RCC_SWPMIx_CLK_ENABLE().
-        (##) SWPMI IO configuration:
-            (+++) Enable the clock for the SWPMI GPIO.
-            (+++) Configure these SWPMI pins as alternate function pull-up.
-        (##) NVIC configuration if you need to use interrupt process (HAL_SWPMI_Transmit_IT()
-             and HAL_SWPMI_Receive_IT() APIs):
-            (+++) Configure the SWPMIx interrupt priority with HAL_NVIC_SetPriority().
-            (+++) Enable the NVIC SWPMI IRQ handle with HAL_NVIC_EnableIRQ().
+/* Inter-component Headers */
 
-        (##) DMA Configuration if you need to use DMA process (HAL_SWPMI_Transmit_DMA()
-             and HAL_SWPMI_Receive_DMA() APIs):
-            (+++) Declare a DMA handle structure for the Tx/Rx channels.
-            (+++) Enable the DMAx interface clock.
-            (+++) Configure the declared DMA handle structure with the required
-                  Tx/Rx parameters.
-            (+++) Configure the DMA Tx/Rx channels and requests.
-            (+++) Associate the initialized DMA handle to the SWPMI DMA Tx/Rx handle.
-            (+++) Configure the priority and enable the NVIC for the transfer complete
-                  interrupt on the DMA Tx/Rx channels.
-
-    (#) Program the Bite Rate, Tx Buffering mode, Rx Buffering mode in the Init structure.
-
-    (#) Enable the SWPMI peripheral by calling the HAL_SWPMI_Init() function.
-
-  [..]
-    Three operation modes are available within this driver :
-
-    *** Polling mode IO operation ***
-    =================================
-    [..]
-      (+) Send an amount of data in blocking mode using HAL_SWPMI_Transmit()
-      (+) Receive an amount of data in blocking mode using HAL_SWPMI_Receive()
-
-    *** Interrupt mode IO operation ***
-    ===================================
-    [..]
-      (+) Send an amount of data in non-blocking mode using HAL_SWPMI_Transmit_IT()
-      (+) At transmission end of transfer HAL_SWPMI_TxCpltCallback() is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_TxCpltCallback()
-      (+) Receive an amount of data in non-blocking mode using HAL_SWPMI_Receive_IT()
-      (+) At reception end of transfer HAL_SWPMI_RxCpltCallback() is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_RxCpltCallback()
-      (+) In case of flag error, HAL_SWPMI_ErrorCallback() function is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_ErrorCallback()
-
-    *** DMA mode IO operation ***
-    =============================
-    [..]
-      (+) Send an amount of data in non-blocking mode (DMA) using HAL_SWPMI_Transmit_DMA()
-      (+) At transmission end of transfer HAL_SWPMI_TxCpltCallback() is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_TxCpltCallback()
-      (+) Receive an amount of data in non-blocking mode (DMA) using HAL_SWPMI_Receive_DMA()
-      (+) At reception end of transfer HAL_SWPMI_RxCpltCallback() is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_RxCpltCallback()
-      (+) In case of flag error, HAL_SWPMI_ErrorCallback() function is executed and user can
-          add his own code by customization of function pointer HAL_SWPMI_ErrorCallback()
-      (+) Stop the DMA Transfer using HAL_SWPMI_DMAStop()
-
-    *** SWPMI HAL driver additional function list ***
-    ===============================================
-    [..]
-      Below the list the others API available SWPMI HAL driver :
-
-      (+) HAL_SWPMI_EnableLoopback(): Enable the loopback mode for test purpose only
-      (+) HAL_SWPMI_DisableLoopback(): Disable the loopback mode
-
-    *** SWPMI HAL driver macros list ***
-    ==================================
-    [..]
-      Below the list of most used macros in SWPMI HAL driver :
-
-      (+) __HAL_SWPMI_ENABLE(): Enable the SWPMI peripheral
-      (+) __HAL_SWPMI_DISABLE(): Disable the SWPMI peripheral
-      (+) __HAL_SWPMI_ENABLE_IT(): Enable the specified SWPMI interrupts
-      (+) __HAL_SWPMI_DISABLE_IT(): Disable the specified SWPMI interrupts
-      (+) __HAL_SWPMI_GET_IT_SOURCE(): Check if the specified SWPMI interrupt source is
-          enabled or disabled
-      (+) __HAL_SWPMI_GET_FLAG(): Check whether the specified SWPMI flag is set or not
-
-    *** Callback registration ***
-    =============================
-    [..]
-      The compilation define USE_HAL_SWPMI_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
-    [..]
-      Use function HAL_SWPMI_RegisterCallback() to register a user callback. It allows
-      to register the following callbacks:
-      (+) RxCpltCallback     : SWPMI receive complete.
-      (+) RxHalfCpltCallback : SWPMI receive half complete.
-      (+) TxCpltCallback     : SWPMI transmit complete.
-      (+) TxHalfCpltCallback : SWPMI transmit half complete.
-      (+) ErrorCallback      : SWPMI error.
-      (+) MspInitCallback    : SWPMI MspInit.
-      (+) MspDeInitCallback  : SWPMI MspDeInit.
-    [..]
-    This function takes as parameters the HAL peripheral handle, the callback ID
-    and a pointer to the user callback function.
-    [..]
-    Use function HAL_SWPMI_UnRegisterCallback() to reset a callback to the default
-    weak (overridden) function.
-    HAL_SWPMI_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-    and the callback ID.
-    This function allows to reset following callbacks:
-      (+) RxCpltCallback     : SWPMI receive complete.
-      (+) RxHalfCpltCallback : SWPMI receive half complete.
-      (+) TxCpltCallback     : SWPMI transmit complete.
-      (+) TxHalfCpltCallback : SWPMI transmit half complete.
-      (+) ErrorCallback      : SWPMI error.
-      (+) MspInitCallback    : SWPMI MspInit.
-      (+) MspDeInitCallback  : SWPMI MspDeInit.
-    [..]
-    By default, after the HAL_SWPMI_Init and if the state is HAL_SWPMI_STATE_RESET
-    all callbacks are reset to the corresponding legacy weak functions:
-    examples HAL_SWPMI_RxCpltCallback(), HAL_SWPMI_ErrorCallback().
-    Exception done for MspInit and MspDeInit callbacks that are respectively
-    reset to the legacy weak functions in the HAL_SWPMI_Init
-    and HAL_SWPMI_DeInit only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_SWPMI_Init and HAL_SWPMI_DeInit
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
-    [..]
-    Callbacks can be registered/unregistered in READY state only.
-    Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-    in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-    during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_SWPMI_RegisterCallback before calling HAL_SWPMI_DeInit
-    or HAL_SWPMI_Init function.
-    [..]
-    When the compilation define USE_HAL_SWPMI_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registering feature is not available
-    and weak callbacks are used.
-
-  @endverbatim
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -345,7 +193,6 @@ HAL_StatusTypeDef HAL_SWPMI_DeInit(SWPMI_HandleTypeDef *hswpmi)
 
     /* Disable Loopback mode */
     CLEAR_BIT(hswpmi->Instance->CR, SWPMI_CR_LPBK);
-
 
     /* DeInit the low level hardware: GPIO, CLOCK, NVIC and DMA */
 #if (USE_HAL_SWPMI_REGISTER_CALLBACKS == 1)
@@ -1200,7 +1047,6 @@ HAL_StatusTypeDef HAL_SWPMI_DMAStop(SWPMI_HandleTypeDef *hswpmi)
   return status;
 }
 
-
 /**
   * @brief Enable the Loopback mode.
   * @param hswpmi SWPMI handle
@@ -1798,7 +1644,6 @@ static void SWPMI_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
   HAL_SWPMI_TxHalfCpltCallback(hswpmi);
 #endif
 }
-
 
 /**
   * @brief DMA SWPMI receive process complete callback.

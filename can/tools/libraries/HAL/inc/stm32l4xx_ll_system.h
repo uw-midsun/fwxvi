@@ -1,35 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_system.h
-  * @author  MCD Application Team
-  * @brief   Header file of SYSTEM LL module.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The LL SYSTEM driver contains a set of generic APIs that can be
-    used by user:
-      (+) Some of the FLASH features need to be handled in the SYSTEM file.
-      (+) Access to DBGCMU registers
-      (+) Access to SYSCFG registers
-      (+) Access to VREFBUF registers
+#pragma once
 
-  @endverbatim
-  ******************************************************************************
-  */
+/************************************************************************************************
+ * @file    stm32l4xx_ll_system.h
+ *
+ * @brief   Header file of SYSTEM LL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_LL_SYSTEM_H
@@ -40,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx.h"
 
 /** @addtogroup STM32L4xx_LL_Driver
   * @{
@@ -1020,7 +1004,6 @@ __STATIC_INLINE void LL_SYSCFG_UnlockSRAM2WRP(void)
 /**
   * @}
   */
-
 
 /** @defgroup SYSTEM_LL_EF_DBGMCU DBGMCU
   * @{

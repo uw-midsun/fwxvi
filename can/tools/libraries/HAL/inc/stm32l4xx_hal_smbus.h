@@ -1,20 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_smbus.h
-  * @author  MCD Application Team
-  * @brief   Header file of SMBUS HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_smbus.h
+ *
+ * @brief   Header file of SMBUS HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_hal_smbus_ex.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_SMBUS_H
@@ -25,7 +26,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -265,7 +265,6 @@ typedef  void (*pSMBUS_AddrCallbackTypeDef)(SMBUS_HandleTypeDef *hsmbus, uint8_t
 /**
   * @}
   */
-
 
 /** @defgroup SMBUS_general_call_addressing_mode SMBUS general call addressing mode
   * @{
@@ -548,7 +547,6 @@ typedef  void (*pSMBUS_AddrCallbackTypeDef)(SMBUS_HandleTypeDef *hsmbus, uint8_t
   * @}
   */
 
-
 /* Private constants ---------------------------------------------------------*/
 
 /* Private macros ------------------------------------------------------------*/
@@ -599,12 +597,10 @@ typedef  void (*pSMBUS_AddrCallbackTypeDef)(SMBUS_HandleTypeDef *hsmbus, uint8_t
                                                       ((MODE) == (SMBUS_AUTOEND_MODE | SMBUS_SENDPEC_MODE | \
                                                                   SMBUS_RELOAD_MODE )))
 
-
 #define IS_SMBUS_TRANSFER_REQUEST(REQUEST)              (((REQUEST) == SMBUS_GENERATE_STOP)              || \
                                                          ((REQUEST) == SMBUS_GENERATE_START_READ)        || \
                                                          ((REQUEST) == SMBUS_GENERATE_START_WRITE)       || \
                                                          ((REQUEST) == SMBUS_NO_STARTSTOP))
-
 
 #define IS_SMBUS_TRANSFER_OPTIONS_REQUEST(REQUEST)   (IS_SMBUS_TRANSFER_OTHER_OPTIONS_REQUEST(REQUEST)       || \
                                                       ((REQUEST) == SMBUS_FIRST_FRAME)                       || \
@@ -654,7 +650,6 @@ typedef  void (*pSMBUS_AddrCallbackTypeDef)(SMBUS_HandleTypeDef *hsmbus, uint8_t
   */
 
 /* Include SMBUS HAL Extended module */
-#include "stm32l4xx_hal_smbus_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup SMBUS_Exported_Functions SMBUS Exported Functions
@@ -784,6 +779,5 @@ uint32_t HAL_SMBUS_GetError(const SMBUS_HandleTypeDef *hsmbus);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* STM32L4xx_HAL_SMBUS_H */

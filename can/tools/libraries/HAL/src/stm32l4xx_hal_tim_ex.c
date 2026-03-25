@@ -1,86 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_tim_ex.c
-  * @author  MCD Application Team
-  * @brief   TIM HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Timer Extended peripheral:
-  *           + Time Hall Sensor Interface Initialization
-  *           + Time Hall Sensor Interface Start
-  *           + Time Complementary signal break and dead time configuration
-  *           + Time Master and Slave synchronization configuration
-  *           + Time Output Compare/PWM Channel Configuration (for channels 5 and 6)
-  *           + Time OCRef clear configuration
-  *           + Timer remapping capabilities configuration
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                      ##### TIMER Extended features #####
-  ==============================================================================
-  [..]
-    The Timer Extended features include:
-    (#) Complementary outputs with programmable dead-time for :
-        (++) Output Compare
-        (++) PWM generation (Edge and Center-aligned Mode)
-        (++) One-pulse mode output
-    (#) Synchronization circuit to control the timer with external signals and to
-        interconnect several timers together.
-    (#) Break input to put the timer output signals in reset state or in a known state.
-    (#) Supports incremental (quadrature) encoder and hall-sensor circuitry for
-        positioning purposes
+/************************************************************************************************
+ * @file    stm32l4xx_hal_tim_ex.c
+ *
+ * @brief   TIM HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-            ##### How to use this driver #####
-  ==============================================================================
-    [..]
-     (#) Initialize the TIM low level resources by implementing the following functions
-         depending on the selected feature:
-           (++) Hall Sensor output : HAL_TIMEx_HallSensor_MspInit()
+/* Standard library Headers */
 
-     (#) Initialize the TIM low level resources :
-        (##) Enable the TIM interface clock using __HAL_RCC_TIMx_CLK_ENABLE();
-        (##) TIM pins configuration
-            (+++) Enable the clock for the TIM GPIOs using the following function:
-              __HAL_RCC_GPIOx_CLK_ENABLE();
-            (+++) Configure these TIM pins in Alternate function mode using HAL_GPIO_Init();
+/* Inter-component Headers */
 
-     (#) The external Clock can be configured, if needed (the default clock is the
-         internal clock from the APBx), using the following function:
-         HAL_TIM_ConfigClockSource, the clock configuration should be done before
-         any start function.
-
-     (#) Configure the TIM in the desired functioning mode using one of the
-         initialization function of this driver:
-          (++) HAL_TIMEx_HallSensor_Init() and HAL_TIMEx_ConfigCommutEvent(): to use the
-               Timer Hall Sensor Interface and the commutation event with the corresponding
-               Interrupt and DMA request if needed (Note that One Timer is used to interface
-               with the Hall sensor Interface and another Timer should be used to use
-               the commutation event).
-
-     (#) Activate the TIM peripheral using one of the start functions:
-           (++) Complementary Output Compare : HAL_TIMEx_OCN_Start(), HAL_TIMEx_OCN_Start_DMA(),
-                HAL_TIMEx_OCN_Start_IT()
-           (++) Complementary PWM generation : HAL_TIMEx_PWMN_Start(), HAL_TIMEx_PWMN_Start_DMA(),
-                HAL_TIMEx_PWMN_Start_IT()
-           (++) Complementary One-pulse mode output : HAL_TIMEx_OnePulseN_Start(), HAL_TIMEx_OnePulseN_Start_IT()
-           (++) Hall Sensor output : HAL_TIMEx_HallSensor_Start(), HAL_TIMEx_HallSensor_Start_DMA(),
-                HAL_TIMEx_HallSensor_Start_IT().
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -572,7 +506,6 @@ HAL_StatusTypeDef HAL_TIMEx_HallSensor_Stop_DMA(TIM_HandleTypeDef *htim)
   TIM_CHANNEL_2 and TIM_CHANNEL_3) */
   TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_DISABLE);
 
-
   /* Disable the capture compare Interrupts 1 event */
   __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC1);
 
@@ -746,7 +679,6 @@ HAL_StatusTypeDef HAL_TIMEx_OCN_Start_IT(TIM_HandleTypeDef *htim, uint32_t Chann
       __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC3);
       break;
     }
-
 
     default:
       status = HAL_ERROR;
@@ -2692,7 +2624,6 @@ void TIMEx_DMACommutationHalfCplt(DMA_HandleTypeDef *hdma)
   HAL_TIMEx_CommutHalfCpltCallback(htim);
 #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
 }
-
 
 /**
   * @brief  TIM DMA Delay Pulse complete callback (complementary channel).

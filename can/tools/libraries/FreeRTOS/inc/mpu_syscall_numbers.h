@@ -1,3 +1,26 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    mpu_syscall_numbers.h
+ *
+ * @brief   Mpu Syscall Numbers
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup mpu_syscall_numbers
+ * @brief    mpu_syscall_numbers Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -103,3 +126,5 @@
 #define NUM_SYSTEM_CALLS                                   70  /* Total number of system calls. */
 
 #endif /* MPU_SYSCALL_NUMBERS_H */
+
+/** @} */

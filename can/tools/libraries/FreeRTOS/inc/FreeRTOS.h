@@ -1,3 +1,33 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    FreeRTOS.h
+ *
+ * @brief   Freertos
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stddef.h>
+#include <stdint.h> /* READ COMMENT ABOVE. */
+
+/* Inter-component Headers */
+#include "FreeRTOSConfig.h"
+#include "portable.h"
+#include "projdefs.h"
+
+/* Intra-component Headers */
+#include "newlib-freertos.h"
+#include "picolibc-freertos.h"
+
+/**
+ * @defgroup FreeRTOS
+ * @brief    FreeRTOS Firmware
+ * @{
+ */
+
 /*
  * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -32,7 +62,6 @@
 /*
  * Include the generic headers required for the FreeRTOS port being used.
  */
-#include <stddef.h>
 
 /*
  * If stdint.h cannot be located then:
@@ -47,7 +76,6 @@
  *     contains the typedefs required to build FreeRTOS.  Read the instructions
  *     in FreeRTOS/source/stdint.readme for more information.
  */
-#include <stdint.h> /* READ COMMENT ABOVE. */
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
@@ -61,7 +89,6 @@ extern "C" {
 #define TICK_TYPE_WIDTH_64_BITS 2
 
 /* Application specific configuration options. */
-#include "FreeRTOSConfig.h"
 
 #if !defined(configUSE_16_BIT_TICKS) && !defined(configTICK_TYPE_WIDTH_IN_BITS)
 #error Missing definition:  One of configUSE_16_BIT_TICKS and configTICK_TYPE_WIDTH_IN_BITS must be defined in FreeRTOSConfig.h.  See the Configuration section of the FreeRTOS API documentation for details.
@@ -101,10 +128,8 @@ extern "C" {
 #endif
 
 /* Basic FreeRTOS definitions. */
-#include "projdefs.h"
 
 /* Definitions specific to the port being used. */
-#include "portable.h"
 
 /* Must be defaulted before configUSE_NEWLIB_REENTRANT is used below. */
 #ifndef configUSE_NEWLIB_REENTRANT
@@ -114,8 +139,6 @@ extern "C" {
 /* Required if struct _reent is used. */
 #if (configUSE_NEWLIB_REENTRANT == 1)
 
-#include "newlib-freertos.h"
-
 #endif /* if ( configUSE_NEWLIB_REENTRANT == 1 ) */
 
 /* Must be defaulted before configUSE_PICOLIBC_TLS is used below. */
@@ -124,8 +147,6 @@ extern "C" {
 #endif
 
 #if (configUSE_PICOLIBC_TLS == 1)
-
-#include "picolibc-freertos.h"
 
 #endif /* if ( configUSE_PICOLIBC_TLS == 1 ) */
 
@@ -3359,3 +3380,5 @@ typedef StaticStreamBuffer_t StaticMessageBuffer_t;
 /* *INDENT-ON* */
 
 #endif /* INC_FREERTOS_H */
+
+/** @} */

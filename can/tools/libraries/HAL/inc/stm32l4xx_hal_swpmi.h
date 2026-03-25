@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_swpmi.h
-  * @author  MCD Application Team
-  * @brief   Header file of SWPMI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_swpmi.h
+ *
+ * @brief   Header file of SWPMI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_SWPMI_H
@@ -25,7 +25,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 /** @addtogroup STM32L4xx_HAL_Driver
   * @{
@@ -63,7 +62,6 @@ typedef struct
                                           This parameter can be a value of @ref SWPMI_Rx_Buffering_Mode */
 
 } SWPMI_InitTypeDef;
-
 
 /**
   * @brief HAL SWPMI State structures definition
@@ -461,16 +459,13 @@ uint32_t               HAL_SWPMI_GetError(const SWPMI_HandleTypeDef *hswpmi);
   * @{
   */
 
-
 #define IS_SWPMI_VOLTAGE_CLASS(__CLASS__)    (((__CLASS__) == SWPMI_VOLTAGE_CLASS_C) || \
                                               ((__CLASS__) == SWPMI_VOLTAGE_CLASS_B))
 
 #define IS_SWPMI_BITRATE_VALUE(__VALUE__)    (((__VALUE__) <= 63U))
 
-
 #define IS_SWPMI_TX_BUFFERING_MODE(__MODE__) (((__MODE__) == SWPMI_TX_NO_SOFTWAREBUFFER) || \
                                               ((__MODE__) == SWPMI_TX_MULTI_SOFTWAREBUFFER))
-
 
 #define IS_SWPMI_RX_BUFFERING_MODE(__MODE__) (((__MODE__) == SWPMI_RX_NO_SOFTWAREBUFFER) || \
                                               ((__MODE__) == SWPMI_RX_MULTI_SOFTWAREBUFFER))

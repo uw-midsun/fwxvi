@@ -1,170 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_ll_sdmmc.c
-  * @author  MCD Application Team
-  * @brief   SDMMC Low Layer HAL module driver.
-  *
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the SDMMC peripheral:
-  *           + Initialization/de-initialization functions
-  *           + I/O operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  @verbatim
-  ==============================================================================
-                       ##### SDMMC peripheral features #####
-  ==============================================================================
-    [..] The SD/SDMMC MMC card host interface (SDMMC) provides an interface between the AHB
-         peripheral bus and MultiMedia cards (MMCs), SD memory cards, SDMMC cards and CE-ATA
-         devices.
+/************************************************************************************************
+ * @file    stm32l4xx_ll_sdmmc.c
+ *
+ * @brief   SDMMC Low Layer HAL module driver.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
 
-    [..] The SDMMC features include the following:
-         (+) Full compliance with MultiMediaCard System Specification Version 4.51. Card support
-             for three different databus modes: 1-bit (default), 4-bit and 8-bit.
-         (+) Full compatibility with previous versions of MultiMediaCards (backward compatibility).
-         (+) Full compliance with SD memory card specifications version 4.1.
-             (SDR104 SDMMC_CK speed limited to maximum allowed IO speed, SPI mode and
-              UHS-II mode not supported).
-         (+) Full compliance with SDIO card specification version 4.0. Card support
-             for two different databus modes: 1-bit (default) and 4-bit.
-             (SDR104 SDMMC_CK speed limited to maximum allowed IO speed, SPI mode and
-              UHS-II mode not supported).
-         (+) Data transfer up to 208 Mbyte/s for the 8 bit mode. (depending maximum allowed IO speed).
-         (+) Data and command output enable signals to control external bidirectional drivers
+/* Standard library Headers */
 
-                           ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      This driver is a considered as a driver of service for external devices drivers
-      that interfaces with the SDMMC peripheral.
-      According to the device used (SD card/ MMC card / SDMMC card ...), a set of APIs
-      is used in the device's driver to perform SDMMC operations and functionalities.
+/* Inter-component Headers */
 
-      This driver is almost transparent for the final user, it is only used to implement other
-      functionalities of the external device.
-
-    [..]
-      (+) The SDMMC clock (SDMMCCLK = 48 MHz) is coming from a specific output (MSI, PLLUSB1CLK,
-          PLLUSB2CLK). Before start working with SDMMC peripheral make sure that the
-          PLL is well configured.
-          The SDMMC peripheral uses two clock signals:
-          (++) SDMMC adapter clock (SDMMCCLK = 48 MHz)
-          (++) APB2 bus clock (PCLK2)
-
-          -@@- PCLK2 and SDMMC_CK clock frequencies must respect the following condition:
-               Frequency(PCLK2) >= (3 / 8 x Frequency(SDMMC_CK)) for STM32L496xG and STM32L4A6xG
-               Frequency(PCLK2) >= (3 / 4 x Frequency(SDMMC_CK)) otherwise
-
-      (+) Enable/Disable peripheral clock using RCC peripheral macros related to SDMMC
-          peripheral.
-
-      (+) Enable the Power ON State using the SDMMC_PowerState_ON(SDMMCx)
-          function and disable it using the function SDMMC_PowerState_OFF(SDMMCx).
-
-      (+) Enable/Disable the clock using the __SDMMC_ENABLE()/__SDMMC_DISABLE() macros.
-
-      (+) Enable/Disable the peripheral interrupts using the macros __SDMMC_ENABLE_IT(hSDMMC, IT)
-          and __SDMMC_DISABLE_IT(hSDMMC, IT) if you need to use interrupt mode.
-
-      (+) When using the DMA mode
-          (++) On STM32L4Rx/STM32L4Sxx devices
-               (+++) Configure the IDMA mode (Single buffer or double)
-               (+++) Configure the buffer address
-               (+++) Configure Data Path State Machine
-          (++) On other devices
-               (+++) Configure the DMA in the MSP layer of the external device
-               (+++) Active the needed channel Request 
-               (+++) Enable the DMA using __SDMMC_DMA_ENABLE() macro or Disable it using the macro
-                     __SDMMC_DMA_DISABLE().
-
-      (+) To control the CPSM (Command Path State Machine) and send
-          commands to the card use the SDMMC_SendCommand(SDMMCx),
-          SDMMC_GetCommandResponse() and SDMMC_GetResponse() functions. First, user has
-          to fill the command structure (pointer to SDMMC_CmdInitTypeDef) according
-          to the selected command to be sent.
-          The parameters that should be filled are:
-           (++) Command Argument
-           (++) Command Index
-           (++) Command Response type
-           (++) Command Wait
-           (++) CPSM Status (Enable or Disable).
-
-          -@@- To check if the command is well received, read the SDMMC_CMDRESP
-              register using the SDMMC_GetCommandResponse().
-              The SDMMC responses registers (SDMMC_RESP1 to SDMMC_RESP2), use the
-              SDMMC_GetResponse() function.
-
-      (+) To control the DPSM (Data Path State Machine) and send/receive
-           data to/from the card use the SDMMC_DataConfig(), SDMMC_GetDataCounter(),
-          SDMMC_ReadFIFO(), SDMMC_WriteFIFO() and SDMMC_GetFIFOCount() functions.
-
-    *** Read Operations ***
-    =======================
-    [..]
-      (#) First, user has to fill the data structure (pointer to
-          SDMMC_DataInitTypeDef) according to the selected data type to be received.
-          The parameters that should be filled are:
-           (++) Data TimeOut
-           (++) Data Length
-           (++) Data Block size
-           (++) Data Transfer direction: should be from card (To SDMMC)
-           (++) Data Transfer mode
-           (++) DPSM Status (Enable or Disable)
-
-      (#) Configure the SDMMC resources to receive the data from the card
-          according to selected transfer mode (Refer to Step 8, 9 and 10).
-
-      (#) Send the selected Read command (refer to step 11).
-
-      (#) Use the SDMMC flags/interrupts to check the transfer status.
-
-    *** Write Operations ***
-    ========================
-    [..]
-     (#) First, user has to fill the data structure (pointer to
-         SDMMC_DataInitTypeDef) according to the selected data type to be received.
-         The parameters that should be filled are:
-          (++) Data TimeOut
-          (++) Data Length
-          (++) Data Block size
-          (++) Data Transfer direction:  should be to card (To CARD)
-          (++) Data Transfer mode
-          (++) DPSM Status (Enable or Disable)
-
-     (#) Configure the SDMMC resources to send the data to the card according to
-         selected transfer mode.
-
-     (#) Send the selected Write command.
-
-     (#) Use the SDMMC flags/interrupts to check the transfer status.
-
-    *** Command management operations ***
-    =====================================
-    [..]
-     (#) The commands used for Read/Write/Erase operations are managed in
-         separate functions.
-         Each function allows to send the needed command with the related argument,
-         then check the response.
-         By the same approach, you could implement a command and check the response.
-
-  @endverbatim
-  ******************************************************************************
-  */
+/* Intra-component Headers */
+#include "stm32l4xx_hal.h"
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal.h"
 
 #if defined(SDMMC1)
 
@@ -243,7 +93,6 @@ HAL_StatusTypeDef SDMMC_Init(SDMMC_TypeDef *SDMMCx, SDMMC_InitTypeDef Init)
 
   return HAL_OK;
 }
-
 
 /**
   * @}
@@ -418,7 +267,6 @@ uint8_t SDMMC_GetCommandResponse(SDMMC_TypeDef *SDMMCx)
   return (uint8_t)(SDMMCx->RESPCMD);
 }
 
-
 /**
   * @brief  Return the response received from the card for the last command
   * @param  SDMMCx Pointer to SDMMC register base
@@ -524,7 +372,6 @@ HAL_StatusTypeDef SDMMC_SetSDMMCReadWaitMode(SDMMC_TypeDef *SDMMCx, uint32_t SDM
 /**
   * @}
   */
-
 
 /** @defgroup HAL_SDMMC_LL_Group4 Command management functions
  *  @brief   Data transfers functions
@@ -1639,7 +1486,6 @@ uint32_t SDMMC_GetCmdResp7(SDMMC_TypeDef *SDMMCx)
 /**
   * @}
   */
-
 
 /* Private function ----------------------------------------------------------*/
 /** @addtogroup SD_Private_Functions

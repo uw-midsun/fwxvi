@@ -1,20 +1,20 @@
-/**
-  ******************************************************************************
-  * @file    stm32l4xx_hal_dcmi.h
-  * @author  MCD Application Team
-  * @brief   Header file of DCMI HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#pragma once
+
+/************************************************************************************************
+ * @file    stm32l4xx_hal_dcmi.h
+ *
+ * @brief   Header file of DCMI HAL module.
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+#include "stm32l4xx_hal_def.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32L4xx_HAL_DCMI_H
@@ -25,7 +25,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l4xx_hal_def.h"
 
 #if defined (DCMI)
 
@@ -54,7 +53,6 @@ typedef struct
   uint8_t FrameEndCode;   /*!< Specifies the code of the frame end delimiter.   */
 }DCMI_CodesInitTypeDef;
 
-
 /**
   * @brief   DCMI Embedded Synchronisation CODE Init structure definition
   */
@@ -65,7 +63,6 @@ typedef struct
   uint8_t LineEndUnmask;    /*!< Specifies the line end delimiter unmask.    */
   uint8_t FrameEndUnmask;   /*!< Specifies the frame end delimiter unmask.   */
 }DCMI_SyncUnmaskTypeDef;
-
 
 /**
   * @brief   DCMI Init structure definition
@@ -108,7 +105,6 @@ typedef struct
                                             This parameter can be a value of @ref DCMI_Line_Select_Start     */
 }DCMI_InitTypeDef;
 
-
 /**
   * @brief  HAL DCMI State structures definition
   */
@@ -121,7 +117,6 @@ typedef enum
   HAL_DCMI_STATE_ERROR             = 0x04U,  /*!< DCMI error state                      */
   HAL_DCMI_STATE_SUSPENDED         = 0x05U   /*!< DCMI suspend state                    */
 }HAL_DCMI_StateTypeDef;
-
 
 /**
   * @brief  DCMI handle Structure definition
@@ -342,7 +337,6 @@ typedef void (*pDCMI_CallbackTypeDef)(DCMI_HandleTypeDef *hdcmi);
 /**
   * @}
   */
-
 
 /** @defgroup DCMI_interrupt_sources  DCMI Interrupt Sources
   * @{

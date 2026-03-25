@@ -1,3 +1,30 @@
+/************************************************************************************************
+ * @file    port.c
+ *
+ * @brief   Port
+ *
+ * @date    2026-03-25
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <errno.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <time.h>
+
+/* Inter-component Headers */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
+#include "wait_for_event.h"
+
+/* Intra-component Headers */
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
  * Copyright (C) 2020 Cambridge Consultants Ltd.
@@ -50,21 +77,7 @@
  * semaphore or mutex.
  *----------------------------------------------------------*/
 
-#include <errno.h>
-#include <pthread.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/times.h>
-#include <time.h>
-
 /* Scheduler includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-#include "wait_for_event.h"
 /*-----------------------------------------------------------*/
 
 #define SIG_RESUME SIGUSR1
