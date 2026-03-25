@@ -19,6 +19,7 @@
 #include "adbms_afe_manager.h"
 #include "adc_manager.h"
 #include "can_listener.h"
+#include "can_manager.h"
 #include "can_scheduler.h"
 #include "gpio_manager.h"
 #include "spi_manager.h"
@@ -41,4 +42,5 @@ extern AdcManager serverAdcManager;     /**< Global ADC Manager */
 extern SPIManager serverSPIManager;     /**< Global SPI Manager */
 extern CanListener serverCanListener;   /**< Global CAN Listener */
 extern CanScheduler serverCanScheduler; /**< Global CAN Scheduler */
+extern CanManager serverCanManager;     /**< Global CAN Manager */
 /** @} */

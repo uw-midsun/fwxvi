@@ -37,15 +37,15 @@ struct {{ message.name | lower }} {
    * @brief   Decode new CAN data and update the storage for {{ message.name }}
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t *raw_data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
-    
+
     {%- for signal in message.signals %}
     {
       raw_val = 0U;
       start_byte = {{signal.start_bit // 8}};
-      {% for i in range((signal.length + 7) // 8) %}raw_val |= static_cast<uint64_t>(data[start_byte + {{ i }}]) << {{ i * 8 }}U;
+      {% for i in range((signal.length + 7) // 8) %}raw_val |= static_cast<uint64_t>(raw_data[start_byte + {{ i }}]) << {{ i * 8 }}U;
       {% endfor %}
       {{ signal.name }} = raw_val;
     }

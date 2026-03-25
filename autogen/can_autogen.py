@@ -141,9 +141,14 @@ def get_data(args):
 
                 if signal.get("type") == "bitfield":
                     
-                    num_flags = len(signal["flags"])
                     signal_data["type"] = "bitfield"
-                    signal_data["length"] = ((num_flags + 7) // 8) * 8
+                    total_bits = 0
+                    for flag in signal["flags"]:
+                        if isinstance(flag, dict):
+                            total_bits += flag["length"]
+                        else:
+                            total_bits += 1
+                    signal_data["length"] = ((total_bits + 7) // 8) * 8
                     
                     index = 0
                     flags = []
