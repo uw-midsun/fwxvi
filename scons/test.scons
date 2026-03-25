@@ -6,6 +6,8 @@ Import('VARS')
 
 TARGET = VARS.get("TARGET")
 PLATFORM = VARS.get("PLATFORM")
+HARDWARE_TYPE = VARS.get("HARDWARE_TYPE")
+FLASH_TYPE = VARS.get("FLASH_TYPE")
 env = VARS.get("env")
 
 ROOT = Dir('#')
@@ -88,7 +90,7 @@ def run_test(target, source, env):
                 fails.append(test_name)
 
         elif PLATFORM == "arm":
-            serialData = flash_run(test_file)
+            serialData = flash_run(test_file, HARDWARE_TYPE, FLASH_TYPE)
 
             # wait until test ok or fail
             while True:

@@ -1,0 +1,78 @@
+#pragma once
+
+/************************************************************************************************
+ * @file   drive_state_manager.h
+ *
+ * @brief  Header file for drive state manager
+ *
+ * @date   2025-07-22
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <stdbool.h>
+
+/* Inter-component Headers */
+#include "global_enums.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup steering
+ * @brief    steering Firmware
+ * @{
+ */
+
+/**
+ * @brief Requests made to control the drive state
+ */
+typedef enum {
+  DRIVE_STATE_REQUEST_NONE = 0, /**< No Request */
+  DRIVE_STATE_REQUEST_D,        /**< Request to switch to drive */
+  DRIVE_STATE_REQUEST_N,        /**< Request to switch to neutral */
+  DRIVE_STATE_REQUEST_R,        /**< Request to switch to reverse */
+  NUM_DRIVE_STATE_REQUESTS,     /**< Number of drive state requests */
+} DriveStateRequest;
+
+/**
+ * @brief Regen braking state
+ */
+typedef enum {
+  REGEN_STATE_DISABLED, /**< Regen braking state DISABLED */
+  REGEN_STATE_ENABLED,  /**< Regen braking state ENABLED */
+  INVALID_REGEN_STATE,  /**< Invalid regen state */
+} RegenState;
+
+/**
+ * @brief Initialize the drive state manager
+ */
+StatusCode drive_state_manager_init(SteeringStorage *storage);
+
+/**
+ * @brief Make a request to change the drive state
+ * @param req The requested drive state
+ */
+StatusCode drive_state_manager_request(DriveStateRequest req);
+
+/**
+ * @brief Update the drive state based on the current request
+ */
+StatusCode drive_state_manager_update(void);
+
+/**
+ * @brief Get the current state of the drive controller
+ * @return Current drive state
+ */
+VehicleDriveState drive_state_manager_get_state(void);
+
+/**
+ * @brief Enter regen state for drive state manager
+ */
+StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state);
+
+/**
+ * @brief Toggle regen state for drive state manager
+ */
+StatusCode drive_state_manager_toggle_regen();
+
+/** @} */

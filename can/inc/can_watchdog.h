@@ -35,28 +35,28 @@ typedef struct CanWatchDog {
 /**
  * @brief   Checks all CAN watchdogs
  * @details This will throw a LOG_WARN if a message has missed its watchdog
- * @return  STATUS_CODE_OK if all watchdogs are checked succesfully
+ * @return  STATUS_CODE_OK if all watchdogs are checked successfully
  */
 StatusCode check_all_can_watchdogs();
 
 /**
  * @brief   Checks CAN watchdogs for messages in fast-cycle
  * @details This will throw a LOG_WARN if a message has missed its watchdog
- * @return  STATUS_CODE_OK if all watchdogs are checked succesfully
+ * @return  STATUS_CODE_OK if all watchdogs are checked successfully
  */
 StatusCode check_fast_can_watchdogs();
 
 /**
  * @brief   Checks CAN watchdogs for messages in medium-cycle
  * @details This will throw a LOG_WARN if a message has missed its watchdog
- * @return  STATUS_CODE_OK if all watchdogs are checked succesfully
+ * @return  STATUS_CODE_OK if all watchdogs are checked successfully
  */
 StatusCode check_medium_can_watchdogs();
 
 /**
  * @brief   Checks CAN watchdogs for messages in slow-cycle
  * @details This will throw a LOG_WARN if a message has missed its watchdog
- * @return  STATUS_CODE_OK if all watchdogs are checked succesfully
+ * @return  STATUS_CODE_OK if all watchdogs are checked successfully
  */
 StatusCode check_slow_can_watchdogs();
 

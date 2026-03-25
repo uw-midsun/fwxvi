@@ -1,0 +1,98 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  drive_status:
+    id: 21
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+      rear_controller:
+        watchdog: 0
+    signals:
+      pedal_percentage:
+        length: 32
+      state_data:
+        type: bitfield
+        flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]
+        length: 8
+  motor_velocity:
+    id: 22
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      vehicle_velocity:
+        length: 32
+      motor_velocity:
+        length: 32
+  motor_temperature:
+    id: 23
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      heat_sink_temp:
+        length: 32
+      motor_temp:
+        length: 32
+  fc_power_group_A:
+    id: 31
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      rev_cam_current:
+        length: 16
+      telem_current:
+        length: 16
+      steering_current:
+        length: 16
+      driver_fan_current:
+        length: 16
+  fc_power_group_B:
+    id: 37
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      horn_current:
+        length: 16
+      spare_current:
+        length: 16
+  fc_power_lights_group:
+    id: 34
+    cycle: "slow"
+    critical: false 
+    target: 
+      telemetry:
+        watchdog: 0 
+    signals: 
+      brake_light_sig_current:
+        length: 16
+      bps_light_sig_current:
+        length: 16
+      right_sig_current:
+        length: 16
+      left_sig_current:
+        length: 16

@@ -6,13 +6,19 @@
 
 ---
 Messages:
-  telemetry:
-    id: 53
+  imu_data:
+    id: 52
     critical: false
-    cycle: "slow"
+    cycle: "medium"
     target:
-      telemetry:
+      steering:
         watchdog: 0
     signals:
-      data:
-        length: 64
+      g_force:
+        length: 16
+      roll:
+        length: 16
+      pitch:
+        length: 16
+      yaw:
+        length: 16

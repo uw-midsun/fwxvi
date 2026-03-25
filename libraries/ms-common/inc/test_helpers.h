@@ -39,4 +39,49 @@
 #define TEST_IN_TASK
 #endif
 
+/**
+ * @brief Initializes test start and end semaphores
+ */
+void test_helpers_init_semphr(void);
+
+/**
+ * @brief   Gets the semaphore for the test start
+ * @return  Value from 0-10
+ */
+uint8_t test_helpers_start_get_semphr(void);
+
+/**
+ * @brief   Gets the semaphore for the test end
+ * @return  Value from 0-10
+ */
+uint8_t test_helpers_end_get_semphr(void);
+
+/**
+ * @brief   Gives the test start semaphore
+ * @return  STATUS_CODE_OK if the semaphore was given successfully
+ *          STATUS_CODE_INTERNAL_ERROR if it fails
+ */
+StatusCode test_helpers_start_give_semphr(void);
+
+/**
+ * @brief   Gives the test end semaphore
+ * @return  STATUS_CODE_OK if the semaphore was given successfully
+ *          STATUS_CODE_INTERNAL_ERROR if it fails
+ */
+StatusCode test_helpers_end_give_semphr(void);
+
+/**
+ * @brief   Takes the test start semaphore
+ * @return  STATUS_CODE_OK if the semaphore was successfully taken
+ *          STATUS_CODE_INTERNAL_ERROR if it fails
+ */
+StatusCode test_helpers_start_take_semphr(void);
+
+/**
+ * @brief   Takes the test end semaphore
+ * @return  STATUS_CODE_OK if the semaphore was successfully taken
+ *          STATUS_CODE_INTERNAL_ERROR if it fails
+ */
+StatusCode test_helpers_end_take_semphr(void);
+
 /** @} */

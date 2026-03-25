@@ -1,0 +1,9 @@
+{
+  "libs": [
+      "FreeRTOS",
+      "ms-common"
+  ],
+  "arm_libs": [
+      "core"
+  ]   
+}

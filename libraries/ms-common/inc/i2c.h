@@ -123,6 +123,21 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
  */
 StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len);
 
+/**
+ * @brief   Reads from a memory address using the I2C port
+ * @details This sends the peripheral address, mem_addr, REPEATED_START, peripheral address [reads RX DATA]
+ *          This uses the HAL_I2C_Mem_Read function
+ * @param   i2c Specifies which I2C port to write with
+ * @param   addr Specifies the I2C address to read from
+ * @param   mem_addr Specifies the memory address to read from
+ * @param   rx_data Pointer to a buffer to receive data
+ * @param   rx_len Length of the data to receive
+ * @return  STATUS_CODE_OK if reading succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
+ */
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len);
+
 #ifdef MS_PLATFORM_X86
 
 /**
@@ -133,7 +148,7 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
+StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
 
 /**
  * @brief   Gets data from the I2C TX queue
@@ -144,6 +159,21 @@ StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);
+
+/**
+ * @brief   Gets the number of queued TX bytes available to read
+ * @param   i2c Specifies which I2C port to inspect
+ * @return  Number of queued bytes on the TX buffer
+ */
+size_t i2c_get_tx_num_bytes(I2CPort i2c);
+
+/**
+ * @brief   Clears both I2C RX and TX queues
+ * @param   i2c Specifies which I2C port to clear
+ * @return  STATUS_CODE_OK if buffers are cleared successfully
+ *          STATUS_CODE_INVALID_ARGS if the port is invalid
+ */
+StatusCode i2c_clear_buffers(I2CPort i2c);
 
 #endif
 

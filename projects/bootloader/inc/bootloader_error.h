@@ -41,12 +41,14 @@ typedef enum {
   BOOTLOADER_CAN_INIT_ERR,              /**< Bootloader CAN initialization failed */
   BOOLOADER_CAN_TRANSMISSION_ERROR,     /**< CAN Bus transmission failed */
   BOOTLOADER_CAN_RECEIVE_ERROR,         /**< CAN Bus receive failed */
+  BOOTLOADER_CAN_TRANSMIT_ERROR,        /**< CAN Bus receive failed */
   BOOTLOADER_INVALID_ADDRESS,           /**< Attempted to write/read to an incorrect address */
   BOOTLOADER_CRC_MISMATCH_BEFORE_WRITE, /**< Bootloader has detected a CRC32 mismatch before writing to flash */
   BOOTLOADER_CRC_MISMATCH_AFTER_WRITE,  /**< Bootloader has detected a CRC32 mismatch after writing to flash */
   BOOTLOADER_SEQUENCE_ERROR,            /**< Bootloader has received an incorrect sequence number */
   BOOTLOADER_TIMEOUT,                   /**< Bootloader has timed out */
-  BOOTLOADER_FLASH_MEMORY_VERIFY_FAILED /**< Bootloader flash memory verification failed. Everything is still erased */
+  BOOTLOADER_FLASH_MEMORY_VERIFY_FAILED,/**< Bootloader flash memory verification failed. Everything is still erased */
+  BOOTLOADER_PING_TIMEOUT               /**< Bootloader ping timed out */
 } BootloaderError;
 
 /** @} */

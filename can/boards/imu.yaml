@@ -1,0 +1,36 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  gyro_data:
+    id: 51
+    critical: false
+    cycle: "medium"
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      x_axis:
+        length: 16
+      y_axis:
+        length: 16
+      z_axis:
+        length: 16
+  accel_data:
+    id: 50
+    critical: false
+    cycle: "medium"
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      x_axis:
+        length: 16
+      y_axis:
+        length: 16
+      z_axis:
+        length: 16

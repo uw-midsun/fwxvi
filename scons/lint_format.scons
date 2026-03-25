@@ -16,6 +16,7 @@ PROJ_DIRS = ROOT.glob('projects/*')
 LIB_DIRS = ROOT.glob('libraries/*')
 SMOKE_DIRS = ROOT.glob('smoke/*')
 PY_DIRS = ROOT.glob('py/*')
+MPXE_DIRS = ROOT.glob('mpxe/*')
 SIMULATION_DIRS = ROOT.glob('simulation/*')
 
 ###########################################################
@@ -53,8 +54,11 @@ def run_format(target, source, env):
     # Specific commands to protect Python Doxygen comments
     PY_FORMAT_CMD = 'autopep8 {} -i'.format(AUTOPEP8_CONFIG)
 
+    # Custom formatter library
+    CUSTOM_FORMATTER_CMD = 'python3 py/file_formatter/main.py'
+
     # Format C source files
-    if len(c_files) > 0 or len(cpp_files > 0):
+    if len(c_files) > 0 or len(cpp_files) > 0:
         print(f'\nFormatting *.[ch] files ...')
         subprocess.run(f'{C_FORMAT_CMD} {c_files_str} {cpp_files_str}', shell=True)
 
@@ -62,6 +66,8 @@ def run_format(target, source, env):
     if len(py_files) > 0:
         print('\nFormatting *.py files ...')
         subprocess.run(f'{PY_FORMAT_CMD} {py_files_str}', shell=True)
+    
+    subprocess.run(f'{CUSTOM_FORMATTER_CMD}', shell=True)
 
     print('Done Formatting.')
 
@@ -77,7 +83,7 @@ if TARGET:
     target_dirs = [ROOT.Dir(TARGET)]
 else:
     # TODO: add this to the end of this  '+ SIMULATION_DIRS'
-    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS
+    target_dirs = PROJ_DIRS + LIB_DIRS + SMOKE_DIRS + PY_DIRS + MPXE_DIRS
 
 for dir in target_dirs:
     config = parse_config(dir)

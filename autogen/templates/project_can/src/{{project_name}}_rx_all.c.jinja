@@ -32,6 +32,10 @@ void can_rx_all() {
         /* If store all functions in callback array may be better? */
         /* Or do some sort or binary search for O(lgn) */
 
+        if (can_get_rx_all_cb() != NULL) {
+            can_get_rx_all_cb()(&msg);
+        }
+
         /* Cache the data */
         uint64_t data = msg.data;
 

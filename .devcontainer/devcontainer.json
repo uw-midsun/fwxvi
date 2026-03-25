@@ -1,0 +1,11 @@
+{
+	"name": "FWXVI",
+	"image": "ghcr.io/uw-midsun/devcontainers/fwxvi:0.1.3",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
+}

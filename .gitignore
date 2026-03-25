@@ -1,5 +1,6 @@
 # build directory
 build/*
+venv/*
 
 # scons cache
 .sconsign.dblite
@@ -8,9 +9,12 @@ build/*
 *.vscode
 .vs/
 build/
+venv/
 *.DS_Store
 .project
 *.code-workspace
+.cache/
+.cache/*
 
 # Vim
 tags
@@ -29,3 +33,20 @@ x86_flash
 # Doxygen HTML
 doxygen/html
 
+# MPXE Simulation
+mpxe/Simulation_JSON/*
+
+# Test results
+**/test_results/*
+
+**/**compile_commands**.json
+
+
+# Matlab/Simulink
+**/slprj/
+**/_ert_rtw/
+**/*_ert_rtw/
+**/*_slprj/
+
+**/**.slxc
+**/**.slx.autosave

@@ -37,6 +37,17 @@ typedef struct GpioInterrupt {
 } GpioInterrupt;
 
 /**
+ * @brief   Initialize pin to be registered as an interrupt
+ * @param   address Pointer to the GPIO address
+ * @param   settings Pointer to the interrupt settings
+ * @param   pin_mode Pin mode of the GPIO
+ * @param   init_state Initial state for the GPIO
+ * @return  STATUS_CODE_OK if interrupt initialization succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings, const GpioMode pin_mode, GpioState init_state);
+
+/**
  * @brief   Register a GPIO interrupt by passing in the pin address and task to notify
  * @param   address Pointer to the GPIO address
  * @param   settings Pointer to the interrupt settings
@@ -46,7 +57,7 @@ typedef struct GpioInterrupt {
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if the pin is already being used
  */
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task);
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task);
 
 /**
  * @brief   Gets the GPIO interrupt edge
@@ -65,12 +76,12 @@ InterruptEdge gpio_it_get_edge(const GpioAddress *address);
 InterruptPriority gpio_it_get_priority(const GpioAddress *address);
 
 /**
- * @brief   Gets the GPIO interrupt class
+ * @brief   Gets the GPIO interrupt type
  * @param   address Pointer to the GPIO address
- * @return  The corresponding GPIO's interrupt class
- *          NUM_INTERRUPT_CLASSES if the interrupt has not been registered
+ * @return  The corresponding GPIO's interrupt type
+ *          NUM_INTERRUPT_TYPES if the interrupt has not been registered
  */
-InterruptClass gpio_it_get_class(const GpioAddress *address);
+InterruptType gpio_it_get_type(const GpioAddress *address);
 
 /**
  * @brief   Gets the GPIO interrupt task

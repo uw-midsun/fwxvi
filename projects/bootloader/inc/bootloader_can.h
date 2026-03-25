@@ -37,6 +37,12 @@
  *          Higher bitrates require shorter time quantas
  *          Bitrate selection impacts signal reliability and bus length
  */
+typedef struct {
+  uint16_t prescaler;
+  uint32_t bs1;
+  uint32_t bs2;
+} BootCanTiming;
+
 typedef enum {
   BOOT_CAN_BITRATE_125KBPS,  /**< 125 KBits per second */
   BOOT_CAN_BITRATE_250KBPS,  /**< 250 KBits per second */
@@ -46,6 +52,8 @@ typedef enum {
 } Boot_CanBitrate;
 
 typedef enum { CAN_CONTINUOUS = 0, CAN_ONE_SHOT_MODE, NUM_CAN_MODES } Boot_CanMode;
+
+#define CAN_HW_BASE CAN1
 
 /**
  * @brief   CAN Settings
@@ -83,7 +91,7 @@ typedef struct {
 
 /**
  * @brief   Initialize the CAN interface for the bootloader
- * @return  BOOTLOADER_ERROR_NONE if the interface is initialized succesfully
+ * @return  BOOTLOADER_ERROR_NONE if the interface is initialized successfully
  *          BOOTLOADER_CAN_INIT_ERR if initialization fails
  */
 BootloaderError boot_can_init(const Boot_CanSettings *settings);
@@ -94,7 +102,7 @@ BootloaderError boot_can_init(const Boot_CanSettings *settings);
  * @param   extended Boolean flag to select 11-bit vs 29-bit CAN transmission
  * @param   data Pointer to the data buffer to transmit
  * @param   len Length of the data buffer
- * @return  BOOTLOADER_ERROR_NONE if the message is transmitted succesfully
+ * @return  BOOTLOADER_ERROR_NONE if the message is transmitted successfully
  *          BOOLOADER_CAN_TRANSMISSION_ERROR if transmitting the message fails
  */
 BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
@@ -102,9 +110,9 @@ BootloaderError boot_can_transmit(uint32_t id, bool extended, const uint8_t *dat
 /**
  * @brief   Receive a CAN message in the bootloader
  * @param   msg Pointer to the message that will be updated with incoming data
- * @return  BOOTLOADER_ERROR_NONE if the message is received succesfully
+ * @return  BOOTLOADER_ERROR_NONE if the message is received successfully
  *          BOOTLOADER_CAN_RECEIVE_ERROR if receiving the message fails
  */
-BootloaderError boot_can_receive(Boot_CanMessage *msg);
+BootloaderError boot_can_receive(Boot_CanMessage *const msg);
 
 /** @} */

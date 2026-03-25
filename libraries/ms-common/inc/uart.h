@@ -24,7 +24,7 @@
  */
 
 /** @brief   UART Port selection */
-typedef enum { UART_PORT_1 = 0, UART_PORT_2, NUM_UART_PORTS } UartPort;
+typedef enum { UART_PORT_1 = 0, UART_PORT_2, UART_PORT_3, NUM_UART_PORTS } UartPort;
 
 /** @brief Maximum size permitted for a UART transaction */
 #define UART_MAX_BUFFER_LEN 256U

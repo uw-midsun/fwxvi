@@ -33,6 +33,8 @@
 #define CAN_HW_DEV_INTERFACE "vcan0"
 #endif
 
+typedef StatusCode (*CanRxAllCallback)(CanMessage *msg);
+
 /** @brief  CAN Bus status flags */
 typedef enum {
   CAN_HW_BUS_STATUS_OK = 0,   /**< CAN Bus is operating correctly */
@@ -69,12 +71,13 @@ typedef enum {
  *          Silent mode is used for only listening to the bus.
  */
 typedef struct CanSettings {
-  uint16_t device_id;         /**< Device CAN ID */
-  CanHwBitrate bitrate;       /**< Bits per second */
-  GpioAddress tx;             /**< GPIO Pin for CAN TX */
-  GpioAddress rx;             /**< GPIO Pin for CAN RX */
-  bool loopback;              /**< Enables self-listening for message debugging */
-  bool silent;                /**< Device can listen but not transmit messages */
+  uint16_t device_id;             /**< Device CAN ID */
+  CanHwBitrate bitrate;           /**< Bits per second */
+  GpioAddress tx;                 /**< GPIO Pin for CAN TX */
+  GpioAddress rx;                 /**< GPIO Pin for CAN RX */
+  bool loopback;                  /**< Enables self-listening for message debugging */
+  bool silent;                    /**< Device can listen but not transmit messages */
+  CanRxAllCallback can_rx_all_cb; /**< Callback function to be called when receiving all data */
 } CanSettings;
 
 /**

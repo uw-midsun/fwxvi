@@ -1,0 +1,13 @@
+{
+    "x86_libs": [
+        "ms-common"
+    ],
+
+    "arm_libs": [
+        "core",
+        "CMSIS",
+        "HAL"
+    ],
+    "can": false,
+    "arm_only": true
+}

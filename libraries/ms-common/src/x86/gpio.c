@@ -38,7 +38,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
 
   taskENTER_CRITICAL();
 
-  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+  uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
 
   s_gpio_pin_modes[index] = pin_mode;
   s_gpio_pin_state[index] = init_state;
@@ -55,7 +55,7 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
 
   taskENTER_CRITICAL();
 
-  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+  uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
 
   s_gpio_pin_modes[index] = pin_mode;
   s_gpio_alt_functions[index] = alt_func;
@@ -75,15 +75,9 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
 
   taskENTER_CRITICAL();
 
-  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+  uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
 
   GpioMode mode = s_gpio_pin_modes[index];
-  if (mode != GPIO_OUTPUT_OPEN_DRAIN && mode != GPIO_OUTPUT_PUSH_PULL) {
-    LOG_WARN("Attempting to set an input pin, check your configuration");
-    taskEXIT_CRITICAL();
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
   s_gpio_pin_state[index] = state;
 
 #ifdef DEBUG
@@ -100,7 +94,7 @@ StatusCode gpio_toggle_state(const GpioAddress *address) {
   }
   taskENTER_CRITICAL();
 
-  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+  uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
 
   if (s_gpio_pin_state[index] == GPIO_STATE_LOW) {
     s_gpio_pin_state[index] = GPIO_STATE_HIGH;
@@ -122,8 +116,24 @@ GpioState gpio_get_state(const GpioAddress *address) {
   }
 
   taskENTER_CRITICAL();
-  uint32_t index = address->port * (uint32_t)GPIO_PINS_PER_PORT + address->pin;
+  uint32_t index = (address->port * (uint32_t)GPIO_PINS_PER_PORT) + address->pin;
   taskEXIT_CRITICAL();
 
   return s_gpio_pin_state[index];
+}
+
+GpioMode gpio_peek_mode(GpioAddress *address) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+    return NUM_GPIO_MODES;
+  } else {
+    return s_gpio_pin_modes[(address->port * GPIO_PINS_PER_PORT) + address->pin];
+  }
+}
+
+GpioAlternateFunctions gpio_peek_alt_function(GpioAddress *address) {
+  if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
+    return GPIO_ALT_NONE;
+  } else {
+    return s_gpio_alt_functions[(address->port * GPIO_PINS_PER_PORT) + address->pin];
+  }
 }

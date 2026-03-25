@@ -17,7 +17,11 @@
 
 static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0U };
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, const Task *task) {
+StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task) {
+  return STATUS_CODE_UNIMPLEMENTED;
+}
+
+StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings, const GpioMode pin_mode, GpioState init_state) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
@@ -35,11 +39,11 @@ InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
   return NUM_INTERRUPT_PRIORITIES;
 }
 
-InterruptClass gpio_it_get_class(const GpioAddress *address) {
+InterruptType gpio_it_get_type(const GpioAddress *address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
-    return s_gpio_it_interrupts[address->pin].settings.class;
+    return s_gpio_it_interrupts[address->pin].settings.type;
   }
-  return NUM_INTERRUPT_CLASSES;
+  return NUM_INTERRUPT_TYPES;
 }
 
 Task *gpio_it_get_target_task(const GpioAddress *address) {

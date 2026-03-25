@@ -32,6 +32,7 @@
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm32l4xx_hal.h"
 
 #ifndef __VFP_FP__
 	#error This port can only be used when the project options are configured to enable hardware floating point support.
@@ -491,17 +492,21 @@ void xPortSysTickHandler( void )
 	executes all interrupts must be unmasked.  There is therefore no need to
 	save and then restore the interrupt mask value as its value is already
 	known. */
-	portDISABLE_INTERRUPTS();
-	{
-		/* Increment the RTOS tick. */
-		if( xTaskIncrementTick() != pdFALSE )
+	HAL_IncTick();
+
+	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+		portDISABLE_INTERRUPTS();
 		{
-			/* A context switch is required.  Context switching is performed in
-			the PendSV interrupt.  Pend the PendSV interrupt. */
-			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+			/* Increment the RTOS tick. */
+			if( xTaskIncrementTick() != pdFALSE )
+			{
+				/* A context switch is required.  Context switching is performed in
+				the PendSV interrupt.  Pend the PendSV interrupt. */
+				portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+			}
 		}
+		portENABLE_INTERRUPTS();
 	}
-	portENABLE_INTERRUPTS();
 }
 /*-----------------------------------------------------------*/
 

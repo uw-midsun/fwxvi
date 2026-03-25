@@ -1,0 +1,26 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  steering:
+    id: 6
+    critical: true
+    cycle: "medium"
+    target:
+      telemetry:
+        watchdog: 0
+      front_controller:
+        watchdog: 0
+      rear_controller:
+        watchdog: 0
+    signals:
+      cruise_control_target_velocity:
+        length: 32
+      buttons:
+        type: bitfield
+        flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled]
+        length: 8

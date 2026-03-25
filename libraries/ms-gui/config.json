@@ -1,0 +1,10 @@
+{
+    "arm_libs": [
+      "core",
+      "lvgl"
+    ],
+    "x86_libs": [
+        "SDL2",
+        "lvgl"
+    ]
+}
