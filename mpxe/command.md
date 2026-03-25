@@ -73,3 +73,20 @@
    - Example: SPI TRANSFER SPI_PORT_1 0x01, 0xAB, 0x34
 4. SPI CLEAR_BUFFER [PORT]
    - Example: SPI CLEAR_BUFFER SPI_PORT_1
+
+### CAN Commands
+Note: CAN commands run server side and do not require a client selection.
+1. CAN START
+   - Example: CAN START
+2. CAN STOP
+   - Example: CAN STOP
+3. CAN LIST_MESSAGES
+   - Example: CAN LIST_MESSAGES
+4. CAN LIST_SIGNALS [MESSAGE_NAME]
+   - Example: CAN LIST_SIGNALS battery_stats_a
+5. CAN GET [MESSAGE_NAME] [SIGNAL_NAME]
+   - Example: CAN GET battery_stats_a pack_voltage
+6. CAN SET [MESSAGE_NAME] [SIGNAL_NAME] [VALUE]
+   - Example: CAN SET battery_stats_a pack_voltage 3700
+7. CAN DUMP
+   - Example: CAN DUMP

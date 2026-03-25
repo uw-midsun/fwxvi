@@ -65,6 +65,13 @@ class Terminal {
   void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
 
   /**
+   * @brief   Handle CAN commands locally on the server
+   * @param   action Action statement (start/stop/list_messages/list_signals/get/set/dump)
+   * @param   tokens List containing action parameters
+   */
+  void handleCanCommands(const std::string &action, std::vector<std::string> &tokens);
+
+  /**
    * @brief   Parse the tokens and branch to the appropiate handler function
    * @details This shall branch to handleGpioCommands, handleI2CCommands, handleSPICommands and handleInterruptCommands
    * @param   tokens List containing tokenized input string

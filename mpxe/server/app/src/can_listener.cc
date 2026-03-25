@@ -113,11 +113,15 @@ void *updateJSONWrapper(void *param) {
 void CanListener::listenCanBus() {
   if (m_isListening) return;
 
+  m_isListening = true;
+
   if (pthread_create(&m_listenCanBusId, nullptr, listenCanBusWrapper, this)) {
+    m_isListening = false;
     throw std::runtime_error("CAN listener thread creation error");
   }
 
   if (pthread_create(&m_updateJSONId, nullptr, updateJSONWrapper, this)) {
+    m_isListening = false;
     throw std::runtime_error("CAN update JSON thread creation error");
   }
 }

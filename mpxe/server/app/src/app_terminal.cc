@@ -15,6 +15,7 @@
 
 /* Inter-component Headers */
 #include "command_code.h"
+#include <nlohmann/json.hpp>
 
 /* Intra-component Headers */
 #include "app.h"
@@ -168,6 +169,52 @@ void Terminal::handleSpiCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
+void Terminal::handleCanCommands(const std::string &action, std::vector<std::string> &tokens) {
+  // todo: start/stop commands; need proper thread shutdown first
+  // if (action == "start") {
+  //   serverCanManager.startSimulation();
+  // } else if (action == "stop") {
+  //   serverCanManager.stopSimulation();
+  // } else
+  if (action == "list_messages") {
+    std::vector<CanMessageInfo> messages = serverCanManager.getMessageInfoList();
+    std::cout << "CAN Messages (" << messages.size() << " total):" << std::endl;
+    for (unsigned int i = 0; i < messages.size(); i++) {
+      std::cout << "  " << messages[i].name << " [" << messages[i].sender
+                << ", " << messages[i].cycle_speed << "ms, DLC:" << messages[i].dlc << "]" << std::endl;
+    }
+  } else if (action == "list_signals" && tokens.size() >= 3) {
+    std::string msg_name = toLower(tokens[2]);
+    CanMessageInfo info = serverCanManager.getMessageInfo(msg_name);
+    if (info.name.empty()) {
+      std::cerr << "Unknown message: " << msg_name << std::endl;
+    } else {
+      std::cout << "Signals for " << info.name << ":" << std::endl;
+      for (unsigned int i = 0; i < info.signals.size(); i++) {
+        std::cout << "  " << info.signals[i].name << " (" << info.signals[i].length << " bits)" << std::endl;
+      }
+    }
+  } else if (action == "get" && tokens.size() >= 4) {
+    std::string msg_name = toLower(tokens[2]);
+    std::string sig_name = toLower(tokens[3]);
+    uint64_t value = serverCanManager.getSignalByName(msg_name, sig_name);
+    std::cout << msg_name << "." << sig_name << " = " << value << std::endl;
+  } else if (action == "set" && tokens.size() >= 5) {
+    std::string msg_name = toLower(tokens[2]);
+    std::string sig_name = toLower(tokens[3]);
+    uint64_t value = std::stoull(tokens[4]);
+    if (serverCanManager.setSignalByName(msg_name, sig_name, value)) {
+      std::cout << "Set " << msg_name << "." << sig_name << " = " << value << std::endl;
+    }
+  // todo: dump command for raw JSON maybe for the GUI
+  // } else if (action == "dump") {
+  //   nlohmann::json signals = serverCanManager.getAllSignals();
+  //   std::cout << signals.dump(2) << std::endl;
+  } else {
+    std::cerr << "Unsupported CAN action: " << action << ". Refer to command.md" << std::endl;
+  }
+}
+
 void Terminal::parseCommand(std::vector<std::string> &tokens) {
   if (tokens.size() < 2) {
     std::cout << "Invalid command. Format: <interface> <action> <args...>\n";
@@ -184,6 +231,8 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
       handleAfeCommands(action, tokens);
     } else if (interface == "adc") {
       handleAdcCommands(action, tokens);
+    } else if (interface == "can") {
+      handleCanCommands(action, tokens);
     } else if (interface == "i2c") {
     } else if (interface == "spi") {
       handleSpiCommands(action, tokens);
@@ -212,6 +261,18 @@ void Terminal::run() {
 
     if (toLower(input) == "quit") {
       break;
+    }
+
+    /* CAN commands run server side, bypass client selection */
+    if (input.length() >= 3 && toLower(input.substr(0, 3)) == "can") {
+      std::vector<std::string> tokens;
+      std::istringstream ss(input);
+      std::string token;
+      while (ss >> token) {
+        tokens.push_back(token);
+      }
+      parseCommand(tokens);
+      continue;
     }
 
     m_targetClient = m_Server->getClientByName(input);
