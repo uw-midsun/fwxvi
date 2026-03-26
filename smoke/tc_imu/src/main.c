@@ -71,8 +71,8 @@ TASK(IMU_RUN, 1024){
       LOG_DEBUG("Error occurred");
       delay_ms(1000U);
     } else if(status == STATUS_CODE_OK){
-      LOG_DEBUG("IMU gx=%.3f gy=%.3f gz=%.3f ax=%.3f ay=%.3f az=%.3f\n", (double)bmi323_storage.gyro.x, (double)bmi323_storage.gyro.y, (double)bmi323_storage.gyro.z, (double)bmi323_storage.accel.x,
-            (double)bmi323_storage.accel.y, (double)bmi323_storage.accel.z);
+      LOG_DEBUG("IMU gx=%d gy=%d gz=%d ax=%d ay=%d az=%d\n", (int16_t)bmi323_storage.gyro.x, (int16_t)bmi323_storage.gyro.y, (int16_t)bmi323_storage.gyro.z, (int16_t)bmi323_storage.accel.x,
+            (int16_t)bmi323_storage.accel.y, (int16_t)bmi323_storage.accel.z);
       delay_ms(1000U);
     }
   }
