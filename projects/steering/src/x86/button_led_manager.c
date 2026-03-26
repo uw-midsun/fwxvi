@@ -62,20 +62,14 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
 }
 
 static LEDPixels* button_led_manager_get_led_pixel(uint32_t button) {
-  switch (button) {
-    case 0: return &steering_storage->button_led_manager->left_led_pixels[0];
-    case 1: return &steering_storage->button_led_manager->left_led_pixels[1];
-    case 2: return &steering_storage->button_led_manager->left_led_pixels[2];
-    case 3: return &steering_storage->button_led_manager->main_led_pixels[0];
-    case 4: return &steering_storage->button_led_manager->main_led_pixels[1];
-    case 5: return &steering_storage->button_led_manager->main_led_pixels[2];
-    case 6: return &steering_storage->button_led_manager->main_led_pixels[3];
-    case 7: return &steering_storage->button_led_manager->main_led_pixels[4];
-    case 8: return &steering_storage->button_led_manager->right_led_pixels[0];
-    case 9: return &steering_storage->button_led_manager->right_led_pixels[1];
-    case 10: return &steering_storage->button_led_manager->right_led_pixels[2];
-    default: return NULL;
-  }
+  if (button < NUM_LEFT_LEDS)
+    return &steering_storage->button_led_manager->left_led_pixels[button];
+  else if (button < NUM_LEFT_LEDS + NUM_MAIN_LEDS)
+    return &steering_storage->button_led_manager->main_led_pixels[button - NUM_LEFT_LEDS];
+  else if (button < NUM_LEFT_LEDS + NUM_MAIN_LEDS + NUM_RIGHT_LEDS)
+    return &steering_storage->button_led_manager->right_led_pixels[button - (NUM_LEFT_LEDS + NUM_MAIN_LEDS)];
+  else
+    return NULL;
 }
 
 StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_code) {

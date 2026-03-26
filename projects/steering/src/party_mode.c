@@ -181,7 +181,12 @@ static Note MELODY_MARIO[] = {
 
 static void party_mode_save_colors(void) {
   for (uint8_t i = 0; i < NUM_STEERING_BUTTONS; i++) {
-    saved_colors[i] = steering_storage->button_led_manager->led_pixels[i];
+     if (i < NUM_LEFT_LEDS)
+      saved_colors[i] = steering_storage->button_led_manager->left_led_pixels[i];
+    else if (i < NUM_LEFT_LEDS + NUM_MAIN_LEDS)
+      saved_colors[i] = steering_storage->button_led_manager->main_led_pixels[i - NUM_LEFT_LEDS];
+    else if (i < NUM_LEFT_LEDS + NUM_MAIN_LEDS + NUM_RIGHT_LEDS)
+      saved_colors[i] = steering_storage->button_led_manager->right_led_pixels[i - (NUM_LEFT_LEDS + NUM_MAIN_LEDS)];
   }
   saved_valid = true;
 }
