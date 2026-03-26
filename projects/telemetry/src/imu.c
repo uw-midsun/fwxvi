@@ -53,7 +53,7 @@ StatusCode imu_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {  // Bmi323 is the peripheral
   if (storage == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

@@ -13,6 +13,7 @@
 #include "delay.h"
 #include "ff.h"
 #include "gpio.h"
+#include "imu.h"
 #include "log.h"
 #include "mcu.h"
 #include "status.h"
@@ -30,16 +31,6 @@ TelemetryStorage telemetry_storage;
 
 TelemetryConfig telemetry_config = {
   .message_transmit_frequency_hz = 1000U,
-  .uart_port = TELEMETRY_XBEE_UART_PORT,
-  .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = TELEMETRY_XBEE_UART_BAUDRATE, .flow_control = TELEMETRY_XBEE_UART_FLOW_CONTROL },
-  .sd_spi_port = SPI_PORT_2,
-  .sd_spi_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
-                       .mode = SD_SPI_MODE_1,
-                       .mosi = GPIO_TELEMETRY_SPI_MOSI,
-                       .miso = GPIO_TELEMETRY_SPI_MISO,
-                       .sclk = GPIO_TELEMETRY_SPI_SCK,
-                       .cs = GPIO_TELEMETRY_SPI_NSS,
-                      },
 };
 
 Bmi323Settings bmi323_settings = {
@@ -59,15 +50,18 @@ Bmi323Storage bmi323_storage = {
   .settings = &bmi323_settings,
 };
 
-TASK(IMU_RUN, 1024){
+TASK(IMU_RUN, 1024) {
   imu_init(&bmi323_storage, &bmi323_settings);
-  
-  telemetry_storage.bmi323_storage = &bmi323_storage; 
-  while(true){
+
+  telemetry_storage.bmi323_storage = &bmi323_storage;
+  delay_ms(1000U);
+  StatusCode status;
+
+  while (true) {
     LOG_DEBUG("Starting IMU run\n");
-    StatusCode status = imu_run(); 
-    
-    if(status != STATUS_CODE_OK){
+    status = imu_run();
+
+    if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Error occurred");
       delay_ms(1000U);
     } else if(status == STATUS_CODE_OK){
@@ -78,13 +72,12 @@ TASK(IMU_RUN, 1024){
   }
 }
 
-
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
 #else
-int main(){
+int main() {
 #endif
   mcu_init();
   tasks_init();
