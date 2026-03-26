@@ -57,6 +57,7 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   telemetry_storage->datagram_queue.storage_buf = (uint8_t *)telemetry_storage->datagram_buffer;
 
   uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
+  spi_init(telemetry_storage->bmi323_storage->settings->spi_port, &telemetry_storage->bmi323_storage->settings->spi_settings);
   can_init(telemetry_storage->can_storage, &s_can_settings);
   queue_init(&telemetry_storage->datagram_queue);
   bmi323_init(bmi323_storage);

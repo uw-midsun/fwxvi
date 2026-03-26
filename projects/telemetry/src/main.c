@@ -75,12 +75,12 @@ void pre_loop_init() {
 void run_1000hz_cycle() {}
 
 void run_10hz_cycle() {
-  run_can_tx_medium();
+  //run_can_tx_medium();
   imu_run();
 }
 
 void run_1hz_cycle() {
-  run_can_tx_slow();
+  //run_can_tx_slow();
 }
 
 #ifdef MS_PLATFORM_X86

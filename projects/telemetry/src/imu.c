@@ -196,7 +196,8 @@ void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw) {
 /**
  * Used to transmit CAN messages, will send the float, roll, pitch, and yaw values
  * Will also send the accel values that are stored in the struct
- */
+ 
 void imu_transmit_can(){
   set_telemetry_telemetry_data((double) &s_storage->gyro.x);
 }
+*/
