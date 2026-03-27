@@ -33,6 +33,7 @@
 class SPIManager {
  private:
   Datagram::SPI m_spiDatagram; /**<Datagram class to serialize/deserialize commands */
+
  public:
   /**
    * @brief   Constructs a SPIManager object
