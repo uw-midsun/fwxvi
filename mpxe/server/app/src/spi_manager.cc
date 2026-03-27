@@ -130,7 +130,7 @@ std::string SPIManager::createSpiCommand(CommandCode commandCode, std::string &s
         }
 
         std::cout << "BRKPT3" << std::endl;
-        
+
         m_spiDatagram.setSPIPort(port);
         m_spiDatagram.setBuffer(bytes.data(), bytes.size());
         break;

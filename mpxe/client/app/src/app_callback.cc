@@ -163,7 +163,6 @@ void applicationMessageCallback(Client *client, std::string &message) {
       break;
     }
     case CommandCode::SPI_WRITE_DATA: {
-      std::cout << "BRKPT2: Is write called?" << std::endl;
       clientSpiManager.writeSpiData(payload);
       break;
     }

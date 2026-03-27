@@ -17,8 +17,8 @@
 #include "adbms_afe_manager.h"
 #include "adc_manager.h"
 #include "gpio_manager.h"
-#include "spi_manager.h"
 #include "i2c_manager.h"
+#include "spi_manager.h"
 
 /**
  * @defgroup ClientAppMain
