@@ -32,17 +32,31 @@ SpiSettings spi_test_settings = {
 };
 
 TASK(spi_api, TASK_STACK_1024) {
+  spi_init(SPI_PORT_1, &spi_test_settings);
   spi_init(SPI_PORT_2, &spi_test_settings);
 
-  uint8_t tx_data[TEST_DATA_SIZE] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
-  uint8_t rx_data[TEST_DATA_SIZE] = { 0x00 };
+  uint8_t tx_data_1[TEST_DATA_SIZE] = { 0xAB, 0xAC, 0xAD, 0xAE, 0xAF };
+  uint8_t rx_data_1[TEST_DATA_SIZE] = { 0x00 };
+
+  uint8_t tx_data_2[TEST_DATA_SIZE] = { 0x10, 0x11, 0x12, 0x13, 0x14 };
+  uint8_t rx_data_2[TEST_DATA_SIZE] = { 0x00 };
 
   while (true) {
     LOG_DEBUG("Exchanging data\n");
-    spi_exchange(SPI_PORT_2, tx_data, sizeof(tx_data), rx_data, sizeof(rx_data));
+    spi_exchange(SPI_PORT_1, tx_data_1, sizeof(tx_data_1), rx_data_1, sizeof(rx_data_1));
+    spi_exchange(SPI_PORT_2, tx_data_2, sizeof(tx_data_2), rx_data_2, sizeof(rx_data_2));
 
+    LOG_DEBUG("------SPI PORT 1-----\n");
     for (size_t i = 0U; i < TEST_DATA_SIZE; i++) {
-      LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data[i]);
+      LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data_1[i]);
+      delay_ms(5);
+    }
+
+    delay_ms(500);
+
+    LOG_DEBUG("------SPI PORT 2-----\n");
+    for (size_t i = 0U; i < TEST_DATA_SIZE; i++) {
+      LOG_DEBUG("Received byte %d: 0x%x\n", i, rx_data_2[i]);
       delay_ms(5);
     }
 

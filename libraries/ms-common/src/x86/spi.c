@@ -33,7 +33,7 @@ typedef struct {
   volatile uint8_t num_rx_bytes;
 } SPIPortData;
 
-/* current implementation of spi server/client manager only accepts SPI_PORT_1 and SPI_PORT_2 in MPXE */
+// only supported ports for SPI im MPXE are port 1 and port 2
 static SPIPortData s_port[NUM_SPI_PORTS] = { [SPI_PORT_1] = {}, [SPI_PORT_2] = {} };
 
 // Initalize Queue for Spi Buffer
@@ -133,8 +133,6 @@ StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len) {
   if (len > SPI_MAX_NUM_DATA) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  // printf("DEBUG: spi_set_rx called. Len: %d, First Byte: 0x%02X\n", len, data[0]);
 
   for (uint8_t i = 0; i < len; i++) {
     if (queue_send(&s_port[spi].spi_rx_buf.queue, &data[i], 0)) {

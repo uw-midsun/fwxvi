@@ -49,30 +49,29 @@ class SPIManager {
   */
 
   /**
-   * @brief   Sets the raw ADC value given the data payload
-   * @details This function shall be called upon receiving a pin-specific payload
-   * @param   payload Message data payload to be parsed
+   * @brief   Transmits data to SPI RX buffer
+   * @param   payload Serialized SPI datagram payload containing port and data
+   * @return  Serialized acknowledgement response
    */
   std::string writeSpiData(std::string &payload);
 
   /**
-   * @brief   Sets the raw ADC value given the data payload
-   * @details This function shall be called upon receiving a pin-specific payload
-   * @param   payload Message data payload to be parsed
+   * @brief   Reads data from the SPI TX buffer written from spi_write()
+   * @param   payload Serialized SPI datagram payload containing port and data
+   * @return  Serialized response with TX buffer data
    */
   std::string processReadSpiData(std::string &payload);
 
   /**
-   * @brief   Sets the raw ADC value given the data payload
+   * @brief   Transmits
    * @details This function shall be called upon receiving a pin-specific payload
    * @param   payload Message data payload to be parsed
    */
   std::string transferSpiData(std::string &payload);
 
   /**
-   * @brief   Clears the SPI buffer given the data payload
-   * @details This function shall be called upon receiving a port-specific payload
-   * @param   payload Message data payload to be parsed
+   * @brief   Clears both SPI RX and TX buffers
+   * @param   payload Serialized SPI datagram payload containing port and data
    */
   void clearBuffer(std::string &payload);
 };
