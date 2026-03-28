@@ -32,6 +32,7 @@ static TelemetryStorage *telemetry_storage;
 static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
 static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
 static GpioAddress s_xbee_reset = GPIO_TELEMETRY_XBEE_XRST;
+static StatusCode status = STATUS_CODE_OK;
 
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,
@@ -56,13 +57,13 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   telemetry_storage->datagram_queue.num_items = DATAGRAM_BUFFER_SIZE;
   telemetry_storage->datagram_queue.storage_buf = (uint8_t *)telemetry_storage->datagram_buffer;
 
-  uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
-  spi_init(telemetry_storage->bmi323_storage->settings->spi_port, &telemetry_storage->bmi323_storage->settings->spi_settings);
-  can_init(telemetry_storage->can_storage, &s_can_settings);
-  queue_init(&telemetry_storage->datagram_queue);
-  bmi323_init(bmi323_storage);
-  sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
-  xb_transmit_init(telemetry_storage, telemetry_storage->config);
+  // uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
+  status = spi_init(telemetry_storage->bmi323_storage->settings->spi_port, &telemetry_storage->bmi323_storage->settings->spi_settings);
+  // can_init(telemetry_storage->can_storage, &s_can_settings);
+  // queue_init(&telemetry_storage->datagram_queue);
+
+  // sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
+  // xb_transmit_init(telemetry_storage, telemetry_storage->config);
 
   gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
