@@ -88,20 +88,20 @@ TASK(record_pedal_calibration, TASK_STACK_1024) {
     }
   }
 
-  gpio_init_pin(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL, GPIO_ANALOG, GPIO_STATE_LOW);
+  gpio_init_pin(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW, GPIO_ANALOG, GPIO_STATE_LOW);
   gpio_init_pin(&GPIO_FRONT_CONTROLLER_BRAKE_PEDAL, GPIO_ANALOG, GPIO_STATE_LOW);
-  adc_add_channel(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL);
+  adc_add_channel(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW);
   adc_add_channel(&GPIO_FRONT_CONTROLLER_BRAKE_PEDAL);
 
   // Accel pedal calibration
   LOG_DEBUG("LIFT accelerator pedal ALL THE WAY UP\r\n");
   delay_ms(3000);
-  sample_pedal_calibration(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL, &persist_data.accel_pedal_data.lower_value);
+  sample_pedal_calibration(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW, &persist_data.accel_pedal_data.lower_value);
   LOG_DEBUG("Accel minimum: %d\r\n", persist_data.accel_pedal_data.lower_value);
 
   LOG_DEBUG("PUSH accelerator pedal ALL THE WAY DOWN\r\n");
   delay_ms(3000);
-  sample_pedal_calibration(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL, &persist_data.accel_pedal_data.upper_value);
+  sample_pedal_calibration(&GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW, &persist_data.accel_pedal_data.upper_value);
   LOG_DEBUG("Accel maximum: %d\r\n", persist_data.accel_pedal_data.upper_value);
 
   // Brake pedal calibration

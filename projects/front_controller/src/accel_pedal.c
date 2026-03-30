@@ -22,7 +22,9 @@
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
 
-static GpioAddress s_accel_pedal_gpio = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL;
+static GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
+static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
+static GpioAddress s_accel_pedal_gpio_opamp_vref = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF;
 
 static FrontControllerStorage *front_controller_storage;
 
@@ -36,7 +38,7 @@ StatusCode accel_pedal_run() {
   }
 
   uint16_t adc_reading = s_accel_pedal_storage.calibration_data.lower_value;
-  adc_read_raw(&s_accel_pedal_gpio, &adc_reading);
+  adc_read_raw(&s_accel_pedal_gpio_raw, &adc_reading);
 
   /**
    * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
@@ -92,8 +94,8 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
 
   /* Initialize hardware */
-  gpio_init_pin(&s_accel_pedal_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
-  adc_add_channel(&s_accel_pedal_gpio);
+  gpio_init_pin(&s_accel_pedal_gpio_raw, GPIO_ANALOG, GPIO_STATE_LOW);
+  adc_add_channel(&s_accel_pedal_gpio_raw);
 
   dac_enable_channel(DAC_CHANNEL1);
   dac_set_voltage(DAC_CHANNEL1, s_accel_pedal_storage.calibration_data.lower_value);

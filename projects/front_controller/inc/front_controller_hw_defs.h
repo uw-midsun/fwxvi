@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define FRONT_CONTROLLER_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define FRONT_CONTROLLER_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Front Controller CAN definitions
@@ -94,8 +93,14 @@
  * Pedal definitions
  ************************************************************************************************/
 
-/** @brief  Front Controller accelerator pedal input */
-#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 0)
+/** @brief  Front Controller accelerator pedal raw input */
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW FRONT_CONTROLLER_GPIO_DEF(A, 0)
+
+/** @brief  Front Controller accelerator pedal input - post op-amp */
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT FRONT_CONTROLLER_GPIO_DEF(A, 3)
+
+/** @brief  Front Controller accelerator pedal input - op-amp Vref */
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF FRONT_CONTROLLER_GPIO_DEF(A, 4)
 
 /** @brief  Front Controller brake pedal input */
 #define GPIO_FRONT_CONTROLLER_BRAKE_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 5)
