@@ -33,14 +33,17 @@ class CanSimulatorDataCache:
                 "state_data": 0,
             },
 
-            "front_controller_motor_velocity": {
-                # motor_velocity cache definitions
-                "vehicle_velocity": 0,
-                "motor_velocity": 0,
+            "front_controller_motor_stats_a": {
+                # motor_stats_a cache definitions
+                "bus_voltage": 0,
+                "bus_current": 0,
+                "rail_15v_supply": 0,
             },
 
-            "front_controller_motor_temperature": {
-                # motor_temperature cache definitions
+            "front_controller_motor_stats_b": {
+                # motor_stats_b cache definitions
+                "vehicle_velocity": 0,
+                "motor_velocity": 0,
                 "heat_sink_temp": 0,
                 "motor_temp": 0,
             },

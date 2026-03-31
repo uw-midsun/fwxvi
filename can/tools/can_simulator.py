@@ -69,17 +69,17 @@ data = bytearray(pack(can_data_cache.get("front_controller_drive_status", "pedal
 
 messages_medium.append(system_can_message_front_controller_drive_status)
 
-system_can_message_front_controller_motor_velocity = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_VELOCITY_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_velocity", "vehicle_velocity"), 32) + pack(can_data_cache.get("front_controller_motor_velocity", "motor_velocity"), 32)))
+system_can_message_front_controller_motor_stats_a = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_A_ID,
+data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_a", "bus_voltage"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "bus_current"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "rail_15v_supply"), 16)))
 
-messages_medium.append(system_can_message_front_controller_motor_velocity)
+messages_medium.append(system_can_message_front_controller_motor_stats_a)
 
-system_can_message_front_controller_motor_temperature = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_TEMPERATURE_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_temperature", "heat_sink_temp"), 32) + pack(can_data_cache.get("front_controller_motor_temperature", "motor_temp"), 32)))
+system_can_message_front_controller_motor_stats_b = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_B_ID,
+data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_b", "vehicle_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "heat_sink_temp"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_temp"), 16)))
 
-messages_medium.append(system_can_message_front_controller_motor_temperature)
+messages_medium.append(system_can_message_front_controller_motor_stats_b)
 
 system_can_message_front_controller_fc_power_group_a = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_A_ID,
