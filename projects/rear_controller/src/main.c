@@ -35,7 +35,6 @@ RearControllerConfig rear_controller_config = {
 };
 
 void pre_loop_init() {
-  rear_controller_init(&rear_controller_storage, &rear_controller_config);
 }
 
 void run_1000hz_cycle() {
@@ -64,6 +63,8 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+  
+  rear_controller_init(&rear_controller_storage, &rear_controller_config);
 
   init_master_tasks();
 

@@ -113,7 +113,7 @@ messages_medium.append(system_can_message_imu_accel_data)
 
 system_can_message_rear_controller_rear_controller_status = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_rear_controller_status", "triggers"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_rear_controller_status", "triggers"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_rear_controller_status)
 

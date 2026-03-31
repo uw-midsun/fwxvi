@@ -23,7 +23,7 @@
  * To test CAN without rear controller connected, BPS_fault and precharge_complete
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
-#define IS_REAR_CONNECTED 0U
+#define IS_REAR_CONNECTED 1U
 
 #define FRONT_STATE_MANAGER_DEBUG 0U
 
@@ -132,7 +132,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
 #else
-  BpsFault bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
+  uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
 #endif
 

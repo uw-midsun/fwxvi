@@ -44,6 +44,7 @@
 #define ACS37800_MASK_FAULTOUT 0x02     /* Bit 1 */
 #define ACS37800_MASK_OVERVOLTAGE 0x08  /* Bit 3 */
 #define ACS37800_MASK_UNDERVOLTAGE 0x10 /* Bit 4 */
+#define ACS37800_MASK_BYPASS_N_EN (1UL << 24)
 
 /**
  * @brief Voltatile Memory register addresses
@@ -52,6 +53,7 @@
  * https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx
  */
 typedef enum {
+  ACS37800_REG_DIO_N_CONFIG = 0x0F,     /**< Shadow config: I2C address, DIO mux, n, bypass_n_en */
   ACS37800_REG_VRMS_IRMS = 0x20,         /**< Voltage and Current RMS */
   ACS37800_REG_VCODES_ICODES = 0x2A,     /**< Voltage and Current Instantaneous */
   ACS37800_REG_PINSTANT = 0x2C,          /**< Power Instantaneous */

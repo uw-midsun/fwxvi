@@ -38,14 +38,17 @@ static SemaphoreHandle_t s_can_rx_handle;
 static CanRxAllCallback s_can_rx_all_cb = NULL;
 
 StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
+  if (storage == NULL || settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   if (settings->device_id >= NUM_SYSTEM_CAN_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_can_storage = storage;
-  s_can_storage->device_id = settings->device_id;
-
   memset(s_can_storage, 0, sizeof(*s_can_storage));
+  s_can_storage->device_id = settings->device_id;
 
   memset(&g_tx_struct, 0, sizeof(g_tx_struct));
   memset(&g_rx_struct, 0, sizeof(g_rx_struct));
@@ -102,13 +105,6 @@ StatusCode can_receive(CanMessage *msg) {
 
   StatusCode ret = can_queue_pop(&s_can_storage->rx_queue, msg);
 
-  // if (ret == STATUS_CODE_OK)
-  // {
-  //   LOG_DEBUG("Source Id: %d\n", msg->id);
-  //   LOG_DEBUG("Data: %lx\n", msg->data);
-  //   LOG_DEBUG("DLC: %ld\n", msg->dlc);
-  //   LOG_DEBUG("ret: %d\n", ret);
-  // }
 
   return ret;
 }

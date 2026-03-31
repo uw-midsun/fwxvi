@@ -419,8 +419,6 @@ StatusCode cell_sense_init(RearControllerStorage *storage) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  cell_sense_init(storage);
-
   rear_controller_storage = storage;
   adbms_afe_storage = &(rear_controller_storage->adbms_afe_storage);
   tasks_init_task(cell_sense_conversions, TASK_PRIORITY(2), NULL);

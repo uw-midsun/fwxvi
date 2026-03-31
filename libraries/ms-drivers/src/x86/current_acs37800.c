@@ -36,6 +36,8 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
     s_registers[i] = 0;
   }
 
+  s_registers[ACS37800_REG_DIO_N_CONFIG] |= ACS37800_MASK_BYPASS_N_EN;
+
   return STATUS_CODE_OK;
 }
 
