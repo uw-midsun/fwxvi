@@ -114,9 +114,9 @@ static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint
 
 static StatusCode get_gyroscope_data(Axes *gyro) {
   uint16_t data[3] = { 0 };
-
   StatusCode status = s_get_multi_register(BMI323_REG_GYRO_REG_ADDR, data, 3);
 
+  LOG_DEBUG("status: %d", status);
   if (status == STATUS_CODE_OK) {
     int16_t raw_x = (int16_t)(data[0]);
     int16_t raw_y = (int16_t)(data[1]);
