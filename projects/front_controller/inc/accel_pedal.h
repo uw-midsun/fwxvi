@@ -25,8 +25,9 @@
  */
 
 typedef struct {
-  uint16_t lower_value; /**< ADC reading when the pedal is considered fully released */
-  uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
+  uint16_t opamp_offset; /**< min value of ADC reading (pedal is either fully pressed or released) */
+  uint16_t lower_value; /**< ADC reading when the pedal is considered fully released - post op-amp */
+  uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed - post op-amp */
   bool reversed;
 } AccelPedalCalibrationData;
 
