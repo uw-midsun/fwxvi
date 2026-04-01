@@ -103,9 +103,9 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   dac_set_voltage(FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF_DAC, s_accel_pedal_storage.calibration_data.opamp_offset);
 
   OpampConfig config = {
-    .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */
-    .vinm_sel = OPAMP_INVERTING_IO0,       /* PA0 - External feedback network */
-    .output_to_adc = true                  /* Flag for documentation */
+    .vinp_sel = OPAMP_NONINVERTING_IO0, /* PA1 - Pedal input */
+    .vinm_sel = OPAMP_INVERTING_IO0,    /* PA0 - External feedback network */
+    .output_to_adc = true               /* Flag for documentation */
   };
 
   opamp_configure(FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP, &config);
