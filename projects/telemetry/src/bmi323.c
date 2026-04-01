@@ -55,8 +55,8 @@ static StatusCode get_accel_data(Axes *accel);
 static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
 static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 
-static void s_calculate_accel_offset();
-static void s_calculate_gyro_offset();
+static StatusCode s_calculate_accel_offset();
+static StatusCode s_calculate_gyro_offset();
 static uint8_t s_get_chip_id();
 
 /************************************************************************************************
@@ -92,16 +92,24 @@ static StatusCode s_set_register(Bmi323Registers reg, uint16_t data) {
 }
 
 static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len) {
-  uint16_t tx_buffer[BMI323_MAX_NUM_DATA] = { 0U };
+  const uint8_t max_words_per_spi_frame = (uint8_t)((SPI_MAX_NUM_DATA - 1U) / 2U);
 
-  tx_buffer[0U] = WRITE_MASK & reg;
-
-  /* Copy data */
-  for (size_t i = 1; i < len + 1U; i++) {
-    tx_buffer[i] = data[i - 1U];
+  if ((data == NULL) || (len == 0U) || (len > BMI323_MAX_NUM_DATA) || (len > max_words_per_spi_frame)) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
-  return spi_exchange(imu_storage->settings->spi_port, (uint8_t *)tx_buffer, sizeof(tx_buffer), NULL, 0U);
+  /* SPI frame is: [register_address][data0_lsb][data0_msb]...[dataN_lsb][dataN_msb] */
+  uint8_t tx_buffer[SPI_MAX_NUM_DATA] = { 0U };
+  size_t tx_len = 1U + (2U * len);
+
+  tx_buffer[0U] = (uint8_t)(reg & WRITE_MASK);
+
+  for (size_t i = 0U; i < len; i++) {
+    tx_buffer[1U + (2U * i)] = (uint8_t)(data[i] & 0xFFU);
+    tx_buffer[1U + (2U * i) + 1U] = (uint8_t)((data[i] >> 8U) & 0xFFU);
+  }
+
+  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, tx_len, NULL, 0U);
 }
 
 static StatusCode get_gyroscope_data(Axes *gyro) {
@@ -201,11 +209,15 @@ static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values) 
   return result;
 }
 
-static void s_calculate_accel_offset() {
+static StatusCode s_calculate_accel_offset() {
   int16_t accel_x_off = 0, accel_y_off = 0, accel_z_off = 0;
+  StatusCode status = STATUS_CODE_OK;
 
   for (int i = 0; i < 100; ++i) {
-    get_accel_data(&imu_storage->accel);
+    status = get_accel_data(&imu_storage->accel);
+    if (status != STATUS_CODE_OK) {
+      return status;
+    }
 
     accel_x_off += imu_storage->accel.x;
     accel_y_off += imu_storage->accel.y;
@@ -222,13 +234,19 @@ static void s_calculate_accel_offset() {
   imu_storage->accel_go_values.accel_offset_x = (uint16_t)accel_x_off;
   imu_storage->accel_go_values.accel_offset_y = (uint16_t)accel_y_off;
   imu_storage->accel_go_values.accel_offset_z = (uint16_t)accel_z_off;
+
+  return STATUS_CODE_OK;
 }
 
-static void s_calculate_gyro_offset() {
+static StatusCode s_calculate_gyro_offset() {
   int16_t gyr_x_off = 0, gyr_y_off = 0, gyr_z_off = 0;
+  StatusCode status = STATUS_CODE_OK;
 
   for (int i = 0; i < 100; ++i) {
-    get_gyroscope_data(&imu_storage->gyro);
+    status = get_gyroscope_data(&imu_storage->gyro);
+    if (status != STATUS_CODE_OK) {
+      return status;
+    }
 
     gyr_x_off += imu_storage->gyro.x;
     gyr_y_off += imu_storage->gyro.y;
@@ -245,12 +263,17 @@ static void s_calculate_gyro_offset() {
   imu_storage->gyro_go_values.gyro_offset_x = (uint16_t)gyr_x_off;
   imu_storage->gyro_go_values.gyro_offset_y = (uint16_t)gyr_y_off;
   imu_storage->gyro_go_values.gyro_offset_z = (uint16_t)gyr_z_off;
+
+  return STATUS_CODE_OK;
 }
 
 static uint8_t s_get_chip_id() {
   uint16_t chip_id = 0U;
+  StatusCode status = s_get_register(BMI323_REG_CHIP_ID, &chip_id);
 
-  s_get_register(BMI323_REG_CHIP_ID, &chip_id);
+  if (status != STATUS_CODE_OK) {
+    return DUMMY_BYTE;
+  }
 
   return (chip_id & 0xFFU);
 }
@@ -266,12 +289,18 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
 
   imu_storage = storage;
 
-  s_set_register(BMI323_REG_CMD, 0xDEAF);  // soft reset
+  StatusCode status = s_set_register(BMI323_REG_CMD, 0xDEAF);  // soft reset
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   uint16_t data = DUMMY_BYTE;
 
   /* Write dummy byte to initialize SPI as per datasheet */
-  s_get_register(BMI323_REG_CHIP_ID, &data);
+  status = s_get_register(BMI323_REG_CHIP_ID, &data);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   /* BMI323 Startup time */
   delay_ms(10U);
@@ -281,7 +310,10 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
     if (data == BMI323_CHIP_ID) {
       break;
     }
-    data = s_get_chip_id();
+    status = s_get_register(BMI323_REG_CHIP_ID, &data);
+    if (status != STATUS_CODE_OK) {
+      return status;
+    }
     delay_ms(10U);
   }
 
@@ -295,7 +327,10 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
    * Enable (in high performance mode)
    */
   uint16_t acc_conf;
-  s_get_register(BMI323_REG_ACC_CONF, &acc_conf);
+  status = s_get_register(BMI323_REG_ACC_CONF, &acc_conf);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   acc_conf &= ~(0b111 << 4);
   acc_conf |= (imu_storage->settings->accel_range << 4);
@@ -304,7 +339,10 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
   acc_conf &= ~(0b111 << 12);
   acc_conf |= (0x7 << 12);
 
-  s_set_register(BMI323_REG_ACC_CONF, (uint16_t)acc_conf);
+  status = s_set_register(BMI323_REG_ACC_CONF, (uint16_t)acc_conf);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   /* CONFIGURE GYROSCOPE
    * Set range
@@ -312,7 +350,10 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
    * Enable (in high performance mode)
    */
   uint16_t gyr_conf;
-  s_get_register(BMI323_REG_GYRO_CONF, &gyr_conf);
+  status = s_get_register(BMI323_REG_GYRO_CONF, &gyr_conf);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   gyr_conf &= ~(0b111 << 4);
   gyr_conf |= (imu_storage->settings->gyro_range << 4);
@@ -321,16 +362,34 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
   gyr_conf &= ~(0b111 << 12);
   gyr_conf |= (0x7 << 12);
 
-  s_set_register(BMI323_REG_GYRO_CONF, (uint16_t)gyr_conf);
+  status = s_set_register(BMI323_REG_GYRO_CONF, (uint16_t)gyr_conf);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   uint16_t activate_config;
-  s_get_register(BMI323_REG_CHIP_ID, &activate_config);
+  status = s_get_register(BMI323_REG_CHIP_ID, &activate_config);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
-  s_calculate_accel_offset();
-  set_accel_offset_gain(&imu_storage->accel_go_values);
+  status = s_calculate_accel_offset();
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+  status = set_accel_offset_gain(&imu_storage->accel_go_values);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
-  s_calculate_gyro_offset();
-  set_gyro_offset_gain(&imu_storage->gyro_go_values);
+  status = s_calculate_gyro_offset();
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+  status = set_gyro_offset_gain(&imu_storage->gyro_go_values);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   // gyro_crt_calibration();
 
@@ -340,8 +399,15 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
 StatusCode bmi323_update(Bmi323Storage *storage) {
   /* Update GYRO/ACCEL readings */
 
-  get_accel_data(&storage->accel);
-  get_gyroscope_data(&storage->gyro);
+  StatusCode status = get_accel_data(&storage->accel);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  status = get_gyroscope_data(&storage->gyro);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   return STATUS_CODE_OK;
 }

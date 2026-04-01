@@ -26,7 +26,8 @@
 
 static Bmi323Storage *s_storage = NULL;
 
-StatusCode imu_run() {
+StatusCode imu_run() 
+{
   StatusCode status = bmi323_update(s_storage);
   if (status != STATUS_CODE_OK) {
     LOG_CRITICAL("status error");
@@ -197,6 +198,11 @@ void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw) {
  * Used to transmit CAN messages, will send the float, roll, pitch, and yaw values
  * Will also send the accel values that are stored in the struct
  */
+/*
 void imu_transmit_can(){
   set_telemetry_telemetry_data((double) &s_storage->gyro.x);
+  set_imu_data_roll((double) &s_storage->accel.) 
+  set_imu_data_pitch(val)
+  set_imu_data_yaw(val) 
 }
+  */
