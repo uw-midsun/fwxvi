@@ -22,7 +22,7 @@
 #include "log.h"
 
 // Pedal Calibration function
-StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address_raw, GpioAddress *address_amplified) {
+StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address_amplified, GpioAddress *address_raw) {
   // Erase existing data at storage location
   memset(calib_storage, 0, sizeof(*calib_storage));
 
@@ -53,13 +53,15 @@ StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalib
       calib_storage->max_reading_amplified = reading;
     }
 
-    status = adc_read_raw(address_raw, &adc_reading);
-    if (status != STATUS_CODE_OK) {
-      return STATUS_CODE_INCOMPLETE;
-    }
+    if (address_raw != NULL) {
+      status = adc_read_raw(address_raw, &adc_reading);
+      if (status != STATUS_CODE_OK) {
+        return STATUS_CODE_INCOMPLETE;
+      }
 
-    if (calib_storage->min_reading_raw > reading) {
-      calib_storage->min_reading_raw = reading;
+      if (calib_storage->min_reading_raw > reading) {
+        calib_storage->min_reading_raw = reading;
+      }
     }
   }
 
