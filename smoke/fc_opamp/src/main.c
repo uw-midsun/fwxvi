@@ -11,16 +11,16 @@
 
 /* Inter-component Headers */
 #include "adc.h"
+#include "dac.h"
 #include "delay.h"
 #include "front_controller.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
+#include "opamp.h"
 #include "power_manager.h"
 #include "status.h"
 #include "tasks.h"
-#include "dac.h"
-#include "opamp.h"
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
@@ -39,7 +39,7 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
 static GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
 static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.opamp_offset = 583, .calibration_data.lower_value = 1154, .calibration_data.upper_value = 303 };
-       
+
 static uint16_t opamp_in_adc_reading;
 static uint16_t opamp_out_adc_reading;
 static float calculated_gain;
@@ -55,9 +55,9 @@ TASK(run_pedal, TASK_STACK_1024) {
   dac_set_voltage(FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF_DAC, s_accel_pedal_storage.calibration_data.opamp_offset);
 
   OpampConfig config = {
-    .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */
-    .vinm_sel = OPAMP_INVERTING_IO0,       /* PA0 - External feedback network */
-    .output_to_adc = true                  /* Flag for documentation */
+    .vinp_sel = OPAMP_NONINVERTING_IO0, /* PA1 - Pedal input */
+    .vinm_sel = OPAMP_INVERTING_IO0,    /* PA0 - External feedback network */
+    .output_to_adc = true               /* Flag for documentation */
   };
 
   opamp_configure(FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP, &config);
