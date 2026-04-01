@@ -24,7 +24,7 @@
 #include "telemetry.h"
 #include "telemetry_hw_defs.h"
 
-static TelemetryStorage *telemetry_storage;
+static TelemetryStorage *telemetry_storage; 
 
 static TelemetryConfig s_telemetry_config = {
   .uart_port = UART_PORT_2,

@@ -17,6 +17,8 @@
 #include "imu.h"
 #include "log.h"
 #include "tasks.h"
+#include "telemetry_setters.h" // Project must be built first 
+
 
 /* Intra-component Headers */
 
@@ -24,7 +26,8 @@
 
 static Bmi323Storage *s_storage = NULL;
 
-StatusCode imu_run() {
+StatusCode imu_run() 
+{
   StatusCode status = bmi323_update(s_storage);
   if (status != STATUS_CODE_OK) {
     LOG_CRITICAL("status error");
@@ -51,7 +54,7 @@ StatusCode imu_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {  // Bmi323 is the peripheral
   if (storage == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -190,3 +193,16 @@ void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw) {
   *pitch *= (180.0f / PI);
   *roll *= (180.0f / PI);
 }
+
+/**
+ * Used to transmit CAN messages, will send the float, roll, pitch, and yaw values
+ * Will also send the accel values that are stored in the struct
+ */
+/*
+void imu_transmit_can(){
+  set_telemetry_telemetry_data((double) &s_storage->gyro.x);
+  set_imu_data_roll((double) &s_storage->accel.) 
+  set_imu_data_pitch(val)
+  set_imu_data_yaw(val) 
+}
+  */
