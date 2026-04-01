@@ -41,10 +41,9 @@ typedef enum {
  * @details The lower_value is the value at which the pedal is considered fully unpressed whereas the upper_value is the value at which the pedal is fully pressed
  */
 typedef struct PedalCalibrationData {
-  // When the pedal is considered fully unpressed
-  int16_t lower_value;
-  // When the pedal is considered fully pressed
-  int16_t upper_value;
+  uint16_t opamp_offset; /**< min value of ADC reading (pedal is either fully pressed or released) */
+  uint16_t lower_value;  /**< ADC reading when the pedal is considered fully released - post op-amp */
+  uint16_t upper_value;  /**< ADC reading when the pedal is considered fully pressed - post op-amp */
 } PedalCalibrationData;
 
 /** @brief Stores pedal calibration data for the break and the throttle pedals */
@@ -55,8 +54,9 @@ typedef struct PedalCalibBlob {
 
 /** @brief A struct that stores the max and min reading along with a sample counter for the data that is being passed in from ADC */
 typedef struct PedalCalibrationStorage {
-  uint16_t min_reading;
-  uint16_t max_reading;
+  uint16_t min_reading_raw;
+  uint16_t min_reading_amplified;
+  uint16_t max_reading_amplified;
   volatile uint32_t sample_counter;
 } PedalCalibrationStorage;
 
@@ -72,6 +72,5 @@ extern PedalCalibBlob global_calib_blob;
  * @param address - The GPIO address for the adc of the pedal
  * @return STATUS_CODE_OK on success
  */
-StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address);
-
+StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address_raw, GpioAddress *address_amplified);
 /** @} */

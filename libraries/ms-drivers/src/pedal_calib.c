@@ -22,34 +22,44 @@
 #include "log.h"
 
 // Pedal Calibration function
-StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address) {
+StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address_raw, GpioAddress *address_amplified) {
   // Erase existing data at storage location
   memset(calib_storage, 0, sizeof(*calib_storage));
 
   // Reset variables for pedal calibration storage
   int32_t average_value = 0;
   calib_storage->sample_counter = 0;
-  calib_storage->min_reading = INT16_MAX;
-  calib_storage->max_reading = INT16_MIN;
+  calib_storage->min_reading_raw = INT16_MAX;
+  calib_storage->min_reading_amplified = INT16_MAX;
+  calib_storage->max_reading_amplified = INT16_MIN;
 
   StatusCode status;
   while (calib_storage->sample_counter < NUM_SAMPLES) {
     // Read the values from the MAX, at this point the pedal should be in either
     // a fully pressed or released state
     uint16_t adc_reading;
-    status = adc_read_raw(address, &adc_reading);
+    status = adc_read_raw(address_amplified, &adc_reading);
     if (status != STATUS_CODE_OK) {
       return STATUS_CODE_INCOMPLETE;
     }
     uint16_t reading = (uint16_t)adc_reading;
     calib_storage->sample_counter++;
     average_value += reading;
-    if (calib_storage->min_reading > reading) {
-      calib_storage->min_reading = reading;
+    if (calib_storage->min_reading_amplified > reading) {
+      calib_storage->min_reading_amplified = reading;
     }
 
-    if (calib_storage->max_reading < reading) {
-      calib_storage->max_reading = reading;
+    if (calib_storage->max_reading_amplified < reading) {
+      calib_storage->max_reading_amplified = reading;
+    }
+
+    status = adc_read_raw(address_raw, &adc_reading);
+    if (status != STATUS_CODE_OK) {
+      return STATUS_CODE_INCOMPLETE;
+    }
+
+    if (calib_storage->min_reading_raw > reading) {
+      calib_storage->min_reading_raw = reading;
     }
   }
 

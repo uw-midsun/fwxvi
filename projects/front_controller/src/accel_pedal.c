@@ -29,7 +29,7 @@ static FrontControllerStorage *front_controller_storage;
 
 static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.opamp_offset = 583, .calibration_data.lower_value = 1154, .calibration_data.upper_value = 303 };
 
-#define DEBUG_ACCEL_PEDAL 1U
+#define DEBUG_ACCEL_PEDAL 0U
 
 StatusCode accel_pedal_run() {
   if (front_controller_storage == NULL) {
@@ -105,7 +105,6 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   OpampConfig config = {
     .vinp_sel = OPAMP_NONINVERTING_IO0,    /* PA1 - Pedal input */
     .vinm_sel = OPAMP_INVERTING_IO0,       /* PA0 - External feedback network */
-    .pga_gain = OPAMP_PROGRAMMABLE_GAIN_2, /* Not used in standalone mode */
     .output_to_adc = true                  /* Flag for documentation */
   };
 

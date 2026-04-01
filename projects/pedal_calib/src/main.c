@@ -20,13 +20,14 @@
 #include "pedal_calib.h"
 #include "persist.h"
 
+GpioAddress onboard_gpio = { .port = GPIO_PORT_B, .pin = 10 };
 GpioAddress accel_pedal_gpio = { .port = GPIO_PORT_A, .pin = 3 };
 GpioAddress brake_pedal_gpio = { .port = GPIO_PORT_A, .pin = 5 };
 
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
 typedef struct PedalPersistData {
-  PedalCalibrationData accel_pedal_data;
+  PedalCalibrationData accel_pedal_data_amplified;
   PedalCalibrationData brake_pedal_data;
 } PedalPersistData;
 
@@ -37,9 +38,11 @@ TASK(pedal_calib, TASK_STACK_1024) {
 
   PersistStorage persist_storage = { 0U };
 
+  gpio_init_pin(&onboard_gpio, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+
   // accel pedal data collection & set to struct
-  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data), PEDAL_PRESSED, &accel_pedal_gpio);
-  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data), PEDAL_UNPRESSED, &accel_pedal_gpio);
+  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data_amplified), PEDAL_PRESSED, &accel_pedal_gpio);
+  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data_amplified), PEDAL_UNPRESSED, &accel_pedal_gpio);
 
   // brake pedal data collection & set to struct
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_PRESSED, &brake_pedal_gpio);

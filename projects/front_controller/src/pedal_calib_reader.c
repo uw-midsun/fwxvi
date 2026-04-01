@@ -40,6 +40,7 @@ StatusCode pedal_calib_read(FrontControllerStorage *storage) {
 
   storage->accel_pedal_storage->calibration_data.lower_value = persist_data.accel_pedal_data.lower_value;
   storage->accel_pedal_storage->calibration_data.upper_value = persist_data.accel_pedal_data.upper_value;
+  storage->accel_pedal_storage->calibration_data.opamp_offset = persist_data.accel_pedal_data.opamp_offset;
 
   storage->brake_pedal_storage->calibration_data.lower_value = persist_data.brake_pedal_data.lower_value;
   storage->brake_pedal_storage->calibration_data.upper_value = persist_data.brake_pedal_data.upper_value;
