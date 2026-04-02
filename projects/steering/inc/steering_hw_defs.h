@@ -130,8 +130,8 @@
         STEERING_GPIO_DEF(E, 10), /* G3 */    \
         STEERING_GPIO_DEF(E, 11), /* G4 */    \
         STEERING_GPIO_DEF(E, 12), /* G5 */    \
-        STEERING_GPIO_DEF(E, 13),  /* G6 */    \
-        STEERING_GPIO_DEF(E, 14)   /* G7 */    \
+        STEERING_GPIO_DEF(E, 13), /* G6 */    \
+        STEERING_GPIO_DEF(E, 14)  /* G7 */    \
   }
 
 /** @brief  LTDC blue channel pins (bits 2-7) */

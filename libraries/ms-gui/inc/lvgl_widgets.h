@@ -87,8 +87,8 @@ typedef struct {
 
 /** @brief   Runtime handles for a labeled bar widget */
 typedef struct {
-  lv_obj_t *bar;            /**< LVGL bar object */
-  lv_obj_t *label;          /**< LVGL label associated with the bar */
+  lv_obj_t *bar;   /**< LVGL bar object */
+  lv_obj_t *label; /**< LVGL label associated with the bar */
 } BarWidget;
 
 /** @brief   Configuration used when creating a labeled bar widget */
