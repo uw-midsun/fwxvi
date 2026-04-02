@@ -1,6 +1,24 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_conf.h
+ *
+ * @brief   Lv Conf
+ *
+ * @date    2026-04-02
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
- * @file lv_conf.h
- * Configuration file for v9.6.0-dev
+ * @defgroup lv_conf
+ * @brief    lv_conf Firmware
+ * @{
  */
 
 /*
@@ -1435,7 +1453,6 @@
 /** Use GLFW to open window on PC and handle mouse and keyboard. Requires*/
 #define LV_USE_GLFW   0
 
-
 /** QNX Screen display and input drivers */
 #define LV_USE_QNX              0
 #if LV_USE_QNX
@@ -1525,3 +1542,5 @@
 #endif /*LV_CONF_H*/
 
 #endif /*End of "Content enable"*/
+
+/** @} */
