@@ -9,7 +9,16 @@ def set_target(option, opt, value, parser):
     if opt == "--project":
         target = f"projects/{value}"
     if opt == "--smoke":
-        target = f"smoke/{value}"
+        if value.startswith("fc"):
+            target = f"smoke/front/{value}"
+        elif value.startswith("rc"):
+            target = f"smoke/rear/{value}"
+        elif value.startswith("sc"):
+            target = f"smoke/steering/{value}"
+        elif value.startswith("tc"):
+            target = f"smoke/telemetry/{value}"
+        else:
+            target = f"smoke/{value}"
     if opt == "--library":
         target = f"libraries/{value}"
     if opt == "--python" or opt == "--py":

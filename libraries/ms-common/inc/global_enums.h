@@ -70,6 +70,28 @@ typedef enum {
 #define GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS 200U
 
 /************************************************************************************************
+ * Front Controller Global Definitions
+ ************************************************************************************************/
+
+/**
+ * @brief Stores data that defines when the pedal is full pressed or unpressed
+ * @details The lower_value is the value at which the pedal is considered fully unpressed whereas the upper_value is the value at which the pedal is fully pressed
+ */
+typedef struct PedalCalibrationData {
+  uint16_t lower_value; /**< ADC reading when the pedal is considered fully released */
+  uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
+} PedalCalibrationData;
+
+/**
+ * @brief  Pedal persist struct
+ */
+typedef struct __attribute__((aligned(4))) PedalPersistData {
+  PedalCalibrationData accel_pedal_data_raw;
+  PedalCalibrationData accel_pedal_data_amplified;
+  PedalCalibrationData brake_pedal_data;
+} PedalPersistData;
+
+/************************************************************************************************
  * Rear Controller Global Definitions
  ************************************************************************************************/
 

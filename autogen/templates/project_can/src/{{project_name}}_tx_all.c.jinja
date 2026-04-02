@@ -20,6 +20,8 @@
 #include "can_codegen.h"
 {% set messages = messages | selectattr("sender", "eq", project_name) | list -%}
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 static CanMessage s_msg = { 0U };
 
 static void prv_tx_can_message(CanMessageId id, uint8_t num_bytes, uint64_t data) {
