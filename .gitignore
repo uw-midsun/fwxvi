@@ -50,3 +50,6 @@ mpxe/Simulation_JSON/*
 
 **/**.slxc
 **/**.slx.autosave
+
+# LVGL
+libraries/lvgl9/src/

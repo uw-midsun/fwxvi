@@ -15,6 +15,7 @@ IGNORE_DIRS = [
     "libraries/FATFs",
     "libraries/CMSIS",
     "libraries/core",
+    "libraries/lvgl9",
     "mpxe",
     "build",
     "protobuf-c"

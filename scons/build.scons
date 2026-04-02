@@ -378,9 +378,30 @@ def build_lvgl_library():
         return library_targets['lvgl']
 
     print("Building library: lvgl")
-
+    
     entry = LVGL_ENTRY
     config = parse_config(entry)
+
+    lvgl_src_archive = entry.File('lvgl_src.tar.gz')
+    lvgl_src_dir = entry.Dir('src')
+
+    if not os.path.isdir(lvgl_src_dir.abspath):
+        if not lvgl_src_archive.exists():
+            raise FileNotFoundError(
+                f"Could not find LVGL sources or archive. Expected either '{lvgl_src_dir.path}' "
+                f"or '{lvgl_src_archive.path}'."
+            )
+
+        print(f"Extracting LVGL sources from {lvgl_src_archive.path}")
+        subprocess.run(
+            ['tar', '-xzvf', lvgl_src_archive.abspath, '-C', entry.abspath],
+            check=True,
+        )
+
+        if not os.path.isdir(lvgl_src_dir.abspath):
+            raise FileNotFoundError(
+                f"Extracted LVGL archive but '{lvgl_src_dir.path}' was not created."
+            )
 
     lib_deps = get_lib_deps(entry)
 
@@ -388,8 +409,6 @@ def build_lvgl_library():
     for dep in lib_deps:
         if dep not in library_targets and LIB_DIR.Dir(dep).exists():
             build_library(dep)
-
-    lvgl_src_dir = entry.Dir('src')
 
     # Recursively collect all .c source files under lvgl/src/
     # Exclude platform-specific driver directories
