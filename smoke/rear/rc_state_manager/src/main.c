@@ -50,14 +50,17 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
+
 #define CYCLE_PERIOD_MS 1000U
 #define LOG_DB_DELAY 10U
+
 static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 static InterruptSettings killswitch_settings = {
   INTERRUPT_TYPE_INTERRUPT,
   INTERRUPT_PRIORITY_NORMAL,
   INTERRUPT_EDGE_FALLING,
 };
+
 static RearControllerStorage s_rear_storage;
 static RearControllerConfig s_rear_config = { 0 };
 
