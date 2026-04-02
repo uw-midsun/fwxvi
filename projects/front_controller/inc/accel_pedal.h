@@ -53,6 +53,11 @@ StatusCode accel_pedal_run();
  */
 StatusCode accel_pedal_init(FrontControllerStorage *storage);
 
+/**
+ * @brief   Enables adc, dac, and opamp
+ * @note    Occurs separately from init() because dac voltage must be set to a value obtained by pedal_calib_read()
+ * @return  STATUS_CODE_OK
+ */
 StatusCode accel_pedal_start();
 
 /** @} */
