@@ -27,9 +27,10 @@ static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PE
 
 static FrontControllerStorage *front_controller_storage;
 
-static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.opamp_offset = 583, .calibration_data.lower_value = 1154, .calibration_data.upper_value = 303 };
+// static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.opamp_offset = 583, .calibration_data.lower_value = 1154, .calibration_data.upper_value = 303 };
+static AccelPedalStorage s_accel_pedal_storage = { 0U };
 
-#define DEBUG_ACCEL_PEDAL 0U
+#define DEBUG_ACCEL_PEDAL 1U
 
 StatusCode accel_pedal_run() {
   if (front_controller_storage == NULL) {
@@ -63,6 +64,9 @@ StatusCode accel_pedal_run() {
     calculated_reading = 1.0f - calculated_reading;
   }
 
+  // Square the value
+  calculated_reading = calculated_reading * calculated_reading;
+
   s_accel_pedal_storage.accel_percentage = front_controller_storage->config->accel_low_pass_filter_alpha * calculated_reading +
                                            (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
 
@@ -76,6 +80,7 @@ StatusCode accel_pedal_run() {
 #if (DEBUG_ACCEL_PEDAL == 1)
   LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
 #endif
+
   return STATUS_CODE_OK;
 }
 
@@ -87,15 +92,10 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
   front_controller_storage = storage;
   front_controller_storage->accel_pedal_storage = &s_accel_pedal_storage;
 
-  if (s_accel_pedal_storage.calibration_data.lower_value > s_accel_pedal_storage.calibration_data.upper_value) {
-    uint16_t tmp = s_accel_pedal_storage.calibration_data.lower_value;
-    s_accel_pedal_storage.calibration_data.lower_value = s_accel_pedal_storage.calibration_data.upper_value;
-    s_accel_pedal_storage.calibration_data.upper_value = tmp;
-    s_accel_pedal_storage.calibration_data.reversed = true;
-  }
+  return STATUS_CODE_OK;
+}
 
-  // TODO: calib_init(&s_accel_pedal_storage.calibration_data, sizeof(s_accel_pedal_storage.calibration_data), false);
-
+StatusCode accel_pedal_start() {
   /* Initialize hardware */
   adc_add_channel(&s_accel_pedal_gpio_opamp_out);
 

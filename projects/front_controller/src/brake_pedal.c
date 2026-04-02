@@ -25,7 +25,7 @@
 
 static GpioAddress s_brake_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
 static FrontControllerStorage *front_controller_storage = NULL;
-static BrakePedalStorage s_brake_pedal_storage = { .calibration_data.lower_value = 767, .calibration_data.upper_value = 4092 };
+static BrakePedalStorage s_brake_pedal_storage = { 0U };
 
 StatusCode brake_pedal_run() {
   if (front_controller_storage == NULL) {

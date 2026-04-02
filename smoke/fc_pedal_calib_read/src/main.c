@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for persist_api
+ * @brief  Smoke test for front_controller_pedal_calib_read
  *
  * @date   2025-09-16
  * @author Midnight Sun Team #24 - MSXVI
@@ -13,6 +13,7 @@
 /* Inter-component Headers */
 #include "delay.h"
 #include "flash.h"
+#include "global_enums.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
@@ -30,15 +31,7 @@
 #define PERSIST_MODE PERSIST_READER_MODE
 /************************************************************************************************** */
 
-// Test struct must be 4 byte aligned
-typedef struct __attribute__((aligned(4))) TestStruct {
-  uint16_t x;
-  uint16_t y;
-  char z;
-  uint8_t _pad[3];
-} TestStruct;
-
-TestStruct test_struct = { 0U };
+PedalPersistData test_struct = { 0U };
 PersistStorage storage = { 0U };
 
 TASK(persist_api, TASK_STACK_1024) {
@@ -67,9 +60,12 @@ TASK(persist_api, TASK_STACK_1024) {
     delay_ms(10U);
   }
 
-  test_struct.x = 32;
-  test_struct.y = 2;
-  test_struct.z = 't';
+  test_struct.accel_pedal_data_amplified.lower_value = 1U;
+  test_struct.accel_pedal_data_amplified.upper_value = 2U;
+  test_struct.accel_pedal_data_raw.lower_value = 3U;
+  test_struct.accel_pedal_data_raw.upper_value = 4U;
+  test_struct.brake_pedal_data.lower_value = 5U;
+  test_struct.brake_pedal_data.upper_value = 6U;
 
   status = persist_commit(&storage);
   if (status != STATUS_CODE_OK) {
@@ -79,7 +75,8 @@ TASK(persist_api, TASK_STACK_1024) {
 
   LOG_DEBUG("Writer commited.\r\n");
   delay_ms(10U);
-  LOG_DEBUG("Wrote test struct X: %u, Y: %u, Z: %c\r\n", test_struct.x, test_struct.y, test_struct.z);
+  LOG_DEBUG("Wrote accel raw: min=%u max=%u | accel amp: min=%u max=%u | brake: min=%u max=%u\r\n", test_struct.accel_pedal_data_raw.lower_value, test_struct.accel_pedal_data_raw.upper_value,
+            test_struct.accel_pedal_data_amplified.lower_value, test_struct.accel_pedal_data_amplified.upper_value, test_struct.brake_pedal_data.lower_value, test_struct.brake_pedal_data.upper_value);
   delay_ms(10U);
 
 #else
@@ -90,7 +87,8 @@ TASK(persist_api, TASK_STACK_1024) {
     LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);
     delay_ms(10U);
   }
-  LOG_DEBUG("Read test struct X: %u, Y: %u, Z: %c\r\n", test_struct.x, test_struct.y, test_struct.z);
+  LOG_DEBUG("Read accel raw: min=%u max=%u | accel amp: min=%u max=%u | brake: min=%u max=%u\r\n", test_struct.accel_pedal_data_raw.lower_value, test_struct.accel_pedal_data_raw.upper_value,
+            test_struct.accel_pedal_data_amplified.lower_value, test_struct.accel_pedal_data_amplified.upper_value, test_struct.brake_pedal_data.lower_value, test_struct.brake_pedal_data.upper_value);
 
 #endif
 

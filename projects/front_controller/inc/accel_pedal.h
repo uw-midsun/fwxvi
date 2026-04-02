@@ -53,4 +53,6 @@ StatusCode accel_pedal_run();
  */
 StatusCode accel_pedal_init(FrontControllerStorage *storage);
 
+StatusCode accel_pedal_start();
+
 /** @} */

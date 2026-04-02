@@ -71,10 +71,10 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   dac_init();
 
   /* Initialize front controller systems */
-  // pedal_calib_read(front_controller_storage);
   power_manager_init(front_controller_storage);
   brake_pedal_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
+  pedal_calib_read(front_controller_storage);
   opd_init(front_controller_storage);
   ws22_motor_can_init(front_controller_storage);
   motor_can_init(front_controller_storage);
@@ -83,9 +83,10 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
 
   front_controller_state_manager_init(front_controller_storage);
 
+  accel_pedal_start();
+
   /* Enable Board LED */
   gpio_init_pin(&s_front_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-
   /* ADC initialization must happen at the very end, so all channels are registered */
   adc_init();
   LOG_DEBUG("Front controller initialized\r\n");
