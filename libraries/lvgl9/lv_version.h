@@ -1,6 +1,24 @@
+#pragma once
+
+/************************************************************************************************
+ * @file    lv_version.h
+ *
+ * @brief   Lv Version
+ *
+ * @date    2026-04-02
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+
+/* Inter-component Headers */
+
+/* Intra-component Headers */
+
 /**
- * @file lv_version.h
- * The current version of LVGL
+ * @defgroup lv_version
+ * @brief    lv_version Firmware
+ * @{
  */
 
 #ifndef LV_VERSION_H
@@ -12,3 +30,5 @@
 #define LVGL_VERSION_INFO "dev"
 
 #endif /* LV_VERSION_H */
+
+/** @} */
