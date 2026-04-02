@@ -238,7 +238,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
     }
 
     /* Wait for RX to complete - CS will be released in the callback */
-    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) {
+    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) { // <-- line that breaks, everything else works.
       gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
       xSemaphoreGive(s_spi_port_handle[spi]);
       return STATUS_CODE_TIMEOUT;

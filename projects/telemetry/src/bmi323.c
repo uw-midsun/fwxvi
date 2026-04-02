@@ -57,7 +57,7 @@ static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 
 static StatusCode s_calculate_accel_offset();
 static StatusCode s_calculate_gyro_offset();
-static uint8_t s_get_chip_id();
+//static uint8_t s_get_chip_id();
 
 /************************************************************************************************
  * Private Function Definition
@@ -75,7 +75,7 @@ static StatusCode s_get_register(Bmi323Registers reg, uint16_t *data) {
 static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len) {
   uint8_t tx_buffer[2U];
 
-  tx_buffer[0U] = READ_BIT | reg;
+  tx_buffer[0U] = READ_BIT | reg; // TODO: Check datasheet
   tx_buffer[1U] = DUMMY_BYTE;
 
   return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), (uint8_t *)data, sizeof(uint16_t) * len);
@@ -266,7 +266,7 @@ static StatusCode s_calculate_gyro_offset() {
 
   return STATUS_CODE_OK;
 }
-
+/*
 static uint8_t s_get_chip_id() {
   uint16_t chip_id = 0U;
   StatusCode status = s_get_register(BMI323_REG_CHIP_ID, &chip_id);
@@ -277,6 +277,7 @@ static uint8_t s_get_chip_id() {
 
   return (chip_id & 0xFFU);
 }
+  */
 
 /************************************************************************************************
  * Public Function Definition

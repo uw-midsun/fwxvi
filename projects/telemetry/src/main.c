@@ -78,7 +78,8 @@ void run_1000hz_cycle() {}
 void run_10hz_cycle() {
   //run_can_tx_medium();
   imu_run();
-  // LOG_DEBUG("IMU: x: %u | y: %u | z: %u\r\n", (uint16_t)telemetry_storage.bmi323_storage->gyro.x * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.y * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.z * 100);
+  LOG_DEBUG("IMU: x: %u | y: %u | z: %u\r\n", (uint16_t)telemetry_storage.bmi323_storage->gyro.x * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.y * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.z * 100);
+  
 }
 
 void run_1hz_cycle() {
