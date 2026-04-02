@@ -59,16 +59,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Pull latest changes (after auto-format)
         run: |
           git fetch origin ${{ github.head_ref || github.ref_name }}
           git reset --hard FETCH_HEAD
-          git submodule sync --recursive
-          git submodule update --init --recursive
 
       - name: Get and run setup script
         run: |
