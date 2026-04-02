@@ -47,10 +47,17 @@
 #include "rear_controller.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
-
+#include "rear_controller_hw_defs.h"
+#include "interrupts.h"
+#include "gpio_interrupts.h"
 #define CYCLE_PERIOD_MS 1000U
 #define LOG_DB_DELAY 10U
-
+static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
+static InterruptSettings killswitch_settings = {
+  INTERRUPT_TYPE_INTERRUPT,
+  INTERRUPT_PRIORITY_NORMAL,
+  INTERRUPT_EDGE_FALLING,
+};
 static RearControllerStorage s_rear_storage;
 static RearControllerConfig s_rear_config = { 0 };
 
@@ -81,6 +88,7 @@ TASK(rear_controller_smoke, TASK_STACK_1024) {
   s_rear_storage.config = &s_rear_config;
   rear_controller_init(&s_rear_storage, &s_rear_config);
   delay_ms(100U);
+  gpio_init_pin(&killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
   while (true) {
     LOG_DEBUG("\n--- REAR CONTROLLER SMOKE TEST ---\n");

@@ -23,21 +23,6 @@
 
 /* Intra-component Headers */
 
-static void print_register_bytes(const char *label, uint32_t raw_data) {
-  uint8_t bytes[4] = {
-    (uint8_t)(raw_data & 0xFF),
-    (uint8_t)((raw_data >> 8) & 0xFF),
-    (uint8_t)((raw_data >> 16) & 0xFF),
-    (uint8_t)((raw_data >> 24) & 0xFF),
-  };
-
-  LOG_DEBUG("%s:\n", label);
-  for (size_t i = 0; i < 4; i++) {
-    LOG_DEBUG("Byte[%u] = 0x%02X\r\n", i, bytes[i]);
-    delay_ms(10);
-  }
-}
-
 I2CSettings i2c_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
 
 #define I2CP I2C_PORT_2

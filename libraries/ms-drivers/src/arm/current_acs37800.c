@@ -102,7 +102,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE_MV;
 
   return STATUS_CODE_OK;
 }

@@ -13,7 +13,9 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#ifdef STM32L4P5xx
 #include "lvgl.h"
+#endif
 
 /* Intra-component Headers */
 #include "status.h"
@@ -28,7 +30,11 @@
  */
 
 /* Idea of this is to seperate lvgl driver specifics from gui_* files */
+#ifdef STM32L4P5xx
 typedef lv_obj_t GuiScreen;
+#else
+typedef void GuiScreen;
+#endif
 
 /**
  * @brief   Set the background color of a screen

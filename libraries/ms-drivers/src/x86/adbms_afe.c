@@ -92,7 +92,10 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t index) {
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe) {
+  if (afe == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
   return STATUS_CODE_OK;
 }
 
@@ -124,22 +127,18 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_read_thermistor(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index) {
-  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
+StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe) {
+  if (afe == NULL || afe->settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
-  LOG_DEBUG("Board %d Thermistor %d voltage: %d\n", device_num, thermistor_index, afe->board_thermistor_voltages[index]);
-  return STATUS_CODE_OK;
-}
-
-StatusCode adbms_afe_read_board_temp(AdbmsAfeStorage *afe, uint8_t device_num) {
-  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
-    return STATUS_CODE_INVALID_ARGS;
+  for (uint8_t device_num = 0; device_num < afe->settings->num_devices; ++device_num) {
+    for (uint8_t thermistor_index = 0; thermistor_index < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; ++thermistor_index) {
+      uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
+      LOG_DEBUG("Board %d Thermistor %d voltage: %d\n", device_num, thermistor_index, afe->thermistor_voltages[index]);
+    }
   }
 
-  LOG_DEBUG("Board %d thermistor voltage: %d\n", device_num, afe->board_thermistor_voltages[device_num]);
   return STATUS_CODE_OK;
 }
 
@@ -240,15 +239,6 @@ StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, float voltage) {
-  if (afe == NULL || device_num >= ADBMS_AFE_MAX_DEVICES) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  afe->board_thermistor_voltages[device_num] = voltage;
-  return STATUS_CODE_OK;
-}
-
 StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -314,18 +304,6 @@ StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float vo
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_pack_board_thermistor_voltages(AdbmsAfeStorage *afe, float voltage) {
-  if (afe == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  uint8_t device_count = afe->settings->num_devices;
-  for (uint8_t device = 0; device < device_count; ++device) {
-    adbms_afe_set_board_thermistor_voltage(afe, device, voltage);
-  }
-  return STATUS_CODE_OK;
-}
-
 uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index) {
   if (afe == NULL) {
     return 0;
@@ -341,14 +319,6 @@ uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_n
 
   uint16_t index = device_num * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor_index;
   return afe->thermistor_voltages[index];
-}
-
-uint16_t adbms_afe_get_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num) {
-  if (afe == NULL) {
-    return 0;
-  }
-
-  return afe->board_thermistor_voltages[device_num];
 }
 
 bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {

@@ -11,11 +11,15 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#ifdef STM32L4P5xx
 #include "lvgl.h"
+#endif
 
 /* Intra-component Headers */
 #include "clut.h"
 #include "gui_widgets.h"
+
+#ifdef STM32L4P5xx
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
 
@@ -170,3 +174,40 @@ StatusCode gui_widgets_set_speed_bar(uint16_t percent) {
 
   return lvgl_widgets_set_bar_value(&s_motor_speed_bar, percent);
 }
+
+#else
+StatusCode gui_widgets_init(void) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_speed(int16_t speed_kmh) {
+  (void) speed_kmh;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_throttle_bar(uint8_t percent) {
+  (void) percent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
+  (void) percent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
+  (void) soc_percent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_temperature_bar(uint16_t percent) {
+  (void) percent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_speed_bar(uint16_t percent) {
+  (void) percent;
+  return STATUS_CODE_OK;
+}
+
+#endif

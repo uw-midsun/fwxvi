@@ -12,11 +12,16 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
+#ifdef STM32L4P5xx
 #include "clut.h"
 #include "lvgl_screens.h"
+#else
+#include "lvgl_screens.h"
+#endif
 
 /* Intra-component Headers */
 
+#ifdef STM32L4P5xx
 static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   ClutEntry color = clut_get_gui_color(color_id);
   return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
@@ -35,3 +40,14 @@ StatusCode lvgl_set_background_color(GuiScreen *screen, GuiColorId screen_color)
 GuiScreen *lvgl_get_active_screen() {
   return lv_screen_active();
 }
+#else
+StatusCode lvgl_set_background_color(GuiScreen *screen, GuiColorId screen_color) {
+  (void)screen;
+  (void)screen_color;
+  return STATUS_CODE_OK;
+}
+
+GuiScreen *lvgl_get_active_screen() {
+  return (GuiScreen *)0;
+}
+#endif

@@ -37,7 +37,12 @@ const SpiSettings spi_config = {
 };
 
 static AdbmsAfeSettings s_settings = {
-  .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ, .num_devices = 1, .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE, .num_thermistors = 1, .spi_settings = &spi_config, .spi_port = SPI_PORT_2
+  .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
+  .num_devices = 1,
+  .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
+  .num_thermistors = ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE,
+  .spi_settings = &spi_config,
+  .spi_port = SPI_PORT_2
 };
 
 static AdbmsAfeStorage s_afe;
@@ -116,57 +121,17 @@ TASK(adbms1818_driver, TASK_STACK_1024) {
     delay_ms(10);
     LOG_DEBUG("CFG B Read:  %02X %02X %02X %02X %02X %02X [PEC: %02X %02X]\r\n", rx_cfgB[0], rx_cfgB[1], rx_cfgB[2], rx_cfgB[3], rx_cfgB[4], rx_cfgB[5], rx_cfgB[6], rx_cfgB[7]);
 
-    for (uint8_t i = 0U; i < s_afe.settings->num_devices; i++) {
-      for (uint8_t j = 0U; j < s_afe.settings->num_thermistors; j++) {
-        status = adbms_afe_trigger_thermistor_conv(&s_afe, i, j);
+    status = adbms_afe_trigger_thermistor_conv(&s_afe);
 
-        if (status != STATUS_CODE_OK) {
-          LOG_DEBUG("adbms_afe_trigger_thermistor_conv() failed: %d\r\n", status);
-        }
-
-        delay_ms(10);
-
-        status = adbms_afe_read_thermistor(&s_afe, i, j);
-
-        if (status != STATUS_CODE_OK) {
-          LOG_DEBUG("adbms_afe_read_thermistor() failed: %d\r\n", status);
-        } else {
-          uint16_t temperature_c = calculate_board_thermistor_temperature(ADBMS1818_AFE_THERMISTOR_VOLTAGE_LOOKUP(s_afe, i, j) / 10U);
-          LOG_DEBUG("Board number: %u, Thermistor: %u has voltage: %u 100uV, and temperature: %u C\r\n", i, j, ADBMS1818_AFE_THERMISTOR_VOLTAGE_LOOKUP(s_afe, i, j), temperature_c);
-        }
-      }
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("adbms_afe_trigger_thermistor_conv() failed: %d\r\n", status);
     }
 
-    for (uint8_t i = 0U; i < s_afe.settings->num_devices; i++) {
-      status = adbms_afe_trigger_board_temp_conv(&s_afe, i);
+    delay_ms(10);
 
-      if (status != STATUS_CODE_OK) {
-        LOG_DEBUG("adbms_afe_trigger_board_temp_conv() failed: %d\r\n", status);
-      }
-
-      delay_ms(10);
-    }
-
-    for (uint8_t i = 0U; i < s_afe.settings->num_devices; i++) {
-      status = adbms_afe_read_board_temp(&s_afe, i);
-
-      if (status != STATUS_CODE_OK) {
-        LOG_DEBUG("adbms_afe_read_board_temp() failed: %d\n", status);
-      } else {
-        uint16_t temperature_c = calculate_board_thermistor_temperature(s_afe.board_thermistor_voltages[i] / 10U);
-        LOG_DEBUG("Board number: %u has Board thermistor voltage: %u 100uV, and temperature: %u C\r\n", i, s_afe.board_thermistor_voltages[i], temperature_c);
-      }
-      adbms_afe_write_config(&s_afe);
-
-      uint8_t rx_cfgA[8] = { 0 };
-      uint8_t rx_cfgB[8] = { 0 };
-      uint8_t cmd[4] = { 0 };
-
-      /* --- Read back CFG A --- */
-      wakeup();
-      build_cmd(ADBMS1818_RDCFGA_RESERVED, cmd);
-      spi_exchange(SPI_PORT_2, cmd, 4, rx_cfgA, 8);
-      delay_ms(10);
+    status = adbms_afe_read_thermistors(&s_afe);
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("adbms_afe_read_thermistors() failed: %d\r\n", status);
     }
 
     delay_ms(1000);
