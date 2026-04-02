@@ -48,13 +48,16 @@ BO_   1361 drive_status: 5 front_controller
   SG_ pedal_percentage : 0|32@1+ (1,0) [0|4294967295] "" telemetry, steering, rear_controller
   SG_ state_data : 32|8@1+ (1,0) [|] "" telemetry, steering, rear_controller
 
-BO_   1377 motor_velocity: 8 front_controller
-  SG_ vehicle_velocity : 0|32@1+ (1,0) [0|4294967295] "" telemetry, steering
-  SG_ motor_velocity : 32|32@1+ (1,0) [0|4294967295] "" telemetry, steering
+BO_   1377 motor_stats_A: 6 front_controller
+  SG_ bus_voltage : 0|16@1+ (1,0) [0|65535] "" telemetry, steering, rear_controller
+  SG_ bus_current : 16|16@1+ (1,0) [0|65535] "" telemetry, steering, rear_controller
+  SG_ rail_15v_supply : 32|16@1+ (1,0) [0|65535] "" telemetry, steering, rear_controller
 
-BO_   1393 motor_temperature: 8 front_controller
-  SG_ heat_sink_temp : 0|32@1+ (1,0) [0|4294967295] "" telemetry, steering
-  SG_ motor_temp : 32|32@1+ (1,0) [0|4294967295] "" telemetry, steering
+BO_   1393 motor_stats_B: 8 front_controller
+  SG_ vehicle_velocity : 0|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ motor_velocity : 16|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ heat_sink_temp : 32|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ motor_temp : 48|16@1+ (1,0) [0|65535] "" telemetry, steering
 
 BO_   1521 fc_power_group_A: 8 front_controller
   SG_ rev_cam_current : 0|16@1+ (1,0) [0|65535] "" telemetry

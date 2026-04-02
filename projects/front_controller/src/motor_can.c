@@ -125,6 +125,19 @@ StatusCode motor_can_update_target_current_velocity() {
   return STATUS_CODE_OK;
 }
 
+StatusCode motor_can_forward_can_data() {
+  set_motor_stats_A_bus_voltage((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage);
+  set_motor_stats_A_bus_current((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_current);
+  set_motor_stats_A_rail_15v_supply((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.rail_15v_supply);
+
+  set_motor_stats_B_vehicle_velocity((int16_t)front_controller_storage->vehicle_speed_kph);
+  set_motor_stats_B_motor_velocity((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
+  set_motor_stats_B_heat_sink_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.heat_sink_temp);
+  set_motor_stats_B_motor_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_temp);
+
+  return STATUS_CODE_OK;
+}
+
 StatusCode motor_can_init(FrontControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;

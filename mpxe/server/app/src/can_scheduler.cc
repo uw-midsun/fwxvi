@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the CanScheduler class
  *
- * @date   2026-03-16
+ * @date   2026-03-23
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -61,12 +61,12 @@ void CanScheduler::scheduleCanMessages() {
   canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS;
   canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].can_dlc = 5U;
   memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_VELOCITY;
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].can_dlc = 8U;
-  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_TEMPERATURE;
-  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].can_dlc = 8U;
-  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_A;
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].can_dlc = 6U;
+  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_B;
+  canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].can_dlc = 8U;
+  memset(canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
   canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].can_id = SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA;
   canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].can_dlc = 6U;
   memset(canMediumCycleBCM.frame[MEDIUM_IMU_GYRO_DATA_FRAME_INDEX].data, 0U, MAX_MESSAGE_LENGTH);
@@ -272,61 +272,92 @@ void CanScheduler::update_drive_status_state_data(uint8_t state_data_value) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_motor_velocity_vehicle_velocity(uint32_t vehicle_velocity_value) {
+void CanScheduler::update_motor_stats_a_bus_voltage(uint16_t bus_voltage_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 0U] = (vehicle_velocity_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 1U] = (vehicle_velocity_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 2U] = (vehicle_velocity_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 3U] = (vehicle_velocity_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 0U] = (bus_voltage_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 1U] = (bus_voltage_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update motor_velocity vehicle_velocity}");
+      throw std::runtime_error("Failed to update motor_stats_a bus_voltage}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_motor_velocity_motor_velocity(uint32_t motor_velocity_value) {
+void CanScheduler::update_motor_stats_a_bus_current(uint16_t bus_current_value) {
+  try {
+    unsigned int start_byte = 2;
+
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 0U] = (bus_current_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 1U] = (bus_current_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update motor_stats_a bus_current}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_motor_stats_a_rail_15v_supply(uint16_t rail_15v_supply_value) {
   try {
     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 0U] = (motor_velocity_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 1U] = (motor_velocity_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 2U] = (motor_velocity_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX].data[start_byte + 3U] = (motor_velocity_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 0U] = (rail_15v_supply_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX].data[start_byte + 1U] = (rail_15v_supply_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update motor_velocity motor_velocity}");
+      throw std::runtime_error("Failed to update motor_stats_a rail_15v_supply}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_motor_temperature_heat_sink_temp(uint32_t heat_sink_temp_value) {
+void CanScheduler::update_motor_stats_b_vehicle_velocity(uint16_t vehicle_velocity_value) {
   try {
     unsigned int start_byte = 0;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 0U] = (heat_sink_temp_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 1U] = (heat_sink_temp_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 2U] = (heat_sink_temp_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 3U] = (heat_sink_temp_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 0U] = (vehicle_velocity_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 1U] = (vehicle_velocity_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update motor_temperature heat_sink_temp}");
+      throw std::runtime_error("Failed to update motor_stats_b vehicle_velocity}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_motor_temperature_motor_temp(uint32_t motor_temp_value) {
+void CanScheduler::update_motor_stats_b_motor_velocity(uint16_t motor_velocity_value) {
+  try {
+    unsigned int start_byte = 2;
+
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 0U] = (motor_velocity_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 1U] = (motor_velocity_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update motor_stats_b motor_velocity}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_motor_stats_b_heat_sink_temp(uint16_t heat_sink_temp_value) {
   try {
     unsigned int start_byte = 4;
 
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 0U] = (motor_temp_value >> 0U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 1U] = (motor_temp_value >> 8U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 2U] = (motor_temp_value >> 16U) & 0xFFU;
-    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX].data[start_byte + 3U] = (motor_temp_value >> 24U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 0U] = (heat_sink_temp_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 1U] = (heat_sink_temp_value >> 8U) & 0xFFU;
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
-      throw std::runtime_error("Failed to update motor_temperature motor_temp}");
+      throw std::runtime_error("Failed to update motor_stats_b heat_sink_temp}");
+    }
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+void CanScheduler::update_motor_stats_b_motor_temp(uint16_t motor_temp_value) {
+  try {
+    unsigned int start_byte = 6;
+
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 0U] = (motor_temp_value >> 0U) & 0xFFU;
+    canMediumCycleBCM.frame[MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX].data[start_byte + 1U] = (motor_temp_value >> 8U) & 0xFFU;
+    if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
+      throw std::runtime_error("Failed to update motor_stats_b motor_temp}");
     }
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;

@@ -89,8 +89,8 @@ class CanScheduler {
 
   static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 0U;  /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
   static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX = 1U;          /**< Broadcast Manager drive_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_MOTOR_VELOCITY_FRAME_INDEX = 2U;        /**< Broadcast Manager motor_velocity to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_MOTOR_TEMPERATURE_FRAME_INDEX = 3U;     /**< Broadcast Manager motor_temperature to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_A_FRAME_INDEX = 2U;         /**< Broadcast Manager motor_stats_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_MOTOR_STATS_B_FRAME_INDEX = 3U;         /**< Broadcast Manager motor_stats_b to Frame index mapping */
   static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 4U;                          /**< Broadcast Manager gyro_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 5U;                         /**< Broadcast Manager accel_data to Frame index mapping */
   static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX = 6U; /**< Broadcast Manager rear_controller_status to Frame index mapping */
@@ -174,25 +174,40 @@ class CanScheduler {
    */
   void update_drive_status_state_data(uint8_t state_data_value);
   /**
-   * @brief   Update the CAN value for motor_velocity vehicle_velocity
+   * @brief   Update the CAN value for motor_stats_a bus_voltage
+   * @param   bus_voltage_value New value for the signal
+   */
+  void update_motor_stats_a_bus_voltage(uint16_t bus_voltage_value);
+  /**
+   * @brief   Update the CAN value for motor_stats_a bus_current
+   * @param   bus_current_value New value for the signal
+   */
+  void update_motor_stats_a_bus_current(uint16_t bus_current_value);
+  /**
+   * @brief   Update the CAN value for motor_stats_a rail_15v_supply
+   * @param   rail_15v_supply_value New value for the signal
+   */
+  void update_motor_stats_a_rail_15v_supply(uint16_t rail_15v_supply_value);
+  /**
+   * @brief   Update the CAN value for motor_stats_b vehicle_velocity
    * @param   vehicle_velocity_value New value for the signal
    */
-  void update_motor_velocity_vehicle_velocity(uint32_t vehicle_velocity_value);
+  void update_motor_stats_b_vehicle_velocity(uint16_t vehicle_velocity_value);
   /**
-   * @brief   Update the CAN value for motor_velocity motor_velocity
+   * @brief   Update the CAN value for motor_stats_b motor_velocity
    * @param   motor_velocity_value New value for the signal
    */
-  void update_motor_velocity_motor_velocity(uint32_t motor_velocity_value);
+  void update_motor_stats_b_motor_velocity(uint16_t motor_velocity_value);
   /**
-   * @brief   Update the CAN value for motor_temperature heat_sink_temp
+   * @brief   Update the CAN value for motor_stats_b heat_sink_temp
    * @param   heat_sink_temp_value New value for the signal
    */
-  void update_motor_temperature_heat_sink_temp(uint32_t heat_sink_temp_value);
+  void update_motor_stats_b_heat_sink_temp(uint16_t heat_sink_temp_value);
   /**
-   * @brief   Update the CAN value for motor_temperature motor_temp
+   * @brief   Update the CAN value for motor_stats_b motor_temp
    * @param   motor_temp_value New value for the signal
    */
-  void update_motor_temperature_motor_temp(uint32_t motor_temp_value);
+  void update_motor_stats_b_motor_temp(uint16_t motor_temp_value);
   /**
    * @brief   Update the CAN value for fc_power_group_a rev_cam_current
    * @param   rev_cam_current_value New value for the signal

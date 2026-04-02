@@ -140,7 +140,7 @@ StatusCode cruise_control_run_medium_cycle() {
     }
 
     // Cruise control should start from our current speed
-    int16_t current_speed_kmh_from_front_signed = (int16_t)get_motor_velocity_vehicle_velocity();
+    int16_t current_speed_kmh_from_front_signed = (int16_t)get_motor_stats_B_vehicle_velocity();
 
     if (current_speed_kmh_from_front_signed < 0) {
       return STATUS_CODE_INVALID_ARGS;

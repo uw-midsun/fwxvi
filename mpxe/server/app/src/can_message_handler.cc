@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the Can Message Handler function
  *
- * @date   2026-03-16
+ * @date   2026-03-23
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -213,14 +213,15 @@ struct drive_status {
   }
 };
 /**
- * @brief   Storage class for motor_velocity CAN message
+ * @brief   Storage class for motor_stats_a CAN message
  */
-struct motor_velocity {
-  uint32_t vehicle_velocity; /**< CAN signal 'vehicle_velocity' defined in *.yaml */
-  uint32_t motor_velocity;   /**< CAN signal 'motor_velocity' defined in *.yaml */
+struct motor_stats_a {
+  uint16_t bus_voltage;     /**< CAN signal 'bus_voltage' defined in *.yaml */
+  uint16_t bus_current;     /**< CAN signal 'bus_current' defined in *.yaml */
+  uint16_t rail_15v_supply; /**< CAN signal 'rail_15v_supply' defined in *.yaml */
 
   /**
-   * @brief   Decode new CAN data and update the storage for motor_velocity
+   * @brief   Decode new CAN data and update the storage for motor_stats_A
    * @param   data Pointer to the CAN message to be decoded
    */
   void decode(const uint8_t *data) {
@@ -231,87 +232,105 @@ struct motor_velocity {
       start_byte = 0;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
+
+      bus_voltage = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 2;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
+
+      bus_current = raw_val;
+    }
+    {
+      raw_val = 0U;
+      start_byte = 4;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
+
+      rail_15v_supply = raw_val;
+    }
+  }
+
+  /**
+   * @brief   Create a JSON object for motor_stats_A using the storage
+   */
+  nlohmann::json to_json() const {
+    return { { "bus_voltage", bus_voltage }, { "bus_current", bus_current }, { "rail_15v_supply", rail_15v_supply } };
+  }
+
+  /**
+   * @brief   Get the message name: motor_stats_A
+   * @return  Returns the message name
+   */
+  std::string get_message_name() const {
+    return "motor_stats_A";
+  }
+};
+/**
+ * @brief   Storage class for motor_stats_b CAN message
+ */
+struct motor_stats_b {
+  uint16_t vehicle_velocity; /**< CAN signal 'vehicle_velocity' defined in *.yaml */
+  uint16_t motor_velocity;   /**< CAN signal 'motor_velocity' defined in *.yaml */
+  uint16_t heat_sink_temp;   /**< CAN signal 'heat_sink_temp' defined in *.yaml */
+  uint16_t motor_temp;       /**< CAN signal 'motor_temp' defined in *.yaml */
+
+  /**
+   * @brief   Decode new CAN data and update the storage for motor_stats_B
+   * @param   data Pointer to the CAN message to be decoded
+   */
+  void decode(const uint8_t *data) {
+    uint64_t raw_val = 0U;
+    uint8_t start_byte = 0U;
+    {
+      raw_val = 0U;
+      start_byte = 0;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
 
       vehicle_velocity = raw_val;
     }
     {
       raw_val = 0U;
-      start_byte = 4;
+      start_byte = 2;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
 
       motor_velocity = raw_val;
     }
-  }
-
-  /**
-   * @brief   Create a JSON object for motor_velocity using the storage
-   */
-  nlohmann::json to_json() const {
-    return { { "vehicle_velocity", vehicle_velocity }, { "motor_velocity", motor_velocity } };
-  }
-
-  /**
-   * @brief   Get the message name: motor_velocity
-   * @return  Returns the message name
-   */
-  std::string get_message_name() const {
-    return "motor_velocity";
-  }
-};
-/**
- * @brief   Storage class for motor_temperature CAN message
- */
-struct motor_temperature {
-  uint32_t heat_sink_temp; /**< CAN signal 'heat_sink_temp' defined in *.yaml */
-  uint32_t motor_temp;     /**< CAN signal 'motor_temp' defined in *.yaml */
-
-  /**
-   * @brief   Decode new CAN data and update the storage for motor_temperature
-   * @param   data Pointer to the CAN message to be decoded
-   */
-  void decode(const uint8_t *data) {
-    uint64_t raw_val = 0U;
-    uint8_t start_byte = 0U;
     {
       raw_val = 0U;
-      start_byte = 0;
+      start_byte = 4;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
 
       heat_sink_temp = raw_val;
     }
     {
       raw_val = 0U;
-      start_byte = 4;
+      start_byte = 6;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
 
       motor_temp = raw_val;
     }
   }
 
   /**
-   * @brief   Create a JSON object for motor_temperature using the storage
+   * @brief   Create a JSON object for motor_stats_B using the storage
    */
   nlohmann::json to_json() const {
-    return { { "heat_sink_temp", heat_sink_temp }, { "motor_temp", motor_temp } };
+    return { { "vehicle_velocity", vehicle_velocity }, { "motor_velocity", motor_velocity }, { "heat_sink_temp", heat_sink_temp }, { "motor_temp", motor_temp } };
   }
 
   /**
-   * @brief   Get the message name: motor_temperature
+   * @brief   Get the message name: motor_stats_B
    * @return  Returns the message name
    */
   std::string get_message_name() const {
-    return "motor_temperature";
+    return "motor_stats_B";
   }
 };
 /**
@@ -1322,14 +1341,14 @@ void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_VELOCITY: {
-      motor_velocity *message = new motor_velocity();
+    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_A: {
+      motor_stats_a *message = new motor_stats_a();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
-    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_TEMPERATURE: {
-      motor_temperature *message = new motor_temperature();
+    case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_B: {
+      motor_stats_b *message = new motor_stats_b();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;

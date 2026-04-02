@@ -62,4 +62,10 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event);
  */
 RearControllerState rear_controller_state_manager_get_state(void);
 
+/**
+ * @brief   Update the state/set relays based on information recieved from CAN (medium cycle).
+ * @return  STATUS_CODE_OK if udpated successfully
+ */
+StatusCode rear_controller_update_state_manager_medium_cycle();
+
 /** @} */
