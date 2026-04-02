@@ -107,8 +107,8 @@ typedef struct AdbmsAfeSettings {
  *          - Each AFE's data (voltages, lookups, etc.) is stored contiguously before the next AFE's data.
  */
 typedef struct AdbmsAfeStorage {
-  uint16_t cell_voltages[ADBMS_AFE_MAX_CELLS];                         /**< Stores cell voltages for all devices */
-  uint16_t thermistor_voltages[ADBMS_AFE_MAX_CELL_THERMISTORS];        /**< Stores thermistor voltages for all devices */
+  uint16_t cell_voltages[ADBMS_AFE_MAX_CELLS];                  /**< Stores cell voltages for all devices */
+  uint16_t thermistor_voltages[ADBMS_AFE_MAX_CELL_THERMISTORS]; /**< Stores thermistor voltages for all devices */
 
   uint16_t cell_result_lookup[ADBMS_AFE_MAX_CELLS];    /**< Map raw cell indices read from AFE to `cell_voltages` */
   uint16_t discharge_cell_lookup[ADBMS_AFE_MAX_CELLS]; /**< Map indicies of `cell_voltages` to raw cell indices */

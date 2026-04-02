@@ -105,7 +105,6 @@ StatusCode can_receive(CanMessage *msg) {
 
   StatusCode ret = can_queue_pop(&s_can_storage->rx_queue, msg);
 
-
   return ret;
 }
 

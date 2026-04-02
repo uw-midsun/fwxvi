@@ -181,32 +181,32 @@ StatusCode gui_widgets_init(void) {
 }
 
 StatusCode gui_widgets_set_speed(int16_t speed_kmh) {
-  (void) speed_kmh;
+  (void)speed_kmh;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_widgets_set_throttle_bar(uint8_t percent) {
-  (void) percent;
+  (void)percent;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
-  (void) percent;
+  (void)percent;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
-  (void) soc_percent;
+  (void)soc_percent;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_widgets_set_temperature_bar(uint16_t percent) {
-  (void) percent;
+  (void)percent;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_widgets_set_speed_bar(uint16_t percent) {
-  (void) percent;
+  (void)percent;
   return STATUS_CODE_OK;
 }
 

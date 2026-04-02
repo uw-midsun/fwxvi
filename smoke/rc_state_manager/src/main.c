@@ -44,12 +44,12 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "gpio_interrupts.h"
+#include "interrupts.h"
 #include "rear_controller.h"
+#include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
-#include "rear_controller_hw_defs.h"
-#include "interrupts.h"
-#include "gpio_interrupts.h"
 #define CYCLE_PERIOD_MS 1000U
 #define LOG_DB_DELAY 10U
 static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;

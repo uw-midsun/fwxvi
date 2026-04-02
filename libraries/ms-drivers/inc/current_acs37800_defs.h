@@ -53,7 +53,7 @@
  * https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx
  */
 typedef enum {
-  ACS37800_REG_DIO_N_CONFIG = 0x0F,     /**< Shadow config: I2C address, DIO mux, n, bypass_n_en */
+  ACS37800_REG_DIO_N_CONFIG = 0x0F,      /**< Shadow config: I2C address, DIO mux, n, bypass_n_en */
   ACS37800_REG_VRMS_IRMS = 0x20,         /**< Voltage and Current RMS */
   ACS37800_REG_VCODES_ICODES = 0x2A,     /**< Voltage and Current Instantaneous */
   ACS37800_REG_PINSTANT = 0x2C,          /**< Power Instantaneous */
