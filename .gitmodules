@@ -1,3 +1,0 @@
-[submodule "libraries/lvgl9"]
-	path = libraries/lvgl9
-	url = https://github.com/uw-midsun/lvgl9
