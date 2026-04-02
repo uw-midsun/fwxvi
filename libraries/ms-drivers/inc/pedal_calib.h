@@ -45,9 +45,8 @@ typedef struct PedalCalibBlob {
 
 /** @brief A struct that stores the max and min reading along with a sample counter for the data that is being passed in from ADC */
 typedef struct PedalCalibrationStorage {
-  uint16_t min_reading_raw;
-  uint16_t min_reading_amplified;
-  uint16_t max_reading_amplified;
+  uint16_t min_reading;
+  uint16_t max_reading;
   volatile uint32_t sample_counter;
 } PedalCalibrationStorage;
 

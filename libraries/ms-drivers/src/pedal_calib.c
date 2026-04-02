@@ -32,9 +32,8 @@ StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalib
   // Reset variables for pedal calibration storage
   int32_t average_value = 0;
   calib_storage->sample_counter = 0;
-  calib_storage->min_reading_raw = INT16_MAX;
-  calib_storage->min_reading_amplified = INT16_MAX;
-  calib_storage->max_reading_amplified = INT16_MIN;
+  calib_storage->min_reading = INT16_MAX;
+  calib_storage->max_reading = INT16_MIN;
 
   StatusCode status;
   while (calib_storage->sample_counter < NUM_SAMPLES) {
@@ -50,12 +49,12 @@ StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalib
     }
     calib_storage->sample_counter++;
     average_value += adc_reading;
-    if (calib_storage->min_reading_amplified > adc_reading) {
-      calib_storage->min_reading_amplified = adc_reading;
+    if (calib_storage->min_reading > adc_reading) {
+      calib_storage->min_reading = adc_reading;
     }
 
-    if (calib_storage->max_reading_amplified < adc_reading) {
-      calib_storage->max_reading_amplified = adc_reading;
+    if (calib_storage->max_reading < adc_reading) {
+      calib_storage->max_reading = adc_reading;
     }
 
     LOG_DEBUG("Sampling %u: %u\r\n", (uint16_t)calib_storage->sample_counter, adc_reading);
