@@ -27,10 +27,9 @@ static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PE
 
 static FrontControllerStorage *front_controller_storage;
 
-// static AccelPedalStorage s_accel_pedal_storage = { .calibration_data.opamp_offset = 583, .calibration_data.lower_value = 1154, .calibration_data.upper_value = 303 };
 static AccelPedalStorage s_accel_pedal_storage = { 0U };
 
-#define DEBUG_ACCEL_PEDAL 1U
+#define DEBUG_ACCEL_PEDAL 0U
 
 StatusCode accel_pedal_run() {
   if (front_controller_storage == NULL) {

@@ -255,7 +255,7 @@ static void print_rear_controller(const rear_controller_tx_struct *data) {
 static void print_steering(const steering_tx_struct *data) {
   LOG_DEBUG("  [STEERING]\r\n");
   LOG_DEBUG("    Buttons (raw):        0x%02X\r\n", (uint16_t)data->steering_buttons);
-  LOG_DEBUG("    Target Vel:           %lu\r\n", (uint64_t)data->steering_cruise_control_target_velocity);
+  LOG_DEBUG("    Target Vel:           %llu\r\n", (uint64_t)data->steering_cruise_control_target_velocity);
 }
 
 // Read little-endian from data buffer in messages

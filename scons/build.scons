@@ -34,6 +34,17 @@ LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
 
 AUTOGEN_DIR = ROOT.Dir("autogen")
 
+
+def get_smoke_entries():
+    # Smoke targets can now be nested (e.g. smoke/front/fc_current_sense).
+    # Discover only directories that define config.json
+    smoke_root = Path(SMOKE_DIR.abspath)
+    entries = []
+    for config_file in sorted(smoke_root.rglob('config.json')):
+        rel_dir = config_file.parent.relative_to(Path(ROOT.abspath))
+        entries.append(ROOT.Dir(str(rel_dir)))
+    return entries
+
 def src(path):
     # return all source files within a path
     srcs = []
@@ -490,7 +501,7 @@ if LIB_DIR.Dir('ms-mpxe').exists():
 ###########################################################
 # Create appropriate targets for all projects and smoke projects
 ###########################################################
-for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
+for entry in PROJ_DIR.glob('*') + get_smoke_entries():
     config = parse_config(entry)
 
     incs = inc(entry)

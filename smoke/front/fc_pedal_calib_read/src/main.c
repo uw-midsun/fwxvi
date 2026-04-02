@@ -40,7 +40,7 @@ TASK(persist_api, TASK_STACK_1024) {
   flash_init();
 #if (PERSIST_MODE == PERSIST_WRITER_MODE)
 
-  LOG_DEBUG("Starting persist smoke test - writer mode\r\n");
+  LOG_DEBUG("Starting pedal calib smoke test - writer mode\r\n");
   delay_ms(10U);
   if (sizeof(test_struct) % FLASH_MEMORY_ALIGNMENT != 0) {
     LOG_DEBUG("Warning: size of test struct: %u is not %u-byte aligned!!\r\n", sizeof(test_struct), FLASH_MEMORY_ALIGNMENT);
@@ -80,7 +80,7 @@ TASK(persist_api, TASK_STACK_1024) {
   delay_ms(10U);
 
 #else
-  LOG_DEBUG("Starting persist smoke test - reader mode\r\n");
+  LOG_DEBUG("Starting pedal calib smoke test - reader mode\r\n");
   delay_ms(10U);
   status = persist_init(&storage, LAST_PAGE, &test_struct, sizeof(test_struct), false);
   if (status != STATUS_CODE_OK) {

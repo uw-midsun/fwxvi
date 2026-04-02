@@ -114,7 +114,8 @@ TASK(cycle_ws22, TASK_STACK_1024) {
   while (true) {
     for (VehicleDriveState state = VEHICLE_DRIVE_STATE_NEUTRAL; state <= VEHICLE_DRIVE_STATE_REVERSE; state++) {
       front_controller_storage.brake_enabled = false;
-      g_rx_struct.steering_buttons_drive_state = state;  // Mock drive state from steering
+      // Mock drive state from steering
+      g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b11 << 0)) | ((state & 0b11) << 0);
 
       for (float i = test_current_min; i <= test_current_max; i += step_size) {
         front_controller_storage.accel_percentage = i;

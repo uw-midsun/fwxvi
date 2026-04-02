@@ -62,6 +62,33 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+static void set_rear_controller_status_triggers_bps_fault(uint16_t val) {
+  g_rx_struct.rear_controller_status_triggers = (g_rx_struct.rear_controller_status_triggers & ~(0b11111111111 << 0)) | ((val & 0b11111111111) << 0);
+}
+
+static void set_rear_controller_status_triggers_motor_precharge_complete(uint16_t val) {
+  g_rx_struct.rear_controller_status_triggers = (g_rx_struct.rear_controller_status_triggers & ~(0b1 << 14)) | ((val & 0b1) << 14);
+}
+
+static void set_steering_buttons_drive_state(uint16_t val) {
+  g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b11 << 0)) | ((val & 0b11) << 0);
+}
+static void set_steering_buttons_lights(uint16_t val) {
+  g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b11 << 2)) | ((val & 0b11) << 2);
+}
+// static void set_steering_buttons_cruise_control_enabled(uint16_t val) {
+//   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 4)) | ((val & 0b1) << 4);
+// }
+// static void set_steering_buttons_hazard_enabled(uint16_t val) {
+//   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 5)) | ((val & 0b1) << 5);
+// }
+static void set_steering_buttons_horn_enabled(uint16_t val) {
+  g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 6)) | ((val & 0b1) << 6);
+}
+// static void set_steering_buttons_regen_enabled(uint16_t val) {
+//   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 7)) | ((val & 0b1) << 7);
+// }
+
 static const char *print_state_str(FrontControllerState state) {
   switch (state) {
     case FRONT_CONTROLLER_STATE_IDLE:
@@ -104,11 +131,11 @@ TASK(front_controller_simulate_can, TASK_STACK_1024) {
 
   while (true) {
     LOG_DEBUG("\n--- FRONT CONTROLLER SMOKE TEST ---\n");
-    g_rx_struct.rear_controller_status_bps_fault = 0;
-    g_rx_struct.battery_stats_B_motor_precharge_complete = 0;
-    g_rx_struct.steering_buttons_drive_state = 0;
-    g_rx_struct.steering_buttons_horn_enabled = 0;
-    g_rx_struct.steering_buttons_lights = 0;
+    set_rear_controller_status_triggers_bps_fault(0);
+    set_rear_controller_status_triggers_motor_precharge_complete(0);
+    set_steering_buttons_drive_state(0U);
+    set_steering_buttons_horn_enabled(0U);
+    set_steering_buttons_lights(0U);
     delay_ms(LOG_DB_DELAY);
     LOG_DEBUG(">> Step 1: Simulating Initialization Complete... \n");
     delay_ms(LOG_DB_DELAY);
@@ -116,54 +143,54 @@ TASK(front_controller_simulate_can, TASK_STACK_1024) {
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 2 : Requesting Drive With Incomplete Precharge...\n");
-    g_rx_struct.steering_buttons_drive_state = VEHICLE_DRIVE_STATE_DRIVE;
-    g_rx_struct.battery_stats_B_motor_precharge_complete = 0U;
+    set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
+    set_rear_controller_status_triggers_motor_precharge_complete(0);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 3 : Requesting Drive With Complete Precharge...\n");
-    g_rx_struct.steering_buttons_drive_state = VEHICLE_DRIVE_STATE_DRIVE;
-    g_rx_struct.battery_stats_B_motor_precharge_complete = 1U;
+    set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
+    set_rear_controller_status_triggers_motor_precharge_complete(1U);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 4 : Steering Lights Left...\n");
-    g_rx_struct.steering_buttons_lights = STEERING_LIGHTS_LEFT_STATE;
+    set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 5 : Steering Lights Right...\n");
-    g_rx_struct.steering_buttons_lights = STEERING_LIGHTS_RIGHT_STATE;
+    set_steering_buttons_lights(STEERING_LIGHTS_RIGHT_STATE);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 6 : Steering Lights Hazard...\n");
-    g_rx_struct.steering_buttons_lights = STEERING_LIGHTS_HAZARD_STATE;
+    set_steering_buttons_lights(STEERING_LIGHTS_HAZARD_STATE);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 7 : Steering Lights Off...\n");
-    g_rx_struct.steering_buttons_lights = STEERING_LIGHTS_OFF_STATE;
+    set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 8 : Enabling Horn...\n");
-    g_rx_struct.steering_buttons_horn_enabled = 1U;
+    set_steering_buttons_horn_enabled(1U);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 9 : Disabling Horn...\n");
-    g_rx_struct.steering_buttons_horn_enabled = 0U;
+    set_steering_buttons_horn_enabled(0U);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 10 : Simulating BPS fault...\n");
-    g_rx_struct.rear_controller_status_bps_fault = 1U;
+    set_rear_controller_status_triggers_bps_fault(1U);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
 
     LOG_DEBUG(">> Step 11 : Exiting BPS fault...\n");
-    g_rx_struct.rear_controller_status_bps_fault = 0U;
+    set_rear_controller_status_triggers_bps_fault(0U);
     log_status();
     delay_ms(CYCLE_PERIOD_MS);
   }
