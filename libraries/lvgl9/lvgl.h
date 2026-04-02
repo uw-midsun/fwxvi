@@ -1,92 +1,61 @@
-#pragma once
+/**
+ * @file lvgl.h
+ * Include all LVGL related headers
+ */
 
-/************************************************************************************************
- * @file    lvgl.h
- *
- * @brief   Lvgl
- *
- * @date    2026-04-02
- * @author  Midnight Sun Team #24 - MSXVI
- ************************************************************************************************/
+#ifndef LVGL_H
+#define LVGL_H
 
-/* Standard library Headers */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/* Inter-component Headers */
+/***************************
+ * CURRENT VERSION OF LVGL
+ ***************************/
 #include "lv_version.h"
 
-/* Intra-component Headers */
-#include "src/core/lv_group.h"
-#include "src/core/lv_obj.h"
-#include "src/core/lv_observer.h"
-#include "src/core/lv_refr.h"
-#include "src/debugging/monkey/lv_monkey.h"
-#include "src/debugging/sysmon/lv_sysmon.h"
-#include "src/debugging/test/lv_test.h"
-#include "src/display/lv_display.h"
-#include "src/draw/lv_draw_buf.h"
-#include "src/draw/lv_draw_vector.h"
-#include "src/draw/snapshot/lv_snapshot.h"
-#include "src/draw/sw/lv_draw_sw_utils.h"
-#include "src/drivers/lv_drivers.h"
-#include "src/font/binfont_loader/lv_binfont_loader.h"
-#include "src/font/fmt_txt/lv_font_fmt_txt.h"
-#include "src/font/font_manager/lv_font_manager.h"
-#include "src/font/imgfont/lv_imgfont.h"
-#include "src/font/lv_font.h"
-#include "src/indev/lv_gridnav.h"
-#include "src/indev/lv_indev.h"
-#include "src/indev/lv_indev_gesture.h"
-#include "src/layouts/lv_layout.h"
-#include "src/libs/barcode/lv_barcode.h"
-#include "src/libs/bin_decoder/lv_bin_decoder.h"
-#include "src/libs/bmp/lv_bmp.h"
-#include "src/libs/ffmpeg/lv_ffmpeg.h"
-#include "src/libs/freetype/lv_freetype.h"
-#include "src/libs/fsdrv/lv_fsdrv.h"
-#include "src/libs/gltf/gltf_data/lv_gltf_model.h"
-#include "src/libs/gltf/gltf_view/lv_gltf.h"
-#include "src/libs/gstreamer/lv_gstreamer.h"
-#include "src/libs/libjpeg_turbo/lv_libjpeg_turbo.h"
-#include "src/libs/libpng/lv_libpng.h"
-#include "src/libs/libwebp/lv_libwebp.h"
-#include "src/libs/lodepng/lv_lodepng.h"
-#include "src/libs/qrcode/lv_qrcode.h"
-#include "src/libs/rle/lv_rle.h"
-#include "src/libs/rlottie/lv_rlottie.h"
-#include "src/libs/svg/lv_svg.h"
-#include "src/libs/svg/lv_svg_render.h"
-#include "src/libs/tiny_ttf/lv_tiny_ttf.h"
-#include "src/libs/tjpgd/lv_tjpgd.h"
-#include "src/lv_api_map_v8.h"
-#include "src/lv_api_map_v9_0.h"
-#include "src/lv_api_map_v9_1.h"
-#include "src/lv_api_map_v9_2.h"
-#include "src/lv_api_map_v9_3.h"
-#include "src/lv_api_map_v9_4.h"
+/*********************
+ *      INCLUDES
+ *********************/
 #include "src/lv_init.h"
-#include "src/lvgl_private.h"
-#include "src/misc/lv_anim_timeline.h"
+
+#include "src/stdlib/lv_mem.h"
+#include "src/stdlib/lv_string.h"
+#include "src/stdlib/lv_sprintf.h"
+
+#include "src/misc/lv_log.h"
+#include "src/misc/lv_timer.h"
+#include "src/misc/lv_math.h"
 #include "src/misc/lv_array.h"
 #include "src/misc/lv_async.h"
-#include "src/misc/lv_circle_buf.h"
-#include "src/misc/lv_iter.h"
-#include "src/misc/lv_log.h"
-#include "src/misc/lv_math.h"
+#include "src/misc/lv_anim_timeline.h"
 #include "src/misc/lv_profiler_builtin.h"
 #include "src/misc/lv_rb.h"
-#include "src/misc/lv_timer.h"
-#include "src/misc/lv_tree.h"
 #include "src/misc/lv_utils.h"
+#include "src/misc/lv_iter.h"
+#include "src/misc/lv_circle_buf.h"
+#include "src/misc/lv_tree.h"
+
 #include "src/osal/lv_os.h"
-#include "src/others/file_explorer/lv_file_explorer.h"
-#include "src/others/fragment/lv_fragment.h"
-#include "src/others/translation/lv_translation.h"
-#include "src/stdlib/lv_mem.h"
-#include "src/stdlib/lv_sprintf.h"
-#include "src/stdlib/lv_string.h"
-#include "src/themes/lv_theme.h"
+
 #include "src/tick/lv_tick.h"
-#include "src/widgets/3dtexture/lv_3dtexture.h"
+
+#include "src/core/lv_obj.h"
+#include "src/core/lv_group.h"
+#include "src/core/lv_refr.h"
+#include "src/core/lv_observer.h"
+#include "src/indev/lv_indev.h"
+#include "src/indev/lv_indev_gesture.h"
+#include "src/indev/lv_gridnav.h"
+#include "src/display/lv_display.h"
+
+#include "src/font/lv_font.h"
+#include "src/font/binfont_loader/lv_binfont_loader.h"
+#include "src/font/fmt_txt/lv_font_fmt_txt.h"
+#include "src/font/imgfont/lv_imgfont.h"
+#include "src/font/font_manager/lv_font_manager.h"
+
 #include "src/widgets/animimage/lv_animimage.h"
 #include "src/widgets/arc/lv_arc.h"
 #include "src/widgets/arclabel/lv_arclabel.h"
@@ -101,7 +70,6 @@
 #include "src/widgets/gif/lv_gif.h"
 #include "src/widgets/image/lv_image.h"
 #include "src/widgets/imagebutton/lv_imagebutton.h"
-#include "src/widgets/ime/lv_ime_pinyin.h"
 #include "src/widgets/keyboard/lv_keyboard.h"
 #include "src/widgets/label/lv_label.h"
 #include "src/widgets/led/lv_led.h"
@@ -122,35 +90,64 @@
 #include "src/widgets/textarea/lv_textarea.h"
 #include "src/widgets/tileview/lv_tileview.h"
 #include "src/widgets/win/lv_win.h"
+#include "src/widgets/3dtexture/lv_3dtexture.h"
+#include "src/widgets/ime/lv_ime_pinyin.h"
 
-/**
- * @defgroup lvgl
- * @brief    lvgl Firmware
- * @{
- */
+#include "src/debugging/sysmon/lv_sysmon.h"
+#include "src/debugging/monkey/lv_monkey.h"
+#include "src/debugging/test/lv_test.h"
 
-#ifndef LVGL_H
-#define LVGL_H
+#include "src/others/fragment/lv_fragment.h"
+#include "src/others/file_explorer/lv_file_explorer.h"
+#include "src/others/translation/lv_translation.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "src/libs/barcode/lv_barcode.h"
+#include "src/libs/bin_decoder/lv_bin_decoder.h"
+#include "src/libs/bmp/lv_bmp.h"
+#include "src/libs/rle/lv_rle.h"
+#include "src/libs/fsdrv/lv_fsdrv.h"
+#include "src/libs/lodepng/lv_lodepng.h"
+#include "src/libs/libpng/lv_libpng.h"
+#include "src/libs/libwebp/lv_libwebp.h"
+#include "src/libs/gltf/gltf_data/lv_gltf_model.h"
+#include "src/libs/gltf/gltf_view/lv_gltf.h"
+#include "src/libs/gstreamer/lv_gstreamer.h"
+#include "src/libs/qrcode/lv_qrcode.h"
+#include "src/libs/tjpgd/lv_tjpgd.h"
+#include "src/libs/libjpeg_turbo/lv_libjpeg_turbo.h"
+#include "src/libs/freetype/lv_freetype.h"
+#include "src/libs/rlottie/lv_rlottie.h"
+#include "src/libs/ffmpeg/lv_ffmpeg.h"
+#include "src/libs/tiny_ttf/lv_tiny_ttf.h"
+#include "src/libs/svg/lv_svg.h"
+#include "src/libs/svg/lv_svg_render.h"
 
-/***************************
- * CURRENT VERSION OF LVGL
- ***************************/
+#include "src/layouts/lv_layout.h"
 
-/*********************
- *      INCLUDES
- *********************/
+#include "src/draw/lv_draw_buf.h"
+#include "src/draw/lv_draw_vector.h"
+#include "src/draw/sw/lv_draw_sw_utils.h"
+#include "src/draw/snapshot/lv_snapshot.h"
+
+#include "src/themes/lv_theme.h"
+
+#include "src/drivers/lv_drivers.h"
 
 /* Define LV_DISABLE_API_MAPPING using a compiler option
  * to make sure your application is not using deprecated names */
 #ifndef LV_DISABLE_API_MAPPING
+#include "src/lv_api_map_v8.h"
+#include "src/lv_api_map_v9_0.h"
+#include "src/lv_api_map_v9_1.h"
+#include "src/lv_api_map_v9_2.h"
+#include "src/lv_api_map_v9_3.h"
+#include "src/lv_api_map_v9_4.h"
 #endif /*LV_DISABLE_API_MAPPING*/
 
 #if LV_USE_PRIVATE_API
+#include "src/lvgl_private.h"
 #endif
+
 
 /*********************
  *      DEFINES
@@ -220,5 +217,3 @@ static inline const char * lv_version_info(void)
 #endif
 
 #endif /*LVGL_H*/
-
-/** @} */
