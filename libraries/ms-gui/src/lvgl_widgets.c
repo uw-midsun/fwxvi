@@ -12,11 +12,16 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
+#ifdef STM32L4P5xx
 #include "clut.h"
 #include "lvgl_widgets.h"
+#else
+#include "lvgl_widgets.h"
+#endif
 
 /* Intra-component Headers */
 
+#ifdef STM32L4P5xx
 /* Speedometer style objects */
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
@@ -228,3 +233,30 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
   lv_bar_set_value(bar_widget->bar, value, LV_ANIM_ON);
   return STATUS_CODE_OK;
 }
+#else
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
+  (void)speedometer;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh) {
+  (void)speedometer;
+  (void)speed_kmh;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent) {
+  (void)bar_widget;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
+  (void)bar_widget;
+  (void)value;
+  return STATUS_CODE_OK;
+}
+#endif

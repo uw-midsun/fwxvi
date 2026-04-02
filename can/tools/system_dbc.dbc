@@ -85,8 +85,8 @@ BO_   1826 accel_data: 6 imu
   SG_ y_axis : 16|16@1+ (1,0) [0|65535] "" telemetry
   SG_ z_axis : 32|16@1+ (1,0) [0|65535] "" telemetry
 
-BO_  19  rear_controller_status: 1 rear_controller
-  SG_ triggers : 0|8@1+ (1,0) [|] "" telemetry, front_controller, steering
+BO_  19  rear_controller_status: 2 rear_controller
+  SG_ triggers : 0|16@1+ (1,0) [|] "" telemetry, front_controller, steering
 
 BO_  35  battery_stats_A: 6 rear_controller
   SG_ pack_voltage : 0|16@1+ (1,0) [0|65535] "" telemetry, front_controller, steering

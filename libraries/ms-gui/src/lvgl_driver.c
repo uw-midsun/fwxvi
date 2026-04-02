@@ -11,14 +11,17 @@
 #include <string.h>
 
 /* Inter-component Headers */
+#ifdef STM32L4P5xx
 #include "FreeRTOS.h"
 #include "lvgl.h"
 #include "task.h"
+#endif
 
 /* Intra-component Headers */
 #include "ltdc.h"
 #include "lvgl_driver.h"
 
+#ifdef STM32L4P5xx
 static LtdcSettings *s_ltdc_settings;
 
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
@@ -87,3 +90,13 @@ StatusCode lvgl_driver_process(void) {
   lv_timer_handler();
   return STATUS_CODE_OK;
 }
+#else
+StatusCode lvgl_driver_init(LtdcSettings *settings) {
+  (void)settings;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_driver_process(void) {
+  return STATUS_CODE_OK;
+}
+#endif

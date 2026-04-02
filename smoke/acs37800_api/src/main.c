@@ -23,14 +23,6 @@
 
 /* Intra-component Headers */
 
-static void print_bytes(const char *label, const uint8_t *data, size_t len) {
-  LOG_DEBUG("%s:\n", label);
-  for (size_t i = 0; i < len; i++) {
-    LOG_DEBUG("Byte[%u] = 0x%02X\r\n", i, data[i]);
-    delay_ms(10);
-  }
-}
-
 I2CSettings i2c_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
 
 #define I2CP I2C_PORT_2
@@ -38,19 +30,10 @@ I2CSettings i2c_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_
 
 ACS37800Storage storage;
 
-void build_packet(uint8_t packet[4], int16_t voltage, int16_t current) {
-  packet[0] = (uint8_t)(voltage >> 8);
-  packet[1] = (uint8_t)(voltage & 0xFF);
-  packet[2] = (uint8_t)(current >> 8);
-  packet[3] = (uint8_t)(current & 0xFF);
-}
-
 TASK(acs37800_smoke, TASK_STACK_1024) {
   i2c_init(I2CP, &i2c_settings);
   acs37800_init(&storage, I2CP, I2CA);
 
-  uint8_t packet[4];
-  uint32_t rx_packet;
   while (true) {
     LOG_DEBUG("---- ACS37800 SMOKE TEST ----\r\r\n\n");
     delay_ms(10);
@@ -70,11 +53,9 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     //   LOG_DEBUG("No device found on bus\r\n");
     // }
 
-    build_packet(packet, 12000, 13000);
-    print_bytes("PACKET: ", (uint8_t *)(&packet), 4);
-
 #ifdef MS_PLATFORM_X86
-    i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
+    acs37800_set_current(3.5f);
+    acs37800_set_voltage(30.0f);
 #endif
     float current = 0.0f;
 
@@ -91,13 +72,9 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
 
     LOG_DEBUG("CURRENT_DATA: %s%u.%03u A\r\n", current_A < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
 
-    delay_ms(10);
+    delay_ms(20);
 
-#ifdef MS_PLATFORM_X86
-    i2c_set_rx_data(I2CP, (uint8_t *)(&packet), 4);
-#endif
-
-    float voltage = 10.0f;
+    float voltage = 0.0f;
 
     if (acs37800_get_voltage(&storage, &voltage) != STATUS_CODE_OK) {
       LOG_DEBUG("ERROR GETTING VOLTAGE\r\n");
@@ -110,7 +87,8 @@ TASK(acs37800_smoke, TASK_STACK_1024) {
     whole = (uint32_t)(voltage_mV < 0 ? -(voltage_mV / 1000) : (voltage_mV / 1000));
     frac = (uint32_t)(voltage_mV < 0 ? -(voltage_mV % 1000) : (voltage_mV % 1000));
 
-    LOG_DEBUG("VOLTAGE_DATA: %s%ld.%03ld mV\r\n", voltage_mV < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
+    LOG_DEBUG("VOLTAGE_DATA: %s%u.%03u mV\r\n", voltage_mV < 0 ? "-" : "", (unsigned)whole, (unsigned)frac);
+    delay_ms(20);
 
     delay_ms(500);
   }

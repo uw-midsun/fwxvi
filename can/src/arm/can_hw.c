@@ -89,6 +89,12 @@ static void s_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) 
   HAL_CAN_ConfigFilter(&s_can_handle, &filter_cfg);
 }
 
+static void s_signal_tx_mailbox_available_from_isr(void) {
+  BaseType_t higher_woken = pdFALSE;
+  xSemaphoreGiveFromISR(s_can_tx_ready_sem_handle, &higher_woken);
+  portYIELD_FROM_ISR(higher_woken);
+}
+
 StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   if (rx_queue == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -147,7 +153,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_g_rx_queue = rx_queue;
 
   /* Create available mailbox semaphore */
-  s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, CAN_NUM_MAILBOXES, &s_can_tx_ready_sem);
+  s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, 0, &s_can_tx_ready_sem);
   configASSERT(s_can_tx_ready_sem_handle);
   s_tx_full = false;
 
@@ -187,11 +193,7 @@ CanHwBusStatus can_hw_bus_status(void) {
 }
 
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint8_t len) {
-  if (data == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  if (len > 8U) {
+  if (data == NULL || len > 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -204,36 +206,46 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
     .TransmitGlobalTime = DISABLE
   };
 
-  uint32_t tx_mailbox;
+  uint32_t tx_mailbox = 0;
 
   HAL_StatusTypeDef status;
   TickType_t timeout = pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT);
 
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
-    status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, data, &tx_mailbox);
-    
-    if (status == HAL_OK) {
-      return STATUS_CODE_OK;
-    }
-    else if (status == HAL_BUSY) {
-      // Wait for mailbox to free up
+    if (HAL_CAN_GetTxMailboxesFreeLevel(&s_can_handle) == 0U) {
       if (xSemaphoreTake(s_can_tx_ready_sem_handle, timeout) != pdTRUE) {
         LOG_WARN("CAN TX timeout");
         continue;
       }
+
+      /* Protect against stale semaphore count / racey wakeups */
+      if (HAL_CAN_GetTxMailboxesFreeLevel(&s_can_handle) == 0U) {
+        continue;
+      }
     }
-    else {
-      LOG_CRITICAL("CAN TX error: %d", status);
-      return STATUS_CODE_INTERNAL_ERROR;
+    status = HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, (uint8_t *)data, &tx_mailbox);
+
+    if (status == HAL_OK) {
+      return STATUS_CODE_OK;
     }
+
+    /* Race: mailbox looked free, but became full before AddTxMessage */
+    if (HAL_CAN_GetTxMailboxesFreeLevel(&s_can_handle) == 0U) {
+      continue;
+    }
+
+    LOG_CRITICAL("CAN TX error: status=%d hal_error=0x%08lx",
+                 status, HAL_CAN_GetError(&s_can_handle));
+                 
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   
   return STATUS_CODE_RESOURCE_EXHAUSTED;
 }
 
-bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
+StatusCode can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
   if (id == NULL || extended == NULL || data == NULL || len == NULL) {
-    return false;
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   CAN_RxHeaderTypeDef rx_header;
@@ -246,7 +258,7 @@ bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) 
       *id = *extended ? rx_header.ExtId : rx_header.StdId;
       *len = rx_header.DLC;
       memcpy(data, rx_data, rx_header.DLC);
-      return true;
+      return STATUS_CODE_OK;
     }
   } else if (HAL_CAN_GetRxFifoFillLevel(&s_can_handle, CAN_RX_FIFO1) > 0) {
     if (HAL_CAN_GetRxMessage(&s_can_handle, CAN_RX_FIFO1, &rx_header, rx_data) == HAL_OK) {
@@ -254,11 +266,12 @@ bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) 
       *id = *extended ? rx_header.ExtId : rx_header.StdId;
       *len = rx_header.DLC;
       memcpy(data, rx_data, rx_header.DLC);
-      return true;
+      return STATUS_CODE_OK;
     }
   }
 
-  return false;
+  LOG_DEBUG("CAN RX Error");
+  return STATUS_CODE_INTERNAL_ERROR;
 }
 
 void CAN1_TX_IRQHandler(void) {
@@ -278,18 +291,31 @@ void CAN1_SCE_IRQHandler(void) {
 }
 
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
-  if (s_tx_full) {
-    /* TX mailbox is no longer full once data is transmitted */
-    xSemaphoreGiveFromISR(s_can_tx_ready_sem_handle, NULL);
-    s_tx_full = false;
-  }
+  (void)(hcan);
+
+  /* TX mailbox is no longer full once data is transmitted */
+  s_signal_tx_mailbox_available_from_isr();
+}
+
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+
+  /* TX mailbox is no longer full once data is transmitted */
+  s_signal_tx_mailbox_available_from_isr();
+}
+
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+
+  /* TX mailbox is no longer full once data is transmitted */
+  s_signal_tx_mailbox_available_from_isr();
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
     bool s_filter_id_match = false;
     for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */

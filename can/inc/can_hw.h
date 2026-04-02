@@ -128,9 +128,10 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
  * @param   extended Pointer to a flag to indicate CAN extended ID feature
  * @param   data Pointer to a buffer to store data
  * @param   len Pointer to the number of CAN messages received
- * @return  true if data is retrieved successfully
- *          false if one of the parameters are incorrect or internal error occurred
+ * @return  STATUS_CODE_OK if data is retrieved successfully
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if there is a CAN Rx error
  */
-bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len);
+StatusCode can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len);
 
 /** @} */

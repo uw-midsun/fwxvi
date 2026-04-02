@@ -35,9 +35,7 @@ RearControllerConfig rear_controller_config = {
   .cell_capacity_Ah = REAR_CONTROLLER_CELL_CAPACITY_AH,
 };
 
-void pre_loop_init() {
-  rear_controller_init(&rear_controller_storage, &rear_controller_config);
-}
+void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
@@ -67,6 +65,8 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+
+  rear_controller_init(&rear_controller_storage, &rear_controller_config);
 
   init_master_tasks();
 

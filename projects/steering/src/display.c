@@ -36,7 +36,7 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((al
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
-TASK(display_lvgl_task, TASK_STACK_1024) {
+TASK(display_lvgl_task, TASK_STACK_2048) {
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {

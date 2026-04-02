@@ -62,12 +62,22 @@ void write_config_register(uint16_t cmd, const uint8_t *data) {
   tx_packet[11] = (uint8_t)(data_pec & 0xFF);
 
   // Send complete packet
-  spi_exchange(SPI_PORT_2, tx_packet, 12, NULL, 0);
+  if (spi_exchange(SPI_PORT_2, tx_packet, 12, NULL, 0) != STATUS_CODE_OK) {
+    while (true) {
+      LOG_DEBUG("spi excahnge failed");
+      delay_ms(10);
+    }
+  }
 }
 
 TASK(adbms1818_spi, TASK_STACK_1024) {
   crc15_init_table();
-  spi_init(SPI_PORT_2, &spi_test_settings);
+  if (spi_init(SPI_PORT_2, &spi_test_settings) != STATUS_CODE_OK) {
+    while (true) {
+      LOG_DEBUG("spi init failed");
+      delay_ms(10);
+    }
+  }
 
   LOG_DEBUG("ADBMS1818 Config + ADAX + Full AUX + CFG Readback Test\r\n");
 

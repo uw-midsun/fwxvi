@@ -32,6 +32,6 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
     return STATUS_CODE_UNIMPLEMENTED;
 }
 
-bool can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
+StatusCode can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
     return true;
 }
