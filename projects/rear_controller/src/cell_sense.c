@@ -63,12 +63,6 @@
 /** @brief  Max number of retries for reading cell*/
 #define CELL_SENSE_MAX_RETRIES 5U
 
-#if (REAR_CONTROLLER_SERIES_COUNT % ADBMS_AFE_MAX_CELLS_PER_DEVICE) != 0
-#error "Rear controller series count must be divisible by the number of cells per ADBMS1818."
-#endif
-
-#define REAR_CONTROLLER_AFE_NUM_DEVICES (REAR_CONTROLLER_SERIES_COUNT / ADBMS_AFE_MAX_CELLS_PER_DEVICE)
-
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
     uint8_t _retries_left = (max_retries);                                \
@@ -100,7 +94,7 @@ static const AdbmsAfeSettings s_afe_settings = {
 
   .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
-  .num_devices = REAR_CONTROLLER_AFE_NUM_DEVICES,
+  .num_devices = ADBMS_AFE_MAX_DEVICES,
   .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
   .num_thermistors = ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE,
 };

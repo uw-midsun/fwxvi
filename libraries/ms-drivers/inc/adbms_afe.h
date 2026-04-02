@@ -49,7 +49,7 @@
  * @brief Maximum AFE devices in daisy chain config
  * @note This is an arbitrary limitation, can be increased/decreased if needed
  */
-#define ADBMS_AFE_MAX_DEVICES 3
+#define ADBMS_AFE_MAX_DEVICES 2
 
 /**
  * @brief Maximum x of each device
