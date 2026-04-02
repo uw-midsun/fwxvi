@@ -58,7 +58,7 @@ StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalib
       calib_storage->max_reading_amplified = adc_reading;
     }
 
-    LOG_DEBUG("Sampling %lu: %u\r\n", calib_storage->sample_counter, adc_reading);
+    LOG_DEBUG("Sampling %u: %u\r\n", (uint16_t)calib_storage->sample_counter, adc_reading);
 
     delay_ms(1U);
   }
