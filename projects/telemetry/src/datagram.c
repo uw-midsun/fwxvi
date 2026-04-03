@@ -38,7 +38,7 @@ StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
     datagram->data[i] = msg->data_u8[i];
   }
 
-  datagram->data[msg->dlc] = DATAGRAM_END_FRAME;
+  datagram->data[datagram->dlc] = DATAGRAM_END_FRAME;
 
   return STATUS_CODE_OK;
 }

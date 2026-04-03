@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for killswitch API
+ * @brief  Smoke test for rear_controller_killswitch
  *
  * @brief  Tests GPIO initialization and interrupt setup for killswitch without calling
  *         killswitch.h directly. This allows testing the killswitch API pattern and behavior.

@@ -23,10 +23,10 @@
 #define PRECHARGE_MODE_OPTO 0U
 #define PRECHARGE_MODE_MANUAL 1U
 
-#define PRECHARGE_MODE PRECHARGE_MODE_OPTO
+#define PRECHARGE_MODE PRECHARGE_MODE_MANUAL
 
 #if (PRECHARGE_MODE == PRECHARGE_MODE_MANUAL)
-#define PRECHARGE_THRESHOLD_VOLTS 1U
+#define PRECHARGE_THRESHOLD_VOLTS 3U
 #include "rear_controller_getters.h"
 #endif
 
@@ -63,7 +63,7 @@ StatusCode precharge_init(Event event, const Task *task, RearControllerStorage *
   }
   rear_controller_storage = storage;
 
-  if (abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
+  if ((uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
     set_rear_controller_status_triggers_motor_precharge_complete(true);
   } else {
     set_rear_controller_status_triggers_motor_precharge_complete(false);
@@ -83,7 +83,7 @@ StatusCode precharge_run() {
 #endif
 
 #if (PRECHARGE_MODE == PRECHARGE_MODE_MANUAL)
-  if (abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
+  if ((uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
     set_rear_controller_status_triggers_motor_precharge_complete(true);
   } else {
     set_rear_controller_status_triggers_motor_precharge_complete(false);
