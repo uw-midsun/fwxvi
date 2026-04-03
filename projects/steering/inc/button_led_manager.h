@@ -5,7 +5,7 @@
  *
  * @brief   Button LED manager header file - SK6812 RGB LEDs
  *
- * @date    2026-3-25
+ * @date    2025-09-27
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -54,14 +54,8 @@ typedef struct {
   uint8_t b;
 } LEDPixels;
 
-#define NUM_LEFT_LEDS 3
-#define NUM_MAIN_LEDS 5
-#define NUM_RIGHT_LEDS 3
-
 typedef struct ButtonLEDManager {
-  LEDPixels left_led_pixels[NUM_LEFT_LEDS];          /**< Color data per LED */
-  LEDPixels main_led_pixels[NUM_MAIN_LEDS];          /**< Color data per LED */
-  LEDPixels right_led_pixels[NUM_RIGHT_LEDS];          /**< Color data per LED */
+  LEDPixels led_pixels[NUM_STEERING_BUTTONS];          /**< Color data per LED */
   uint16_t dma_buffer[BUTTON_LED_MANAGER_DMA_BUF_LEN]; /**< DMA buffer holds CCR compare values (ticks) */
   bool needs_update;                                   /**< Flag to track if LEDs need updating */
   bool is_transmitting;                                /**< Flag to prevent concurrent transmissions */
