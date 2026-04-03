@@ -80,6 +80,8 @@ StatusCode precharge_run() {
   if (rear_controller_storage->precharge_complete) {
 #if (PRECHARGE_DEBUG == 1)
     LOG_DEBUG("Precharge complete\r\n");
+    LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
+              (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
 #endif
     return STATUS_CODE_OK;
   }

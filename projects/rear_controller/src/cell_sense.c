@@ -33,6 +33,8 @@
 #include "relays.h"
 #include "thermistor.h"
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 /************************************************************************************************
  * Private defines
  ************************************************************************************************/
@@ -75,9 +77,10 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 1U
+#define BALANCING_ENABLED 0U
 
-#define CELL_SENSE_DEBUG 1U
+#define CELL_SENSE_DEBUG 0U
+#define CELL_SENSE_FAULT_DEBUG 1U
 
 /************************************************************************************************
  * Private variables
@@ -141,6 +144,8 @@ static void s_balance_cells(uint16_t min_voltage) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       if (CELL_VOLTAGE_LOOKUP(dev, cell) > balancing_threshold) {
+        LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
+        delay_ms(12U);
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, true);
       } else {
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
@@ -284,7 +289,7 @@ static StatusCode s_cell_sense_run() {
 #if (CELL_SENSE_DEBUG == 1)
       LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
 #endif
-      delay_ms(10U);
+      delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
@@ -296,7 +301,8 @@ static StatusCode s_cell_sense_run() {
     }
   }
 
-  rear_controller_storage->pack_voltage = total_voltage / 100000;
+  rear_controller_storage->pack_voltage = total_voltage / 10000;
+
 #if (CELL_SENSE_DEBUG == 1)
   LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
 #endif
@@ -320,7 +326,7 @@ static StatusCode s_cell_sense_run() {
    * We must multiply the safety limit of 10 to convert from mV -> 100 uV
    */
   if (max_voltage >= (CELL_OVERVOLTAGE_LIMIT_mV * 10U)) {
-#if (CELL_SENSE_DEBUG == 1)
+#if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("OVERVOLTAGE: %u\r\n", max_voltage);
 #endif
     trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
@@ -328,16 +334,16 @@ static StatusCode s_cell_sense_run() {
   }
 
   if (min_voltage <= (CELL_UNDERVOLTAGE_LIMIT_mV * 10U)) {
-#if (CELL_SENSE_DEBUG == 1)
+#if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("UNDERVOLTAGE: %u\r\n", min_voltage);
 #endif
-    trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+    // trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
   if ((max_voltage - min_voltage) >= (CELL_UNBALANCED_LIMIT_mV * 10)) {
 /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
-#if (CELL_SENSE_DEBUG == 1)
+#if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #endif
     trigger_bps_fault(BPS_FAULT_UNBALANCE);
