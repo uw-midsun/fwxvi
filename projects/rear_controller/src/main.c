@@ -45,7 +45,6 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
-  // LOG_DEBUG("MOT: %u | BAT: %lu \r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage.pack_voltage);
   rear_controller_update_state_manager_medium_cycle();
   log_cell_sense();
   run_can_tx_medium();

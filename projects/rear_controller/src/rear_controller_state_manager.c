@@ -26,7 +26,8 @@ static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 static StatusCode status;
 static bool started = false;
 
-#define IS_MOTOR_CONNECTED 0U
+#define IS_MOTOR_CONNECTED 1U
+#define REAR_STATE_MANAGER_DEBUG 0U
 
 /**
  * @brief   Asynchronous event handler
@@ -137,8 +138,9 @@ RearControllerState rear_controller_state_manager_get_state(void) {
 }
 
 StatusCode rear_controller_update_state_manager_medium_cycle() {
+#if (REAR_STATE_MANAGER_DEBUG == 1)
   LOG_DEBUG("Current state: %d\r\n", s_current_state);
-
+#endif
   if (s_current_state == REAR_CONTROLLER_STATE_START && started == false) {
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_START);
     return STATUS_CODE_OK;
