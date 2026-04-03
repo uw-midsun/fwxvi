@@ -252,15 +252,15 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
   }
 
   /* Initialize left and right turn signal LED GPIO pins as regular outputs */
-  // status = gpio_init_pin_af(&s_button_left_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2); // DMA Channel 1
-  //  if (status != STATUS_CODE_OK) {
-  //   return status;
-  // }
+  status = gpio_init_pin_af(&s_button_left_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2); // DMA Channel 1
+   if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
-  // status = gpio_init_pin_af(&s_button_right_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4); // DMA Channel 2
-  //  if (status != STATUS_CODE_OK) {
-  //   return status;
-  // }
+  status = gpio_init_pin_af(&s_button_right_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4); // DMA Channel 2
+   if (status != STATUS_CODE_OK) {
+    return status;
+  }
 
   return button_led_manager_init_timer_dma();
 }
@@ -296,8 +296,8 @@ StatusCode button_led_manager_update(void) {
   steering_storage->button_led_manager->is_transmitting = true;
 
   /* CRITICAL: Cast to uint32_t* for CCR register (16-bit values but 32-bit register access) */
-  HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_1, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
-  // hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
+  // HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_1, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
+  HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
   // hal_status = HAL_TIM_PWM_Start_DMA(&s_tim4_handle, TIM_CHANNEL_2, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
 
   if (hal_status != HAL_OK) {
