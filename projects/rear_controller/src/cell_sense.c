@@ -78,6 +78,7 @@
 
 #define THERMISTORS_CONNECTED 0U
 #define BALANCING_ENABLED 0U
+#define OVER_UNDER_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
 #define CELL_SENSE_FAULT_DEBUG 1U
@@ -216,7 +217,9 @@ static StatusCode s_cell_sense_conversions() {
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell conv failed): %d\n", status);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+#endif
     return status;
   }
 
@@ -232,7 +235,9 @@ static StatusCode s_cell_sense_conversions() {
   }
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell read failed %d\n", status);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+#endif
     return status;
   }
 #if (THERMISTORS_CONNECTED == 1U)
@@ -329,7 +334,9 @@ static StatusCode s_cell_sense_run() {
 #if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("OVERVOLTAGE: %u\r\n", max_voltage);
 #endif
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -337,7 +344,9 @@ static StatusCode s_cell_sense_run() {
 #if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("UNDERVOLTAGE: %u\r\n", min_voltage);
 #endif
-    // trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -346,7 +355,9 @@ static StatusCode s_cell_sense_run() {
 #if (CELL_SENSE_FAULT_DEBUG == 1)
     LOG_DEBUG("UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #endif
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_UNBALANCE);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
