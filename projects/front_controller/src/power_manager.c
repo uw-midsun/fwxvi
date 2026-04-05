@@ -56,12 +56,12 @@ const GpioAddress output_pins[NUM_OUTPUTS] = {
 
 static OutputGroupDef output_group_all = {
   .num_outputs = NUM_OUTPUTS,
-  .outputs = { LEFT_SIG, RIGHT_SIG, BRAKE_LIGHT, BPS_LIGHT, DRIVER_FAN, REV_CAM, TELEM, STEERING, HORN, SPARE_1 },
+  .outputs = { STEERING, TELEM, BPS_LIGHT, REV_CAM, HORN, BRAKE_LIGHT, LEFT_SIG, RIGHT_SIG, DRIVER_FAN, SPARE_1 },
 };
 
 static OutputGroupDef output_group_idle_group = {
   .num_outputs = 3,
-  .outputs = { REV_CAM, TELEM, STEERING },
+  .outputs = { STEERING, TELEM, REV_CAM },
 };
 
 static OutputGroupDef output_group_d_r_indicators_group = {
@@ -71,12 +71,12 @@ static OutputGroupDef output_group_d_r_indicators_group = {
 
 static OutputGroupDef output_group_drive_group = {
   .num_outputs = 4,
-  .outputs = { REV_CAM, TELEM, STEERING, SPARE_1 },
+  .outputs = { STEERING, TELEM, REV_CAM, SPARE_1 },
 };
 
 static OutputGroupDef output_group_reverse_group = {
   .num_outputs = 4,
-  .outputs = { REV_CAM, TELEM, STEERING, DRIVER_FAN },
+  .outputs = { STEERING, TELEM, REV_CAM, DRIVER_FAN },
 };
 
 static OutputGroupDef output_group_left_lights_group = {
