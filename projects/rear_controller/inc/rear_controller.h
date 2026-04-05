@@ -28,8 +28,6 @@
 #define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
 #define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
 
-#define REAR_CONTROLLER_RELAY_INRUSH_MIN_DELAY_MS 130U
-
 typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
   uint8_t parallel_count; /**< Number of cells in parallel */
