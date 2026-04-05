@@ -206,9 +206,6 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
     } else {
       front_controller_storage->power_manager_storage->current_readings[i] = power_sense_lo_current_calc(sampled_voltage);
     }
-
-    // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
-    // delay_ms(10);
   }
 
   power_manager_set_telemetry();
@@ -229,12 +226,12 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable) {
 
   for (uint8_t i = 0U; i < mapped_group->num_outputs; i++) {
     OutputId output_id = mapped_group->outputs[i];
-
     if (enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_HIGH);
     } else if (!enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_LOW);
     }
+    delay_ms(FRONT_OPEN_LOAD_SWITCH_DELAY_MS);
   }
 
   return STATUS_CODE_OK;
