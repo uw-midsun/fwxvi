@@ -7,6 +7,8 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* clang-format off */
+
 /* Standard library Headers */
 #include <stdint.h>
 #include <string.h>
@@ -212,10 +214,13 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
   TickType_t timeout = pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT);
 
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
+    if (can_hw_bus_status() == CAN_HW_BUS_STATUS_OFF) {
+      return STATUS_CODE_RESOURCE_EXHAUSTED;
+    }
+
     if (HAL_CAN_GetTxMailboxesFreeLevel(&s_can_handle) == 0U) {
       if (xSemaphoreTake(s_can_tx_ready_sem_handle, timeout) != pdTRUE) {
-        LOG_WARN("CAN TX timeout");
-        continue;
+        return STATUS_CODE_RESOURCE_EXHAUSTED;
       }
 
       /* Protect against stale semaphore count / racey wakeups */
@@ -270,7 +275,6 @@ StatusCode can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t 
     }
   }
 
-  LOG_DEBUG("CAN RX Error");
   return STATUS_CODE_INTERNAL_ERROR;
 }
 
@@ -311,6 +315,27 @@ void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan) {
   s_signal_tx_mailbox_available_from_isr();
 }
 
+void HAL_CAN_TxMailbox0AbortCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+  
+  /* TX mailbox is no longer full if transmission is aborted */
+  s_signal_tx_mailbox_available_from_isr();
+}
+
+void HAL_CAN_TxMailbox1AbortCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+
+  /* TX mailbox is no longer full if transmission is aborted */
+  s_signal_tx_mailbox_available_from_isr();
+}
+
+void HAL_CAN_TxMailbox2AbortCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+
+  /* TX mailbox is no longer full if transmission is aborted */
+  s_signal_tx_mailbox_available_from_isr();
+}
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
@@ -338,7 +363,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
   
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc)) {
+  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
     bool s_filter_id_match = false;
     for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
       /* Check if the ID is in the filter */
@@ -367,3 +392,4 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
     HAL_CAN_Start(hcan);
   }
 }
+/* clang-format on */
