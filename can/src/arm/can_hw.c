@@ -397,7 +397,6 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   /* Aryan - Maybe reinitialize bus? */
    uint32_t error = HAL_CAN_GetError(hcan);
   
-
   /* When TX fails (TERR or ALST), the mailbox is freed by hardware but
    * TxMailboxNCompleteCallback is not called, so the semaphore is never given.
    * Signal it here so can_hw_transmit doesn't block indefinitely. */
