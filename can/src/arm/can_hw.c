@@ -69,6 +69,7 @@ static CAN_HandleTypeDef s_can_handle;
 static SemaphoreHandle_t s_can_tx_ready_sem_handle;
 static StaticSemaphore_t s_can_tx_ready_sem;
 static bool s_tx_full = false;
+static bool s_can_bus_error = false;
 
 /* 1 for filter in, 2 for filter out, default = 0 */
 static int s_can_filter_en = 0;
@@ -212,6 +213,15 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
 
   HAL_StatusTypeDef status;
   TickType_t timeout = pdMS_TO_TICKS(MAX_TX_MS_TIMEOUT);
+
+  if (s_can_bus_error && can_hw_bus_status() == CAN_HW_BUS_STATUS_OK) {
+    s_can_bus_error = false;
+    HAL_CAN_ActivateNotification(&s_can_handle, CAN_IT_ERROR |
+                                                CAN_IT_ERROR_WARNING |
+                                                CAN_IT_ERROR_PASSIVE |
+                                                CAN_IT_BUSOFF |
+                                                CAN_IT_LAST_ERROR_CODE);
+  }
 
   for (size_t i = 0; i < MAX_TX_RETRIES; ++i) {
     if (can_hw_bus_status() == CAN_HW_BUS_STATUS_OFF) {
@@ -382,14 +392,24 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   portYIELD_FROM_ISR(higher_woken);
 }
 
-void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
   /* TODO: Add error notifications/handling */
   /* Aryan - Maybe reinitialize bus? */
-  uint32_t error = HAL_CAN_GetError(hcan);
+   uint32_t error = HAL_CAN_GetError(hcan);
   
-  if (error & HAL_CAN_ERROR_BOF) {
-    HAL_CAN_ResetError(hcan);
-    HAL_CAN_Start(hcan);
+
+  /* When TX fails (TERR or ALST), the mailbox is freed by hardware but
+   * TxMailboxNCompleteCallback is not called, so the semaphore is never given.
+   * Signal it here so can_hw_transmit doesn't block indefinitely. */
+  if (error & (HAL_CAN_ERROR_TX_TERR0 | HAL_CAN_ERROR_TX_ALST0)) {
+    s_signal_tx_mailbox_available_from_isr();
   }
-}
+  if (error & (HAL_CAN_ERROR_TX_TERR1 | HAL_CAN_ERROR_TX_ALST1)) {
+    s_signal_tx_mailbox_available_from_isr();
+  }
+  if (error & (HAL_CAN_ERROR_TX_TERR2 | HAL_CAN_ERROR_TX_ALST2)) {
+    s_signal_tx_mailbox_available_from_isr();
+  }
+
+ }
 /* clang-format on */
