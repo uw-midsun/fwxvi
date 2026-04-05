@@ -119,10 +119,11 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
     case REAR_CONTROLLER_STATE_START:
       if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-      } else if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
+      } else if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
-      else if (event == REAR_CONTROLLER_EVENT_FAULT)
+      } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+      }
       break;
 
     default:
