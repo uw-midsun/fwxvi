@@ -39,32 +39,33 @@ static FrontControllerStorage *front_controller_storage = NULL;
 static FrontControllerState s_current_state = NUM_FRONT_CONTROLLER_STATES;
 static bool is_horn_enabled;
 static bool is_brake_enabled;
+static bool started = false;
 
 static void front_controller_state_manager_enter_state(FrontControllerState new_state) {
   switch (new_state) {
     case FRONT_CONTROLLER_STATE_IDLE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_IDLE) {
+      if (s_current_state != FRONT_CONTROLLER_STATE_IDLE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case FRONT_CONTROLLER_STATE_DRIVE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE) {
+      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_DRIVE, true);
       }
       break;
 
     case FRONT_CONTROLLER_STATE_REVERSE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE) {
+      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_REVERSE, true);
       }
       break;
 
     case FRONT_CONTROLLER_STATE_FAULT:
-      if (s_current_state != FRONT_CONTROLLER_STATE_FAULT) {
+      if (s_current_state != FRONT_CONTROLLER_STATE_FAULT || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
@@ -82,22 +83,8 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
   }
   front_controller_storage = storage;
 
-  front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
-  is_horn_enabled = get_steering_buttons_horn_enabled();
-
-  is_brake_enabled = front_controller_storage->brake_enabled || front_controller_storage->regen_enabled;
-
-  if (is_horn_enabled) {
-    power_manager_set_output_group(OUTPUT_GROUP_HORN, true);
-  } else {
-    power_manager_set_output_group(OUTPUT_GROUP_HORN, false);
-  }
-
-  if (is_brake_enabled) {
-    power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
-  } else {
-    power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
-  }
+  s_current_state = FRONT_CONTROLLER_STATE_IDLE;
+  started = false;
 
   return STATUS_CODE_OK;
 }
@@ -157,6 +144,12 @@ FrontControllerState front_controller_state_manager_get_state(void) {
 }
 
 StatusCode front_controller_update_state_manager_medium_cycle() {
+  if (started == false) {
+    front_controller_state_manager_enter_state(s_current_state);
+    started = true;
+    return STATUS_CODE_OK;
+  }
+
   /* Get required values from rear */
 #if (IS_REAR_CONNECTED == 0U)
   uint8_t bps_fault_from_rear = 0U;
