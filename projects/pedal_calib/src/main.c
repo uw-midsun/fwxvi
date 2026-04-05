@@ -111,8 +111,14 @@ TASK(pedal_calib, TASK_STACK_1024) {
   pedal_calib_sample(&pedal_storage, &(pedal_persist_data.accel_pedal_data_amplified), PEDAL_PRESSED, &accel_pedal_gpio_opamp);
 
   // brake pedal data collection & set to struct
-  // pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_PRESSED, &brake_pedal_gpio, NULL);
-  // pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_UNPRESSED, &brake_pedal_gpio, NULL);
+
+  delay_ms(1000U);
+  LOG_DEBUG("Lift the Brake Pedal all the way UP!\r\n");
+  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_UNPRESSED, &brake_pedal_gpio);
+
+  delay_ms(1000U);
+  LOG_DEBUG("Push the Brake Pedal all the way DOWN!\r\n");
+  pedal_calib_sample(&pedal_storage, &(pedal_persist_data.brake_pedal_data), PEDAL_PRESSED, &brake_pedal_gpio);
 
   status = persist_commit(&persist_storage);
   if (status != STATUS_CODE_OK) {
