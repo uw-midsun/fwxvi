@@ -25,12 +25,12 @@
 
 #ifndef MASTER_TASK_1000HZ_SIZE
 /** @brief  Number of bytes statically allocated for 1000hz task */
-#define MASTER_TASK_1000HZ_SIZE (TASK_STACK_256)
+#define MASTER_TASK_1000HZ_SIZE (TASK_STACK_512)
 #endif
 
 #ifndef MASTER_TASK_10HZ_SIZE
 /** @brief  Number of bytes statically allocated for 10hz task */
-#define MASTER_TASK_10HZ_SIZE (TASK_STACK_256)
+#define MASTER_TASK_10HZ_SIZE (TASK_STACK_512)
 #endif
 
 #ifndef MASTER_TASK_1HZ_SIZE

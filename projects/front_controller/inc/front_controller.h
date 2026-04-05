@@ -45,8 +45,8 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
 
-/** @brief  Front controller brake pedal set to 1% deadzone  */
-#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.01f
+/** @brief  Front controller brake pedal set to 5% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.05f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
@@ -61,8 +61,8 @@ struct Ws22MotorCanStorage;
 #define FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_THRESHOLD_DEFAULT 535
 #define FRONT_CONTROLLER_ACCEL_PEDAL_REVERSED_DEFAULT true
 
-#define FRONT_CONTROLLER_BRAKE_PEDAL_UPPER_VALUE_DEFAULT 4092
-#define FRONT_CONTROLLER_BRAKE_PEDAL_LOWER_VALUE_DEFAULT 767
+#define FRONT_CONTROLLER_BRAKE_PEDAL_UPPER_VALUE_DEFAULT 1230
+#define FRONT_CONTROLLER_BRAKE_PEDAL_LOWER_VALUE_DEFAULT 960
 
 /**
  * @brief   Front Controller configuration data

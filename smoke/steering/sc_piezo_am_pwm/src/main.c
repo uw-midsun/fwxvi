@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for piezo_am_pwm
+ * @brief  Smoke test for steering_piezo_am_pwm
  *
  * @date   2025-12-28
  * @author Midnight Sun Team #24 - MSXVI

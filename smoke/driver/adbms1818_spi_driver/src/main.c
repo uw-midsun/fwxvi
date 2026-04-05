@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for adbms1818_spi
+ * @brief  Smoke test for adbms1818_spi_driver
  *
  * @date   2025-01-27
  * @author Midnight Sun Team #24 - MSXVI

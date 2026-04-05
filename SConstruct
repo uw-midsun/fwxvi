@@ -17,6 +17,10 @@ def set_target(option, opt, value, parser):
             target = f"smoke/steering/{value}"
         elif value.startswith("tc"):
             target = f"smoke/telemetry/{value}"
+        elif value.endswith("_api"):
+            target = f"smoke/api/{value}"
+        elif value.endswith("_driver"):
+            target = f"smoke/driver/{value}"
         else:
             target = f"smoke/{value}"
     if opt == "--library":
