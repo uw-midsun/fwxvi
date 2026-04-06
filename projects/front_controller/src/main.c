@@ -46,7 +46,7 @@ void run_1000hz_cycle() {
   adc_run();
 
   accel_pedal_run();
-  brake_pedal_run();
+  // brake_pedal_run();
   opd_run();
   motor_can_update_target_current_velocity();
 
