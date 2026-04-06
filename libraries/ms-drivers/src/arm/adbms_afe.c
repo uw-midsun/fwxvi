@@ -133,8 +133,8 @@ static StatusCode s_write_cfga(AdbmsAfeStorage *afe) {
 
   uint8_t *raw = (uint8_t *)&afe->config_a[0].cfg;
   for (int i = 0; i < 6; i++) {
-    LOG_DEBUG("  Byte[%d]: 0x%02X\r\n", i, raw[i]);
-    delay_ms(10);
+    // LOG_DEBUG("  Byte[%d]: 0x%02X\r\n", i, raw[i]);
+    // delay_ms(10);
   }
 
   /* Add command to buffer */

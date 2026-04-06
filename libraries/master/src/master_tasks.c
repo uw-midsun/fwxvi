@@ -14,8 +14,8 @@
 /* Intra-component Headers */
 #include "master_tasks.h"
 
-#define MASTER_1000HZ_TO_MS 1U
-#define MASTER_10HZ_TO_MS 100U
+#define MASTER_1000HZ_TO_MS 20U
+#define MASTER_10HZ_TO_MS 300U
 #define MASTER_1HZ_TO_MS 1000U
 
 #define MASTER_TASKS_PRIORITY (configMAX_PRIORITIES - 1U)

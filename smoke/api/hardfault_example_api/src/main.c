@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for hardfault_example
+ * @brief  Smoke test for hardfault_example_api
  *
  * @date   2025-01-27
  * @author Midnight Sun Team #24 - MSXVI

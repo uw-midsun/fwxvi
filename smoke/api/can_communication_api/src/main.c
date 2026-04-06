@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Main file for can_communication
+ * @brief  Main file for can_communication_api
  *
  * @date   2024-11-03
  * @author Midnight Sun Team #24 - MSXVI

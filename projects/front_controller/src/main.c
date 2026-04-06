@@ -43,10 +43,10 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
-
   adc_run();
+
   accel_pedal_run();
-  brake_pedal_run();
+  // brake_pedal_run();
   opd_run();
   motor_can_update_target_current_velocity();
 
@@ -55,8 +55,8 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   run_can_tx_medium();
-  front_controller_update_state_manager_medium_cycle();
   motor_can_forward_can_data();
+  front_controller_update_state_manager_medium_cycle();
 }
 
 void run_1hz_cycle() {

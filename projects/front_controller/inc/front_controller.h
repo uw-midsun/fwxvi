@@ -30,7 +30,7 @@ struct PowerSenseStorage;
 struct AccelPedalStorage;
 struct Ws22MotorCanStorage;
 
-/** @brief  Front controller pedal set to 5% deadzone  */
+/** @brief  Front controller pedal set to 10% deadzone  */
 #define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.05f
 
 /** @brief  Front controller pedal is remapped from 0 - 1 to 0.1 to 1 */

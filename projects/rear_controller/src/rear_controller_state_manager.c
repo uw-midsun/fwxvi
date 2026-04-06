@@ -23,12 +23,18 @@
 static RearControllerStorage *rear_controller_storage = NULL;
 static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 
+static StatusCode status;
+static bool started = false;
+
 #define IS_MOTOR_CONNECTED 1U
+#define REAR_STATE_MANAGER_DEBUG 0U
 
 /**
  * @brief   Asynchronous event handler
  */
 static void rear_controller_state_manager_enter_state(RearControllerState new_state) {
+  s_current_state = new_state;
+
   switch (new_state) {
     case REAR_CONTROLLER_STATE_IDLE:
       relays_disable_ws22_lv();
@@ -53,9 +59,13 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       relays_disable_ws22_lv();
       relays_reset();
       break;
+    case REAR_CONTROLLER_STATE_START:
+      relays_close_pos();
+      relays_close_solar();
+      relays_close_neg();
+      started = true;
+      break;
   }
-
-  s_current_state = new_state;
 }
 
 StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
@@ -64,17 +74,8 @@ StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
   }
 
   rear_controller_storage = storage;
-
-  StatusCode status = relays_close_pos();
-  status = relays_close_solar();
-  status = relays_close_neg();
-
-  if (status == STATUS_CODE_OK) {
-    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
-  } else {
-    LOG_DEBUG("Close relays was unsuccessful, entering fault from initialization\n");
-    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
-  }
+  started = false;
+  s_current_state = REAR_CONTROLLER_STATE_START;
 
   return STATUS_CODE_OK;
 }
@@ -115,6 +116,15 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
       }
       break;
 
+    case REAR_CONTROLLER_STATE_START:
+      if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+      } else if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
+      else if (event == REAR_CONTROLLER_EVENT_FAULT)
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+      break;
+
     default:
       rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       break;
@@ -128,7 +138,15 @@ RearControllerState rear_controller_state_manager_get_state(void) {
 }
 
 StatusCode rear_controller_update_state_manager_medium_cycle() {
-  if (rear_controller_storage->bps_fault != 0) {
+#if (REAR_STATE_MANAGER_DEBUG == 1)
+  LOG_DEBUG("Current state: %d\r\n", s_current_state);
+#endif
+  if (s_current_state == REAR_CONTROLLER_STATE_START && started == false) {
+    rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_START);
+    return STATUS_CODE_OK;
+  }
+
+  if (rear_controller_storage->bps_fault != 0 && s_current_state != REAR_CONTROLLER_STATE_FAULT) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
     return STATUS_CODE_OK;
   }
@@ -136,9 +154,10 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t drive_state_from_front = get_drive_status_state_data_drive_state();
 
-  if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE) {
+  if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
-  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
+  } else if (s_current_state != REAR_CONTROLLER_STATE_DRIVE &&
+             (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE)) {
 #if (IS_MOTOR_CONNECTED == 1)
     if (rear_controller_storage->precharge_complete) {
       rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
@@ -146,7 +165,7 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
 #else
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
 #endif
-  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
+  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
   }
   return STATUS_CODE_OK;
