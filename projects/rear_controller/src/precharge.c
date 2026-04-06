@@ -38,6 +38,8 @@ static RearControllerStorage *rear_controller_storage = NULL;
 
 static GpioAddress precharge_address = GPIO_REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
+static GpioAddress s_rear_controller_board_led = GPIO_REAR_CONTROLLER_BOARD_LED;
+
 static uint32_t notification;
 
 static uint8_t valid_cycles = 0;
@@ -94,34 +96,42 @@ StatusCode precharge_run() {
   }
 #endif
 
-#if (PRECHARGE_MODE == PRECHARGE_MODE_MANUAL)
-#if (PRECHARGE_DEBUG == 1)
-  // Report values
-  LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
-            (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
-#endif
-
-  // If either voltage reading is zero, we should exit immediately
-  if (get_motor_stats_A_bus_voltage() == 0 || rear_controller_storage->pack_voltage == 0) {
-    valid_cycles = 0;
-    set_rear_controller_status_triggers_motor_precharge_complete(false);
-    return STATUS_CODE_OK;
+  valid_cycles++;
+  if (valid_cycles >= 250U) {
+    set_rear_controller_status_triggers_motor_precharge_complete(true);
+    rear_controller_storage->precharge_complete = true;
+    gpio_set_state(&s_rear_controller_board_led, GPIO_STATE_HIGH);
   }
 
-  // Check difference in voltage
-  if ((uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
-    valid_cycles++;
+  // #if (PRECHARGE_MODE == PRECHARGE_MODE_MANUAL)
+  // #if (PRECHARGE_DEBUG == 1)
+  //   // Report values
+  //   LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
+  //             (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
+  // #endif
 
-    // We should be within precharge threshold for a given amount of cycles
-    if (valid_cycles >= PRECHARGE_VALID_CYCLES) {
-      set_rear_controller_status_triggers_motor_precharge_complete(true);
-      rear_controller_storage->precharge_complete = true;
-    }
-  } else {
-    valid_cycles = 0;
-    set_rear_controller_status_triggers_motor_precharge_complete(false);
-  }
-#endif
+  //   // If either voltage reading is zero, we should exit immediately
+  //   if (get_motor_stats_A_bus_voltage() == 0 || rear_controller_storage->pack_voltage == 0) {
+  //     valid_cycles = 0;
+  //     set_rear_controller_status_triggers_motor_precharge_complete(false);
+  //     return STATUS_CODE_OK;
+  //   }
+
+  //   // Check difference in voltage
+  //   if ((uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
+  //     valid_cycles++;
+
+  //     // We should be within precharge threshold for a given amount of cycles
+  //     if (valid_cycles >= PRECHARGE_VALID_CYCLES) {
+  //       set_rear_controller_status_triggers_motor_precharge_complete(true);
+  //       rear_controller_storage->precharge_complete = true;
+  //       gpio_set_state(&s_rear_controller_board_led, GPIO_STATE_HIGH);
+  //     }
+  //   } else {
+  //     valid_cycles = 0;
+  //     set_rear_controller_status_triggers_motor_precharge_complete(false);
+  //   }
+  // #endif
 
   return STATUS_CODE_OK;
 }
