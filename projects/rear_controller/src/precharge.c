@@ -28,6 +28,14 @@
 
 #define PRECHARGE_DEBUG 1U
 
+#if (PRECHARGE_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
+
 #define PRECHARGE_VALID_CYCLES 50U
 
 #if (PRECHARGE_MODE == PRECHARGE_MODE_COMPARE)
@@ -82,12 +90,10 @@ StatusCode precharge_init(Event event, const Task *task, RearControllerStorage *
 StatusCode precharge_run() {
   // If precharge is already complete, we are done
   if (rear_controller_storage->precharge_complete) {
-#if (PRECHARGE_DEBUG == 1)
-    LOG_DEBUG("Precharge complete\r\n");
+    CONDITIONAL_LOG_DEBUG("Precharge complete\r\n");
 #if (PRECHARGE_MODE == PRECHARGE_MODE_COMPARE)
-    LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
-              (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
-#endif
+    CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
+                          (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
 #endif
     return STATUS_CODE_OK;
   }
@@ -103,10 +109,8 @@ StatusCode precharge_run() {
 #endif
 
 #if (PRECHARGE_MODE == PRECHARGE_MODE_COMPARE)
-#if (PRECHARGE_DEBUG == 1)
-  LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
-            (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
-#endif
+  CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
+                        (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
 
   // If either voltage reading is zero, we should exit immediately
   if (get_motor_stats_A_bus_voltage() == 0 || rear_controller_storage->pack_voltage == 0) {
@@ -134,7 +138,7 @@ StatusCode precharge_run() {
 #if (PRECHARGE_MODE == PRECHARGE_MODE_TIMEOUT)
   valid_cycles++;
   if (valid_cycles >= REAR_CONTROLLER_PRECHARGE_TIMEOUT_COUNTER) {
-    LOG_DEBUG("Precharge timeout: %u\r\n", valid_cycles);
+    CONDITIONAL_LOG_DEBUG("Precharge timeout: %u\r\n", valid_cycles);
     set_rear_controller_status_triggers_motor_precharge_complete(true);
     rear_controller_storage->precharge_complete = true;
     gpio_set_state(&s_rear_controller_board_led, GPIO_STATE_HIGH);
