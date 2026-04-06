@@ -25,8 +25,12 @@ static inline const char *output_grp_to_str(OutputGroup x) {
   switch (x) {
     case OUTPUT_GROUP_ALL:
       return "OUTPUT_GROUP_ALL";
-    case OUTPUT_GROUP_ACTIVE:
-      return "OUTPUT_GROUP_ACTIVE";
+    case OUTPUT_GROUP_D_R_INDICATORS:
+      return "OUTPUT_GROUP_D_R_INDICATORS";
+    case OUTPUT_GROUP_DRIVE:
+      return "OUTPUT_GROUP_DRIVE";
+    case OUTPUT_GROUP_REVERSE:
+      return "OUTPUT_GROUP_REVERSE";
     case OUTPUT_GROUP_LEFT_LIGHTS:
       return "OUTPUT_GROUP_LEFT_LIGHTS";
     case OUTPUT_GROUP_RIGHT_LIGHTS:
