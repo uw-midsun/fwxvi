@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "gpio_interrupts.h"
+#include "master_tasks.h"
 #include "notify.h"
 #include "tasks.h"
 
@@ -26,6 +27,9 @@
  */
 
 #define REAR_CONTROLLER_PRECHARGE_EVENT 0U
+
+#define REAR_CONTROLLER_PRECHARGE_CYCLE_DELAY_MS MASTER_1000HZ_TO_MS
+#define REAR_CONTROLLER_PRECHARGE_TIMEOUT_COUNTER 5000 / REAR_CONTROLLER_PRECHARGE_CYCLE_DELAY_MS
 
 /**
  * @brief   Initializes the precharge pin with interrupt handling

@@ -38,6 +38,10 @@
 #define MASTER_TASK_1HZ_SIZE (TASK_STACK_256)
 #endif
 
+#define MASTER_1000HZ_TO_MS 20U
+#define MASTER_10HZ_TO_MS 300U
+#define MASTER_1HZ_TO_MS 1000U
+
 /**
  * @brief   Run the 1000hz cycle
  * @details If this cycle takes longer than 1ms it will throw a warning
