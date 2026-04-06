@@ -91,8 +91,8 @@ AddOption(
 
 NUM_JOBS = os.cpu_count() or 4
 
-if not GetOption("num_jobs"):
-    AddOption("--jobs", dest="num_jobs", type="int", default=NUM_JOBS)
+if GetOption("num_jobs") == 1:
+    SetOption("num_jobs", NUM_JOBS)
 
 PLATFORM = GetOption("platform")
 TARGET = GetOption("name")
