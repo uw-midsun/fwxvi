@@ -88,7 +88,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   // current_sense_init(rear_controller_storage);
   precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task(), rear_controller_storage);
 
-  gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
   LOG_DEBUG("Rear controller initialized\r\n");
 

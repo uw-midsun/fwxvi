@@ -15,6 +15,7 @@
 
 /* Intra-component Headers */
 #include "front_controller_getters.h"
+#include "front_controller_setters.h"
 #include "front_controller_state_manager.h"
 #include "front_lights_signal.h"
 #include "power_manager.h"
@@ -45,6 +46,13 @@ static void front_controller_state_manager_enter_state(FrontControllerState new_
   switch (new_state) {
     case FRONT_CONTROLLER_STATE_IDLE:
       if (s_current_state != FRONT_CONTROLLER_STATE_IDLE || !started) {
+        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
+        power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+      }
+      break;
+
+    case FRONT_CONTROLLER_STATE_BRAKE:
+      if (s_current_state != FRONT_CONTROLLER_STATE_BRAKE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
@@ -98,6 +106,20 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
     case FRONT_CONTROLLER_STATE_IDLE:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+      } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
+      } else if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+      } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+      }
+      break;
+
+    case FRONT_CONTROLLER_STATE_BRAKE:
+      if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+      } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
       } else if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
@@ -108,6 +130,8 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
     case FRONT_CONTROLLER_STATE_DRIVE:
       if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+      } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
@@ -118,6 +142,8 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
     case FRONT_CONTROLLER_STATE_REVERSE:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+      } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
+        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
         front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
@@ -149,6 +175,9 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     started = true;
     return STATUS_CODE_OK;
   }
+
+  front_controller_storage->current_drive_state = s_current_state;
+  set_drive_status_state_data_drive_state(front_controller_storage->current_drive_state);
 
   /* Get required values from rear */
 #if (IS_REAR_CONNECTED == 0U)
@@ -183,36 +212,39 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   } else {
   }
 
-  // Handle drive state from steering
-  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE) {
-    // Precharge MUST be complete in order to enter driving state
-    if (is_precharge_complete_from_rear) {
-      front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_DRIVE_REQUEST);
-    } else {
-      CONDITIONAL_LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
-    }
-  }
-
-  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
-    // Precharge MUST be complete in order to enter driving state
-    if (is_precharge_complete_from_rear) {
-      front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_REVERSE_REQUEST);
-    } else {
-      CONDITIONAL_LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
-    }
-  }
-
-  if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
-    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_IDLE_REQUEST);
-  }
-
   // Handle brake
   if (is_brake_enabled == true && (front_controller_storage->brake_enabled == false) && (front_controller_storage->regen_enabled == false)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
     is_brake_enabled = false;
   } else if (is_brake_enabled == false && ((front_controller_storage->brake_enabled == true) || (front_controller_storage->regen_enabled == true))) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
+    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_BRAKE_REQUEST);
     is_brake_enabled = true;
+  }
+
+  if (!is_brake_enabled && !front_controller_storage->brake_enabled) {
+    // Handle drive state from steering
+    if (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE) {
+      // Precharge MUST be complete in order to enter driving state
+      if (is_precharge_complete_from_rear) {
+        front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_DRIVE_REQUEST);
+      } else {
+        CONDITIONAL_LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
+      }
+    }
+
+    if (drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE) {
+      // Precharge MUST be complete in order to enter driving state
+      if (is_precharge_complete_from_rear) {
+        front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_REVERSE_REQUEST);
+      } else {
+        CONDITIONAL_LOG_DEBUG("Warning: incomplete precharge preventing drive\r\n");
+      }
+    }
+
+    if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL) {
+      front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_IDLE_REQUEST);
+    }
   }
 
   // Handle horn
