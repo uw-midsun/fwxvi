@@ -54,11 +54,11 @@ typedef struct CanHwTiming {
 } CanHwTiming;
 
 /* Generated settings using http://www.bittiming.can-wiki.info/ */
-/* For 80 MHz APB1 clock. CAN Sampling occurs at ~87.5% of the frame */
+/* For 80 MHz APB1 clock */
 static CanHwTiming s_timing[NUM_CAN_HW_BITRATES] = {
   [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
   [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
-  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
+  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_11TQ, .bs2 = CAN_BS2_4TQ },
   [CAN_HW_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ }
 };
 
@@ -119,7 +119,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_can_handle.Instance = CAN_HW_BASE;
   s_can_handle.Init.Prescaler = s_timing[settings->bitrate].prescaler;
   s_can_handle.Init.Mode = can_mode;
-  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
+  s_can_handle.Init.SyncJumpWidth = CAN_SJW_4TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
   s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;   /* Time permitted before sample point (Prop + Phase seg) */
   s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;   /* Time permitted after sample point */
   s_can_handle.Init.TimeTriggeredMode = DISABLE;                  /* Traditional CAN behaviour based on priority and arbitration */
