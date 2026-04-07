@@ -29,7 +29,7 @@
  * @brief    GUI Firmware
  * @{
  */
-
+#ifdef STM32L4P5xx
 typedef lv_align_t WidgetAlignment;
 typedef lv_bar_orientation_t WidgetOrientation;
 typedef const lv_font_t *WidgetFontSize;
@@ -130,6 +130,110 @@ typedef struct {
   lv_coord_t border_width;         /**< Border width in pixels when the border is enabled */
   /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
 } LabelWidgetConfig;
+
+#else
+typedef int16_t WidgetAlignment;
+typedef int16_t WidgetOrientation;
+typedef const int16_t *WidgetFontSize;
+
+/** @brief   Struct defining the dimensions of a widget */
+typedef struct {
+  int16_t width;  /**< Widget width in pixels */
+  int16_t height; /**< Widget height in pixels */
+} WidgetSize;
+
+/** @brief   Positioning modes supported by widgets */
+typedef enum {
+  WIDGET_POSITION_ALIGN,    /**< Position the widget relative to an LVGL alignment anchor */
+  WIDGET_POSITION_ABSOLUTE, /**< Position the widget using an absolute (x,y) coords */
+} WidgetPositionType;
+
+/** 
+ * @brief  Alignment of text 
+ * @note   We start at 1 to match lv_text_align_t */
+typedef enum {
+  WIDGET_TEXT_ALIGN_LEFT = 1,     /**< Align text to left*/
+  WIDGET_TEXT_ALIGN_CENTER,       /**< Align text to center*/
+  WIDGET_TEXT_ALIGN_RIGHT,        /**< Align text to right*/
+} WidgetTextAlignment;
+
+/** @brief   Position a widget using an LVGL alignment and offsets */
+typedef struct {
+  WidgetAlignment align; /**< LVGL alignment anchor used for placement */
+  int16_t x_offset;   /**< Horizontal offset from the alignment anchor */
+  int16_t y_offset;   /**< Vertical offset from the alignment anchor */
+} WidgetAlignedPosition;
+
+/** @brief   Position a widget using absolute screen coordinates */
+typedef struct {
+  int16_t x; /**< Absolute X coordinate in pixels */
+  int16_t y; /**< Absolute Y coordinate in pixels */
+} WidgetAbsolutePosition;
+
+/** @brief   Generic widget position description */
+typedef struct {
+  WidgetPositionType type; /**< Positioning mode used by the union below */
+  union {
+    WidgetAlignedPosition align;     /**< Alignment-based position configuration */
+    WidgetAbsolutePosition absolute; /**< Absolute position configuration */
+  } value;                           /**< Position data matching the selected mode */
+} WidgetPosition;
+
+/** @brief   Runtime handles and state for a speedometer widget */
+typedef struct {
+  int16_t *scale;                     /**< LVGL scale object used for the dial */
+  int16_t *needle;                    /**< LVGL line object used as the speedometer needle */
+  int16_t *label;                     /**< LVGL label object showing the current speed */
+  int16_t needle_points[2]; /**< Line endpoints used to draw the needle */
+} SpeedometerWidget;
+
+/** @brief   Configuration used when creating a speedometer widget */
+typedef struct {
+  WidgetSize size;           /**< Bounding size of the widget */
+  WidgetPosition position;   /**< Placement of the widget on screen */
+  uint16_t total_tick_count; /**< Total number of dial ticks to draw */
+  uint16_t major_tick_every; /**< Interval between emphasized major ticks */
+  int32_t angle_range;       /**< Sweep angle of the dial in degrees */
+  int32_t rotation;          /**< Rotation offset applied to the dial in degrees */
+  int32_t needle_length;     /**< Needle length in pixels */
+} SpeedometerWidgetConfig;
+
+/** @brief   Runtime handles for a labeled bar widget */
+typedef struct {
+  int16_t *bar;   /**< LVGL bar object */
+  int16_t *label; /**< LVGL label associated with the bar */
+} BarWidget;
+
+/** @brief   Configuration used when creating a labeled bar widget */
+typedef struct {
+  WidgetSize size;                      /**< Bounding size of the bar widget */
+  WidgetPosition position;              /**< Placement of the bar widget on screen */
+  const char *label_text;               /**< Static label text shown beside the bar */
+  WidgetAlignment label_alignment; /**< Alignment used for the label relative to the bar */
+  WidgetOrientation orientation;        /**< LVGL bar orientation */
+  GuiColorId indicator_color_id;        /**< Ccolor used for the bar indicator */
+} BarWidgetConfig;
+
+typedef struct {
+  int16_t *label;
+} LabelWidget;
+
+typedef struct {
+  WidgetSize size;                 /**< Bounding size of the label widget, or content-sized when zero */
+  WidgetPosition position;         /**< Placement of the label widget on screen */
+  const char *label_text;          /**< Static label text shown */
+  WidgetTextAlignment alignment;   /**< Text alignment inside the label */
+  GuiColorId text_color_id;        /**< Color used for the label text */
+  WidgetFontSize font;             /**< Font used by the label text */
+  bool background_enabled;         /**< Whether to draw a background behind the label */
+  GuiColorId background_color_id;  /**< Color used for the background when enabled */
+  bool border_enabled;             /**< Whether to draw a border around the label */
+  GuiColorId border_color_id;      /**< Color used for the border when enabled */
+  int16_t border_width;           /**< Border width in pixels when the border is enabled */
+  /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
+} LabelWidgetConfig;
+
+#endif
 
 /* Inside alignment (inside parent widget) */
 #define WIDGET_ALIGN_IN_TOP_LEFT LV_ALIGN_TOP_LEFT
