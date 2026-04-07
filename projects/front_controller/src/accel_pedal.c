@@ -65,6 +65,11 @@ StatusCode accel_pedal_run() {
 
   // Square the value
   calculated_reading = calculated_reading * calculated_reading;
+  calculated_reading -= 0.08;
+
+  if (calculated_reading < 0) {
+    calculated_reading = 0.0f;
+  }
 
   s_accel_pedal_storage.accel_percentage = front_controller_storage->config->accel_low_pass_filter_alpha * calculated_reading +
                                            (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
