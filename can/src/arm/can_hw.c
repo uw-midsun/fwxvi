@@ -346,50 +346,42 @@ void HAL_CAN_TxMailbox2AbortCallback(CAN_HandleTypeDef *hcan) {
   s_signal_tx_mailbox_available_from_isr();
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+static void s_process_rx_fifo(uint32_t fifo) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
-  
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
+  CAN_RxHeaderTypeDef rx_header;
+  uint8_t rx_data[8];
+
+  if (HAL_CAN_GetRxMessage(&s_can_handle, fifo, &rx_header, rx_data) == HAL_OK) {
+    rx_msg.extended = (rx_header.IDE == CAN_ID_EXT);
+    rx_msg.id.raw = rx_msg.extended ? rx_header.ExtId : rx_header.StdId;
+    rx_msg.dlc = rx_header.DLC;
+    memcpy(&rx_msg.data, rx_data, rx_header.DLC);
+
     bool s_filter_id_match = false;
     for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
-      /* Check if the ID is in the filter */
       if (can_filters[i] == rx_msg.id.raw) {
         s_filter_id_match = true;
         break;
       }
     }
 
-    /* If the ID is not in the filters, push to RX queue */
     if (!s_filter_id_match) {
       can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
     }
   }
-  
+
   portYIELD_FROM_ISR(higher_woken);
 }
 
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-  BaseType_t higher_woken = pdFALSE;
-  CanMessage rx_msg = { 0 };
-  
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
-    bool s_filter_id_match = false;
-    for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
-      /* Check if the ID is in the filter */
-      if (can_filters[i] == rx_msg.id.raw) {
-        s_filter_id_match = true;
-        break;
-      }
-    }
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+  s_process_rx_fifo(CAN_RX_FIFO0);
+}
 
-    /* If the ID is not in the filters, push to RX queue */
-    if (!s_filter_id_match) {
-      can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
-    }
-  }
-  
-  portYIELD_FROM_ISR(higher_woken);
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+  s_process_rx_fifo(CAN_RX_FIFO1);
 }
 
  void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
