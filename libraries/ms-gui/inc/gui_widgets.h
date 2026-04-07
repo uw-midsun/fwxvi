@@ -53,24 +53,34 @@ StatusCode gui_widgets_set_throttle_bar(uint8_t percent);
 StatusCode gui_widgets_set_brake_bar(uint8_t percent);
 
 /**
- * @brief   Update the vertical temperature bar
- * @param   percent Current motor temperature
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_temperature_bar(uint16_t percent);
-
-/**
- * @brief   Update the vertical motor speed bar
- * @param   percent Current motor speed
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_speed_bar(uint16_t percent);
-
-/**
  * @brief   Update the horizontal segmented soc bar
  * @param   soc_percent Current percentage (0-100)
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
+
+/**
+ * @brief   Update the text for the top label
+ * @param   pack_voltage The battery pack voltage
+ * @param   motor_bus_voltage The motor bus voltage
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage);
+
+/**
+ * @brief   Update the text for the cell stats label
+ * @param   min_cell_voltage_mv The minimum cell voltage in mV
+ * @param   max_cell_voltage_mv The maximum cell voltage in mV
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16_t max_cell_voltage_mv);
+
+/**
+ * @brief   Update the text for the temperature stats label
+ * @param   motor_temp_c The motor temperature in C
+ * @param   max_cell_temp_c The maximum cell temperature in C
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c);
 
 /** @} */

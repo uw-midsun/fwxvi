@@ -67,7 +67,7 @@ struct {
  * @class   CanScheduler
  * @brief   Class that handles message scheduling over a SocketCAN interface
  * @details This class is responsible scheduling CAN messages based on their cycle speed
- *          Only 3 cycle speeds are supported, Fast (1kHz), medium (10Hz) and slow (1Hz)
+ *          Only 3 cycle speeds are supported, Fast (1kHz), medium (3HZ) and slow (1Hz)
  *          The class shall support message updating during run-time for further bus simulation
  */
 class CanScheduler {

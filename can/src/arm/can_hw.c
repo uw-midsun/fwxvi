@@ -361,7 +361,14 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
   /* TODO: Add error notifications/handling */
   /* Aryan - Maybe reinitialize bus? */
   uint32_t error = HAL_CAN_GetError(hcan);
-  
+
+  /* When TX fails (TERR or ALST), the mailbox is freed by hardware but
+   * TxMailboxNCompleteCallback is not called, so the semaphore is never given.
+   * Signal it here so can_hw_transmit doesn't block indefinitely. */
+  if (error & (HAL_CAN_ERROR_TX_TERR0 | HAL_CAN_ERROR_TX_ALST0)) {
+    s_signal_tx_mailbox_available_from_isr();
+  }
+
   if (error & HAL_CAN_ERROR_BOF) {
     HAL_CAN_ResetError(hcan);
     HAL_CAN_Start(hcan);

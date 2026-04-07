@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   master_tasks.c
  *
- * @brief  Source file for Master Tasks API. Supports 1KHz, 100Hz and 10Hz scheduling
+ * @brief  Source file for Master Tasks API. Supports 1KHz, 100Hz and 3HZ scheduling
  *
  * @date   2024-11-04
  * @author Midnight Sun Team #24 - MSXVI
@@ -14,8 +14,8 @@
 /* Intra-component Headers */
 #include "master_tasks.h"
 
-#define MASTER_1000HZ_TO_MS 1U
-#define MASTER_10HZ_TO_MS 100U
+#define MASTER_50HZ_TO_MS 20U
+#define MASTER_3HZ_TO_MS 300U
 #define MASTER_1HZ_TO_MS 1000U
 
 #define MASTER_TASKS_PRIORITY (configMAX_PRIORITIES - 1U)
@@ -45,21 +45,21 @@ void check_late_cycle(Task *task, BaseType_t delay) {
   }
 }
 
-TASK(master_task_1000hz, MASTER_TASK_1000HZ_SIZE) {
+TASK(master_task_1000hz, MASTER_TASK_50HZ_SIZE) {
   pre_loop_init();
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
     run_1000hz_cycle();
-    BaseType_t delay = xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(MASTER_1000HZ_TO_MS));
+    BaseType_t delay = xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(MASTER_50HZ_TO_MS));
     check_late_cycle(master_task_1000hz, delay);
   }
 }
 
-TASK(master_task_10hz, MASTER_TASK_10HZ_SIZE) {
+TASK(master_task_10hz, MASTER_TASK_3HZ_SIZE) {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
     run_10hz_cycle();
-    BaseType_t delay = xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(MASTER_10HZ_TO_MS));
+    BaseType_t delay = xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(MASTER_3HZ_TO_MS));
     check_late_cycle(master_task_10hz, delay);
   }
 }
