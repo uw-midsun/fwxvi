@@ -29,4 +29,12 @@
 #define DISPLAY_HEIGHT 1 /**< Height of the display */
 #endif
 
+/* Speedometer widget min and max vals */
+#define SPEEDOMETER_MIN_VALUE 0
+#define SPEEDOMETER_MAX_VALUE 120
+
+/* Bar widget min and max vals */
+#define BAR_MIN_VALUE 0
+#define BAR_MAX_VALUE 100
+
 /** @} */

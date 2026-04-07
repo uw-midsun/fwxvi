@@ -86,7 +86,7 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
 
 TASK(main_10hz_cycle, TASK_STACK_1024) {
   delay_ms(2000U);
-  LOG_DEBUG("Starting 10hz cycle\n\r");
+  LOG_DEBUG("Starting 3hz cycle\n\r");
   while (true) {
     run_can_tx_medium();
     front_controller_update_state_manager_medium_cycle();

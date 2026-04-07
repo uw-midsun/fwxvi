@@ -43,8 +43,10 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
     gui_widgets_set_speed(display_data->vehicle_velocity);
     gui_widgets_set_throttle_bar(display_data->pedal_percentage);
     gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
-    gui_widgets_set_temperature_bar(display_data->motor_heatsink_temp);
-    gui_widgets_set_speed_bar(display_data->motor_velocity);
+    gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage);
+    gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv,
+                                     display_data->max_cell_voltage_mv);
+    gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp);
 
     gui_render();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
@@ -111,14 +113,18 @@ StatusCode display_rx_medium() {
   display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
   display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
 
+  display_data->motor_bus_voltage = (uint16_t)get_motor_stats_A_bus_voltage();
   display_data->vehicle_velocity = (int16_t)get_motor_stats_B_vehicle_velocity();
   display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
 
-  display_data->pack_voltage = (int16_t)get_battery_stats_A_pack_voltage();
+  display_data->pack_voltage = (uint16_t)get_battery_stats_A_pack_voltage();
   display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
+  display_data->min_cell_voltage_mv = (uint16_t)get_battery_stats_B_min_cell_voltage();
+  display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
+  display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
   display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
 
   return STATUS_CODE_OK;

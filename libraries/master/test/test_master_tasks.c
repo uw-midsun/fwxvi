@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   test_master_tasks.c
  *
- * @brief  Test file for Master Tasks API. Supports 1Hz, 10Hz and 1000Hz scheduling
+ * @brief  Test file for Master Tasks API. Supports 1Hz, 3HZ and 1000Hz scheduling
  *
  * @date   2024-11-04
  * @author Midnight Sun Team #24 - MSXVI

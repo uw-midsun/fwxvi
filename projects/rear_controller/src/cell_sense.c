@@ -63,7 +63,7 @@
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
 
 /** @brief  Max number of retries for reading cell*/
-#define CELL_SENSE_MAX_RETRIES 5U
+#define CELL_SENSE_MAX_RETRIES 10U
 
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
@@ -80,7 +80,7 @@
 #define BALANCING_ENABLED 0U
 #define OVER_UNDER_FAULTS_ENABLED 0U
 
-#define CELL_SENSE_DEBUG 0U
+#define CELL_SENSE_DEBUG 1U
 #define CELL_SENSE_FAULT_DEBUG 1U
 
 /************************************************************************************************
@@ -157,6 +157,33 @@ static void s_balance_cells(uint16_t min_voltage) {
   /* Commit the discharge configuration to the ADBMS1818 */
   adbms_afe_write_config(adbms_afe_storage);
 #endif
+}
+
+static void s_disable_balancing() {
+  /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
+  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
+    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+    }
+  }
+
+  /* Commit the discharge configuration to the ADBMS1818 */
+  adbms_afe_write_config(adbms_afe_storage);
+#endif
+}
+
+static void s_disable_balancing() {
+  /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
+  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
+    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+    }
+  }
+
+  /* Commit the discharge configuration to the ADBMS1818 */
+  adbms_afe_write_config(adbms_afe_storage);
 }
 
 static StatusCode s_check_thermistors() {
@@ -426,11 +453,14 @@ StatusCode log_cell_sense() {
 }
 
 TASK(cell_sense_conversions, TASK_STACK_512) {
-  adbms_afe_init(adbms_afe_storage, &s_afe_settings);
+  StatusCode status = STATUS_CODE_OK;
+  RETRY_OPERATION(AFE_NUM_RETRIES, RETRY_DELAY_MS, adbms_afe_init(adbms_afe_storage, &s_afe_settings), status);
+
   delay_ms(10);
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
+    s_disable_balancing();  /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
     s_cell_sense_run();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));
