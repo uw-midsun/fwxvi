@@ -105,8 +105,8 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
 
   __HAL_RCC_CAN1_CLK_ENABLE();
 
-  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
-  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
+  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
+  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1); // effectively floating in our abstraction
 
   uint32_t can_mode = CAN_MODE_NORMAL;
   if (settings->loopback) {
