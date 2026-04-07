@@ -410,5 +410,9 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     s_signal_tx_mailbox_available_from_isr();
   }
 
+  if (error & (HAL_CAN_ERROR_BOF | HAL_CAN_ERROR_EPV)) {
+    s_can_bus_error = true;
+  }
+
  }
 /* clang-format on */
