@@ -61,7 +61,6 @@ static DMA_HandleTypeDef s_dma_tim2_ch3_handle = { 0U };
 static TIM_HandleTypeDef s_tim4_handle = { 0U };
 static DMA_HandleTypeDef s_dma_tim4_ch2_handle = { 0U };
 
-
 static SteeringStorage *steering_storage = NULL;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
@@ -85,7 +84,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
     HAL_TIM_PWM_Stop_DMA(&s_tim4_handle, TIM_CHANNEL_1);
     s_button_led_manager.is_transmitting = false;
     s_button_led_manager.needs_update = false;
-  } 
+  }
 }
 
 static void button_led_manager_compute_timing_from_clock(void) {
@@ -302,19 +301,19 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
 
   /* Initialize GPIO pin for PWM output - TIM2_CH3 can be PA2 or PB10 */
 
-  StatusCode status = gpio_init_pin_af(&s_button_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2); // DMA Channel 3
-   if (status != STATUS_CODE_OK) {
+  StatusCode status = gpio_init_pin_af(&s_button_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);  // DMA Channel 3
+  if (status != STATUS_CODE_OK) {
     return status;
   }
 
   /* Initialize left and right turn signal LED GPIO pins as regular outputs */
-  status = gpio_init_pin_af(&s_button_left_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2); // DMA Channel 1
-   if (status != STATUS_CODE_OK) {
+  status = gpio_init_pin_af(&s_button_left_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);  // DMA Channel 1
+  if (status != STATUS_CODE_OK) {
     return status;
   }
 
-  status = gpio_init_pin_af(&s_button_right_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4); // DMA Channel 2
-   if (status != STATUS_CODE_OK) {
+  status = gpio_init_pin_af(&s_button_right_turn_led_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4);  // DMA Channel 2
+  if (status != STATUS_CODE_OK) {
     return status;
   }
 
