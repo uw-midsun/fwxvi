@@ -39,5 +39,11 @@
     {% endfor %}
 #define get_received_{{message.name}}() \
     g_rx_struct.received_{{message.name}}
+{%- if message.crc %}
+#define get_crc_error_{{message.name}}() \
+    g_rx_struct.crc_error_{{message.name}}
+#define get_seq_counter_error_{{message.name}}() \
+    g_rx_struct.seq_counter_error_{{message.name}}
+{%- endif %}
 {% endfor %}
 /** @} */

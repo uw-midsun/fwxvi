@@ -14,9 +14,9 @@ Messages:
       telemetry:
         watchdog: 0
       front_controller:
-        watchdog: 0
+        watchdog: 5
       rear_controller:
-        watchdog: 0
+        watchdog: 5
     signals:
       cruise_control_target_velocity:
         length: 32

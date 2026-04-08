@@ -82,7 +82,7 @@ def check_yaml_file(data):
             message_length += signal['length']
 
         if message_length > 64:
-            raise Exception("Message must be 64 bits or less")
+            raise Exception(f"Message {message_name} exceeds 64 bit limit")
         
         if "critical" not in message:
             raise Exception("Critical is not defined for message " + message_name)
@@ -180,10 +180,14 @@ def get_data(args):
             # Packet structure:
             # | PRIORITY (1 bit) | MESSAGE ID (6 bits) | SOURCE (4 bits) |
 
+            signal_bits = sum(s["length"] for s in signals)
+            use_crc = message["critical"] and signal_bits <= 48
+
             messages.append({
                 "id": message["id"],
                 "critical": message["critical"],
                 "cycle": message["cycle"],
+                "crc": use_crc,
                 "name": message_name,
                 "signals": signals,
                 "sender": sender,

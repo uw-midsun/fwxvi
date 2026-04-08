@@ -35,6 +35,12 @@ typedef struct
 {%- for message in messages %}
     bool received_{{message.name}};
 {%- endfor %}
+{%- for message in messages %}
+{%- if message.crc %}
+    uint8_t crc_error_{{message.name}};
+    uint8_t seq_counter_error_{{message.name}};
+{%- endif %}
+{%- endfor %}
 } {{project_name}}_rx_struct;
 {% for message in messages %}
     {%- if message.receiver[project_name].watchdog != 0 %}

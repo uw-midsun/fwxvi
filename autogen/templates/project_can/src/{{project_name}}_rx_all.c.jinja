@@ -13,6 +13,7 @@
 /* Inter-component Headers */
 #include "can.h"
 #include "system_can.h"
+#include "crc8.h"
 
 /* Intra-component Headers */
 #include "can_codegen.h"
@@ -23,6 +24,11 @@
 CanWatchDog s_{{message.name}}_msg_watchdog = {0, {{message.receiver[project_name].watchdog | lower}}, 0};
     {%- endif %}
 {%- endfor %}
+{% set crc_rx_messages = messages | selectattr("crc") | list -%}
+{% if crc_rx_messages | length > 0 -%}
+static uint8_t s_last_seq_counter[{{ crc_rx_messages | length }}] = { 0U };
+static bool s_seq_counter_initialized[{{ crc_rx_messages | length }}] = { false };
+{% endif -%}
 
 void can_rx_all() {
     CanMessage msg = { 0 };
@@ -40,14 +46,44 @@ void can_rx_all() {
         uint64_t data = msg.data;
 
         switch (msg.id.raw) {
+        {%- set ns = namespace(crc_idx=0) %}
         {%- for message in messages %}
             case SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}:
+            {%- if message.crc %}
+            {%- set signal_bytes = (message.signals | sum(attribute='length') / 8) | int %}
+            {
+                uint8_t received_crc = (uint8_t)(data >> {{ (signal_bytes + 1) * 8 }});
+                uint8_t computed_crc = crc8_calculate((const uint8_t *)&data, {{ signal_bytes + 1 }});
+                if (received_crc != computed_crc) {
+                    g_rx_struct.crc_error_{{message.name}}++;
+                    break;
+                }
+                uint8_t received_seq_counter = (uint8_t)(data >> {{ signal_bytes * 8 }});
+                bool seq_counter_ok = !s_seq_counter_initialized[{{ ns.crc_idx }}] ||
+                    (received_seq_counter == ((s_last_seq_counter[{{ ns.crc_idx }}] + 1U) & 0xFFU));
+                s_last_seq_counter[{{ ns.crc_idx }}] = received_seq_counter;
+                s_seq_counter_initialized[{{ ns.crc_idx }}] = true;
+                if (!seq_counter_ok) {
+                    g_rx_struct.seq_counter_error_{{message.name}}++;
+                    break;
+                }
             {%- for signal in message.signals %}
                 g_rx_struct.{{message.name}}_{{signal.name}} = (data >> {{signal.start_bit}});
             {%- endfor %}
                 g_rx_struct.received_{{message.name}} = true;
             {%- if message.receiver[project_name].watchdog %}
                 s_{{message.name}}_msg_watchdog.cycles_over = 0;
+            {%- endif %}
+            }
+            {%- set ns.crc_idx = ns.crc_idx + 1 %}
+            {%- else %}
+            {%- for signal in message.signals %}
+                g_rx_struct.{{message.name}}_{{signal.name}} = (data >> {{signal.start_bit}});
+            {%- endfor %}
+                g_rx_struct.received_{{message.name}} = true;
+            {%- if message.receiver[project_name].watchdog %}
+                s_{{message.name}}_msg_watchdog.cycles_over = 0;
+            {%- endif %}
             {%- endif %}
                 break;
         {%- endfor %}

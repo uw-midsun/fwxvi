@@ -15,12 +15,17 @@
 /* Inter-component Headers */
 #include "can.h"
 #include "system_can.h"
+#include "crc8.h"
 
 /* Intra-component Headers */
 #include "can_codegen.h"
 {% set messages = messages | selectattr("sender", "eq", project_name) | list -%}
 
 static CanMessage s_msg = { 0U };
+{% set crc_messages = messages | selectattr("crc") | list -%}
+{% if crc_messages | length > 0 -%}
+static uint8_t s_seq_counters[{{ crc_messages | length }}] = { 0U };
+{% endif -%}
 
 static void prv_tx_can_message(CanMessageId id, uint8_t num_bytes, uint64_t data) {
     s_msg.id.raw = id,
@@ -31,56 +36,141 @@ static void prv_tx_can_message(CanMessageId id, uint8_t num_bytes, uint64_t data
 }
 
 void can_tx_all() {
+{%- set ns = namespace(crc_idx=0) %}
 {%- for message in messages %}
+{%- set signal_bytes = (message.signals | sum(attribute='length') / 8) | int %}
+{%- if message.crc %}
+    {
+        uint64_t data =
+    {%- for signal in message.signals %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor %};
+        data |= (uint64_t)s_seq_counters[{{ ns.crc_idx }}] << {{ signal_bytes * 8 }};
+        uint8_t crc = crc8_calculate((const uint8_t *)&data, {{ signal_bytes + 1 }});
+        data |= (uint64_t)crc << {{ (signal_bytes + 1) * 8 }};
+        s_seq_counters[{{ ns.crc_idx }}]++;
+        prv_tx_can_message(
+            SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+            {{ signal_bytes + 2 }},
+            data);
+    }
+{%- set ns.crc_idx = ns.crc_idx + 1 %}
+{%- else %}
     prv_tx_can_message(
-        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
-        {{- (message.signals | sum(attribute='length') / 8) | int }},
-    
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+        {{- signal_bytes }},
     {%- for signal in message.signals %}
         (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
     {%- endfor -%}
     );
+{%- endif %}
 {%- endfor %}
 }
 
 void can_tx_fast_cycle() {
+{%- set ns = namespace(crc_idx=0) %}
 {%- for message in messages %}
+{%- set signal_bytes = (message.signals | sum(attribute='length') / 8) | int %}
 {%- if message.cycle == "fast" %}
+{%- if message.crc %}
+    {
+        uint64_t data =
+    {%- for signal in message.signals %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor %};
+        data |= (uint64_t)s_seq_counters[{{ ns.crc_idx }}] << {{ signal_bytes * 8 }};
+        uint8_t crc = crc8_calculate((const uint8_t *)&data, {{ signal_bytes + 1 }});
+        data |= (uint64_t)crc << {{ (signal_bytes + 1) * 8 }};
+        s_seq_counters[{{ ns.crc_idx }}]++;
+        prv_tx_can_message(
+            SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+            {{ signal_bytes + 2 }},
+            data);
+    }
+{%- else %}
     prv_tx_can_message(
-        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
-        {{- (message.signals | sum(attribute='length') / 8) | int }},
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+        {{- signal_bytes }},
     {%- for signal in message.signals %}
         (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
     {%- endfor -%}
     );
+{%- endif %}
+{%- endif %}
+{%- if message.crc %}
+{%- set ns.crc_idx = ns.crc_idx + 1 %}
 {%- endif %}
 {%- endfor %}
 }
 
 void can_tx_medium_cycle() {
+{%- set ns = namespace(crc_idx=0) %}
 {%- for message in messages %}
+{%- set signal_bytes = (message.signals | sum(attribute='length') / 8) | int %}
 {%- if message.cycle == "medium" %}
+{%- if message.crc %}
+    {
+        uint64_t data =
+    {%- for signal in message.signals %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor %};
+        data |= (uint64_t)s_seq_counters[{{ ns.crc_idx }}] << {{ signal_bytes * 8 }};
+        uint8_t crc = crc8_calculate((const uint8_t *)&data, {{ signal_bytes + 1 }});
+        data |= (uint64_t)crc << {{ (signal_bytes + 1) * 8 }};
+        s_seq_counters[{{ ns.crc_idx }}]++;
+        prv_tx_can_message(
+            SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+            {{ signal_bytes + 2 }},
+            data);
+    }
+{%- else %}
     prv_tx_can_message(
-        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
-        {{- (message.signals | sum(attribute='length') / 8) | int }},
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+        {{- signal_bytes }},
     {%- for signal in message.signals %}
         (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
     {%- endfor -%}
     );
 {%- endif %}
+{%- endif %}
+{%- if message.crc %}
+{%- set ns.crc_idx = ns.crc_idx + 1 %}
+{%- endif %}
 {%- endfor %}
 }
 
 void can_tx_slow_cycle() {
+{%- set ns = namespace(crc_idx=0) %}
 {%- for message in messages %}
+{%- set signal_bytes = (message.signals | sum(attribute='length') / 8) | int %}
 {%- if message.cycle == "slow" %}
+{%- if message.crc %}
+    {
+        uint64_t data =
+    {%- for signal in message.signals %}
+            (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
+    {%- endfor %};
+        data |= (uint64_t)s_seq_counters[{{ ns.crc_idx }}] << {{ signal_bytes * 8 }};
+        uint8_t crc = crc8_calculate((const uint8_t *)&data, {{ signal_bytes + 1 }});
+        data |= (uint64_t)crc << {{ (signal_bytes + 1) * 8 }};
+        s_seq_counters[{{ ns.crc_idx }}]++;
+        prv_tx_can_message(
+            SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+            {{ signal_bytes + 2 }},
+            data);
+    }
+{%- else %}
     prv_tx_can_message(
-        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}}, 
-        {{- (message.signals | sum(attribute='length') / 8) | int }},
+        SYSTEM_CAN_MESSAGE_{{message.sender | upper}}_{{message.name | upper}},
+        {{- signal_bytes }},
     {%- for signal in message.signals %}
         (uint64_t) g_tx_struct.{{message.name}}_{{signal.name}} << {{signal.start_bit}}{{ " |" if not loop.last }}
     {%- endfor -%}
     );
+{%- endif %}
+{%- endif %}
+{%- if message.crc %}
+{%- set ns.crc_idx = ns.crc_idx + 1 %}
 {%- endif %}
 {%- endfor %}
 }

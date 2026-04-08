@@ -14,9 +14,9 @@ Messages:
       telemetry:
         watchdog: 0
       front_controller:
-        watchdog: 0
+        watchdog: 5
       steering:
-        watchdog: 0
+        watchdog: 5
     signals:
       triggers:
         type: bitfield
@@ -31,9 +31,9 @@ Messages:
       telemetry:
         watchdog: 0
       front_controller:
-        watchdog: 0
+        watchdog: 5
       steering:
-        watchdog: 0
+        watchdog: 5
     signals:
       pack_voltage:
         length: 16
@@ -50,9 +50,9 @@ Messages:
       telemetry:
         watchdog: 0
       front_controller:
-        watchdog: 0
+        watchdog: 5
       steering:
-        watchdog: 0
+        watchdog: 5
     signals:
       max_cell_voltage:
         length: 16
