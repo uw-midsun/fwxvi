@@ -12,11 +12,11 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "delay.h"
 #include "display.h"
 #include "log.h"
 #include "mcu.h"
 #include "tasks.h"
-#include "delay.h"
 
 /* Intra-component Headers */
 
@@ -84,7 +84,6 @@ static void s_update_demo_display_data(uint32_t step) {
   }
 }
 
-
 TASK(sc_gui_api, TASK_STACK_2048) {
   StatusCode status = display_init(&s_demo_storage);
 
@@ -96,6 +95,9 @@ TASK(sc_gui_api, TASK_STACK_2048) {
   }
 
   LOG_DEBUG("Initialization success!");
+#ifdef MS_PLATFORM_X86
+  LOG_DEBUG("Smoke controls: LEFT+RIGHT opens/closes menu, UP/DOWN navigate, ENTER selects, ESC closes\r\n");
+#endif
 
   uint32_t step = 0U;
 

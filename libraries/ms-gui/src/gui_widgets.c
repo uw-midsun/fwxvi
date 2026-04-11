@@ -239,11 +239,13 @@ static StatusCode s_create_cc_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
-StatusCode gui_widgets_init(void) {
-  GuiScreen *screen = lvgl_get_active_screen();
-
+StatusCode gui_widgets_init_screen(GuiScreen *screen) {
   if (screen == NULL) {
-    return STATUS_CODE_INTERNAL_ERROR;
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (s_widgets_initialized) {
+    return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
@@ -261,6 +263,16 @@ StatusCode gui_widgets_init(void) {
   s_widgets_initialized = true;
 
   return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_init(void) {
+  GuiScreen *screen = lvgl_get_active_screen();
+
+  if (screen == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  return gui_widgets_init_screen(screen);
 }
 
 StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault) {
@@ -361,6 +373,11 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
 
 #else
 StatusCode gui_widgets_init(void) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_init_screen(GuiScreen *screen) {
+  (void)screen;
   return STATUS_CODE_OK;
 }
 

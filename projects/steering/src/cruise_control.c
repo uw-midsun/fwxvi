@@ -18,6 +18,7 @@
 #include "button.h"
 #include "button_manager.h"
 #include "buzzer.h"
+#include "gui_menu.h"
 #include "steering.h"
 #include "steering_getters.h"
 #include "steering_setters.h"
@@ -123,6 +124,13 @@ StatusCode cruise_control_run_medium_cycle() {
 
   ButtonState up = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state;
   ButtonState down = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state;
+
+  if (gui_menu_is_open()) {
+    hold_ticks = 0;
+    hold_direction = 0;
+    cruise_control_enabled_released = !(up || down);
+    return STATUS_CODE_OK;
+  }
 
   /* Enable / Disable */
 

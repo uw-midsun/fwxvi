@@ -26,14 +26,21 @@ static ClutEntry s_clut_table[NUM_COLOR_INDICES] = {
 static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = {
   [GUI_COLOR_SCREEN_BACKGROUND] = { .red = 0x08U, .green = 0x0CU, .blue = 0x12U },
   [GUI_COLOR_TEXT_PRIMARY] = { .red = 0xF4U, .green = 0xF7U, .blue = 0xFBU },
+  [GUI_COLOR_MENU_OVERLAY] = { .red = 0x00U, .green = 0x00U, .blue = 0x00U },
+  [GUI_COLOR_MENU_PANEL_BACKGROUND] = { .red = 0x17U, .green = 0x20U, .blue = 0x29U },
+  [GUI_COLOR_MENU_PANEL_BORDER] = { .red = 0xD9U, .green = 0xE2U, .blue = 0xECU },
+  [GUI_COLOR_MENU_TITLE_TEXT] = { .red = 0xF4U, .green = 0xF7U, .blue = 0xFBU },
+  [GUI_COLOR_MENU_ITEM_TEXT] = { .red = 0xF4U, .green = 0xF7U, .blue = 0xFBU },
+  [GUI_COLOR_MENU_ITEM_SELECTED_BACKGROUND] = { .red = 0x0DU, .green = 0x32U, .blue = 0x6EU },
+  [GUI_COLOR_MENU_ITEM_SELECTED_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU },
   [GUI_COLOR_SPEEDOMETER_TICK_MAJOR] = { .red = 0xF4U, .green = 0xF7U, .blue = 0xFBU },
   [GUI_COLOR_SPEEDOMETER_TICK_MINOR] = { .red = 0x59U, .green = 0x66U, .blue = 0x74U },
   [GUI_COLOR_SPEEDOMETER_NEEDLE] = { .red = 0xFFU, .green = 0x6BU, .blue = 0x6BU },
   [GUI_COLOR_BAR_BACKGROUND] = { .red = 0x17U, .green = 0x20U, .blue = 0x29U },
   [GUI_COLOR_BAR_BORDER] = { .red = 0xD9U, .green = 0xE2U, .blue = 0xECU },
-  [GUI_COLOR_THROTTLE_FILL] = { .red = 0x00U, .green = 0xC8U, .blue = 0x53U },
-  [GUI_COLOR_BRAKE_FILL] = { .red = 0xFFU, .green = 0x70U, .blue = 0x43U },
-  [GUI_COLOR_SOC_FILL] = { .red = 0x00U, .green = 0xC8U, .blue = 0x53U },
+  [GUI_COLOR_THROTTLE_FILL] = { .red = 0x0DU, .green = 0x32U, .blue = 0x6EU },
+  [GUI_COLOR_BRAKE_FILL] = { .red = 0xD6U, .green = 0x9BU, .blue = 0x33U },
+  [GUI_COLOR_SOC_FILL] = { .red = 0xD6U, .green = 0x9BU, .blue = 0x33U },
   [GUI_COLOR_LABEL_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU }
 };
 

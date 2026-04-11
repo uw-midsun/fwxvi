@@ -306,8 +306,10 @@ static StatusCode s_cell_sense_run() {
 
   uint16_t max_voltage = 0U;
   uint16_t min_voltage = 0xFFFFU;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
   uint8_t max_voltage_cell = 0U;
   uint8_t min_voltage_cell = 0U;
+#endif
   uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
@@ -321,12 +323,16 @@ static StatusCode s_cell_sense_run() {
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
         max_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
 
       if (current_cell_voltage < min_voltage) {
         min_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
         min_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
     }
   }

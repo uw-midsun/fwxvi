@@ -17,6 +17,7 @@
 #include "status.h"
 
 /* Intra-component Headers */
+#include "lvgl_screens.h"
 
 /**
  * @defgroup GUI
@@ -31,6 +32,13 @@
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_init(void);
+
+/**
+ * @brief   Initialize the widget layer on a specific screen root
+ * @param   screen Screen root to populate with the drive widgets
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_init_screen(GuiScreen *screen);
 
 /**
  * @brief   Update the speedometer needle
