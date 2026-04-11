@@ -193,6 +193,8 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+  ++steering_storage->cruise_control_target_speed_kmh;
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 #endif
@@ -209,6 +211,12 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+  --steering_storage->cruise_control_target_speed_kmh;
+
+  if (steering_storage->cruise_control_target_speed_kmh == 0) {
+    steering_storage->cruise_control_enabled = true;
+  }
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
 #endif

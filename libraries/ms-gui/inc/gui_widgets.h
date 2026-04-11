@@ -11,6 +11,7 @@
 
 /* Standard library Headers */
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Inter-component Headers */
 #include "status.h"
@@ -63,9 +64,11 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
  * @brief   Update the text for the top label
  * @param   pack_voltage The battery pack voltage
  * @param   motor_bus_voltage The motor bus voltage
+ * @param   fault Active BPS fault bitmask
+ * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage);
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault);
 
 /**
  * @brief   Update the text for the cell stats label
@@ -83,4 +86,10 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
  */
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c);
 
+/**
+ * @brief   Update the cruise control set speed
+ * @param   cruise_control_speed_kmh The cruise control set speed in km/h
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled);
 /** @} */

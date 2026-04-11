@@ -21,7 +21,7 @@
  * @{
  */
 
-#ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)         /* Framebuffer takes up too much RAM on other STMs otherwise*/
 #define DISPLAY_WIDTH 480  /**< Width of the display */
 #define DISPLAY_HEIGHT 272 /**< Height of the display */
 #else

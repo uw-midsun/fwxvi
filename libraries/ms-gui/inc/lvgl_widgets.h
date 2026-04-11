@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl.h"
 #endif
 #include "status.h"
@@ -29,7 +29,7 @@
  * @brief    GUI Firmware
  * @{
  */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef lv_align_t WidgetAlignment;
 typedef lv_bar_orientation_t WidgetOrientation;
 typedef const lv_font_t *WidgetFontSize;
@@ -46,8 +46,8 @@ typedef enum {
   WIDGET_POSITION_ABSOLUTE, /**< Position the widget using an absolute (x,y) coords */
 } WidgetPositionType;
 
-/** 
- * @brief  Alignment of text 
+/**
+ * @brief  Alignment of text
  * @note   We start at 1 to match lv_text_align_t */
 typedef enum {
   WIDGET_TEXT_ALIGN_LEFT = 1,     /**< Align text to left*/
@@ -148,8 +148,8 @@ typedef enum {
   WIDGET_POSITION_ABSOLUTE, /**< Position the widget using an absolute (x,y) coords */
 } WidgetPositionType;
 
-/** 
- * @brief  Alignment of text 
+/**
+ * @brief  Alignment of text
  * @note   We start at 1 to match lv_text_align_t */
 typedef enum {
   WIDGET_TEXT_ALIGN_LEFT = 1,     /**< Align text to left*/

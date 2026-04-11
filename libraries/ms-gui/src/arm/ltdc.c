@@ -21,7 +21,7 @@
 #include "gpio.h"
 #include "ltdc.h"
 
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;

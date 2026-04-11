@@ -17,6 +17,8 @@
 #include "gui_widgets.h"
 #include "ltdc.h"
 #include "pwm.h"
+#include "status.h"
+#include "tasks.h"
 
 /* Intra-component Headers */
 #include "display.h"
@@ -36,19 +38,47 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((al
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
+static StatusCode s_render_gui_step(void) {
+  status_ok_or_return(gui_widgets_set_speed(display_data->vehicle_velocity));
+  status_ok_or_return(gui_widgets_set_throttle_bar(display_data->pedal_percentage));
+  status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0));  // TODO change to % base when available
+  status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell));
+  status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
+  status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
+  status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
+  status_ok_or_return(gui_widgets_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+
+  return gui_render();
+}
+
 TASK(display_lvgl_task, TASK_STACK_2048) {
+#ifdef MS_PLATFORM_X86
+  StatusCode init_status = gui_init(&settings);
+  if (init_status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui_init failed: %u\r\n", init_status);
+    vTaskEndScheduler();
+    return;
+  }
+
+  LOG_DEBUG("LVGL display initialized\r\n");
+#endif
+
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
-    gui_widgets_set_speed(display_data->vehicle_velocity);
-    gui_widgets_set_throttle_bar(display_data->pedal_percentage);
-    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
-    gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage);
-    gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv,
-                                     display_data->max_cell_voltage_mv);
-    gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp);
+    StatusCode render_status = s_render_gui_step();
+    if (render_status != STATUS_CODE_OK) {
+      LOG_DEBUG("gui render step failed: %u\r\n", render_status);
+    }
 
-    gui_render();
+#ifdef MS_PLATFORM_X86
+    if (!ltdc_process_events()) {
+      ltdc_cleanup();
+      vTaskEndScheduler();
+      return;
+    }
+#endif
+
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5));
   }
 }
@@ -86,10 +116,14 @@ StatusCode display_init(SteeringStorage *storage) {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
 
+#ifdef MS_PLATFORM_X86
+  status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
+#else
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
   LOG_DEBUG("LVGL display initialized\r\n");
+#endif
   return STATUS_CODE_OK;
 }
 
@@ -109,6 +143,7 @@ StatusCode display_rx_medium() {
   display_data->drive_state = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
+  display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
 
   display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
   display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();

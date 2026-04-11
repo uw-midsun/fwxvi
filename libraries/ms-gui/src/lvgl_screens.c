@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "clut.h"
 #include "lvgl_screens.h"
 #else
@@ -21,7 +21,7 @@
 
 /* Intra-component Headers */
 
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   ClutEntry color = clut_get_gui_color(color_id);
   return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));

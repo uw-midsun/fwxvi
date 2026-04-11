@@ -116,6 +116,14 @@ static uint8_t s_afe_message_index = 0U;
 
 static RearControllerStorage *rear_controller_storage;
 
+static uint8_t s_global_cell_index_1_based(uint8_t device, uint8_t cell) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELLS_PER_DEVICE + cell + 1U);
+}
+
+static uint8_t s_global_thermistor_index_1_based(uint8_t device, uint8_t thermistor) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor + 1U);
+}
+
 /************************************************************************************************
  * Private function definitions
  ************************************************************************************************/
@@ -170,20 +178,6 @@ static void s_disable_balancing() {
 
   /* Commit the discharge configuration to the ADBMS1818 */
   adbms_afe_write_config(adbms_afe_storage);
-#endif
-}
-
-static void s_disable_balancing() {
-  /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
-  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
-    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
-      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
-        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
-    }
-  }
-
-  /* Commit the discharge configuration to the ADBMS1818 */
-  adbms_afe_write_config(adbms_afe_storage);
 }
 
 static StatusCode s_check_thermistors() {
@@ -210,14 +204,14 @@ static StatusCode s_check_thermistors() {
         /* Discharging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       } else {
         /* Charging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
@@ -312,6 +306,8 @@ static StatusCode s_cell_sense_run() {
 
   uint16_t max_voltage = 0U;
   uint16_t min_voltage = 0xFFFFU;
+  uint8_t max_voltage_cell = 0U;
+  uint8_t min_voltage_cell = 0U;
   uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
@@ -325,10 +321,12 @@ static StatusCode s_cell_sense_run() {
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
+        max_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
       }
 
       if (current_cell_voltage < min_voltage) {
         min_voltage = current_cell_voltage;
+        min_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
       }
     }
   }
@@ -362,7 +360,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("OVERVOLTAGE: %u\r\n", max_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+    trigger_bps_fault_with_cell(BPS_FAULT_OVERVOLTAGE, max_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -372,7 +370,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("UNDERVOLTAGE: %u\r\n", min_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+    trigger_bps_fault_with_cell(BPS_FAULT_UNDERVOLTAGE, min_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -383,7 +381,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_UNBALANCE);
+    trigger_bps_fault_with_cell(BPS_FAULT_UNBALANCE, max_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }

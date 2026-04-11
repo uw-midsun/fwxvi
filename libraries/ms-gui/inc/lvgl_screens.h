@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl.h"
 #endif
 
@@ -30,7 +30,7 @@
  */
 
 /* Idea of this is to seperate lvgl driver specifics from gui_* files */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef lv_obj_t GuiScreen;
 #else
 typedef void GuiScreen;

@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 /* Inter-component Headers */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "clut.h"
 #include "lvgl_widgets.h"
 #else
@@ -21,7 +21,7 @@
 
 /* Intra-component Headers */
 
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 /* Speedometer style objects */
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;

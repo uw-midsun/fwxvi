@@ -33,7 +33,7 @@ static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = {
   [GUI_COLOR_BAR_BORDER] = { .red = 0xD9U, .green = 0xE2U, .blue = 0xECU },
   [GUI_COLOR_THROTTLE_FILL] = { .red = 0x00U, .green = 0xC8U, .blue = 0x53U },
   [GUI_COLOR_BRAKE_FILL] = { .red = 0xFFU, .green = 0x70U, .blue = 0x43U },
-  [GUI_COLOR_SOC_FILL] = { .red = 0x26U, .green = 0xC6U, .blue = 0xDAU },
+  [GUI_COLOR_SOC_FILL] = { .red = 0x00U, .green = 0xC8U, .blue = 0x53U },
   [GUI_COLOR_LABEL_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU }
 };
 

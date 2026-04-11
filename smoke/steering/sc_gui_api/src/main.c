@@ -29,7 +29,13 @@
 
 static SteeringStorage s_demo_storage = { 0 };
 
-/** @brief For simulating values */
+/**
+ * @brief   Generate a triangle-wave sample for the GUI smoke test
+ * @param   step Current simulation step
+ * @param   period_steps Number of steps in the rising half of the wave
+ * @param   max_value Peak value returned by the wave
+ * @return  Current triangle-wave sample in the range [0, max_value]
+ */
 static uint16_t s_triangle_wave(uint32_t step, uint32_t period_steps, uint16_t max_value) {
   if (period_steps == 0U || max_value == 0U) {
     return 0U;
@@ -44,15 +50,42 @@ static uint16_t s_triangle_wave(uint32_t step, uint32_t period_steps, uint16_t m
 }
 
 static void s_update_demo_display_data(uint32_t step) {
+  uint32_t fault_phase = (step / 120U) % 4U;
+
   s_demo_storage.display_data.vehicle_velocity = (int16_t)s_triangle_wave(step, 400U, 160U);
   s_demo_storage.display_data.pedal_percentage = (uint8_t)s_triangle_wave(step + 80U, 180U, 100U);
   s_demo_storage.display_data.brake_enabled = ((step / 45U) % 6U) == 0U;
   s_demo_storage.display_data.motor_heatsink_temp = (int16_t)(25U + s_triangle_wave(step + 120U, 240U, 75U));
   s_demo_storage.display_data.motor_velocity = (int16_t)s_triangle_wave(step + 40U, 160U, 100U);
+  s_demo_storage.display_data.pack_voltage = 120U + s_triangle_wave(step + 20U, 300U, 40U);
+  s_demo_storage.display_data.motor_bus_voltage = 110U + s_triangle_wave(step + 60U, 260U, 30U);
+  s_demo_storage.display_data.min_cell_voltage_mv = 3300U + s_triangle_wave(step + 10U, 220U, 500U);
+  s_demo_storage.display_data.max_cell_voltage_mv = 3600U + s_triangle_wave(step + 50U, 220U, 500U);
+  s_demo_storage.display_data.max_cell_temp = 30U + s_triangle_wave(step + 90U, 250U, 35U);
+  s_demo_storage.display_data.state_of_charge = (uint8_t)s_triangle_wave(step + 30U, 320U, 100U);
+
+  switch (fault_phase) {
+    case 1:
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERVOLTAGE_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 1U + (uint8_t)(s_triangle_wave(step, 96U, 23U));
+      break;
+    case 2:
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_KILLSWITCH_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 0U;
+      break;
+    case 3:
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERTEMP_CELL_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 1U + (uint8_t)(s_triangle_wave(step + 25U, 96U, 23U));
+      break;
+    default:
+      s_demo_storage.display_data.bps_fault = 0U;
+      s_demo_storage.display_data.bps_fault_cell = 0U;
+      break;
+  }
 }
 
 
-TASK(sc_gui_api, TASK_STACK_1024) {
+TASK(sc_gui_api, TASK_STACK_2048) {
   StatusCode status = display_init(&s_demo_storage);
 
   if (status != STATUS_CODE_OK) {
@@ -61,7 +94,7 @@ TASK(sc_gui_api, TASK_STACK_1024) {
       delay_ms(10);
     }
   }
-  
+
   LOG_DEBUG("Initialization success!");
 
   uint32_t step = 0U;
@@ -76,9 +109,7 @@ TASK(sc_gui_api, TASK_STACK_1024) {
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
-  // mpxe_init(argc, argv);
-  (void) argc;
-  (void) argv;
+  mpxe_init(argc, argv);
   /* TODO: For some reason, this breaks, too much work to figure out why, and we don't need it */
 #else
 int main(void) {
@@ -87,7 +118,7 @@ int main(void) {
   tasks_init();
   log_init();
 
-  tasks_init_task(sc_gui_api, TASK_PRIORITY(3), NULL);
+  tasks_init_task(sc_gui_api, TASK_PRIORITY(4), NULL);
 
   tasks_start();
 
