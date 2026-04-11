@@ -18,6 +18,7 @@
 #include "cruise_control.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
+#include "regen_brake.h"
 
 #define MOTOR_CAN_DEBUG 0U
 
@@ -34,6 +35,9 @@
 static FrontControllerStorage *front_controller_storage = NULL;
 
 static VehicleDriveState current_drive_state;
+
+static float regen_strength;
+static bool regen_direction;
 
 StatusCode motor_can_update_target_current_velocity() {
   if (front_controller_storage == NULL) {
@@ -73,9 +77,20 @@ StatusCode motor_can_update_target_current_velocity() {
       ws22_motor_can_set_velocity(0.0f);
       break;
     case VEHICLE_DRIVE_STATE_REGEN:
-      CONDITIONAL_LOG_DEBUG("Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
-      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
-      ws22_motor_can_set_velocity(0.0f);
+      regen_brake_run(&regen_strength, &regen_direction);
+      CONDITIONAL_LOG_DEBUG("REGEN STRENGTH: %ld\r\n", (int32_t)(regen_strength * 100));
+
+      if (regen_strength == 0) {
+        ws22_motor_can_set_current(0.0f);
+        ws22_motor_can_set_velocity(0.0f);
+      } else if (regen_direction == true) {
+        ws22_motor_can_set_current(regen_strength);
+        ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
+      } else {
+        ws22_motor_can_set_current(regen_strength);
+        ws22_motor_can_set_velocity((-1) * WS22_CONTROLLER_MAX_VELOCITY);
+      }
+
       break;
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       CONDITIONAL_LOG_DEBUG("Neutral\r\n");
