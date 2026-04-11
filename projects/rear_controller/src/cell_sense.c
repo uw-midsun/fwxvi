@@ -81,7 +81,14 @@
 #define OVER_UNDER_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
-#define CELL_SENSE_FAULT_DEBUG 1U
+
+#if (CELL_SENSE_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
 
 /************************************************************************************************
  * Private variables
@@ -291,9 +298,7 @@ static StatusCode s_cell_sense_run() {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
-#if (CELL_SENSE_DEBUG == 1)
-      LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
-#endif
+      CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
       delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
@@ -308,15 +313,9 @@ static StatusCode s_cell_sense_run() {
 
   rear_controller_storage->pack_voltage = total_voltage / 10000;
 
-#if (CELL_SENSE_DEBUG == 1)
-  LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
-#endif
+  CONDITIONAL_LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
   delay_ms(10U);
-
-#if (CELL_SENSE_DEBUG == 1)
-  LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
-#endif
-
+  CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
   delay_ms(10U);
 
   set_battery_stats_B_max_cell_voltage(max_voltage);
@@ -331,9 +330,7 @@ static StatusCode s_cell_sense_run() {
    * We must multiply the safety limit of 10 to convert from mV -> 100 uV
    */
   if (max_voltage >= (CELL_OVERVOLTAGE_LIMIT_mV * 10U)) {
-#if (CELL_SENSE_FAULT_DEBUG == 1)
-    LOG_DEBUG("OVERVOLTAGE: %u\r\n", max_voltage);
-#endif
+    LOG_DEBUG("FAULT: OVERVOLTAGE: %u\r\n", max_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
 #endif
@@ -341,9 +338,7 @@ static StatusCode s_cell_sense_run() {
   }
 
   if (min_voltage <= (CELL_UNDERVOLTAGE_LIMIT_mV * 10U)) {
-#if (CELL_SENSE_FAULT_DEBUG == 1)
-    LOG_DEBUG("UNDERVOLTAGE: %u\r\n", min_voltage);
-#endif
+    LOG_DEBUG("FAULT: UNDERVOLTAGE: %u\r\n", min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
 #endif
@@ -351,10 +346,8 @@ static StatusCode s_cell_sense_run() {
   }
 
   if ((max_voltage - min_voltage) >= (CELL_UNBALANCED_LIMIT_mV * 10)) {
-/* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
-#if (CELL_SENSE_FAULT_DEBUG == 1)
-    LOG_DEBUG("UNBALANCED: %u\r\n", max_voltage - min_voltage);
-#endif
+    /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
+    LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_UNBALANCE);
 #endif
