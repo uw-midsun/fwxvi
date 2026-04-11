@@ -19,7 +19,9 @@ Messages:
         watchdog: 0
     signals:
       pedal_percentage:
-        length: 32
+        length: 16
+      brake_percentage:
+        length: 16
       state_data:
         type: bitfield
         flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]

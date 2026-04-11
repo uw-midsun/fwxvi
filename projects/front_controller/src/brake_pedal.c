@@ -50,13 +50,17 @@ StatusCode brake_pedal_run() {
       calculated_reading * front_controller_storage->config->brake_low_pass_filter_alpha + (1.0f - front_controller_storage->config->brake_low_pass_filter_alpha) * s_brake_pedal_storage.prev_reading;
   s_brake_pedal_storage.prev_reading = calculated_reading;
 
-  if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
-    front_controller_storage->brake_enabled = true;
+  if (calculated_reading > front_controller_storage->config->brake_pedal_activation_zone) {
+    front_controller_storage->brake_state = BRAKE_STATE_BRAKING;
+  } else if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
+    front_controller_storage->brake_state = BRAKE_STATE_REGEN;
   } else {
-    front_controller_storage->brake_enabled = false;
+    front_controller_storage->brake_state = BRAKE_STATE_DISABLED;
   }
-  CONDITIONAL_LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | ENABLED %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
-  set_drive_status_state_data_brake_enabled(front_controller_storage->brake_enabled);
+
+  front_controller_storage->brake_percentage = calculated_reading;
+  CONDITIONAL_LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | BRAKE_STATE %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
+  set_drive_status_state_data_brake_enabled(front_controller_storage->brake_state > 0);
   return STATUS_CODE_OK;
 }
 
