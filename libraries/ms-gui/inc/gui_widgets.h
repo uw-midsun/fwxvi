@@ -62,6 +62,27 @@ StatusCode gui_widgets_set_throttle_bar(uint8_t percent);
 StatusCode gui_widgets_set_brake_bar(uint8_t percent);
 
 /**
+ * @brief   Update the vertical brake percentage bar color
+ * @param   color_id
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id);
+
+/**
+ * @brief   Update the vertical temperature bar
+ * @param   percent Current motor temperature
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_temperature_bar(uint16_t percent);
+
+/**
+ * @brief   Update the vertical motor speed bar
+ * @param   percent Current motor speed
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_speed_bar(uint16_t percent);
+
+/**
  * @brief   Update the horizontal segmented soc bar
  * @param   soc_percent Current percentage (0-100)
  * @return  STATUS_CODE_OK on success, error otherwise

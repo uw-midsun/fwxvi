@@ -347,6 +347,10 @@ StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
   return lvgl_widgets_set_bar_value(&s_brake_bar, percent);
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  return lvgl_widgets_set_bar_color(&s_brake_bar, color_id);
+}
+
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;

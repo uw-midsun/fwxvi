@@ -198,7 +198,6 @@ static void horn_btn_falling_edge_cb(Button *button) {
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
-<<<<<<< HEAD
   if (gui_menu_is_open()) {
     return;
   }
@@ -206,8 +205,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
-  == == == = CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
->>>>>>> f98e8ee (switched DEBUG defines to CONDITIONAL_LOG_DEBUG macro)
+  CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 
   set_steering_buttons_horn_enabled(false);
 }
@@ -230,17 +228,12 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
-<<<<<<< HEAD
   if (gui_menu_is_open()) {
     gui_menu_request_move_up();
     return;
   }
 
-#if (BUTTON_MANAGER_DEBUG)
-  LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
-#endif
-  == == == = CONDITIONAL_LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
->>>>>>> f98e8ee (switched DEBUG defines to CONDITIONAL_LOG_DEBUG macro)
+  CONDITIONAL_LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 }
 
 static void cruise_control_up_btn_rising_edge_cb(Button *button) {
@@ -252,17 +245,12 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
-<<<<<<< HEAD
   if (gui_menu_is_open()) {
     gui_menu_request_move_down();
     return;
   }
 
-#if (BUTTON_MANAGER_DEBUG)
-  LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
-#endif
-  == == == = CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
->>>>>>> f98e8ee (switched DEBUG defines to CONDITIONAL_LOG_DEBUG macro)
+  CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
 }
 
 static void cruise_control_down_btn_rising_edge_cb(Button *button) {
