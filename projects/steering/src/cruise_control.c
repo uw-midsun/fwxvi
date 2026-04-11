@@ -25,6 +25,14 @@
 
 #define CC_DEBUG 1U
 
+#if (CC_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
+
 static SteeringStorage *steering_storage;
 
 /* Hold state */
@@ -103,19 +111,11 @@ StatusCode cruise_control_run_medium_cycle() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  // #if (CC_DEBUG == 1)
-  //   if (steering_storage->cruise_control_enabled == true) {
-  //     LOG_DEBUG("Cruise control target speed: %u\r\n", steering_storage->cruise_control_target_speed_kmh);
-  //   } else {
-  //     LOG_DEBUG("Cruise control disabled\r\n");
-  //   }
-  // #endif
-
   // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
   VehicleDriveState drive_state_from_front = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
-    LOG_DEBUG("BRAKE from front\r\n");
+    CONDITIONAL_LOG_DEBUG("BRAKE from front\r\n");
     steering_storage->cruise_control_enabled = false;
     buzzer_play_cruise_control_disable();
     set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
@@ -141,9 +141,7 @@ StatusCode cruise_control_run_medium_cycle() {
     cruise_control_enabled_released = false;
 
     if (drive_state_from_front != VEHICLE_DRIVE_STATE_DRIVE && drive_state_from_front != VEHICLE_DRIVE_STATE_CRUISE) {
-#if (CC_DEBUG == 1)
-      LOG_DEBUG("not in drive/cruise\r\n");
-#endif
+      CONDITIONAL_LOG_DEBUG("not in drive/cruise\r\n");
       return STATUS_CODE_INVALID_ARGS;
     }
 
@@ -159,9 +157,7 @@ StatusCode cruise_control_run_medium_cycle() {
     if (current_speed_kmh_from_front >= steering_storage->config->cruise_min_speed_kmh && current_speed_kmh_from_front <= steering_storage->config->cruise_max_speed_kmh) {
       steering_storage->cruise_control_target_speed_kmh = current_speed_kmh_from_front;
     } else {
-#if (CC_DEBUG == 1)
-      LOG_DEBUG("current speed is %u\r\n", current_speed_kmh_from_front_signed);
-#endif
+      CONDITIONAL_LOG_DEBUG("current speed is %u\r\n", current_speed_kmh_from_front_signed);
       return STATUS_CODE_INVALID_ARGS;
     }
 
@@ -180,7 +176,7 @@ StatusCode cruise_control_run_medium_cycle() {
 
     hold_ticks = 0;
     hold_direction = 0;
-    LOG_DEBUG("Cruise control %s\r\n", steering_storage->cruise_control_enabled ? "enabled" : "disabled");
+    CONDITIONAL_LOG_DEBUG("Cruise control %s\r\n", steering_storage->cruise_control_enabled ? "enabled" : "disabled");
 
     return STATUS_CODE_OK;
   }
