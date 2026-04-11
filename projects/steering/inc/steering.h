@@ -73,6 +73,7 @@ typedef struct {
  */
 typedef struct {
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */
+  uint8_t brake_percentage;
 
   int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
   int16_t motor_temp;          /**< Temperature of the motor */

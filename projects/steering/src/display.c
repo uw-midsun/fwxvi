@@ -42,7 +42,13 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
   while (true) {
     gui_widgets_set_speed(display_data->vehicle_velocity);
     gui_widgets_set_throttle_bar(display_data->pedal_percentage);
-    gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0);  // TODO change to % base when available
+
+    gui_widgets_set_brake_bar(display_data->brake_percentage);
+    if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
+    } else {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
+    }
     gui_widgets_set_temperature_bar(display_data->motor_heatsink_temp);
     gui_widgets_set_speed_bar(display_data->motor_velocity);
 
@@ -104,6 +110,7 @@ StatusCode display_rx_medium() {
   display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
   display_data->regen_enabled = get_drive_status_state_data_regen_enabled();
   display_data->pedal_percentage = (uint8_t)get_drive_status_pedal_percentage();
+  display_data->brake_percentage = (uint8_t)get_drive_status_brake_percentage();
   display_data->drive_state = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();

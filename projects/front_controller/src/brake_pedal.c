@@ -21,7 +21,15 @@
 #include "front_controller_hw_defs.h"
 #include "front_controller_setters.h"
 
-#define DEBUG_BRAKE_PEDAL 0U
+#define BRAKE_PEDAL_DEBUG 0U
+
+#if (BRAKE_PEDAL_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
 
 static GpioAddress s_brake_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
 static FrontControllerStorage *front_controller_storage = NULL;
@@ -42,15 +50,17 @@ StatusCode brake_pedal_run() {
       calculated_reading * front_controller_storage->config->brake_low_pass_filter_alpha + (1.0f - front_controller_storage->config->brake_low_pass_filter_alpha) * s_brake_pedal_storage.prev_reading;
   s_brake_pedal_storage.prev_reading = calculated_reading;
 
-  if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
-    front_controller_storage->brake_enabled = true;
+  if (calculated_reading > front_controller_storage->config->brake_pedal_activation_zone) {
+    front_controller_storage->brake_state = BRAKE_STATE_BRAKING;
+  } else if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
+    front_controller_storage->brake_state = BRAKE_STATE_REGEN;
   } else {
-    front_controller_storage->brake_enabled = false;
+    front_controller_storage->brake_state = BRAKE_STATE_DISABLED;
   }
-#if (DEBUG_BRAKE_PEDAL == 1)
-  LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | ENABLED %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
-#endif
-  set_drive_status_state_data_brake_enabled(front_controller_storage->brake_enabled);
+
+  front_controller_storage->brake_percentage = calculated_reading;
+  CONDITIONAL_LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | BRAKE_STATE %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
+  set_drive_status_state_data_brake_enabled(front_controller_storage->brake_state > 0);
   return STATUS_CODE_OK;
 }
 

@@ -73,18 +73,28 @@ typedef struct {
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
   float brake_pedal_deadzone;        /**< Deadzone for brake pedal input [0.0 - 1.0]  */
+  float brake_pedal_activation_zone; /**< Activation zone for brake pedal input [0.0 - 1.0]  */
   float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
 } FrontControllerConfig;
+
+/**
+ * @brief   Front Controller brake states
+ */
+typedef enum {
+  BRAKE_STATE_DISABLED = 0,
+  BRAKE_STATE_BRAKING,
+  BRAKE_STATE_REGEN,
+} BrakeState;
 
 /**
  * @brief   Front Controller storage
  */
 typedef struct {
-  bool brake_enabled; /**< Brake enabled */
-  bool regen_enabled; /**< Regen enabled */
+  BrakeState brake_state; /**< Brake state - enabled, braking, or regen */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
+  float brake_percentage;
   float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 

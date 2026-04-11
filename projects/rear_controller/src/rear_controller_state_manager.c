@@ -29,6 +29,14 @@ static bool started = false;
 #define IS_MOTOR_CONNECTED 1U
 #define REAR_STATE_MANAGER_DEBUG 0U
 
+#if (REAR_STATE_MANAGER_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
+
 /**
  * @brief   Asynchronous event handler
  */
@@ -110,7 +118,7 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
         if (status == STATUS_CODE_OK) {
           rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
         } else {
-          LOG_DEBUG("Reset was unsuccessful\n");
+          CONDITIONAL_LOG_DEBUG("Reset was unsuccessful\n");
           rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
         }
       }
@@ -139,9 +147,7 @@ RearControllerState rear_controller_state_manager_get_state(void) {
 }
 
 StatusCode rear_controller_update_state_manager_medium_cycle() {
-#if (REAR_STATE_MANAGER_DEBUG == 1)
-  LOG_DEBUG("Current state: %d\r\n", s_current_state);
-#endif
+  CONDITIONAL_LOG_DEBUG("Current state: %d\r\n", s_current_state);
   if (s_current_state == REAR_CONTROLLER_STATE_START && started == false) {
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_START);
     return STATUS_CODE_OK;
