@@ -280,4 +280,12 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
  */
 StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value);
 
+/**
+ * @brief   Update the current color of a bar widget
+ * @param   bar_widget Pointer to the bar widget runtime object
+ * @param   color_id
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id);
+
 /** @} */

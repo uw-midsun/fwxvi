@@ -233,6 +233,20 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
   lv_bar_set_value(bar_widget->bar, value, LV_ANIM_ON);
   return STATUS_CODE_OK;
 }
+
+StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id) {
+  if (bar_widget == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (bar_widget->bar == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_obj_set_style_bg_color(bar_widget->bar, s_gui_palette_color(color_id), LV_PART_INDICATOR);
+  return STATUS_CODE_OK;
+}
+
 #else
 StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
   (void)speedometer;
