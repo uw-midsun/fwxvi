@@ -70,3 +70,15 @@ Messages:
         length: 16
       left_sig_current:
         length: 16
+  error_msg:
+    id: 0
+    critical: true
+    cycle: "fast"
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      status_code:
+        length: 8
+      file:
+        length: 32
