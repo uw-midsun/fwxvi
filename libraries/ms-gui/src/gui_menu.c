@@ -14,8 +14,8 @@
 /* Inter-component Headers */
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "FreeRTOS.h"
-#include "task.h"
 #include "lvgl.h"
+#include "task.h"
 #endif
 
 /* Intra-component Headers */

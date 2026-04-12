@@ -154,8 +154,7 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
     lv_label_set_long_mode(label->label, LV_LABEL_LONG_MODE_WRAP);
   }
 
-  lv_obj_set_size(label->label, config->size.width > 0 ? config->size.width : LV_SIZE_CONTENT,
-                  config->size.height > 0 ? config->size.height : LV_SIZE_CONTENT);
+  lv_obj_set_size(label->label, config->size.width > 0 ? config->size.width : LV_SIZE_CONTENT, config->size.height > 0 ? config->size.height : LV_SIZE_CONTENT);
   s_apply_position(label->label, &config->position);
 
   lv_obj_set_style_text_align(label->label, s_widget_text_alignment(config->alignment), 0);

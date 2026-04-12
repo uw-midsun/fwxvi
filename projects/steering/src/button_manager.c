@@ -71,7 +71,6 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
 static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
-
   if (s_handle_menu_light_chord(STEERING_BUTTON_LEFT_LIGHT)) {
     return;
   }
@@ -98,7 +97,6 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-
   if (s_handle_menu_light_chord(STEERING_BUTTON_RIGHT_LIGHT)) {
     return;
   }
@@ -125,7 +123,6 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-
   if (gui_menu_is_open()) {
     gui_menu_request_select(drive_state_manager_get_state());
     return;
@@ -202,7 +199,6 @@ static void neutral_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void horn_btn_falling_edge_cb(Button *button) {
-
   if (gui_menu_is_open()) {
     return;
   }
@@ -219,7 +215,6 @@ static void horn_btn_falling_edge_cb(Button *button) {
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
-
   if (gui_menu_is_open()) {
     return;
   }
@@ -253,7 +248,6 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
-
   if (gui_menu_is_open()) {
     gui_menu_request_move_up();
     return;
@@ -275,7 +269,6 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
-
   if (gui_menu_is_open()) {
     gui_menu_request_move_down();
     return;

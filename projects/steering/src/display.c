@@ -19,10 +19,10 @@
 #include "gui_menu.h"
 #include "gui_widgets.h"
 #include "ltdc.h"
+#include "party_mode.h"
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
-#include "party_mode.h"
 
 #ifdef MS_PLATFORM_X86
 #include <SDL2/SDL.h>

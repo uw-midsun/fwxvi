@@ -21,8 +21,8 @@
 
 /* Intra-component Headers */
 #include "clut.h"
-#include "lvgl_screens.h"
 #include "display_defs.h"
+#include "lvgl_screens.h"
 
 /**
  * @defgroup GUI
@@ -50,9 +50,9 @@ typedef enum {
  * @brief  Alignment of text
  * @note   We start at 1 to match lv_text_align_t */
 typedef enum {
-  WIDGET_TEXT_ALIGN_LEFT = 1,     /**< Align text to left*/
-  WIDGET_TEXT_ALIGN_CENTER,       /**< Align text to center*/
-  WIDGET_TEXT_ALIGN_RIGHT,        /**< Align text to right*/
+  WIDGET_TEXT_ALIGN_LEFT = 1, /**< Align text to left*/
+  WIDGET_TEXT_ALIGN_CENTER,   /**< Align text to center*/
+  WIDGET_TEXT_ALIGN_RIGHT,    /**< Align text to right*/
 } WidgetTextAlignment;
 
 /** @brief   Position a widget using an LVGL alignment and offsets */
@@ -104,12 +104,12 @@ typedef struct {
 
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
-  WidgetSize size;                      /**< Bounding size of the bar widget */
-  WidgetPosition position;              /**< Placement of the bar widget on screen */
-  const char *label_text;               /**< Static label text shown beside the bar */
+  WidgetSize size;                 /**< Bounding size of the bar widget */
+  WidgetPosition position;         /**< Placement of the bar widget on screen */
+  const char *label_text;          /**< Static label text shown beside the bar */
   WidgetAlignment label_alignment; /**< Alignment used for the label relative to the bar */
-  WidgetOrientation orientation;        /**< LVGL bar orientation */
-  GuiColorId indicator_color_id;        /**< Ccolor used for the bar indicator */
+  WidgetOrientation orientation;   /**< LVGL bar orientation */
+  GuiColorId indicator_color_id;   /**< Ccolor used for the bar indicator */
 } BarWidgetConfig;
 
 typedef struct {
@@ -117,17 +117,17 @@ typedef struct {
 } LabelWidget;
 
 typedef struct {
-  WidgetSize size;                 /**< Bounding size of the label widget, or content-sized when zero */
-  WidgetPosition position;         /**< Placement of the label widget on screen */
-  const char *label_text;          /**< Static label text shown */
-  WidgetTextAlignment alignment;   /**< Text alignment inside the label */
-  GuiColorId text_color_id;        /**< Color used for the label text */
-  WidgetFontSize font;             /**< Font used by the label text */
-  bool background_enabled;         /**< Whether to draw a background behind the label */
-  GuiColorId background_color_id;  /**< Color used for the background when enabled */
-  bool border_enabled;             /**< Whether to draw a border around the label */
-  GuiColorId border_color_id;      /**< Color used for the border when enabled */
-  lv_coord_t border_width;         /**< Border width in pixels when the border is enabled */
+  WidgetSize size;                /**< Bounding size of the label widget, or content-sized when zero */
+  WidgetPosition position;        /**< Placement of the label widget on screen */
+  const char *label_text;         /**< Static label text shown */
+  WidgetTextAlignment alignment;  /**< Text alignment inside the label */
+  GuiColorId text_color_id;       /**< Color used for the label text */
+  WidgetFontSize font;            /**< Font used by the label text */
+  bool background_enabled;        /**< Whether to draw a background behind the label */
+  GuiColorId background_color_id; /**< Color used for the background when enabled */
+  bool border_enabled;            /**< Whether to draw a border around the label */
+  GuiColorId border_color_id;     /**< Color used for the border when enabled */
+  lv_coord_t border_width;        /**< Border width in pixels when the border is enabled */
   /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
 } LabelWidgetConfig;
 
@@ -152,16 +152,16 @@ typedef enum {
  * @brief  Alignment of text
  * @note   We start at 1 to match lv_text_align_t */
 typedef enum {
-  WIDGET_TEXT_ALIGN_LEFT = 1,     /**< Align text to left*/
-  WIDGET_TEXT_ALIGN_CENTER,       /**< Align text to center*/
-  WIDGET_TEXT_ALIGN_RIGHT,        /**< Align text to right*/
+  WIDGET_TEXT_ALIGN_LEFT = 1, /**< Align text to left*/
+  WIDGET_TEXT_ALIGN_CENTER,   /**< Align text to center*/
+  WIDGET_TEXT_ALIGN_RIGHT,    /**< Align text to right*/
 } WidgetTextAlignment;
 
 /** @brief   Position a widget using an LVGL alignment and offsets */
 typedef struct {
   WidgetAlignment align; /**< LVGL alignment anchor used for placement */
-  int16_t x_offset;   /**< Horizontal offset from the alignment anchor */
-  int16_t y_offset;   /**< Vertical offset from the alignment anchor */
+  int16_t x_offset;      /**< Horizontal offset from the alignment anchor */
+  int16_t y_offset;      /**< Vertical offset from the alignment anchor */
 } WidgetAlignedPosition;
 
 /** @brief   Position a widget using absolute screen coordinates */
@@ -181,9 +181,9 @@ typedef struct {
 
 /** @brief   Runtime handles and state for a speedometer widget */
 typedef struct {
-  int16_t *scale;                     /**< LVGL scale object used for the dial */
-  int16_t *needle;                    /**< LVGL line object used as the speedometer needle */
-  int16_t *label;                     /**< LVGL label object showing the current speed */
+  int16_t *scale;           /**< LVGL scale object used for the dial */
+  int16_t *needle;          /**< LVGL line object used as the speedometer needle */
+  int16_t *label;           /**< LVGL label object showing the current speed */
   int16_t needle_points[2]; /**< Line endpoints used to draw the needle */
 } SpeedometerWidget;
 
@@ -206,12 +206,12 @@ typedef struct {
 
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
-  WidgetSize size;                      /**< Bounding size of the bar widget */
-  WidgetPosition position;              /**< Placement of the bar widget on screen */
-  const char *label_text;               /**< Static label text shown beside the bar */
+  WidgetSize size;                 /**< Bounding size of the bar widget */
+  WidgetPosition position;         /**< Placement of the bar widget on screen */
+  const char *label_text;          /**< Static label text shown beside the bar */
   WidgetAlignment label_alignment; /**< Alignment used for the label relative to the bar */
-  WidgetOrientation orientation;        /**< LVGL bar orientation */
-  GuiColorId indicator_color_id;        /**< Ccolor used for the bar indicator */
+  WidgetOrientation orientation;   /**< LVGL bar orientation */
+  GuiColorId indicator_color_id;   /**< Ccolor used for the bar indicator */
 } BarWidgetConfig;
 
 typedef struct {
@@ -219,16 +219,16 @@ typedef struct {
 } LabelWidget;
 
 typedef struct {
-  WidgetSize size;                 /**< Bounding size of the label widget, or content-sized when zero */
-  WidgetPosition position;         /**< Placement of the label widget on screen */
-  const char *label_text;          /**< Static label text shown */
-  WidgetTextAlignment alignment;   /**< Text alignment inside the label */
-  GuiColorId text_color_id;        /**< Color used for the label text */
-  WidgetFontSize font;             /**< Font used by the label text */
-  bool background_enabled;         /**< Whether to draw a background behind the label */
-  GuiColorId background_color_id;  /**< Color used for the background when enabled */
-  bool border_enabled;             /**< Whether to draw a border around the label */
-  GuiColorId border_color_id;      /**< Color used for the border when enabled */
+  WidgetSize size;                /**< Bounding size of the label widget, or content-sized when zero */
+  WidgetPosition position;        /**< Placement of the label widget on screen */
+  const char *label_text;         /**< Static label text shown */
+  WidgetTextAlignment alignment;  /**< Text alignment inside the label */
+  GuiColorId text_color_id;       /**< Color used for the label text */
+  WidgetFontSize font;            /**< Font used by the label text */
+  bool background_enabled;        /**< Whether to draw a background behind the label */
+  GuiColorId background_color_id; /**< Color used for the background when enabled */
+  bool border_enabled;            /**< Whether to draw a border around the label */
+  GuiColorId border_color_id;     /**< Color used for the border when enabled */
   int16_t border_width;           /**< Border width in pixels when the border is enabled */
   /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
 } LabelWidgetConfig;

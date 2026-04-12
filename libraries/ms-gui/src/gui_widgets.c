@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "status.h"
 
 /* Inter-component Headers */
@@ -158,10 +159,7 @@ static StatusCode s_create_soc_bar(GuiScreen *screen) {
 static StatusCode s_create_top_label(GuiScreen *screen) {
   const LabelWidgetConfig top_label_config = {
     .size = { .width = 300, .height = 30 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID,  .x_offset = 0, .y_offset = 0}
-    },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 0 } },
     .label_text = "Pack: 0 V   |   Mot: 0 V",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -179,10 +177,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
 static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
   const LabelWidgetConfig cell_stats_label_config = {
     .size = { .width = 100, .height = 50 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT,  .x_offset = -10, .y_offset = -25}
-    },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT, .x_offset = -10, .y_offset = -25 } },
     .label_text = "Cells\n0.000 V\n0.000 V",
     .alignment = WIDGET_TEXT_ALIGN_LEFT,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -200,10 +195,7 @@ static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
 static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   const LabelWidgetConfig temps_stats_label_config = {
     .size = { .width = 100, .height = 50 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_IN_RIGHT_MID,  .x_offset = -10, .y_offset = 10}
-    },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_RIGHT_MID, .x_offset = -10, .y_offset = 10 } },
     .label_text = "Temps\nMot: 0 C\nMax C: 0 C",
     .alignment = WIDGET_TEXT_ALIGN_LEFT,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -221,10 +213,7 @@ static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
 static StatusCode s_create_cc_label(GuiScreen *screen) {
   const LabelWidgetConfig cruise_control_label_config = {
     .size = { .width = 100, .height = 20 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID,  .x_offset = 0, .y_offset = -30}
-    },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = -30 } },
     .label_text = "0 km/h",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -291,10 +280,8 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_v
     } else {
       snprintf(text_buffer, sizeof(text_buffer), "%s", fault_text);
     }
-  }
-  else {
-    snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   Mot: %u V", pack_voltage,
-           motor_bus_voltage);
+  } else {
+    snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   Mot: %u V", pack_voltage, motor_bus_voltage);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
@@ -306,9 +293,7 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
   }
 
   char text_buffer[LABEL_MAX_CHARS];
-  snprintf(text_buffer, sizeof(text_buffer), "Cells\n%u.%03u V\n%u.%03u V",
-           min_cell_voltage_mv / 1000, min_cell_voltage_mv % 1000, max_cell_voltage_mv / 1000,
-           max_cell_voltage_mv % 1000);
+  snprintf(text_buffer, sizeof(text_buffer), "Cells\n%u.%03u V\n%u.%03u V", min_cell_voltage_mv / 1000, min_cell_voltage_mv % 1000, max_cell_voltage_mv / 1000, max_cell_voltage_mv % 1000);
 
   return lvgl_widgets_set_label_text(&s_cells_stats_label, text_buffer);
 }
@@ -319,8 +304,7 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
   }
 
   char text_buffer[LABEL_MAX_CHARS];
-  snprintf(text_buffer, sizeof(text_buffer), "Temps\nMot: %d C\nMax C: %u C", motor_temp_c,
-           max_cell_temp_c);
+  snprintf(text_buffer, sizeof(text_buffer), "Temps\nMot: %d C\nMax C: %u C", motor_temp_c, max_cell_temp_c);
 
   return lvgl_widgets_set_label_text(&s_temps_stats_label, text_buffer);
 }
@@ -422,7 +406,7 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
 }
 
 StatusCode gui_widgets_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled) {
-  (void) cruise_control_speed_kmh;
+  (void)cruise_control_speed_kmh;
 
   return STATUS_CODE_OK;
 }

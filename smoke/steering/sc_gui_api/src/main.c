@@ -105,7 +105,6 @@ TASK(sc_gui_api, TASK_STACK_2048) {
     s_update_demo_display_data(step++);
     delay_ms(GUI_UPDATE_PERIOD_MS);
   }
-
 }
 
 #ifdef MS_PLATFORM_X86

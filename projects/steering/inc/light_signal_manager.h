@@ -31,9 +31,9 @@
  * @brief Requests made to control the light signals
  */
 typedef enum {
-  LIGHTS_SIGNAL_COMMAND_NONE = 0,  /**< No light signal command */
-  LIGHTS_SIGNAL_COMMAND_LEFT = 1,  /**< Request to turn on left signal */
-  LIGHTS_SIGNAL_COMMAND_RIGHT = 2, /**< Request to turn on right signal */
+  LIGHTS_SIGNAL_COMMAND_NONE = 0,   /**< No light signal command */
+  LIGHTS_SIGNAL_COMMAND_LEFT = 1,   /**< Request to turn on left signal */
+  LIGHTS_SIGNAL_COMMAND_RIGHT = 2,  /**< Request to turn on right signal */
   LIGHTS_SIGNAL_COMMAND_HAZARD = 3, /**< Request to turn on hazard signal */
   LIGHTS_SIGNAL_COMMAND_OFF = 4     /**< Request to turn off any active or pending signal */
 } LightsSignalCommand;

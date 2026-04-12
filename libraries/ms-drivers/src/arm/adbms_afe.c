@@ -434,7 +434,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
       cfgB->discharge_bitset &= ~(1U << bit_index);
     }
   }
-  #endif
+#endif
 
   return STATUS_CODE_OK;
 }

@@ -172,7 +172,7 @@ static void s_disable_balancing() {
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
-        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+      adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
     }
   }
 
@@ -464,7 +464,7 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
-    s_disable_balancing();  /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
+    s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
     s_cell_sense_run();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));
