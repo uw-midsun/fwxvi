@@ -33,7 +33,7 @@ void run_1000hz_cycle() {}
 void run_10hz_cycle() {
   TickType_t time_elapsed = xTaskGetTickCount() - last_time_10hz;
   last_time_10hz = xTaskGetTickCount();
-  LOG_DEBUG("Running 10hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
+  LOG_DEBUG("Running 3hz cycle. Time elapsed between cycles: %ld\n", time_elapsed);
 }
 
 void run_1hz_cycle() {

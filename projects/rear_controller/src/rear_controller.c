@@ -73,6 +73,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   rear_controller_storage->pcs_valid = false;
   rear_controller_storage->aux_valid = false;
   rear_controller_storage->bps_fault = 0U;
+  rear_controller_storage->bps_fault_cell = 0U;
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);

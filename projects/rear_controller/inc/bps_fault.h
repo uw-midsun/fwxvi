@@ -47,6 +47,15 @@ StatusCode bps_fault_commit(void);
 StatusCode trigger_bps_fault(BpsFault fault);
 
 /**
+ * @brief   Trigger a BPS fault with an associated cell index
+ * @param   fault BPS Fault event
+ * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
+ * @return  STATUS_CODE_OK if triggered successfully
+ *          STATUS_CODE_UNINITIALIZED if the system is not initialized
+ */
+StatusCode trigger_bps_fault_with_cell(BpsFault fault, uint8_t cell_at_fault);
+
+/**
  * @brief   Clear the BPS fault
  * @param   fault BPS Fault event
  * @return  STATUS_CODE_OK if triggered successfully

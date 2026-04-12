@@ -21,12 +21,20 @@
  * @{
  */
 
-#ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
-#define DISPLAY_WIDTH 480  /**< Width of the display */
-#define DISPLAY_HEIGHT 272 /**< Height of the display */
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86) /* Framebuffer takes up too much RAM on other STMs otherwise*/
+#define DISPLAY_WIDTH 480                            /**< Width of the display */
+#define DISPLAY_HEIGHT 272                           /**< Height of the display */
 #else
 #define DISPLAY_WIDTH 1  /**< Width of the display */
 #define DISPLAY_HEIGHT 1 /**< Height of the display */
 #endif
+
+/* Speedometer widget min and max vals */
+#define SPEEDOMETER_MIN_VALUE 0
+#define SPEEDOMETER_MAX_VALUE 120
+
+/* Bar widget min and max vals */
+#define BAR_MIN_VALUE 0
+#define BAR_MAX_VALUE 100
 
 /** @} */

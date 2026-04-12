@@ -25,6 +25,7 @@
 #include "cruise_control.h"
 #include "drive_state_manager.h"
 #include "global_enums.h"
+#include "gui_menu.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
 #include "steering.h"
@@ -38,6 +39,31 @@ static ButtonManager s_button_manager = { 0U };
 static SoftTimer s_hazard_blink_timer;
 static bool hazard_light_state = false;
 
+/**
+ * @brief   Check whether a steering button is currently pressed
+ * @param   button Steering button to inspect
+ * @return  TRUE when the button is pressed, FALSE otherwise
+ */
+static bool s_button_is_pressed(SteeringButtons button) {
+  return steering_storage != NULL && steering_storage->button_manager != NULL && steering_storage->button_manager->buttons[button].state == BUTTON_PRESSED;
+}
+
+/**
+ * @brief   Toggle the overlay menu when both light buttons are pressed together
+ * @param   button Light button that triggered the current callback
+ * @return  TRUE when the chord was handled as a menu toggle, FALSE otherwise
+ */
+static bool s_handle_menu_light_chord(SteeringButtons button) {
+  SteeringButtons other_button = button == STEERING_BUTTON_LEFT_LIGHT ? STEERING_BUTTON_RIGHT_LIGHT : STEERING_BUTTON_LEFT_LIGHT;
+
+  if (!s_button_is_pressed(other_button)) {
+    return false;
+  }
+
+  lights_signal_manager_register(LIGHTS_SIGNAL_COMMAND_OFF);
+  return gui_menu_request_toggle() == STATUS_CODE_OK;
+}
+
 /************************************************************************************************
  * Left turn button handlers
  ************************************************************************************************/
@@ -45,6 +71,14 @@ static bool hazard_light_state = false;
 static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
+  if (s_handle_menu_light_chord(STEERING_BUTTON_LEFT_LIGHT)) {
+    return;
+  }
+
+  if (gui_menu_is_open()) {
+    return;
+  }
+
   lights_signal_manager_register(STEERING_LIGHTS_LEFT_STATE);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -63,6 +97,14 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
+  if (s_handle_menu_light_chord(STEERING_BUTTON_RIGHT_LIGHT)) {
+    return;
+  }
+
+  if (gui_menu_is_open()) {
+    return;
+  }
+
   lights_signal_manager_register(STEERING_LIGHTS_RIGHT_STATE);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -81,6 +123,11 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    gui_menu_request_select(drive_state_manager_get_state());
+    return;
+  }
+
   lights_signal_manager_register(STEERING_LIGHTS_HAZARD_STATE);
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Falling edge callback\r\n");
@@ -152,6 +199,10 @@ static void neutral_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void horn_btn_falling_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    return;
+  }
+
   if (party_mode_active() == false) {
     buzzer_play_success();
   }
@@ -164,6 +215,10 @@ static void horn_btn_falling_edge_cb(Button *button) {
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    return;
+  }
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
 #endif
@@ -193,6 +248,11 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    gui_menu_request_move_up();
+    return;
+  }
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 #endif
@@ -209,6 +269,11 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    gui_menu_request_move_down();
+    return;
+  }
+
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
 #endif

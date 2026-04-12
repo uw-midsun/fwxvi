@@ -14,6 +14,8 @@
 /* Inter-component Headers */
 #include "clut.h"
 #include "gui.h"
+#include "gui_menu.h"
+#include "gui_screens.h"
 #include "gui_widgets.h"
 #include "ltdc.h"
 #include "lvgl_driver.h"
@@ -43,9 +45,16 @@ StatusCode gui_init(LtdcSettings *settings) {
     return ret;
   }
 
-  ret = gui_widgets_init();
+  ret = gui_screens_init();
   if (ret != STATUS_CODE_OK) {
-    LOG_DEBUG("gui_widgets_init error: %d\n", ret);
+    LOG_DEBUG("gui_screens_init error: %d\n", ret);
+    return ret;
+  }
+
+  ret = gui_menu_init();
+  if (ret != STATUS_CODE_OK && ret != STATUS_CODE_ALREADY_INITIALIZED) {
+    LOG_DEBUG("gui_menu_init error: %d\n", ret);
+    return ret;
   }
 
   return STATUS_CODE_OK;

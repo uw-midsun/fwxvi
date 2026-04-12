@@ -14,6 +14,8 @@
 /* Macro to calculate the size of an array */
 #define SIZEOF_ARRAY(arr) (sizeof(arr) / sizeof((arr)[0]))
 
+#define ALLOW_DISCHARGE 1U
+
 /* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
@@ -403,6 +405,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
     return STATUS_CODE_INVALID_ARGS;
   }
 
+#if (ALLOW_DISCHARGE == 1U)
   uint16_t total_cells = (uint16_t)(afe->settings->num_devices * ADBMS_AFE_MAX_CELLS_PER_DEVICE);
   if (cell >= total_cells) {
     return STATUS_CODE_INVALID_ARGS;
@@ -431,6 +434,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
       cfgB->discharge_bitset &= ~(1U << bit_index);
     }
   }
+#endif
 
   return STATUS_CODE_OK;
 }

@@ -63,7 +63,7 @@
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
 
 /** @brief  Max number of retries for reading cell*/
-#define CELL_SENSE_MAX_RETRIES 5U
+#define CELL_SENSE_MAX_RETRIES 10U
 
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
@@ -80,7 +80,7 @@
 #define BALANCING_ENABLED 0U
 #define OVER_UNDER_FAULTS_ENABLED 0U
 
-#define CELL_SENSE_DEBUG 0U
+#define CELL_SENSE_DEBUG 1U
 #define CELL_SENSE_FAULT_DEBUG 1U
 
 /************************************************************************************************
@@ -115,6 +115,14 @@ static bool s_cell_data_updated = false;
 static uint8_t s_afe_message_index = 0U;
 
 static RearControllerStorage *rear_controller_storage;
+
+static uint8_t s_global_cell_index_1_based(uint8_t device, uint8_t cell) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELLS_PER_DEVICE + cell + 1U);
+}
+
+static uint8_t s_global_thermistor_index_1_based(uint8_t device, uint8_t thermistor) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor + 1U);
+}
 
 /************************************************************************************************
  * Private function definitions
@@ -159,6 +167,19 @@ static void s_balance_cells(uint16_t min_voltage) {
 #endif
 }
 
+static void s_disable_balancing() {
+  /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
+  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
+    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
+      adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+    }
+  }
+
+  /* Commit the discharge configuration to the ADBMS1818 */
+  adbms_afe_write_config(adbms_afe_storage);
+}
+
 static StatusCode s_check_thermistors() {
   StatusCode status = STATUS_CODE_OK;
 #if (THERMISTORS_CONNECTED == 1U)
@@ -183,14 +204,14 @@ static StatusCode s_check_thermistors() {
         /* Discharging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       } else {
         /* Charging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
@@ -285,6 +306,10 @@ static StatusCode s_cell_sense_run() {
 
   uint16_t max_voltage = 0U;
   uint16_t min_voltage = 0xFFFFU;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+  uint8_t max_voltage_cell = 0U;
+  uint8_t min_voltage_cell = 0U;
+#endif
   uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
@@ -298,10 +323,16 @@ static StatusCode s_cell_sense_run() {
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+        max_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
 
       if (current_cell_voltage < min_voltage) {
         min_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+        min_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
     }
   }
@@ -335,7 +366,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("OVERVOLTAGE: %u\r\n", max_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+    trigger_bps_fault_with_cell(BPS_FAULT_OVERVOLTAGE, max_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -345,7 +376,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("UNDERVOLTAGE: %u\r\n", min_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+    trigger_bps_fault_with_cell(BPS_FAULT_UNDERVOLTAGE, min_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -356,7 +387,7 @@ static StatusCode s_cell_sense_run() {
     LOG_DEBUG("UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #endif
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_UNBALANCE);
+    trigger_bps_fault_with_cell(BPS_FAULT_UNBALANCE, max_voltage_cell);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -426,11 +457,14 @@ StatusCode log_cell_sense() {
 }
 
 TASK(cell_sense_conversions, TASK_STACK_512) {
-  adbms_afe_init(adbms_afe_storage, &s_afe_settings);
+  StatusCode status = STATUS_CODE_OK;
+  RETRY_OPERATION(AFE_NUM_RETRIES, RETRY_DELAY_MS, adbms_afe_init(adbms_afe_storage, &s_afe_settings), status);
+
   delay_ms(10);
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
+    s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
     s_cell_sense_run();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));

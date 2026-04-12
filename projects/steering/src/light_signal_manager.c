@@ -61,6 +61,19 @@ StatusCode lights_signal_manager_update(void) {
   switch (current_request) {
     case LIGHTS_SIGNAL_COMMAND_NONE:
       break;
+    case LIGHTS_SIGNAL_COMMAND_OFF:
+      set_steering_buttons_lights(STEERING_LIGHTS_OFF_STATE);
+      steering_storage->light_signal = STEERING_LIGHTS_OFF_STATE;
+
+      software_timer_cancel(&s_signal_blink_timer);
+      button_led_disable(STEERING_BUTTON_LEFT_LIGHT);
+      button_led_disable(STEERING_BUTTON_RIGHT_LIGHT);
+      button_led_disable(STEERING_BUTTON_HAZARDS);
+      buzzer_stop_turn_signal();
+
+      current_state = STEERING_LIGHTS_OFF_STATE;
+      current_request = LIGHTS_SIGNAL_COMMAND_NONE;
+      break;
     case LIGHTS_SIGNAL_COMMAND_LEFT:
       if (previous_state != STEERING_LIGHTS_LEFT_STATE && previous_state != STEERING_LIGHTS_HAZARD_STATE) {
         set_steering_buttons_lights(STEERING_LIGHTS_LEFT_STATE);

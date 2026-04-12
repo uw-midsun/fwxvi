@@ -11,7 +11,7 @@
 #include <string.h>
 
 /* Inter-component Headers */
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "FreeRTOS.h"
 #include "lvgl.h"
 #include "task.h"
@@ -21,7 +21,7 @@
 #include "ltdc.h"
 #include "lvgl_driver.h"
 
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 static LtdcSettings *s_ltdc_settings;
 
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
