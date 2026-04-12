@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['magic_5fnumber_0',['magic_number',['../structFotaDatagramPayload__JumpToApp.html#a45eaf7e07ea0226c1328ee7d4a5f7948',1,'FotaDatagramPayload_JumpToApp']]],
+  ['masked_1',['masked',['../structX86Interrupt.html#a363c5bbe096b0980ebabf7496af2c424',1,'X86Interrupt']]],
+  ['max_5fbraking_5fpercentage_2',['max_braking_percentage',['../structOpdStorage.html#afdeea39dae70f4f3b1dbf04752b7f3ea',1,'OpdStorage']]],
+  ['max_5fcell_5ftemp_3',['max_cell_temp',['../structDisplayData.html#ae1afab1b0f4b22c5422916abc051752f',1,'DisplayData']]],
+  ['max_5fcell_5fvoltage_5fmv_4',['max_cell_voltage_mv',['../structDisplayData.html#a56137cebd72f5e7d020430b5622778f0',1,'DisplayData']]],
+  ['max_5fcycles_5',['max_cycles',['../structCanWatchDog.html#af2d0e2b584c4eb2938df20684310438d',1,'CanWatchDog']]],
+  ['max_5fvehicle_5fspeed_5fkph_6',['max_vehicle_speed_kph',['../structOpdStorage.html#a8aa39ecdc74ac504546ab0981c2f6307',1,'OpdStorage']]],
+  ['message_5ftransmit_5ffrequency_5fhz_7',['message_transmit_frequency_hz',['../structTelemetryConfig.html#a2450b2365a4aa2c73985e94d25f3a5d6',1,'TelemetryConfig']]],
+  ['min_5fcell_5fvoltage_5fmv_8',['min_cell_voltage_mv',['../structDisplayData.html#a9aa6b486b04cea827c0ea2d0e68f8c39',1,'DisplayData']]],
+  ['miso_9',['miso',['../structSdSpiSettings.html#add58d661db9d6f1c334033c3dfe2c6fb',1,'SdSpiSettings']]],
+  ['missed_10',['missed',['../structCanWatchDog.html#ab8fe183646a0728fa47901967cc53b7e',1,'CanWatchDog']]],
+  ['mode_11',['mode',['../structSdSpiSettings.html#ac6e6defe9cb813f8409baaa28da9a789',1,'SdSpiSettings']]],
+  ['mosi_12',['mosi',['../structSdSpiSettings.html#ad73a8504cb7eb66a498e3c3fea31fe7a',1,'SdSpiSettings']]],
+  ['motor_5fbus_5fvoltage_13',['motor_bus_voltage',['../structDisplayData.html#ab13a4371c97a50ab71bdd64961143023',1,'DisplayData']]],
+  ['motor_5fheatsink_5ftemp_14',['motor_heatsink_temp',['../structDisplayData.html#aa73a2b2eb6a05b7da21b21683c2765d9',1,'DisplayData']]],
+  ['motor_5flv_5fenabled_15',['motor_lv_enabled',['../structRearControllerStorage.html#a1d961c7c5fb829e18770a5bad2e8b708',1,'RearControllerStorage']]],
+  ['motor_5frelay_5fclosed_16',['motor_relay_closed',['../structRearControllerStorage.html#a6f1937f5ee0158ee6b9e01b3cb9d3d40',1,'RearControllerStorage']]],
+  ['motor_5frelay_5fen_17',['motor_relay_en',['../structRelayStorage.html#a090527ae6b4cbe0e0fb5a97b82557fa7',1,'RelayStorage']]],
+  ['motor_5frelay_5fsense_18',['motor_relay_sense',['../structRelayStorage.html#ad327088204690440ae0565027874a620',1,'RelayStorage']]],
+  ['motor_5ftemp_19',['motor_temp',['../structWs22MotorTelemetryData.html#afc54151eaa4ebd7d1fda55b7dc6e7c31',1,'Ws22MotorTelemetryData::motor_temp()'],['../structDisplayData.html#ae6364e5e0ae847b15dce2004a212be3f',1,'DisplayData::motor_temp()']]],
+  ['motor_5fvelocity_20',['motor_velocity',['../structWs22MotorTelemetryData.html#a9df6fbeb406e8d1b7be0b7cba2a85d39',1,'Ws22MotorTelemetryData::motor_velocity()'],['../structDisplayData.html#aa1d875b5f271e6d3315baeeab6201389',1,'DisplayData::motor_velocity()']]],
+  ['motor_5fvelocity_5fvehicle_5fvelocity_21',['motor_velocity_vehicle_velocity',['../structfront__controller__tx__struct.html#a2303f0ac82bf037a20e11d2a46c39f88',1,'front_controller_tx_struct']]],
+  ['mute_22',['mute',['../struct__PACKED.html#ad9aef3fe07cb77df6845f5830762396d',1,'_PACKED']]]
+];
