@@ -13,6 +13,7 @@
 #include <string.h>
 
 /* Inter-component Headers */
+#include "buzzer.h"
 #include "gpio.h"
 #include "gui.h"
 #include "gui_menu.h"
@@ -21,6 +22,7 @@
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
+#include "party_mode.h"
 
 #ifdef MS_PLATFORM_X86
 #include <SDL2/SDL.h>
@@ -127,6 +129,16 @@ static void s_process_x86_keyboard_input(void) {
 }
 #endif
 
+static void s_process_pending_menu_input(void) {
+  StatusCode menu_status = gui_menu_process_pending();
+
+  if (menu_status == STATUS_CODE_INVALID_ARGS) {
+    buzzer_play_invalid();
+  } else if (menu_status != STATUS_CODE_OK) {
+    LOG_DEBUG("gui menu input failed: %u\r\n", menu_status);
+  }
+}
+
 static StatusCode s_render_gui_step(void) {
   status_ok_or_return(gui_widgets_set_speed(display_data->vehicle_velocity));
   status_ok_or_return(gui_widgets_set_throttle_bar(display_data->pedal_percentage));
@@ -155,6 +167,8 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
+    s_process_pending_menu_input();
+
     StatusCode render_status = s_render_gui_step();
     if (render_status != STATUS_CODE_OK) {
       LOG_DEBUG("gui render step failed: %u\r\n", render_status);

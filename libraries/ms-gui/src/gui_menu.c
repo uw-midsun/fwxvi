@@ -13,6 +13,8 @@
 
 /* Inter-component Headers */
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
+#include "FreeRTOS.h"
+#include "task.h"
 #include "lvgl.h"
 #endif
 
@@ -56,7 +58,16 @@ typedef struct {
   lv_obj_t *row_labels[GUI_MENU_ITEM_COUNT];
 } GuiMenuState;
 
+typedef struct {
+  bool toggle_requested;
+  bool select_requested;
+  VehicleDriveState select_drive_state;
+  uint8_t move_up_count;
+  uint8_t move_down_count;
+} GuiMenuPendingRequests;
+
 static GuiMenuState s_menu;
+static GuiMenuPendingRequests s_pending_requests;
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
   [0] = {
@@ -153,6 +164,7 @@ StatusCode gui_menu_init(void) {
   }
 
   s_menu = (GuiMenuState){ 0 };
+  s_pending_requests = (GuiMenuPendingRequests){ 0 };
   s_menu.party_mode_callback = party_mode_callback;
   s_menu.initialized = true;
   return STATUS_CODE_OK;
@@ -160,6 +172,80 @@ StatusCode gui_menu_init(void) {
 
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
   s_menu.party_mode_callback = callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_toggle(void) {
+  taskENTER_CRITICAL();
+  s_pending_requests.toggle_requested = true;
+  taskEXIT_CRITICAL();
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_move_up(void) {
+  taskENTER_CRITICAL();
+  if (s_pending_requests.move_up_count < UINT8_MAX) {
+    s_pending_requests.move_up_count++;
+  }
+  taskEXIT_CRITICAL();
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_move_down(void) {
+  taskENTER_CRITICAL();
+  if (s_pending_requests.move_down_count < UINT8_MAX) {
+    s_pending_requests.move_down_count++;
+  }
+  taskEXIT_CRITICAL();
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_select(VehicleDriveState drive_state) {
+  taskENTER_CRITICAL();
+  s_pending_requests.select_requested = true;
+  s_pending_requests.select_drive_state = drive_state;
+  taskEXIT_CRITICAL();
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_process_pending(void) {
+  GuiMenuPendingRequests pending;
+  StatusCode status;
+
+  if (!s_menu.initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  taskENTER_CRITICAL();
+  pending = s_pending_requests;
+  s_pending_requests = (GuiMenuPendingRequests){ 0 };
+  taskEXIT_CRITICAL();
+
+  if (pending.toggle_requested) {
+    status_ok_or_return(gui_menu_toggle());
+  }
+
+  while (pending.move_up_count-- > 0U) {
+    status = gui_menu_move_up();
+    if (status != STATUS_CODE_OK && status != STATUS_CODE_INCOMPLETE) {
+      return status;
+    }
+  }
+
+  while (pending.move_down_count-- > 0U) {
+    status = gui_menu_move_down();
+    if (status != STATUS_CODE_OK && status != STATUS_CODE_INCOMPLETE) {
+      return status;
+    }
+  }
+
+  if (pending.select_requested) {
+    status = gui_menu_select(pending.select_drive_state);
+    if (status != STATUS_CODE_INCOMPLETE) {
+      return status;
+    }
+  }
+
   return STATUS_CODE_OK;
 }
 
@@ -366,6 +452,27 @@ StatusCode gui_menu_init(void) {
 
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
   (void)callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_toggle(void) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_move_up(void) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_move_down(void) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_request_select(VehicleDriveState drive_state) {
+  (void)drive_state;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_process_pending(void) {
   return STATUS_CODE_OK;
 }
 

@@ -40,6 +40,39 @@ StatusCode gui_menu_init(void);
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback);
 
 /**
+ * @brief   Queue a menu toggle request for processing on the display task
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_request_toggle(void);
+
+/**
+ * @brief   Queue an upward selection movement for processing on the display task
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_request_move_up(void);
+
+/**
+ * @brief   Queue a downward selection movement for processing on the display task
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_request_move_down(void);
+
+/**
+ * @brief   Queue activation of the current menu item for processing on the display task
+ * @param   drive_state Current confirmed vehicle drive state used to validate menu actions
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_request_select(VehicleDriveState drive_state);
+
+/**
+ * @brief   Apply queued menu requests on the display task
+ * @return  STATUS_CODE_OK when all queued requests were handled
+ *          STATUS_CODE_INVALID_ARGS when a queued selection is not allowed in the current drive state
+ *          error otherwise
+ */
+StatusCode gui_menu_process_pending(void);
+
+/**
  * @brief   Open the overlay menu on top of the current screen
  * @return  STATUS_CODE_OK on success, error otherwise
  */

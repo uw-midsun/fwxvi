@@ -60,11 +60,8 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
     return false;
   }
 
-  if (gui_menu_is_open()) {
-    return gui_menu_close() == STATUS_CODE_OK;
-  }
-
-  return gui_menu_open() == STATUS_CODE_OK;
+  lights_signal_manager_register(LIGHTS_SIGNAL_COMMAND_OFF);
+  return gui_menu_request_toggle() == STATUS_CODE_OK;
 }
 
 /************************************************************************************************
@@ -74,7 +71,6 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
 static SteeringLightState light_state = STEERING_LIGHTS_OFF_STATE;
 
 static void left_turn_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (s_handle_menu_light_chord(STEERING_BUTTON_LEFT_LIGHT)) {
     return;
@@ -92,7 +88,6 @@ static void left_turn_btn_falling_edge_cb(Button *button) {
 }
 
 static void left_turn_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - LeftTurn Rising edge callback\r\n");
 #endif
@@ -103,7 +98,6 @@ static void left_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void right_turn_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (s_handle_menu_light_chord(STEERING_BUTTON_RIGHT_LIGHT)) {
     return;
@@ -121,7 +115,6 @@ static void right_turn_btn_falling_edge_cb(Button *button) {
 }
 
 static void right_turn_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - RightTurn Rising edge callback\r\n");
 #endif
@@ -132,13 +125,9 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void hazards_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (gui_menu_is_open()) {
-    StatusCode status = gui_menu_select(drive_state_manager_get_state());
-    if (status == STATUS_CODE_INVALID_ARGS) {
-      buzzer_play_invalid();
-    }
+    gui_menu_request_select(drive_state_manager_get_state());
     return;
   }
 
@@ -149,7 +138,6 @@ static void hazards_btn_falling_edge_cb(Button *button) {
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");
 #endif
@@ -160,7 +148,6 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-  (void)button;
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -169,7 +156,6 @@ static void drive_btn_falling_edge_cb(Button *button) {
 }
 
 static void drive_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Drive Rising edge callback\r\n");
 #endif
@@ -180,7 +166,6 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-  (void)button;
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -189,7 +174,6 @@ static void reverse_btn_falling_edge_cb(Button *button) {
 }
 
 static void reverse_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Reverse Rising edge callback\r\n");
 #endif
@@ -200,7 +184,6 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  (void)button;
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -209,7 +192,6 @@ static void neutral_btn_falling_edge_cb(Button *button) {
 }
 
 static void neutral_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
 #endif
@@ -220,7 +202,6 @@ static void neutral_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void horn_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (gui_menu_is_open()) {
     return;
@@ -238,7 +219,6 @@ static void horn_btn_falling_edge_cb(Button *button) {
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
-  (void)button;
 
   if (gui_menu_is_open()) {
     return;
@@ -256,7 +236,6 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 #endif
@@ -264,7 +243,6 @@ static void regen_btn_falling_edge_cb(Button *button) {
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - Regen Rising edge callback\r\n");
 #endif
@@ -275,14 +253,11 @@ static void regen_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_up_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (gui_menu_is_open()) {
-    gui_menu_move_up();
+    gui_menu_request_move_up();
     return;
   }
-
-  ++steering_storage->cruise_control_target_speed_kmh;
 
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
@@ -290,7 +265,6 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
 }
 
 static void cruise_control_up_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC up Rising edge callback\r\n");
 #endif
@@ -301,17 +275,10 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
-  (void)button;
 
   if (gui_menu_is_open()) {
-    gui_menu_move_down();
+    gui_menu_request_move_down();
     return;
-  }
-
-  --steering_storage->cruise_control_target_speed_kmh;
-
-  if (steering_storage->cruise_control_target_speed_kmh == 0) {
-    steering_storage->cruise_control_enabled = true;
   }
 
 #if (BUTTON_MANAGER_DEBUG)
@@ -320,7 +287,6 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
 }
 
 static void cruise_control_down_btn_rising_edge_cb(Button *button) {
-  (void)button;
 #if (BUTTON_MANAGER_DEBUG)
   LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
 #endif
