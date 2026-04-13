@@ -90,11 +90,11 @@ typedef enum{
 } File;
 
 typedef struct {
-  char *name;
   File file;
+  const char *name;
 } FileStringLut;
 
-extern const FileStringLut *const file_string_lut[] = {
+extern const FileStringLut file_string_lut[] = {
 
   {FILE_ACCEL_PEDAL, "accel_pedal.c"},
   {FILE_BRAKE_PEDAL, "brake_pedal.c"},
@@ -152,13 +152,14 @@ extern const FileStringLut *const file_string_lut[] = {
   ({                                        \
     __typeof__(code) status_expr = (code);  \
     if (status_expr) {   \
-      for (uint8_t i = 0; i < FILE_NUM_FILE; i++){\
-        if (file_string_lut[i].name == __FILE__){\
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++){\
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0){\
           set_error_msg_status_code(status_expr); \
           set_error_msg_file(file_string_lut[i].file);\
+          break;\
         }\
       }                   \
        \
-    }  \                              
+    }\                              
   })
 /** @} */
