@@ -54,11 +54,11 @@ typedef struct CanHwTiming {
 } CanHwTiming;
 
 /* Generated settings using http://www.bittiming.can-wiki.info/ */
-/* For 80 MHz APB1 clock. CAN Sampling occurs at ~87.5% of the frame */
+/* For 80 MHz APB1 clock */
 static CanHwTiming s_timing[NUM_CAN_HW_BITRATES] = {
   [CAN_HW_BITRATE_125KBPS] = { .prescaler = 40, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
   [CAN_HW_BITRATE_250KBPS] = { .prescaler = 20, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
-  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ },
+  [CAN_HW_BITRATE_500KBPS] = { .prescaler = 10, .bs1 = CAN_BS1_11TQ, .bs2 = CAN_BS2_4TQ },
   [CAN_HW_BITRATE_1000KBPS] = { .prescaler = 5, .bs1 = CAN_BS1_13TQ, .bs2 = CAN_BS2_2TQ }
 };
 
@@ -105,8 +105,8 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
 
   __HAL_RCC_CAN1_CLK_ENABLE();
 
-  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
-  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT9_CAN1);
+  gpio_init_pin_af(&settings->tx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1);
+  gpio_init_pin_af(&settings->rx, GPIO_ALTFN_PUSH_PULL, GPIO_ALT9_CAN1); // effectively floating in our abstraction
 
   uint32_t can_mode = CAN_MODE_NORMAL;
   if (settings->loopback) {
@@ -119,7 +119,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   s_can_handle.Instance = CAN_HW_BASE;
   s_can_handle.Init.Prescaler = s_timing[settings->bitrate].prescaler;
   s_can_handle.Init.Mode = can_mode;
-  s_can_handle.Init.SyncJumpWidth = CAN_SJW_1TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
+  s_can_handle.Init.SyncJumpWidth = CAN_SJW_4TQ;                  /* Maximum time quantum jumps for resynchronization of bus nodes */
   s_can_handle.Init.TimeSeg1 = s_timing[settings->bitrate].bs1;   /* Time permitted before sample point (Prop + Phase seg) */
   s_can_handle.Init.TimeSeg2 = s_timing[settings->bitrate].bs2;   /* Time permitted after sample point */
   s_can_handle.Init.TimeTriggeredMode = DISABLE;                  /* Traditional CAN behaviour based on priority and arbitration */
@@ -346,50 +346,42 @@ void HAL_CAN_TxMailbox2AbortCallback(CAN_HandleTypeDef *hcan) {
   s_signal_tx_mailbox_available_from_isr();
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+static void s_process_rx_fifo(uint32_t fifo) {
   BaseType_t higher_woken = pdFALSE;
   CanMessage rx_msg = { 0 };
-  
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
+  CAN_RxHeaderTypeDef rx_header;
+  uint8_t rx_data[8];
+
+  if (HAL_CAN_GetRxMessage(&s_can_handle, fifo, &rx_header, rx_data) == HAL_OK) {
+    rx_msg.extended = (rx_header.IDE == CAN_ID_EXT);
+    rx_msg.id.raw = rx_msg.extended ? rx_header.ExtId : rx_header.StdId;
+    rx_msg.dlc = rx_header.DLC;
+    memcpy(&rx_msg.data, rx_data, rx_header.DLC);
+
     bool s_filter_id_match = false;
     for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
-      /* Check if the ID is in the filter */
       if (can_filters[i] == rx_msg.id.raw) {
         s_filter_id_match = true;
         break;
       }
     }
 
-    /* If the ID is not in the filters, push to RX queue */
     if (!s_filter_id_match) {
       can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
     }
   }
-  
+
   portYIELD_FROM_ISR(higher_woken);
 }
 
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-  BaseType_t higher_woken = pdFALSE;
-  CanMessage rx_msg = { 0 };
-  
-  if (can_hw_receive(&rx_msg.id.raw, &rx_msg.extended, &rx_msg.data, &rx_msg.dlc) == STATUS_CODE_OK) {
-    bool s_filter_id_match = false;
-    for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
-      /* Check if the ID is in the filter */
-      if (can_filters[i] == rx_msg.id.raw) {
-        s_filter_id_match = true;
-        break;
-      }
-    }
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+  s_process_rx_fifo(CAN_RX_FIFO0);
+}
 
-    /* If the ID is not in the filters, push to RX queue */
-    if (!s_filter_id_match) {
-      can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
-    }
-  }
-  
-  portYIELD_FROM_ISR(higher_woken);
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  (void)(hcan);
+  s_process_rx_fifo(CAN_RX_FIFO1);
 }
 
  void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
@@ -408,6 +400,10 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   }
   if (error & (HAL_CAN_ERROR_TX_TERR2 | HAL_CAN_ERROR_TX_ALST2)) {
     s_signal_tx_mailbox_available_from_isr();
+  }
+
+  if (error & (HAL_CAN_ERROR_BOF | HAL_CAN_ERROR_EPV)) {
+    s_can_bus_error = true;
   }
 
  }
