@@ -49,8 +49,8 @@ StatusCode motor_can_init(FrontControllerStorage *storage);
 StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
 
 /**
- * @brief print a state as a string
+ * @brief forward necessary motor data over CAN
  */
-char *motor_can_get_current_state_str();
+StatusCode motor_can_forward_can_data();
 
 /** @} */

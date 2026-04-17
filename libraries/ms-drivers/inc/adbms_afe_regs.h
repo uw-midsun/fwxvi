@@ -90,6 +90,15 @@ typedef enum {
   NUM_ADBMS_AFE_VOLTAGE_REGISTERS
 } AdbmsAfeVoltageRegister;
 
+/** @brief Aux registers for easy mapping to `AdbmsAfeRegister` */
+typedef enum {
+  ADBMS_AFE_AUXILIARY_REGISTER_A = ADBMS_AFE_REGISTER_AUX_A,
+  ADBMS_AFE_AUXILIARY_REGISTER_B = ADBMS_AFE_REGISTER_AUX_B,
+  ADBMS_AFE_AUXILIARY_REGISTER_C = ADBMS_AFE_REGISTER_AUX_C,
+  ADBMS_AFE_AUXILIARY_REGISTER_D = ADBMS_AFE_REGISTER_AUX_D,
+  NUM_ADBMS_AFE_AUXILIARY_REGISTERS
+} AdbsAfeAuxiliaryRegister;
+
 /**
  * @brief Discharge timeout options for the AFE
  * @details See Table 72 on Page 68 for more details
@@ -286,7 +295,7 @@ static_assert(sizeof(AdbmsAfeAuxData) == 8, "AdbmsAfeAuxData must be 8 bytes");
 
 /**
  * @brief GPIO pull-down configuration for the Config Register Group.
- * @note  See Table 72 (p.68) and `AdbmsAfeConfigReg  isterXData` struct for details.
+ * @note  See Table 72 (p.68) and `AdbmsAfeConfigReg RegisterXData` struct for details.
  */
 #define ADBMS1818_GPIO1_PD_ON (0 << 3)
 #define ADBMS1818_GPIO1_PD_OFF (1 << 3)

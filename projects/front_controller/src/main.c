@@ -43,10 +43,10 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
-
   adc_run();
+
   accel_pedal_run();
-  brake_pedal_run();
+  // brake_pedal_run();
   opd_run();
   motor_can_update_target_current_velocity();
 
@@ -55,9 +55,8 @@ void run_1000hz_cycle() {
 
 void run_10hz_cycle() {
   run_can_tx_medium();
+  motor_can_forward_can_data();
   front_controller_update_state_manager_medium_cycle();
-  // printf("CURRENT STATE: %s\r\n", motor_can_get_current_state_str());
-  // printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_enabled);
 }
 
 void run_1hz_cycle() {

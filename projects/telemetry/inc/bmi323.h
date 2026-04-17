@@ -185,6 +185,12 @@ typedef struct {
   IMUGyroRange gyro_range;
 } Bmi323Settings;
 
+typedef struct {
+  float roll;
+  float pitch;
+  float yaw;
+} Bmi323Readings;
+
 /** @brief Storage struct for bmi323 */
 typedef struct {
   Bmi323Settings *settings;
@@ -192,6 +198,7 @@ typedef struct {
   Axes gyro;
   AccelGainOffsetValues accel_go_values;
   GyroGainOffsetValues gyro_go_values;
+  Bmi323Readings readings;
 } Bmi323Storage;
 
 /**

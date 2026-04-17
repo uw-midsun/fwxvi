@@ -20,9 +20,15 @@ Messages:
     signals:
       triggers:
         type: bitfield
-        flags: [{name: bps_fault, length: 11}, relay_state, power_state, afe_status, motor_precharge_complete]
-        length: 16
-  
+        flags:
+          - {name: bps_fault, length: 11}
+          - {name: cell_at_fault, length: 8}
+          - relay_state
+          - {name: power_state, length: 2}
+          - afe_status
+          - motor_precharge_complete
+        length: 32
+
   battery_stats_A:
     id: 2
     cycle: "medium"
@@ -60,7 +66,7 @@ Messages:
         length: 16
       max_temperature:
         length: 16
-  
+
   power_input_stats:
     id: 4
     cycle: "medium"
@@ -98,7 +104,7 @@ Messages:
         length: 16
       voltage_2:
         length: 16
-  
+
   AFE1_status_B:
     id: 60
     cycle: "medium"

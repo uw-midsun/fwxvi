@@ -89,9 +89,12 @@
 /** @brief  Display control (Push-pull to control display state) */
 #define GPIO_STEERING_DISPLAY_CTRL STEERING_GPIO_DEF(C, 6)
 
+#define GPIO_STEERING_DISPLAY_BACKLIGHT_CTRL STEERING_GPIO_DEF(A, 1)
+
 /************************************************************************************************
  * Display LTDC Config
  ************************************************************************************************/
+#define GPIO_STEERING_BACKLIGHT STEERING_GPIO_DEF(A, 1)
 
 /** @brief  LTDC pixel clock pin */
 #define GPIO_STEERING_DISPLAY_LTDC_CLOCK STEERING_GPIO_DEF(A, 4)
@@ -114,8 +117,8 @@
         STEERING_GPIO_DEF(D, 8),  /* R3 */  \
         STEERING_GPIO_DEF(D, 9),  /* R4 */  \
         STEERING_GPIO_DEF(D, 10), /* R5 */  \
-        {},                       /* R6 */  \
-    {}                            /* R7 */  \
+        STEERING_GPIO_DEF(D, 11), /* R6 */  \
+        STEERING_GPIO_DEF(D, 12)  /* R7 */  \
   }
 
 /** @brief  LTDC green channel pins (bits 2-7) */
@@ -127,8 +130,8 @@
         STEERING_GPIO_DEF(E, 10), /* G3 */    \
         STEERING_GPIO_DEF(E, 11), /* G4 */    \
         STEERING_GPIO_DEF(E, 12), /* G5 */    \
-        {},                       /* G6 */    \
-    {}                            /* G7 */    \
+        STEERING_GPIO_DEF(E, 13), /* G6 */    \
+        STEERING_GPIO_DEF(E, 14)  /* G7 */    \
   }
 
 /** @brief  LTDC blue channel pins (bits 2-7) */

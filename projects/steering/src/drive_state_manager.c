@@ -35,6 +35,16 @@ static RegenState current_regen_state = INVALID_REGEN_STATE;
 
 static SteeringStorage *steering_storage = NULL;
 
+/**
+ * @brief   Mirror the current confirmed drive state into steering storage
+ * @param   state Drive state that should be exposed to the rest of steering
+ */
+static void s_update_storage_drive_state(VehicleDriveState state) {
+  if (steering_storage != NULL) {
+    steering_storage->drive_state = state;
+  }
+}
+
 static StatusCode drive_state_manager_neutral(void) {
   if (current_state == VEHICLE_DRIVE_STATE_DRIVE) {
     button_led_disable(STEERING_BUTTON_DRIVE);
@@ -156,6 +166,7 @@ StatusCode drive_state_manager_init(SteeringStorage *storage) {
     return STATUS_CODE_INVALID_ARGS;
   }
   steering_storage = storage;
+  s_update_storage_drive_state(VEHICLE_DRIVE_STATE_INVALID);
 
   current_state = VEHICLE_DRIVE_STATE_INVALID;
   current_request = DRIVE_STATE_REQUEST_NONE;
@@ -186,6 +197,7 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to DRIVE\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_DRIVE;
+          s_update_storage_drive_state(current_state);
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
@@ -201,6 +213,7 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to NEUTRAL\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
+          s_update_storage_drive_state(current_state);
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
 
@@ -218,6 +231,7 @@ StatusCode drive_state_manager_update(void) {
           LOG_DEBUG("Drive state set to REVERSE\n");
 #endif
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
+          s_update_storage_drive_state(current_state);
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
           current_request = DRIVE_STATE_REQUEST_NONE;
@@ -231,6 +245,7 @@ StatusCode drive_state_manager_update(void) {
 
     default:
       current_state = VEHICLE_DRIVE_STATE_INVALID;
+      s_update_storage_drive_state(current_state);
       return STATUS_CODE_INVALID_ARGS;
       break;
   }

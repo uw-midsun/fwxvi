@@ -30,6 +30,8 @@
 #include "buzzer.h"
 #include "steering_hw_defs.h"
 
+#define MUTE_BUZZER 0
+
 #define BUZZER_TIMER PWM_TIMER_16
 #define BUZZER_CHANNEL PWM_CHANNEL_1
 #define BUZZER_GPIO_ALTFN GPIO_ALT14_TIM16
@@ -296,8 +298,11 @@ static void s_blink_signal_timer_callback(SoftTimerId timer_id) {
 }
 
 StatusCode buzzer_init(BuzzerSettings settings) {
+#if (MUTE_BUZZER == 0)
   status_ok_or_return(gpio_init_pin_af(&s_buzzer_pwm_pin, GPIO_ALTFN_PUSH_PULL, BUZZER_GPIO_ALTFN));
   status_ok_or_return(pwm_init(BUZZER_TIMER, s_freq_to_period_us(settings.amplitude_modulation_enabled ? CARRIER_FREQUENCY_KHZ * 1000 : NOTE_A4)));
+#endif
+
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
   status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_signal_timer));
   

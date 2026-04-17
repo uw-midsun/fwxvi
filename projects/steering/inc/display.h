@@ -13,6 +13,7 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "display_defs.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -36,14 +37,6 @@
 #define HORIZONTAL_FRONT_PORCH 8
 #define VERTICAL_FRONT_PORCH 8
 
-#ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
-#define DISPLAY_WIDTH 480  /**< Width of the display */
-#define DISPLAY_HEIGHT 272 /**< Height of the display */
-#else
-#define DISPLAY_WIDTH 1  /**< Width of the display */
-#define DISPLAY_HEIGHT 1 /**< Height of the display */
-#endif
-
 /**
  * @brief   Initialize the display
  * @param   storage Pointer to the SteeringStorage instance
@@ -55,5 +48,6 @@ StatusCode display_init(SteeringStorage *storage);
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();
 StatusCode display_rx_fast();
+StatusCode display_run();
 
 /** @} */

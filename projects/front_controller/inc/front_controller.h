@@ -30,8 +30,8 @@ struct PowerSenseStorage;
 struct AccelPedalStorage;
 struct Ws22MotorCanStorage;
 
-/** @brief  Front controller pedal set to 2% deadzone  */
-#define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.02f
+/** @brief  Front controller pedal set to 10% deadzone  */
+#define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.05f
 
 /** @brief  Front controller pedal is remapped from 0 - 1 to 0.1 to 1 */
 #define FRONT_CONTROLLER_ACCEL_REMAP_MIN 0.10f
@@ -45,14 +45,24 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
 
-/** @brief  Front controller brake pedal set to 1% deadzone  */
-#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.01f
+/** @brief  Front controller brake pedal set to 5% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.05f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
 
 /** @brief Max speed of vehicle in KPH */
 #define MAX_VEHICLE_SPEED_KPH 50
+
+/** @brief Default values of calibration values for when calibration fails */
+#define FRONT_CONTROLLER_ACCEL_PEDAL_UPPER_VALUE_AMPLIFIED_DEFAULT 1120
+#define FRONT_CONTROLLER_ACCEL_PEDAL_LOWER_VALUE_AMPLIFIED_DEFAULT 286
+
+#define FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_THRESHOLD_DEFAULT 535
+#define FRONT_CONTROLLER_ACCEL_PEDAL_REVERSED_DEFAULT true
+
+#define FRONT_CONTROLLER_BRAKE_PEDAL_UPPER_VALUE_DEFAULT 1230
+#define FRONT_CONTROLLER_BRAKE_PEDAL_LOWER_VALUE_DEFAULT 960
 
 /**
  * @brief   Front Controller configuration data

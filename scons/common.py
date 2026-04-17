@@ -141,7 +141,6 @@ def gdb_run(elf_path, hardware, flash_type):
         
         gdb_cmd = [
             "arm-none-eabi-gdb",
-            "-tui",
             str(elf_path),
             "-ex", "target extended-remote localhost:3333",
             "-ex", "monitor reset halt",
