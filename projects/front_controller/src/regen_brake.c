@@ -49,7 +49,7 @@ StatusCode regen_brake_run(float *target_current, bool *direction) {
     *direction = true;
   }
 
-  if (current_velocity < REGEN_BRAKE_STOPPING_THRESHOLD) {
+  if (fabsf(current_velocity) < REGEN_BRAKE_STOPPING_THRESHOLD) {
     *target_current = 0;
     return STATUS_CODE_OK;
   }

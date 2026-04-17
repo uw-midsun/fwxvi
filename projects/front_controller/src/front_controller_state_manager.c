@@ -37,50 +37,50 @@
 #endif
 
 static FrontControllerStorage *front_controller_storage = NULL;
-static FrontControllerState s_current_state = NUM_FRONT_CONTROLLER_STATES;
+static VehicleDriveState s_current_state = VEHICLE_DRIVE_NUM_STATES;
 static bool is_horn_enabled;
 static BrakeState s_brake_state;
 static bool started = false;
 
-static void front_controller_state_manager_enter_state(FrontControllerState new_state) {
+static void front_controller_state_manager_enter_state(VehicleDriveState new_state) {
   switch (new_state) {
-    case FRONT_CONTROLLER_STATE_IDLE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_IDLE || !started) {
+    case VEHICLE_DRIVE_STATE_NEUTRAL:
+      if (s_current_state != VEHICLE_DRIVE_STATE_NEUTRAL || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_BRAKE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_BRAKE || !started) {
+    case VEHICLE_DRIVE_STATE_BRAKE:
+      if (s_current_state != VEHICLE_DRIVE_STATE_BRAKE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_REGEN:
-      if (s_current_state != FRONT_CONTROLLER_STATE_REGEN || !started) {
+    case VEHICLE_DRIVE_STATE_REGEN:
+      if (s_current_state != VEHICLE_DRIVE_STATE_REGEN || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_DRIVE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE || !started) {
+    case VEHICLE_DRIVE_STATE_DRIVE:
+      if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_DRIVE, true);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_REVERSE:
-      if (s_current_state != FRONT_CONTROLLER_STATE_DRIVE || !started) {
+    case VEHICLE_DRIVE_STATE_REVERSE:
+      if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_REVERSE, true);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_FAULT:
-      if (s_current_state != FRONT_CONTROLLER_STATE_FAULT || !started) {
+    case VEHICLE_DRIVE_STATE_FAULT:
+      if (s_current_state != VEHICLE_DRIVE_STATE_FAULT || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
@@ -98,7 +98,7 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
   }
   front_controller_storage = storage;
 
-  s_current_state = FRONT_CONTROLLER_STATE_IDLE;
+  s_current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
   started = false;
 
   return STATUS_CODE_OK;
@@ -110,91 +110,91 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
   }
 
   switch (s_current_state) {
-    case FRONT_CONTROLLER_STATE_IDLE:
+    case VEHICLE_DRIVE_STATE_NEUTRAL:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_DRIVE);
       } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_REGEN_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REGEN);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REGEN);
       } else if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REVERSE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_REGEN:
+    case VEHICLE_DRIVE_STATE_REGEN:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_DRIVE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_NEUTRAL);
       } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REVERSE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_BRAKE:
+    case VEHICLE_DRIVE_STATE_BRAKE:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_DRIVE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_NEUTRAL);
       } else if (event == FRONT_CONTROLLER_EVENT_REGEN_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REGEN);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REGEN);
       } else if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REVERSE);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_DRIVE:
+    case VEHICLE_DRIVE_STATE_DRIVE:
       if (event == FRONT_CONTROLLER_EVENT_REVERSE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REVERSE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REVERSE);
       } else if (event == FRONT_CONTROLLER_EVENT_REGEN_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REGEN);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REGEN);
       } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_NEUTRAL);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_REVERSE:
+    case VEHICLE_DRIVE_STATE_REVERSE:
       if (event == FRONT_CONTROLLER_EVENT_DRIVE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_DRIVE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_DRIVE);
       } else if (event == FRONT_CONTROLLER_EVENT_REGEN_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_REGEN);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_REGEN);
       } else if (event == FRONT_CONTROLLER_EVENT_BRAKE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_BRAKE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_BRAKE);
       } else if (event == FRONT_CONTROLLER_EVENT_IDLE_REQUEST) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_NEUTRAL);
       } else if (event == FRONT_CONTROLLER_EVENT_FAULT) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       }
       break;
 
-    case FRONT_CONTROLLER_STATE_FAULT:
+    case VEHICLE_DRIVE_STATE_FAULT:
       if (event == FRONT_CONTROLLER_EVENT_RESET) {
-        front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_IDLE);
+        front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_NEUTRAL);
       }
       break;
 
     default:
-      front_controller_state_manager_enter_state(FRONT_CONTROLLER_STATE_FAULT);
+      front_controller_state_manager_enter_state(VEHICLE_DRIVE_STATE_FAULT);
       break;
   }
 
   return STATUS_CODE_OK;
 }
 
-FrontControllerState front_controller_state_manager_get_state(void) {
+VehicleDriveState front_controller_state_manager_get_state(void) {
   return s_current_state;
 }
 
@@ -227,7 +227,8 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
   uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
 
-  CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u LIGHTS %u HORN %u\r\n", drive_state_from_steering, lights_from_steering, horn_enabled_from_steering);
+  CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
+                        front_controller_storage->brake_state);
 
   // Handle BPS fault
   if (bps_fault_from_rear) {
@@ -235,7 +236,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
     CONDITIONAL_LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
     return STATUS_CODE_OK;
-  } else if (!bps_fault_from_rear && s_current_state == FRONT_CONTROLLER_STATE_FAULT) {
+  } else if (!bps_fault_from_rear && s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
     // Logic to turn off BPS fault
     front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
     front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);

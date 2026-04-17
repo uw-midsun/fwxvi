@@ -59,7 +59,7 @@ StatusCode brake_pedal_run() {
   }
 
   front_controller_storage->brake_percentage = calculated_reading;
-  CONDITIONAL_LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | BRAKE_STATE %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_enabled);
+  CONDITIONAL_LOG_DEBUG("BRAKE ADC %d | CURVED READING: %.2f | BRAKE_STATE %d\r\n", adc_reading, (double)calculated_reading, front_controller_storage->brake_state);
   set_drive_status_state_data_brake_enabled(front_controller_storage->brake_state > 0);
   return STATUS_CODE_OK;
 }

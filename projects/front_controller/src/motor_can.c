@@ -20,7 +20,7 @@
 #include "front_controller_setters.h"
 #include "regen_brake.h"
 
-#define MOTOR_CAN_DEBUG 0U
+#define MOTOR_CAN_DEBUG 1U
 
 #if (MOTOR_CAN_DEBUG == 1)
 #define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)

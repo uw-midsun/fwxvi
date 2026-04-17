@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -25,15 +26,15 @@
  * @{
  */
 
-typedef enum {
-  FRONT_CONTROLLER_STATE_IDLE = 0, /**< Ready but not driving or charging, car's in neutral */
-  FRONT_CONTROLLER_STATE_REGEN,    /**< Brake - car will regen */
-  FRONT_CONTROLLER_STATE_BRAKE,    /**< Brake - car's in neutral */
-  FRONT_CONTROLLER_STATE_DRIVE,    /**< Driving: motor relays closed, LV enabled */
-  FRONT_CONTROLLER_STATE_REVERSE,  /**< Reverse: motor relays closed, LV enabled */
-  FRONT_CONTROLLER_STATE_FAULT,    /**< Faulted: relays open, latched until reset */
-  NUM_FRONT_CONTROLLER_STATES
-} FrontControllerState;
+// typedef enum {
+//   FRONT_CONTROLLER_STATE_IDLE = 0, /**< Ready but not driving or charging, car's in neutral */
+//   FRONT_CONTROLLER_STATE_REGEN,    /**< Brake - car will regen */
+//   FRONT_CONTROLLER_STATE_BRAKE,    /**< Brake - car's in neutral */
+//   FRONT_CONTROLLER_STATE_DRIVE,    /**< Driving: motor relays closed, LV enabled */
+//   FRONT_CONTROLLER_STATE_REVERSE,  /**< Reverse: motor relays closed, LV enabled */
+//   FRONT_CONTROLLER_STATE_FAULT,    /**< Faulted: relays open, latched until reset */
+//   NUM_FRONT_CONTROLLER_STATES
+// } FrontControllerState;
 
 typedef enum {
   FRONT_CONTROLLER_EVENT_NONE = 0,
@@ -66,7 +67,7 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event);
  * @brief   Get current state.
  * @return  Current front controller state (see #FrontControllerState)
  */
-FrontControllerState front_controller_state_manager_get_state(void);
+VehicleDriveState front_controller_state_manager_get_state(void);
 
 /**
  * @brief   Update the state/set load switches based on information recieved from CAN (medium cycle).

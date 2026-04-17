@@ -162,6 +162,8 @@ StatusCode opd_run() {
   set_drive_status_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
   set_drive_status_brake_percentage((uint8_t)(front_controller_storage->brake_percentage * 100));
   set_drive_status_state_data_regen_enabled(front_controller_storage->current_drive_state == VEHICLE_DRIVE_STATE_REGEN);
+
+  // LOG_DEBUG("Brake: %u\r\n", (uint8_t)front_controller_storage->brake_percentage * 100);
   return STATUS_CODE_OK;
 }
 

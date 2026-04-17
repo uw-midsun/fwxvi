@@ -40,6 +40,7 @@ typedef enum {
   VEHICLE_DRIVE_STATE_CRUISE = 4, /**< Car Cruise Constant Velocity */
   VEHICLE_DRIVE_STATE_BRAKE = 5,  /**< Car Brake */
   VEHICLE_DRIVE_STATE_REGEN = 6,  /**< Car Brake With Regen */
+  VEHICLE_DRIVE_STATE_FAULT = 7,  /**< BPS fault */
   VEHICLE_DRIVE_NUM_STATES,
 } VehicleDriveState;
 
