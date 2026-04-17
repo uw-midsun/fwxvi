@@ -19,7 +19,6 @@
 #include "mcu.h"
 #include "pwm.h"
 #include "software_timer.h"
-
 #include "status.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_cortex.h"
@@ -154,22 +153,22 @@ static StatusCode hal_timer_init(uint16_t modulation_frequency) {
   h_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   h_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 
-  #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
   LOG_DEBUG("Attempting to initialize HAL timer\r\n");
   delay_ms(10U);
-  #endif
+#endif
 
   if (HAL_TIM_Base_Init(&h_timer) != HAL_OK) {
-    #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
     LOG_DEBUG("Error initalizing HAL timer!\r\n");
     delay_ms(10U);
-    #endif
+#endif
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
   LOG_DEBUG("Finished base init\r\n");
   delay_ms(10U);
-  #endif
+#endif
   HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
 
@@ -196,10 +195,10 @@ static StatusCode s_play_note_modulated(NoteFrequency freq) {
     isNoteRest = false;
     uint16_t arr = get_arr(freq);
 
-    #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
     LOG_DEBUG("Starting to play note of frequency: %d | ARR: %u\r\n", freq, arr);
     delay_ms(10U);
-    #endif
+#endif
     __HAL_TIM_SET_AUTORELOAD(&h_timer, arr);
     __HAL_TIM_SET_COUNTER(&h_timer, 0);
   }
@@ -305,29 +304,29 @@ StatusCode buzzer_init(BuzzerSettings settings) {
 
   status_ok_or_return(software_timer_init(BUZZER_BEEP_DURATION_MS, s_beep_callback, &s_beep_timer));
   status_ok_or_return(software_timer_init(GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS, s_blink_signal_timer_callback, &s_signal_timer));
-  
+
   amplitude_modulation_enabled = settings.amplitude_modulation_enabled;
 
   if (settings.amplitude_modulation_enabled) {
-    #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
     LOG_DEBUG("Attempting to initialize HAL timer...\r\n");
     delay_ms(10);
-    #endif
+#endif
     status_ok_or_return(hal_timer_init(NOTE_A4));
-    
-    #if (BUZZER_DEBUG == 1)
+
+#if (BUZZER_DEBUG == 1)
     LOG_DEBUG("HAL timer initialized...\r\n");
     delay_ms(10);
-    #endif
+#endif
 
     if (HAL_TIM_Base_Start_IT(&h_timer) != HAL_OK) {
       return STATUS_CODE_INTERNAL_ERROR;
     }
 
-    #if (BUZZER_DEBUG == 1)
+#if (BUZZER_DEBUG == 1)
     LOG_DEBUG("finished start IT\r\n");
     delay_ms(10);
-    #endif
+#endif
   }
 
   return STATUS_CODE_OK;
