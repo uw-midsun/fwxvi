@@ -37,7 +37,6 @@
 
 static bool party_mode = false;
 static uint8_t party_hue = 0;
-static bool toggle_triggered = false;
 
 static SteeringStorage *steering_storage = NULL;
 static LEDPixels saved_colors[NUM_STEERING_BUTTONS];
@@ -221,6 +220,32 @@ static LEDPixels hsv_to_rgb(uint8_t hue) {
   }
 }
 
+/**
+ * @brief   Set party mode to a specific enabled state
+ * @param   enabled TRUE to enable party mode, FALSE to disable it
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+static StatusCode s_set_party_mode(bool enabled) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if (enabled == party_mode) {
+    return STATUS_CODE_OK;
+  }
+
+  if (enabled) {
+    party_mode_save_colors();
+    party_mode = true;
+  } else {
+    party_mode = false;
+    party_mode_restore_colors();
+  }
+
+  buzzer_stop();
+  return STATUS_CODE_OK;
+}
+
 StatusCode party_mode_init(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -234,24 +259,6 @@ StatusCode party_mode_init(SteeringStorage *storage) {
 StatusCode party_mode_run(void) {
   if (steering_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
-  }
-
-  bool both_pressed =
-      (steering_storage->button_manager->buttons[STEERING_BUTTON_RIGHT_LIGHT].state == BUTTON_PRESSED && steering_storage->button_manager->buttons[STEERING_BUTTON_LEFT_LIGHT].state == BUTTON_PRESSED);
-
-  if (both_pressed && !toggle_triggered) {
-    toggle_triggered = true;
-    if (party_mode) {
-      party_mode = false;
-      party_mode_restore_colors();
-      buzzer_stop();
-    } else {
-      party_mode_save_colors();
-      party_mode = true;
-      buzzer_stop();
-    }
-  } else if (!both_pressed) {
-    toggle_triggered = false;
   }
 
   if (party_mode) {
@@ -268,6 +275,10 @@ StatusCode party_mode_run(void) {
     }
   }
   return STATUS_CODE_OK;
+}
+
+StatusCode party_mode_toggle(void) {
+  return s_set_party_mode(!party_mode);
 }
 
 bool party_mode_active(void) {

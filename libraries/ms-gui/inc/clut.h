@@ -22,19 +22,32 @@
  */
 
 /**
- * @brief   CLUT color entry (ARGB8888 format for LTDC hardware)
- *          Memory layout must match LTDC expectation: 0x00RRGGBB
+ * @brief   CLUT color entry
  */
 typedef struct {
-  uint8_t blue;     /**< Blue component   [7:0]   */
-  uint8_t green;    /**< Green component  [15:8]  */
-  uint8_t red;      /**< Red component    [23:16] */
-  uint8_t reserved; /**< Reserved/Alpha   [31:24] */
+  uint8_t blue;
+  uint8_t green;
+  uint8_t red;
 } ClutEntry;
 
+#define CLUT_RGB565_RED_SHIFT 11U
+#define CLUT_RGB565_GREEN_SHIFT 5U
+
 /**
- * @brief   Color index enumeration for CLUT entries (0–255)
- *          Each value corresponds to an index into the LTDC CLUT.
+ * @brief   Convert a color entry to RGB565
+ * @param   color Input color entry
+ * @return  RGB565 packed pixel value
+ */
+static inline uint16_t clut_entry_rgb565(ClutEntry color) {
+  uint16_t red = ((uint16_t)color.red >> 3U) << CLUT_RGB565_RED_SHIFT;
+  uint16_t green = ((uint16_t)color.green >> 2U) << CLUT_RGB565_GREEN_SHIFT;
+  uint16_t blue = ((uint16_t)color.blue >> 3U);
+
+  return (uint16_t)(red | green | blue);
+}
+
+/**
+ * @brief   Legacy color indices used by indexed LTDC helpers and tests (Not used by LVGL)
  */
 typedef enum {
   COLOR_INDEX_BLACK = 0,
@@ -46,16 +59,69 @@ typedef enum {
   COLOR_INDEX_CYAN,
   COLOR_INDEX_MAGENTA,
 
-  // Reserved or unused slots can go here
   COLOR_INDEX_TRANSPARENT = 255,
 
   NUM_COLOR_INDICES = 256
 } ColorIndex;
 
 /**
- * @brief   Get pointer to the default CLUT table
- * @return  Pointer to a statically defined CLUT table
+ * @brief   Semantic GUI palette IDs for the LVGL widget layer
+ */
+typedef enum {
+  GUI_COLOR_SCREEN_BACKGROUND = 0,
+  GUI_COLOR_TEXT_PRIMARY,
+  GUI_COLOR_MENU_OVERLAY,
+  GUI_COLOR_MENU_PANEL_BACKGROUND,
+  GUI_COLOR_MENU_PANEL_BORDER,
+  GUI_COLOR_MENU_TITLE_TEXT,
+  GUI_COLOR_MENU_ITEM_TEXT,
+  GUI_COLOR_MENU_ITEM_SELECTED_BACKGROUND,
+  GUI_COLOR_MENU_ITEM_SELECTED_BORDER,
+  GUI_COLOR_SPEEDOMETER_TICK_MAJOR,
+  GUI_COLOR_SPEEDOMETER_TICK_MINOR,
+  GUI_COLOR_SPEEDOMETER_NEEDLE,
+  GUI_COLOR_BAR_BACKGROUND,
+  GUI_COLOR_BAR_BORDER,
+  GUI_COLOR_THROTTLE_FILL,
+  GUI_COLOR_BRAKE_FILL,
+  GUI_COLOR_SOC_FILL,
+  GUI_COLOR_LABEL_BORDER,
+
+  NUM_GUI_COLOR_IDS,
+} GuiColorId;
+
+/**
+ * @brief   Get a semantic GUI palette color
+ * @param   color_id Semantic GUI color ID
+ * @return  Palette entry for the requested GUI color
+ */
+ClutEntry clut_get_gui_color(GuiColorId color_id);
+
+/**
+ * @brief   Get the default indexed CLUT table
+ * @return  Pointer to the default CLUT table
  */
 ClutEntry *clut_get_table(void);
+
+/**
+ * @brief   Return the red component of a color entry
+ */
+static inline uint8_t clut_entry_red(ClutEntry color) {
+  return color.red;
+}
+
+/**
+ * @brief   Return the green component of a color entry
+ */
+static inline uint8_t clut_entry_green(ClutEntry color) {
+  return color.green;
+}
+
+/**
+ * @brief   Return the blue component of a color entry
+ */
+static inline uint8_t clut_entry_blue(ClutEntry color) {
+  return color.blue;
+}
 
 /** @} */

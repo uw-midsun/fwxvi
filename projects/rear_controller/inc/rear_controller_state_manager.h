@@ -28,7 +28,8 @@
 typedef enum {
   REAR_CONTROLLER_STATE_IDLE,  /**< Ready but not driving or charging, cars in neutral */
   REAR_CONTROLLER_STATE_DRIVE, /**< Driving: motor relays closed, LV enabled */
-  REAR_CONTROLLER_STATE_FAULT  /**< Faulted: relays open, latched until reset */
+  REAR_CONTROLLER_STATE_FAULT, /**< Faulted: relays open, latched until reset */
+  REAR_CONTROLLER_STATE_START, /**< Start: relays open, latched until begin */
 } RearControllerState;
 
 typedef enum {
@@ -61,5 +62,11 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event);
  * @return  Current rear controller state (see #RearControllerState)
  */
 RearControllerState rear_controller_state_manager_get_state(void);
+
+/**
+ * @brief   Update the state/set relays based on information recieved from CAN (medium cycle).
+ * @return  STATUS_CODE_OK if udpated successfully
+ */
+StatusCode rear_controller_update_state_manager_medium_cycle();
 
 /** @} */

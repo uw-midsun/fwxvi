@@ -80,16 +80,21 @@ typedef struct {
   int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
   int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
 
-  BpsFault bps_fault;    /**< BPS fault bitfield */
-  float state_of_charge; /** Battery percentage from 0-100, two decimal points of precision*/
+  uint16_t bps_fault;     /**< BPS fault bitfield */
+  uint8_t bps_fault_cell; /**< BPS fault cell number (if it exists) */
+  float state_of_charge;  /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
   int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */
   int16_t aux_voltage;  /**< Auxiliary bus voltage (mV) */
   int16_t aux_current;  /**< Auxiliary bus current (mA) */
 
-  uint16_t pack_voltage; /**< Pack voltage reading (mV) */
-  uint16_t pack_current; /**< Pack current reading (mA) */
+  uint16_t pack_voltage;        /**< Pack voltage reading (mV) */
+  uint16_t motor_bus_voltage;   /**< Motor bus voltage reading (V) */
+  uint16_t pack_current;        /**< Pack current reading (mA) */
+  uint16_t min_cell_voltage_mv; /**< Minimum cell voltage reading (mV) */
+  uint16_t max_cell_voltage_mv; /**< Maximum cell voltage reading (mV) */
+  uint16_t max_cell_temp;       /**< Maximum cell temperature reading (C) */
 
   VehicleDriveState drive_state;
   uint8_t brake_enabled;

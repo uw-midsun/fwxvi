@@ -18,6 +18,7 @@
 #include "button.h"
 #include "button_manager.h"
 #include "buzzer.h"
+#include "gui_menu.h"
 #include "steering.h"
 #include "steering_getters.h"
 #include "steering_setters.h"
@@ -111,7 +112,7 @@ StatusCode cruise_control_run_medium_cycle() {
   // #endif
 
   // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
-  VehicleDriveState drive_state_from_front = (VehicleDriveState)get_pedal_data_drive_state();
+  VehicleDriveState drive_state_from_front = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
     LOG_DEBUG("BRAKE from front\r\n");
@@ -123,6 +124,13 @@ StatusCode cruise_control_run_medium_cycle() {
 
   ButtonState up = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_UP].state;
   ButtonState down = steering_storage->button_manager->buttons[STEERING_BUTTON_CRUISE_CONTROL_DOWN].state;
+
+  if (gui_menu_is_open()) {
+    hold_ticks = 0;
+    hold_direction = 0;
+    cruise_control_enabled_released = !(up || down);
+    return STATUS_CODE_OK;
+  }
 
   /* Enable / Disable */
 
@@ -140,7 +148,7 @@ StatusCode cruise_control_run_medium_cycle() {
     }
 
     // Cruise control should start from our current speed
-    int16_t current_speed_kmh_from_front_signed = (int16_t)get_motor_velocity_vehicle_velocity();
+    int16_t current_speed_kmh_from_front_signed = (int16_t)get_motor_stats_B_vehicle_velocity();
 
     if (current_speed_kmh_from_front_signed < 0) {
       return STATUS_CODE_INVALID_ARGS;

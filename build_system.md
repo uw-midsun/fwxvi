@@ -89,7 +89,7 @@ Commands:
         (x86) Run the project's binary with gdb.
         - e.g. `scons gdb <target>`
 
-        (arm) Start OpenOCD and connect GDB with TUI mode for on-target debugging.
+        (arm) Start OpenOCD and connect GDB for on-target debugging.
         Requires a controller board to be connected and powered.
         - e.g. `scons gdb <target>`
 
