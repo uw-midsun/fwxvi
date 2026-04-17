@@ -158,13 +158,12 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
-  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t drive_state_from_front = get_drive_status_state_data_drive_state();
 
   if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
-  } else if (s_current_state != REAR_CONTROLLER_STATE_DRIVE &&
-             (drive_state_from_steering == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_steering == VEHICLE_DRIVE_STATE_CRUISE || drive_state_from_steering == VEHICLE_DRIVE_STATE_REVERSE)) {
+  } else if (s_current_state != REAR_CONTROLLER_STATE_DRIVE && (drive_state_from_front == VEHICLE_DRIVE_STATE_DRIVE || drive_state_from_front == VEHICLE_DRIVE_STATE_CRUISE ||
+                                                                drive_state_from_front == VEHICLE_DRIVE_STATE_REVERSE || drive_state_from_front == VEHICLE_DRIVE_STATE_REGEN)) {
 #if (IS_MOTOR_CONNECTED == 1)
     if (rear_controller_storage->precharge_complete) {
       rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
@@ -172,7 +171,7 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
 #else
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
 #endif
-  } else if (drive_state_from_steering == VEHICLE_DRIVE_STATE_NEUTRAL && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
+  } else if (drive_state_from_front == VEHICLE_DRIVE_STATE_NEUTRAL && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
   }
   return STATUS_CODE_OK;

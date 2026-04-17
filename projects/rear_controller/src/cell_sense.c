@@ -77,7 +77,7 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 0U
+#define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
@@ -455,6 +455,7 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   RETRY_OPERATION(AFE_NUM_RETRIES, RETRY_DELAY_MS, adbms_afe_init(adbms_afe_storage, &s_afe_settings), status);
 
   delay_ms(10);
+
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
