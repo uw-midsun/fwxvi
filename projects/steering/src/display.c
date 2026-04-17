@@ -145,9 +145,9 @@ static StatusCode s_render_gui_step(void) {
   status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0));  // TODO change to % base when available
   status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_percentage));
   if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
-    status_ok_or_return(gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL));
+    gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
   } else {
-    status_ok_or_return(gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL));
+    gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
   }
   status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell));
   status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));

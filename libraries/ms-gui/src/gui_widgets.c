@@ -384,6 +384,11 @@ StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  (void)color_id;
+  return STATUS_CODE_OK;
+}
+
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   (void)soc_percent;
   return STATUS_CODE_OK;

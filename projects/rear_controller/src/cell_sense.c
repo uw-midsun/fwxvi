@@ -343,6 +343,7 @@ static StatusCode s_cell_sense_run() {
   }
 
   rear_controller_storage->pack_voltage = total_voltage / 10000;
+  set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
 
   CONDITIONAL_LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
   delay_ms(10U);

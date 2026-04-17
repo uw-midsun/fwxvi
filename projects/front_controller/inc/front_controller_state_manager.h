@@ -26,16 +26,6 @@
  * @{
  */
 
-// typedef enum {
-//   FRONT_CONTROLLER_STATE_IDLE = 0, /**< Ready but not driving or charging, car's in neutral */
-//   FRONT_CONTROLLER_STATE_REGEN,    /**< Brake - car will regen */
-//   FRONT_CONTROLLER_STATE_BRAKE,    /**< Brake - car's in neutral */
-//   FRONT_CONTROLLER_STATE_DRIVE,    /**< Driving: motor relays closed, LV enabled */
-//   FRONT_CONTROLLER_STATE_REVERSE,  /**< Reverse: motor relays closed, LV enabled */
-//   FRONT_CONTROLLER_STATE_FAULT,    /**< Faulted: relays open, latched until reset */
-//   NUM_FRONT_CONTROLLER_STATES
-// } FrontControllerState;
-
 typedef enum {
   FRONT_CONTROLLER_EVENT_NONE = 0,
   FRONT_CONTROLLER_EVENT_IDLE_REQUEST,
