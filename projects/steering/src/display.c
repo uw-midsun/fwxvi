@@ -262,8 +262,9 @@ StatusCode display_rx_medium() {
   display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
 
   display_data->motor_bus_voltage = (uint16_t)get_motor_stats_A_bus_voltage();
-  display_data->vehicle_velocity = (int16_t)get_motor_stats_B_vehicle_velocity();
   display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
+  // display_data->vehicle_velocity = (int16_t)get_motor_stats_B_vehicle_velocity();
+  display_data->vehicle_velocity = display_data->motor_velocity * 3.141f * 0.558f * 0.001 * 60;
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();

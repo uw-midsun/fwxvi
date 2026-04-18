@@ -51,7 +51,7 @@ StatusCode brake_pedal_run() {
   s_brake_pedal_storage.prev_reading = calculated_reading;
 
   if (calculated_reading > front_controller_storage->config->brake_pedal_activation_zone) {
-    front_controller_storage->brake_state = BRAKE_STATE_BRAKING;
+    front_controller_storage->brake_state = BRAKE_STATE_REGEN;
   } else if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
     front_controller_storage->brake_state = BRAKE_STATE_REGEN;
   } else {
