@@ -32,7 +32,9 @@
 #include "opd.h"
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
+#include "regen_brake.h"
 #include "ws22_motor_can.h"
+
 /************************************************************************************************
  * Storage definitions
  ************************************************************************************************/
@@ -79,6 +81,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   ws22_motor_can_init(front_controller_storage);
   motor_can_init(front_controller_storage);
   cruise_control_init(front_controller_storage);
+  regen_brake_init(front_controller_storage);
   front_lights_signal_init();
 
   front_controller_state_manager_init(front_controller_storage);

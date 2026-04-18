@@ -62,6 +62,27 @@ StatusCode gui_widgets_set_throttle_bar(uint8_t percent);
 StatusCode gui_widgets_set_brake_bar(uint8_t percent);
 
 /**
+ * @brief   Update the vertical brake percentage bar color
+ * @param   color_id
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id);
+
+/**
+ * @brief   Update the vertical temperature bar
+ * @param   percent Current motor temperature
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_temperature_bar(uint16_t percent);
+
+/**
+ * @brief   Update the vertical motor speed bar
+ * @param   percent Current motor speed
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_speed_bar(uint16_t percent);
+
+/**
  * @brief   Update the horizontal segmented soc bar
  * @param   soc_percent Current percentage (0-100)
  * @return  STATUS_CODE_OK on success, error otherwise
@@ -74,9 +95,10 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
  * @param   motor_bus_voltage The motor bus voltage
  * @param   fault Active BPS fault bitmask
  * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
+ * @param   ws22_flags Motor flags bitmask
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault);
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags);
 
 /**
  * @brief   Update the text for the cell stats label

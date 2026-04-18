@@ -91,6 +91,56 @@ static const char *s_get_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
   return "BPS FAULT";
 }
 
+static const char *s_get_ws22_flag_text(uint16_t flags) {
+  if (flags & ERROR_FLAG_HARDWARE_OVERCURRENT_MASK) {
+    return "HARDWARE_OVERCURRENT";
+  }
+  if (flags & ERROR_FLAG_SOFTWARE_OVERCURRENT_MASK) {
+    return "SOFTWARE_OVERCURRENT";
+  }
+  if (flags & ERROR_FLAG_DC_BUS_OV_MASK) {
+    return "DC_BUS_OV";
+  }
+  if (flags & ERROR_FLAG_BAD_HALL_SEQUENCE_MASK) {
+    return "BAD_HALL_SEQUENCE";
+  }
+  if (flags & ERROR_FLAG_WATCHDOG_CAUSED_RESET_MASK) {
+    return "WATCHDOG_CAUSED_RESET";
+  }
+  if (flags & ERROR_FLAG_CFG_READ_ERROR_MASK) {
+    return "CFG_READ_ERROR";
+  }
+  if (flags & ERROR_FLAG_DESATURATION_FAULT_MASK) {
+    return "DESATURATION_FAULT";
+  }
+  if (flags & ERROR_FLAG_MOTOR_OVER_SPEED_MASK) {
+    return "MOTOR_OVER_SPEED";
+  }
+  if (flags & LIMIT_FLAG_OUTPUT_VOLTAGE_PWM_MASK) {
+    return "OUTPUT_VOLTAGE_PWM_LIMIT";
+  }
+  if (flags & LIMIT_FLAG_MOTOR_CURRENT_MASK) {
+    return "MOTOR_CURRENT";
+  }
+  if (flags & LIMIT_FLAG_VELOCITY_MASK) {
+    return "VELOCITY_LIMIT";
+  }
+  if (flags & LIMIT_FLAG_BUS_CURRENT_MASK) {
+    return "BUS_CURRENT_LIMIT";
+  }
+  if (flags & LIMIT_FLAG_BUS_VOLTAGE_UPPER_MASK) {
+    return "BUS_VOLTAGE_UPPER_LIMIT";
+  }
+  if (flags & LIMIT_FLAG_BUS_VOLTAGE_LOWER_MASK) {
+    return "BUS_VOLTAGE_LOWER_LIMIT";
+  }
+  if (flags & LIMIT_FLAG_TEMPERATURE_MASK) {
+    return "TEMPERATURE_LIMIT";
+  }
+
+  return "WS22 FLAG";
+}
+
 static StatusCode s_create_speedometer(GuiScreen *screen) {
   const SpeedometerWidgetConfig speedometer_config = {
     .size = { .width = 220, .height = 220 },
@@ -264,22 +314,25 @@ StatusCode gui_widgets_init(void) {
   return gui_widgets_init_screen(screen);
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault) {
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
   char text_buffer[LABEL_MAX_CHARS];
 
-  if (fault) {
+  if (bps_fault) {
     bool is_cell_fault = false;
-    const char *fault_text = s_get_bps_fault_text(fault, &is_cell_fault);
+    const char *fault_text = s_get_bps_fault_text(bps_fault, &is_cell_fault);
 
     if (is_cell_fault && cell_at_fault != 0U) {
       snprintf(text_buffer, sizeof(text_buffer), "%s, %u", fault_text, cell_at_fault);
     } else {
       snprintf(text_buffer, sizeof(text_buffer), "%s", fault_text);
     }
+  } else if (ws22_flags) {
+    const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
+    snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
     snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   Mot: %u V", pack_voltage, motor_bus_voltage);
   }
@@ -347,6 +400,10 @@ StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
   return lvgl_widgets_set_bar_value(&s_brake_bar, percent);
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  return lvgl_widgets_set_bar_color(&s_brake_bar, color_id);
+}
+
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
@@ -380,16 +437,22 @@ StatusCode gui_widgets_set_brake_bar(uint8_t percent) {
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  (void)color_id;
+  return STATUS_CODE_OK;
+}
+
 StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   (void)soc_percent;
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault) {
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
   (void)pack_voltage;
   (void)motor_bus_voltage;
   (void)fault;
   (void)cell_at_fault;
+  (void)ws22_flags;
   return STATUS_CODE_OK;
 }
 

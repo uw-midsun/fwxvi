@@ -45,8 +45,8 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
 
-/** @brief  Front controller brake pedal set to 5% deadzone  */
-#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.05f
+/** @brief  Front controller brake pedal set to 15% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.15f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
@@ -77,14 +77,22 @@ typedef struct {
 } FrontControllerConfig;
 
 /**
+ * @brief   Front Controller brake states
+ */
+typedef enum {
+  BRAKE_STATE_DISABLED = 0,
+  BRAKE_STATE_BRAKING,
+} BrakeState;
+
+/**
  * @brief   Front Controller storage
  */
 typedef struct {
-  bool brake_enabled; /**< Brake enabled */
-  bool regen_enabled; /**< Regen enabled */
+  BrakeState brake_state; /**< Brake state - enabled, braking, or regen */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
+  float brake_percentage;
   float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 

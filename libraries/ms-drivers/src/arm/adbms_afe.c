@@ -412,6 +412,13 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   }
 
   uint16_t device_index = cell / ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+
+  if (device_index == 0) {
+    device_index = 1;
+  } else {
+    device_index = 0;
+  }
+
   uint16_t cell_indx_in_dev = cell % ADBMS_AFE_MAX_CELLS_PER_DEVICE;
 
   if (cell_indx_in_dev < 12U) {
