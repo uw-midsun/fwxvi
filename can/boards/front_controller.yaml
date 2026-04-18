@@ -44,6 +44,8 @@ Messages:
         length: 16
       rail_15v_supply:
         length: 16
+      flags:
+        length: 16
   motor_stats_B:
     id: 23
     cycle: "medium"

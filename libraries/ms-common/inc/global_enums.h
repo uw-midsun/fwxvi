@@ -34,13 +34,10 @@ typedef enum {
   VEHICLE_DRIVE_STATE_NEUTRAL = 1, /**< Car Not Actively Moving in Neutral */
   VEHICLE_DRIVE_STATE_DRIVE = 2,   /**< Car Drive Forward */
   VEHICLE_DRIVE_STATE_REVERSE = 3, /**< Car Drive Reverse*/
-
-  /* Extra drive state types used only by motor */
-
-  VEHICLE_DRIVE_STATE_CRUISE = 4, /**< Car Cruise Constant Velocity */
-  VEHICLE_DRIVE_STATE_BRAKE = 5,  /**< Car Brake */
-  VEHICLE_DRIVE_STATE_REGEN = 6,  /**< Car Brake With Regen */
-  VEHICLE_DRIVE_STATE_FAULT = 7,  /**< BPS fault */
+  VEHICLE_DRIVE_STATE_CRUISE = 4,  /**< Car Cruise Constant Velocity */
+  VEHICLE_DRIVE_STATE_BRAKE = 5,   /**< Car Brake */
+  VEHICLE_DRIVE_STATE_REGEN = 6,   /**< Car Brake With Regen */
+  VEHICLE_DRIVE_STATE_FAULT = 7,   /**< BPS fault */
   VEHICLE_DRIVE_NUM_STATES,
 } VehicleDriveState;
 
@@ -69,6 +66,67 @@ typedef enum {
  */
 #define GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS 400U
 #define GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS 200U
+
+/**
+ * @brief   WS22 motor limit and error flags
+ */
+
+typedef enum {
+  ERROR_FLAG_HARDWARE_OVERCURRENT = 0,
+  ERROR_FLAG_SOFTWARE_OVERCURRENT = 1,
+  ERROR_FLAG_DC_BUS_OV = 2,
+  ERROR_FLAG_BAD_HALL_SEQUENCE = 3,
+  ERROR_FLAG_WATCHDOG_CAUSED_RESET = 4,
+  ERROR_FLAG_CFG_READ_ERROR = 6,
+  ERROR_FLAG_UVLO = 6,
+  ERROR_FLAG_DESATURATION_FAULT = 7,
+  ERROR_FLAG_MOTOR_OVER_SPEED = 8,
+  LIMIT_FLAG_OUTPUT_VOLTAGE_PWM = 9,
+  LIMIT_FLAG_MOTOR_CURRENT = 10,
+  LIMIT_FLAG_VELOCITY = 11,
+  LIMIT_FLAG_BUS_CURRENT = 12,
+  LIMIT_FLAG_BUS_VOLTAGE_UPPER = 13,
+  LIMIT_FLAG_BUS_VOLTAGE_LOWER = 14,
+  LIMIT_FLAG_TEMPERATURE = 15,
+  NUM_WS22_MOTOR_FLAGS,
+} Ws22MotorFlags;
+
+/** @brief  Hardware overcurrent error flag mask */
+#define ERROR_FLAG_HARDWARE_OVERCURRENT_MASK (1U << ERROR_FLAG_HARDWARE_OVERCURRENT)
+/** @brief  Software overcurrent error flag mask */
+#define ERROR_FLAG_SOFTWARE_OVERCURRENT_MASK (1U << ERROR_FLAG_SOFTWARE_OVERCURRENT)
+/** @brief  DC bus overvoltage error flag mask */
+#define ERROR_FLAG_DC_BUS_OV_MASK (1U << ERROR_FLAG_DC_BUS_OV)
+/** @brief  Bad hall sequence error flag mask */
+#define ERROR_FLAG_BAD_HALL_SEQUENCE_MASK (1U << ERROR_FLAG_BAD_HALL_SEQUENCE)
+/** @brief  Watchdog caused reset error flag mask */
+#define ERROR_FLAG_WATCHDOG_CAUSED_RESET_MASK (1U << ERROR_FLAG_WATCHDOG_CAUSED_RESET)
+/** @brief  CFG read error flag mask */
+#define ERROR_FLAG_CFG_READ_ERROR_MASK (1U << ERROR_FLAG_CFG_READ_ERROR)
+/** @brief  UVLO error flag mask */
+#define ERROR_FLAG_UVLO_MASK (1U << ERROR_FLAG_UVLO)
+/** @brief  Desaturation fault error flag mask */
+#define ERROR_FLAG_DESATURATION_FAULT_MASK (1U << ERROR_FLAG_DESATURATION_FAULT)
+/** @brief  Motor overspeed error flag mask */
+#define ERROR_FLAG_MOTOR_OVER_SPEED_MASK (1U << ERROR_FLAG_MOTOR_OVER_SPEED)
+/** @brief  Output voltage PWM limit flag mask */
+#define LIMIT_FLAG_OUTPUT_VOLTAGE_PWM_MASK (1U << LIMIT_FLAG_OUTPUT_VOLTAGE_PWM)
+/** @brief  Motor current limit flag mask */
+#define LIMIT_FLAG_MOTOR_CURRENT_MASK (1U << LIMIT_FLAG_MOTOR_CURRENT)
+/** @brief  Velocity limit flag mask */
+#define LIMIT_FLAG_VELOCITY_MASK (1U << LIMIT_FLAG_VELOCITY)
+/** @brief  Bus current limit flag mask */
+#define LIMIT_FLAG_BUS_CURRENT_MASK (1U << LIMIT_FLAG_BUS_CURRENT)
+/** @brief  Bus voltage upper limit flag mask */
+#define LIMIT_FLAG_BUS_VOLTAGE_UPPER_MASK (1U << LIMIT_FLAG_BUS_VOLTAGE_UPPER)
+/** @brief  Bus voltage lower limit flag mask */
+#define LIMIT_FLAG_BUS_VOLTAGE_LOWER_MASK (1U << LIMIT_FLAG_BUS_VOLTAGE_LOWER)
+/** @brief  Temperature limit flag mask */
+#define LIMIT_FLAG_TEMPERATURE_MASK (1U << LIMIT_FLAG_TEMPERATURE)
+
+/** @brief  IDs of WS22 CAN messages to exclude from telemetry datagram forwarding */
+#define IS_EXCLUDED_WS22_CAN_ID(x) ((((x) >= 128U) && ((x) <= 142U)) || ((x) == 151U) || ((x) == 1281U))
+
 
 /************************************************************************************************
  * Front Controller Global Definitions

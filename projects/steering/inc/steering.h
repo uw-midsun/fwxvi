@@ -83,6 +83,7 @@ typedef struct {
 
   uint16_t bps_fault;     /**< BPS fault bitfield */
   uint8_t bps_fault_cell; /**< BPS fault cell number (if it exists) */
+  uint16_t ws22_flags;    /**< Error and limit flags from the WS22 */
   float state_of_charge;  /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */

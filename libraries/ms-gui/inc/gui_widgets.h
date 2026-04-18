@@ -95,9 +95,10 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
  * @param   motor_bus_voltage The motor bus voltage
  * @param   fault Active BPS fault bitmask
  * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
+ * @param   ws22_flags Motor flags bitmask
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault);
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_voltage, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags);
 
 /**
  * @brief   Update the text for the cell stats label
