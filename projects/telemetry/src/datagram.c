@@ -12,8 +12,8 @@
 
 /* Inter-component Headers */
 #include "delay.h"
-#include "log.h"
 #include "global_enums.h"
+#include "log.h"
 
 /* Intra-component Headers */
 #include "datagram.h"
