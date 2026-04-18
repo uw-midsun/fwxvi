@@ -28,9 +28,9 @@ CanWatchDog s_{{message.name}}_msg_watchdog = {0, {{message.receiver[project_nam
 void can_rx_all() {
     CanMessage msg = { 0 };
     while (can_receive(&msg) == STATUS_CODE_OK) {
-        if (IS_EXCLUDED_WS22_CAN_ID(msg.id.raw)){
-            continue;
-        }
+        // if (IS_EXCLUDED_WS22_CAN_ID(msg.id.raw)){
+        //     continue;
+        // }
 
         /* TODO: Not sure if loop is best way */
         /* Might be O(n) */
