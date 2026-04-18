@@ -21,6 +21,7 @@
 #include "gui_widgets.h"
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
+#include "gui_pack_screen.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef struct {
@@ -107,7 +108,7 @@ static StatusCode s_create_trip_info_screen(GuiScreen *screen) {
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 static StatusCode s_create_pack_voltage_screen(GuiScreen *screen) {
-  return s_create_centered_placeholder(screen, "Pack Voltage", "Unimplemented");
+  return gui_pack_screen_init(screen);
 }
 
 /**

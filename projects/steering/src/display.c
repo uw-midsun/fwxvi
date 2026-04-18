@@ -23,7 +23,9 @@
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
-
+#include "gui_pack_screen.h"
+#include "gui_screens.h"
+#include "log.h"
 #ifdef MS_PLATFORM_X86
 #include <SDL2/SDL.h>
 #endif
@@ -140,21 +142,28 @@ static void s_process_pending_menu_input(void) {
 }
 
 static StatusCode s_render_gui_step(void) {
-  status_ok_or_return(gui_widgets_set_speed(display_data->vehicle_velocity));
-  status_ok_or_return(gui_widgets_set_throttle_bar(display_data->pedal_percentage));
-  status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0));  // TODO change to % base when available
-  status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_percentage));
-  if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
-    gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
-  } else {
-    gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
+  if (gui_screens_get_current() == GUI_SCREEN_DRIVE) {
+    status_ok_or_return(gui_widgets_set_speed(display_data->vehicle_velocity));
+    status_ok_or_return(gui_widgets_set_throttle_bar(display_data->pedal_percentage));
+    status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0));  // TODO change to % base when available
+    status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_percentage));
+    if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
+    } else {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
+    }
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell));
+    status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
+    status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
+    status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
+    status_ok_or_return(gui_widgets_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
   }
-  status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell));
-  status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
-  status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
-  status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
-  status_ok_or_return(gui_widgets_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
 
+  else if (gui_screens_get_current() == GUI_SCREEN_PACK_VOLTAGE) {
+    for (uint8_t i = 0; i < 36; ++i)
+      status_ok_or_return(gui_widgets_set_pack_voltage(i, display_data->cell_voltages[i]));
+  }
+  
   return gui_render();
 }
 
@@ -244,6 +253,47 @@ StatusCode display_run() {
 }
 
 StatusCode display_rx_slow() {
+  /* Greatest piece of code ever written. */
+  const uint16_t cell_voltages[36] = {
+    (uint16_t)get_AFE1_status_A_voltage_0(),
+    (uint16_t)get_AFE1_status_A_voltage_1(),
+    (uint16_t)get_AFE1_status_A_voltage_2(),
+    (uint16_t)get_AFE1_status_B_voltage_3(),
+    (uint16_t)get_AFE1_status_B_voltage_4(),
+    (uint16_t)get_AFE1_status_B_voltage_5(),
+    (uint16_t)get_AFE1_status_C_voltage_6(),
+    (uint16_t)get_AFE1_status_C_voltage_7(),
+    (uint16_t)get_AFE1_status_C_voltage_8(),
+    (uint16_t)get_AFE1_status_D_voltage_9(),
+    (uint16_t)get_AFE1_status_D_voltage_10(),
+    (uint16_t)get_AFE1_status_D_voltage_11(),
+    (uint16_t)get_AFE1_status_E_voltage_12(),
+    (uint16_t)get_AFE1_status_E_voltage_13(),
+    (uint16_t)get_AFE1_status_E_voltage_14(),
+    (uint16_t)get_AFE1_status_F_voltage_15(),
+    (uint16_t)get_AFE1_status_F_voltage_16(),
+    (uint16_t)get_AFE1_status_F_voltage_17(),
+    (uint16_t)get_AFE2_status_A_voltage_0(),
+    (uint16_t)get_AFE2_status_A_voltage_1(),
+    (uint16_t)get_AFE2_status_A_voltage_2(),
+    (uint16_t)get_AFE2_status_B_voltage_3(),
+    (uint16_t)get_AFE2_status_B_voltage_4(),
+    (uint16_t)get_AFE2_status_B_voltage_5(),
+    (uint16_t)get_AFE2_status_C_voltage_6(),
+    (uint16_t)get_AFE2_status_C_voltage_7(),
+    (uint16_t)get_AFE2_status_C_voltage_8(),
+    (uint16_t)get_AFE2_status_D_voltage_9(),
+    (uint16_t)get_AFE2_status_D_voltage_10(),
+    (uint16_t)get_AFE2_status_D_voltage_11(),
+    (uint16_t)get_AFE2_status_E_voltage_12(),
+    (uint16_t)get_AFE2_status_E_voltage_13(),
+    (uint16_t)get_AFE2_status_E_voltage_14(),
+    (uint16_t)get_AFE2_status_F_voltage_15(),
+    (uint16_t)get_AFE2_status_F_voltage_16(),
+    (uint16_t)get_AFE2_status_F_voltage_17(),
+  };
+
+  memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
   return STATUS_CODE_OK;
 }
 
@@ -269,7 +319,7 @@ StatusCode display_rx_medium() {
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
 
-  display_data->pack_voltage = (uint16_t)get_battery_stats_A_pack_voltage();
+  display_data->pack_voltage = (uint16_t)get_AFE1_status_F_voltage_16();
   display_data->pack_current = (int16_t)get_battery_stats_A_pack_current();
   display_data->min_cell_voltage_mv = (uint16_t)get_battery_stats_B_min_cell_voltage();
   display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();

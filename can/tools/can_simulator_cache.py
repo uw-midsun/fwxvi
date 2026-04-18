@@ -30,6 +30,7 @@ class CanSimulatorDataCache:
             "front_controller_drive_status": {
                 # drive_status cache definitions
                 "pedal_percentage": 0,
+                "brake_percentage": 0,
                 "state_data": 0,
             },
 
@@ -122,9 +123,41 @@ class CanSimulatorDataCache:
             "rear_controller_afe1_status_b": {
                 # afe1_status_b cache definitions
                 "id": 0,
-                "voltage_0": 0,
-                "voltage_1": 0,
-                "voltage_2": 0,
+                "voltage_3": 0,
+                "voltage_4": 0,
+                "voltage_5": 0,
+            },
+
+            "rear_controller_afe1_status_c": {
+                # afe1_status_c cache definitions
+                "id": 0,
+                "voltage_6": 0,
+                "voltage_7": 0,
+                "voltage_8": 0,
+            },
+
+            "rear_controller_afe1_status_d": {
+                # afe1_status_d cache definitions
+                "id": 0,
+                "voltage_9": 0,
+                "voltage_10": 0,
+                "voltage_11": 0,
+            },
+
+            "rear_controller_afe1_status_e": {
+                # afe1_status_e cache definitions
+                "id": 0,
+                "voltage_12": 0,
+                "voltage_13": 0,
+                "voltage_14": 0,
+            },
+
+            "rear_controller_afe1_status_f": {
+                # afe1_status_f cache definitions
+                "id": 0,
+                "voltage_15": 0,
+                "voltage_16": 0,
+                "voltage_17": 0,
             },
 
             "rear_controller_afe2_status_a": {
@@ -138,9 +171,41 @@ class CanSimulatorDataCache:
             "rear_controller_afe2_status_b": {
                 # afe2_status_b cache definitions
                 "id": 0,
-                "voltage_0": 0,
-                "voltage_1": 0,
-                "voltage_2": 0,
+                "voltage_3": 0,
+                "voltage_4": 0,
+                "voltage_5": 0,
+            },
+
+            "rear_controller_afe2_status_c": {
+                # afe2_status_c cache definitions
+                "id": 0,
+                "voltage_6": 0,
+                "voltage_7": 0,
+                "voltage_8": 0,
+            },
+
+            "rear_controller_afe2_status_d": {
+                # afe2_status_d cache definitions
+                "id": 0,
+                "voltage_9": 0,
+                "voltage_10": 0,
+                "voltage_11": 0,
+            },
+
+            "rear_controller_afe2_status_e": {
+                # afe2_status_e cache definitions
+                "id": 0,
+                "voltage_12": 0,
+                "voltage_13": 0,
+                "voltage_14": 0,
+            },
+
+            "rear_controller_afe2_status_f": {
+                # afe2_status_f cache definitions
+                "id": 0,
+                "voltage_15": 0,
+                "voltage_16": 0,
+                "voltage_17": 0,
             },
 
             "rear_controller_afe_temperature": {

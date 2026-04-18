@@ -293,7 +293,7 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
   }
 
   char text_buffer[LABEL_MAX_CHARS];
-  snprintf(text_buffer, sizeof(text_buffer), "Cells\n%u.%03u V\n%u.%03u V", min_cell_voltage_mv / 1000, min_cell_voltage_mv % 1000, max_cell_voltage_mv / 1000, max_cell_voltage_mv % 1000);
+  snprintf(text_buffer, sizeof(text_buffer), "Cells\n%u.%03u V\n%u.%03u V", min_cell_voltage_mv / 10000, min_cell_voltage_mv % 10000, max_cell_voltage_mv / 10000, max_cell_voltage_mv % 10000);
 
   return lvgl_widgets_set_label_text(&s_cells_stats_label, text_buffer);
 }

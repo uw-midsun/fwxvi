@@ -91,6 +91,7 @@ typedef struct {
   int16_t aux_current;  /**< Auxiliary bus current (mA) */
 
   uint16_t pack_voltage;        /**< Pack voltage reading (mV) */
+  uint16_t cell_voltages[36];   /**< All cell voltages */
   uint16_t motor_bus_voltage;   /**< Motor bus voltage reading (V) */
   uint16_t pack_current;        /**< Pack current reading (mA) */
   uint16_t min_cell_voltage_mv; /**< Minimum cell voltage reading (mV) */
