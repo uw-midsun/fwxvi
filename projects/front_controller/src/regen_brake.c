@@ -55,7 +55,7 @@ StatusCode regen_brake_run(float *target_current, bool *direction) {
   }
 
   regen_percentage = (front_controller_storage->brake_percentage - front_controller_storage->config->brake_pedal_deadzone) /
-                     (front_controller_storage->config->brake_pedal_activation_zone - front_controller_storage->config->brake_pedal_deadzone);
+                     (1.0f - front_controller_storage->config->brake_pedal_deadzone);
 
   // y = 2x - x^2 to curve the value upwards
   *target_current = 2 * regen_percentage - (regen_percentage * regen_percentage);

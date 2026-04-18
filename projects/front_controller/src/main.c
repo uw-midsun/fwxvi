@@ -36,7 +36,6 @@ FrontControllerConfig front_controller_config = {
   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA,
   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
-  .brake_pedal_activation_zone = 0.8,
   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA,
 };
 

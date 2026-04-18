@@ -50,10 +50,8 @@ StatusCode brake_pedal_run() {
       calculated_reading * front_controller_storage->config->brake_low_pass_filter_alpha + (1.0f - front_controller_storage->config->brake_low_pass_filter_alpha) * s_brake_pedal_storage.prev_reading;
   s_brake_pedal_storage.prev_reading = calculated_reading;
 
-  if (calculated_reading > front_controller_storage->config->brake_pedal_activation_zone) {
-    front_controller_storage->brake_state = BRAKE_STATE_REGEN;
-  } else if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
-    front_controller_storage->brake_state = BRAKE_STATE_REGEN;
+  if (calculated_reading > front_controller_storage->config->brake_pedal_deadzone) {
+    front_controller_storage->brake_state = BRAKE_STATE_BRAKING;
   } else {
     front_controller_storage->brake_state = BRAKE_STATE_DISABLED;
   }
