@@ -359,10 +359,11 @@ Messages:
         length: 8
       temperature_6:
         length: 8
+        
   error_msg:
     id: 0
-    critical: true
     cycle: "fast"
+    critical: true
     target:
       telemetry:
         watchdog: 0

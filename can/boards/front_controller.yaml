@@ -69,11 +69,11 @@ Messages:
       right_sig_current:
         length: 16
       left_sig_current:
-        length: 16
+        length: 16      
   error_msg:
     id: 0
-    critical: true
     cycle: "fast"
+    critical: true
     target:
       telemetry:
         watchdog: 0

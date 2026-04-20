@@ -8,6 +8,10 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+/*start debug*/
+#include <stdint.h>
+#include <string.h>
+/*end debug*/
 
 /* Inter-component Headers */
 #include "adc.h"
@@ -33,8 +37,11 @@
 #include "opd.h"
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
-#include "regen_brake.h"
-
+#include "ws22_motor_can.h"
+/*start debug*/
+#include "front_controller_setters.h"
+#include "front_controller_tx_structs.h"
+/*end debug*/
 /************************************************************************************************
  * Storage definitions
  ************************************************************************************************/
@@ -58,7 +65,12 @@ static const CanSettings s_can_settings = {
 
 static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
 
-StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config, Ws22MotorCanConfig *motor_can_config) {
+StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
+  /*start debug*/
+  status_ok_or_warning(STATUS_CODE_OUT_OF_RANGE);
+  LOG_DEBUG("Value: %u\n", g_tx_struct.error_msg_status_code);
+  LOG_DEBUG("File: %lu\n", g_tx_struct.error_msg_file);
+  /*end debug*/
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
