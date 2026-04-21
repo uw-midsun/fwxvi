@@ -102,7 +102,9 @@ extern UartSettings log_uart_settings;
     }                                                                                                                                   \
   } while (0)
 #else
-#define LOG(level, fmt, ...) do {} while(0);
+#define LOG(level, fmt, ...) \
+  do {                       \
+  } while (0);
 #endif
 
 /** @} */
