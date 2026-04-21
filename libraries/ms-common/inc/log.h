@@ -93,7 +93,7 @@ extern UartSettings log_uart_settings;
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
-#elif MS_LOG == 1
+#elif MS_DEBUG_LOG
 #define LOG(level, fmt, ...)                                                                                                            \
   do {                                                                                                                                  \
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
