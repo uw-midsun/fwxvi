@@ -31,6 +31,7 @@
 
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
+#define MS_LOG 0
 
 #ifdef STM32L433xx
 #define LOG_UART_PORT UART_PORT_1
