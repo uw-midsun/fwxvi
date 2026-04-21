@@ -27,8 +27,16 @@ arch_cflags = [
 common_defines = [
     'MS_PLATFORM_ARM',
     'HSE_VALUE=16000000',
-    'LSE_VALUE=32768'
+    'LSE_VALUE=32768',
 ]
+
+debug_defines = [
+    "MS_DEBUG_LOG=1",
+]
+
+release_defines = [
+    "MS_DEBUG_LOG=0",
+],
 
 hardware_defines = {
     'STM32L433CCU6': [
@@ -142,17 +150,23 @@ def get_link_flags(hardware, flash_type='legacy'):
     return link_flags
 
 
-def get_defines(hardware):
+def get_defines(hardware, build_config):
     """Generate the list of defines based on the hardware type."""
 
     defines = hardware_defines.get(hardware, [])
     defines = defines + common_defines
+
+    if build_config == 'debug':
+        defines += debug_defines
+    else:
+        defines += release_defines
 
     define_flags = ['-D{}'.format(define) for define in defines]
     return define_flags
 
 
 def create_arm_env(hardware, flash_type='default', build_config='debug'):
+    env_defines = get_defines(hardware, build_config)
     if build_config == 'debug':
         build_config_flags = debug_flags
     else:
@@ -161,11 +175,11 @@ def create_arm_env(hardware, flash_type='default', build_config='debug'):
         ENV = os.environ,
 
         CC=compiler,
-        CCFLAGS=common_flags + build_config_flags + arch_cflags + get_defines(hardware),
+        CCFLAGS=common_flags + build_config_flags + arch_cflags + env_defines,
         CPPPATH=[],
 
         AS=compiler,
-        ASFLAGS=['-c'] + common_flags + build_config_flags + arch_cflags + get_defines(hardware),
+        ASFLAGS=['-c'] + common_flags + build_config_flags + arch_cflags + env_defines,
         
         LINK=compiler,
         LINKFLAGS=common_flags + arch_cflags + get_link_flags(hardware, flash_type),
