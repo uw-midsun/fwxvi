@@ -360,12 +360,12 @@ Messages:
       temperature_6:
         length: 8
         
-  error_msg:
+  rear_controller_error_msg:
     id: 0
     cycle: "fast"
     critical: true
     target:
-      telemetry:
+      steering:
         watchdog: 0
     signals:
       status_code:

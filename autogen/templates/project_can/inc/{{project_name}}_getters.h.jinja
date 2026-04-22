@@ -39,5 +39,7 @@
     {% endfor %}
 #define get_received_{{message.name}}() \
     g_rx_struct.received_{{message.name}}
+#define get_{{message.name}}_sender() \
+    SYSTEM_CAN_MESSAGE_{{message.sender | upper}}
 {% endfor %}
 /** @} */

@@ -70,12 +70,12 @@ Messages:
         length: 16
       left_sig_current:
         length: 16      
-  error_msg:
+  front_controller_error_msg:
     id: 0
     cycle: "fast"
     critical: true
     target:
-      telemetry:
+      steering:
         watchdog: 0
     signals:
       status_code:
