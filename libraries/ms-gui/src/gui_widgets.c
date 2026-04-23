@@ -21,8 +21,8 @@
 
 /* Intra-component Headers */
 #include "clut.h"
-#include "gui_widgets.h"
 #include "display_defs.h"
+#include "gui_widgets.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl_screens.h"

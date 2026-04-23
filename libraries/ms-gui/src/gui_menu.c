@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <stddef.h>
 #include <stdint.h>
+
 #include "status.h"
 
 /* Inter-component Headers */
@@ -21,7 +22,6 @@
 
 /* Intra-component Headers */
 #include "gui_menu.h"
-
 
 /* TODO: Better abstraction over lvgl library */
 
@@ -38,7 +38,6 @@ typedef enum {
   GUI_MENU_ITEM_INDEX_PARTY_MODE = 3,
   GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 4,
 } GuiMenuIndex;
-
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
   [GUI_MENU_ITEM_INDEX_DRIVE] = {

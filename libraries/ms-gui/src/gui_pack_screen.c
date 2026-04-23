@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "status.h"
 
 /* Inter-component Headers */
@@ -19,9 +20,9 @@
 
 /* Intra-component Headers */
 #include "clut.h"
+#include "display_defs.h"
 #include "gui_pack_screen.h"
 #include "gui_widgets.h"
-#include "display_defs.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl_screens.h"

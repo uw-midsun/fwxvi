@@ -21,6 +21,12 @@
 #include "lvgl_screens.h"
 
 /**
+ * @defgroup gui_drive_screen
+ * @brief    gui_drive_screen Firmware
+ * @{
+ */
+
+/**
  * @brief   Create the drive screen from common and drive-specific widgets
  * @param   screen Screen root to populate
  * @return  STATUS_CODE_OK on success, error otherwise
@@ -74,3 +80,5 @@ StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_km
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id);
+
+/** @} */

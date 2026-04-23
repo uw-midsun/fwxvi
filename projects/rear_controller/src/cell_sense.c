@@ -141,45 +141,111 @@ static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_
   switch (dev_index_1_based) {
     case 1U:
       switch (cell_index) {
-        case 0U: set_AFE_discharge_bitset_AFE1_cell_0(is_enabled); break;
-        case 1U: set_AFE_discharge_bitset_AFE1_cell_1(is_enabled); break;
-        case 2U: set_AFE_discharge_bitset_AFE1_cell_2(is_enabled); break;
-        case 3U: set_AFE_discharge_bitset_AFE1_cell_3(is_enabled); break;
-        case 4U: set_AFE_discharge_bitset_AFE1_cell_4(is_enabled); break;
-        case 5U: set_AFE_discharge_bitset_AFE1_cell_5(is_enabled); break;
-        case 6U: set_AFE_discharge_bitset_AFE1_cell_6(is_enabled); break;
-        case 7U: set_AFE_discharge_bitset_AFE1_cell_7(is_enabled); break;
-        case 8U: set_AFE_discharge_bitset_AFE1_cell_8(is_enabled); break;
-        case 9U: set_AFE_discharge_bitset_AFE1_cell_9(is_enabled); break;
-        case 10U: set_AFE_discharge_bitset_AFE1_cell_10(is_enabled); break;
-        case 11U: set_AFE_discharge_bitset_AFE1_cell_11(is_enabled); break;
-        case 12U: set_AFE_discharge_bitset_AFE1_cell_12(is_enabled); break;
-        case 13U: set_AFE_discharge_bitset_AFE1_cell_13(is_enabled); break;
-        case 14U: set_AFE_discharge_bitset_AFE1_cell_14(is_enabled); break;
-        case 15U: set_AFE_discharge_bitset_AFE1_cell_15(is_enabled); break;
-        default: break;
+        case 0U:
+          set_AFE_discharge_bitset_AFE1_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE1_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE1_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE1_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE1_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE1_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE1_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE1_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE1_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE1_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE1_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE1_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE1_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE1_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE1_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE1_cell_15(is_enabled);
+          break;
+        default:
+          break;
       }
       break;
 
     case 2U:
       switch (cell_index) {
-        case 0U: set_AFE_discharge_bitset_AFE2_cell_0(is_enabled); break;
-        case 1U: set_AFE_discharge_bitset_AFE2_cell_1(is_enabled); break;
-        case 2U: set_AFE_discharge_bitset_AFE2_cell_2(is_enabled); break;
-        case 3U: set_AFE_discharge_bitset_AFE2_cell_3(is_enabled); break;
-        case 4U: set_AFE_discharge_bitset_AFE2_cell_4(is_enabled); break;
-        case 5U: set_AFE_discharge_bitset_AFE2_cell_5(is_enabled); break;
-        case 6U: set_AFE_discharge_bitset_AFE2_cell_6(is_enabled); break;
-        case 7U: set_AFE_discharge_bitset_AFE2_cell_7(is_enabled); break;
-        case 8U: set_AFE_discharge_bitset_AFE2_cell_8(is_enabled); break;
-        case 9U: set_AFE_discharge_bitset_AFE2_cell_9(is_enabled); break;
-        case 10U: set_AFE_discharge_bitset_AFE2_cell_10(is_enabled); break;
-        case 11U: set_AFE_discharge_bitset_AFE2_cell_11(is_enabled); break;
-        case 12U: set_AFE_discharge_bitset_AFE2_cell_12(is_enabled); break;
-        case 13U: set_AFE_discharge_bitset_AFE2_cell_13(is_enabled); break;
-        case 14U: set_AFE_discharge_bitset_AFE2_cell_14(is_enabled); break;
-        case 15U: set_AFE_discharge_bitset_AFE2_cell_15(is_enabled); break;
-        default: break;
+        case 0U:
+          set_AFE_discharge_bitset_AFE2_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE2_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE2_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE2_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE2_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE2_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE2_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE2_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE2_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE2_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE2_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE2_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE2_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE2_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE2_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE2_cell_15(is_enabled);
+          break;
+        default:
+          break;
       }
       break;
 
@@ -217,10 +283,10 @@ static void s_balance_cells(uint16_t min_voltage) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       if (CELL_VOLTAGE_LOOKUP(dev, cell) > balancing_threshold) {
-        #if (CELL_SENSE_DEBUG == 1)
-          LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
-          delay_ms(12U);
-        #endif
+#if (CELL_SENSE_DEBUG == 1)
+        LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
+        delay_ms(12U);
+#endif
 
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, true);
         s_set_afe_discharge_status_message((dev + 1), cell, 1U);

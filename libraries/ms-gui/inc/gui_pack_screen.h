@@ -19,6 +19,12 @@
 #include "lvgl_screens.h"
 
 /**
+ * @defgroup gui_pack_screen
+ * @brief    gui_pack_screen Firmware
+ * @{
+ */
+
+/**
  * @brief   Create the pack voltage screen from common widgets and the pack table
  * @param   screen Screen root to populate
  * @return  STATUS_CODE_OK on success, error otherwise
@@ -52,3 +58,5 @@ StatusCode gui_pack_screen_widget_set_speed_label(int16_t speed_kmh);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled);
+
+/** @} */

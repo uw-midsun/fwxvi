@@ -164,8 +164,7 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
 
   } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    for (uint8_t i = 0; i < 36; ++i)
-      status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
+    for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(display_data->vehicle_velocity));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
