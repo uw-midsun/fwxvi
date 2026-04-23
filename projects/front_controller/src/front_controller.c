@@ -19,6 +19,7 @@
 #include "mcu.h"
 #include "opamp.h"
 #include "system_can.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "accel_pedal.h"
@@ -53,7 +54,7 @@ static const CanSettings s_can_settings = {
   .tx = GPIO_FRONT_CONTROLLER_CAN_TX,
   .rx = GPIO_FRONT_CONTROLLER_CAN_RX,
   .loopback = false,
-  .can_rx_all_cb = ws22_motor_can_process_rx,
+  .can_rx_all_cb = motor_can_process_rx,
 };
 
 static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
@@ -78,7 +79,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   accel_pedal_init(front_controller_storage);
   pedal_calib_read(front_controller_storage);
   opd_init(front_controller_storage);
-  ws22_motor_can_init(front_controller_storage);
+  ws22_motor_can_init(front_controller_storage->ws22_motor_can_storage);
   motor_can_init(front_controller_storage);
   cruise_control_init(front_controller_storage);
   regen_brake_init(front_controller_storage);

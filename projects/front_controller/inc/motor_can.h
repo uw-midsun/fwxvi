@@ -14,6 +14,7 @@
 
 /* Inter-component Headers */
 #include "status.h"
+#include "can.h"
 
 /* Intra-component Headers */
 #include "front_controller.h"
@@ -53,4 +54,7 @@ StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
  */
 StatusCode motor_can_forward_can_data();
 
+StatusCode motor_can_transmit_drive_command(void);
+
+StatusCode motor_can_process_rx(CanMessage *msg);
 /** @} */

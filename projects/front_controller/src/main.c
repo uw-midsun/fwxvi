@@ -52,7 +52,7 @@ void run_1000hz_cycle() {
   opd_run();
   motor_can_update_target_current_velocity();
 
-  ws22_motor_can_transmit_drive_command();
+  motor_can_transmit_drive_command();
 }
 
 void run_10hz_cycle() {
