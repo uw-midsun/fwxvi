@@ -8,8 +8,8 @@ from sys import platform
 
 # OpenOCD configuration constants
 OPENOCD = 'openocd'
-OPENOCD_SCRIPT_DIR = '/usr/share/openocd/scripts/'
-PROBE = 'stlink'
+OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
+PROBE = 'cmsis-dap'
 PLATFORM_DIR = 'platform'
 
 
