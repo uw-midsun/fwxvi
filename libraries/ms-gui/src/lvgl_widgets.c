@@ -153,7 +153,7 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
   if (label->label == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  
+
   lv_label_set_text(label->label, config->label_text);
 
   if (config->size.width > 0 || config->size.height > 0) {

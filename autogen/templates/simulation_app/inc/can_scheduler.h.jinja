@@ -13,8 +13,8 @@
 
 /* Standard library Headers */
 #include <atomic>
-#include <string>
 #include <cstdint>
+#include <string>
 
 /* Inter-component Headers */
 #include <arpa/inet.h>
@@ -36,32 +36,32 @@
  */
 {% set messages = messages | list %}
 
-#define NUM_FAST_CYCLE_MESSAGES   {{ message_count.fast_cycle }}U /**< Number of fast cycle messages */
+#define NUM_FAST_CYCLE_MESSAGES {{ message_count.fast_cycle }}U /**< Number of fast cycle messages */
 #define NUM_MEDIUM_CYCLE_MESSAGES {{ message_count.medium_cycle }}U /**< Number of medium cycle messages */
-#define NUM_SLOW_CYCLE_MESSAGES   {{ message_count.slow_cycle }}U /**< Number of slow cycle messages */
+#define NUM_SLOW_CYCLE_MESSAGES {{ message_count.slow_cycle }}U /**< Number of slow cycle messages */
 
 /**
-  * @brief   Fast cycle Broadcast Manager message for the Linux Kernel
-  */
+ * @brief   Fast cycle Broadcast Manager message for the Linux Kernel
+ */
 struct {
-  struct can_frame frame[NUM_FAST_CYCLE_MESSAGES];    /**< CAN message frames that shall be scheduled for fast cycle */
-  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_FAST_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for fast cycle */
+  struct bcm_msg_head msg_head;                    /**< Broadcast Manager message head containing metadata */
 } canFastCycleBCM;
 
 /**
-  * @brief   Medium cycle Broadcast Manager message for the Linux Kernel
-  */
+ * @brief   Medium cycle Broadcast Manager message for the Linux Kernel
+ */
 struct {
-  struct can_frame frame[NUM_MEDIUM_CYCLE_MESSAGES];  /**< CAN message frames that shall be scheduled for medium cycle */
-  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_MEDIUM_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for medium cycle */
+  struct bcm_msg_head msg_head;                      /**< Broadcast Manager message head containing metadata */
 } canMediumCycleBCM;
 
 /**
-  * @brief   Slow cycle Broadcast Manager message for the Linux Kernel
-  */
+ * @brief   Slow cycle Broadcast Manager message for the Linux Kernel
+ */
 struct {
-  struct can_frame frame[NUM_SLOW_CYCLE_MESSAGES];    /**< CAN message frames that shall be scheduled for slow cycle */
-  struct bcm_msg_head msg_head;                       /**< Broadcast Manager message head containing metadata */
+  struct can_frame frame[NUM_SLOW_CYCLE_MESSAGES]; /**< CAN message frames that shall be scheduled for slow cycle */
+  struct bcm_msg_head msg_head;                    /**< Broadcast Manager message head containing metadata */
 } canSlowCycleBCM;
 
 /**
@@ -73,15 +73,15 @@ struct {
  */
 class CanScheduler {
  private:
-  const std::string CAN_INTERFACE_NAME = "vcan0";                   /**< SocketCAN interface name */
+  const std::string CAN_INTERFACE_NAME = "vcan0"; /**< SocketCAN interface name */
 
   static const constexpr unsigned int FAST_CYCLE_SPEED_MS = 1U;     /**< CAN fast cycle period in milliseconds */
   static const constexpr unsigned int MEDIUM_CYCLE_SPEED_MS = 100U; /**< CAN medium cycle period in milliseconds */
   static const constexpr unsigned int SLOW_CYCLE_SPEED_MS = 1000U;  /**< CAN slow cycle period in milliseconds */
 
-  static const constexpr unsigned int SLOW_CYCLE_BCM_ID = 0U;       /**< Linux Broadcast Manager Id for tracking fast cycle messages */
-  static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U;     /**< Linux Broadcast Manager Id for tracking medium cycle messages */
-  static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;       /**< Linux Broadcast Manager Id for tracking slow cycle messages */
+  static const constexpr unsigned int SLOW_CYCLE_BCM_ID = 0U;   /**< Linux Broadcast Manager Id for tracking fast cycle messages */
+  static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U; /**< Linux Broadcast Manager Id for tracking medium cycle messages */
+  static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;   /**< Linux Broadcast Manager Id for tracking slow cycle messages */
 
   static const constexpr unsigned int NUM_TOTAL_MESSAGES = {{ message_count.total }}U; /**< Total number of messages */
   static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U; /**< Max message length in bytes */

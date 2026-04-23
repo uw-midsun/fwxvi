@@ -67,3 +67,10 @@ StatusCode gui_drive_screen_widget_set_brake_bar_color(GuiColorId color_id);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled);
+
+/**
+ * @brief   Update the vertical brake percentage bar color
+ * @param   color_id
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id);

@@ -244,15 +244,15 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   }
 
   // Handle brake, brake status is updated by brake_pedal.c and stored in front_controller_storage->brake_enabled
-  if (s_brake_state > 0 && (front_controller_storage->brake_state == BRAKE_STATE_DISABLED)) {
+  if (s_brake_state == BRAKE_STATE_BRAKING && (front_controller_storage->brake_state == BRAKE_STATE_DISABLED)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
     s_brake_state = BRAKE_STATE_DISABLED;
-  } else if (s_brake_state == BRAKE_STATE_DISABLED && (front_controller_storage->brake_state > BRAKE_STATE_DISABLED)) {
+  } else if (s_brake_state == BRAKE_STATE_DISABLED && (front_controller_storage->brake_state == BRAKE_STATE_BRAKING)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, true);
 
-    if (is_regen_enabled_from_steering && front_controller_storage->brake_state == BRAKE_STATE_REGEN) {
+    if (is_regen_enabled_from_steering && front_controller_storage->brake_state == BRAKE_STATE_BRAKING) {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_REGEN_REQUEST);
-      s_brake_state = BRAKE_STATE_REGEN;
+      s_brake_state = BRAKE_STATE_BRAKING;
     } else {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_BRAKE_REQUEST);
       s_brake_state = BRAKE_STATE_BRAKING;

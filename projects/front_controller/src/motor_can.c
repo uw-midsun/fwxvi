@@ -20,7 +20,7 @@
 #include "front_controller_setters.h"
 #include "regen_brake.h"
 
-#define MOTOR_CAN_DEBUG 1U
+#define MOTOR_CAN_DEBUG 0U
 
 #if (MOTOR_CAN_DEBUG == 1)
 #define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
@@ -106,14 +106,19 @@ StatusCode motor_can_update_target_current_velocity() {
 }
 
 StatusCode motor_can_forward_can_data() {
+  set_motor_stats_B_vehicle_velocity((int16_t)front_controller_storage->vehicle_speed_kph);
+  set_motor_stats_B_motor_velocity((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
+
   set_motor_stats_A_bus_voltage((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage);
   set_motor_stats_A_bus_current((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_current);
   set_motor_stats_A_rail_15v_supply((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.rail_15v_supply);
+  set_motor_stats_A_flags(front_controller_storage->ws22_motor_can_storage->telemetry.merged_flags);
 
-  set_motor_stats_B_vehicle_velocity((int16_t)front_controller_storage->vehicle_speed_kph);
-  set_motor_stats_B_motor_velocity((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
   set_motor_stats_B_heat_sink_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.heat_sink_temp);
   set_motor_stats_B_motor_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_temp);
+
+  LOG_DEBUG("MOT V: %d | MotVel: %d\r\n", (int8_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage,
+            (int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
 
   return STATUS_CODE_OK;
 }

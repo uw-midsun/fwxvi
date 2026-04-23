@@ -194,6 +194,9 @@ StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_km
   return lvgl_widgets_set_label_text(&s_cc_label, text_buffer);
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  return lvgl_widgets_set_bar_color(&s_brake_bar, color_id);
+}
 #else
 
 StatusCode gui_drive_screen_init(GuiScreen *screen) {
@@ -229,4 +232,8 @@ StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_km
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
+  (void)color_id;
+  return STATUS_CODE_OK;
+}
 #endif

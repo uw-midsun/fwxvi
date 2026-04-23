@@ -68,6 +68,7 @@ static StatusCode drive_state_manager_reverse(void) {
   if (get_rear_controller_status_triggers_bps_fault() != 0) {
     CONDITIONAL_LOG_DEBUG("Cannot change state; BPS has faulted\n");
     buzzer_play_invalid();
+    current_request = DRIVE_STATE_REQUEST_NONE;
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
@@ -75,6 +76,7 @@ static StatusCode drive_state_manager_reverse(void) {
   } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
     CONDITIONAL_LOG_DEBUG("Cannot change state; Precharge is not complete\n");
     buzzer_play_invalid();
+    current_request = DRIVE_STATE_REQUEST_NONE;
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
@@ -95,6 +97,7 @@ static StatusCode drive_state_manager_drive(void) {
   if (get_rear_controller_status_triggers_bps_fault() != 0) {
     CONDITIONAL_LOG_DEBUG("Cannot change state; BPS has faulted\n");
     buzzer_play_invalid();
+    current_request = DRIVE_STATE_REQUEST_NONE;
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
 
@@ -102,6 +105,7 @@ static StatusCode drive_state_manager_drive(void) {
   } else if (get_rear_controller_status_triggers_motor_precharge_complete() == 0) {
     CONDITIONAL_LOG_DEBUG("Cannot change state; Precharge is not complete\n");
     buzzer_play_invalid();
+    current_request = DRIVE_STATE_REQUEST_NONE;
 
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }

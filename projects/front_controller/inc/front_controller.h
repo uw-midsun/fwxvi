@@ -83,7 +83,6 @@ typedef struct {
 typedef enum {
   BRAKE_STATE_DISABLED = 0,
   BRAKE_STATE_BRAKING,
-  BRAKE_STATE_REGEN,
 } BrakeState;
 
 /**

@@ -8,8 +8,8 @@ from sys import platform
 
 # OpenOCD configuration constants
 OPENOCD = 'openocd'
-OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
-PROBE = 'cmsis-dap'
+OPENOCD_SCRIPT_DIR = '/usr/share/openocd/scripts/'
+PROBE = 'stlink'
 PLATFORM_DIR = 'platform'
 
 
@@ -115,14 +115,14 @@ def flash_run(entry, hardware, flash_type):
 
 def gdb_run(elf_path, hardware, flash_type):
     """Start OpenOCD and GDB for ARM debugging.
-    
+
     Args:
         elf_path: Path to the ELF file to debug
         hardware: Hardware type (e.g., 'STM32L433CCU6')
         flash_type: Flash type (e.g., 'legacy')
     """
     paths = get_hardware_paths(hardware, flash_type)
-    
+
     openocd_cmd = [
         "sudo", OPENOCD,
         "-s", OPENOCD_SCRIPT_DIR,
@@ -131,21 +131,21 @@ def gdb_run(elf_path, hardware, flash_type):
         "-f", paths['device_params'],
         "-f", paths['flash_procs'],
     ]
-    
+
     print(f"Starting OpenOCD: {' '.join(openocd_cmd)}")
     openocd_proc = subprocess.Popen(openocd_cmd)
-    
+
     try:
         # Give OpenOCD time to start
         time.sleep(2)
-        
+
         gdb_cmd = [
             "arm-none-eabi-gdb",
             str(elf_path),
             "-ex", "target extended-remote localhost:3333",
             "-ex", "monitor reset halt",
         ]
-        
+
         print(f"Starting GDB: {' '.join(gdb_cmd)}")
         subprocess.run(gdb_cmd)
     finally:
