@@ -13,7 +13,12 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "clut.h"
+#include "display_defs.h"
 #include "global_enums.h"
+#include "gui_menu.h"
+#include "gui_screens.h"
+#include "lvgl_screens.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -25,6 +30,48 @@
  */
 
 typedef StatusCode (*GuiMenuActionCallback)(void);
+
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
+
+/** @brief Action Type for menu (Open new screen or do something) */
+typedef enum {
+  GUI_MENU_ITEM_SCREEN = 0,
+  GUI_MENU_ITEM_ACTION,
+} GuiMenuItemType;
+
+/** @brief Union to store info about each menu item */
+typedef struct {
+  GuiMenuItemType type;     /**< Type of item (screen or action) */
+  const char *action_label; /**< Label to show up on the menu screen */
+  union {
+    GuiScreenId screen_id;          /**< Screen ID (to distinguish between screens) */
+    GuiMenuActionCallback callback; /**< Callback function for action item */
+  } target;
+} GuiMenuItem;
+
+/** @brief Store menu state */
+typedef struct {
+  bool is_open;                                    /**< Bool to check if menu is currently open */
+  uint8_t selected_index;                          /**< Index user is currently "hovering" over */
+  GuiMenuActionCallback party_mode_callback;       /**< Callback for party mode */
+  GuiMenuActionCallback toggle_discharge_callback; /**< Callback for toggling cell discharge */
+  lv_obj_t *overlay;                               /**< Dimmed backdrop when menu is open */
+  lv_obj_t *panel;                                 /**< Container that holds title + menu rows */
+  lv_obj_t *title;                                 /**< Menu title */
+  lv_obj_t *rows[GUI_MENU_ITEM_COUNT];             /**< LVGL Object to store Menu rows */
+  lv_obj_t *row_labels[GUI_MENU_ITEM_COUNT];       /**< Labels for rows */
+} GuiMenuState;
+
+/** @brief To store pending requests for menu */
+typedef struct {
+  bool toggle_requested;                /**< Request flag to open/close the menu */
+  bool select_requested;                /**< Request flag to activate the selected menu item */
+  VehicleDriveState select_drive_state; /**< Drive state snapshot used to validate selection */
+  uint8_t move_up_count;                /**< Number of queued "move up" steps */
+  uint8_t move_down_count;              /**< Number of queued "move down" steps */
+} GuiMenuPendingRequests;
+
+#endif
 
 /**
  * @brief   Initialize the overlay menu state

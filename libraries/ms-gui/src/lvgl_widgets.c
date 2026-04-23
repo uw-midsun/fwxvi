@@ -9,6 +9,7 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 /* Inter-component Headers */
@@ -148,6 +149,11 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
 
   *label = (LabelWidget){ 0 };
   label->label = lv_label_create(parent);
+
+  if (label->label == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
   lv_label_set_text(label->label, config->label_text);
 
   if (config->size.width > 0 || config->size.height > 0) {
@@ -319,6 +325,55 @@ StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id
   return STATUS_CODE_OK;
 }
 
+StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+  if (widget == NULL || config == NULL || parent == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  *widget = (TableWidget){ 0 };
+  widget->table = lv_table_create(parent);
+  if (widget->table == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  lv_table_set_row_count(widget->table, config->row_count);
+  lv_table_set_column_count(widget->table, config->col_count);
+  for (uint32_t col = 0U; col < config->col_count; ++col) {
+    lv_table_set_column_width(widget->table, col, config->col_width);
+  }
+
+  s_apply_position(widget->table, &config->position);
+
+  lv_obj_set_style_text_color(widget->table, s_gui_palette_color(config->text_color_id), LV_PART_ITEMS);
+  lv_obj_set_style_text_font(widget->table, config->font != NULL ? config->font : GUI_SMALL_TEXT, LV_PART_ITEMS);
+  lv_obj_set_style_text_align(widget->table, LV_TEXT_ALIGN_CENTER, LV_PART_ITEMS);
+  lv_obj_set_style_border_color(widget->table, s_gui_palette_color(config->border_color_id), LV_PART_ITEMS);
+  lv_obj_set_style_border_width(widget->table, 1, LV_PART_ITEMS);
+  lv_obj_set_style_border_side(widget->table, LV_BORDER_SIDE_FULL, LV_PART_ITEMS);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_ITEMS);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_ITEMS | LV_STATE_PRESSED);
+
+  lv_obj_set_style_border_color(widget->table, s_gui_palette_color(config->border_color_id), LV_PART_MAIN);
+  lv_obj_set_style_border_width(widget->table, 1, LV_PART_MAIN);
+  lv_obj_set_style_border_side(widget->table, LV_BORDER_SIDE_FULL, LV_PART_MAIN);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_MAIN);
+  lv_obj_set_style_pad_all(widget->table, 0, LV_PART_MAIN);
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+  if (widget == NULL || text == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if (widget->table == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_table_set_cell_value(widget->table, row, col, text);
+  return STATUS_CODE_OK;
+}
+
 #else
 StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
   (void)label;
@@ -356,6 +411,21 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
 StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
   (void)bar_widget;
   (void)value;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+  (void)widget;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+  (void)widget;
+  (void)row;
+  (void)col;
+  (void)text;
   return STATUS_CODE_OK;
 }
 #endif

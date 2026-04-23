@@ -39,14 +39,11 @@
  * Private defines
  ************************************************************************************************/
 
-/** @brief  Number of AFE messages */
-#define NUM_AFE_MSGS 4U
-
-/** @brief  Number of cell voltages per device transmitted in a single log */
-#define NUM_AFE_CELL_VOLTAGES_PER_LOG 6U
-
 /** @brief  Number of temperatures transmitted in a single log */
 #define NUM_AFE_TEMPERATURES_PER_LOG 7U
+
+/** @brief  Number of temperature messages needed to cover all thermistors */
+#define NUM_AFE_TEMPERATURE_MSGS ((ADBMS_AFE_MAX_CELL_THERMISTORS + NUM_AFE_TEMPERATURES_PER_LOG - 1U) / NUM_AFE_TEMPERATURES_PER_LOG)
 
 /** @brief  Number of communication retries before throwing AFE fault */
 #define AFE_NUM_RETRIES 5U
@@ -61,6 +58,14 @@
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
 
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
+
+#define SET_AFE_STATUS_MESSAGE(device, message_name, message_id, voltage_a, voltage_b, voltage_c) \
+  do {                                                                                            \
+    set_##message_name##_id(message_id);                                                          \
+    set_##message_name##_voltage_##voltage_a(CELL_VOLTAGE_LOOKUP(device, voltage_a));             \
+    set_##message_name##_voltage_##voltage_b(CELL_VOLTAGE_LOOKUP(device, voltage_b));             \
+    set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
+  } while (0)
 
 /** @brief  Max number of retries for reading cell*/
 #define CELL_SENSE_MAX_RETRIES 10U
@@ -119,7 +124,7 @@ static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
 
-static uint8_t s_afe_message_index = 0U;
+static uint8_t s_afe_temperature_message_index = 0U;
 
 static RearControllerStorage *rear_controller_storage;
 
@@ -129,6 +134,124 @@ static uint8_t s_global_cell_index_1_based(uint8_t device, uint8_t cell) {
 
 static uint8_t s_global_thermistor_index_1_based(uint8_t device, uint8_t thermistor) {
   return (uint8_t)(device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor + 1U);
+}
+
+/* The art of programming. */
+static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_t cell_index, uint8_t is_enabled) {
+  switch (dev_index_1_based) {
+    case 1U:
+      switch (cell_index) {
+        case 0U:
+          set_AFE_discharge_bitset_AFE1_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE1_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE1_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE1_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE1_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE1_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE1_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE1_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE1_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE1_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE1_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE1_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE1_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE1_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE1_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE1_cell_15(is_enabled);
+          break;
+        default:
+          break;
+      }
+      break;
+
+    case 2U:
+      switch (cell_index) {
+        case 0U:
+          set_AFE_discharge_bitset_AFE2_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE2_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE2_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE2_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE2_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE2_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE2_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE2_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE2_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE2_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE2_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE2_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE2_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE2_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE2_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE2_cell_15(is_enabled);
+          break;
+        default:
+          break;
+      }
+      break;
+
+    default:
+      break;
+  }
 }
 
 /************************************************************************************************
@@ -160,11 +283,17 @@ static void s_balance_cells(uint16_t min_voltage) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       if (CELL_VOLTAGE_LOOKUP(dev, cell) > balancing_threshold) {
+#if (CELL_SENSE_DEBUG == 1)
         LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
         delay_ms(12U);
+#endif
+
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, true);
+        s_set_afe_discharge_status_message((dev + 1), cell, 1U);
+
       } else {
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+        s_set_afe_discharge_status_message((dev + 1), cell, 0U);
       }
     }
   }
@@ -180,6 +309,7 @@ static void s_disable_balancing() {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+      s_set_afe_discharge_status_message((dev + 1U), cell, 0U);
     }
   }
 
@@ -403,36 +533,28 @@ static StatusCode s_cell_sense_run() {
  ************************************************************************************************/
 
 StatusCode log_cell_sense() {
-  /* AFE messages are split into 3 (For each AFE) */
-  /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
   if (s_cell_data_updated != true) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
-  set_AFE1_status_A_id(s_afe_message_index);
-  set_AFE1_status_A_voltage_0(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 0U));
-  set_AFE1_status_A_voltage_1(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 1U));
-  set_AFE1_status_A_voltage_2(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 2U));
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_A, 0U, 0, 1, 2);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_B, 1U, 3, 4, 5);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_C, 2U, 6, 7, 8);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_D, 3U, 9, 10, 11);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_E, 4U, 12, 13, 14);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_F, 5U, 15, 16, 17);
 
-  set_AFE1_status_B_id(s_afe_message_index);
-  set_AFE1_status_B_voltage_0(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 3U));
-  set_AFE1_status_B_voltage_1(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 4U));
-  set_AFE1_status_B_voltage_2(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 5U));
-
-  set_AFE2_status_A_id(s_afe_message_index);
-  set_AFE2_status_A_voltage_0(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 0U));
-  set_AFE2_status_A_voltage_1(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 1U));
-  set_AFE2_status_A_voltage_2(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 2U));
-
-  set_AFE2_status_B_id(s_afe_message_index);
-  set_AFE2_status_B_voltage_0(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 3U));
-  set_AFE2_status_B_voltage_1(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 4U));
-  set_AFE2_status_B_voltage_2(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 5U));
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_A, 0U, 0, 1, 2);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_B, 1U, 3, 4, 5);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_C, 2U, 6, 7, 8);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_D, 3U, 9, 10, 11);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_E, 4U, 12, 13, 14);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_F, 5U, 15, 16, 17);
 
   size_t total_thermistors = s_afe_settings.num_devices * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE;
-  size_t thermistor_start = s_afe_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
+  size_t thermistor_start = s_afe_temperature_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
 
-  set_AFE_temperature_id(s_afe_message_index);
+  set_AFE_temperature_id(s_afe_temperature_message_index);
   set_AFE_temperature_temperature_0((thermistor_start + 0U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 0U] : 0U);
   set_AFE_temperature_temperature_1((thermistor_start + 1U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 1U] : 0U);
   set_AFE_temperature_temperature_2((thermistor_start + 2U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 2U] : 0U);
@@ -441,9 +563,9 @@ StatusCode log_cell_sense() {
   set_AFE_temperature_temperature_5((thermistor_start + 5U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 5U] : 0U);
   set_AFE_temperature_temperature_6((thermistor_start + 6U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 6U] : 0U);
 
-  s_afe_message_index = (s_afe_message_index + 1U) % NUM_AFE_MSGS;
+  s_afe_temperature_message_index = (s_afe_temperature_message_index + 1U) % NUM_AFE_TEMPERATURE_MSGS;
 
-  if (s_afe_message_index == 0U) {
+  if (s_afe_temperature_message_index == 0U) {
     s_cell_data_updated = false;
   }
 

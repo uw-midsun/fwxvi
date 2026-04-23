@@ -73,6 +73,7 @@ typedef struct {
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
   float brake_pedal_deadzone;        /**< Deadzone for brake pedal input [0.0 - 1.0]  */
+  float brake_pedal_activation_zone; /**< Activation zone for brake pedal input [0.0 - 1.0]  */
   float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
 } FrontControllerConfig;
 

@@ -75,6 +75,15 @@ StatusCode lvgl_screens_destroy(GuiScreen *screen) {
   return STATUS_CODE_OK;
 }
 
+StatusCode lvgl_screens_clean(GuiScreen *screen) {
+  if (screen == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  lv_obj_clean(screen);
+  return STATUS_CODE_OK;
+}
+
 GuiScreen *lvgl_get_active_screen() {
   return lv_screen_active();
 }
@@ -104,6 +113,11 @@ StatusCode lvgl_screens_load(GuiScreen *screen) {
 }
 
 StatusCode lvgl_screens_destroy(GuiScreen *screen) {
+  (void)screen;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_screens_clean(GuiScreen *screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }

@@ -33,11 +33,13 @@ typedef enum {
 } GuiScreenId;
 
 typedef StatusCode (*GuiScreenCreateFn)(GuiScreen *screen);
+typedef void (*GuiScreenDestroyFn)(void);
 
 typedef struct {
   GuiScreenId id;
   const char *name;
   GuiScreenCreateFn create;
+  GuiScreenDestroyFn destroy;
 } GuiScreenDescriptor;
 
 /**

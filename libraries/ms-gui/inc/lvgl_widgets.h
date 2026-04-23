@@ -131,6 +131,22 @@ typedef struct {
   /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
 } LabelWidgetConfig;
 
+/** @brief   Runtime handle for a table widget */
+typedef struct {
+  lv_obj_t *table;
+} TableWidget;
+
+/** @brief   Configuration used when creating a table widget */
+typedef struct {
+  WidgetPosition position;    /**< Placement of the table on screen */
+  uint16_t row_count;         /**< Number of rows */
+  uint16_t col_count;         /**< Number of columns */
+  lv_coord_t col_width;       /**< Uniform column width in pixels */
+  GuiColorId text_color_id;   /**< Color used for cell text */
+  WidgetFontSize font;        /**< Font used for cell text */
+  GuiColorId border_color_id; /**< Color used for cell borders */
+} TableWidgetConfig;
+
 #else
 typedef int16_t WidgetAlignment;
 typedef int16_t WidgetOrientation;
@@ -233,6 +249,22 @@ typedef struct {
   /* TODO: Maybe add in a WidgetsFont member when FW-506 is done */
 } LabelWidgetConfig;
 
+/** @brief   Runtime handle for a table widget */
+typedef struct {
+  int16_t *table;
+} TableWidget;
+
+/** @brief   Configuration used when creating a table widget */
+typedef struct {
+  WidgetPosition position;    /**< Placement of the table on screen */
+  uint16_t row_count;         /**< Number of rows */
+  uint16_t col_count;         /**< Number of columns */
+  int16_t col_width;          /**< Uniform column width in pixels */
+  GuiColorId text_color_id;   /**< Color used for cell text */
+  WidgetFontSize font;        /**< Font used for cell text */
+  GuiColorId border_color_id; /**< Color used for cell borders */
+} TableWidgetConfig;
+
 #endif
 
 /* Inside alignment (inside parent widget) */
@@ -314,5 +346,24 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id);
+
+/**
+ * @brief   Create and initialize a table widget
+ * @param   widget Pointer to the runtime table object to initialize
+ * @param   config Pointer to the widget configuration
+ * @param   parent Parent LVGL object that will own the widget
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent);
+
+/**
+ * @brief   Set the text of a table cell
+ * @param   widget Pointer to the table widget runtime object
+ * @param   row Zero-based row index
+ * @param   col Zero-based column index
+ * @param   text Text to display in the cell
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text);
 
 /** @} */
