@@ -22,7 +22,7 @@
 
 /* Intra-component Headers */
 
-#define IMU_DEBUG 0U
+#define IMU_DEBUG 1U
 
 static Bmi323Storage *s_storage = NULL;
 
@@ -33,9 +33,9 @@ StatusCode imu_run()
     LOG_CRITICAL("status error");
     return status;
   }
-  LOG_DEBUG("here");
-  imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
-  eulerAngles(q_est, &s_storage->readings.roll, &s_storage->readings.pitch, &s_storage->readings.yaw);
+  LOG_DEBUG("here12312312312312312313");
+  //imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
+  //eulerAngles(q_est, &s_storage->readings.roll, &s_storage->readings.pitch, &s_storage->readings.yaw);
 
 #if (IMU_DEBUG == 1)
   // Create buffer and log IMU values

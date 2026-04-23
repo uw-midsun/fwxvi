@@ -34,7 +34,7 @@ TelemetryConfig telemetry_config = {
   .uart_port = TELEMETRY_XBEE_UART_PORT,
   .uart_settings = { .tx = GPIO_TELEMETRY_UART_TX, .rx = GPIO_TELEMETRY_UART_RX, .baudrate = TELEMETRY_XBEE_UART_BAUDRATE, .flow_control = TELEMETRY_XBEE_UART_FLOW_CONTROL },
   .sd_spi_port = SPI_PORT_2,
-  .sd_spi_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
+  .sd_spi_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ, // all correct from darren, also not necessary to check
                        .mode = SD_SPI_MODE_1,
                        .mosi = GPIO_TELEMETRY_SPI_MOSI,
                        .miso = GPIO_TELEMETRY_SPI_MISO,
@@ -66,7 +66,7 @@ float roll = 0;
 float pitch = 0;
 float yaw = 0;
 void pre_loop_init() {
-  bmi323_init(&bmi323_storage);
+  imu_init(&bmi323_storage, &bmi323_settings);
   // for (float i = 0; i < 1000; i++) {
   //   imu_filter(0.05, 0.05, 0.9, 0, 0, 0);
   //   eulerAngles(q_est, &roll, &pitch, &yaw);
@@ -93,9 +93,10 @@ int main(int argc, char *argv[]) {
 #else
 int main() {
 #endif
-  mcu_init();
-  tasks_init();
-  log_init();
+  mcu_init(); // works
+  tasks_init(); // works
+  log_init(); // works
+  // works
 
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
   init_master_tasks();

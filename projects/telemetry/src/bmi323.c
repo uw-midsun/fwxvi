@@ -57,7 +57,7 @@ static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
 
 static StatusCode s_calculate_accel_offset();
 static StatusCode s_calculate_gyro_offset();
-//static uint8_t s_get_chip_id();
+static uint8_t s_get_chip_id();
 
 /************************************************************************************************
  * Private Function Definition
