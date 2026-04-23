@@ -10,8 +10,8 @@
 /* Standard library Headers */
 #include <stdbool.h>
 #include <stdio.h>
-#include "log.h"
-#include "delay.h"
+#include "status.h"
+
 /* Inter-component Headers */
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl.h"
@@ -21,45 +21,64 @@
 #include "clut.h"
 #include "gui_pack_screen.h"
 #include "gui_widgets.h"
+#include "display_defs.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
 
-#define NUMBER_OF_CELLS 36U
-#define PACK_SCREEN_VISIBLE_CELL_COUNT 5U
-#define PACK_SCREEN_X_MARGIN 10
-#define PACK_SCREEN_Y_MARGIN 12
-#define PACK_SCREEN_LABEL_MAX_CHARS 320
-
-static LabelWidget s_pack_voltage_label;
-static char s_pack_voltage_text[PACK_SCREEN_LABEL_MAX_CHARS];
+static TableWidget s_pack_table;
 static uint16_t s_cell_voltages[NUMBER_OF_CELLS];
-static bool s_widgets_initialized;
+static bool s_pack_widgets_initialized;
 
-static StatusCode s_format_pack_voltage_text(void) {
-  size_t offset = 0U;
+static LabelWidget s_speed_label;
+static LabelWidget s_cc_label;
 
-  s_pack_voltage_text[0] = '\0';
-  for (uint8_t i = 0U; i < PACK_SCREEN_VISIBLE_CELL_COUNT; ++i) {
-    int chars_written = snprintf(&s_pack_voltage_text[offset], sizeof(s_pack_voltage_text) - offset, i == 0U ? "%u.%03uV" : " %u.%03uV", s_cell_voltages[i] / 10000U, (s_cell_voltages[i] % 10000U) / 10U);
-    if (chars_written < 0 || (size_t)chars_written >= (sizeof(s_pack_voltage_text) - offset)) {
-      return STATUS_CODE_RESOURCE_EXHAUSTED;
-    }
-
-    offset += (size_t)chars_written;
-  }
-
-  lv_label_set_text_static(s_pack_voltage_label.label, s_pack_voltage_text);
-  return STATUS_CODE_OK;
+static void s_format_cell(char *buf, uint8_t idx) {
+  snprintf(buf, PACK_CELL_TEXT_LEN, "C%02u\n%u.%03u", idx + 1U, s_cell_voltages[idx] / 10000U, (s_cell_voltages[idx] % 10000U) / 10U);
 }
 
-static StatusCode s_create_pack_voltage_label(GuiScreen *screen, WidgetPosition position) {
-  const LabelWidgetConfig pack_voltage_label_config = {
-    .size = { .width = 200, .height = 275 },
-    .position = position,
-    .label_text = "0.000V",
-    .alignment = WIDGET_TEXT_ALIGN_LEFT,
+static StatusCode s_create_table(GuiScreen *screen) {
+  const TableWidgetConfig config = {
+    .position = {
+      .type = WIDGET_POSITION_ALIGN,
+      .value.align = { .align = WIDGET_ALIGN_IN_LEFT_MID, .x_offset = 10, .y_offset = 20 },
+    },
+    .row_count = PACK_TABLE_ROWS,
+    .col_count = PACK_TABLE_COLS,
+    .col_width = PACK_TABLE_COL_W,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_SMALL_TEXT,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+  };
+
+  return lvgl_widgets_create_table(&s_pack_table, &config, screen);
+}
+
+static StatusCode s_create_speed_label(GuiScreen *screen) {
+  const LabelWidgetConfig speed_label_config = {
+    .size = { .width = 75, .height = 50 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_LEFT, .x_offset = 0, .y_offset = 0 } },
+    .label_text = "0",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_BIG_TEXT,
+    .background_enabled = false,
+    .background_color_id = 0,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+
+  return lvgl_widgets_create_label(&s_speed_label, &speed_label_config, screen);
+}
+
+static StatusCode s_create_cc_label(GuiScreen *screen) {
+  const LabelWidgetConfig cruise_control_label_config = {
+    .size = { .width = 75, .height = 20 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_LEFT, .x_offset = 0, .y_offset = 40 } },
+    .label_text = "0 km/h",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
     .background_enabled = false,
@@ -69,23 +88,7 @@ static StatusCode s_create_pack_voltage_label(GuiScreen *screen, WidgetPosition 
     .border_width = 0,
   };
 
-  status_ok_or_return(lvgl_widgets_create_label(&s_pack_voltage_label, &pack_voltage_label_config, screen));
-
-  return s_format_pack_voltage_text();
-}
-
-static bool s_pack_voltage_text_changed(const uint16_t *cell_voltages) {
-  if (cell_voltages == NULL) {
-    return false;
-  }
-
-  for (uint8_t i = 0U; i < PACK_SCREEN_VISIBLE_CELL_COUNT; ++i) {
-    if (s_cell_voltages[i] != cell_voltages[i]) {
-      return true;
-    }
-  }
-
-  return false;
+  return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
 StatusCode gui_pack_screen_init(GuiScreen *screen) {
@@ -93,30 +96,44 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if (s_widgets_initialized) {
+  if (s_pack_widgets_initialized) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
-  WidgetPosition position = {
-    .type = WIDGET_POSITION_ALIGN,
-    .value.align = {
-      .align = WIDGET_ALIGN_IN_TOP_LEFT,
-      .x_offset = PACK_SCREEN_X_MARGIN,
-      .y_offset = PACK_SCREEN_Y_MARGIN,
-    }
-  };
+  status_ok_or_return(s_create_speed_label(screen));
+  status_ok_or_return(s_create_cc_label(screen));
 
-  status_ok_or_return(s_create_pack_voltage_label(screen, position));
+  status_ok_or_return(s_create_table(screen));
+  StatusCode status = gui_widgets_init_screen(screen);
+  if (status != STATUS_CODE_OK) {
+    s_pack_table = (TableWidget){ 0 };
+    return status;
+  }
 
-  s_widgets_initialized = true;
+  /* Initialize table with 0s */
+  char buf[PACK_CELL_TEXT_LEN];
+  for (uint8_t i = 0U; i < NUMBER_OF_CELLS; ++i) {
+    s_format_cell(buf, i);
+    status_ok_or_return(lvgl_widgets_set_table_cell(&s_pack_table, i / PACK_TABLE_COLS, i % PACK_TABLE_COLS, buf));
+  }
 
+  s_pack_widgets_initialized = true;
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
-  if (!s_widgets_initialized) {
+void gui_pack_screen_deinit(void) {
+  gui_widgets_deinit();
+  s_pack_table = (TableWidget){ 0 };
+  for (uint8_t i = 0U; i < NUMBER_OF_CELLS; ++i) {
+    s_cell_voltages[i] = 0U;
+  }
+  s_pack_widgets_initialized = false;
+}
+
+StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
+  if (!s_pack_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -124,48 +141,42 @@ StatusCode gui_widgets_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage)
     return STATUS_CODE_OUT_OF_RANGE;
   }
 
-  if (s_pack_voltage_label.label == NULL) {
-    return STATUS_CODE_UNINITIALIZED;
-  }
-
   if (s_cell_voltages[cell_idx] == cell_voltage) {
     return STATUS_CODE_OK;
   }
 
   s_cell_voltages[cell_idx] = cell_voltage;
-  return s_format_pack_voltage_text();
+
+  char buf[PACK_CELL_TEXT_LEN];
+  s_format_cell(buf, cell_idx);
+  return lvgl_widgets_set_table_cell(&s_pack_table, cell_idx / PACK_TABLE_COLS, cell_idx % PACK_TABLE_COLS, buf);
 }
 
-StatusCode gui_pack_screen_set_voltages(const uint16_t *cell_voltages) {
-  if (!s_widgets_initialized) {
+StatusCode gui_pack_screen_widget_set_speed_label(int16_t speed_kmh) {
+  if (!s_pack_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (cell_voltages == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
+  char text_buffer[3];
 
-  if (s_pack_voltage_label.label == NULL) {
+  snprintf(text_buffer, sizeof(text_buffer), "%u", speed_kmh);
+
+  return lvgl_widgets_set_label_text(&s_speed_label, text_buffer);
+}
+
+StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled) {
+  if (!s_pack_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (!s_pack_voltage_text_changed(cell_voltages)) {
-    return STATUS_CODE_OK;
+  char text_buffer[LABEL_MAX_CHARS];
+  if (is_cc_enabled) {
+    snprintf(text_buffer, sizeof(text_buffer), "%u km/h", cruise_control_speed_kmh);
+  } else {
+    snprintf(text_buffer, sizeof(text_buffer), "cc off");
   }
 
-  for (uint8_t i = 0U; i < PACK_SCREEN_VISIBLE_CELL_COUNT; ++i) {
-    s_cell_voltages[i] = cell_voltages[i];
-  }
-
-  if (s_format_pack_voltage_text() != STATUS_CODE_OK) {
-    while(true) {
-
-      LOG_DEBUG("BRKPT1: ERROR");
-      delay_ms(10);
-    }
-  }
-
-  return STATUS_CODE_OK;
+  return lvgl_widgets_set_label_text(&s_cc_label, text_buffer);
 }
 
 #else
@@ -175,14 +186,22 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_pack_screen_set_voltages(const uint16_t *cell_voltages) {
-  (void)cell_voltages;
+void gui_pack_screen_deinit(void) {}
+
+StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
+  (void)cell_idx;
+  (void)cell_voltage;
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
-  (void)cell_idx;
-  (void)cell_voltage;
+StatusCode gui_pack_screen_widget_set_speed_label(int16_t speed_kmh) {
+  (void)speed_kmh;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled) {
+  (void)cruise_control_speed_kmh;
+  (void)is_cc_enabled;
   return STATUS_CODE_OK;
 }
 

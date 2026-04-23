@@ -17,22 +17,22 @@
 
 /* Intra-component Headers */
 #include "clut.h"
+#include "gui_drive_screen.h"
+#include "gui_pack_screen.h"
 #include "gui_screens.h"
-#include "gui_widgets.h"
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
-#include "gui_pack_screen.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef struct {
   GuiScreenDescriptor descriptor;
-  GuiScreen *root;
   bool registered;
-  bool created;
 } GuiScreenSlot;
 
 static GuiScreenSlot s_screen_slots[NUM_GUI_SCREENS];
+static GuiScreen *s_screen_root;
 static GuiScreenId s_current_screen = GUI_SCREEN_DRIVE;
+static bool s_current_screen_created;
 static bool s_screens_initialized;
 
 /**
@@ -90,7 +90,14 @@ static StatusCode s_create_centered_placeholder(GuiScreen *screen, const char *t
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 static StatusCode s_create_drive_screen(GuiScreen *screen) {
-  return gui_widgets_init_screen(screen);
+  return gui_drive_screen_init(screen);
+}
+
+/**
+ * @brief   Reset drive-screen widget handles after the active root is cleaned
+ */
+static void s_destroy_drive_screen(void) {
+  gui_drive_screen_deinit();
 }
 
 /**
@@ -112,6 +119,13 @@ static StatusCode s_create_pack_voltage_screen(GuiScreen *screen) {
 }
 
 /**
+ * @brief   Reset pack-voltage widget handles after the active root is cleaned
+ */
+static void s_destroy_pack_voltage_screen(void) {
+  gui_pack_screen_deinit();
+}
+
+/**
  * @brief   Build the pedal calibration placeholder screen
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
@@ -130,6 +144,7 @@ static StatusCode s_register_default_screens(void) {
       .id = GUI_SCREEN_DRIVE,
       .name = "Drive",
       .create = s_create_drive_screen,
+      .destroy = s_destroy_drive_screen,
     },
     [GUI_SCREEN_TRIP_INFO] = {
       .id = GUI_SCREEN_TRIP_INFO,
@@ -140,6 +155,7 @@ static StatusCode s_register_default_screens(void) {
       .id = GUI_SCREEN_PACK_VOLTAGE,
       .name = "Pack Voltage",
       .create = s_create_pack_voltage_screen,
+      .destroy = s_destroy_pack_voltage_screen,
     },
     [GUI_SCREEN_PEDAL_CALIB] = {
       .id = GUI_SCREEN_PEDAL_CALIB,
@@ -175,18 +191,27 @@ static StatusCode s_ensure_screen_created(GuiScreenId screen_id) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (slot->created) {
+  if (s_current_screen_created && s_current_screen == screen_id) {
     return STATUS_CODE_OK;
   }
 
-  status_ok_or_return(lvgl_screens_create(&slot->root));
-  status = slot->descriptor.create(slot->root);
+  if (s_current_screen_created) {
+    GuiScreenSlot *current_slot = &s_screen_slots[s_current_screen];
+
+    if (current_slot->descriptor.destroy != NULL) {
+      current_slot->descriptor.destroy();
+    }
+    status_ok_or_return(lvgl_screens_clean(s_screen_root));
+    s_current_screen_created = false;
+  }
+
+  status = slot->descriptor.create(s_screen_root);
   if (status != STATUS_CODE_OK) {
-    lvgl_screens_destroy(slot->root);
-    slot->root = NULL;
     return status;
   }
-  slot->created = true;
+
+  s_current_screen = screen_id;
+  s_current_screen_created = true;
 
   return STATUS_CODE_OK;
 }
@@ -197,9 +222,14 @@ StatusCode gui_screens_init(void) {
   }
 
   status_ok_or_return(s_register_default_screens());
+  status_ok_or_return(lvgl_screens_create(&s_screen_root));
+  status_ok_or_return(lvgl_screens_load(s_screen_root));
   s_screens_initialized = true;
   StatusCode status = gui_screens_show(GUI_SCREEN_DRIVE);
   if (status != STATUS_CODE_OK) {
+    lvgl_screens_destroy(s_screen_root);
+    s_screen_root = NULL;
+    s_current_screen_created = false;
     s_screens_initialized = false;
     return status;
   }
@@ -215,7 +245,7 @@ StatusCode gui_screens_register(const GuiScreenDescriptor *descriptor) {
   }
 
   slot = &s_screen_slots[descriptor->id];
-  if (slot->created) {
+  if (s_current_screen_created && s_current_screen == descriptor->id) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
@@ -230,8 +260,6 @@ StatusCode gui_screens_show(GuiScreenId screen_id) {
   }
 
   status_ok_or_return(s_ensure_screen_created(screen_id));
-  status_ok_or_return(lvgl_screens_load(s_screen_slots[screen_id].root));
-  s_current_screen = screen_id;
 
   return STATUS_CODE_OK;
 }
@@ -241,11 +269,11 @@ GuiScreenId gui_screens_get_current(void) {
 }
 
 GuiScreen *gui_screens_get_root(GuiScreenId screen_id) {
-  if (screen_id >= NUM_GUI_SCREENS || !s_screen_slots[screen_id].created) {
+  if (screen_id >= NUM_GUI_SCREENS || !s_current_screen_created || s_current_screen != screen_id) {
     return NULL;
   }
 
-  return s_screen_slots[screen_id].root;
+  return s_screen_root;
 }
 
 const char *gui_screens_get_name(GuiScreenId screen_id) {

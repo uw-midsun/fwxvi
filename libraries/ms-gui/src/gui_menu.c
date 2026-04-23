@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <stddef.h>
 #include <stdint.h>
+#include "status.h"
 
 /* Inter-component Headers */
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
@@ -19,75 +20,50 @@
 #endif
 
 /* Intra-component Headers */
-#include "clut.h"
 #include "gui_menu.h"
-#include "gui_screens.h"
-#include "lvgl_screens.h"
+
 
 /* TODO: Better abstraction over lvgl library */
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
-#define GUI_MENU_ITEM_COUNT 5U
-#define GUI_MENU_PANEL_WIDTH 240
-#define GUI_MENU_PANEL_HEIGHT 180
-#define GUI_MENU_ROW_WIDTH 188
-#define GUI_MENU_ROW_HEIGHT 24
-
-typedef enum {
-  GUI_MENU_ITEM_SCREEN = 0,
-  GUI_MENU_ITEM_ACTION,
-} GuiMenuItemType;
-
-typedef struct {
-  GuiMenuItemType type;
-  union {
-    GuiScreenId screen_id;
-    GuiMenuActionCallback callback;
-  } target;
-} GuiMenuItem;
-
-typedef struct {
-  bool initialized;
-  bool is_open;
-  uint8_t selected_index;
-  GuiMenuActionCallback party_mode_callback;
-  lv_obj_t *overlay;
-  lv_obj_t *panel;
-  lv_obj_t *title;
-  lv_obj_t *rows[GUI_MENU_ITEM_COUNT];
-  lv_obj_t *row_labels[GUI_MENU_ITEM_COUNT];
-} GuiMenuState;
-
-typedef struct {
-  bool toggle_requested;
-  bool select_requested;
-  VehicleDriveState select_drive_state;
-  uint8_t move_up_count;
-  uint8_t move_down_count;
-} GuiMenuPendingRequests;
 
 static GuiMenuState s_menu;
 static GuiMenuPendingRequests s_pending_requests;
+static bool s_is_initalized = false;
+
+typedef enum {
+  GUI_MENU_ITEM_INDEX_DRIVE = 0,
+  GUI_MENU_ITEM_INDEX_PACK_MONITOR = 1,
+  GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE = 2,
+  GUI_MENU_ITEM_INDEX_PARTY_MODE = 3,
+  GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 4,
+} GuiMenuIndex;
+
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
-  [0] = {
+  [GUI_MENU_ITEM_INDEX_DRIVE] = {
     .type = GUI_MENU_ITEM_SCREEN,
+    .action_label = "Drive Mode",
     .target.screen_id = GUI_SCREEN_DRIVE,
   },
-  [1] = {
+  [GUI_MENU_ITEM_INDEX_PACK_MONITOR] = {
     .type = GUI_MENU_ITEM_SCREEN,
-    .target.screen_id = GUI_SCREEN_TRIP_INFO,
-  },
-  [2] = {
-    .type = GUI_MENU_ITEM_SCREEN,
+    .action_label = "Pack Monitor",
     .target.screen_id = GUI_SCREEN_PACK_VOLTAGE,
   },
-  [3] = {
+  [GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE] = {
     .type = GUI_MENU_ITEM_ACTION,
+    .action_label = "Toggle Cell Discharge",
     .target.callback = NULL,
   },
-  [4] = {
+  [GUI_MENU_ITEM_INDEX_PARTY_MODE] = {
+    .type = GUI_MENU_ITEM_ACTION,
+    .action_label = "Toggle Party Mode",
+    .target.callback = NULL,
+  },
+  [GUI_MENU_ITEM_INDEX_PEDAL_CALIB] = {
     .type = GUI_MENU_ITEM_SCREEN,
+    .action_label = "Pedal Calib",
     .target.screen_id = GUI_SCREEN_PEDAL_CALIB,
   },
 };
@@ -112,11 +88,7 @@ static const char *s_get_item_label(uint8_t index) {
     return "";
   }
 
-  if (s_menu_items[index].type == GUI_MENU_ITEM_ACTION) {
-    return "Party Mode";
-  }
-
-  return gui_screens_get_name(s_menu_items[index].target.screen_id);
+  return s_menu_items[index].action_label;
 }
 
 /**
@@ -157,21 +129,31 @@ static void s_refresh_selection(void) {
 }
 
 StatusCode gui_menu_init(void) {
-  GuiMenuActionCallback party_mode_callback = s_menu.party_mode_callback;
-
-  if (s_menu.initialized) {
+  if (s_is_initalized) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
+  /* Save callback state */
+  GuiMenuActionCallback party_mode_callback = s_menu.party_mode_callback;
+  GuiMenuActionCallback toggle_discharge_callback = s_menu.toggle_discharge_callback;
+
   s_menu = (GuiMenuState){ 0 };
   s_pending_requests = (GuiMenuPendingRequests){ 0 };
+
   s_menu.party_mode_callback = party_mode_callback;
-  s_menu.initialized = true;
+  s_menu.toggle_discharge_callback = toggle_discharge_callback;
+
+  s_is_initalized = true;
   return STATUS_CODE_OK;
 }
 
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
   s_menu.party_mode_callback = callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
+  s_menu.toggle_discharge_callback = callback;
   return STATUS_CODE_OK;
 }
 
@@ -212,7 +194,7 @@ StatusCode gui_menu_process_pending(void) {
   GuiMenuPendingRequests pending;
   StatusCode status;
 
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -252,7 +234,7 @@ StatusCode gui_menu_process_pending(void) {
 StatusCode gui_menu_open(void) {
   GuiScreen *top_layer;
 
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -338,7 +320,7 @@ StatusCode gui_menu_open(void) {
 }
 
 StatusCode gui_menu_close(void) {
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -368,7 +350,7 @@ StatusCode gui_menu_toggle(void) {
 }
 
 StatusCode gui_menu_move_up(void) {
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -387,7 +369,7 @@ StatusCode gui_menu_move_up(void) {
 }
 
 StatusCode gui_menu_move_down(void) {
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -405,7 +387,7 @@ StatusCode gui_menu_select(VehicleDriveState drive_state) {
   StatusCode status = STATUS_CODE_OK;
   const GuiMenuItem *item;
 
-  if (!s_menu.initialized) {
+  if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -424,13 +406,27 @@ StatusCode gui_menu_select(VehicleDriveState drive_state) {
       return gui_screens_show(item->target.screen_id);
 
     case GUI_MENU_ITEM_ACTION:
-      if (s_menu.party_mode_callback == NULL) {
-        return STATUS_CODE_UNIMPLEMENTED;
-      }
+      switch (s_menu.selected_index) {
+        case GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE:
+          if (s_menu.toggle_discharge_callback != NULL) {
+            status = s_menu.toggle_discharge_callback();
+            if (status != STATUS_CODE_OK) {
+              return status;
+            }
+          }
+          break;
 
-      status = s_menu.party_mode_callback();
-      if (status != STATUS_CODE_OK) {
-        return status;
+        case GUI_MENU_ITEM_INDEX_PARTY_MODE:
+          if (s_menu.party_mode_callback != NULL) {
+            status = s_menu.party_mode_callback();
+            if (status != STATUS_CODE_OK) {
+              return status;
+            }
+          }
+          break;
+
+        default:
+          return STATUS_CODE_UNREACHABLE;
       }
 
       return gui_menu_close();
@@ -451,6 +447,11 @@ StatusCode gui_menu_init(void) {
 }
 
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
+  (void)callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
   (void)callback;
   return STATUS_CODE_OK;
 }

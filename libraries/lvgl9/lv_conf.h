@@ -852,7 +852,7 @@
 
 #define LV_USE_SWITCH     0
 
-#define LV_USE_TABLE      0
+#define LV_USE_TABLE      1
 
 #define LV_USE_TABVIEW    0
 

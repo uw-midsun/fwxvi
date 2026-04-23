@@ -86,9 +86,28 @@ Messages:
       input_aux_current:
         length: 16
 
+  AFE_discharge_bitset:
+    id: 50
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      AFE1:
+        type: bitfield
+        flags: [cell_0, cell_1, cell_2, cell_3, cell_4, cell_5, cell_6, cell_7, cell_8, cell_9, cell_10, cell_11, cell_12, cell_13, cell_14, cell_15]
+        length: 32
+      AFE2:
+        type: bitfield
+        flags: [cell_0, cell_1, cell_2, cell_3, cell_4, cell_5, cell_6, cell_7, cell_8, cell_9, cell_10, cell_11, cell_12, cell_13, cell_14, cell_15]
+        length: 32
+
   AFE1_status_A:
     id: 51
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -107,7 +126,7 @@ Messages:
 
   AFE1_status_B:
     id: 52
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -126,7 +145,7 @@ Messages:
 
   AFE1_status_C:
     id: 53
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -145,7 +164,7 @@ Messages:
 
   AFE1_status_D:
     id: 54
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -164,7 +183,7 @@ Messages:
 
   AFE1_status_E:
     id: 55
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -183,7 +202,7 @@ Messages:
 
   AFE1_status_F:
     id: 56
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -202,7 +221,7 @@ Messages:
 
   AFE2_status_A:
     id: 57
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -221,7 +240,7 @@ Messages:
 
   AFE2_status_B:
     id: 58
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -240,7 +259,7 @@ Messages:
 
   AFE2_status_C:
     id: 59
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -259,7 +278,7 @@ Messages:
 
   AFE2_status_D:
     id: 60
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -278,7 +297,7 @@ Messages:
 
   AFE2_status_E:
     id: 61
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:
@@ -297,7 +316,7 @@ Messages:
 
   AFE2_status_F:
     id: 62
-    cycle: "slow"
+    cycle: "medium"
     critical: false
     target:
       telemetry:

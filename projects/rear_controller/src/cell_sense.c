@@ -60,8 +60,8 @@
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
 
 #define SET_AFE_STATUS_MESSAGE(device, message_name, message_id, voltage_a, voltage_b, voltage_c) \
-  do {                                                                                             \
-    set_##message_name##_id(message_id);                                                           \
+  do {                                                                                            \
+    set_##message_name##_id(message_id);                                                          \
     set_##message_name##_voltage_##voltage_a(CELL_VOLTAGE_LOOKUP(device, voltage_a));             \
     set_##message_name##_voltage_##voltage_b(CELL_VOLTAGE_LOOKUP(device, voltage_b));             \
     set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
@@ -136,6 +136,58 @@ static uint8_t s_global_thermistor_index_1_based(uint8_t device, uint8_t thermis
   return (uint8_t)(device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor + 1U);
 }
 
+/* The art of programming. */
+static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_t cell_index, uint8_t is_enabled) {
+  switch (dev_index_1_based) {
+    case 1U:
+      switch (cell_index) {
+        case 0U: set_AFE_discharge_bitset_AFE1_cell_0(is_enabled); break;
+        case 1U: set_AFE_discharge_bitset_AFE1_cell_1(is_enabled); break;
+        case 2U: set_AFE_discharge_bitset_AFE1_cell_2(is_enabled); break;
+        case 3U: set_AFE_discharge_bitset_AFE1_cell_3(is_enabled); break;
+        case 4U: set_AFE_discharge_bitset_AFE1_cell_4(is_enabled); break;
+        case 5U: set_AFE_discharge_bitset_AFE1_cell_5(is_enabled); break;
+        case 6U: set_AFE_discharge_bitset_AFE1_cell_6(is_enabled); break;
+        case 7U: set_AFE_discharge_bitset_AFE1_cell_7(is_enabled); break;
+        case 8U: set_AFE_discharge_bitset_AFE1_cell_8(is_enabled); break;
+        case 9U: set_AFE_discharge_bitset_AFE1_cell_9(is_enabled); break;
+        case 10U: set_AFE_discharge_bitset_AFE1_cell_10(is_enabled); break;
+        case 11U: set_AFE_discharge_bitset_AFE1_cell_11(is_enabled); break;
+        case 12U: set_AFE_discharge_bitset_AFE1_cell_12(is_enabled); break;
+        case 13U: set_AFE_discharge_bitset_AFE1_cell_13(is_enabled); break;
+        case 14U: set_AFE_discharge_bitset_AFE1_cell_14(is_enabled); break;
+        case 15U: set_AFE_discharge_bitset_AFE1_cell_15(is_enabled); break;
+        default: break;
+      }
+      break;
+
+    case 2U:
+      switch (cell_index) {
+        case 0U: set_AFE_discharge_bitset_AFE2_cell_0(is_enabled); break;
+        case 1U: set_AFE_discharge_bitset_AFE2_cell_1(is_enabled); break;
+        case 2U: set_AFE_discharge_bitset_AFE2_cell_2(is_enabled); break;
+        case 3U: set_AFE_discharge_bitset_AFE2_cell_3(is_enabled); break;
+        case 4U: set_AFE_discharge_bitset_AFE2_cell_4(is_enabled); break;
+        case 5U: set_AFE_discharge_bitset_AFE2_cell_5(is_enabled); break;
+        case 6U: set_AFE_discharge_bitset_AFE2_cell_6(is_enabled); break;
+        case 7U: set_AFE_discharge_bitset_AFE2_cell_7(is_enabled); break;
+        case 8U: set_AFE_discharge_bitset_AFE2_cell_8(is_enabled); break;
+        case 9U: set_AFE_discharge_bitset_AFE2_cell_9(is_enabled); break;
+        case 10U: set_AFE_discharge_bitset_AFE2_cell_10(is_enabled); break;
+        case 11U: set_AFE_discharge_bitset_AFE2_cell_11(is_enabled); break;
+        case 12U: set_AFE_discharge_bitset_AFE2_cell_12(is_enabled); break;
+        case 13U: set_AFE_discharge_bitset_AFE2_cell_13(is_enabled); break;
+        case 14U: set_AFE_discharge_bitset_AFE2_cell_14(is_enabled); break;
+        case 15U: set_AFE_discharge_bitset_AFE2_cell_15(is_enabled); break;
+        default: break;
+      }
+      break;
+
+    default:
+      break;
+  }
+}
+
 /************************************************************************************************
  * Private function definitions
  ************************************************************************************************/
@@ -169,9 +221,13 @@ static void s_balance_cells(uint16_t min_voltage) {
           LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
           delay_ms(12U);
         #endif
+
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, true);
+        s_set_afe_discharge_status_message((dev + 1), cell, 1U);
+
       } else {
         adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+        s_set_afe_discharge_status_message((dev + 1), cell, 0U);
       }
     }
   }
@@ -187,6 +243,7 @@ static void s_disable_balancing() {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+      s_set_afe_discharge_status_message((dev + 1U), cell, 0U);
     }
   }
 

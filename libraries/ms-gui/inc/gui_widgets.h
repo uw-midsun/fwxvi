@@ -3,14 +3,13 @@
 /************************************************************************************************
  * @file   gui_widgets.h
  *
- * @brief  High-level LVGL widget abstractions for the vehicle display
+ * @brief  Common high-level LVGL widgets for the vehicle display
  *
  * @date   2026-03-10
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <stdbool.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -26,61 +25,23 @@
  */
 
 /**
- * @brief   Initialize the widget layer and create the main screen
- * @details Sets up common LVGL styles, creates the speedometer (round scale)
- *          and vertical percentage bar. Must be called after lvgl_driver_init().
+ * @brief   Initialize the common widget layer on the active LVGL screen
+ * @details Must be called after lvgl_driver_init().
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_init(void);
 
 /**
  * @brief   Initialize the widget layer on a specific screen root
- * @param   screen Screen root to populate with the drive widgets
+ * @param   screen Screen root to populate with common widgets
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_init_screen(GuiScreen *screen);
 
 /**
- * @brief   Update the speedometer needle
- * @param   speed_kmh Current speed in km/h
- * @return  STATUS_CODE_OK on success, error otherwise
+ * @brief   Reset cached common widget handles after their LVGL parent is deleted
  */
-StatusCode gui_widgets_set_speed(int16_t speed_kmh);
-
-/**
- * @brief   Update the vertical throttle percentage bar
- * @param   percent Current percentage (0-100)
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_throttle_bar(uint8_t percent);
-
-/**
- * @brief   Update the vertical brake percentage bar
- * @param   percent Current percentage (0-100)
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_brake_bar(uint8_t percent);
-
-/**
- * @brief   Update the vertical brake percentage bar color
- * @param   color_id
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id);
-
-/**
- * @brief   Update the vertical temperature bar
- * @param   percent Current motor temperature
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_temperature_bar(uint16_t percent);
-
-/**
- * @brief   Update the vertical motor speed bar
- * @param   percent Current motor speed
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_speed_bar(uint16_t percent);
+void gui_widgets_deinit(void);
 
 /**
  * @brief   Update the horizontal segmented soc bar
@@ -115,10 +76,4 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
  */
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c);
 
-/**
- * @brief   Update the cruise control set speed
- * @param   cruise_control_speed_kmh The cruise control set speed in km/h
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled);
 /** @} */

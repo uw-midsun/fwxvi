@@ -66,6 +66,13 @@ StatusCode lvgl_screens_load(GuiScreen *screen);
 StatusCode lvgl_screens_destroy(GuiScreen *screen);
 
 /**
+ * @brief   Delete all children from a screen root while keeping the root object alive
+ * @param   screen Screen root to clean
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_screens_clean(GuiScreen *screen);
+
+/**
  * @brief   Get the currently active LVGL screen
  * @return  Pointer to the active screen object
  */
