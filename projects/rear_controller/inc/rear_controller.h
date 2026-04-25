@@ -16,6 +16,7 @@
 /* Inter-component Headers */
 #include "adbms_afe.h"
 #include "current_acs37800.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 
@@ -24,6 +25,9 @@
  * @brief    Rear Controller Board Firmware
  * @{
  */
+
+/* Forward declarations */
+struct Ws22MotorCanConfig;
 
 #define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
 #define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
@@ -65,12 +69,15 @@ typedef struct {
   int16_t max_board_temperature;
   int16_t max_cell_temperature;
 
+  struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
+
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
   ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
   RearControllerConfig *config;
+  Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
 } RearControllerStorage;
 
-StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
+StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config, Ws22MotorCanConfig *motor_can_config);
 
 /** @} */

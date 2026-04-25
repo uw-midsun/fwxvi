@@ -275,7 +275,7 @@ StatusCode display_rx_medium() {
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
 
-  display_data->vehicle_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
+  steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
