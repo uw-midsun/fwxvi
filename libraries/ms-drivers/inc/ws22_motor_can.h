@@ -89,6 +89,18 @@ typedef struct {
   float motor_temp;     /**< Motor temperature (°C) */
 } Ws22MotorTelemetryData;
 
+typedef struct {
+  bool ws22_status_info_enabled;          /**< Flag to indicate if CAN reading status_info is enabled */
+  bool ws22_bus_measurement_enabled;      /**< Flag to indicate if CAN reading bus_measurement is enabled */
+  bool ws22_velocity_measurement_enabled; /**< Flag to indicate if CAN reading velocity_measurement is enabled */
+  bool ws22_phase_current_enabled;        /**< Flag to indicate if CAN reading phase_current is enabled */
+  bool ws22_motor_voltage_enabled;        /**< Flag to indicate if CAN reading motor_voltage is enabled */
+  bool ws22_motor_current_enabled;        /**< Flag to indicate if CAN reading motor_current is enabled */
+  bool ws22_motor_back_emf_enabled;       /**< Flag to indicate if CAN reading motor_back_emf is enabled */
+  bool ws22_rail_15v_enabled;             /**< Flag to indicate if CAN reading rail_15v is enabled */
+  bool ws22_temperature_enabled;          /**< Flag to indicate if CAN reading temperature is enabled */
+} Ws22MotorCanConfig;
+
 /**
  * @brief WS22 motor CAN interface storage structure
  */
@@ -102,7 +114,7 @@ typedef struct Ws22MotorCanStorage {
  * @param   storage Pointer to Front controller storage structure
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
-StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage);
+StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage, Ws22MotorCanConfig *config);
 
 /**
  * @brief   Set motor control current command

@@ -17,6 +17,7 @@
 #include "ws22_motor_can.h"
 
 static Ws22MotorCanStorage *s_ws22_motor_can_storage = NULL;
+static Ws22MotorCanConfig *s_ws22_motor_can_config = NULL;
 
 static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 4U) {
@@ -45,6 +46,7 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
+  LOG_DEBUG("data: %x %x %x %x\r\n", msg_data_u8[0], msg_data_u8[1], msg_data_u8[2], msg_data_u8[3]);
 
   memcpy(&telemetry->motor_velocity, &msg_data_u8[0], sizeof(float));
   memcpy(&telemetry->vehicle_velocity, &msg_data_u8[4], sizeof(float));
@@ -120,12 +122,13 @@ static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, uint8
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage) {
-  if (storage == NULL) {
+StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage, Ws22MotorCanConfig *config) {
+  if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_ws22_motor_can_storage = storage;
+  s_ws22_motor_can_config = config;
 
   return STATUS_CODE_OK;
 }
@@ -155,30 +158,57 @@ StatusCode ws22_motor_can_process_rx(uint8_t *msg_data_u8, uint32_t msg_id_raw, 
 
   switch (msg_id_raw) {
     case WS22_CAN_ID_STATUS_INFO:
+      if (!s_ws22_motor_can_config->ws22_status_info_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_status_info(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_BUS_MEASUREMENT:
+      if (!s_ws22_motor_can_config->ws22_bus_measurement_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_bus_measurement(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_VELOCITY_MEASUREMENT:
+      if (!s_ws22_motor_can_config->ws22_velocity_measurement_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_velocity_measurement(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_PHASE_CURRENT:
+      if (!s_ws22_motor_can_config->ws22_phase_current_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_phase_current(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_MOTOR_VOLTAGE:
+      if (!s_ws22_motor_can_config->ws22_motor_voltage_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_motor_voltage(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_MOTOR_CURRENT:
+      if (!s_ws22_motor_can_config->ws22_motor_current_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_motor_current(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_MOTOR_BACK_EMF:
+      if (!s_ws22_motor_can_config->ws22_motor_back_emf_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_motor_back_emf(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_RAIL_15V:
+      if (!s_ws22_motor_can_config->ws22_rail_15v_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_rail_15v(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     case WS22_CAN_ID_TEMPERATURE:
+      if (!s_ws22_motor_can_config->ws22_temperature_enabled) {
+        return STATUS_CODE_OK;
+      }
       return s_process_temperature(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
 
     default:
