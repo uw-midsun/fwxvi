@@ -133,8 +133,30 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
 #ifdef MS_PLATFORM_X86
 
 /**
+ * @brief   Sets SPI TX queue with the given data
+ * @param   spi Specifies which SPI port to read from
+ * @param   tx_data Pointer to a buffer of data to transmit
+ * @param   tx_len Length of the data to retrieve
+ * @return  STATUS_CODE_OK if data is retrieved successfully
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_RESOURCE_EXHAUSTED if queue is full
+ */
+StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len);
+
+/**
  * @brief   Gets data from the spi TX queue
- * @param   i2c Specifies which SPI port to read from
+ * @param   spi Specifies which SPI port to read from
+ * @param   rx_data Pointer to a buffer of data to fill
+ * @param   rx_len Length of the data to retrieve
+ * @return  STATUS_CODE_OK if data is retrieved successfully
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
+ */
+StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len);
+
+/**
+ * @brief   Gets data from the spi TX queue
+ * @param   spi Specifies which SPI port to read from
  * @param   data Pointer to a buffer of data to fill
  * @param   len Length of the data to retrieve
  * @return  STATUS_CODE_OK if data is retrieved successfully
@@ -150,7 +172,14 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode spi_set_rx(SpiPort spi, uint8_t *data, uint8_t len);
+StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len);
+
+/**
+ * @brief   Gets the number of queued TX bytes available to read
+ * @param   spi Specifies which Spi port to inspect
+ * @return  Number of queued bytes on the TX buffer
+ */
+size_t spi_get_tx_num_bytes(SpiPort spi);
 
 #endif
 

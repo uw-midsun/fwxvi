@@ -32,7 +32,7 @@ std::string SPI::serialize(const CommandCode &commandCode) const {
   serializeInteger(serializedData, static_cast<uint16_t>(m_spiDatagram.bufferLength));
   serializedData.append(reinterpret_cast<const char *>(m_spiDatagram.buffer), m_spiDatagram.bufferLength);
 
-  return serializedData;
+  return encodeCommand(commandCode, serializedData);
 }
 
 void SPI::deserialize(std::string &spiDatagramPayload) {
