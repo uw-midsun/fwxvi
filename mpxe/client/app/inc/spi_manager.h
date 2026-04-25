@@ -41,14 +41,6 @@ class SPIManager {
    */
   SPIManager() = default;
 
-  /*
-  SPI COMMANDS JUST FOR ME TO KEEP FOR NOW
-  SPI_WRITE_DATA,
-  SPI_READ_DATA,
-  SPI_TRANSFER_DATA,
-  SPI_CLEAR_BUFFER,
-  */
-
   /**
    * @brief   Transmits data to SPI RX buffer
    * @param   payload Serialized SPI datagram payload containing port and data
