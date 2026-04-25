@@ -90,11 +90,11 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
-    front_controller_storage->regen_enabled = false;
+    // front_controller_storage->regen_enabled = false;
     float m = 1 / (1 - current_speed);
     *calculated_reading = (0.25 * m * (pedal_percentage - 1)) + 1;
   } else {
-    front_controller_storage->regen_enabled = true;
+    // front_controller_storage->regen_enabled = true;
     float m = 1 / current_speed;
     *calculated_reading = s_one_pedal_storage.max_braking_percentage * (1 - (m * pedal_percentage));
   }
@@ -106,10 +106,10 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
   float m;
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
-    front_controller_storage->regen_enabled = false;
+    // front_controller_storage->regen_enabled = false;
     m = 1 / ((1 - current_speed) * (1 - current_speed));
   } else {
-    front_controller_storage->regen_enabled = true;
+    // front_controller_storage->regen_enabled = true;
     m = s_one_pedal_storage.max_braking_percentage / (current_speed * current_speed);
   }
   *calculated_reading = m * (pedal_percentage - current_speed) * (pedal_percentage - current_speed);
@@ -138,9 +138,10 @@ StatusCode opd_run() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (front_controller_storage->brake_enabled) {
-    set_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
-    set_pedal_data_regen_enabled(front_controller_storage->regen_enabled);
+  if (front_controller_storage->brake_state > 0) {
+    set_drive_status_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
+    set_drive_status_brake_percentage((uint8_t)(front_controller_storage->brake_percentage * 100));
+    set_drive_status_state_data_regen_enabled(front_controller_storage->current_drive_state == VEHICLE_DRIVE_STATE_REGEN);
     return STATUS_CODE_OK;
   }
 
@@ -158,8 +159,11 @@ StatusCode opd_run() {
 
   front_controller_storage->accel_percentage = calculated_reading;
 #endif
-  set_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
-  set_pedal_data_regen_enabled(front_controller_storage->regen_enabled);
+  set_drive_status_pedal_percentage((uint8_t)(front_controller_storage->accel_percentage * 100));
+  set_drive_status_brake_percentage((uint8_t)(front_controller_storage->brake_percentage * 100));
+  set_drive_status_state_data_regen_enabled(front_controller_storage->current_drive_state == VEHICLE_DRIVE_STATE_REGEN);
+
+  // LOG_DEBUG("Brake: %u\r\n", (uint8_t)front_controller_storage->brake_percentage * 100);
   return STATUS_CODE_OK;
 }
 

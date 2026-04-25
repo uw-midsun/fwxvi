@@ -9,14 +9,20 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 /* Inter-component Headers */
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "clut.h"
 #include "lvgl_widgets.h"
+#else
+#include "lvgl_widgets.h"
+#endif
 
 /* Intra-component Headers */
 
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 /* Speedometer style objects */
 static lv_style_t s_speedometer_main_style;
 static lv_style_t s_speedometer_minor_style;
@@ -27,9 +33,26 @@ static bool s_speedometer_styles_initialized;
 static lv_style_t s_bar_bg_style;
 static bool s_bar_styles_initialized;
 
+/* Label styling */
+#define LABEL_WIDGET_DEFAULT_PADDING 4
+
 static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   ClutEntry color = clut_get_gui_color(color_id);
   return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
+}
+
+static lv_text_align_t s_widget_text_alignment(WidgetTextAlignment alignment) {
+  switch (alignment) {
+    case WIDGET_TEXT_ALIGN_CENTER:
+      return LV_TEXT_ALIGN_CENTER;
+
+    case WIDGET_TEXT_ALIGN_RIGHT:
+      return LV_TEXT_ALIGN_RIGHT;
+
+    case WIDGET_TEXT_ALIGN_LEFT:
+    default:
+      return LV_TEXT_ALIGN_LEFT;
+  }
 }
 
 static void s_apply_position(lv_obj_t *obj, const WidgetPosition *position) {
@@ -115,7 +138,67 @@ static void s_bar_draw_event_cb(lv_event_t *e) {
   lv_draw_label(lv_event_get_layer(e), &label_dsc, &label_area);
 }
 
-StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, lv_obj_t *parent) {
+StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
+  if (label == NULL || config == NULL || parent == NULL || config->label_text == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (config->size.width < 0 || config->size.height < 0 || config->border_width < 0) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  *label = (LabelWidget){ 0 };
+  label->label = lv_label_create(parent);
+
+  if (label->label == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  lv_label_set_text(label->label, config->label_text);
+
+  if (config->size.width > 0 || config->size.height > 0) {
+    lv_label_set_long_mode(label->label, LV_LABEL_LONG_MODE_WRAP);
+  }
+
+  lv_obj_set_size(label->label, config->size.width > 0 ? config->size.width : LV_SIZE_CONTENT, config->size.height > 0 ? config->size.height : LV_SIZE_CONTENT);
+  s_apply_position(label->label, &config->position);
+
+  lv_obj_set_style_text_align(label->label, s_widget_text_alignment(config->alignment), 0);
+  lv_obj_set_style_text_color(label->label, s_gui_palette_color(config->text_color_id), 0);
+  lv_obj_set_style_text_font(label->label, config->font != NULL ? config->font : GUI_SMALL_TEXT, 0);
+
+  lv_obj_set_style_bg_opa(label->label, config->background_enabled ? LV_OPA_COVER : LV_OPA_TRANSP, 0);
+  if (config->background_enabled) {
+    lv_obj_set_style_bg_color(label->label, s_gui_palette_color(config->background_color_id), 0);
+  }
+
+  lv_obj_set_style_border_opa(label->label, config->border_enabled ? LV_OPA_COVER : LV_OPA_TRANSP, 0);
+  if (config->border_enabled) {
+    lv_obj_set_style_border_color(label->label, s_gui_palette_color(config->border_color_id), 0);
+  }
+  lv_obj_set_style_border_width(label->label, config->border_enabled ? (config->border_width > 0 ? config->border_width : 1) : 0, 0);
+
+  lv_obj_set_style_pad_top(label->label, (config->background_enabled || config->border_enabled) ? LABEL_WIDGET_DEFAULT_PADDING : 0, 0);
+  lv_obj_set_style_pad_bottom(label->label, (config->background_enabled || config->border_enabled) ? LABEL_WIDGET_DEFAULT_PADDING : 0, 0);
+  lv_obj_set_style_pad_left(label->label, (config->background_enabled || config->border_enabled) ? LABEL_WIDGET_DEFAULT_PADDING : 0, 0);
+  lv_obj_set_style_pad_right(label->label, (config->background_enabled || config->border_enabled) ? LABEL_WIDGET_DEFAULT_PADDING : 0, 0);
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
+  if (label == NULL || text == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if (label->label == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_label_set_text(label->label, text);
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
   if (speedometer == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -177,7 +260,7 @@ StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_km
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, lv_obj_t *parent) {
+StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent) {
   if (bar_widget == NULL || config == NULL || parent == NULL || config->label_text == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -204,7 +287,7 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   lv_label_set_text(bar_widget->label, config->label_text);
   lv_obj_set_style_text_color(bar_widget->label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
 
-  lv_obj_align_to(bar_widget->label, bar_widget->bar, config->label_text_alignment, 0, 0);
+  lv_obj_align_to(bar_widget->label, bar_widget->bar, config->label_alignment, 0, 0);
 
   return STATUS_CODE_OK;
 }
@@ -228,3 +311,121 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
   lv_bar_set_value(bar_widget->bar, value, LV_ANIM_ON);
   return STATUS_CODE_OK;
 }
+
+StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id) {
+  if (bar_widget == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (bar_widget->bar == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_obj_set_style_bg_color(bar_widget->bar, s_gui_palette_color(color_id), LV_PART_INDICATOR);
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+  if (widget == NULL || config == NULL || parent == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  *widget = (TableWidget){ 0 };
+  widget->table = lv_table_create(parent);
+  if (widget->table == NULL) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  lv_table_set_row_count(widget->table, config->row_count);
+  lv_table_set_column_count(widget->table, config->col_count);
+  for (uint32_t col = 0U; col < config->col_count; ++col) {
+    lv_table_set_column_width(widget->table, col, config->col_width);
+  }
+
+  s_apply_position(widget->table, &config->position);
+
+  lv_obj_set_style_text_color(widget->table, s_gui_palette_color(config->text_color_id), LV_PART_ITEMS);
+  lv_obj_set_style_text_font(widget->table, config->font != NULL ? config->font : GUI_SMALL_TEXT, LV_PART_ITEMS);
+  lv_obj_set_style_text_align(widget->table, LV_TEXT_ALIGN_CENTER, LV_PART_ITEMS);
+  lv_obj_set_style_border_color(widget->table, s_gui_palette_color(config->border_color_id), LV_PART_ITEMS);
+  lv_obj_set_style_border_width(widget->table, 1, LV_PART_ITEMS);
+  lv_obj_set_style_border_side(widget->table, LV_BORDER_SIDE_FULL, LV_PART_ITEMS);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_ITEMS);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_ITEMS | LV_STATE_PRESSED);
+
+  lv_obj_set_style_border_color(widget->table, s_gui_palette_color(config->border_color_id), LV_PART_MAIN);
+  lv_obj_set_style_border_width(widget->table, 1, LV_PART_MAIN);
+  lv_obj_set_style_border_side(widget->table, LV_BORDER_SIDE_FULL, LV_PART_MAIN);
+  lv_obj_set_style_bg_opa(widget->table, LV_OPA_TRANSP, LV_PART_MAIN);
+  lv_obj_set_style_pad_all(widget->table, 0, LV_PART_MAIN);
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+  if (widget == NULL || text == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if (widget->table == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_table_set_cell_value(widget->table, row, col, text);
+  return STATUS_CODE_OK;
+}
+
+#else
+StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
+  (void)label;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
+  (void)label;
+  (void)text;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
+  (void)speedometer;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh) {
+  (void)speedometer;
+  (void)speed_kmh;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent) {
+  (void)bar_widget;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
+  (void)bar_widget;
+  (void)value;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+  (void)widget;
+  (void)config;
+  (void)parent;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+  (void)widget;
+  (void)row;
+  (void)col;
+  (void)text;
+  return STATUS_CODE_OK;
+}
+#endif

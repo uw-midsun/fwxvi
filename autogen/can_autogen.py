@@ -140,15 +140,13 @@ def get_data(args):
                 }
 
                 if signal.get("type") == "bitfield":
-                    
-                    num_flags = len(signal["flags"])
                     signal_data["type"] = "bitfield"
-                    signal_data["length"] = ((num_flags + 7) // 8) * 8
-                    
-                    index = 0
+                    signal_data["length"] = signal["length"]
+
                     flags = []
                     prev_offset = 0
                     prev_length = 0
+                    total_flag_bits = 0
                     for flag in signal["flags"]:
                         if isinstance(flag, dict):
                             curr_length = flag["length"]
@@ -161,8 +159,12 @@ def get_data(args):
                         
                         offset = prev_offset + prev_length
                         flags.append({"name": curr_name, "length": curr_length, "offset": offset})
+                        total_flag_bits += curr_length
                         prev_length = curr_length
                         prev_offset = offset
+
+                    if total_flag_bits > signal_data["length"]:
+                        raise Exception("The total size of bitfield flags is larger than the size of the bitfield")
                     
                     signal_data["flags"] = flags
                 else:

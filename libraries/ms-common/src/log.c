@@ -16,6 +16,5 @@
 
 // Allocating memory for extern variables in .h files
 char g_log_buffer[MAX_LOG_SIZE];
-Mutex s_log_mutex;
 
 UartSettings log_uart_settings = { .tx = { .port = LOG_GPIO_PORT, .pin = LOG_TX_PIN }, .rx = { .port = LOG_GPIO_PORT, .pin = LOG_RX_PIN }, .baudrate = 115200 };

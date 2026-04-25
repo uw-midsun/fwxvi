@@ -94,8 +94,17 @@
  * Pedal definitions
  ************************************************************************************************/
 
-/** @brief  Front Controller accelerator pedal input */
-#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 3)
+/** @brief  Front Controller accelerator pedal raw input */
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW FRONT_CONTROLLER_GPIO_DEF(A, 0)
+
+/** @brief  Front Controller accelerator pedal input - op-amp Vref DAC channel */
+#define FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP OPAMP_1
+
+/** @brief  Front Controller accelerator pedal input - post op-amp */
+#define GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT FRONT_CONTROLLER_GPIO_DEF(A, 3)
+
+/** @brief  Front Controller accelerator pedal input - op-amp Vref DAC channel */
+#define FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF_DAC DAC_CHANNEL1
 
 /** @brief  Front Controller brake pedal input */
 #define GPIO_FRONT_CONTROLLER_BRAKE_PEDAL FRONT_CONTROLLER_GPIO_DEF(A, 5)

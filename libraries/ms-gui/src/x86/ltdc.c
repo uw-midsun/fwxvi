@@ -73,7 +73,7 @@ StatusCode ltdc_init(LtdcSettings *settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  s_ltdc_sim_settings.renderer = SDL_CreateRenderer(s_ltdc_sim_settings.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  s_ltdc_sim_settings.renderer = SDL_CreateRenderer(s_ltdc_sim_settings.window, -1, SDL_RENDERER_SOFTWARE);
   if (!s_ltdc_sim_settings.renderer) {
     LOG_DEBUG("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     SDL_DestroyWindow(s_ltdc_sim_settings.window);

@@ -34,6 +34,17 @@ LIBRARIES_INC_DIR = LIB_DIR.Dir("ms-common").Dir("inc")
 
 AUTOGEN_DIR = ROOT.Dir("autogen")
 
+
+def get_smoke_entries():
+    # Smoke targets can now be nested (e.g. smoke/front/fc_current_sense).
+    # Discover only directories that define config.json
+    smoke_root = Path(SMOKE_DIR.abspath)
+    entries = []
+    for config_file in sorted(smoke_root.rglob('config.json')):
+        rel_dir = config_file.parent.relative_to(Path(ROOT.abspath))
+        entries.append(ROOT.Dir(str(rel_dir)))
+    return entries
+
 def src(path):
     # return all source files within a path
     srcs = []
@@ -50,10 +61,16 @@ def inc(path):
     return [path.Dir("inc"), path.Dir("inc").Dir(PLATFORM)]
 
 
+def should_link_lvgl():
+    return PLATFORM != 'arm' or HARDWARE_TYPE == 'STM32L4P5VET6'
+
+
 def get_lib_deps(entry):
     # Recursively get library dependencies for entry
     config = parse_config(entry)
     deps = config['libs'] + config['{}_libs'.format(PLATFORM)]
+    if not should_link_lvgl():
+        deps = [dep for dep in deps if dep != 'lvgl']
     for dep in deps:
         deps += get_lib_deps(LIB_DIR.Dir(dep))
     return deps
@@ -361,9 +378,30 @@ def build_lvgl_library():
         return library_targets['lvgl']
 
     print("Building library: lvgl")
-
+    
     entry = LVGL_ENTRY
     config = parse_config(entry)
+
+    lvgl_src_archive = entry.File('lvgl_src.tar.gz')
+    lvgl_src_dir = entry.Dir('src')
+
+    if not os.path.isdir(lvgl_src_dir.abspath):
+        if not lvgl_src_archive.exists():
+            raise FileNotFoundError(
+                f"Could not find LVGL sources or archive. Expected either '{lvgl_src_dir.path}' "
+                f"or '{lvgl_src_archive.path}'."
+            )
+
+        print(f"Extracting LVGL sources from {lvgl_src_archive.path}")
+        subprocess.run(
+            ['tar', '-xzvf', lvgl_src_archive.abspath, '-C', entry.abspath],
+            check=True,
+        )
+
+        if not os.path.isdir(lvgl_src_dir.abspath):
+            raise FileNotFoundError(
+                f"Extracted LVGL archive but '{lvgl_src_dir.path}' was not created."
+            )
 
     lib_deps = get_lib_deps(entry)
 
@@ -371,8 +409,6 @@ def build_lvgl_library():
     for dep in lib_deps:
         if dep not in library_targets and LIB_DIR.Dir(dep).exists():
             build_library(dep)
-
-    lvgl_src_dir = entry.Dir('src')
 
     # Recursively collect all .c source files under lvgl/src/
     # Exclude platform-specific driver directories
@@ -464,8 +500,8 @@ def build_lvgl_library():
 ms_common_lib = build_library('ms-common')
 ms_drivers_lib = build_library('ms-drivers')
 
-# 2. Build LVGL, Only built for STM32L4P5VET6 (Steering board)
-if HARDWARE_TYPE == 'STM32L4P5VET6':
+# 2. Build LVGL whenever the current platform/config will link against it.
+if should_link_lvgl():
     build_lvgl_library()
 
 # 3. Build all other non-MPXE libraries
@@ -484,7 +520,7 @@ if LIB_DIR.Dir('ms-mpxe').exists():
 ###########################################################
 # Create appropriate targets for all projects and smoke projects
 ###########################################################
-for entry in PROJ_DIR.glob('*') + SMOKE_DIR.glob('*'):
+for entry in PROJ_DIR.glob('*') + get_smoke_entries():
     config = parse_config(entry)
 
     incs = inc(entry)

@@ -25,6 +25,8 @@
 #include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_config.h"
+#include "rear_controller_getters.h"
+#include "rear_controller_state_manager.h"
 
 RearControllerStorage rear_controller_storage = { 0U };
 
@@ -34,24 +36,22 @@ RearControllerConfig rear_controller_config = {
   .cell_capacity_Ah = REAR_CONTROLLER_CELL_CAPACITY_AH,
 };
 
-void pre_loop_init() {
-  rear_controller_init(&rear_controller_storage, &rear_controller_config);
-}
+void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
   killswitch_run();
-  run_can_tx_fast();
+  precharge_run();
 }
 
 void run_10hz_cycle() {
+  rear_controller_update_state_manager_medium_cycle();
   log_cell_sense();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-  bps_fault_commit();
-  run_can_tx_slow();
+  // bps_fault_commit();
 }
 
 #ifdef MS_PLATFORM_X86
@@ -64,6 +64,8 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+
+  rear_controller_init(&rear_controller_storage, &rear_controller_config);
 
   init_master_tasks();
 
