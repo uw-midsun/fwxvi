@@ -80,13 +80,13 @@ typedef struct {
   // int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
   // int16_t motor_temp;          /**< Temperature of the motor */
 
-  // int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
+  int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
   // int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
 
   uint16_t bps_fault;     /**< BPS fault bitfield */
   uint8_t bps_fault_cell; /**< BPS fault cell number (if it exists) */
-  uint16_t ws22_flags;    /**< Error and limit flags from the WS22 */
-  float state_of_charge;  /** Battery percentage from 0-100, two decimal points of precision*/
+  // uint16_t ws22_flags;    /**< Error and limit flags from the WS22 */
+  float state_of_charge; /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
   int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */

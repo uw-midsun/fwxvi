@@ -26,6 +26,7 @@ static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, uint8
 
   telemetry->limit_flags = (uint16_t)((msg_data_u8[1] << 8U) | msg_data_u8[0]);
   telemetry->error_flags = (uint16_t)((msg_data_u8[3] << 8U) | msg_data_u8[2]);
+  telemetry->merged_flags = (telemetry->error_flags & 0x1FF) | ((telemetry->limit_flags & 0x8F) << 9U);
 
   return STATUS_CODE_OK;
 }
