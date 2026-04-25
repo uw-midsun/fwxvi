@@ -274,13 +274,6 @@ StatusCode display_rx_medium() {
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
 
-  display_data->ws22_flags = get_motor_stats_A_flags();
-
-  display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
-  display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
-
-  display_data->motor_bus_voltage = (uint16_t)get_motor_stats_A_bus_voltage();
-  display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
   display_data->vehicle_velocity = (float)display_data->motor_velocity * 3.141f * 0.558f * 0.001 * 60;
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();

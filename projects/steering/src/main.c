@@ -33,6 +33,18 @@ SteeringStorage steering_storage = { 0 };
 
 SteeringConfig steering_config = { .cruise_max_speed_kmh = STEERING_CRUISE_MAX_SPEED_KMH, .cruise_min_speed_kmh = STEERING_CRUISE_MIN_SPEED_KMH };
 
+Ws22MotorCanConfig motor_can_config = {
+  .ws22_status_info_enabled = true,
+  .ws22_bus_measurement_enabled = true,
+  .ws22_velocity_measurement_enabled = true,
+  .ws22_phase_current_enabled = true,
+  .ws22_motor_voltage_enabled = true,
+  .ws22_motor_current_enabled = false,
+  .ws22_motor_back_emf_enabled = false,
+  .ws22_rail_15v_enabled = false,
+  .ws22_temperature_enabled = true,
+};
+
 void pre_loop_init() {}
 
 void run_1000hz_cycle() {
@@ -68,7 +80,7 @@ int main() {
   tasks_init();
   log_init();
 
-  steering_init(&steering_storage, &steering_config);
+  steering_init(&steering_storage, &steering_config, &motor_can_config);
 
   init_master_tasks();
 

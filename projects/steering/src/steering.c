@@ -52,7 +52,7 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
+StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -61,6 +61,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   steering_storage->config = config;
 
   can_init(&s_can_storage, &s_can_settings);
+  ws22_motor_can_init(storage->ws22_motor_can_storage, motor_can_config);
   lights_signal_manager_init(steering_storage);
   button_led_manager_init(steering_storage);
   button_manager_init(steering_storage);

@@ -16,6 +16,7 @@
 /* Inter-component Headers */
 #include "global_enums.h"
 #include "status.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 
