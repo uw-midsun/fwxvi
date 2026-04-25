@@ -24,6 +24,7 @@
 
 /* Inter-component headers */
 #include "afe_page.h"
+#include "can_page.h"
 #include "gpio_page.h"
 #include "overview_page.h"
 
@@ -135,6 +136,7 @@ class MainWindow : public QMainWindow {
   QPointer<OverviewPage> m_overview_page; /**< Overview page */
   QPointer<AfePage> m_afe_page;           /**< AFE page */
   QPointer<GpioPage> m_gpio_page;         /**< GPIO page */
+  QPointer<CanPage> m_can_page;           /**< CAN signal table page */
 
   /* Future pages go here, to be implemented */
   QPointer<QWidget> m_spi_page; /**< Placeholder SPI page */

@@ -55,6 +55,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
     m_overview_page{ nullptr },
     m_afe_page{ nullptr },
     m_gpio_page{ nullptr },
+    m_can_page{ nullptr },
     m_spi_page{ nullptr },
     m_i2c_page{ nullptr },
     m_adc_page{ nullptr } {
@@ -69,6 +70,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   new QListWidgetItem(QStringLiteral("Overview"), m_list);
   new QListWidgetItem(QStringLiteral("AFE"), m_list);
   new QListWidgetItem(QStringLiteral("GPIO"), m_list);
+  new QListWidgetItem(QStringLiteral("CAN"), m_list);
   new QListWidgetItem(QStringLiteral("SPI"), m_list);
   new QListWidgetItem(QStringLiteral("I2C"), m_list);
   new QListWidgetItem(QStringLiteral("ADC"), m_list);
@@ -77,10 +79,12 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
 
   const std::map<QString, QVariant> afe_payload = extractSubmap(m_state.payload, QStringLiteral("afe"));
   const std::map<QString, QVariant> gpio_payload = extractSubmap(m_state.payload, QStringLiteral("gpio"));
+  const std::map<QString, QVariant> can_payload = extractSubmap(m_state.payload, QStringLiteral("messages"));
 
   m_overview_page = new OverviewPage(m_state.payload, m_state.client_files, m_state.current_client_index, m_stack);
   m_afe_page = new AfePage(afe_payload, m_stack);
   m_gpio_page = new GpioPage(gpio_payload, m_stack);
+  m_can_page = new CanPage(can_payload, m_stack);
 
   m_spi_page = new QWidget(m_stack);
   {
@@ -104,6 +108,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   m_stack->addWidget(m_overview_page);
   m_stack->addWidget(m_afe_page);
   m_stack->addWidget(m_gpio_page);
+  m_stack->addWidget(m_can_page);
   m_stack->addWidget(m_spi_page);
   m_stack->addWidget(m_i2c_page);
   m_stack->addWidget(m_adc_page);
@@ -167,6 +172,10 @@ void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
   if (m_gpio_page) {
     const auto gpio_payload = extractSubmap(payload, QStringLiteral("gpio"));
     m_gpio_page->setPayload(gpio_payload);
+  }
+  if (m_can_page) {
+    const auto can_payload = extractSubmap(payload, QStringLiteral("messages"));
+    m_can_page->setPayload(can_payload);
   }
 }
 
