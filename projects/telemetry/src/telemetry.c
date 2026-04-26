@@ -61,7 +61,7 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   status = spi_init(telemetry_storage->bmi323_storage->settings->spi_port, &telemetry_storage->bmi323_storage->settings->spi_settings);
   // can_init(telemetry_storage->can_storage, &s_can_settings);
   // queue_init(&telemetry_storage->datagram_queue);
-
+  bmi323_init(bmi323_storage);
   // sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
   // xb_transmit_init(telemetry_storage, telemetry_storage->config);
 
