@@ -303,14 +303,31 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
     if (data == BMI323_CHIP_ID) {
       break;
     }
-    status = s_get_register(BMI323_REG_CHIP_ID, &data);
-    if (status != STATUS_CODE_OK) {
-      return status;
-    }
+    data = s_get_chip_id();
     delay_ms(10U);
   }
 
   if (data != BMI323_CHIP_ID) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  /* CHECK CORRECT INITALIZATION STATUS
+  * Check device status from reading from register 0x01
+  * Check sensor register
+  *
+   */
+
+  uint16_t device_status; 
+  s_get_register(0x01, &device_status);
+
+  if((device_status & (0xFF)) != 0b0){
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  uint16_t sensor_status; 
+  s_get_register(0x02, &sensor_status);
+
+  if((sensor_status & (0xFF)) != 0b1){
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
