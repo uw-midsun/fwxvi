@@ -5,7 +5,7 @@
  *
  * @brief  Header file for steering
  *
- * @date   2025-07-09
+ * @date   2026-3-25
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -56,6 +56,7 @@ typedef enum {
 
   STEERING_BUTTON_CRUISE_CONTROL_UP,
   STEERING_BUTTON_CRUISE_CONTROL_DOWN,
+  STEERING_BUTTON_PTT, /**< Unused button, does not exist */
 
   NUM_STEERING_BUTTONS,
 } SteeringButtons;
