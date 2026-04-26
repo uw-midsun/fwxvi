@@ -31,7 +31,6 @@ StatusCode imu_run() {
     LOG_CRITICAL("status error");
     return status;
   }
-  LOG_DEBUG("here12312312312312312313");
   //imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
   //eulerAngles(q_est, &s_storage->readings.roll, &s_storage->readings.pitch, &s_storage->readings.yaw);
 
