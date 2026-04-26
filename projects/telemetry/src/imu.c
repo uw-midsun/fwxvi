@@ -19,15 +19,13 @@
 #include "tasks.h"
 #include "telemetry_setters.h" // Project must be built first 
 
-
 /* Intra-component Headers */
 
 #define IMU_DEBUG 1U
 
 static Bmi323Storage *s_storage = NULL;
 
-StatusCode imu_run() 
-{
+StatusCode imu_run() {
   StatusCode status = bmi323_update(s_storage);
   if (status != STATUS_CODE_OK) {
     LOG_CRITICAL("status error");
