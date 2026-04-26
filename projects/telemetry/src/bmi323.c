@@ -92,24 +92,16 @@ static StatusCode s_set_register(Bmi323Registers reg, uint16_t data) {
 }
 
 static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len) {
-  const uint8_t max_words_per_spi_frame = (uint8_t)((SPI_MAX_NUM_DATA - 1U) / 2U);
+  uint16_t tx_buffer[BMI323_MAX_NUM_DATA] = { 0U };
 
-  if ((data == NULL) || (len == 0U) || (len > BMI323_MAX_NUM_DATA) || (len > max_words_per_spi_frame)) {
-    return STATUS_CODE_INVALID_ARGS;
+  tx_buffer[0U] = WRITE_MASK & reg;
+
+  /* Copy data */
+  for (size_t i = 1; i < len + 1U; i++) {
+    tx_buffer[i] = data[i - 1U];
   }
 
-  /* SPI frame is: [register_address][data0_lsb][data0_msb]...[dataN_lsb][dataN_msb] */
-  uint8_t tx_buffer[SPI_MAX_NUM_DATA] = { 0U };
-  size_t tx_len = 1U + (2U * len);
-
-  tx_buffer[0U] = (uint8_t)(reg & WRITE_MASK);
-
-  for (size_t i = 0U; i < len; i++) {
-    tx_buffer[1U + (2U * i)] = (uint8_t)(data[i] & 0xFFU);
-    tx_buffer[1U + (2U * i) + 1U] = (uint8_t)((data[i] >> 8U) & 0xFFU);
-  }
-
-  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, tx_len, NULL, 0U);
+  return spi_exchange(imu_storage->settings->spi_port, (uint8_t *)tx_buffer, sizeof(tx_buffer), NULL, 0U);
 }
 
 static StatusCode get_gyroscope_data(Axes *gyro) {
