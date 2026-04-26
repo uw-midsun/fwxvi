@@ -20,9 +20,15 @@ Messages:
     signals:
       triggers:
         type: bitfield
-        flags: [{name: bps_fault, length: 11}, relay_state, power_state, afe_status, motor_precharge_complete]
-        length: 16
-  
+        flags:
+          - {name: bps_fault, length: 11}
+          - {name: cell_at_fault, length: 8}
+          - relay_state
+          - {name: power_state, length: 2}
+          - afe_status
+          - motor_precharge_complete
+        length: 32
+
   battery_stats_A:
     id: 2
     cycle: "medium"
@@ -60,7 +66,7 @@ Messages:
         length: 16
       max_temperature:
         length: 16
-  
+
   power_input_stats:
     id: 4
     cycle: "medium"
@@ -80,8 +86,8 @@ Messages:
       input_aux_current:
         length: 16
 
-  AFE1_status_A:
-    id: 59
+  AFE_discharge_bitset:
+    id: 50
     cycle: "medium"
     critical: false
     target:
@@ -90,17 +96,17 @@ Messages:
       steering:
         watchdog: 0
     signals:
-      id:
-        length: 8
-      voltage_0:
-        length: 16
-      voltage_1:
-        length: 16
-      voltage_2:
-        length: 16
-  
-  AFE1_status_B:
-    id: 60
+      AFE1:
+        type: bitfield
+        flags: [cell_0, cell_1, cell_2, cell_3, cell_4, cell_5, cell_6, cell_7, cell_8, cell_9, cell_10, cell_11, cell_12, cell_13, cell_14, cell_15]
+        length: 32
+      AFE2:
+        type: bitfield
+        flags: [cell_0, cell_1, cell_2, cell_3, cell_4, cell_5, cell_6, cell_7, cell_8, cell_9, cell_10, cell_11, cell_12, cell_13, cell_14, cell_15]
+        length: 32
+
+  AFE1_status_A:
+    id: 51
     cycle: "medium"
     critical: false
     target:
@@ -118,8 +124,103 @@ Messages:
       voltage_2:
         length: 16
 
+  AFE1_status_B:
+    id: 52
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_3:
+        length: 16
+      voltage_4:
+        length: 16
+      voltage_5:
+        length: 16
+
+  AFE1_status_C:
+    id: 53
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_6:
+        length: 16
+      voltage_7:
+        length: 16
+      voltage_8:
+        length: 16
+
+  AFE1_status_D:
+    id: 54
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_9:
+        length: 16
+      voltage_10:
+        length: 16
+      voltage_11:
+        length: 16
+
+  AFE1_status_E:
+    id: 55
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_12:
+        length: 16
+      voltage_13:
+        length: 16
+      voltage_14:
+        length: 16
+
+  AFE1_status_F:
+    id: 56
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_15:
+        length: 16
+      voltage_16:
+        length: 16
+      voltage_17:
+        length: 16
+
   AFE2_status_A:
-    id: 61
+    id: 57
     cycle: "medium"
     critical: false
     target:
@@ -138,6 +239,82 @@ Messages:
         length: 16
 
   AFE2_status_B:
+    id: 58
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_3:
+        length: 16
+      voltage_4:
+        length: 16
+      voltage_5:
+        length: 16
+
+  AFE2_status_C:
+    id: 59
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_6:
+        length: 16
+      voltage_7:
+        length: 16
+      voltage_8:
+        length: 16
+
+  AFE2_status_D:
+    id: 60
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_9:
+        length: 16
+      voltage_10:
+        length: 16
+      voltage_11:
+        length: 16
+
+  AFE2_status_E:
+    id: 61
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      id:
+        length: 8
+      voltage_12:
+        length: 16
+      voltage_13:
+        length: 16
+      voltage_14:
+        length: 16
+
+  AFE2_status_F:
     id: 62
     cycle: "medium"
     critical: false
@@ -149,11 +326,11 @@ Messages:
     signals:
       id:
         length: 8
-      voltage_0:
+      voltage_15:
         length: 16
-      voltage_1:
+      voltage_16:
         length: 16
-      voltage_2:
+      voltage_17:
         length: 16
 
   AFE_temperature:

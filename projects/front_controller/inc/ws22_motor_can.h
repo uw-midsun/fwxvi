@@ -55,8 +55,9 @@ typedef struct {
  */
 typedef struct {
   /* Status Information (0x401/0x81) */
-  uint16_t error_flags; /**< Motor controller error flags */
-  uint16_t limit_flags; /**< Motor controller limit flags */
+  uint16_t error_flags;  /**< Motor controller error flags */
+  uint16_t limit_flags;  /**< Motor controller limit flags */
+  uint16_t merged_flags; /**< Motor controller flags - merged to a 16 bit field */
 
   /* Bus Measurements (0x402/0x82) */
   float bus_current; /**< DC bus current (A) */

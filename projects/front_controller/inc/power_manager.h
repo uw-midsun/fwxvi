@@ -29,6 +29,8 @@ typedef struct PowerManagerStorage {
   uint16_t current_readings[NUM_OUTPUTS];
 } PowerManagerStorage;
 
+#define FRONT_OPEN_LOAD_SWITCH_DELAY_MS 40U
+
 /**
  * @brief   Initialize all the GPIO pins
  * @param   storage Pointer to the front controller storage

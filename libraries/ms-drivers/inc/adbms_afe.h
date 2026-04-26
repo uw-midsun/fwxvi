@@ -49,22 +49,20 @@
  * @brief Maximum AFE devices in daisy chain config
  * @note This is an arbitrary limitation, can be increased/decreased if needed
  */
-#define ADBMS_AFE_MAX_DEVICES 3
+#define ADBMS_AFE_MAX_DEVICES 2
 
 /**
  * @brief Maximum x of each device
  * @note This is a device limitation
  */
 #define ADBMS_AFE_MAX_CELLS_PER_DEVICE 18
-#define ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE 16
-#define ADBMS_AFE_MAX_BOARD_THERMISTORS_PER_DEVICE 1
+#define ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE 9
 
 /**
  * @brief Maximum across all devices
  */
 #define ADBMS_AFE_MAX_CELLS (ADBMS_AFE_MAX_DEVICES * ADBMS_AFE_MAX_CELLS_PER_DEVICE)
 #define ADBMS_AFE_MAX_CELL_THERMISTORS (ADBMS_AFE_MAX_DEVICES * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE)
-#define ADBMS_AFE_MAX_BOARD_THERMISTORS (ADBMS_AFE_MAX_DEVICES * ADBMS_AFE_MAX_BOARD_THERMISTORS_PER_DEVICE)
 
 /**
  * @brief   Select the ADC mode
@@ -109,9 +107,8 @@ typedef struct AdbmsAfeSettings {
  *          - Each AFE's data (voltages, lookups, etc.) is stored contiguously before the next AFE's data.
  */
 typedef struct AdbmsAfeStorage {
-  uint16_t cell_voltages[ADBMS_AFE_MAX_CELLS];                         /**< Stores cell voltages for all devices */
-  uint16_t thermistor_voltages[ADBMS_AFE_MAX_CELL_THERMISTORS];        /**< Stores thermistor voltages for all devices */
-  uint16_t board_thermistor_voltages[ADBMS_AFE_MAX_BOARD_THERMISTORS]; /**< Stores thermistor voltage for all board temperature */
+  uint16_t cell_voltages[ADBMS_AFE_MAX_CELLS];                  /**< Stores cell voltages for all devices */
+  uint16_t thermistor_voltages[ADBMS_AFE_MAX_CELL_THERMISTORS]; /**< Stores thermistor voltages for all devices */
 
   uint16_t cell_result_lookup[ADBMS_AFE_MAX_CELLS];    /**< Map raw cell indices read from AFE to `cell_voltages` */
   uint16_t discharge_cell_lookup[ADBMS_AFE_MAX_CELLS]; /**< Map indicies of `cell_voltages` to raw cell indices */
@@ -159,18 +156,16 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe);
 
 /**
- * @brief   Triggers ADC conversion for the specified thermistor voltage inputs
- * @details Builds and transmits the ADCV command using the configured ADC mode to start
- *          aux voltage conversion across all AFE devices. Puts device into active mode
- *          before initiating conversion.
+ * @brief   Triggers ADC conversion for all thermistor GPIO inputs
+ * @details Starts a single aux conversion across every AFE in the daisy chain.
+ *          The converted values map directly to the 9 GPIO thermistor inputs on
+ *          each device.
  * @param   afe Pointer to AdbmsAfeStorage struct, stores runtime data and settings of AFE
- * @param   device_num Target device number
- * @param   thermistor_index Thermistor index between 0-16
- * @return  STATUS_CODE_OK if the ADCV command was successfully transmitted
+ * @return  STATUS_CODE_OK if the ADAX command was successfully transmitted
  *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
-StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index);
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe);
 
 /**
  * @brief   Triggers ADC conversion for the specified board temperature thermistor input
@@ -199,28 +194,15 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe);
 
 /**
  * @brief   Reads and stores thermistor voltages from the aux voltage registers of each afe
- * @details Received PEC and PEC of data is compared to see if data is valid
- *          Voltages are stored in the `afe->thermistor_voltages` array
+ * @details Reads the GPIO-backed thermistor channels for every device. Received
+ *          PEC and calculated PEC are compared to ensure the data is valid.
+ *          Voltages are stored in the `afe->thermistor_voltages` array.
  * @param   afe Pointer to AdbmsAfeStorage struct, stores runtime data and settings of AFE
- * @param   device_num Target device number
- * @param   thermistor_index Thermistor index between 0-16
  * @return  STATUS_CODE_OK if thermistors were read correctly
- *          STATUS_CODE_INTERNAL_ERROR if read PEC and calcualted PEC do not match up
+ *          STATUS_CODE_INTERNAL_ERROR if read PEC and calculated PEC do not match
  *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `s_read_register`
  */
-StatusCode adbms_afe_read_thermistor(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index);
-
-/**
- * @brief   Reads and stores board temperature thermistor voltage from the aux voltage registers of each afe
- * @details Received PEC and PEC of data is compared to see if data is valid
- *          Voltages are stored in the `afe->board_thermistor_voltages` array
- * @param   afe Pointer to AdbmsAfeStorage struct, stores runtime data and settings of AFE
- * @param   device_num Target device number
- * @return  STATUS_CODE_OK if thermistors were read correctly
- *          STATUS_CODE_INTERNAL_ERROR if read PEC and calcualted PEC do not match up
- *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `s_read_register`
- */
-StatusCode adbms_afe_read_board_temp(AdbmsAfeStorage *afe, uint8_t device_num);
+StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe);
 
 /**
  * @brief   Mark cell for discharging in each device
@@ -266,23 +248,14 @@ AdbmsAfeStorage *adbms_afe_get_storage(void);
 StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage);
 
 /**
- * @brief Sets the voltage for a specific thermistoriliary input (thermistor channel).
+ * @brief Sets the voltage for a specific thermistor input.
  * @param afe Pointer to the AFE storage structure.
  * @param device_num Device number containing the target thermistor.
- * @param thermistor_index Index of the thermistoriliary channel (global index across all devices).
+ * @param thermistor_index Index of the thermistor channel on the target device.
  * @param voltage The voltage value to set.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
  */
 StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index, float voltage);
-
-/**
- * @brief Sets the voltage for a specific thermistoriliary input (thermistor channel).
- * @param afe Pointer to the AFE storage structure.
- * @param device_num Device number containing the target thermistor.
- * @param voltage The voltage value to set.
- * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
- */
-StatusCode adbms_afe_set_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, float voltage);
 
 /**
  * @brief Sets the voltage for all cells on a specific AFE device.
@@ -294,10 +267,10 @@ StatusCode adbms_afe_set_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t 
 StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage);
 
 /**
- * @brief Sets the voltage for all thermistoriliary inputs on a specific AFE device.
+ * @brief Sets the voltage for all thermistor inputs on a specific AFE device.
  * @param afe Pointer to the AFE storage structure.
  * @param device_num Device number containing the target thermistor.
- * @param voltage The voltage value to set for each thermistoriliary channel.
+ * @param voltage The voltage value to set for each thermistor channel.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
 StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage);
@@ -311,20 +284,12 @@ StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_
 StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage);
 
 /**
- * @brief Sets the voltage for all thermistoriliary channels across all AFE devices in the pack.
+ * @brief Sets the voltage for all thermistor channels across all AFE devices in the pack.
  * @param afe Pointer to the AFE storage structure.
- * @param voltage The voltage value to set for all thermistoriliary inputs.
+ * @param voltage The voltage value to set for all thermistor inputs.
  * @return STATUS_CODE_OK always.
  */
 StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float voltage);
-
-/**
- * @brief Sets the voltage for all board thermistor channels across all AFE devices in the pack.
- * @param afe Pointer to the AFE storage structure.
- * @param voltage The voltage value to set for all thermistoriliary inputs.
- * @return STATUS_CODE_OK always.
- */
-StatusCode adbms_afe_set_pack_board_thermistor_voltages(AdbmsAfeStorage *afe, float voltage);
 
 /**
  * @brief Gets the simulated voltage for a specific cell.
@@ -334,19 +299,12 @@ StatusCode adbms_afe_set_pack_board_thermistor_voltages(AdbmsAfeStorage *afe, fl
 uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index);
 
 /**
- * @brief Gets the simulated voltage for a specific thermistoriliary input.
- * @param device_num Device number of the board thermistor.
- * @param thermistor_index Index between 0-16 of the thermistoriliary input.
- * @return The voltage value of the specified thermistoriliary input.
+ * @brief Gets the simulated voltage for a specific thermistor input.
+ * @param device_num Device number containing the target thermistor.
+ * @param thermistor_index Index between 0-8 of the thermistor input.
+ * @return The voltage value of the specified thermistor input.
  */
 uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint16_t thermistor_index);
-
-/**
- * @brief Gets the simulated voltage for a specific board thermistor input.
- * @param device_num Device number of the board thermistor.
- * @return The voltage value of the specified thermistoriliary input.
- */
-uint16_t adbms_afe_get_board_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num);
 
 /**
  * @brief   Get the discharge enable state of a single cell.

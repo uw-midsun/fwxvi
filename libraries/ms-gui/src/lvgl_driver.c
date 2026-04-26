@@ -11,18 +11,21 @@
 #include <string.h>
 
 /* Inter-component Headers */
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "FreeRTOS.h"
 #include "lvgl.h"
 #include "task.h"
+#endif
 
 /* Intra-component Headers */
 #include "ltdc.h"
 #include "lvgl_driver.h"
 
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 static LtdcSettings *s_ltdc_settings;
 
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
-#define LV_DRAW_BUF_LINES 20
+#define LV_DRAW_BUF_LINES 25        /* This can be tweaked to improve refresh rate, but may also kill RAM */
 #define NUMBER_OF_BYTES_PER_PIXEL 2 /* Since RGB565 = 2 bytes per pixel*/
 static uint8_t s_draw_buf[DISPLAY_WIDTH * LV_DRAW_BUF_LINES * NUMBER_OF_BYTES_PER_PIXEL];
 
@@ -87,3 +90,13 @@ StatusCode lvgl_driver_process(void) {
   lv_timer_handler();
   return STATUS_CODE_OK;
 }
+#else
+StatusCode lvgl_driver_init(LtdcSettings *settings) {
+  (void)settings;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_driver_process(void) {
+  return STATUS_CODE_OK;
+}
+#endif

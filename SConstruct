@@ -9,7 +9,20 @@ def set_target(option, opt, value, parser):
     if opt == "--project":
         target = f"projects/{value}"
     if opt == "--smoke":
-        target = f"smoke/{value}"
+        if value.startswith("fc"):
+            target = f"smoke/front/{value}"
+        elif value.startswith("rc"):
+            target = f"smoke/rear/{value}"
+        elif value.startswith("sc"):
+            target = f"smoke/steering/{value}"
+        elif value.startswith("tc"):
+            target = f"smoke/telemetry/{value}"
+        elif value.endswith("_api"):
+            target = f"smoke/api/{value}"
+        elif value.endswith("_driver"):
+            target = f"smoke/driver/{value}"
+        else:
+            target = f"smoke/{value}"
     if opt == "--library":
         target = f"libraries/{value}"
     if opt == "--python" or opt == "--py":
@@ -78,8 +91,8 @@ AddOption(
 
 NUM_JOBS = os.cpu_count() or 4
 
-if not GetOption("num_jobs"):
-    AddOption("--jobs", dest="num_jobs", type="int", default=NUM_JOBS)
+if GetOption("num_jobs") == 1:
+    SetOption("num_jobs", NUM_JOBS)
 
 PLATFORM = GetOption("platform")
 TARGET = GetOption("name")

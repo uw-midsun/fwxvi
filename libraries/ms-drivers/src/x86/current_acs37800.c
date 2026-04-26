@@ -36,6 +36,8 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
     s_registers[i] = 0;
   }
 
+  s_registers[ACS37800_REG_DIO_N_CONFIG] |= ACS37800_MASK_BYPASS_N_EN;
+
   return STATUS_CODE_OK;
 }
 
@@ -81,7 +83,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
 
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
-  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE_MV;
 
   return STATUS_CODE_OK;
 }
@@ -204,7 +206,7 @@ void acs37800_set_current(float current_amps) {
 
 void acs37800_set_voltage(float voltage_mV) {
   // Encode into lower 16 bits of VCODES_ICODES register
-  int16_t voltage_raw = (int16_t)(voltage_mV / ACS37800_VOLTAGE_SCALE);
+  int16_t voltage_raw = (int16_t)(voltage_mV / ACS37800_VOLTAGE_SCALE_MV);
   // Clear lower 16 bits
   s_registers[ACS37800_REG_VCODES_ICODES] &= 0xFFFF0000;
   s_registers[ACS37800_REG_VCODES_ICODES] |= ((uint32_t)voltage_raw & 0xFFFF);

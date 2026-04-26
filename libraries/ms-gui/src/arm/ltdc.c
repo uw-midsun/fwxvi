@@ -21,7 +21,7 @@
 #include "gpio.h"
 #include "ltdc.h"
 
-#ifdef STM32L4P5xx
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 
 static LtdcSettings *s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
@@ -134,7 +134,7 @@ static StatusCode s_configure_layer(void) {
 }
 
 /**
- * @brief Configure the ltdc pixel clock. Uses MSI as source
+ * @brief Configure the ltdc pixel clock. Uses HSI16 as source
  */
 static StatusCode s_configure_ltdc_pixel_clock(void) {
   RCC_PeriphCLKInitTypeDef clk = { 0 };
@@ -143,13 +143,13 @@ static StatusCode s_configure_ltdc_pixel_clock(void) {
 
   /* Configure PLLSAI2 for LTDC pixel clock
    * Target: ~9 MHz for 480x272 TFT display
-   * MSI = 4 MHz (RCC_MSIRANGE_6):
-   * VCO = (MSI / M) * N = (4 / 1) * 72 = 288 MHz
+   * HSI16 = 16 MHz:
+   * VCO = (HSI / M) * N = (16 / 4) * 72 = 288 MHz
    * PLLSAI2R = VCO / R = 288 / 8 = 36 MHz
    * LTDC clock = PLLSAI2R / DIV4 = 36 / 4 = 9 MHz
    */
-  clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_MSI;
-  clk.PLLSAI2.PLLSAI2M = 1;                          /* Division factor: 1-16 */
+  clk.PLLSAI2.PLLSAI2Source = RCC_PLLSOURCE_HSI;
+  clk.PLLSAI2.PLLSAI2M = 4;                          /* Division factor: 1-16 */
   clk.PLLSAI2.PLLSAI2N = 72;                         /* Multiplication factor: 8-127 */
   clk.PLLSAI2.PLLSAI2R = 8;                          /* Division factor: 2, 4, 6, or 8 */
   clk.PLLSAI2.PLLSAI2ClockOut = RCC_PLLSAI2_LTDCCLK; /* Enable LTDC clock output */
