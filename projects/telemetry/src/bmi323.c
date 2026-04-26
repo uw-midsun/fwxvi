@@ -258,7 +258,7 @@ static StatusCode s_calculate_gyro_offset() {
 
   return STATUS_CODE_OK;
 }
-/*
+
 static uint8_t s_get_chip_id() {
   uint16_t chip_id = 0U;
   StatusCode status = s_get_register(BMI323_REG_CHIP_ID, &chip_id);
@@ -269,7 +269,7 @@ static uint8_t s_get_chip_id() {
 
   return (chip_id & 0xFFU);
 }
-  */
+  
 
 /************************************************************************************************
  * Public Function Definition
