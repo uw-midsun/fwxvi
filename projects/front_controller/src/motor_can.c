@@ -10,14 +10,14 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
-#include "motor_can.h"
-
 #include "accel_pedal.h"
 #include "cruise_control.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
+#include "motor_can.h"
 #include "regen_brake.h"
 
 #define MOTOR_CAN_DEBUG 0U
@@ -38,6 +38,52 @@ static VehicleDriveState current_drive_state;
 
 static float regen_strength;
 static bool regen_direction;
+
+static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanMessage *msg) {
+  if (control_data == NULL || msg == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  msg->id.raw = WS22_CAN_ID_DRIVE_CMD;
+  msg->extended = false;
+  msg->dlc = 8U;
+
+  /* Pack velocity as float */
+  union {
+    float f;
+    uint8_t bytes[4];
+  } velocity_union;
+  velocity_union.f = control_data->velocity;
+  msg->data_u8[0] = velocity_union.bytes[0];
+  msg->data_u8[1] = velocity_union.bytes[1];
+  msg->data_u8[2] = velocity_union.bytes[2];
+  msg->data_u8[3] = velocity_union.bytes[3];
+
+  /* Pack current as float */
+  union {
+    float f;
+    uint8_t bytes[4];
+  } current_union;
+  current_union.f = control_data->current;
+
+  msg->data_u8[4] = current_union.bytes[0];
+  msg->data_u8[5] = current_union.bytes[1];
+  msg->data_u8[6] = current_union.bytes[2];
+  msg->data_u8[7] = current_union.bytes[3];
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode motor_can_transmit_drive_command(void) {
+  CanMessage msg;
+
+  StatusCode status = s_build_drive_command(&front_controller_storage->ws22_motor_can_storage->control, &msg);
+  if (status != STATUS_CODE_OK) {
+    return status;
+  }
+
+  return can_transmit(&msg);
+}
 
 StatusCode motor_can_update_target_current_velocity() {
   if (front_controller_storage == NULL) {
@@ -105,24 +151,6 @@ StatusCode motor_can_update_target_current_velocity() {
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_forward_can_data() {
-  set_motor_stats_B_vehicle_velocity((int16_t)front_controller_storage->vehicle_speed_kph);
-  set_motor_stats_B_motor_velocity((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
-
-  set_motor_stats_A_bus_voltage((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage);
-  set_motor_stats_A_bus_current((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_current);
-  set_motor_stats_A_rail_15v_supply((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.rail_15v_supply);
-  set_motor_stats_A_flags(front_controller_storage->ws22_motor_can_storage->telemetry.merged_flags);
-
-  set_motor_stats_B_heat_sink_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.heat_sink_temp);
-  set_motor_stats_B_motor_temp((int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_temp);
-
-  LOG_DEBUG("MOT V: %d | MotVel: %d\r\n", (int8_t)front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage,
-            (int16_t)front_controller_storage->ws22_motor_can_storage->telemetry.motor_velocity);
-
-  return STATUS_CODE_OK;
-}
-
 StatusCode motor_can_init(FrontControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -136,4 +164,12 @@ StatusCode motor_can_init(FrontControllerStorage *storage) {
 StatusCode motor_can_get_current_state(VehicleDriveState *current_state) {
   *current_state = current_drive_state;
   return STATUS_CODE_OK;
+}
+
+StatusCode motor_can_process_rx(CanMessage *msg) {
+  if (msg->id.raw == 0x82) {
+    LOG_DEBUG("data: %x %x %x %x\r\n", msg->data_u8[0], msg->data_u8[1], msg->data_u8[2], msg->data_u8[3]);
+  }
+
+  return ws22_motor_can_process_rx(msg->data_u8, msg->id.raw, msg->dlc);
 }

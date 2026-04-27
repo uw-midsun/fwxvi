@@ -92,8 +92,8 @@ StatusCode precharge_run() {
   if (rear_controller_storage->precharge_complete) {
     CONDITIONAL_LOG_DEBUG("Precharge complete\r\n");
 #if (PRECHARGE_MODE == PRECHARGE_MODE_COMPARE)
-    CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
-                          (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
+    CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage, rear_controller_storage->pack_voltage,
+                          (uint32_t)abs(rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
 #endif
     return STATUS_CODE_OK;
   }
@@ -109,18 +109,18 @@ StatusCode precharge_run() {
 #endif
 
 #if (PRECHARGE_MODE == PRECHARGE_MODE_COMPARE)
-  CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", get_motor_stats_A_bus_voltage(), rear_controller_storage->pack_voltage,
-                        (uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
+  CONDITIONAL_LOG_DEBUG("MOT: %u | BAT: %lu DIFF: %lu PC complete: %u\r\n", rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage, rear_controller_storage->pack_voltage,
+                        (uint32_t)abs(rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage - rear_controller_storage->pack_voltage), rear_controller_storage->precharge_complete);
 
   // If either voltage reading is zero, we should exit immediately
-  if (get_motor_stats_A_bus_voltage() == 0 || rear_controller_storage->pack_voltage == 0) {
+  if (rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage == 0 || rear_controller_storage->pack_voltage == 0) {
     valid_cycles = 0;
     set_rear_controller_status_triggers_motor_precharge_complete(false);
     return STATUS_CODE_OK;
   }
 
   // Check difference in voltage
-  if ((uint32_t)abs(get_motor_stats_A_bus_voltage() - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
+  if ((uint32_t)abs(rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
     valid_cycles++;
 
     // We should be within precharge threshold for a given amount of cycles

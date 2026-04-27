@@ -24,6 +24,7 @@
 #include "display.h"
 #include "drive_state_manager.h"
 #include "light_signal_manager.h"
+#include "motor_can.h"
 #include "party_mode.h"
 #include "range_estimator.h"
 #include "steering.h"
@@ -49,10 +50,10 @@ static const CanSettings s_can_settings = {
   .tx = GPIO_STEERING_CAN_TX,
   .rx = GPIO_STEERING_CAN_RX,
   .loopback = false,
-  .can_rx_all_cb = NULL,
+  .can_rx_all_cb = motor_can_process_rx,
 };
 
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
+StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -61,6 +62,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   steering_storage->config = config;
 
   can_init(&s_can_storage, &s_can_settings);
+  ws22_motor_can_init(storage->ws22_motor_can_storage, motor_can_config);
   lights_signal_manager_init(steering_storage);
   button_led_manager_init(steering_storage);
   button_manager_init(steering_storage);

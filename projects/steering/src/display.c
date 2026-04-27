@@ -146,9 +146,10 @@ static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell, display_data->ws22_flags));
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, steering_storage->ws22_motor_can_storage->telemetry.motor_velocity, display_data->bps_fault, display_data->bps_fault_cell,
+                                                  steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
-    status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
+    status_ok_or_return(gui_widgets_set_temps_stats_label(steering_storage->ws22_motor_can_storage->telemetry.motor_temp, display_data->max_cell_temp));
     status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
   }
 
@@ -274,14 +275,7 @@ StatusCode display_rx_medium() {
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
 
-  display_data->ws22_flags = get_motor_stats_A_flags();
-
-  display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
-  display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
-
-  display_data->motor_bus_voltage = (uint16_t)get_motor_stats_A_bus_voltage();
-  display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
-  display_data->vehicle_velocity = (float)display_data->motor_velocity * 3.141f * 0.558f * 0.001 * 60;
+  steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();

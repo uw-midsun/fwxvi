@@ -45,63 +45,9 @@ def pack(num, size):
 
 can_data_cache = CanSimulatorDataCache()
 
-system_can_message_can_communication_fast_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_fast_one_shot_msg", "sig2"), 16)))
-
-messages_fast.append(system_can_message_can_communication_fast_one_shot_msg)
-
-system_can_message_can_communication_medium_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_medium_one_shot_msg", "sig2"), 16)))
-
-messages_medium.append(system_can_message_can_communication_medium_one_shot_msg)
-
-system_can_message_can_communication_slow_one_shot_msg = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_ID,
-data = bytearray(pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig1"), 16) + pack(can_data_cache.get("can_communication_slow_one_shot_msg", "sig2"), 16)))
-
-messages_slow.append(system_can_message_can_communication_slow_one_shot_msg)
-
-system_can_message_front_controller_drive_status = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_drive_status", "pedal_percentage"), 32) + pack(can_data_cache.get("front_controller_drive_status", "state_data"), 8)))
-
-messages_medium.append(system_can_message_front_controller_drive_status)
-
-system_can_message_front_controller_motor_stats_a = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_A_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_a", "bus_voltage"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "bus_current"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "rail_15v_supply"), 16)))
-
-messages_medium.append(system_can_message_front_controller_motor_stats_a)
-
-system_can_message_front_controller_motor_stats_b = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_B_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_b", "vehicle_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "heat_sink_temp"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_temp"), 16)))
-
-messages_medium.append(system_can_message_front_controller_motor_stats_b)
-
-system_can_message_front_controller_fc_power_group_a = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_A_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_fc_power_group_a", "rev_cam_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "telem_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "steering_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "driver_fan_current"), 16)))
-
-messages_slow.append(system_can_message_front_controller_fc_power_group_a)
-
-system_can_message_front_controller_fc_power_group_b = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_B_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_fc_power_group_b", "horn_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_b", "spare_current"), 16)))
-
-messages_slow.append(system_can_message_front_controller_fc_power_group_b)
-
-system_can_message_front_controller_fc_power_lights_group = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_LIGHTS_GROUP_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_fc_power_lights_group", "brake_light_sig_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_lights_group", "bps_light_sig_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_lights_group", "right_sig_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_lights_group", "left_sig_current"), 16)))
-
-messages_slow.append(system_can_message_front_controller_fc_power_lights_group)
-
-system_can_message_imu_gyro_data = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA_ID,
-data = bytearray(pack(can_data_cache.get("imu_gyro_data", "x_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "y_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "z_axis"), 16)))
+system_can_message_steering_steering = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_STEERING_ID,
+data = bytearray(pack(can_data_cache.get("steering_steering", "cruise_control_target_velocity"), 32) + pack(can_data_cache.get("steering_steering", "buttons"), 8)))
 
 messages_medium.append(system_can_message_steering_steering)
 
@@ -128,6 +74,12 @@ arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_POWER_INP
 data = bytearray(pack(can_data_cache.get("rear_controller_power_input_stats", "input_dcdc_voltage"), 16) + pack(can_data_cache.get("rear_controller_power_input_stats", "input_dcdc_current"), 16) + pack(can_data_cache.get("rear_controller_power_input_stats", "input_aux_voltage"), 16) + pack(can_data_cache.get("rear_controller_power_input_stats", "input_aux_current"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_power_input_stats)
+
+system_can_message_rear_controller_afe_discharge_bitset = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE_DISCHARGE_BITSET_ID,
+data = bytearray(pack(can_data_cache.get("rear_controller_afe_discharge_bitset", "AFE1"), 32) + pack(can_data_cache.get("rear_controller_afe_discharge_bitset", "AFE2"), 32)))
+
+messages_medium.append(system_can_message_rear_controller_afe_discharge_bitset)
 
 system_can_message_rear_controller_afe1_status_a = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_A_ID,
@@ -249,18 +201,6 @@ data = bytearray(pack(can_data_cache.get("front_controller_drive_status", "pedal
 
 messages_medium.append(system_can_message_front_controller_drive_status)
 
-system_can_message_front_controller_motor_stats_a = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_A_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_a", "bus_voltage"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "bus_current"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "rail_15v_supply"), 16) + pack(can_data_cache.get("front_controller_motor_stats_a", "flags"), 16)))
-
-messages_medium.append(system_can_message_front_controller_motor_stats_a)
-
-system_can_message_front_controller_motor_stats_b = Message(
-arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_MOTOR_STATS_B_ID,
-data = bytearray(pack(can_data_cache.get("front_controller_motor_stats_b", "vehicle_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_velocity"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "heat_sink_temp"), 16) + pack(can_data_cache.get("front_controller_motor_stats_b", "motor_temp"), 16)))
-
-messages_medium.append(system_can_message_front_controller_motor_stats_b)
-
 system_can_message_front_controller_fc_power_group_a = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_A_ID,
 data = bytearray(pack(can_data_cache.get("front_controller_fc_power_group_a", "rev_cam_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "telem_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "steering_current"), 16) + pack(can_data_cache.get("front_controller_fc_power_group_a", "driver_fan_current"), 16)))
@@ -288,7 +228,7 @@ def periodic_sender(bus, messages, period, stop_event):
             message_delay = min(0.01, period / (len(messages) * 2))  # Don't use more than half the period for delays
         else:
             message_delay = 0
-
+            
         for msg in messages:
             try:
                 bus.send(msg)
@@ -316,13 +256,13 @@ def main():
         args=(can_bus, messages_fast, FAST_CYCLE_PERIOD, stop_event),
         daemon=True
     )
-
+    
     medium_thread = Thread(
         target=periodic_sender,
         args=(can_bus, messages_medium, MEDIUM_CYCLE_PERIOD, stop_event),
         daemon=True
     )
-
+    
     slow_thread = Thread(
         target=periodic_sender,
         args=(can_bus, messages_slow, SLOW_CYCLE_PERIOD, stop_event),
@@ -332,7 +272,7 @@ def main():
     fast_thread.start()
     medium_thread.start()
     slow_thread.start()
-
+    
     try:
         while True:
             time.sleep(1)
