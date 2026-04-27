@@ -34,7 +34,6 @@
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
 #include "regen_brake.h"
-#include "ws22_motor_can.h"
 
 /************************************************************************************************
  * Storage definitions
