@@ -35,10 +35,9 @@
  * @{
  */
 
-
-#define NUM_FAST_CYCLE_MESSAGES 1U /**< Number of fast cycle messages */
+#define NUM_FAST_CYCLE_MESSAGES 1U    /**< Number of fast cycle messages */
 #define NUM_MEDIUM_CYCLE_MESSAGES 24U /**< Number of medium cycle messages */
-#define NUM_SLOW_CYCLE_MESSAGES 4U /**< Number of slow cycle messages */
+#define NUM_SLOW_CYCLE_MESSAGES 4U    /**< Number of slow cycle messages */
 
 /**
  * @brief   Fast cycle Broadcast Manager message for the Linux Kernel
@@ -84,45 +83,42 @@ class CanScheduler {
   static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;   /**< Linux Broadcast Manager Id for tracking slow cycle messages */
 
   static const constexpr unsigned int NUM_TOTAL_MESSAGES = 29U; /**< Total number of messages */
-  static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U; /**< Max message length in bytes */
+  static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U;  /**< Max message length in bytes */
 
-  
   static const constexpr unsigned int FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager fast_one_shot_msg to Frame index mapping */
 
-  
-  static const constexpr unsigned int MEDIUM_STEERING_STEERING_FRAME_INDEX = 0U; /**< Broadcast Manager steering to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_STEERING_STEERING_FRAME_INDEX = 0U;                      /**< Broadcast Manager steering to Frame index mapping */
   static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX = 1U; /**< Broadcast Manager rear_controller_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_A_FRAME_INDEX = 2U; /**< Broadcast Manager battery_stats_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_B_FRAME_INDEX = 3U; /**< Broadcast Manager battery_stats_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_POWER_INPUT_STATS_FRAME_INDEX = 4U; /**< Broadcast Manager power_input_stats to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_DISCHARGE_BITSET_FRAME_INDEX = 5U; /**< Broadcast Manager afe_discharge_bitset to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_A_FRAME_INDEX = 6U; /**< Broadcast Manager afe1_status_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_B_FRAME_INDEX = 7U; /**< Broadcast Manager afe1_status_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_C_FRAME_INDEX = 8U; /**< Broadcast Manager afe1_status_c to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_D_FRAME_INDEX = 9U; /**< Broadcast Manager afe1_status_d to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_E_FRAME_INDEX = 10U; /**< Broadcast Manager afe1_status_e to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_F_FRAME_INDEX = 11U; /**< Broadcast Manager afe1_status_f to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_A_FRAME_INDEX = 12U; /**< Broadcast Manager afe2_status_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_B_FRAME_INDEX = 13U; /**< Broadcast Manager afe2_status_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_C_FRAME_INDEX = 14U; /**< Broadcast Manager afe2_status_c to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_D_FRAME_INDEX = 15U; /**< Broadcast Manager afe2_status_d to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_E_FRAME_INDEX = 16U; /**< Broadcast Manager afe2_status_e to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_F_FRAME_INDEX = 17U; /**< Broadcast Manager afe2_status_f to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_TEMPERATURE_FRAME_INDEX = 18U; /**< Broadcast Manager afe_temperature to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_A_FRAME_INDEX = 2U;        /**< Broadcast Manager battery_stats_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_B_FRAME_INDEX = 3U;        /**< Broadcast Manager battery_stats_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_POWER_INPUT_STATS_FRAME_INDEX = 4U;      /**< Broadcast Manager power_input_stats to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_DISCHARGE_BITSET_FRAME_INDEX = 5U;   /**< Broadcast Manager afe_discharge_bitset to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_A_FRAME_INDEX = 6U;          /**< Broadcast Manager afe1_status_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_B_FRAME_INDEX = 7U;          /**< Broadcast Manager afe1_status_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_C_FRAME_INDEX = 8U;          /**< Broadcast Manager afe1_status_c to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_D_FRAME_INDEX = 9U;          /**< Broadcast Manager afe1_status_d to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_E_FRAME_INDEX = 10U;         /**< Broadcast Manager afe1_status_e to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_F_FRAME_INDEX = 11U;         /**< Broadcast Manager afe1_status_f to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_A_FRAME_INDEX = 12U;         /**< Broadcast Manager afe2_status_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_B_FRAME_INDEX = 13U;         /**< Broadcast Manager afe2_status_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_C_FRAME_INDEX = 14U;         /**< Broadcast Manager afe2_status_c to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_D_FRAME_INDEX = 15U;         /**< Broadcast Manager afe2_status_d to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_E_FRAME_INDEX = 16U;         /**< Broadcast Manager afe2_status_e to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_F_FRAME_INDEX = 17U;         /**< Broadcast Manager afe2_status_f to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_TEMPERATURE_FRAME_INDEX = 18U;       /**< Broadcast Manager afe_temperature to Frame index mapping */
   static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 19U; /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 20U; /**< Broadcast Manager gyro_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 21U; /**< Broadcast Manager accel_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_TELEMETRY_IMU_DATA_FRAME_INDEX = 22U; /**< Broadcast Manager imu_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX = 23U; /**< Broadcast Manager drive_status to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 20U;                         /**< Broadcast Manager gyro_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 21U;                        /**< Broadcast Manager accel_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_TELEMETRY_IMU_DATA_FRAME_INDEX = 22U;                    /**< Broadcast Manager imu_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX = 23U;         /**< Broadcast Manager drive_status to Frame index mapping */
 
-  
-  static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_GROUP_A_FRAME_INDEX = 1U; /**< Broadcast Manager fc_power_group_a to Frame index mapping */
-  static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_GROUP_B_FRAME_INDEX = 2U; /**< Broadcast Manager fc_power_group_b to Frame index mapping */
+  static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 0U;    /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
+  static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_GROUP_A_FRAME_INDEX = 1U;      /**< Broadcast Manager fc_power_group_a to Frame index mapping */
+  static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_GROUP_B_FRAME_INDEX = 2U;      /**< Broadcast Manager fc_power_group_b to Frame index mapping */
   static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_LIGHTS_GROUP_FRAME_INDEX = 3U; /**< Broadcast Manager fc_power_lights_group to Frame index mapping */
 
-  int m_bcmCanSocket;               /**< The CAN schedulers Broadcast Manager socket FD */
-  std::atomic<bool> m_isConnected;  /**< Boolean flag to track the CAN schedulers connection status */
+  int m_bcmCanSocket;              /**< The CAN schedulers Broadcast Manager socket FD */
+  std::atomic<bool> m_isConnected; /**< Boolean flag to track the CAN schedulers connection status */
 
   /**
    * @brief   Schedules all CAN data by updating the Broacast Manager socket
