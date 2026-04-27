@@ -86,6 +86,12 @@ class Terminal {
    *          This function will never return. To exit safely, you must enter 'exit'
    */
   void run();
+
+  /**
+   * @brief   Execute terminal-style command for a selected client
+   * @note    For testing purposes
+   */
+  void executeCommand(ClientConnection *targetClient, const std::string &input);
 };
 
 /** @} */

@@ -117,9 +117,9 @@ def build_library(library_name, dependencies=None):
     # Skip if already built
     if library_name in library_targets:
         return library_targets[library_name]
-    
+
     print(f"Building library: {library_name}")
-    
+
     entry = LIB_DIR.Dir(library_name)
     config = parse_config(entry)
 
@@ -171,7 +171,7 @@ def build_ms_mpxe_library():
     mpxe_client_dir = mpxe_dir.Dir("client")
     mpxe_client_util_dir = mpxe_client_dir.Dir("utils")
     mpxe_client_app_dir = mpxe_client_dir.Dir("app")
-    
+
     # Include paths
     include_paths = inc(ms_mpxe_dir) + inc(mpxe_common_dir) + inc(mpxe_client_util_dir) + inc(mpxe_client_app_dir)
 
@@ -187,7 +187,7 @@ def build_ms_mpxe_library():
             CPPPATH=include_paths + env['CPPPATH']
         ) for src in c_sources
     ]
-    
+
     # C++ object files with C++ compiler
     cpp_objects = [
         cxx_env.Object(
@@ -343,7 +343,7 @@ ms_drivers_lib = build_library('ms-drivers')
 for entry in LIB_DIR.glob('*'):
     if entry.name not in ['ms-common', 'ms-mpxe', 'ms-drivers']:
         build_library(entry.name)
-    
+
 # 3. Build MPXE common and client libraries
 mpxe_common_lib = create_mpxe_common_lib()
 mpxe_client_lib = create_mpxe_client_lib()
@@ -446,7 +446,14 @@ if check_qt6_installed():
 
     GUI_SRC = ROOT.Dir('mpxe').Dir('server').Dir('app').Dir('gui')
     GUI_OBJ = OBJ_DIR.Dir('mpxe_gui')
+    MPXE_DIR = ROOT.Dir('mpxe')
+    MPXE_SERVER_DIR = MPXE_DIR.Dir('server')
+    MPXE_SERVER_UTIL_DIR = MPXE_SERVER_DIR.Dir('utils')
+    MPXE_SERVER_APP_DIR = MPXE_SERVER_DIR.Dir('app')
+    MPXE_COMMON_DIR = MPXE_DIR.Dir('common')
+    GUI_SERVER_OBJ = OBJ_DIR.Dir('mpxe_gui_server')
     VariantDir(GUI_OBJ, GUI_SRC, duplicate=0)
+    VariantDir(GUI_SERVER_OBJ, MPXE_SERVER_DIR, duplicate=0)
 
     def collect_variant(src_root, var_root, patterns):
         """Return VARIANT File nodes for sources under src_root matching patterns."""
@@ -462,7 +469,26 @@ if check_qt6_installed():
         # de-dup while preserving order
         return list(dict.fromkeys(out))
 
+    def collect_variant_flat(src_root, var_root, patterns):
+        """Return VARIANT File nodes for immediate files under src_root matching patterns."""
+        base = Path(src_root.abspath)
+        out = []
+        for pat in patterns:
+            for p in base.glob(pat):
+                if not p.is_file():
+                    continue
+                rel = str(p.relative_to(base))
+                out.append(var_root.File(rel))
+        return list(dict.fromkeys(out))
+
     gui_cc = collect_variant(GUI_SRC, GUI_OBJ, ('*.cc', '*.cpp'))
+    server_backend_srcs = []
+    server_backend_srcs += collect_variant_flat(MPXE_SERVER_UTIL_DIR.Dir('src'), GUI_SERVER_OBJ.Dir('utils').Dir('src'), ('*.cc', '*.cpp'))
+    server_backend_srcs += collect_variant_flat(MPXE_SERVER_APP_DIR.Dir('src'), GUI_SERVER_OBJ.Dir('app').Dir('src'), ('*.cc', '*.cpp'))
+    server_backend_srcs = [
+        source for source in server_backend_srcs
+        if not str(source).endswith('mpxe/server/app/src/main.cc')
+    ]
 
     # Keep main.cc first if present
     main_src = GUI_OBJ.File('main.cc')
@@ -477,11 +503,18 @@ if check_qt6_installed():
         GUI_SRC.Dir('utils').Dir('inc'),
         GUI_SRC.Dir('models').Dir('inc'),
         GUI_SRC.Dir('ui').Dir('inc'),
+        *inc(MPXE_SERVER_UTIL_DIR),
+        *inc(MPXE_SERVER_APP_DIR),
+        *inc(MPXE_COMMON_DIR),
+        *inc(LIB_DIR.Dir("ms-common")),
+        *inc(LIB_DIR.Dir("ms-drivers")),
     ])
 
     mpxe_gui = qtEnv.Program(
         target=BIN_DIR.Dir('projects').File('mpxe_gui'),
-        source=gui_cc
+        source=gui_cc + server_backend_srcs,
+        LIBS=qtEnv['LIBS'] + ['mpxe_common'] * 2,
+        LIBPATH=qtEnv.get('LIBPATH', []) + [LIB_BIN_DIR],
     )
     Alias('mpxe_gui', mpxe_gui)
 else:
