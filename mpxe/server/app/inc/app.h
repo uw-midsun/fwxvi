@@ -35,13 +35,12 @@
 #define USE_NETWORK_TIME_PROTOCOL 0U
 #endif
 
-extern JSONManager serverJSONManager; /**< Global JSON Manager */
-extern GpioManager serverGpioManager; /**< Global GPIO Manager */
-extern AfeManager serverAfeManager;   /**< Global AFE Manager */
-extern AdcManager serverAdcManager;   /**< Global ADC Manager */
-extern I2CManager serverI2CManager;   /**< Global I2C Manager */
-extern SPIManager serverSPIManager;   /**< Global SPI Manager */
-
+extern JSONManager serverJSONManager;   /**< Global JSON Manager */
+extern GpioManager serverGpioManager;   /**< Global GPIO Manager */
+extern AfeManager serverAfeManager;     /**< Global AFE Manager */
+extern AdcManager serverAdcManager;     /**< Global ADC Manager */
+extern I2CManager serverI2CManager;     /**< Global I2C Manager */
+extern SPIManager serverSPIManager;     /**< Global SPI Manager */
 extern CanListener serverCanListener;   /**< Global CAN Listener */
 extern CanScheduler serverCanScheduler; /**< Global CAN Scheduler */
 /** @} */

@@ -8,12 +8,18 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <iostream>
+#include <string>
 
 /* Qt library headers */
+#include <QTimer>
 
 /* Inter-component Headers */
+#include "app_callback.h"
+#include "app_terminal.h"
 #include "json_watcher.h"
 #include "main_window.h"
+#include "server.h"
 #include "utils.h"
 
 /* Intra-component Headers */
@@ -21,6 +27,15 @@
 int main(int argc, char *argv[]) {
   QApplication app{ argc, argv };
   applyDarkTheme(app);
+
+  Server server;
+  Terminal terminal{ &server };
+
+  try {
+    server.listenClients(8080, applicationMessageCallback, applicationConnectCallback);
+  } catch (const std::exception &e) {
+    std::cerr << "Failed to start MPXE server: " << e.what() << std::endl;
+  }
 
   AppState state;
   state.client_files = findClientJsons();
@@ -75,6 +90,19 @@ int main(int argc, char *argv[]) {
 
   /* When the set of *.json files changes, update UI + selection */
   QObject::connect(watcher, SIGNAL(clientsListChanged(QStringList)), &win, SLOT(onClientsListChanged(QStringList)));
+
+  QTimer gpio_poll_timer{ &win };
+  QObject::connect(&gpio_poll_timer, &QTimer::timeout, [&server, &terminal]() {
+    std::string client_name = "gpio_api";
+    ClientConnection *client = server.getClientByName(client_name);
+
+    if (client == nullptr) {
+      return;
+    }
+
+    terminal.executeCommand(client, "GPIO GET_PIN_STATE A0");
+  });
+  gpio_poll_timer.start(1000);
 
   return app.exec();
 }
