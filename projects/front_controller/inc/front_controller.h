@@ -30,8 +30,8 @@ struct PowerSenseStorage;
 struct AccelPedalStorage;
 struct Ws22MotorCanStorage;
 
-/** @brief  Front controller pedal set to 2% deadzone  */
-#define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.02f
+/** @brief  Front controller pedal set to 10% deadzone  */
+#define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.05f
 
 /** @brief  Front controller pedal is remapped from 0 - 1 to 0.1 to 1 */
 #define FRONT_CONTROLLER_ACCEL_REMAP_MIN 0.10f
@@ -45,14 +45,24 @@ struct Ws22MotorCanStorage;
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
 
-/** @brief  Front controller brake pedal set to 1% deadzone  */
-#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.01f
+/** @brief  Front controller brake pedal set to 15% deadzone  */
+#define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.15f
 
 /** @brief Max velocity value used for ws22 motor controllers */
 #define WS22_CONTROLLER_MAX_VELOCITY 12000
 
 /** @brief Max speed of vehicle in KPH */
 #define MAX_VEHICLE_SPEED_KPH 50
+
+/** @brief Default values of calibration values for when calibration fails */
+#define FRONT_CONTROLLER_ACCEL_PEDAL_UPPER_VALUE_AMPLIFIED_DEFAULT 1120
+#define FRONT_CONTROLLER_ACCEL_PEDAL_LOWER_VALUE_AMPLIFIED_DEFAULT 286
+
+#define FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_THRESHOLD_DEFAULT 535
+#define FRONT_CONTROLLER_ACCEL_PEDAL_REVERSED_DEFAULT true
+
+#define FRONT_CONTROLLER_BRAKE_PEDAL_UPPER_VALUE_DEFAULT 1230
+#define FRONT_CONTROLLER_BRAKE_PEDAL_LOWER_VALUE_DEFAULT 960
 
 /**
  * @brief   Front Controller configuration data
@@ -63,18 +73,27 @@ typedef struct {
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
   float brake_pedal_deadzone;        /**< Deadzone for brake pedal input [0.0 - 1.0]  */
+  float brake_pedal_activation_zone; /**< Activation zone for brake pedal input [0.0 - 1.0]  */
   float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
 } FrontControllerConfig;
+
+/**
+ * @brief   Front Controller brake states
+ */
+typedef enum {
+  BRAKE_STATE_DISABLED = 0,
+  BRAKE_STATE_BRAKING,
+} BrakeState;
 
 /**
  * @brief   Front Controller storage
  */
 typedef struct {
-  bool brake_enabled; /**< Brake enabled */
-  bool regen_enabled; /**< Regen enabled */
+  BrakeState brake_state; /**< Brake state - enabled, braking, or regen */
 
   uint32_t vehicle_speed_kph; /**< Current vehicle speed in km/h */
 
+  float brake_percentage;
   float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 

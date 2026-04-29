@@ -23,11 +23,16 @@
 
 /** @brief Values are given in */
 #define ACS37800_Q15_SCALE_DENOM 32768.0f
+#define ACS37800_Q16_SCALE_DENOM 65536.0f
 
-/* Table value formula, NEED the Rsense and Riso resistor values for line voltage calculation */
-/* Note in mv */
-#define ACS37800_DELTA_VIN_MAX 0.84f
-#define ACS37800_VOLTAGE_SCALE ((ACS37800_DELTA_VIN_MAX * 1.19f) / ACS37800_Q15_SCALE_DENOM)
+/* Pack voltage divider values from the ACS37800 input network */
+#define ACS37800_RISO_OHMS 4000000.0f
+#define ACS37800_RSENSE_OHMS 6200.0f
+#define ACS37800_LINE_TO_DEVICE_RATIO (ACS37800_RSENSE_OHMS / (ACS37800_RSENSE_OHMS + ACS37800_RISO_OHMS))
+
+/* VRMS full-scale value from the datasheet */
+#define ACS37800_DELTA_VIN_MAX 250.0f
+#define ACS37800_VOLTAGE_SCALE_MV ((ACS37800_DELTA_VIN_MAX * 1.19f) / ACS37800_Q15_SCALE_DENOM)
 
 /* Note in Amps */
 #define ACS37800_IPR_MAX_A 90.0f
@@ -39,6 +44,7 @@
 #define ACS37800_MASK_FAULTOUT 0x02     /* Bit 1 */
 #define ACS37800_MASK_OVERVOLTAGE 0x08  /* Bit 3 */
 #define ACS37800_MASK_UNDERVOLTAGE 0x10 /* Bit 4 */
+#define ACS37800_MASK_BYPASS_N_EN (1UL << 24)
 
 /**
  * @brief Voltatile Memory register addresses
@@ -47,6 +53,7 @@
  * https://www.allegromicro.com/-/media/files/datasheets/acs37800-datasheet.ashx
  */
 typedef enum {
+  ACS37800_REG_DIO_N_CONFIG = 0x0F,      /**< Shadow config: I2C address, DIO mux, n, bypass_n_en */
   ACS37800_REG_VRMS_IRMS = 0x20,         /**< Voltage and Current RMS */
   ACS37800_REG_VCODES_ICODES = 0x2A,     /**< Voltage and Current Instantaneous */
   ACS37800_REG_PINSTANT = 0x2C,          /**< Power Instantaneous */

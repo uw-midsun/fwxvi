@@ -14,7 +14,6 @@
 #include "log.h"
 
 /* Intra-component Headers */
-#include "front_controller_setters.h"
 #include "ws22_motor_can.h"
 
 static FrontControllerStorage *front_controller_storage = NULL;
@@ -64,6 +63,8 @@ static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, CanMe
   telemetry->limit_flags = (uint16_t)((msg->data_u8[1] << 8U) | msg->data_u8[0]);
   telemetry->error_flags = (uint16_t)((msg->data_u8[3] << 8U) | msg->data_u8[2]);
 
+  telemetry->merged_flags = (telemetry->error_flags & 0x1FF) | ((telemetry->limit_flags & 0x8F) << 9U);
+
   return STATUS_CODE_OK;
 }
 
@@ -88,9 +89,6 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
 
   /* Read vehicle velocity is in units of m/s */
   front_controller_storage->vehicle_speed_kph = telemetry->motor_velocity * 3.6f;
-
-  set_motor_velocity_vehicle_velocity((int16_t)(front_controller_storage->vehicle_speed_kph));
-  set_motor_velocity_motor_velocity((int16_t)(telemetry->motor_velocity));
 
   return STATUS_CODE_OK;
 }
@@ -156,9 +154,6 @@ static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, CanMe
 
   memcpy(&telemetry->motor_temp, &msg->data_u8[0], sizeof(float));
   memcpy(&telemetry->heat_sink_temp, &msg->data_u8[4], sizeof(float));
-
-  set_motor_temperature_motor_temp((int16_t)telemetry->motor_temp);
-  set_motor_temperature_heat_sink_temp((int16_t)telemetry->heat_sink_temp);
 
   return STATUS_CODE_OK;
 }

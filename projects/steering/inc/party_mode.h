@@ -41,6 +41,13 @@ StatusCode party_mode_init(SteeringStorage *storage);
 StatusCode party_mode_run(void);
 
 /**
+ * @brief   Toggle party mode on or off
+ * @return  STATUS_CODE_OK on success
+ *          STATUS_CODE_UNINITIALIZED when party mode is not initialized
+ */
+StatusCode party_mode_toggle(void);
+
+/**
  * @brief   Check if party mode is active
  * @return  TRUE when party mode is active
  *          FALSE when party mode is inactive

@@ -56,12 +56,27 @@ const GpioAddress output_pins[NUM_OUTPUTS] = {
 
 static OutputGroupDef output_group_all = {
   .num_outputs = NUM_OUTPUTS,
-  .outputs = { LEFT_SIG, RIGHT_SIG, BRAKE_LIGHT, BPS_LIGHT, DRIVER_FAN, REV_CAM, TELEM, STEERING, HORN, SPARE_1 },
+  .outputs = { STEERING, TELEM, BPS_LIGHT, REV_CAM, HORN, BRAKE_LIGHT, LEFT_SIG, RIGHT_SIG, DRIVER_FAN, SPARE_1 },
 };
 
-static OutputGroupDef output_group_active_group = {
+static OutputGroupDef output_group_idle_group = {
   .num_outputs = 3,
-  .outputs = { REV_CAM, TELEM, STEERING },
+  .outputs = { STEERING, TELEM, REV_CAM },
+};
+
+static OutputGroupDef output_group_d_r_indicators_group = {
+  .num_outputs = 2,
+  .outputs = { SPARE_1, DRIVER_FAN },
+};
+
+static OutputGroupDef output_group_drive_group = {
+  .num_outputs = 4,
+  .outputs = { STEERING, TELEM, REV_CAM, SPARE_1 },
+};
+
+static OutputGroupDef output_group_reverse_group = {
+  .num_outputs = 4,
+  .outputs = { STEERING, TELEM, REV_CAM, DRIVER_FAN },
 };
 
 static OutputGroupDef output_group_left_lights_group = {
@@ -96,7 +111,10 @@ static OutputGroupDef output_group_horn_group = {
 
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
-  [OUTPUT_GROUP_ACTIVE] = &output_group_active_group,
+  [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
+  [OUTPUT_GROUP_D_R_INDICATORS] = &output_group_d_r_indicators_group,
+  [OUTPUT_GROUP_DRIVE] = &output_group_drive_group,
+  [OUTPUT_GROUP_REVERSE] = &output_group_reverse_group,
   [OUTPUT_GROUP_LEFT_LIGHTS] = &output_group_left_lights_group,
   [OUTPUT_GROUP_RIGHT_LIGHTS] = &output_group_right_lights_group,
   [OUTPUT_GROUP_HAZARD_LIGHTS] = &output_group_hazard_lights_group,
@@ -188,9 +206,6 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
     } else {
       front_controller_storage->power_manager_storage->current_readings[i] = power_sense_lo_current_calc(sampled_voltage);
     }
-
-    // LOG_DEBUG("GROUP %d | ADC %d | CURRENT %d\r\n", i, sampled_voltage, s_power_manager_storage.current_readings[i]);
-    // delay_ms(10);
   }
 
   power_manager_set_telemetry();
@@ -211,12 +226,12 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable) {
 
   for (uint8_t i = 0U; i < mapped_group->num_outputs; i++) {
     OutputId output_id = mapped_group->outputs[i];
-
     if (enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_HIGH);
     } else if (!enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_LOW);
     }
+    delay_ms(FRONT_OPEN_LOAD_SWITCH_DELAY_MS);
   }
 
   return STATUS_CODE_OK;

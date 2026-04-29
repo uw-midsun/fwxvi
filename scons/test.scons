@@ -24,6 +24,15 @@ SMOKE_DIR = ROOT.Dir('smoke')
 GEN_RUNNER = 'libraries/unity/auto/generate_test_runner.py'
 GEN_RUNNER_CONFIG = 'libraries/unity/unity_config.yml'
 
+
+def get_smoke_entries():
+    smoke_root = Path(SMOKE_DIR.abspath)
+    entries = []
+    for config_file in sorted(smoke_root.rglob('config.json')):
+        rel_dir = config_file.parent.relative_to(Path(ROOT.abspath))
+        entries.append(ROOT.Dir(str(rel_dir)))
+    return entries
+
 ###########################################################
 # Create appropriate test targets, (when lib/proj target is defined)
 ###########################################################
@@ -112,7 +121,7 @@ env.Append(PROGEMITTER=add_test_targets)
 env.Append(LIBEMITTER=add_test_targets)
 # generate all test target names
 all_tests = []
-for entry in PROJ_DIR.glob('*') + LIB_DIR.glob('*') + SMOKE_DIR.glob('*'):
+for entry in PROJ_DIR.glob('*') + LIB_DIR.glob('*') + get_smoke_entries():
     for test_file in entry.glob('test/*.c'):
         test_module_name = Path(test_file.path).stem
         all_tests.append(f"test/{entry.path}/{test_module_name}")
