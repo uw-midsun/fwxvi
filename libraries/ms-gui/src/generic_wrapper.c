@@ -1,3 +1,13 @@
+/************************************************************************************************
+ * @file   generic_widget.h
+ *
+ * @brief  A generic LVGL widget wrapper
+ *
+ * @date   2026-05-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+
 
 #include "generic_wrapper.h"
 
@@ -6,7 +16,7 @@ widget_t* create_widget(widget_config_t* config){
 
     widget_t *widget=malloc(sizeof(widget_t));
     if (!widget) return NULL;
-    
+
     widget->config = config;
     widget->obj = lv_image_create(config->parent);
     if (!widget->obj) {

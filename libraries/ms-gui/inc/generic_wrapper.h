@@ -1,10 +1,22 @@
 #pragma once
 
+/************************************************************************************************
+ * @file   generic_widget.h
+ *
+ * @brief  A generic LVGL widget wrapper
+ *
+ * @date   2026-05-12
+ * @author Midnight Sun Team #24 - MSXVI
+ ********
+*/
 
-// Uses lv_image_dst (constant) and colours 
 
 #include "lvgl.h"
 
+/**
+ * @brief Configuration struct for a generic LVGL widget.
+ * All settings for the widget are defined here.
+ */
 typedef struct{
     int32_t x;
     int32_t y;
@@ -15,7 +27,9 @@ typedef struct{
     lv_color_t color;
 }widget_config_t;
 
-
+/**
+ * @brief Represents a generic widget instance.
+ */
 typedef struct{
     lv_obj_t *obj;
     widget_config_t* config;
