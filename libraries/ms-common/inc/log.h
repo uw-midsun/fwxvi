@@ -10,9 +10,9 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
