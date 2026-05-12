@@ -33,7 +33,7 @@
 
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
-#define MS_LOG 0
+#define MS_LOG 1
 
 #ifdef STM32L433xx
 #define LOG_UART_PORT UART_PORT_1
@@ -88,7 +88,6 @@ typedef struct {
   size_t msg_size;
 } logger_message_data;
 
-extern char g_log_buffer[MAX_LOG_SIZE];
 extern UartSettings log_uart_settings;
 extern Queue s_logger_queue;
 
@@ -109,7 +108,7 @@ StatusCode log_init(void);
   do {                                                                                                                                    \
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                              \
       logger_message_data log_data;                                                                                                       \
-      log_data.msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
+      log_data.msg_size = (size_t)snprintf(log_data.log_msg, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
       queue_send(&s_logger_queue, &log_data, 1000);                                                                                       \
     }                                                                                                                                     \
   } while (0);

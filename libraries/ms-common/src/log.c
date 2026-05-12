@@ -23,13 +23,12 @@ UartSettings log_uart_settings = { .tx = { .port = LOG_GPIO_PORT, .pin = LOG_TX_
 // change the sizes of things -> MAX_LOG_SIZE,
 
 #define NUM_ITEMS_LOGGER 10
-#define ITEM_SIZE_LOGGER MAX_LOG_SIZE + sizeof(size_t)
 
-static uint8_t s_logger_queue_buf[NUM_ITEMS_LOGGER * ITEM_SIZE_LOGGER];
+static uint8_t s_logger_queue_buf[NUM_ITEMS_LOGGER * sizeof(logger_message_data)];
 
 Queue s_logger_queue = {
   .num_items = NUM_ITEMS_LOGGER,
-  .item_size = ITEM_SIZE_LOGGER,
+  .item_size = sizeof(logger_message_data),
   .storage_buf = s_logger_queue_buf,
 };
 
