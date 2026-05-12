@@ -105,8 +105,9 @@ StatusCode log_init(void);
       log_data.msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
       log_data.log_msg = g_log_buffer;                                                                                                    \
       queue_send(&s_logger_queue, &log_data, 1000);
-    } \
-  } while (0);
+}
+}
+while (0);
 #else
 #define LOG(level, fmt, ...) \
   do {                       \
