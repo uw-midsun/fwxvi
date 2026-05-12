@@ -95,6 +95,7 @@ StatusCode mcu_init(void) {
 
   gpio_init();
   retarget_init();
+  log_init();
 
   return SystemClock_Config();
 }

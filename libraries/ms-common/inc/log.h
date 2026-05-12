@@ -22,6 +22,7 @@
 #include "ms_semaphore.h"
 #include "tasks.h"
 #include "uart.h"
+#include "queues.h"
 
 /**
  * @defgroup  Logger
@@ -88,8 +89,14 @@ extern UartSettings log_uart_settings;
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
-#define log_init() \
-  { uart_init(LOG_UART_PORT, &log_uart_settings); }
+//#define task_init() t
+
+
+// PARAMETERS AND BLOCK COMMENT STUFF <-- may need to move this to a diff location
+ 
+StatusCode log_init(void);
+
+
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
@@ -97,8 +104,10 @@ extern UartSettings log_uart_settings;
 #define LOG(level, fmt, ...)                                                                                                            \
   do {                                                                                                                                  \
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
-      size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
-      uart_tx(LOG_UART_PORT, (uint8_t *)g_log_buffer, msg_size);                                                                        \
+      queue_send(&s_logger_queue, g_log_buffer, 1000);
+      size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__);
+      queue_send(&s_logger_size_queue, msg_size, 1000);
+                                                                    
     }                                                                                                                                   \
   } while (0)
 #else
