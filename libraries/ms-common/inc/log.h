@@ -104,13 +104,13 @@ StatusCode log_init(void);
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
 #elif MS_DEBUG_LOG
-#define LOG(level, fmt, ...)                                                                                                              \
-  do {                                                                                                                                    \
-    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                              \
-      logger_message_data log_data;                                                                                                       \
+#define LOG(level, fmt, ...)                                                                                                                  \
+  do {                                                                                                                                        \
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                                  \
+      logger_message_data log_data;                                                                                                           \
       log_data.msg_size = (size_t)snprintf(log_data.log_msg, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
-      queue_send(&s_logger_queue, &log_data, 1000);                                                                                       \
-    }                                                                                                                                     \
+      queue_send(&s_logger_queue, &log_data, 1000);                                                                                           \
+    }                                                                                                                                         \
   } while (0);
 #else
 #define LOG(level, fmt, ...) \
