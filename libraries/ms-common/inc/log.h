@@ -82,8 +82,14 @@ typedef enum {
   NUM_LOG_LEVELS,      /**< Number of Log levels */
 } LogLevel;
 
+typedef struct {
+  char log_msg[MAX_LOG_SIZE];
+  size_t msg_size;
+} logger_message_data;
+
 extern char g_log_buffer[MAX_LOG_SIZE];
 extern UartSettings log_uart_settings;
+extern Queue s_logger_queue;
 
 #define LOG_DEBUG(fmt, ...) LOG(LOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
@@ -103,7 +109,6 @@ StatusCode log_init(void);
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                              \
       logger_message_data log_data;                                                                                                       \
       log_data.msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
-      log_data.log_msg = g_log_buffer;                                                                                                    \
       queue_send(&s_logger_queue, &log_data, 1000);                                                                                       \
     }                                                                                                                                     \
   } while (0);
