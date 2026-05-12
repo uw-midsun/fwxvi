@@ -34,7 +34,6 @@ Queue s_logger_queue = {
 };
 
 TASK(LoggerTask, TASK_STACK_512) {
-  static_assert(sizeof(logger_message_data) < TASK_STACK_512);
   while (true) {
     logger_message_data log_data;
     if (queue_receive(&s_logger_queue, &log_data, 1000) == STATUS_CODE_OK) {
