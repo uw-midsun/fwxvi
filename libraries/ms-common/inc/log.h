@@ -20,9 +20,9 @@
 /* Intra-component Headers */
 #include "gpio.h"
 #include "ms_semaphore.h"
+#include "queues.h"
 #include "tasks.h"
 #include "uart.h"
-#include "queues.h"
 
 /**
  * @defgroup  Logger
@@ -89,31 +89,28 @@ extern UartSettings log_uart_settings;
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
-//#define task_init() t
-
+// #define task_init() t
 
 // PARAMETERS AND BLOCK COMMENT STUFF <-- may need to move this to a diff location
- 
+
 StatusCode log_init(void);
-
-
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
 #elif MS_DEBUG_LOG
-#define LOG(level, fmt, ...)                                                                                                            \
-  do {                                                                                                                                  \
-    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
-     logger_message_data log_data;
+#define LOG(level, fmt, ...)                                 \
+  do {                                                       \
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) { \
+      logger_message_data log_data;
 
-      log_data.msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__);
+log_data.msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__);
 
-      log_data.log_msg = g_log_buffer;
+log_data.log_msg = g_log_buffer;
 
-      queue_send(&s_logger_queue, &log_data, 1000);
-                                                                    
-    }                                                                                                                                   \
-  } while (0)
+queue_send(&s_logger_queue, &log_data, 1000);
+}
+}
+while (0)
 #else
 #define LOG(level, fmt, ...) \
   do {                       \
