@@ -62,6 +62,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
+  LOG_DEBUG("HELLO WORLD");
   run_can_tx_slow();
 }
 
