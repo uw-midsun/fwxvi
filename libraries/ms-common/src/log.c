@@ -22,7 +22,7 @@ UartSettings log_uart_settings = { .tx = { .port = LOG_GPIO_PORT, .pin = LOG_TX_
 // make a struct -> hold sizes and messages
 // change the sizes of things -> MAX_LOG_SIZE,
 
-#define NUM_ITEMS_LOGGER 10
+#define NUM_ITEMS_LOGGER 15
 
 static uint8_t s_logger_queue_buf[NUM_ITEMS_LOGGER * sizeof(logger_message_data)];
 
@@ -46,6 +46,8 @@ StatusCode log_init(void) {
 
   queue_init(&s_logger_queue);
   tasks_init();
+
+  tasks_init_task(LoggerTask, TASK_PRIORITY(3U), NULL);
 
   return STATUS_CODE_OK;
 }
