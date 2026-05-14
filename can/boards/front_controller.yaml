@@ -108,3 +108,13 @@ Messages:
         length: 16
       left_sig_current:
         length: 16
+  pedal_calib_status:
+    id: 25
+    cycle: "fast"
+    critical: false
+    target:
+      steering:
+        watchdog: 0
+    signals:
+      status:
+        length: 8

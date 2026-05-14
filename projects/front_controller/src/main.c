@@ -19,6 +19,7 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
+#include "../pedal_calib/inc/pedal_calib_handler.h"
 #include "accel_pedal.h"
 #include "brake_pedal.h"
 #include "front_controller.h"
@@ -46,6 +47,9 @@ void pre_loop_init() {}
 void run_1000hz_cycle() {
   run_can_rx_all();
   adc_run();
+
+  pedal_calib_handler_rx(&front_controller_storage);
+  pedal_calib_handler_run(&front_controller_storage);
 
   accel_pedal_run();
   brake_pedal_run();

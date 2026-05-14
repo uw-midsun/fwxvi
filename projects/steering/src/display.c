@@ -33,6 +33,7 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "pedal_calib.h"
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
@@ -135,11 +136,13 @@ static void s_process_x86_keyboard_input(void) {
 static void s_process_pending_menu_input(void) {
   StatusCode menu_status = gui_menu_process_pending();
 
+#ifndef MS_PLATFORM_X86
   if (menu_status == STATUS_CODE_INVALID_ARGS) {
     buzzer_play_invalid();
   } else if (menu_status != STATUS_CODE_OK) {
     LOG_DEBUG("gui menu input failed: %u\r\n", menu_status);
   }
+#endif
 }
 
 static StatusCode s_render_gui_step(void) {
@@ -168,6 +171,14 @@ static StatusCode s_render_gui_step(void) {
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(display_data->vehicle_velocity));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+
+  } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
+    // Start calibration on first entry
+    if (!steering_pedal_calib_is_active(steering_storage)) {
+      steering_pedal_calib_start(steering_storage);
+    }
+    // Receive status updates from front controller
+    steering_pedal_calib_rx(steering_storage);
   }
 
   return gui_render();

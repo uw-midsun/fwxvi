@@ -21,6 +21,7 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "../pedal_calib/inc/pedal_calib_handler.h"
 #include "accel_pedal.h"
 #include "brake_pedal.h"
 #include "cruise_control.h"
@@ -77,6 +78,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   brake_pedal_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
   pedal_calib_read(front_controller_storage);
+  pedal_calib_handler_init(front_controller_storage);
   opd_init(front_controller_storage);
   ws22_motor_can_init(front_controller_storage);
   motor_can_init(front_controller_storage);
