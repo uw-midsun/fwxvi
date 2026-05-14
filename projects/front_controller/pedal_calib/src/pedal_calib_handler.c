@@ -84,8 +84,7 @@ static StatusCode s_init_calib_hardware(void) {
     return status;
   }
 
-  status = persist_init(&s_calib_state.persist_storage, LAST_PAGE, &s_calib_state.pedal_persist_data,
-                        sizeof(s_calib_state.pedal_persist_data), true);
+  status = persist_init(&s_calib_state.persist_storage, LAST_PAGE, &s_calib_state.pedal_persist_data, sizeof(s_calib_state.pedal_persist_data), true);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("persist_init() failed with status %u\r\n", status);
     return status;
@@ -111,8 +110,7 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal raw (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw,
-                          PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED;
         s_calib_state.step_start_time_ms = delay_ms(0);
         s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED);
@@ -122,12 +120,10 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal raw (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw,
-                          PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
 
         // Setup OPAMP for next phase
-        uint16_t min_raw_reading = (s_calib_state.pedal_persist_data.accel_pedal_data_raw.lower_value <
-                                    s_calib_state.pedal_persist_data.accel_pedal_data_raw.upper_value)
+        uint16_t min_raw_reading = (s_calib_state.pedal_persist_data.accel_pedal_data_raw.lower_value < s_calib_state.pedal_persist_data.accel_pedal_data_raw.upper_value)
                                        ? s_calib_state.pedal_persist_data.accel_pedal_data_raw.lower_value
                                        : s_calib_state.pedal_persist_data.accel_pedal_data_raw.upper_value;
 
@@ -136,11 +132,7 @@ static StatusCode s_execute_calib_step(void) {
         dac_enable_channel(PEDAL_CALIB_DAC_CHANNEL);
         dac_set_voltage(PEDAL_CALIB_DAC_CHANNEL, min_raw_reading);
 
-        OpampConfig config = {
-          .vinp_sel = OPAMP_NONINVERTING_IO0,
-          .vinm_sel = OPAMP_INVERTING_IO0,
-          .output_to_adc = true
-        };
+        OpampConfig config = { .vinp_sel = OPAMP_NONINVERTING_IO0, .vinm_sel = OPAMP_INVERTING_IO0, .output_to_adc = true };
 
         opamp_configure(PEDAL_CALIB_OPAMP, &config);
         opamp_start(PEDAL_CALIB_OPAMP);
@@ -154,8 +146,7 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal amplified (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified,
-                          PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED;
         s_calib_state.step_start_time_ms = delay_ms(0);
         s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED);
@@ -165,8 +156,7 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal amplified (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified,
-                          PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_UNPRESSED;
         s_calib_state.step_start_time_ms = delay_ms(0);
         s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_UNPRESSED);
@@ -176,8 +166,7 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_BRAKE_UNPRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling brake pedal (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data,
-                          PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_PRESSED;
         s_calib_state.step_start_time_ms = delay_ms(0);
         s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_PRESSED);
@@ -187,8 +176,7 @@ static StatusCode s_execute_calib_step(void) {
     case PEDAL_CALIB_STATUS_BRAKE_PRESSED:
       if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling brake pedal (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data,
-                          PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio);
+        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio);
 
         // Commit to persist storage
         StatusCode status = persist_commit(&s_calib_state.persist_storage);

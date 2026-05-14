@@ -60,7 +60,7 @@ StatusCode gui_pedal_calib_screen_init(GuiScreen *screen) {
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
   status_ok_or_return(s_create_status_label(screen));
-  
+
   s_pedal_calib_widgets_initialized = true;
   return STATUS_CODE_OK;
 }
