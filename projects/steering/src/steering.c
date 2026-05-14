@@ -27,6 +27,7 @@
 #include "light_signal_manager.h"
 #include "motor_can.h"
 #include "party_mode.h"
+#include "pedal_calib.h"
 #include "range_estimator.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
@@ -75,6 +76,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
   drive_state_manager_init(steering_storage);
+  steering_pedal_calib_init(steering_storage);
 
   buzzer_play_startup();
   // button_led_manager_clear_all();

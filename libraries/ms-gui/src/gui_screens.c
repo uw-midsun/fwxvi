@@ -19,6 +19,7 @@
 #include "clut.h"
 #include "gui_drive_screen.h"
 #include "gui_pack_screen.h"
+#include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
@@ -126,12 +127,19 @@ static void s_destroy_pack_voltage_screen(void) {
 }
 
 /**
- * @brief   Build the pedal calibration placeholder screen
+ * @brief   Build the pedal calibration screen
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 static StatusCode s_create_pedal_calib_screen(GuiScreen *screen) {
-  return s_create_centered_placeholder(screen, "Pedal Calib", "Unimplemented");
+  return gui_pedal_calib_screen_init(screen);
+}
+
+/**
+ * @brief   Reset pedal-calib widget handles after the active root is cleaned
+ */
+static void s_destroy_pedal_calib_screen(void) {
+  gui_pedal_calib_screen_deinit();
 }
 
 /**
@@ -161,6 +169,7 @@ static StatusCode s_register_default_screens(void) {
       .id = GUI_SCREEN_PEDAL_CALIB,
       .name = "Pedal Calib",
       .create = s_create_pedal_calib_screen,
+      .destroy = s_destroy_pedal_calib_screen,
     },
   };
 
