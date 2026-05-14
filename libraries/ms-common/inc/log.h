@@ -31,6 +31,7 @@
 
 #define MAX_LOG_SIZE (size_t)200
 #define LOG_TIMEOUT_MS 10
+#define MS_LOG 0
 
 #ifdef STM32L433xx
 #define LOG_UART_PORT UART_PORT_1
@@ -81,19 +82,20 @@ typedef enum {
 } LogLevel;
 
 extern char g_log_buffer[MAX_LOG_SIZE];
-extern Mutex s_log_mutex;
 extern UartSettings log_uart_settings;
 
 #define LOG_DEBUG(fmt, ...) LOG(LOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
-#define log_init() \
-  { uart_init(LOG_UART_PORT, &log_uart_settings); }
+#define log_init()                                \
+  {                                               \
+    uart_init(LOG_UART_PORT, &log_uart_settings); \
+  }
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
-#else
+#elif MS_DEBUG_LOG
 #define LOG(level, fmt, ...)                                                                                                            \
   do {                                                                                                                                  \
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
@@ -101,6 +103,10 @@ extern UartSettings log_uart_settings;
       uart_tx(LOG_UART_PORT, (uint8_t *)g_log_buffer, msg_size);                                                                        \
     }                                                                                                                                   \
   } while (0)
+#else
+#define LOG(level, fmt, ...) \
+  do {                       \
+  } while (0);
 #endif
 
 /** @} */

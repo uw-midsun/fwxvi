@@ -13,14 +13,14 @@
 
 /* Inter-component Headers */
 #include "FreeRTOS.h"
-#include "semphr.h"
-#include "log.h"
-#include "system_can.h"
 #include "can_codegen.h"
+#include "log.h"
+#include "semphr.h"
+#include "system_can.h"
 
 /* Intra-component Headers */
-#include "can_hw.h"
 #include "can.h"
+#include "can_hw.h"
 #include "can_watchdog.h"
 
 rx_struct g_rx_struct;
@@ -38,20 +38,23 @@ static SemaphoreHandle_t s_can_rx_handle;
 static CanRxAllCallback s_can_rx_all_cb = NULL;
 
 StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
+  if (storage == NULL || settings == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   if (settings->device_id >= NUM_SYSTEM_CAN_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   s_can_storage = storage;
-  s_can_storage->device_id = settings->device_id;
-
   memset(s_can_storage, 0, sizeof(*s_can_storage));
+  s_can_storage->device_id = settings->device_id;
 
   memset(&g_tx_struct, 0, sizeof(g_tx_struct));
   memset(&g_rx_struct, 0, sizeof(g_rx_struct));
 
   status_ok_or_return(can_queue_init(&s_can_storage->rx_queue));
- 
+
   /* Initialize CAN HW interface */
   status_ok_or_return(can_hw_init(&s_can_storage->rx_queue, settings));
 
@@ -70,7 +73,6 @@ StatusCode can_init(CanStorage *storage, const CanSettings *settings) {
 }
 
 StatusCode can_add_filter_in(CanMessageId msg_id) {
-
   if (s_can_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   } else if (msg_id >= CAN_MSG_MAX_STD_IDS) {
@@ -102,22 +104,16 @@ StatusCode can_receive(CanMessage *msg) {
 
   StatusCode ret = can_queue_pop(&s_can_storage->rx_queue, msg);
 
-  // if (ret == STATUS_CODE_OK)
-  // {
-  //   LOG_DEBUG("Source Id: %d\n", msg->id);
-  //   LOG_DEBUG("Data: %lx\n", msg->data);
-  //   LOG_DEBUG("DLC: %ld\n", msg->dlc);
-  //   LOG_DEBUG("ret: %d\n", ret);
-  // }
-
   return ret;
 }
 
 StatusCode run_can_tx_all() {
-  xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS));
+  if (xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
 
   can_tx_all();
-  
+
   /* Check all cycles watchdogs, and update internal states */
   check_all_can_watchdogs();
   clear_all_rx_received();
@@ -127,7 +123,9 @@ StatusCode run_can_tx_all() {
 }
 
 StatusCode run_can_tx_fast() {
-  xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS));
+  if (xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
 
   can_tx_fast_cycle();
 
@@ -140,7 +138,9 @@ StatusCode run_can_tx_fast() {
 }
 
 StatusCode run_can_tx_medium() {
-  xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS));
+  if (xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
 
   can_tx_medium_cycle();
 
@@ -153,7 +153,9 @@ StatusCode run_can_tx_medium() {
 }
 
 StatusCode run_can_tx_slow() {
-  xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS));
+  if (xSemaphoreTake(s_can_tx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
 
   can_tx_slow_cycle();
 
@@ -166,7 +168,9 @@ StatusCode run_can_tx_slow() {
 }
 
 StatusCode run_can_rx_all() {
-  xSemaphoreTake(s_can_rx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS));
+  if (xSemaphoreTake(s_can_rx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
   can_rx_all();
   xSemaphoreGive(s_can_rx_handle);
   return STATUS_CODE_OK;
@@ -178,7 +182,7 @@ StatusCode clear_rx_struct() {
 }
 
 StatusCode clear_tx_struct() {
-  memset(&g_rx_struct, 0, sizeof(g_rx_struct));
+  memset(&g_tx_struct, 0, sizeof(g_tx_struct));
   return STATUS_CODE_OK;
 }
 

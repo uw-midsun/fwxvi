@@ -77,10 +77,12 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
 
   const std::map<QString, QVariant> afe_payload = extractSubmap(m_state.payload, QStringLiteral("afe"));
   const std::map<QString, QVariant> gpio_payload = extractSubmap(m_state.payload, QStringLiteral("gpio"));
+  const std::map<QString, QVariant> adc_payload = extractSubmap(m_state.payload, QStringLiteral("adc"));
 
   m_overview_page = new OverviewPage(m_state.payload, m_state.client_files, m_state.current_client_index, m_stack);
   m_afe_page = new AfePage(afe_payload, m_stack);
   m_gpio_page = new GpioPage(gpio_payload, m_stack);
+  m_adc_page = new AdcPage(adc_payload, m_stack);
 
   m_spi_page = new QWidget(m_stack);
   {
@@ -92,12 +94,6 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   {
     QFormLayout *f = new QFormLayout(m_i2c_page);
     f->addRow(new QLabel(QStringLiteral("I2C Page")), new QLabel(QStringLiteral("TODO")));
-  }
-
-  m_adc_page = new QWidget(m_stack);
-  {
-    QFormLayout *f = new QFormLayout(m_adc_page);
-    f->addRow(new QLabel(QStringLiteral("ADC Page")), new QLabel(QStringLiteral("TODO")));
   }
 
   /** Stacked pages */
@@ -167,6 +163,10 @@ void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
   if (m_gpio_page) {
     const auto gpio_payload = extractSubmap(payload, QStringLiteral("gpio"));
     m_gpio_page->setPayload(gpio_payload);
+  }
+  if (m_adc_page) {
+    const auto adc_payload = extractSubmap(payload, QStringLiteral("adc"));
+    m_adc_page->setPayload(adc_payload);
   }
 }
 

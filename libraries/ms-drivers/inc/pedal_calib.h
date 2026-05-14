@@ -13,6 +13,7 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "global_enums.h"
 #include "gpio.h"
 
 /* Intra-component Headers */
@@ -35,17 +36,6 @@ typedef enum {
   PEDAL_UNPRESSED,
   NUM_PEDAL_STATES,
 } PedalState;
-
-/**
- * @brief Stores data that defines when the pedal is full pressed or unpressed
- * @details The lower_value is the value at which the pedal is considered fully unpressed whereas the upper_value is the value at which the pedal is fully pressed
- */
-typedef struct PedalCalibrationData {
-  // When the pedal is considered fully unpressed
-  int16_t lower_value;
-  // When the pedal is considered fully pressed
-  int16_t upper_value;
-} PedalCalibrationData;
 
 /** @brief Stores pedal calibration data for the break and the throttle pedals */
 typedef struct PedalCalibBlob {
@@ -73,5 +63,4 @@ extern PedalCalibBlob global_calib_blob;
  * @return STATUS_CODE_OK on success
  */
 StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address);
-
 /** @} */

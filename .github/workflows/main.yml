@@ -16,9 +16,11 @@ jobs:
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -47,8 +49,6 @@ jobs:
         run: |
           git add .
           git commit -m "[auto-format] SCons Format and Lint via Github Actions"
-          git config pull.rebase true
-          git pull origin ${{ github.head_ref || github.ref_name }}
           git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
   build:
@@ -58,7 +58,10 @@ jobs:
     timeout-minutes: 12
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
       - name: Pull latest changes (after auto-format)
         run: |

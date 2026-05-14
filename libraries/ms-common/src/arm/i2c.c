@@ -203,8 +203,8 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   }
 
   /* The I2C pins need to be configured in push pull instead of Open drain mode. TODO: Research why */
-  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
-  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
 
   s_i2c_handles[i2c].Instance = s_port[i2c].base;
   s_i2c_handles[i2c].Init.Timing = s_i2c_timing[settings->speed];

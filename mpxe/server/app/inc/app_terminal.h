@@ -65,6 +65,13 @@ class Terminal {
   void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
 
   /**
+   * @brief   Handle I2C commands provided an action statement and tokenized parameters
+   * @param   action Action statement to select the Remote procedure call
+   * @param   tokens List containing action parameters to format the Remote procedure call
+   */
+  void handleI2CCommands(const std::string &action, std::vector<std::string> &tokens);
+
+  /**
    * @brief   Parse the tokens and branch to the appropiate handler function
    * @details This shall branch to handleGpioCommands, handleI2CCommands, handleSPICommands and handleInterruptCommands
    * @param   tokens List containing tokenized input string

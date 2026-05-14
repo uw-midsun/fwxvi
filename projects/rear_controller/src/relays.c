@@ -110,6 +110,7 @@ StatusCode relays_disable_ws22_lv(void) {
 
 StatusCode relays_close_motor(void) {
   gpio_set_state(&s_relay_storage.motor_relay_en, GPIO_STATE_HIGH);
+  delay_ms(REAR_CLOSE_RELAYS_DELAY_MS);
 
 #if RELAYS_RESPECT_CURRENT_SENSE != 0
   if (gpio_get_state(&s_relay_storage.motor_relay_sense) != GPIO_STATE_HIGH) {

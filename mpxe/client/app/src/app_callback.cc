@@ -21,6 +21,8 @@
 GpioManager clientGpioManager;
 AfeManager clientAfeManager;
 AdcManager clientAdcManager;
+SPIManager clientSpiManager;
+I2CManager clientI2CManager;
 
 void applicationMessageCallback(Client *client, std::string &message) {
   std::string data = message;
@@ -158,6 +160,35 @@ void applicationMessageCallback(Client *client, std::string &message) {
     }
     case CommandCode::ADC_GET_ALL_CONVERTED: {
       client->sendMessage(clientAdcManager.processReadAdcAllConverted());
+      break;
+    }
+    case CommandCode::SPI_WRITE_DATA: {
+      clientSpiManager.writeSpiData(payload);
+      break;
+    }
+    case CommandCode::SPI_READ_DATA: {
+      client->sendMessage(clientSpiManager.processReadSpiData(payload));
+      break;
+    }
+    case CommandCode::SPI_TRANSFER_DATA: {
+      client->sendMessage(clientSpiManager.transferSpiData(payload));
+      break;
+    }
+    case CommandCode::SPI_CLEAR_BUFFER: {
+      clientSpiManager.clearBuffer(payload);
+      break;
+    }
+
+    case CommandCode::I2C_WRITE_DATA: {
+      clientI2CManager.writeI2CData(payload);
+      break;
+    }
+    case CommandCode::I2C_READ_DATA: {
+      client->sendMessage(clientI2CManager.readI2CData(payload));
+      break;
+    }
+    case CommandCode::I2C_CLEAR_BUFFER: {
+      clientI2CManager.clearI2CBuffers(payload);
       break;
     }
     default: {

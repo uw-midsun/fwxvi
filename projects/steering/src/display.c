@@ -16,14 +16,17 @@
 #include "buzzer.h"
 #include "gpio.h"
 #include "gui.h"
+#include "gui_drive_screen.h"
 #include "gui_menu.h"
+#include "gui_pack_screen.h"
+#include "gui_screens.h"
 #include "gui_widgets.h"
+#include "log.h"
 #include "ltdc.h"
 #include "party_mode.h"
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
-
 #ifdef MS_PLATFORM_X86
 #include <SDL2/SDL.h>
 #endif
@@ -140,20 +143,32 @@ static void s_process_pending_menu_input(void) {
 }
 
 static StatusCode s_render_gui_step(void) {
-  status_ok_or_return(gui_widgets_set_speed(display_data->vehicle_velocity));
-  status_ok_or_return(gui_widgets_set_throttle_bar(display_data->pedal_percentage));
-  status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_enabled ? 100 : 0));  // TODO change to % base when available
-  status_ok_or_return(gui_widgets_set_brake_bar(display_data->brake_percentage));
-  if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
-    status_ok_or_return(gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL));
-  } else {
-    status_ok_or_return(gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL));
+  GuiScreenId current_screen = gui_screens_get_current();
+
+  if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell, display_data->ws22_flags));
+    status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
+    status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
+    status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
   }
-  status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->motor_bus_voltage, display_data->bps_fault, display_data->bps_fault_cell));
-  status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
-  status_ok_or_return(gui_widgets_set_temps_stats_label(display_data->motor_temp, display_data->max_cell_temp));
-  status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
-  status_ok_or_return(gui_widgets_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+
+  if (current_screen == GUI_SCREEN_DRIVE) {
+    status_ok_or_return(gui_drive_screen_widget_set_speed(display_data->vehicle_velocity));
+    status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(display_data->pedal_percentage));
+    status_ok_or_return(gui_drive_screen_widget_set_brake_bar(display_data->brake_percentage));
+    if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
+    } else {
+      gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
+    }
+    status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+
+  } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
+    for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
+
+    status_ok_or_return(gui_pack_screen_widget_set_speed_label(display_data->vehicle_velocity));
+    status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+  }
 
   return gui_render();
 }
@@ -207,7 +222,7 @@ StatusCode display_init(SteeringStorage *storage) {
 
   LtdcGpioConfig gpio_config = { .clk = GPIO_STEERING_DISPLAY_LTDC_CLOCK,
                                  .hsync = GPIO_STEERING_DISPLAY_LTDC_HSYNC,
-                                 .vsync = GPIO_STEsERING_DISPLAY_LTDC_VSYNC,
+                                 .vsync = GPIO_STEERING_DISPLAY_LTDC_VSYNC,
                                  .de = GPIO_STEERING_DISPLAY_LTDC_DE,
                                  .r = GPIO_STEERING_DISPLAY_LTDC_RED_PINS,
                                  .g = GPIO_STEERING_DISPLAY_LTDC_GREEN_PINS,
@@ -231,6 +246,8 @@ StatusCode display_init(SteeringStorage *storage) {
 #else
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
+
+  // TODO: FW-520 Add callback here for toggle discharge
 
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
@@ -258,12 +275,14 @@ StatusCode display_rx_medium() {
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
 
+  display_data->ws22_flags = get_motor_stats_A_flags();
+
   display_data->motor_heatsink_temp = (int16_t)get_motor_stats_B_heat_sink_temp();
   display_data->motor_temp = (int16_t)get_motor_stats_B_motor_temp();
 
   display_data->motor_bus_voltage = (uint16_t)get_motor_stats_A_bus_voltage();
-  display_data->vehicle_velocity = (int16_t)get_motor_stats_B_vehicle_velocity();
   display_data->motor_velocity = (int16_t)get_motor_stats_B_motor_velocity();
+  display_data->vehicle_velocity = (float)display_data->motor_velocity * 3.141f * 0.558f * 0.001 * 60;
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
@@ -274,6 +293,21 @@ StatusCode display_rx_medium() {
   display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
   display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
+
+  /* Greatest piece of code ever written. */
+  const uint16_t cell_voltages[36] = {
+    (uint16_t)get_AFE1_status_A_voltage_0(),  (uint16_t)get_AFE1_status_A_voltage_1(),  (uint16_t)get_AFE1_status_A_voltage_2(),  (uint16_t)get_AFE1_status_B_voltage_3(),
+    (uint16_t)get_AFE1_status_B_voltage_4(),  (uint16_t)get_AFE1_status_B_voltage_5(),  (uint16_t)get_AFE1_status_C_voltage_6(),  (uint16_t)get_AFE1_status_C_voltage_7(),
+    (uint16_t)get_AFE1_status_C_voltage_8(),  (uint16_t)get_AFE1_status_D_voltage_9(),  (uint16_t)get_AFE1_status_D_voltage_10(), (uint16_t)get_AFE1_status_D_voltage_11(),
+    (uint16_t)get_AFE1_status_E_voltage_12(), (uint16_t)get_AFE1_status_E_voltage_13(), (uint16_t)get_AFE1_status_E_voltage_14(), (uint16_t)get_AFE1_status_F_voltage_15(),
+    (uint16_t)get_AFE1_status_F_voltage_16(), (uint16_t)get_AFE1_status_F_voltage_17(), (uint16_t)get_AFE2_status_A_voltage_0(),  (uint16_t)get_AFE2_status_A_voltage_1(),
+    (uint16_t)get_AFE2_status_A_voltage_2(),  (uint16_t)get_AFE2_status_B_voltage_3(),  (uint16_t)get_AFE2_status_B_voltage_4(),  (uint16_t)get_AFE2_status_B_voltage_5(),
+    (uint16_t)get_AFE2_status_C_voltage_6(),  (uint16_t)get_AFE2_status_C_voltage_7(),  (uint16_t)get_AFE2_status_C_voltage_8(),  (uint16_t)get_AFE2_status_D_voltage_9(),
+    (uint16_t)get_AFE2_status_D_voltage_10(), (uint16_t)get_AFE2_status_D_voltage_11(), (uint16_t)get_AFE2_status_E_voltage_12(), (uint16_t)get_AFE2_status_E_voltage_13(),
+    (uint16_t)get_AFE2_status_E_voltage_14(), (uint16_t)get_AFE2_status_F_voltage_15(), (uint16_t)get_AFE2_status_F_voltage_16(), (uint16_t)get_AFE2_status_F_voltage_17(),
+  };
+
+  memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
 
   return STATUS_CODE_OK;
 }

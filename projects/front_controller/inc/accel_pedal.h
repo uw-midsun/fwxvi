@@ -25,8 +25,10 @@
  */
 
 typedef struct {
-  uint16_t lower_value; /**< ADC reading when the pedal is considered fully released */
-  uint16_t upper_value; /**< ADC reading when the pedal is considered fully pressed */
+  uint16_t opamp_offset; /**< min value of ADC reading (pedal is either fully pressed or released) */
+  uint16_t lower_value;  /**< ADC reading when the pedal is considered fully released - post op-amp */
+  uint16_t upper_value;  /**< ADC reading when the pedal is considered fully pressed - post op-amp */
+  bool reversed;
 } AccelPedalCalibrationData;
 
 typedef struct AccelPedalStorage {
@@ -50,5 +52,12 @@ StatusCode accel_pedal_run();
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is provided
  */
 StatusCode accel_pedal_init(FrontControllerStorage *storage);
+
+/**
+ * @brief   Enables adc, dac, and opamp
+ * @note    Occurs separately from init() because dac voltage must be set to a value obtained by pedal_calib_read()
+ * @return  STATUS_CODE_OK
+ */
+StatusCode accel_pedal_start();
 
 /** @} */

@@ -33,15 +33,17 @@
 #include "relays.h"
 #include "thermistor.h"
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 /************************************************************************************************
  * Private defines
  ************************************************************************************************/
 
-/** @brief  Number of AFE messages */
-#define NUM_AFE_MSGS 4U
+/** @brief  Number of temperatures transmitted in a single log */
+#define NUM_AFE_TEMPERATURES_PER_LOG 7U
 
-/** @brief  Number of cell voltages per device transmitted in a single log */
-#define NUM_AFE_CELL_VOLTAGES_PER_LOG 6U
+/** @brief  Number of temperature messages needed to cover all thermistors */
+#define NUM_AFE_TEMPERATURE_MSGS ((ADBMS_AFE_MAX_CELL_THERMISTORS + NUM_AFE_TEMPERATURES_PER_LOG - 1U) / NUM_AFE_TEMPERATURES_PER_LOG)
 
 /** @brief  Number of communication retries before throwing AFE fault */
 #define AFE_NUM_RETRIES 5U
@@ -57,8 +59,16 @@
 
 #define CELL_VOLTAGE_LOOKUP(dev_num, cell) (adbms_afe_storage->cell_voltages[adbms_afe_storage->cell_result_lookup[CELL_PER_DEVICE * dev_num + cell]])
 
+#define SET_AFE_STATUS_MESSAGE(device, message_name, message_id, voltage_a, voltage_b, voltage_c) \
+  do {                                                                                            \
+    set_##message_name##_id(message_id);                                                          \
+    set_##message_name##_voltage_##voltage_a(CELL_VOLTAGE_LOOKUP(device, voltage_a));             \
+    set_##message_name##_voltage_##voltage_b(CELL_VOLTAGE_LOOKUP(device, voltage_b));             \
+    set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
+  } while (0)
+
 /** @brief  Max number of retries for reading cell*/
-#define CELL_SENSE_MAX_RETRIES 5U
+#define CELL_SENSE_MAX_RETRIES 10U
 
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
@@ -70,6 +80,20 @@
       delay_ms(delay_ms_val);                                             \
     }                                                                     \
   } while (0)
+
+#define THERMISTORS_CONNECTED 0U
+#define BALANCING_ENABLED 1U
+#define OVER_UNDER_FAULTS_ENABLED 0U
+
+#define CELL_SENSE_DEBUG 0U
+
+#if (CELL_SENSE_DEBUG == 1)
+#define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
+#else
+#define CONDITIONAL_LOG_DEBUG(...) \
+  do {                             \
+  } while (0)
+#endif
 
 /************************************************************************************************
  * Private variables
@@ -100,15 +124,142 @@ static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
 
-static uint8_t s_afe_message_index = 0U;
+static uint8_t s_afe_temperature_message_index = 0U;
 
 static RearControllerStorage *rear_controller_storage;
+
+static uint8_t s_global_cell_index_1_based(uint8_t device, uint8_t cell) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELLS_PER_DEVICE + cell + 1U);
+}
+
+static uint8_t s_global_thermistor_index_1_based(uint8_t device, uint8_t thermistor) {
+  return (uint8_t)(device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor + 1U);
+}
+
+/* The art of programming. */
+static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_t cell_index, uint8_t is_enabled) {
+  switch (dev_index_1_based) {
+    case 1U:
+      switch (cell_index) {
+        case 0U:
+          set_AFE_discharge_bitset_AFE1_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE1_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE1_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE1_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE1_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE1_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE1_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE1_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE1_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE1_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE1_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE1_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE1_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE1_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE1_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE1_cell_15(is_enabled);
+          break;
+        default:
+          break;
+      }
+      break;
+
+    case 2U:
+      switch (cell_index) {
+        case 0U:
+          set_AFE_discharge_bitset_AFE2_cell_0(is_enabled);
+          break;
+        case 1U:
+          set_AFE_discharge_bitset_AFE2_cell_1(is_enabled);
+          break;
+        case 2U:
+          set_AFE_discharge_bitset_AFE2_cell_2(is_enabled);
+          break;
+        case 3U:
+          set_AFE_discharge_bitset_AFE2_cell_3(is_enabled);
+          break;
+        case 4U:
+          set_AFE_discharge_bitset_AFE2_cell_4(is_enabled);
+          break;
+        case 5U:
+          set_AFE_discharge_bitset_AFE2_cell_5(is_enabled);
+          break;
+        case 6U:
+          set_AFE_discharge_bitset_AFE2_cell_6(is_enabled);
+          break;
+        case 7U:
+          set_AFE_discharge_bitset_AFE2_cell_7(is_enabled);
+          break;
+        case 8U:
+          set_AFE_discharge_bitset_AFE2_cell_8(is_enabled);
+          break;
+        case 9U:
+          set_AFE_discharge_bitset_AFE2_cell_9(is_enabled);
+          break;
+        case 10U:
+          set_AFE_discharge_bitset_AFE2_cell_10(is_enabled);
+          break;
+        case 11U:
+          set_AFE_discharge_bitset_AFE2_cell_11(is_enabled);
+          break;
+        case 12U:
+          set_AFE_discharge_bitset_AFE2_cell_12(is_enabled);
+          break;
+        case 13U:
+          set_AFE_discharge_bitset_AFE2_cell_13(is_enabled);
+          break;
+        case 14U:
+          set_AFE_discharge_bitset_AFE2_cell_14(is_enabled);
+          break;
+        case 15U:
+          set_AFE_discharge_bitset_AFE2_cell_15(is_enabled);
+          break;
+        default:
+          break;
+      }
+      break;
+
+    default:
+      break;
+  }
+}
 
 /************************************************************************************************
  * Private function definitions
  ************************************************************************************************/
 
 static void s_balance_cells(uint16_t min_voltage) {
+#if (BALANCING_ENABLED == 1U)
   uint16_t balancing_threshold = min_voltage;
 
   if (rear_controller_storage->pack_current > MAX_PACK_CURRENT_FOR_CELL_DISCHARGING) {
@@ -130,11 +281,35 @@ static void s_balance_cells(uint16_t min_voltage) {
   /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
       if (CELL_VOLTAGE_LOOKUP(dev, cell) > balancing_threshold) {
-        adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell * dev, true);
+#if (CELL_SENSE_DEBUG == 1)
+        LOG_DEBUG("DISCHRG CELL %d %d\r\n", (uint8_t)dev, (uint8_t)cell);
+        delay_ms(12U);
+#endif
+
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, true);
+        s_set_afe_discharge_status_message((dev + 1), cell, 1U);
+
       } else {
-        adbms_afe_toggle_cell_discharge(adbms_afe_storage, cell * dev, false);
+        adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+        s_set_afe_discharge_status_message((dev + 1), cell, 0U);
       }
+    }
+  }
+
+  /* Commit the discharge configuration to the ADBMS1818 */
+  adbms_afe_write_config(adbms_afe_storage);
+#endif
+}
+
+static void s_disable_balancing() {
+  /* Toggle cell discharge in the ADBMS1818 configuration if cell voltage is above the balancing threshold */
+  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
+    for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      uint16_t global_cell = (uint16_t)(cell + (dev * ADBMS_AFE_MAX_CELLS_PER_DEVICE));
+      adbms_afe_toggle_cell_discharge(adbms_afe_storage, global_cell, false);
+      s_set_afe_discharge_status_message((dev + 1U), cell, 0U);
     }
   }
 
@@ -144,31 +319,14 @@ static void s_balance_cells(uint16_t min_voltage) {
 
 static StatusCode s_check_thermistors() {
   StatusCode status = STATUS_CODE_OK;
+#if (THERMISTORS_CONNECTED == 1U)
   uint16_t max_temp = 0U;
 
   /* Loop over all devices and thermistors */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
-    adbms_afe_storage->board_thermistor_voltages[device] = calculate_board_thermistor_temperature(adbms_afe_storage->board_thermistor_voltages[device]);
-
-    if (rear_controller_storage->pack_current < 0) {
-      /* Discharging max temp */
-      if (adbms_afe_storage->thermistor_voltages[device] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
-        LOG_DEBUG("BOARD OVERTEMP\n");
-        trigger_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
-        status = STATUS_CODE_INTERNAL_ERROR;
-      }
-    } else {
-      /* Charging max temp */
-      if (adbms_afe_storage->thermistor_voltages[device] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
-        LOG_DEBUG("BOARD OVERTEMP\n");
-        trigger_bps_fault(BPS_FAULT_OVERTEMP_AMBIENT);
-        status = STATUS_CODE_INTERNAL_ERROR;
-      }
-    }
-
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
       uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
-      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index]);
+      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U);
 
       /* Ignore temperature readings outside of the valid temperature range */
       if (adbms_afe_storage->thermistor_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
@@ -183,20 +341,20 @@ static StatusCode s_check_thermistors() {
         /* Discharging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       } else {
         /* Charging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault(BPS_FAULT_OVERTEMP_CELL);
+          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
     }
   }
-
+#endif
   return status;
 }
 
@@ -217,7 +375,9 @@ static StatusCode s_cell_sense_conversions() {
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell conv failed): %d\n", status);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+#endif
     return status;
   }
 
@@ -233,57 +393,48 @@ static StatusCode s_cell_sense_conversions() {
   }
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Cell read failed %d\n", status);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+#endif
+    return status;
+  }
+#if (THERMISTORS_CONNECTED == 1U)
+  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
+    status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
+
+    if (status == STATUS_CODE_OK) {
+      break;
+    }
+
+    LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
+    delay_ms(RETRY_DELAY_MS);
+  }
+
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("Thermistor conv failed: Status %d\n", status);
     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
     return status;
   }
 
-  for (size_t thermistor = 0; thermistor < s_afe_settings.num_thermistors; thermistor += 1) {
-    /* Thermistor indices are read for each daisy chained dev at the same time */
-    for (uint8_t dev = 0; dev < s_afe_settings.num_devices; dev++) {
-      adbms_afe_trigger_board_temp_conv(adbms_afe_storage, dev);
+  delay_ms(AUX_CONV_DELAY_MS);
 
-      delay_ms(AUX_CONV_DELAY_MS);
+  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
+    status = adbms_afe_read_thermistors(adbms_afe_storage);
 
-      adbms_afe_read_board_temp(adbms_afe_storage, dev);
-
-      /* Trigger and read thermistor value */
-      for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage, dev, thermistor);
-
-        if (status == STATUS_CODE_OK) {
-          break;
-        }
-
-        LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
-        delay_ms(RETRY_DELAY_MS);
-      }
-
-      if (status) {
-        LOG_DEBUG("Thermistor conv failed for therm %d: Status %d\n", (uint8_t)thermistor, status);
-        trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-        return status;
-      }
-
-      delay_ms(AUX_CONV_DELAY_MS);
-
-      for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-        status = adbms_afe_read_thermistor(adbms_afe_storage, dev, thermistor);
-
-        if (status == STATUS_CODE_OK) {
-          break;
-        }
-
-        LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
-        delay_ms(RETRY_DELAY_MS);
-      }
-
-      if (status) {
-        LOG_DEBUG("Thermistor read trigger failed for thermistor %d,  %d\n", (uint8_t)thermistor, status);
-        trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-        return status;
-      }
+    if (status == STATUS_CODE_OK) {
+      break;
     }
+
+    LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
+    delay_ms(RETRY_DELAY_MS);
   }
+
+  if (status != STATUS_CODE_OK) {
+    LOG_DEBUG("Thermistor read failed: %d\n", status);
+    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    return status;
+  }
+#endif
   return status;
 }
 
@@ -292,27 +443,42 @@ static StatusCode s_cell_sense_run() {
 
   uint16_t max_voltage = 0U;
   uint16_t min_voltage = 0xFFFFU;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+  uint8_t max_voltage_cell = 0U;
+  uint8_t min_voltage_cell = 0U;
+#endif
+  uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
-      uint16_t current_cell_voltage = CELL_VOLTAGE_LOOKUP(dev, cell);
-
-      LOG_DEBUG("CELL %d: %d\n\r", (uint8_t)cell, current_cell_voltage);
-      delay_ms(5U);
+      uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
+      total_voltage += current_cell_voltage;
+      CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
+      delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+        max_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
 
       if (current_cell_voltage < min_voltage) {
         min_voltage = current_cell_voltage;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+        min_voltage_cell = s_global_cell_index_1_based((uint8_t)dev, (uint8_t)cell);
+#endif
       }
     }
   }
 
-  LOG_DEBUG("MAX VOLTAGE: %d\n", max_voltage);
-  LOG_DEBUG("MIN VOLTAGE: %d\n", min_voltage);
-  LOG_DEBUG("UNBALANCE: %d\n", max_voltage - min_voltage);
+  rear_controller_storage->pack_voltage = total_voltage / 10000;
+  set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
+
+  CONDITIONAL_LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
+  delay_ms(10U);
+  CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
+  delay_ms(10U);
 
   set_battery_stats_B_max_cell_voltage(max_voltage);
   set_battery_stats_B_min_cell_voltage(min_voltage);
@@ -326,29 +492,38 @@ static StatusCode s_cell_sense_run() {
    * We must multiply the safety limit of 10 to convert from mV -> 100 uV
    */
   if (max_voltage >= (CELL_OVERVOLTAGE_LIMIT_mV * 10U)) {
-    LOG_DEBUG("OVERVOLTAGE\n");
-    trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+    LOG_DEBUG("FAULT: OVERVOLTAGE: %u\r\n", max_voltage);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    trigger_bps_fault_with_cell(BPS_FAULT_OVERVOLTAGE, max_voltage_cell);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
   if (min_voltage <= (CELL_UNDERVOLTAGE_LIMIT_mV * 10U)) {
-    LOG_DEBUG("UNDERVOLTAGE\n");
-    trigger_bps_fault(BPS_FAULT_UNDERVOLTAGE);
+    LOG_DEBUG("FAULT: UNDERVOLTAGE: %u\r\n", min_voltage);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    trigger_bps_fault_with_cell(BPS_FAULT_UNDERVOLTAGE, min_voltage_cell);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
   if ((max_voltage - min_voltage) >= (CELL_UNBALANCED_LIMIT_mV * 10)) {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
-    LOG_DEBUG("UNBALANCED\n");
-    trigger_bps_fault(BPS_FAULT_UNBALANCE);
+    LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    trigger_bps_fault_with_cell(BPS_FAULT_UNBALANCE, max_voltage_cell);
+#endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
+#if (BALANCING_ENABLED == 1U)
   s_balance_cells(min_voltage);
-
+#endif
   s_cell_data_updated = true;
 
+#if (THERMISTORS_CONNECTED == 1U)
   status_ok_or_return(s_check_thermistors());
+#endif
 
   return status;
 }
@@ -358,44 +533,39 @@ static StatusCode s_cell_sense_run() {
  ************************************************************************************************/
 
 StatusCode log_cell_sense() {
-  /* AFE messages are split into 3 (For each AFE) */
-  /* We send 4 messages total to transmit all cell voltages (3 per msg * 4 times) = 12 total cell voltages */
   if (s_cell_data_updated != true) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 
-  set_AFE1_status_A_id(s_afe_message_index);
-  set_AFE1_status_A_voltage_0(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 0U));
-  set_AFE1_status_A_voltage_1(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 1U));
-  set_AFE1_status_A_voltage_2(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 2U));
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_A, 0U, 0, 1, 2);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_B, 1U, 3, 4, 5);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_C, 2U, 6, 7, 8);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_D, 3U, 9, 10, 11);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_E, 4U, 12, 13, 14);
+  SET_AFE_STATUS_MESSAGE(0U, AFE1_status_F, 5U, 15, 16, 17);
 
-  set_AFE1_status_B_id(s_afe_message_index);
-  set_AFE1_status_B_voltage_0(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 3U));
-  set_AFE1_status_B_voltage_1(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 4U));
-  set_AFE1_status_B_voltage_2(CELL_VOLTAGE_LOOKUP(0U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 5U));
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_A, 0U, 0, 1, 2);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_B, 1U, 3, 4, 5);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_C, 2U, 6, 7, 8);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_D, 3U, 9, 10, 11);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_E, 4U, 12, 13, 14);
+  SET_AFE_STATUS_MESSAGE(1U, AFE2_status_F, 5U, 15, 16, 17);
 
-  set_AFE2_status_A_id(s_afe_message_index);
-  set_AFE2_status_A_voltage_0(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 0U));
-  set_AFE2_status_A_voltage_1(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 1U));
-  set_AFE2_status_A_voltage_2(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 2U));
+  size_t total_thermistors = s_afe_settings.num_devices * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE;
+  size_t thermistor_start = s_afe_temperature_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
 
-  set_AFE2_status_B_id(s_afe_message_index);
-  set_AFE2_status_B_voltage_0(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 3U));
-  set_AFE2_status_B_voltage_1(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 4U));
-  set_AFE2_status_B_voltage_2(CELL_VOLTAGE_LOOKUP(1U, (s_afe_message_index * NUM_AFE_CELL_VOLTAGES_PER_LOG) + 5U));
+  set_AFE_temperature_id(s_afe_temperature_message_index);
+  set_AFE_temperature_temperature_0((thermistor_start + 0U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 0U] : 0U);
+  set_AFE_temperature_temperature_1((thermistor_start + 1U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 1U] : 0U);
+  set_AFE_temperature_temperature_2((thermistor_start + 2U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 2U] : 0U);
+  set_AFE_temperature_temperature_3((thermistor_start + 3U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 3U] : 0U);
+  set_AFE_temperature_temperature_4((thermistor_start + 4U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 4U] : 0U);
+  set_AFE_temperature_temperature_5((thermistor_start + 5U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 5U] : 0U);
+  set_AFE_temperature_temperature_6((thermistor_start + 6U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 6U] : 0U);
 
-  /* TODO: Fix thermistor logging */
-  set_AFE_temperature_id(s_afe_message_index);
-  set_AFE_temperature_temperature_0(adbms_afe_storage->thermistor_voltages[0]);
-  set_AFE_temperature_temperature_1(adbms_afe_storage->thermistor_voltages[2]);
-  set_AFE_temperature_temperature_2(adbms_afe_storage->thermistor_voltages[4]);
-  set_AFE_temperature_temperature_3(adbms_afe_storage->thermistor_voltages[6]);
-  set_AFE_temperature_temperature_4(adbms_afe_storage->thermistor_voltages[8]);
-  set_AFE_temperature_temperature_5(adbms_afe_storage->thermistor_voltages[10]);
+  s_afe_temperature_message_index = (s_afe_temperature_message_index + 1U) % NUM_AFE_TEMPERATURE_MSGS;
 
-  s_afe_message_index = (s_afe_message_index + 1U) % NUM_AFE_MSGS;
-
-  if (s_afe_message_index == 0U) {
+  if (s_afe_temperature_message_index == 0U) {
     s_cell_data_updated = false;
   }
 
@@ -403,11 +573,15 @@ StatusCode log_cell_sense() {
 }
 
 TASK(cell_sense_conversions, TASK_STACK_512) {
-  adbms_afe_init(adbms_afe_storage, &s_afe_settings);
+  StatusCode status = STATUS_CODE_OK;
+  RETRY_OPERATION(AFE_NUM_RETRIES, RETRY_DELAY_MS, adbms_afe_init(adbms_afe_storage, &s_afe_settings), status);
+
   delay_ms(10);
+
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while (true) {
+    s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
     s_cell_sense_run();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));
@@ -418,8 +592,6 @@ StatusCode cell_sense_init(RearControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  cell_sense_init(storage);
 
   rear_controller_storage = storage;
   adbms_afe_storage = &(rear_controller_storage->adbms_afe_storage);

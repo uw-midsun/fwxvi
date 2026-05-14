@@ -26,6 +26,10 @@ extern "C" {
 /* Constructor */
 #include <iomanip>
 
+namespace {
+constexpr uint8_t kBoardThermistorIndex = ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE - 1U;
+}
+
 /* SET
 -------------------------------------------------*/
 void AfeManager::setAfeCell(std::string &payload) {
@@ -51,7 +55,6 @@ void AfeManager::setAfeTherm(std::string &payload) {
   m_afeDatagram.deserialize(payload);
 
   uint8_t therm_index = m_afeDatagram.getIndex();
-  std::size_t board_index = m_afeDatagram.getDevIndex();
 
   if (therm_index >= ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE) {
     std::cout << "Invalid Thermistor Index" << std::endl;
@@ -143,7 +146,8 @@ void AfeManager::setAfeBoardTherm(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    adbms_afe_set_board_thermistor_voltage(p_afe, dev_index, voltage);
+    /* Board thermistors are modeled as the last thermistor channel on each device. */
+    adbms_afe_set_thermistor_voltage(p_afe, dev_index, kBoardThermistorIndex, voltage);
   }
 }
 
@@ -303,7 +307,8 @@ std::string AfeManager::processAfeBoardTherm(std::string &payload) {
   AdbmsAfeStorage *p_afe = adbms_afe_get_storage();
 
   if (p_afe != NULL) {
-    voltage = adbms_afe_get_board_thermistor_voltage(p_afe, dev_index);
+    /* Board thermistors are modeled as the last thermistor channel on each device. */
+    voltage = adbms_afe_get_thermistor_voltage(p_afe, dev_index, kBoardThermistorIndex);
   }
 
   m_afeDatagram.setBoardTherm(dev_index, voltage);

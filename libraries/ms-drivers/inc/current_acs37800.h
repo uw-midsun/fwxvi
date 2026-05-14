@@ -42,7 +42,7 @@ typedef struct {
 StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address);
 
 /**
- * @brief Gets the instantaneous current in amps
+ * @brief Gets the instantaneous current in Amps
  * @param storage - pointer to already initialized ACS37800 struct
  * @param out_current_amps - current in amps
  * @return STATUS_CODE_OK on success
@@ -50,7 +50,7 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
 StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amps);
 
 /**
- * @brief Gets the instantaneous voltage in volts
+ * @brief Gets the instantaneous voltage in mV
  * @param storage - pointer to already initialized ACS37800 struct
  * @param out_voltage_mV - voltage in milivolts
  * @return STATUS_CODE_OK on success

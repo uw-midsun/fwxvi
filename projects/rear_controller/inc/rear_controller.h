@@ -28,6 +28,8 @@
 #define REAR_CONTROLLER_CURRENT_SENSE_FILTER_ALPHA 0.5
 #define REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES 3
 
+#define REAR_CONTROLLER_RELAY_INRUSH_MIN_DELAY_MS 130U
+
 typedef struct {
   uint8_t series_count;   /**< Number of cells in series */
   uint8_t parallel_count; /**< Number of cells in parallel */
@@ -57,6 +59,7 @@ typedef struct {
   bool pcs_valid;          /**< PCS input valid state */
   bool aux_valid;          /**< Aux valid state */
   uint16_t bps_fault;      /**< Fault */
+  uint8_t bps_fault_cell;  /**< One-based cell index for cell-related faults */
 
   /* Temperature monitoring */
   int16_t max_board_temperature;

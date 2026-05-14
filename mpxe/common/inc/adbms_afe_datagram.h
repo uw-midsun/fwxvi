@@ -1,7 +1,7 @@
 #pragma once
 
 /************************************************************************************************
- * @file   command_code.h
+ * @file   adbms_afe_datagram.h
  *
  * @brief  Header file defining the afe_datagram
  *

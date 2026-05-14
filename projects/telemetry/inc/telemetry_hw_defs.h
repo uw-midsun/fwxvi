@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define TELEMETRY_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define TELEMETRY_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Telemetry CAN definitions
@@ -53,7 +52,7 @@
 /** @brief  Telemetry XBee SLEEP_RQ Pin */
 #define GPIO_TELEMETRY_XBEE_SLEEP_RQ TELEMETRY_GPIO_DEF(A, 11)
 
-#define TELEMETRY_XBEE_UART_BAUDRATE 115200
+#define TELEMETRY_XBEE_UART_BAUDRATE 230400
 
 #define TELEMETRY_XBEE_UART_FLOW_CONTROL UART_FLOW_CONTROL_NONE
 

@@ -30,12 +30,14 @@
 
 FrontControllerStorage front_controller_storage = { 0 };
 
-FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
-                                                  .accel_input_remap_min = FRONT_CONTROLLER_ACCEL_REMAP_MIN,
-                                                  .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
-                                                  .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA,
-                                                  .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
-                                                  .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA };
+FrontControllerConfig front_controller_config = {
+  .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
+  .accel_input_remap_min = FRONT_CONTROLLER_ACCEL_REMAP_MIN,
+  .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
+  .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA,
+  .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
+  .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA,
+};
 
 VehicleDriveState drive_state;
 
@@ -43,8 +45,8 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
-
   adc_run();
+
   accel_pedal_run();
   brake_pedal_run();
   opd_run();
@@ -54,10 +56,9 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
-  run_can_tx_medium();
+  motor_can_forward_can_data();
   front_controller_update_state_manager_medium_cycle();
-  // printf("CURRENT STATE: %s\r\n", motor_can_get_current_state_str());
-  // printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_enabled);
+  run_can_tx_medium();
 }
 
 void run_1hz_cycle() {

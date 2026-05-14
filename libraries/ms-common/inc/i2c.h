@@ -148,7 +148,7 @@ StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t 
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
+StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
 
 /**
  * @brief   Gets data from the I2C TX queue
@@ -159,6 +159,21 @@ StatusCode i2c_set_rx_data(I2CPort i2c, uint8_t *data, size_t len);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);
+
+/**
+ * @brief   Gets the number of queued TX bytes available to read
+ * @param   i2c Specifies which I2C port to inspect
+ * @return  Number of queued bytes on the TX buffer
+ */
+size_t i2c_get_tx_num_bytes(I2CPort i2c);
+
+/**
+ * @brief   Clears both I2C RX and TX queues
+ * @param   i2c Specifies which I2C port to clear
+ * @return  STATUS_CODE_OK if buffers are cleared successfully
+ *          STATUS_CODE_INVALID_ARGS if the port is invalid
+ */
+StatusCode i2c_clear_buffers(I2CPort i2c);
 
 #endif
 

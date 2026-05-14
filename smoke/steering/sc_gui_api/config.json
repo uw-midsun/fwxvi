@@ -1,0 +1,19 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common",
+        "ms-gui"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/steering/inc",
+        "build/arm/obj/projects/steering/can/inc"
+    ],
+    "sources": [
+        "projects/steering/src/display.o"
+    ],
+    "can": true, 
+    "selected_preset": "STM32L4P5VET6_legacy_debug"
+}

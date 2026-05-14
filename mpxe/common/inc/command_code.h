@@ -40,12 +40,15 @@ enum class CommandCode {
   GPIO_GET_ALL_ALT_FUNCTIONS, /**< Get all Gpio Pin alternate functions */
 
   /* I2C Commands */
+  I2C_WRITE_DATA,   /**< Write data into the I2C RX buffer */
+  I2C_READ_DATA,    /**< Read data from the I2C TX buffer */
+  I2C_CLEAR_BUFFER, /**< Clear both I2C RX and TX buffers */
 
   /* SPI Commands */
-  SPI_WRITE_DATA,
-  SPI_READ_DATA,
-  SPI_TRANSFER_DATA,
-  SPI_CLEAR_BUFFER,
+  SPI_WRITE_DATA,    /**< Write data into the SPI RX buffer */
+  SPI_READ_DATA,     /**< Read data into the SPI TX buffer */
+  SPI_TRANSFER_DATA, /**< Transfer data between SPI RX and TX buffers */
+  SPI_CLEAR_BUFFER,  /**< Clear data from both SPI RX and TX buffers */
   /* UART Commands */
 
   /* FLASH Commands */

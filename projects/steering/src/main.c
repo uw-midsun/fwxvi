@@ -42,11 +42,11 @@ void run_1000hz_cycle() {
 }
 
 void run_10hz_cycle() {
+  display_rx_medium();
   button_led_manager_update();
   drive_state_manager_update();
   lights_signal_manager_update();
   cruise_control_run_medium_cycle();
-  display_rx_medium();
   run_can_tx_medium();
 }
 

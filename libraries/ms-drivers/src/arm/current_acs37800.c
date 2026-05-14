@@ -16,6 +16,21 @@
 
 #include "current_acs37800_defs.h"
 
+static StatusCode s_acs37800_write_register(ACS37800Storage *storage, uint8_t reg, uint32_t raw_data) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint8_t tx_buff[4] = {
+    (uint8_t)(raw_data & 0xFF),
+    (uint8_t)((raw_data >> 8) & 0xFF),
+    (uint8_t)((raw_data >> 16) & 0xFF),
+    (uint8_t)((raw_data >> 24) & 0xFF),
+  };
+
+  return i2c_write_reg(storage->i2c_port, storage->i2c_address, reg, tx_buff, sizeof(tx_buff));
+}
+
 // initialize the storage object
 StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
   if (storage == NULL || i2c_address > 127) {
@@ -24,6 +39,11 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
   // i2c peripherals
   storage->i2c_port = i2c_port;
   storage->i2c_address = i2c_address;
+
+  uint32_t dio_n_config = 0U;
+  status_ok_or_return(acs37800_get_register(storage, ACS37800_REG_DIO_N_CONFIG, &dio_n_config));
+  dio_n_config |= ACS37800_MASK_BYPASS_N_EN;
+  status_ok_or_return(s_acs37800_write_register(storage, ACS37800_REG_DIO_N_CONFIG, dio_n_config));
 
   return STATUS_CODE_OK;
 }
@@ -42,7 +62,7 @@ StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers re
     return status;
   }
 
-  *out_raw = ((uint32_t)rx_buff[0] << 24) | ((uint32_t)rx_buff[1] << 16) | ((uint32_t)rx_buff[2] << 8) | ((uint32_t)rx_buff[3]);
+  *out_raw = ((uint32_t)rx_buff[3] << 24) | ((uint32_t)rx_buff[2] << 16) | ((uint32_t)rx_buff[1] << 8) | ((uint32_t)rx_buff[0]);
 
   return STATUS_CODE_OK;
 }
@@ -62,7 +82,7 @@ StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amp
   // the current value is signed (16 bits upper)
   int16_t current_raw = (int16_t)((raw_data >> 16) & 0xFFFF);
 
-  *out_current_amps = (float)(current_raw)*CURRENT_SCALE;
+  *out_current_amps = (float)(current_raw)*ACS37800_CURRENT_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -82,7 +102,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
   // the voltage value is signed (16 bits lower)
   int16_t voltage_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_voltage_mV = (float)(voltage_raw)*VOLTAGE_SCALE;
+  *out_voltage_mV = (float)(voltage_raw)*ACS37800_VOLTAGE_SCALE_MV;
 
   return STATUS_CODE_OK;
 }
@@ -102,7 +122,7 @@ StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_
   // the active power value is signed (16 bits lower)
   int16_t power_raw = (int16_t)(raw_data & 0xFFFF);
 
-  *out_power_mW = (float)(power_raw)*POWER_SCALE;
+  *out_power_mW = (float)(power_raw)*ACS37800_POWER_SCALE;
 
   return STATUS_CODE_OK;
 }
@@ -141,17 +161,8 @@ StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage *storage) {
     return status;
   }
 
-  // write all of it back, reset the FAULTLATCH address
-  uint8_t tx_buff[4] = {
-    (uint8_t)((raw_data >> 24) & 0xFF),
-    (uint8_t)((raw_data >> 16) & 0xFF),
-    (uint8_t)((raw_data >> 8) & 0xFF),
-    (uint8_t)(raw_data & 0xFF),
-  };
-
-  status = i2c_write_reg(storage->i2c_port, storage->i2c_address, ACS37800_REG_STATUS, tx_buff, sizeof(tx_buff));
-
-  return status;
+  // Write the register back with the latch-reset bit asserted.
+  return s_acs37800_write_register(storage, ACS37800_REG_STATUS, raw_data);
 }
 
 StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvoltage_flag) {
