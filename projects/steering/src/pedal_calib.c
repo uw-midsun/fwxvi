@@ -119,7 +119,7 @@ StatusCode steering_pedal_calib_rx(SteeringStorage *storage) {
 #ifdef MS_PLATFORM_X86
   // Debug mode: Auto-advance through calibration states
   static uint32_t debug_call_counter = 0;
-  
+
   debug_call_counter++;
   if (debug_call_counter > 60 && s_calib_state.last_status < 7) {
     debug_call_counter = 0;
