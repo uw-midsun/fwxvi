@@ -33,7 +33,7 @@
 
 /* Rest (gap) after each note for separation (staccato feel) */
 #define GAP_MS 30U
-#define PLAY_TIME(duration) ((duration) - GAP_MS)
+#define PLAY_TIME(duration) ((duration)-GAP_MS)
 
 static bool party_mode = false;
 static uint8_t party_hue = 0;
