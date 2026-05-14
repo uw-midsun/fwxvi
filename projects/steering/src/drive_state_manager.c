@@ -121,6 +121,17 @@ static StatusCode drive_state_manager_drive(void) {
   return STATUS_CODE_OK;
 }
 
+static StatusCode drive_state_manager_charging(void) {
+  button_led_enable(STEERING_BUTTON_DRIVE);
+  button_led_enable(STEERING_BUTTON_REVERSE);
+  button_led_disable(STEERING_BUTTON_NEUTRAL);
+  buzzer_play_charging();
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_CHARGING);
+  CONDITIONAL_LOG_DEBUG("Setting drive state to CHARGING\n");
+  return STATUS_CODE_OK;
+}
+
 StatusCode drive_state_manager_init(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -184,7 +195,23 @@ StatusCode drive_state_manager_update(void) {
         StatusCode ret = drive_state_manager_reverse();
         if (ret == STATUS_CODE_OK) {
           CONDITIONAL_LOG_DEBUG("Drive state set to REVERSE\n");
-          current_state = VEHICLE_DRIVE_STATE_REVERSE;
+          current_state = VEHICLE_DRIVE_STATE_CHARGING;
+          s_update_storage_drive_state(current_state);
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
+          current_request = DRIVE_STATE_REQUEST_NONE;
+        }
+      }
+
+      break;
+
+    case DRIVE_STATE_REQUEST_C:
+
+      if (current_state != VEHICLE_DRIVE_STATE_CHARGING) {
+        StatusCode ret = drive_state_manager_charging();
+        if (ret == STATUS_CODE_OK) {
+          CONDITIONAL_LOG_DEBUG("Drive state set to CHARGING\n");
+          current_state = VEHICLE_DRIVE_STATE_CHARGING;
           s_update_storage_drive_state(current_state);
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);

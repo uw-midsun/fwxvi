@@ -24,7 +24,7 @@ Messages:
         length: 16
       state_data:
         type: bitfield
-        flags: [{name: drive_state, length: 3}, brake_enabled, regen_enabled]
+        flags: [{name: drive_state, length: 2}, brake_enabled, regen_enabled]
         length: 8
   motor_stats_A:
     id: 22
