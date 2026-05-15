@@ -69,7 +69,6 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
  * @param   button reverse/drive button that triggered the current callback
  * @return  TRUE when the chord was handled as drive state charging, FALSE otherwise
  */
-
 static bool s_charging_up_btns_chord(SteeringButtons button) {
   SteeringButtons other_button = button == STEERING_BUTTON_DRIVE ? STEERING_BUTTON_REVERSE : STEERING_BUTTON_DRIVE;
 
