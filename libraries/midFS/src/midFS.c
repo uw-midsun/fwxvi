@@ -61,8 +61,10 @@ StatusCode fs_init() {
   superBlock->rootFolderMetadata.size = 0;
   // printf("End of file system init\n\r");
   printf("File system initialized with BLOCKS_PER_GROUP: %d BLOCK_SIZE: %d NUM_BLOCK_GROUPS: %d\r\n", BLOCKS_PER_GROUP, BLOCK_SIZE, NUM_BLOCK_GROUPS);
-  printf("Stats: sizeof(SuperBlock): %d, sizeof(BlockGroup): %d, sizeof(FileEntry): %d\r\n", sizeof(superBlock), sizeof(BlockGroup), sizeof(FileEntry));
-  printf("Total size: %d\r\n", FS_TOTAL_SIZE);
+  printf(
+      "Stats: sizeof(SuperBlock): %zu, sizeof(BlockGroup): %zu, sizeof(FileEntry): %zu\r\n",
+      sizeof(SuperBlock), sizeof(BlockGroup), sizeof(FileEntry));
+  printf("Total size: %zu\r\n", (size_t)FS_TOTAL_SIZE);
   return STATUS_CODE_OK;
 }
 

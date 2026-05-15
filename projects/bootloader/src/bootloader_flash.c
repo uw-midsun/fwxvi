@@ -26,7 +26,7 @@ static BootloaderError s_validate_address(uintptr_t address, size_t size) {
   }
 
   /* Ensure address is in range */
-  uint32_t flash_end = FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE;
+  uintptr_t flash_end = FLASH_START_ADDRESS_LINKERSCRIPT + FLASH_SIZE_LINKERSCRIPT;
   if (address < FLASH_START_ADDRESS_LINKERSCRIPT || address + size > flash_end) {
     return BOOTLOADER_FLASH_WRITE_OUT_OF_BOUNDS;
   }
@@ -39,22 +39,25 @@ BootloaderError boot_flash_write(uintptr_t address, uint8_t *buffer, size_t buff
     return BOOTLOADER_INVALID_ARGS;
   }
 
-  if (s_validate_address(address, buffer_len) == BOOTLOADER_ERROR_NONE) {
-    HAL_FLASH_Unlock();
-    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
-
-    /* Program the flash double word by double word (64-bits) */
-    for (size_t i = 0U; i < buffer_len; i += 8U) {
-      uint64_t data = 0U;
-      memcpy(&data, &buffer[i], MIN(8U, buffer_len - i));
-
-      if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, address + i, data) != HAL_OK) {
-        HAL_FLASH_Lock();
-        return BOOTLOADER_INTERNAL_ERR;
-      }
-    }
-    HAL_FLASH_Lock();
+  BootloaderError error = s_validate_address(address, buffer_len);
+  if (error != BOOTLOADER_ERROR_NONE) {
+    return error;
   }
+
+  HAL_FLASH_Unlock();
+  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
+
+  /* Program the flash double word by double word (64-bits) */
+  for (size_t i = 0U; i < buffer_len; i += 8U) {
+    uint64_t data = 0U;
+    memcpy(&data, &buffer[i], MIN(8U, buffer_len - i));
+
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, address + i, data) != HAL_OK) {
+      HAL_FLASH_Lock();
+      return BOOTLOADER_INTERNAL_ERR;
+    }
+  }
+  HAL_FLASH_Lock();
 
   return BOOTLOADER_ERROR_NONE;
 }
@@ -86,11 +89,13 @@ BootloaderError boot_flash_read(uintptr_t address, uint8_t *buffer, size_t buffe
     return BOOTLOADER_INVALID_ARGS;
   }
 
-  if (s_validate_address(address, buffer_len) == BOOTLOADER_ERROR_NONE) {
-    /* Direct memory read */
-    memcpy(buffer, (void *)address, buffer_len);
+  BootloaderError error = s_validate_address(address, buffer_len);
+  if (error != BOOTLOADER_ERROR_NONE) {
+    return error;
   }
 
+  /* Direct memory read */
+  memcpy(buffer, (void *)address, buffer_len);
   return BOOTLOADER_ERROR_NONE;
 }
 

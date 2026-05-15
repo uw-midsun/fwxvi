@@ -8,8 +8,8 @@ from sys import platform
 
 # OpenOCD configuration constants
 OPENOCD = 'openocd'
-OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
-PROBE = 'cmsis-dap'
+OPENOCD_SCRIPT_DIR = '/usr/share/openocd/scripts/'
+PROBE = 'stlink'
 PLATFORM_DIR = 'platform'
 
 
@@ -140,7 +140,7 @@ def gdb_run(elf_path, hardware, flash_type):
         time.sleep(2)
 
         gdb_cmd = [
-            "arm-none-eabi-gdb",
+            "gdb-multiarch",
             str(elf_path),
             "-ex", "target extended-remote localhost:3333",
             "-ex", "monitor reset halt",

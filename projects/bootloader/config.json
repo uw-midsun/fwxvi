@@ -1,10 +1,11 @@
 {
     "arm_libs": [
         "CMSIS",
-        "HAL", 
+        "HAL",
         "core"
     ],
     "no_lint": true,
     "can": false,
-    "arm_only": true
+    "arm_only": true,
+    "selected_preset": "STM32L433CCU6_bootloader_debug"
 }

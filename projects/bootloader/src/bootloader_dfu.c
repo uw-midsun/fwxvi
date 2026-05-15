@@ -34,18 +34,21 @@ BootloaderError bootloader_dfu_flash(PacketManager *pm, uint8_t *flash_buffer) {
     return BOOTLOADER_CRC_MISMATCH_BEFORE_WRITE;
   }
   
-  error |= boot_flash_erase(BOOTLOADER_ADDR_TO_PAGE(dfu_info.current_write_address), 1U);
-  error |= boot_flash_write(dfu_info.current_write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
-  error |= boot_flash_read(dfu_info.current_write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
-  
+  uintptr_t write_address = pm->current_write_address;
+
+  error |= boot_flash_erase(BOOTLOADER_ADDR_TO_PAGE(write_address), 1U);
+  error |= boot_flash_write(write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
+  error |= boot_flash_read(write_address, flash_buffer, BOOTLOADER_PAGE_BYTES);
+
+  if (error != BOOTLOADER_ERROR_NONE) {
+    send_ack_datagram(NACK, error);
+    return error;
+  }
+
   calculated_crc32 = boot_crc32_calculate((uint32_t *)flash_buffer, BYTES_TO_WORD(pm->buffer_index));
   if (calculated_crc32 != pm->packet_crc32) {
     send_ack_datagram(NACK, BOOTLOADER_CRC_MISMATCH_AFTER_WRITE);
     return BOOTLOADER_CRC_MISMATCH_AFTER_WRITE;
-  }
-  if (error != BOOTLOADER_ERROR_NONE) {
-    send_ack_datagram(NACK, error);
-    return error;
   }
 
   return error;

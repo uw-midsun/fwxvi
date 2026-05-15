@@ -20,6 +20,10 @@
 #include "bootloader_flash.h"
 #include "bootloader_memory_map.h"
 
+#ifndef BOOTLOADER_LOOPBACK_TESTS_ENABLE
+#define BOOTLOADER_LOOPBACK_TESTS_ENABLE 1
+#endif
+
 /**
  * @defgroup bootloader
  * @brief    bootloader Firmware
@@ -40,16 +44,11 @@ typedef enum {
   BOOTLOADER_PING               /**< Bootloader is ready to start receiving data */
 } BootloaderStates;
 
-/**
- * @brief Bootloader Ping States
- */
+/** @brief Bootloader Ping States */
 typedef enum {
-  /// @brief Bootloader should start pinging MCU's
-  BOOTLOADER_PING_NODES = 0,
-  /// @brief Bootloader ping should do branch stuff
-  BOOTLOADER_PING_BRANCH,
-  /// @brief Bootloader ping should do group stuff
-  BOOTLOADER_PING_PROJECT,
+  BOOTLOADER_PING_NODES = 0, /**< Bootloader should start pinging MCU's */
+  BOOTLOADER_PING_BRANCH,    /**< Bootloader ping should do branch stuff */
+  BOOTLOADER_PING_PROJECT,   /**< Bootloader ping should do group stuff */
 } BootloaderPingStates;
 
 /**
@@ -71,5 +70,9 @@ BootloaderError bootloader_run(Boot_CanMessage *msg);
  * @return  BOOTLOADER_INTERNAL_ERR. This function should never return
  */
 BootloaderError bootloader_jump_app(void);
+
+#if BOOTLOADER_LOOPBACK_TESTS_ENABLE == 1
+BootloaderError bootloader_loopback_tests(Boot_CanMessage *msg);
+#endif
 
 /** @} */

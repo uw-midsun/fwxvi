@@ -16,7 +16,10 @@
 #include "bootstrap.h"
 
 int main() {
+  bootstrap_main();
+
   while (true) {
   }
+
   return 0;
 }

@@ -86,12 +86,12 @@ static BootloaderError s_receive_chunk(PacketManager *pm, BootloaderDatagram *da
 
   /* Prevent overflow */
   size_t bytes_to_copy = DATAGRAM_CHUNK;
-  uint8_t remaining_page = BOOTLOADER_PAGE_BYTES - pm->buffer_index;
+  size_t remaining_page = BOOTLOADER_PAGE_BYTES - pm->buffer_index;
   if (remaining_page < DATAGRAM_CHUNK) {
     bytes_to_copy = remaining_page;
   }
-  uint8_t remaining_data = pm->data_size - (pm->buffer_index + pm->bytes_written);
-  if (remaining_data < DATAGRAM_CHUNK) {
+  size_t remaining_data = pm->data_size - (pm->buffer_index + pm->bytes_written);
+  if (remaining_data < bytes_to_copy) {
     bytes_to_copy = remaining_data;
   }
 
@@ -113,7 +113,7 @@ static BootloaderError s_on_flash_success(PacketManager *pm, uint8_t *flash_buff
   pm->current_write_address += pm->buffer_index; 
   pm->buffer_index = 0;
 
-  memset(flash_buffer, 0, sizeof(flash_buffer));
+  memset(flash_buffer, 0, BOOTLOADER_PAGE_BYTES);
   send_ack_datagram(ACK, BOOTLOADER_ERROR_NONE);
 
   if (pm->bytes_written >= pm->data_size && boot_verify_flash_memory()) {

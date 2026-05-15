@@ -10,13 +10,15 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
 /* Inter-component Headers */
 #include "midFS.h"
 #include "status.h"
+
 /* Intra-component Headers */
+#include "bootstrap_memory_map.h"
 
 /**
  * @defgroup bootstrap
@@ -24,14 +26,9 @@
  * @{
  */
 
-#define BOOTLOADER_ADDR 0x08008000
-#define BOOTLOADER_SIZE 0x00007000  // 64 KB
-#define APPLICATION_ADDR 0x08018000
-#define CRC_FILE_PATH "crc.txt"
-#define CRC_SIZE 8
+#define CRC_FILE_PATH "/crc.txt"
+#define CRC32_HEX_STRING_SIZE 8U
 #define CRC32_POLY 0xEDB88320UL  // Reversed 0x04C11DB7
-
-extern uint32_t crc32_table[256];
 
 typedef void (*EntryPoint)(void);
 
@@ -48,20 +45,31 @@ void jump_to(uint32_t addr);
 void crc32_init(void);
 
 /**
- * Manually computes CRC
- *
+ * @brief Manually computes CRC
+ * @param data The data we want to compute the crc for
+ * @param length The length of the data in bytes
+ * @param crc_dest The variable we want to store the CRC computation result
+ * @return void (status codes might be better TODO)
  */
 void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest);
 
 /**
- * Reads CRC value from file system
- *
+ * @brief Parses an 8-character ASCII hex CRC32 value.
+ * @param crc_bytes Bytes containing the ASCII hex CRC32 value.
+ * @param length Length of crc_bytes. Must be CRC32_HEX_STRING_SIZE.
+ * @param crc_dest Destination for the parsed CRC32 value.
+ * @return STATUS_CODE_OK if parsed successfully.
  */
-StatusCode read_crc32(const char *file_path, size_t length, uint8_t *crc_dest);
+StatusCode parse_crc32_hex(const uint8_t *crc_bytes, size_t length, uint32_t *crc_dest);
 
 /**
- * Main application executed at runtime
- *
+ * @brief  Reads an ASCII hex CRC32 value from file system.
+ * @return STATUS_CODE_OK if the file was read and parsed successfully.
+ */
+StatusCode read_crc32(const char *file_path, size_t length, uint32_t *crc_dest);
+
+/**
+ * @brief Main application executed at runtime (No clue why it was done like this)
  */
 void bootstrap_main(void);
 /** @} */

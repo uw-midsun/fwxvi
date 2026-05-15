@@ -1,6 +1,6 @@
 {
-    "x86_libs": [
-        "ms-common"
+    "libs": [
+        "midFS"
     ],
 
     "arm_libs": [
@@ -9,5 +9,5 @@
         "HAL"
     ],
     "can": false,
-    "arm_only": true
+    "selected_preset": "STM32L433CCU6_bootstrap_debug"
 }
