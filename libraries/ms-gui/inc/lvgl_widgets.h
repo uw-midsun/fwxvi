@@ -366,4 +366,14 @@ StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfi
  */
 StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text);
 
+/**
+ * @brief   Set the text color of a table cell
+ * @param   widget Pointer to the table widget runtime object
+ * @param   row Zero-based row index
+ * @param   col Zero-based column index
+ * @param   color_id Color to set for the cell text
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_widgets_set_table_cell_color(TableWidget *widget, uint32_t row, uint32_t col, GuiColorId color_id);
+
 /** @} */

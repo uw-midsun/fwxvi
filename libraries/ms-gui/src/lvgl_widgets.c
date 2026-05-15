@@ -374,6 +374,21 @@ StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32
   return STATUS_CODE_OK;
 }
 
+StatusCode lvgl_widgets_set_table_cell_color(TableWidget *widget, uint32_t row, uint32_t col, GuiColorId color_id) {
+  if (widget == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if (widget->table == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_obj_t *cell = lv_table_get_cell_obj(widget->table, row, col);
+  if (cell != NULL) {
+    lv_obj_set_style_text_color(cell, s_gui_palette_color(color_id), 0);
+  }
+  return STATUS_CODE_OK;
+}
+
 #else
 StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
   (void)label;
@@ -426,6 +441,14 @@ StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32
   (void)row;
   (void)col;
   (void)text;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_table_cell_color(TableWidget *widget, uint32_t row, uint32_t col, GuiColorId color_id) {
+  (void)widget;
+  (void)row;
+  (void)col;
+  (void)color_id;
   return STATUS_CODE_OK;
 }
 #endif

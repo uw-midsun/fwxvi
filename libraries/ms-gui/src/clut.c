@@ -41,7 +41,8 @@ static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = { [GUI_COLOR_SCREE
                                                                 [GUI_COLOR_REGEN_BRAKE_FILL] = { .red = 0x00U, .green = 0xC8U, .blue = 0x53U },
                                                                 [GUI_COLOR_BRAKE_FILL] = { .red = 0xD6U, .green = 0x9BU, .blue = 0x33U },
                                                                 [GUI_COLOR_SOC_FILL] = { .red = 0xD6U, .green = 0x9BU, .blue = 0x33U },
-                                                                [GUI_COLOR_LABEL_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU } };
+                                                                [GUI_COLOR_LABEL_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU },
+                                                                [GUI_COLOR_CELL_DISCHARGING] = { .red = 0xFFU, .green = 0x00U, .blue = 0x00U } };
 ClutEntry *clut_get_table(void) {
   return s_clut_table;
 }
