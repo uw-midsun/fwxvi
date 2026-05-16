@@ -86,8 +86,5 @@ proc stm_flash_fs_storage {IMGFILE} {
 }
 
 proc stm_erase {} {
-    reset halt
-    sleep 100
-    stm32l4x mass_erase 0
-    sleep 100
+    
 }

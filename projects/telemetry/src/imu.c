@@ -17,12 +17,43 @@
 #include "imu.h"
 #include "log.h"
 #include "tasks.h"
+#include "telemetry_setters.h" // Project must be built first 
 
 /* Intra-component Headers */
 
-#define IMU_DEBUG 0U
+#define IMU_DEBUG 1U
 
 static Bmi323Storage *s_storage = NULL;
+
+typedef struct {
+  Bmi323Storage *storage;
+  Bmi323Settings *settings;
+} ImuTaskContext;
+
+static ImuTaskContext imu_context;
+
+TASK(initialize_imu, TASK_STACK_512) {
+  ImuTaskContext *ctx = (ImuTaskContext *)context;
+  if (ctx == NULL || ctx->storage == NULL || ctx->settings == NULL) {
+    LOG_CRITICAL("IMU task context tweaking");
+    vTaskDelete(NULL);
+  }
+
+  s_storage = ctx->storage;
+  s_storage->settings = ctx->settings;
+  
+  StatusCode status = spi_init(ctx->settings->spi_port, &ctx->settings->spi_settings);
+  if (status != STATUS_CODE_OK) {
+    LOG_CRITICAL("SPI init failed");
+    vTaskDelete(NULL);
+  }
+
+  status = bmi323_init(s_storage);
+  if (status != STATUS_CODE_OK) {
+    LOG_CRITICAL("BMI323 init failed");
+    vTaskDelete(NULL);
+  }
+}
 
 StatusCode imu_run() {
   StatusCode status = bmi323_update(s_storage);
@@ -30,8 +61,8 @@ StatusCode imu_run() {
     LOG_CRITICAL("status error");
     return status;
   }
-  imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
-  eulerAngles(q_est, &s_storage->readings.roll, &s_storage->readings.pitch, &s_storage->readings.yaw);
+  //imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
+  //eulerAngles(q_est, &s_storage->readings.roll, &s_storage->readings.pitch, &s_storage->readings.yaw);
 
 #if (IMU_DEBUG == 1)
   // Create buffer and log IMU values
@@ -51,7 +82,7 @@ StatusCode imu_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {  // Bmi323 is the peripheral
   if (storage == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -59,10 +90,11 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
   s_storage = storage;
   s_storage->settings = settings;
 
-  StatusCode status = bmi323_init(s_storage);
-  if (status != STATUS_CODE_OK) {
-    return status;
-  }
+  imu_context.storage = storage;
+  imu_context.settings = settings;
+
+
+  tasks_init_task(initialize_imu, TASK_PRIORITY(2), &imu_context);
 
   return STATUS_CODE_OK;
 }
@@ -190,3 +222,16 @@ void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw) {
   *pitch *= (180.0f / PI);
   *roll *= (180.0f / PI);
 }
+
+/**
+ * Used to transmit CAN messages, will send the float, roll, pitch, and yaw values
+ * Will also send the accel values that are stored in the struct
+ */
+/*
+void imu_transmit_can(){
+  set_telemetry_telemetry_data((double) &s_storage->gyro.x);
+  set_imu_data_roll((double) &s_storage->accel.) 
+  set_imu_data_pitch(val)
+  set_imu_data_yaw(val) 
+}
+  */
