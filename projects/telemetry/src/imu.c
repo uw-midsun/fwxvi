@@ -25,6 +25,36 @@
 
 static Bmi323Storage *s_storage = NULL;
 
+typedef struct {
+  Bmi323Storage *storage;
+  Bmi323Settings *settings;
+} ImuTaskContext;
+
+static ImuTaskContext imu_context;
+
+TASK(initialize_imu, TASK_STACK_512) {
+  ImuTaskContext *ctx = (ImuTaskContext *)context;
+  if (ctx == NULL || ctx->storage == NULL || ctx->settings == NULL) {
+    LOG_CRITICAL("IMU task context tweaking");
+    vTaskDelete(NULL);
+  }
+
+  s_storage = ctx->storage;
+  s_storage->settings = ctx->settings;
+  
+  StatusCode status = spi_init(ctx->settings->spi_port, &ctx->settings->spi_settings);
+  if (status != STATUS_CODE_OK) {
+    LOG_CRITICAL("SPI init failed");
+    vTaskDelete(NULL);
+  }
+
+  status = bmi323_init(s_storage);
+  if (status != STATUS_CODE_OK) {
+    LOG_CRITICAL("BMI323 init failed");
+    vTaskDelete(NULL);
+  }
+}
+
 StatusCode imu_run() {
   StatusCode status = bmi323_update(s_storage);
   if (status != STATUS_CODE_OK) {
@@ -60,10 +90,11 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {  // Bmi3
   s_storage = storage;
   s_storage->settings = settings;
 
-  StatusCode status = bmi323_init(s_storage);
-  if (status != STATUS_CODE_OK) {
-    return status;
-  }
+  imu_context.storage = storage;
+  imu_context.settings = settings;
+
+
+  tasks_init_task(initialize_imu, TASK_PRIORITY(2), &imu_context);
 
   return STATUS_CODE_OK;
 }

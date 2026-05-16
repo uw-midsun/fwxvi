@@ -20,6 +20,7 @@
 #include "system_can.h"
 #include "tasks.h"
 #include "uart.h"
+#include "imu.h"
 
 /* Intra-component Headers */
 #include "bmi323.h"
@@ -33,6 +34,20 @@ static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
 static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
 static GpioAddress s_xbee_reset = GPIO_TELEMETRY_XBEE_XRST;
 static StatusCode status = STATUS_CODE_OK;
+
+#define IMU_LOG_PERIOD_MS 1000U
+
+TASK(telemetry_imu_task, TASK_STACK_512) {
+  delay_ms(10000U);
+
+  while (true) {
+    StatusCode imu_status = imu_run();
+    if (imu_status != STATUS_CODE_OK) {
+      LOG_WARN("IMU run failed: %d", imu_status);
+    }
+    delay_ms(IMU_LOG_PERIOD_MS);
+  }
+}
 
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,
@@ -58,12 +73,12 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   telemetry_storage->datagram_queue.storage_buf = (uint8_t *)telemetry_storage->datagram_buffer;
 
   // uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
-  status = spi_init(telemetry_storage->bmi323_storage->settings->spi_port, &telemetry_storage->bmi323_storage->settings->spi_settings);
   // can_init(telemetry_storage->can_storage, &s_can_settings);
   // queue_init(&telemetry_storage->datagram_queue);
-  bmi323_init(bmi323_storage);
   // sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
   // xb_transmit_init(telemetry_storage, telemetry_storage->config);
+  imu_init(telemetry_storage->bmi323_storage, telemetry_storage->bmi323_storage->settings);
+  tasks_init_task(telemetry_imu_task, TASK_PRIORITY(2), NULL);
 
   gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);

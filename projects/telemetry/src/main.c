@@ -62,30 +62,6 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
-float roll = 0;
-float pitch = 0;
-float yaw = 0;
-void pre_loop_init() {
-  imu_init(&bmi323_storage, &bmi323_settings);
-  // for (float i = 0; i < 1000; i++) {
-  //   imu_filter(0.05, 0.05, 0.9, 0, 0, 0);
-  //   eulerAngles(q_est, &roll, &pitch, &yaw);
-  // }
-}
-
-void run_1000hz_cycle() {}
-
-void run_10hz_cycle() {
-  //run_can_tx_medium();
-  imu_run();
-  LOG_DEBUG("IMU: x: %u | y: %u | z: %u\r\n", (uint16_t)telemetry_storage.bmi323_storage->gyro.x * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.y * 100, (uint16_t)telemetry_storage.bmi323_storage->gyro.z * 100);
-  
-}
-
-void run_1hz_cycle() {
-  //run_can_tx_slow();
-}
-
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
@@ -99,7 +75,6 @@ int main() {
   // works
 
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
-  init_master_tasks();
 
   tasks_start();
 
