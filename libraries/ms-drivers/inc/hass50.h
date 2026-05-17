@@ -1,11 +1,12 @@
 #pragma once
 
 /************************************************************************************************
- * @file   hass50.h
+ * @file    hass50.h
  *
- * @brief  Header file to implement the current sensing from the HASS50 sensor
+ * @brief   Header file to implement the current sensing from the HASS50 sensor
  *
- * @author
+ * @date    2026-05-17
+ * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
 /* Standard library Headers */
@@ -15,6 +16,8 @@
 /* Inter-component Headers */
 #include "adc.h"
 #include "gpio.h"
+
+/* Intra-component Headers */
 #include "status.h"
 
 #define HASS50_IPN 50.0f
@@ -47,3 +50,5 @@ StatusCode hass50_init(HASS50Storage *storage, GpioAddress *out_pin, GpioAddress
  * @return STATUS_CODE_OK on success
  */
 StatusCode hass50_get_current(HASS50Storage *storage, float *out_current_amps);
+
+/** @} */
