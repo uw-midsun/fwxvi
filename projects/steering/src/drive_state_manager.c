@@ -195,7 +195,7 @@ StatusCode drive_state_manager_update(void) {
         StatusCode ret = drive_state_manager_reverse();
         if (ret == STATUS_CODE_OK) {
           CONDITIONAL_LOG_DEBUG("Drive state set to REVERSE\n");
-          current_state = VEHICLE_DRIVE_STATE_CHARGING;
+          current_state = VEHICLE_DRIVE_STATE_REVERSE;
           s_update_storage_drive_state(current_state);
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);

@@ -35,7 +35,7 @@
 #define GAP_MS 30U
 #define PLAY_TIME(duration) ((duration)-GAP_MS)
 
-static bool party_mode = false;
+static bool party_mode = true;
 static uint8_t party_hue = 0;
 
 static SteeringStorage *steering_storage = NULL;
