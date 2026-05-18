@@ -31,7 +31,7 @@
  * @{
  */
 
-#define LOG_STRING_SIZE (size_t)200
+#define LOG_STRING_SIZE (size_t)256
 #define LOG_TIMEOUT_MS 10
 #define MS_LOG 0U
 
@@ -96,7 +96,7 @@ extern Queue logger_queue;
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
 #define LOG_TIMEOUT 1000
-#define LOGGER_ITEMS 15
+#define LOGGER_ITEMS 50
 #define TASK_PRIORTIY_LOGGER 3U
 
 StatusCode log_init(void);
