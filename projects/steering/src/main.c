@@ -51,7 +51,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
-  //party_mode_run();
+  party_mode_run();
   //range_estimator_run();
   //display_rx_slow();
   //display_run();
