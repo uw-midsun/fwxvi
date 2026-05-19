@@ -36,25 +36,25 @@ SteeringConfig steering_config = { .cruise_max_speed_kmh = STEERING_CRUISE_MAX_S
 void pre_loop_init() {}
 
 void run_1000hz_cycle() {
- // run_can_rx_all();
+  run_can_rx_all();
   button_manager_update();
-  //display_rx_fast();
+  display_rx_fast();
 }
 
 void run_10hz_cycle() {
-  //display_rx_medium();
+  display_rx_medium();
   button_led_manager_update();
   drive_state_manager_update();
   lights_signal_manager_update();
-  //cruise_control_run_medium_cycle();
-  //run_can_tx_medium();
+  cruise_control_run_medium_cycle();
+  run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
   party_mode_run();
-  //range_estimator_run();
-  //display_rx_slow();
-  //display_run();
+  range_estimator_run();
+  display_rx_slow();
+  display_run();
 }
 
 #ifdef MS_PLATFORM_X86

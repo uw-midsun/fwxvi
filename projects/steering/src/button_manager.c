@@ -64,21 +64,6 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
   return gui_menu_request_toggle() == STATUS_CODE_OK;
 }
 
-/**
- * @brief   Toggle the overlay menu when both drive and reverse buttons are pressed together
- * @param   button reverse/drive button that triggered the current callback
- * @return  TRUE when the chord was handled as drive state charging, FALSE otherwise
- */
-static bool s_charging_up_btns_chord(SteeringButtons button) {
-  SteeringButtons other_button = button == STEERING_BUTTON_DRIVE ? STEERING_BUTTON_REVERSE : STEERING_BUTTON_DRIVE;
-
-  if (!s_button_is_pressed(other_button)) {
-    return false;
-  }
-
-  return drive_state_manager_request(DRIVE_STATE_REQUEST_D) == STATUS_CODE_OK;
-}
-
 #define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
 
 #if (BUTTON_MANAGER_DEBUG == 1)
@@ -157,9 +142,6 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-  if (s_charging_up_btns_chord(STEERING_BUTTON_DRIVE)) {
-    return;
-  }
 
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
@@ -175,9 +157,6 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-  if (s_charging_up_btns_chord(STEERING_BUTTON_REVERSE)) {
-    return;
-  }
 
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
@@ -193,13 +172,15 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
+  
+  drive_state_manager_enter_regen_state(REGEN_STATE_DISABLED);
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
 }
 
 static void neutral_btn_rising_edge_cb(Button *button) {
-  CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
+  CONDITIONAL_LOG_DEBUG("ButtonsManager - Neutral Rising edge callback\r\n");
 }
 
 /************************************************************************************************
@@ -238,8 +219,15 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
-  drive_state_manager_toggle_regen();
+  if(drive_state_manager_get_state() == VEHICLE_DRIVE_STATE_NEUTRAL){
+      drive_state_manager_request(DRIVE_STATE_REQUEST_C);
+      return;
+  }else if(drive_state_manager_get_state() == VEHICLE_DRIVE_STATE_CHARGING){
+    drive_state_manager_request(DRIVE_STATE_REQUEST_N);
+  }else{
+    CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+    drive_state_manager_toggle_regen();
+  } 
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {
