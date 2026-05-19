@@ -3,7 +3,7 @@
  *
  * @brief  Unit tests for opd module
  *
- * @date   2025-10-03
+ * @date   2026-05-15
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -29,17 +29,34 @@
 #include "front_controller_hw_defs.h"
 #include "opd.h"
 
+/**
+ * NOTE: IS_OPD_ENABLED is currently 0 in opd.c. opd_run() does not perform the
+ * OPD speed-matching algorithm — it only forwards accel/brake percentages to the CAN
+ * TX struct. The public calculation API (opd_linear_calculate, opd_quadratic_calculate,
+ * opd_calculate_handler) is still fully exercised below.
+ *
+ * opd_linear_calculate formula:
+ *   current_speed = vehicle_speed_kph / max_vehicle_speed_kph
+ *   if pedal > current_speed (PTS_TYPE_LINEAR):  driving
+ *     result = 0.25 * (1/(1-speed)) * (pedal - 1) + 1
+ *   else: braking
+ *     result = max_braking * (1 - (1/speed) * pedal)
+ *
+ * opd_quadratic_calculate formula:
+ *   if pedal^2 > current_speed (PTS_TYPE_QUADRATIC):  driving
+ *     m = 1 / (1-speed)^2,  result = m * (pedal - speed)^2
+ *   else: braking
+ *     m = max_braking / speed^2,  result = m * (pedal - speed)^2
+ */
+
 static FrontControllerStorage mock_storage = { 0 };
-static GpioAddress mock_accel_pedal_gpio = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 static uint16_t mock_raw_adc_reading = 0;
 
 StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
   if (reading == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
   *reading = mock_raw_adc_reading;
-
   return STATUS_CODE_OK;
 }
 
@@ -52,249 +69,150 @@ void setup_test(void) {
   };
 
   mock_storage.config = &config;
+  mock_storage.brake_state = BRAKE_STATE_DISABLED;
 
   accel_pedal_init(&mock_storage);
   opd_init(&mock_storage);
 
   mock_storage.accel_pedal_storage->calibration_data.lower_value = 1000;
   mock_storage.accel_pedal_storage->calibration_data.upper_value = 2000;
+  mock_storage.accel_pedal_storage->calibration_data.reversed = false;
   mock_storage.accel_pedal_storage->prev_accel_percentage = 0.0f;
   mock_storage.accel_pedal_storage->accel_percentage = 0.0f;
+
   mock_storage.opd_storage->max_vehicle_speed_kph = 100;
-  mock_storage.opd_storage->max_braking_percentage = 0.75;
-  // Disable regen limiter by setting cell voltage under 4150mV to avoid interfering with other tests
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4000;
+  mock_storage.opd_storage->max_braking_percentage = 0.75f;
 }
 
 void teardown_test(void) {}
 
+/* ---- init tests ---- */
+
 TEST_IN_TASK
-void test_opd_braking(void) {
-  mock_raw_adc_reading = 1500;
-  mock_storage.vehicle_speed_kph = 50;
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+void test_opd_init_null_storage_returns_error(void) {
+  TEST_ASSERT_NOT_OK(opd_init(NULL));
+}
 
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+/* ---- opd_run tests (IS_OPD_ENABLED = 0) ---- */
 
-  /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.5
-   * Deadzone = 0.05 (ignored)
-   * pow(0.5, 2.0) = 0.25
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
-   *
-   * Current speed = 50 / 100 = 0.5
-   * Since 0.4 < 5, it should be braking
-   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
-   *
-   */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+TEST_IN_TASK
+void test_opd_run_without_brake_engaged_returns_ok(void) {
+  mock_storage.brake_state = BRAKE_STATE_DISABLED;
+  mock_storage.accel_percentage = 0.5f;
+  mock_storage.brake_percentage = 0.0f;
+
+  TEST_ASSERT_OK(opd_run());
 }
 
 TEST_IN_TASK
-void test_opd_regen_no_limiting(void) {
-  // Simulate braking with no regen limiting
-  mock_raw_adc_reading = 1500;
-  mock_storage.vehicle_speed_kph = 50;
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4100;  // Below the range of 4.15 to 4.2V
+void test_opd_run_with_brake_engaged_returns_ok(void) {
+  mock_storage.brake_state = BRAKE_STATE_BRAKING;
+  mock_storage.accel_percentage = 0.0f;
+  mock_storage.brake_percentage = 0.3f;
 
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+  TEST_ASSERT_OK(opd_run());
+}
 
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+/* ---- opd_linear_calculate tests ---- */
 
+TEST_IN_TASK
+void test_opd_linear_calculate_braking(void) {
   /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.5
-   * Deadzone = 0.05 (ignored)
-   * pow(0.5, 2.0) = 0.25
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
-   *
-   * Current speed = 50 / 100 = 0.5
-   * Since 0.4 < 5, it should be braking
-   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
-   * Cell voltage below 4150mV, so regen limiter shouldn't touch anything
-   *
+   * pedal=0.4, speed=50/100=0.5 → pedal < speed → braking
+   * m = 1/speed = 1/0.5 = 2
+   * result = max_braking * (1 - m*pedal) = 0.75 * (1 - 2*0.4) = 0.75 * 0.2 = 0.15
    */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_linear_calculate(0.4f, PTS_TYPE_LINEAR, &result));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, result);
 }
 
 TEST_IN_TASK
-void test_opd_regen_partial_limiting(void) {
-  // Simulate braking with cell voltage that should require partial
-  // regen limiting (between 4.15 to 4.2V)
-  mock_raw_adc_reading = 1500;
-  mock_storage.vehicle_speed_kph = 50;
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4175;
-
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
+void test_opd_linear_calculate_driving(void) {
   /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.5
-   * Deadzone = 0.05 (ignored)
-   * pow(0.5, 2.0) = 0.25
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
-   *
-   * Current speed = 50 / 100 = 0.5
-   * Since 0.4 < 5, it should be braking
-   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
-   * Cell voltage in range [4150, 4200], so determine multplier to dampen regen
-   * (4200 - 4175) / 50 = 0.5
-   * 0.15 * 0.5 = 0.075
-   *
+   * pedal=0.712, speed=70/100=0.7 → pedal > speed → driving
+   * m = 1/(1-speed) = 1/0.3 ≈ 3.333
+   * result = 0.25 * m * (pedal - 1) + 1 = 0.25*3.333*(-0.288) + 1 ≈ 0.76
    */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.075f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
-}
-
-TEST_IN_TASK
-void test_opd_regen_full_limiting(void) {
-  // Simulate braking with cell voltage where regen should be fully limited (max cell voltage)
-  mock_raw_adc_reading = 1500;
-  mock_storage.vehicle_speed_kph = 50;
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4200;
-
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.5
-   * Deadzone = 0.05 (ignored)
-   * pow(0.5, 2.0) = 0.25
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.25 = 0.4
-   *
-   * Current speed = 50 / 100 = 0.5
-   * Since 0.4 < 5, it should be braking
-   * 0.75 * (1 - (0.4 / 0.5)) = 0.15
-   * Since cell voltage is at max, should be 0
-   *
-   */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
-}
-
-TEST_IN_TASK
-void test_opd_regen_no_expected_limiting(void) {
-  // Simulate accelerating with cell voltage (mV) in [4150, 4200]
-  mock_raw_adc_reading = 1800;
   mock_storage.vehicle_speed_kph = 70;
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4175;
-
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.8
-   * Deadzone = 0.05 (ignored)
-   * pow(0.8, 2.0) = 0.64
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
-   *
-   * Current speed = 70 / 100 = 0.7
-   * Since 0.712 > 0.7, it should be driving
-   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
-   * This shouldn't be touched by the regen limiter since it's driving
-   *
-   */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
-
-  // Simulate accelerating with max cell voltage
-  g_rx_struct.battery_stats_B_min_cell_voltage = 4200;
-
-  ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.8
-   * Deadzone = 0.05 (ignored)
-   * pow(0.8, 2.0) = 0.64
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
-   *
-   * Current speed = 70 / 100 = 0.7
-   * Since 0.712 > 0.7, it should be driving
-   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
-   * This shouldn't be touched by the regen limiter since it's driving
-   *
-   */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_linear_calculate(0.712f, PTS_TYPE_LINEAR, &result));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, result);
 }
 
 TEST_IN_TASK
-void test_opd_driving(void) {
-  mock_raw_adc_reading = 1800;
-  mock_storage.vehicle_speed_kph = 70;
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
-
+void test_opd_linear_calculate_pedal_at_zero_full_braking(void) {
   /**
-   * Normalized = (1500-1000)/(2000-1000) = 0.8
-   * Deadzone = 0.05 (ignored)
-   * pow(0.8, 2.0) = 0.64
-   * Remap_min=0.2, remapped = 0.2 + (1-0.2)*0.64 = 0.712
-   *
-   * Current speed = 70 / 100 = 0.7
-   * Since 0.712 > 0.7, it should be driving
-   * 0.25 * (1 / (1 - 0.7)) * (0.712 - 1) + 1 = 0.76
-   *
+   * pedal=0.0, speed=0.6 → braking
+   * m = 1/0.6 ≈ 1.667
+   * result = 0.75 * (1 - 1.667*0) = 0.75
    */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
-}
-
-TEST_IN_TASK
-void test_opd_deadzone(void) {
-  /* Normalized = (1040-1000)/1000 = 0.04 < deadzone 0.05 */
-  mock_raw_adc_reading = 1040;
   mock_storage.vehicle_speed_kph = 60;
-  StatusCode ret = accel_pedal_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_linear_calculate(0.0f, PTS_TYPE_LINEAR, &result));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.75f, result);
+}
 
-  ret = opd_run();
-  TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
+/* ---- opd_quadratic_calculate tests ---- */
 
+TEST_IN_TASK
+void test_opd_quadratic_calculate_braking(void) {
   /**
-   * Current speed = 70 / 100 = 0.6
-   * Since 0.0 < 0.7, it should be braking
-   * 0.75 * (1 - (1/0.6 * 0.0)) = 0.75
+   * pedal=0.4, speed=0.5 → PTS_TYPE_QUADRATIC: pedal^2=0.16 < speed=0.5 → braking
+   * m = max_braking / speed^2 = 0.75 / 0.25 = 3
+   * result = m * (pedal - speed)^2 = 3 * (0.4 - 0.5)^2 = 3 * 0.01 = 0.03
    */
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_pedal_storage->accel_percentage);
-  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.75f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
-  TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_quadratic_calculate(0.4f, PTS_TYPE_QUADRATIC, &result));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.03f, result);
+}
+
+TEST_IN_TASK
+void test_opd_quadratic_calculate_driving(void) {
+  /**
+   * pedal=0.9, speed=0.5 → PTS_TYPE_QUADRATIC: pedal^2=0.81 > speed=0.5 → driving
+   * m = 1 / (1-speed)^2 = 1 / 0.25 = 4
+   * result = m * (pedal - speed)^2 = 4 * (0.9 - 0.5)^2 = 4 * 0.16 = 0.64
+   */
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_quadratic_calculate(0.9f, PTS_TYPE_QUADRATIC, &result));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.64f, result);
+}
+
+/* ---- opd_calculate_handler curve type routing tests ---- */
+
+TEST_IN_TASK
+void test_opd_calculate_handler_routes_linear_curve(void) {
+  /* Same inputs as test_opd_linear_calculate_braking — confirms routing */
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_calculate_handler(0.4f, PTS_TYPE_LINEAR, &result, CURVE_TYPE_LINEAR));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, result);
+}
+
+TEST_IN_TASK
+void test_opd_calculate_handler_routes_quadratic_curve(void) {
+  /* Same inputs as test_opd_quadratic_calculate_braking — confirms routing */
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_calculate_handler(0.4f, PTS_TYPE_QUADRATIC, &result, CURVE_TYPE_QUADRATIC));
+  TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.03f, result);
+}
+
+TEST_IN_TASK
+void test_opd_calculate_handler_exponential_applies_exponent_to_linear(void) {
+  /**
+   * CURVE_TYPE_EXPONENTIAL runs opd_linear_calculate then raises to config exponent (2.0).
+   * pedal=0.4, speed=0.5 → linear braking result = 0.15
+   * exponential: 0.15^2 = 0.0225
+   */
+  mock_storage.vehicle_speed_kph = 50;
+  float result = 0.0f;
+  TEST_ASSERT_OK(opd_calculate_handler(0.4f, PTS_TYPE_LINEAR, &result, CURVE_TYPE_EXPONENTIAL));
+  TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0225f, result);
 }
 
 TEST_IN_TASK
@@ -325,18 +243,24 @@ void test_opd_visualize_curve(void) {
   FILE *f = fopen(out_file, "w");
   TEST_ASSERT_NOT_NULL(f);
 
-  fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");
+  fprintf(f, "pedal_percentage,speed_percentage,linear_result,quadratic_result\n");
 
-  for (uint16_t adc_val = mock_storage.accel_pedal_storage->calibration_data.lower_value; adc_val <= mock_storage.accel_pedal_storage->calibration_data.upper_value; adc_val += 10) {
-    for (uint32_t speed = 0; speed <= 100; speed += 1) {
-      mock_raw_adc_reading = adc_val;
-      mock_storage.vehicle_speed_kph = speed;
-      float normalized_speed = ((float)mock_storage.vehicle_speed_kph / (float)mock_storage.opd_storage->max_vehicle_speed_kph);
+  for (uint32_t speed_kph = 0; speed_kph <= 100; speed_kph += 10) {
+    mock_storage.vehicle_speed_kph = speed_kph;
 
-      accel_pedal_run();
-      opd_run();
+    for (int pedal_pct = 0; pedal_pct <= 100; pedal_pct += 5) {
+      float pedal = (float)pedal_pct / 100.0f;
+      float speed_norm = (float)speed_kph / 100.0f;
 
-      fprintf(f, "%u,%.5f,%.2f,%u,%.5f\n", adc_val, mock_storage.accel_pedal_storage->accel_percentage, mock_storage.accel_percentage, mock_storage.opd_storage->drive_state, (double)normalized_speed);
+      float linear_result = 0.0f;
+      float quadratic_result = 0.0f;
+
+      if (speed_kph > 0) {
+        opd_linear_calculate(pedal, PTS_TYPE_LINEAR, &linear_result);
+        opd_quadratic_calculate(pedal, PTS_TYPE_QUADRATIC, &quadratic_result);
+      }
+
+      fprintf(f, "%.2f,%.2f,%.5f,%.5f\n", (double)pedal, (double)speed_norm, (double)linear_result, (double)quadratic_result);
     }
   }
 

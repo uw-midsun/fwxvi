@@ -117,7 +117,7 @@ Commands:
         Build a local copy of the doxygen HTML
 
 Target:
-targest can be specified with an option.
+target can be specified with an option.
 
     --project=<name>
         specify the target as a project with `name`
