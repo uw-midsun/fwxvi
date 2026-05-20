@@ -7,7 +7,12 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
+/* Inter-component Headers */
 #include "generic_wrapper.h"
+
+/* Intra-component Headers */
 
 widget_t *create_widget(widget_config_t *config) {
   if (!config) return NULL;

@@ -10,7 +10,16 @@
  ********
  */
 
+/* Inter-component Headers */
 #include "lvgl.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup generic_wrapper
+ * @brief    generic_wrapper Firmware
+ * @{
+ */
 
 /**
  * @brief Configuration struct for a generic LVGL widget.
