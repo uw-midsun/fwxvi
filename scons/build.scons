@@ -49,6 +49,8 @@ def src(path):
     # return all source files within a path
     srcs = []
     for file in path.glob("src/*.[cs]") + path.glob("src/*.cc") + path.glob("src/*.cpp") + \
+               
+               path.glob("fonts/*.c") + \
                path.glob(f"src/{PLATFORM}/*.[cs]") + path.glob(f"src/{PLATFORM}/*.cc") + path.glob(f"src/{PLATFORM}/*.cpp"):
         if file.abspath.startswith(OBJ_DIR.abspath):
             srcs.append(file)
