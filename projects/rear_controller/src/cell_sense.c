@@ -82,7 +82,6 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
@@ -123,6 +122,8 @@ static const AdbmsAfeSettings s_afe_settings = {
 static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
+
+static bool s_balancing_enabled = true;
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
@@ -259,7 +260,9 @@ static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_
  ************************************************************************************************/
 
 static void s_balance_cells(uint16_t min_voltage) {
-#if (BALANCING_ENABLED == 1U)
+  if (!s_balancing_enabled){
+    return;
+  }
   uint16_t balancing_threshold = min_voltage;
 
   if (rear_controller_storage->pack_current > MAX_PACK_CURRENT_FOR_CELL_DISCHARGING) {
@@ -300,7 +303,6 @@ static void s_balance_cells(uint16_t min_voltage) {
 
   /* Commit the discharge configuration to the ADBMS1818 */
   adbms_afe_write_config(adbms_afe_storage);
-#endif
 }
 
 static void s_disable_balancing() {
@@ -516,9 +518,7 @@ static StatusCode s_cell_sense_run() {
     status = STATUS_CODE_INTERNAL_ERROR;
   }
 
-#if (BALANCING_ENABLED == 1U)
   s_balance_cells(min_voltage);
-#endif
   s_cell_data_updated = true;
 
 #if (THERMISTORS_CONNECTED == 1U)
