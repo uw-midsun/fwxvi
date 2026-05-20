@@ -187,11 +187,6 @@ StatusCode drive_state_manager_update(void) {
       break;
 
     case DRIVE_STATE_REQUEST_N:
-
-      //if(current_regen_state == REGEN_STATE_ENABLED){
-      //  current_request = VEHICLE_DRIVE_STATE_CHARGING;
-      //}
-
       if (current_state != VEHICLE_DRIVE_STATE_NEUTRAL) {
         StatusCode ret = drive_state_manager_neutral();
         if (ret == STATUS_CODE_OK) {
