@@ -10,6 +10,8 @@
  ********
  */
 
+/* Standard library Headers */
+
 /* Inter-component Headers */
 #include "lvgl.h"
 
@@ -48,3 +50,5 @@ widget_t create_widget(widget_config_t *config);
 void set_image(const lv_image_dsc_t *img, widget_t *widget);
 
 void set_color(const lv_color_t color, widget_t *widget);
+
+/** @} */
