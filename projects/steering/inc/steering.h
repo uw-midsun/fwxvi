@@ -15,6 +15,7 @@
 
 /* Inter-component Headers */
 #include "global_enums.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "status.h"
@@ -28,6 +29,7 @@
 /* Forward declarations */
 struct ButtonManager;
 struct ButtonLEDManager;
+struct Ws22MotorCanConfig;
 
 /** @brief  Steering button debounce period millisecond */
 #define STEERING_BUTTON_DEBOUNCE_PERIOD_MS 5U
@@ -75,16 +77,16 @@ typedef struct {
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */
   uint8_t brake_percentage;
 
-  int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
-  int16_t motor_temp;          /**< Temperature of the motor */
+  // int16_t motor_heatsink_temp; /**< Temperature of the motor heatsink */
+  // int16_t motor_temp;          /**< Temperature of the motor */
 
   int16_t vehicle_velocity; /**< Velocity of the vehicle in kph */
-  int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
+  // int16_t motor_velocity;   /**< Angular velocity of the motor in ??? */
 
   uint16_t bps_fault;     /**< BPS fault bitfield */
   uint8_t bps_fault_cell; /**< BPS fault cell number (if it exists) */
-  uint16_t ws22_flags;    /**< Error and limit flags from the WS22 */
-  float state_of_charge;  /** Battery percentage from 0-100, two decimal points of precision*/
+  // uint16_t ws22_flags;    /**< Error and limit flags from the WS22 */
+  float state_of_charge; /** Battery percentage from 0-100, two decimal points of precision*/
 
   int16_t dcdc_voltage; /**< DC/DC or PCS bus voltage (mV) */
   int16_t dcdc_current; /**< DC/DC or PCS bus current (mA) */
@@ -117,13 +119,15 @@ typedef struct {
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */
   uint8_t light_signal;                     /**< Light signal state (see #LightsSignalState) */
 
-  struct ButtonManager *button_manager;        /**< Button manager */
-  struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
-  DisplayData display_data;                    /**< Data for the display */
+  struct ButtonManager *button_manager;               /**< Button manager */
+  struct ButtonLEDManager *button_led_manager;        /**< Button LED manager */
+  struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
+  DisplayData display_data;                           /**< Data for the display */
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
-  SteeringConfig *config; /**< Pointer to the steering configuration data */
+  SteeringConfig *config;                    /**< Pointer to the steering configuration data */
+  Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
 } SteeringStorage;
 
 /**
@@ -133,6 +137,6 @@ typedef struct {
  * @return  STATUS_CODE_OK if steering initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config);
+StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config);
 
 /** @} */

@@ -25,6 +25,7 @@
 #include "cell_sense.h"
 #include "current_sense.h"
 #include "killswitch.h"
+#include "motor_can.h"
 #include "power_path_manager.h"
 #include "precharge.h"
 #include "rear_controller.h"
@@ -50,12 +51,12 @@ static const CanSettings s_can_settings = {
   .tx = GPIO_REAR_CONTROLLER_CAN_TX,
   .rx = GPIO_REAR_CONTROLLER_CAN_RX,
   .loopback = false,
-  .can_rx_all_cb = NULL,
+  .can_rx_all_cb = motor_can_process_rx,
 };
 
 static GpioAddress s_rear_controller_board_led = GPIO_REAR_CONTROLLER_BOARD_LED;
 
-StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
+StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config, Ws22MotorCanConfig *motor_can_config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -81,6 +82,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
 
   /* Initialize rear controller systems */
   bps_fault_init(rear_controller_storage);
+  ws22_motor_can_init(rear_controller_storage->ws22_motor_can_storage, motor_can_config);
   killswitch_init(REAR_CONTROLLER_KILLSWITCH_EVENT, get_1000hz_task());
   relays_init(rear_controller_storage);
   rear_controller_state_manager_init(rear_controller_storage);

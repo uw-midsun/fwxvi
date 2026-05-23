@@ -18,6 +18,7 @@
 #include "adc_manager.h"
 #include "gpio_manager.h"
 #include "i2c_manager.h"
+#include "spi_manager.h"
 
 /**
  * @defgroup ClientAppMain
@@ -38,6 +39,7 @@
 
 extern GpioManager clientGpioManager; /**< Global GPIO Manager */
 extern AfeManager clientAfeManager;   /**< Global ADBMS1818 AFE Manager */
+extern SPIManager clientSpiManager;   /**<GLobal SPI Manager */
 extern AdcManager clientAdcManager;   /**< Global ADC Manager */
 extern I2CManager clientI2CManager;   /**< Global I2C Manager */
 
