@@ -28,7 +28,9 @@
 #include "rear_controller_getters.h"
 #include "rear_controller_state_manager.h"
 
-RearControllerStorage rear_controller_storage = { 0U };
+Ws22MotorCanStorage motor_can_storage = { 0 };
+
+RearControllerStorage rear_controller_storage = { .ws22_motor_can_storage = &motor_can_storage };
 
 RearControllerConfig rear_controller_config = {
   .series_count = REAR_CONTROLLER_SERIES_COUNT,

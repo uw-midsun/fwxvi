@@ -28,7 +28,9 @@
 #include "power_manager.h"
 #include "ws22_motor_can.h"
 
-FrontControllerStorage front_controller_storage = { 0 };
+Ws22MotorCanStorage motor_can_storage = { 0 };
+
+FrontControllerStorage front_controller_storage = { .ws22_motor_can_storage = &motor_can_storage };
 
 FrontControllerConfig front_controller_config = {
   .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,

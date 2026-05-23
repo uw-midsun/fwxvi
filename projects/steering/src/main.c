@@ -29,7 +29,9 @@
 #include "steering.h"
 #include "steering_getters.h"
 
-SteeringStorage steering_storage = { 0 };
+Ws22MotorCanStorage motor_can_storage = { 0 };
+
+SteeringStorage steering_storage = { .ws22_motor_can_storage = &motor_can_storage };
 
 SteeringConfig steering_config = { .cruise_max_speed_kmh = STEERING_CRUISE_MAX_SPEED_KMH, .cruise_min_speed_kmh = STEERING_CRUISE_MIN_SPEED_KMH };
 

@@ -38,7 +38,6 @@ static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, u
 
   memcpy(&telemetry->bus_voltage, &msg_data_u8[0], sizeof(float));
   memcpy(&telemetry->bus_current, &msg_data_u8[4], sizeof(float));
-  // LOG_DEBUG("Busvolt reading %d\r\n", (int16_t)telemetry->bus_voltage);
 
   return STATUS_CODE_OK;
 }
@@ -47,7 +46,6 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  LOG_DEBUG("data: %x %x %x %x\r\n", msg_data_u8[0], msg_data_u8[1], msg_data_u8[2], msg_data_u8[3]);
 
   memcpy(&telemetry->motor_velocity, &msg_data_u8[0], sizeof(float));
   memcpy(&telemetry->vehicle_velocity, &msg_data_u8[4], sizeof(float));
