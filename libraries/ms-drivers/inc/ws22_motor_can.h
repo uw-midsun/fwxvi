@@ -5,7 +5,7 @@
  *
  * @brief  Header file for Wavesculptor 22 CAN interface
  *
- * @date   2025-06-29
+ * @date   2025-04-23
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -14,15 +14,13 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#include "can.h"
 #include "status.h"
 
 /* Intra-component Headers */
-#include "front_controller.h"
 
 /**
- * @defgroup Front_Controller
- * @brief    Front Controller Board Firmware
+ * @defgroup WS22 motor can
+ * @brief    WS22 motor can library
  * @{
  */
 
@@ -91,6 +89,18 @@ typedef struct {
   float motor_temp;     /**< Motor temperature (°C) */
 } Ws22MotorTelemetryData;
 
+typedef struct {
+  bool ws22_status_info_enabled;          /**< Flag to indicate if CAN reading status_info is enabled */
+  bool ws22_bus_measurement_enabled;      /**< Flag to indicate if CAN reading bus_measurement is enabled */
+  bool ws22_velocity_measurement_enabled; /**< Flag to indicate if CAN reading velocity_measurement is enabled */
+  bool ws22_phase_current_enabled;        /**< Flag to indicate if CAN reading phase_current is enabled */
+  bool ws22_motor_voltage_enabled;        /**< Flag to indicate if CAN reading motor_voltage is enabled */
+  bool ws22_motor_current_enabled;        /**< Flag to indicate if CAN reading motor_current is enabled */
+  bool ws22_motor_back_emf_enabled;       /**< Flag to indicate if CAN reading motor_back_emf is enabled */
+  bool ws22_rail_15v_enabled;             /**< Flag to indicate if CAN reading rail_15v is enabled */
+  bool ws22_temperature_enabled;          /**< Flag to indicate if CAN reading temperature is enabled */
+} Ws22MotorCanConfig;
+
 /**
  * @brief WS22 motor CAN interface storage structure
  */
@@ -104,7 +114,7 @@ typedef struct Ws22MotorCanStorage {
  * @param   storage Pointer to Front controller storage structure
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
-StatusCode ws22_motor_can_init(FrontControllerStorage *storage);
+StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage, Ws22MotorCanConfig *config);
 
 /**
  * @brief   Set motor control current command
@@ -121,17 +131,11 @@ StatusCode ws22_motor_can_set_current(float current);
 StatusCode ws22_motor_can_set_velocity(float velocity);
 
 /**
- * @brief   Build and transmit motor drive command
- * @return  STATUS_CODE_OK on success, error code otherwise
- */
-StatusCode ws22_motor_can_transmit_drive_command(void);
-
-/**
  * @brief   Process received CAN message for motor controller
  * @param   msg Pointer to received CAN message
  * @return  STATUS_CODE_OK on success, STATUS_CODE_UNIMPLEMENTED for unknown message IDs
  */
-StatusCode ws22_motor_can_process_rx(CanMessage *msg);
+StatusCode ws22_motor_can_process_rx(uint8_t *msg_data_u8, uint32_t msg_id_raw, uint8_t msg_dlc);
 
 /**
  * @brief   Get current motor control data
