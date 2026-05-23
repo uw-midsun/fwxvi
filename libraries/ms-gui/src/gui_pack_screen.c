@@ -157,7 +157,7 @@ StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t ce
   if (is_discharging) {
     color_id = GUI_COLOR_CELL_DISCHARGING;
   }
-  
+
   return lvgl_widgets_set_table_cell_color(&s_pack_table, cell_idx / PACK_TABLE_COLS, cell_idx % PACK_TABLE_COLS, color_id);
 }
 
