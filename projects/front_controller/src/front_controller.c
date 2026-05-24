@@ -22,7 +22,7 @@
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
-#include "../pedal_calib/inc/pedal_calib_handler.h"
+#include "pedal_calib_handler.h"
 #include "accel_pedal.h"
 #include "brake_pedal.h"
 #include "cruise_control.h"

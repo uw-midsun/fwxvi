@@ -21,6 +21,8 @@
 #include "pedal_calib.h"
 #include "persist.h"
 #include "status.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /* Intra-component Headers */
 #include "front_controller.h"
@@ -40,6 +42,14 @@ typedef struct {
 } PedalCalibrationState;
 
 static PedalCalibrationState s_calib_state = { 0 };
+
+/**
+ * @brief   Get current time in milliseconds
+ * @return  Current time in milliseconds
+ */
+static uint32_t s_get_current_time_ms(void) {
+  return (uint32_t)(xTaskGetTickCount() * 1000 / configTICK_RATE_HZ);
+}
 
 // GPIO addresses for pedal inputs
 static const GpioAddress s_accel_pedal_gpio_opamp = { .port = GPIO_PORT_A, .pin = 3 };
@@ -97,28 +107,28 @@ static StatusCode s_init_calib_hardware(void) {
  * @brief   Execute one step of the calibration
  */
 static StatusCode s_execute_calib_step(void) {
-  uint32_t elapsed_time = delay_ms(0);  // Get current time
+  uint32_t elapsed_time = s_get_current_time_ms();  // Get current time
 
   switch (s_calib_state.current_step) {
     case PEDAL_CALIB_STATUS_IDLE:
       s_init_calib_hardware();
       s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED;
-      s_calib_state.step_start_time_ms = delay_ms(0);
+      s_calib_state.step_start_time_ms = s_get_current_time_ms();
       s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED);
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal raw (unpressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED;
-        s_calib_state.step_start_time_ms = delay_ms(0);
+        s_calib_state.step_start_time_ms = s_get_current_time_ms();
         s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED);
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal raw (pressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
 
@@ -138,43 +148,43 @@ static StatusCode s_execute_calib_step(void) {
         opamp_start(PEDAL_CALIB_OPAMP);
 
         s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED;
-        s_calib_state.step_start_time_ms = delay_ms(0);
+        s_calib_state.step_start_time_ms = s_get_current_time_ms();
         s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED);
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal amplified (unpressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED;
-        s_calib_state.step_start_time_ms = delay_ms(0);
+        s_calib_state.step_start_time_ms = s_get_current_time_ms();
         s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED);
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling accel pedal amplified (pressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_UNPRESSED;
-        s_calib_state.step_start_time_ms = delay_ms(0);
+        s_calib_state.step_start_time_ms = s_get_current_time_ms();
         s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_UNPRESSED);
       }
       break;
 
     case PEDAL_CALIB_STATUS_BRAKE_UNPRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling brake pedal (unpressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio);
         s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_PRESSED;
-        s_calib_state.step_start_time_ms = delay_ms(0);
+        s_calib_state.step_start_time_ms = s_get_current_time_ms();
         s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_PRESSED);
       }
       break;
 
     case PEDAL_CALIB_STATUS_BRAKE_PRESSED:
-      if (delay_ms(0) - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
         LOG_DEBUG("Sampling brake pedal (pressed)\r\n");
         pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio);
 
@@ -198,7 +208,7 @@ static StatusCode s_execute_calib_step(void) {
       break;
 
     default:
-      return STATUS_CODE_INVALID_STATE;
+      return STATUS_CODE_UNKNOWN;
   }
 
   return STATUS_CODE_OK;
@@ -217,19 +227,16 @@ StatusCode pedal_calib_handler_init(FrontControllerStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode pedal_calib_handler_rx(FrontControllerStorage *storage) {
+StatusCode pedal_calib_handler_start(FrontControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  // Check if there's a calibration request from steering
-  // The auto-generated function will be: get_steering_pedal_calib_request_command()
-  // For now, we just check a flag that would be set by the CAN handler
-  // This will be completed when the auto-generated code is available
-
+  // Activate the calibration state machine
   if (!s_calib_state.active) {
-    // Check for calibration start request (would be from CAN message)
-    // s_calib_state.active = get_steering_pedal_calib_request_command() > 0;
+    s_calib_state.active = true;
+    s_calib_state.current_step = PEDAL_CALIB_STATUS_IDLE;
+    LOG_DEBUG("Pedal calibration started\r\n");
   }
 
   return STATUS_CODE_OK;

@@ -47,12 +47,13 @@ typedef enum {
 StatusCode pedal_calib_handler_init(FrontControllerStorage *storage);
 
 /**
- * @brief   Process pedal calibration request from CAN
- * @details Handles CAN messages from steering requesting calibration
+ * @brief   Start the pedal calibration process
+ * @details Initiates the calibration state machine. Called when the user selects the pedal
+ *          calibration option from the display.
  * @param   storage Pointer to the front controller storage
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode pedal_calib_handler_rx(FrontControllerStorage *storage);
+StatusCode pedal_calib_handler_start(FrontControllerStorage *storage);
 
 /**
  * @brief   Execute one step of the calibration process
