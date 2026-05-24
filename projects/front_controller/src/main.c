@@ -19,13 +19,13 @@
 #include "tasks.h"
 
 /* Intra-component Headers */
-#include "pedal_calib_handler.h"
 #include "accel_pedal.h"
 #include "brake_pedal.h"
 #include "front_controller.h"
 #include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
+#include "pedal_calib_handler.h"
 #include "power_manager.h"
 #include "ws22_motor_can.h"
 
