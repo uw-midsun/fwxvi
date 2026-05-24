@@ -11,6 +11,7 @@
 #include <stdbool.h>
 
 /* Inter-component Headers */
+#include "FreeRTOS.h"
 #include "adc.h"
 #include "dac.h"
 #include "delay.h"
@@ -21,7 +22,6 @@
 #include "pedal_calib.h"
 #include "persist.h"
 #include "status.h"
-#include "FreeRTOS.h"
 #include "task.h"
 
 /* Intra-component Headers */
