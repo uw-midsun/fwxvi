@@ -247,6 +247,7 @@ StatusCode display_init(SteeringStorage *storage) {
 #else
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
+
   // TODO: FW-520 Add callback here for toggle discharge
 
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
