@@ -50,7 +50,6 @@ typedef struct {
  */
 WidgetInstance create_widget(WidgetConfig *config);
 
-
 /**
  * @brief Set the image inside widget object
  */

@@ -47,7 +47,7 @@ WidgetInstance *create_widget(WidgetConfig *config) {
 
 /**
  * @brief   Chnage the image object of widget
- * @param   widget Widget instance 
+ * @param   widget Widget instance
  * @param   img Lvgl image
  * @return  None
  */
@@ -59,7 +59,7 @@ void set_image(const lv_image_dsc_t *img, WidgetInstance *widget) {
 
 /**
  * @brief   Chnage the color of widget's image
- * @param   widget Widget instance 
+ * @param   widget Widget instance
  * @param   color Lvgl color
  * @return  None
  */
