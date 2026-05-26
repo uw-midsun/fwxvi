@@ -34,10 +34,12 @@
 /* Intra-component Headers */
 #include "display.h"
 #include "steering_getters.h"
+#include "steering_setters.h"
 #include "steering_hw_defs.h"
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
+static bool s_balancing_enabled = true;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -208,6 +210,13 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
   }
 }
 
+static StatusCode cell_balancing_toggle(void) {
+  s_balancing_enabled = !s_balancing_enabled;
+  set_steering_buttons_balancing_enabled(s_balancing_enabled);
+  return STATUS_CODE_OK;
+}
+
+
 StatusCode display_init(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -246,7 +255,7 @@ StatusCode display_init(SteeringStorage *storage) {
 #else
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
-  // TODO: FW-520 Add callback here for toggle discharge
+  status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
 
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
