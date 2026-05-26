@@ -213,6 +213,7 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
 static StatusCode cell_balancing_toggle(void) {
   s_balancing_enabled = !s_balancing_enabled;
   set_steering_buttons_balancing_enabled(s_balancing_enabled);
+  gui_menu_set_discharge_label(s_balancing_enabled ? "Cell Discharge: ON" : "Cell Discharge: OFF");
   return STATUS_CODE_OK;
 }
 
@@ -255,6 +256,7 @@ StatusCode display_init(SteeringStorage *storage) {
 #else
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
+  gui_menu_set_discharge_label(s_balancing_enabled ? "Cell Discharge: ON" : "Cell Discharge: OFF");
   status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
   set_steering_buttons_balancing_enabled(s_balancing_enabled);
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));

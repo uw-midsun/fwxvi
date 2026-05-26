@@ -55,6 +55,7 @@ typedef struct {
   uint8_t selected_index;                          /**< Index user is currently "hovering" over */
   GuiMenuActionCallback party_mode_callback;       /**< Callback for party mode */
   GuiMenuActionCallback toggle_discharge_callback; /**< Callback for toggling cell discharge */
+  const char *discharge_label_override;            /**< Dynamic label for discharge toggle */
   lv_obj_t *overlay;                               /**< Dimmed backdrop when menu is open */
   lv_obj_t *panel;                                 /**< Container that holds title + menu rows */
   lv_obj_t *title;                                 /**< Menu title */
@@ -85,6 +86,13 @@ StatusCode gui_menu_init(void);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback);
+
+/**
+ * @brief   Set display label for cell discharge toggle
+ * @param   label string to display, always valid when menu open
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_set_discharge_label(const char *label);
 
 /**
  * @brief   Queue a menu toggle request for processing on the display task

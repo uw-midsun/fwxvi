@@ -87,6 +87,10 @@ static const char *s_get_item_label(uint8_t index) {
     return "";
   }
 
+  if (index == GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE && s_menu.discharge_label_override != NULL) {
+    return s_menu.discharge_label_override;
+  }
+
   return s_menu_items[index].action_label;
 }
 
@@ -153,6 +157,11 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
 
 StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
   s_menu.toggle_discharge_callback = callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_discharge_label(const char *label) {
+  s_menu.discharge_label_override = label;
   return STATUS_CODE_OK;
 }
 
@@ -452,6 +461,11 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
 
 StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
   (void)callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_discharge_label(const char *label) {
+  (void)label;
   return STATUS_CODE_OK;
 }
 
