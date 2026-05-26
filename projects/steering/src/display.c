@@ -256,7 +256,7 @@ StatusCode display_init(SteeringStorage *storage) {
   status_ok_or_return(gui_init(&settings));
   status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
   status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
-
+  set_steering_buttons_balancing_enabled(s_balancing_enabled);
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
   LOG_DEBUG("LVGL display initialized\r\n");
