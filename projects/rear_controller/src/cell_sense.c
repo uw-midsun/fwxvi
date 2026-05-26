@@ -517,7 +517,7 @@ static StatusCode s_cell_sense_run() {
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
-
+  s_balancing_enabled = (bool)get_steering_buttons_balancing_enabled();
   s_balance_cells(min_voltage);
   s_cell_data_updated = true;
 
