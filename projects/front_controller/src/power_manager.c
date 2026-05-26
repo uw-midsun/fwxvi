@@ -29,6 +29,9 @@
 #define POWER_MANAGER_LO_SIDE_CURRENT_SENSE_RATIO 1000
 #define POWER_MANAGER_LO_SIDE_RESISTOR_OHMS 10000
 
+#undef status_ok_or_warning
+#define status_ok_or_warning(status) __FILE__
+
 static PowerManagerStorage s_power_manager_storage = { 0U };
 
 static FrontControllerStorage *front_controller_storage = NULL;

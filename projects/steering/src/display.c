@@ -287,20 +287,16 @@ StatusCode display_rx_medium() {
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
   display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
 
-  /* Greatest piece of code ever written. */
-  const uint16_t cell_voltages[36] = {
-    (uint16_t)get_AFE1_status_A_voltage_0(),  (uint16_t)get_AFE1_status_A_voltage_1(),  (uint16_t)get_AFE1_status_A_voltage_2(),  (uint16_t)get_AFE1_status_B_voltage_3(),
-    (uint16_t)get_AFE1_status_B_voltage_4(),  (uint16_t)get_AFE1_status_B_voltage_5(),  (uint16_t)get_AFE1_status_C_voltage_6(),  (uint16_t)get_AFE1_status_C_voltage_7(),
-    (uint16_t)get_AFE1_status_C_voltage_8(),  (uint16_t)get_AFE1_status_D_voltage_9(),  (uint16_t)get_AFE1_status_D_voltage_10(), (uint16_t)get_AFE1_status_D_voltage_11(),
-    (uint16_t)get_AFE1_status_E_voltage_12(), (uint16_t)get_AFE1_status_E_voltage_13(), (uint16_t)get_AFE1_status_E_voltage_14(), (uint16_t)get_AFE1_status_F_voltage_15(),
-    (uint16_t)get_AFE1_status_F_voltage_16(), (uint16_t)get_AFE1_status_F_voltage_17(), (uint16_t)get_AFE2_status_A_voltage_0(),  (uint16_t)get_AFE2_status_A_voltage_1(),
-    (uint16_t)get_AFE2_status_A_voltage_2(),  (uint16_t)get_AFE2_status_B_voltage_3(),  (uint16_t)get_AFE2_status_B_voltage_4(),  (uint16_t)get_AFE2_status_B_voltage_5(),
-    (uint16_t)get_AFE2_status_C_voltage_6(),  (uint16_t)get_AFE2_status_C_voltage_7(),  (uint16_t)get_AFE2_status_C_voltage_8(),  (uint16_t)get_AFE2_status_D_voltage_9(),
-    (uint16_t)get_AFE2_status_D_voltage_10(), (uint16_t)get_AFE2_status_D_voltage_11(), (uint16_t)get_AFE2_status_E_voltage_12(), (uint16_t)get_AFE2_status_E_voltage_13(),
-    (uint16_t)get_AFE2_status_E_voltage_14(), (uint16_t)get_AFE2_status_F_voltage_15(), (uint16_t)get_AFE2_status_F_voltage_16(), (uint16_t)get_AFE2_status_F_voltage_17(),
-  };
-
-  memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
+  display_data->telemetry_status_code = get_telemetry_status_status_code();
+  display_data->telemetry_file = get_telemetry_file();
+  display_data->front_controller_status_code = get_front_controller_status_status_code();
+  display_data->front_controller_file = get_front_controller_file();
+  display_data->rear_controller_status_code = get_rear_controller_status_status_code();
+  display_data->rear_controller_file = get_rear_controller_file();
+  display_data->imu_status_code = get_imu_status_status_code();
+  display_data->imu_file = get_imu_file();
+  display_data->steering_status_code = get_steering_status_status_code();
+  display_data->steering_file = get_steering_file();
 
   return STATUS_CODE_OK;
 }

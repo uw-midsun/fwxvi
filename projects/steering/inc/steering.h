@@ -105,6 +105,21 @@ typedef struct {
   uint8_t brake_enabled;
   uint8_t regen_enabled;
   uint8_t precharge_complete;
+
+  uint8_t telemetry_status_code;
+  uint32_t telemetry_file;
+
+  uint8_t front_controller_status_code;
+  uint32_t front_controller_file;
+
+  uint8_t rear_controller_status_code;
+  uint32_t rear_controller_file;
+
+  uint8_t imu_status_code;
+  uint32_t imu_file;
+
+  uint8_t steering_status_code;
+  uint32_t steering_file;
 } DisplayData;
 
 /**
