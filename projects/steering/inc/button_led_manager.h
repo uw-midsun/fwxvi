@@ -55,12 +55,12 @@ typedef struct {
 } LEDPixels;
 
 typedef struct ButtonLEDManager {
-  LEDPixels led_pixels[NUM_STEERING_BUTTONS];          /**< Color data per LED */
+  LEDPixels led_pixels[NUM_STEERING_BUTTONS];               /**< Color data per LED */
   uint16_t dma_buffer_main[BUTTON_LED_MANAGER_DMA_BUF_LEN]; /**< DMA buffer holds CCR compare values (ticks) */
   uint16_t dma_buffer_left[BUTTON_LED_MANAGER_DMA_BUF_LEN];
   uint16_t dma_buffer_right[BUTTON_LED_MANAGER_DMA_BUF_LEN];
-  bool needs_update;                                   /**< Flag to track if LEDs need updating */
-  bool is_transmitting;                                /**< Flag to prevent concurrent transmissions */
+  bool needs_update;    /**< Flag to track if LEDs need updating */
+  bool is_transmitting; /**< Flag to prevent concurrent transmissions */
 } ButtonLEDManager;
 
 /**

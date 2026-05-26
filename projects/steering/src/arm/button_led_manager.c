@@ -46,8 +46,8 @@
 
 #ifdef STM32L4P5xx
 #define LED_DMAMUX_REQUEST_TIM2_CH3 DMA_REQUEST_TIM2_CH3
-#define LED_DMAMUX_REQUEST_TIM2_CH1 DMA_REQUEST_TIM2_CH1 
-#define LED_DMAMUX_REQUEST_TIM4_CH2 DMA_REQUEST_TIM4_CH2 
+#define LED_DMAMUX_REQUEST_TIM2_CH1 DMA_REQUEST_TIM2_CH1
+#define LED_DMAMUX_REQUEST_TIM4_CH2 DMA_REQUEST_TIM4_CH2
 #else
 #define LED_DMAMUX_REQUEST_TIM2_CH3 0U
 #define LED_DMAMUX_REQUEST_TIM2_CH1 0U
@@ -55,8 +55,8 @@
 
 #endif
 
-//tim2_ch1 - left
-//tim4_ch2 - right
+// tim2_ch1 - left
+// tim4_ch2 - right
 
 static uint32_t s_timer_arr = 0U;
 static uint16_t s_t1_high_ticks = 0U;
@@ -68,7 +68,6 @@ static uint16_t s_dma_length_right = 0U;
 static uint16_t s_timer_arr_16b = 0U;
 static uint16_t s_t1_high_ticks_16b = 0U;
 static uint16_t s_t0_high_ticks_16b = 0U;
-
 
 static TIM_HandleTypeDef s_tim2_handle = { 0U };
 static DMA_HandleTypeDef s_dma_tim2_ch3_handle = { 0U };
@@ -130,7 +129,7 @@ static void button_led_manager_compute_timing_from_clock(void) {
   uint32_t psc = 0;
   float target_counts = (float)tim_clk * SK6812_BIT_PERIOD_US * 1e-6f;
   uint32_t arr_32b = (uint32_t)(target_counts + 0.5f);  // Round
-  uint16_t arr_16b = (uint16_t)(target_counts + 0.5f);  //NOTE: if I cast do I lose precision??
+  uint16_t arr_16b = (uint16_t)(target_counts + 0.5f);  // NOTE: if I cast do I lose precision??
 
   if (arr_32b > 0) {
     arr_32b = arr_32b - 1U;
@@ -153,7 +152,7 @@ static void button_led_manager_compute_timing_from_clock(void) {
   s_tim4_handle.Init.Prescaler = (uint16_t)psc;
   s_tim4_handle.Init.Period = arr_16b;
 
-   /* Generate update event to load new values */
+  /* Generate update event to load new values */
   //  s_tim2_handle.Instance->PSC = psc;
   //  s_tim2_handle.Instance->ARR = arr_32b;
   //  s_tim2_handle.Instance->EGR = TIM_EGR_UG;
@@ -202,7 +201,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   /* Enable clocks */
   __HAL_RCC_TIM2_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
-  
+
   __HAL_RCC_TIM4_CLK_ENABLE();
 #ifdef STM32L4P5xx
   __HAL_RCC_DMAMUX1_CLK_ENABLE();
@@ -240,10 +239,10 @@ static StatusCode button_led_manager_init_timer_dma(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
   if (HAL_TIM_Base_Init(&s_tim4_handle) != HAL_OK) {
-   return STATUS_CODE_INTERNAL_ERROR;
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   if (HAL_TIM_PWM_Init(&s_tim4_handle) != HAL_OK) {
-   return STATUS_CODE_INTERNAL_ERROR;
+    return STATUS_CODE_INTERNAL_ERROR;
   }
 
   /* PWM channel configuration */
@@ -256,10 +255,10 @@ static StatusCode button_led_manager_init_timer_dma(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
   if (HAL_TIM_PWM_ConfigChannel(&s_tim2_handle_left, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
-   return STATUS_CODE_INTERNAL_ERROR;
+    return STATUS_CODE_INTERNAL_ERROR;
   }
   if (HAL_TIM_PWM_ConfigChannel(&s_tim4_handle, &sConfigOC, TIM_CHANNEL_2) != HAL_OK) {
-   return STATUS_CODE_INTERNAL_ERROR;
+    return STATUS_CODE_INTERNAL_ERROR;
   }
 
   /* DMA initialization */
@@ -306,13 +305,12 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   /* Link DMA to TIM handle */
   __HAL_LINKDMA(&s_tim2_handle, hdma[TIM_DMA_ID_CC3], s_dma_tim2_ch3_handle);
   __HAL_LINKDMA(&s_tim2_handle_left, hdma[TIM_DMA_ID_CC3], s_dma_tim2_ch1_handle);
-  __HAL_LINKDMA(&s_tim4_handle, hdma[TIM_DMA_ID_CC3], s_dma_tim4_ch2_handle); //TODO: this part may break
+  __HAL_LINKDMA(&s_tim4_handle, hdma[TIM_DMA_ID_CC3], s_dma_tim4_ch2_handle);  // TODO: this part may break
 
   /* Enable DMA interrupt */
   interrupt_nvic_enable(LED_DMA_CH2_IRQn, INTERRUPT_PRIORITY_HIGH);
-   interrupt_nvic_enable(LED_DMA_CH3_IRQn, INTERRUPT_PRIORITY_HIGH);
-   interrupt_nvic_enable(LED_DMA_CH4_IRQn, INTERRUPT_PRIORITY_HIGH);
-
+  interrupt_nvic_enable(LED_DMA_CH3_IRQn, INTERRUPT_PRIORITY_HIGH);
+  interrupt_nvic_enable(LED_DMA_CH4_IRQn, INTERRUPT_PRIORITY_HIGH);
 
   return STATUS_CODE_OK;
 }
