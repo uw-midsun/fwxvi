@@ -137,6 +137,12 @@ static void button_led_manager_compute_timing_from_clock(void) {
     arr_32b = 0;
   }
 
+  if (arr_16b > 0) {                                                                                                │
+    arr_16b = arr_16b - 1U;                                                                                         │
+  } else {                                                                                                          │
+    arr_32b = 0;                                                                                                    │
+  }  
+
   /* Clamp to 32-bit (TIM2 is 32-bit timer) */
   if (arr_32b > 0xFFFFFFFFU) {
     arr_32b = 0xFFFFFFFFU;

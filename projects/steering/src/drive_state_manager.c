@@ -26,7 +26,7 @@
  * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
-#define IS_REAR_CONNECTED 1U
+#define IS_REAR_CONNECTED 0U
 #define DRIVE_STATE_MANAGER_DEBUG 0U
 
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
