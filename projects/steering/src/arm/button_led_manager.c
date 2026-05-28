@@ -293,7 +293,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   s_dma_tim4_ch2_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
   s_dma_tim4_ch2_handle.Init.PeriphInc = DMA_PINC_DISABLE;
   s_dma_tim4_ch2_handle.Init.MemInc = DMA_MINC_ENABLE;
-  s_dma_tim4_ch2_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+  s_dma_tim4_ch2_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
   s_dma_tim4_ch2_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
   s_dma_tim4_ch2_handle.Init.Mode = DMA_NORMAL;
   s_dma_tim4_ch2_handle.Init.Priority = DMA_PRIORITY_HIGH;
