@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "can.h"
 #include "gpio.h"
+#include "gui_menu.h"
 #include "log.h"
 #include "mcu.h"
 #include "system_can.h"
@@ -67,6 +68,8 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
   buzzer_init();
   display_init(steering_storage);
   party_mode_init(steering_storage);
+  gui_menu_set_party_mode_callback(party_mode_toggle);
+  // TODO: FW-520 Add callback here for toggle discharge
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
   drive_state_manager_init(steering_storage);

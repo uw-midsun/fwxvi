@@ -23,7 +23,6 @@
 #include "gui_widgets.h"
 #include "log.h"
 #include "ltdc.h"
-#include "party_mode.h"
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
@@ -136,7 +135,7 @@ static void s_process_pending_menu_input(void) {
   StatusCode menu_status = gui_menu_process_pending();
 
   if (menu_status == STATUS_CODE_INVALID_ARGS) {
-    buzzer_play_invalid();
+    //TODO
   } else if (menu_status != STATUS_CODE_OK) {
     LOG_DEBUG("gui menu input failed: %u\r\n", menu_status);
   }
@@ -245,8 +244,6 @@ StatusCode display_init(SteeringStorage *storage) {
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 #else
   status_ok_or_return(gui_init(&settings));
-  status_ok_or_return(gui_menu_set_party_mode_callback(party_mode_toggle));
-  // TODO: FW-520 Add callback here for toggle discharge
 
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
