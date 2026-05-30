@@ -79,10 +79,10 @@ def check_yaml_file(data):
             if signal.get("type") == "float":
                 if "min" not in signal or "max" not in signal:
                     raise Exception(f"Float signal '{signal_name}' must have 'min' and 'max' defined")
-                if signal["min"] > signal["max"]:
-                    raise Exception(f"Float signal '{signal_name}': ")
+                if signal["min"] >= signal["max"]:
+                    raise Exception(f"Float signal '{signal_name}': min must be less than max")
                 if not isinstance(signal["min"], (int, float)) or not isinstance(signal["max"], (int, float)):
-                    raise Exception(f"Float signal '{signal_name}': ")
+                    raise Exception(f"Float signal '{signal_name}': min and max must be numbers")
                 
                 
             # All signals within a message are the same length
