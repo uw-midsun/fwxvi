@@ -32,14 +32,18 @@
 StatusCode steering_pedal_calib_init(SteeringStorage *storage);
 
 /**
- * @brief   Start pedal calibration via CAN
+ * @brief   Request calibration start via CAN — safe to call from any task
+ * @details Sets the pedal_calib_request CAN signal high. The display task's
+ *          steering_pedal_calib_rx() processes the first cycle and clears the
+ *          "press to continue" subtitle.
  * @param   storage Pointer to steering storage
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode steering_pedal_calib_start(SteeringStorage *storage);
+StatusCode steering_pedal_calib_request(SteeringStorage *storage);
 
 /**
  * @brief   Handle CAN status updates from front controller during calibration
+ * @details Must be called from the display task only (makes LVGL calls).
  * @param   storage Pointer to steering storage
  * @return  STATUS_CODE_OK on success, error otherwise
  */

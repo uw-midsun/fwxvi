@@ -124,6 +124,10 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
+  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+    if (return_pressed_edge) {
+      steering_pedal_calib_request(steering_storage);
+    }
   }
 
   s_keyboard_state.left_pressed = left_pressed;
@@ -179,11 +183,6 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
-    // Start calibration on first entry
-    if (!steering_pedal_calib_is_active(steering_storage)) {
-      steering_pedal_calib_start(steering_storage);
-    }
-    // Receive status updates from front controller
     steering_pedal_calib_rx(steering_storage);
   }
 

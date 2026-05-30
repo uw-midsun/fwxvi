@@ -17,6 +17,8 @@
 #include "gui_screens.h"
 #include "log.h"
 #include "status.h"
+#include "steering_getters.h"
+#include "steering_setters.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
@@ -28,35 +30,35 @@
  */
 typedef struct {
   bool active;
+  bool subtitle_cleared;  // Set once rx() clears the "press to continue" subtitle
   uint8_t last_status;
-  uint32_t last_status_change_ms;  // For debug auto-advance
 } PedalCalibState;
 
-static PedalCalibState s_calib_state = { false, 0, 0 };
+static PedalCalibState s_calib_state = { false, false, 0xFF };
 
 /**
- * @brief   Get status message text for display
+ * @brief   Get user-facing status message text
  */
 static const char *s_get_status_text(uint8_t status) {
   switch (status) {
     case 0:
       return "Initializing...";
     case 1:
-      return "Lift Accel\nPedal UP";
+      return "LIFT Accel\nPedal";
     case 2:
-      return "Push Accel\nPedal DOWN";
+      return "PRESS Accel\nPedal";
     case 3:
-      return "Lift Accel\nPedal UP (2)";
+      return "LIFT Accel\nPedal (2)";
     case 4:
-      return "Push Accel\nPedal DOWN (2)";
+      return "PRESS Accel\nPedal (2)";
     case 5:
-      return "Lift Brake\nPedal UP";
+      return "LIFT Brake\nPedal";
     case 6:
-      return "Push Brake\nPedal DOWN";
+      return "PRESS Brake\nPedal";
     case 7:
-      return "Complete!\nCalibration Done";
+      return "Calibration\nComplete!";
     case 8:
-      return "ERROR!\nCalibration Failed";
+      return "Calibration\nFailed!";
     default:
       return "Unknown Status";
   }
@@ -68,35 +70,27 @@ StatusCode steering_pedal_calib_init(SteeringStorage *storage) {
   }
 
   s_calib_state.active = false;
-  s_calib_state.last_status = 0;
+  s_calib_state.subtitle_cleared = false;
+  s_calib_state.last_status = 0xFF;
 
   return STATUS_CODE_OK;
 }
 
-StatusCode steering_pedal_calib_start(SteeringStorage *storage) {
+StatusCode steering_pedal_calib_request(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
+  if (s_calib_state.active) {
+    return STATUS_CODE_OK;
+  }
+
   s_calib_state.active = true;
-  s_calib_state.last_status = 0;
+  s_calib_state.subtitle_cleared = false;
+  s_calib_state.last_status = 0xFF;
 
-  // Switch to pedal calibration screen
-  StatusCode status = gui_screens_show(GUI_SCREEN_PEDAL_CALIB);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Failed to switch to pedal calib screen: %u\r\n", status);
-    return status;
-  }
-
-  // Update display with initial message
-  status = gui_pedal_calib_widget_big_text("Initializing...");
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Failed to update pedal calib display: %u\r\n", status);
-  }
-
-  // Send CAN request to front controller to start calibration
-  // The auto-generated function will be: set_steering_pedal_calib_request_command()
-  // set_steering_pedal_calib_request_command(1);
+  // Write to CAN TX struct (safe to call from any task — single field write)
+  set_pedal_calib_request_command(1);
 
   return STATUS_CODE_OK;
 }
@@ -110,35 +104,35 @@ StatusCode steering_pedal_calib_rx(SteeringStorage *storage) {
     return STATUS_CODE_OK;
   }
 
-  uint8_t old_status = s_calib_state.last_status;
-
-  // Receive status from front controller
-  // The auto-generated function will be: get_front_controller_pedal_calib_status_status()
-  // uint8_t status = get_front_controller_pedal_calib_status_status();
+  // Clear "press to continue" subtitle on first rx cycle after activation.
+  // This is called from the display task so LVGL calls are safe here.
+  if (!s_calib_state.subtitle_cleared) {
+    gui_pedal_calib_widget_subtitle_text("");
+    s_calib_state.subtitle_cleared = true;
+  }
 
 #ifdef MS_PLATFORM_X86
-  // Debug mode: Auto-advance through calibration states
+  // Debug: auto-advance through calibration states since there is no real CAN
   static uint32_t debug_call_counter = 0;
-
+  uint8_t status = (s_calib_state.last_status == 0xFF) ? 0 : s_calib_state.last_status;
   debug_call_counter++;
-  if (debug_call_counter > 60 && s_calib_state.last_status < 7) {
+  if (debug_call_counter > 60 && status < 7) {
     debug_call_counter = 0;
-    s_calib_state.last_status++;
+    status++;
   }
+#else
+  uint8_t status = (uint8_t)get_pedal_calib_status_status();
 #endif
 
-  uint8_t status = s_calib_state.last_status;
-
-  // If status changed, update display
-  if (status != old_status) {
-    const char *status_text = s_get_status_text(status);
-    StatusCode update_status = gui_pedal_calib_widget_big_text(status_text);
+  if (status != s_calib_state.last_status) {
+    s_calib_state.last_status = status;
+    StatusCode update_status = gui_pedal_calib_widget_big_text(s_get_status_text(status));
     if (update_status != STATUS_CODE_OK) {
       LOG_DEBUG("Failed to update pedal calib display: %u\r\n", update_status);
     }
 
-    // Check if calibration is complete or errored
     if (status == 7 || status == 8) {
+      set_pedal_calib_request_command(0);
       s_calib_state.active = false;
     }
   }
@@ -147,6 +141,6 @@ StatusCode steering_pedal_calib_rx(SteeringStorage *storage) {
 }
 
 bool steering_pedal_calib_is_active(SteeringStorage *storage) {
-  (void)storage;  // Not used
+  (void)storage;
   return s_calib_state.active;
 }

@@ -71,8 +71,8 @@ Messages:
       left_sig_current:
         length: 16
   pedal_calib_status:
-    id: 25
-    cycle: "fast"
+    id: 45
+    cycle: "medium"
     critical: false
     target:
       steering:
