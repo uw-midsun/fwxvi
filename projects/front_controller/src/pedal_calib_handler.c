@@ -44,6 +44,7 @@ typedef struct {
 } PedalCalibrationState;
 
 static PedalCalibrationState s_calib_state = { 0 };
+static bool command_active = false;
 
 /**
  * @brief   Get current time in milliseconds
@@ -54,9 +55,9 @@ static uint32_t s_get_current_time_ms(void) {
 }
 
 // GPIO addresses for pedal inputs
-static const GpioAddress s_accel_pedal_gpio_opamp = { .port = GPIO_PORT_A, .pin = 3 };
-static const GpioAddress s_accel_pedal_gpio_raw = { .port = GPIO_PORT_A, .pin = 0 };
-static const GpioAddress s_brake_pedal_gpio = { .port = GPIO_PORT_A, .pin = 5 };
+static const GpioAddress s_accel_pedal_gpio_opamp = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
+static const GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
+static const GpioAddress s_brake_pedal_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
 
 // Hardware configuration
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
@@ -81,6 +82,7 @@ static StatusCode s_execute_calib_step(void) {
 
   switch (s_calib_state.current_step) {
     case PEDAL_CALIB_STATUS_IDLE:
+      adc_add_channel(&s_accel_pedal_gpio_raw);
       s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED;
       s_calib_state.step_start_time_ms = s_get_current_time_ms();
       s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED);
@@ -212,11 +214,13 @@ StatusCode pedal_calib_handler_start(FrontControllerStorage *storage) {
 }
 
 StatusCode pedal_calib_handler_run(FrontControllerStorage *storage) {
+  LOG_DEBUG("%d | %d\r\n", command_active, get_pedal_calib_request_command());
+
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  bool command_active = get_pedal_calib_request_command() != 0;
+  command_active = get_pedal_calib_request_command() != 0;
 
   if (!s_calib_state.active) {
     if (command_active) {
