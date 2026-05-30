@@ -154,7 +154,7 @@ static StatusCode s_render_gui_step(void) {
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
-    status_ok_or_return(gui_drive_screen_widget_set_speed(display_data->vehicle_velocity));
+    status_ok_or_return(gui_drive_screen_widget_set_speed(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(display_data->pedal_percentage));
     status_ok_or_return(gui_drive_screen_widget_set_brake_bar(display_data->brake_percentage));
     if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
@@ -167,7 +167,7 @@ static StatusCode s_render_gui_step(void) {
   } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
 
-    status_ok_or_return(gui_pack_screen_widget_set_speed_label(display_data->vehicle_velocity));
+    status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
   }
 
