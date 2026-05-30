@@ -28,6 +28,8 @@
 #define WS22_CAN_BASE_CONTROL 0x500U /**< Base address for control messages */
 #define WS22_CAN_BASE_STATUS 0x80U   /**< Base address for status messages */
 
+#define VEHICLE_RPM_TO_KPH 0.10367f
+
 /* CAN Message IDs */
 #define WS22_CAN_ID_DRIVE_CMD (WS22_CAN_BASE_CONTROL + 0x01U)
 #define WS22_CAN_ID_STATUS_INFO (WS22_CAN_BASE_STATUS + 0x01U)
@@ -62,8 +64,8 @@ typedef struct {
   float bus_voltage; /**< DC bus voltage (V) */
 
   /* Velocity Measurements (0x403/0x83) */
-  float vehicle_velocity; /**< Vehicle velocity (m/s) */
-  float motor_velocity;   /**< Motor velocity (rpm) */
+  float vehicle_velocity_kph; /**< Vehicle velocity (kph) */
+  float motor_velocity;       /**< Motor velocity (rpm) */
 
   /* Phase Currents (0x404/0x84) */
   float phase_b_current; /**< Phase B current (A) */

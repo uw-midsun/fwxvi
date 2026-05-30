@@ -48,10 +48,10 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   }
 
   memcpy(&telemetry->motor_velocity, &msg_data_u8[0], sizeof(float));
-  memcpy(&telemetry->vehicle_velocity, &msg_data_u8[4], sizeof(float));
+  memcpy(&telemetry->vehicle_velocity_kph, &msg_data_u8[4], sizeof(float));
 
-  /* Read vehicle velocity is in units of m/s */
-  //   front_controller_storage->vehicle_speed_kph = telemetry->motor_velocity * 3.6f;
+  /* Read vehicle velocity is in units of kph */
+  telemetry->vehicle_velocity_kph = telemetry->motor_velocity * VEHICLE_RPM_TO_KPH;
 
   return STATUS_CODE_OK;
 }
