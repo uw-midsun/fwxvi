@@ -40,9 +40,16 @@ void gui_pedal_calib_screen_deinit(void);
 
 /**
  * @brief   Update the large display text with calibration status
- * @param   text Text to display (e.g., "Press fully", "Release fully")
+ * @param   text Text to display (e.g., "LIFT Accel Pedal")
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_pedal_calib_widget_big_text(const char *text);
+
+/**
+ * @brief   Update the subtitle text shown below the main status label
+ * @param   text Text to display (pass "" to clear)
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_pedal_calib_widget_subtitle_text(const char *text);
 
 /** @} */

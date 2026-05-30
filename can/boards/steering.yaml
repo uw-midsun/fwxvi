@@ -25,8 +25,8 @@ Messages:
         flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled]
         length: 8
   pedal_calib_request:
-    id: 26
-    cycle: "fast"
+    id: 46
+    cycle: "medium"
     critical: false
     target:
       front_controller:
