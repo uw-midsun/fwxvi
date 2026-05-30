@@ -32,6 +32,11 @@
 #define get_{{message.name}}_{{signal.name}}_{{flag["name"]}}() \
     ((g_rx_struct.{{message.name}}_{{signal.name}} >> {{flag["offset"]}}) & 0b{{"1" * flag["length"]}})
             {%- endfor %}
+        {%- elif signal.type == "float" %}
+#define get_{{message.name}}_{{signal.name}}() \
+    (g_rx_struct.{{message.name}}_{{signal.name}} == 0 ? ({{signal.min}}f) - 1.0f) : \
+    (g_rx_struct.{{message.name}}_{{signal.name}} == ({{(2 ** signal.length) - 1}}.0f) ? ({{signal.max}}f) + 1.0f) : \
+    (((float)g_rx_struct.{{message.name}}_{{signal.name}} - 1) / ({{(2 ** signal.length) - 3}}.0f) * (({{signal.max}}f) - ({{signal.min}}f)) + ({{signal.min}}f))
         {%- else %}
 #define get_{{message.name}}_{{signal.name}}() \
     g_rx_struct.{{message.name}}_{{signal.name}}

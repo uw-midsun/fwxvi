@@ -75,6 +75,15 @@ def check_yaml_file(data):
                     else:
                         if (illegal_chars_regex.search(flag) != None):
                             raise Exception("Illegal character in bitfield flag")
+
+            if signal.get("type") == "float":
+                if "min" not in signal or "max" not in signal:
+                    raise Exception(f"Float signal '{signal_name}' must have 'min' and 'max' defined")
+                if signal["min"] > signal["max"]:
+                    raise Exception(f"Float signal '{signal_name}': ")
+                if not isinstance(signal["min"], (int, float)) or not isinstance(signal["max"], (int, float)):
+                    raise Exception(f"Float signal '{signal_name}': ")
+                
                 
             # All signals within a message are the same length
             if signal["length"] % 8 != 0:
@@ -167,6 +176,12 @@ def get_data(args):
                         raise Exception("The total size of bitfield flags is larger than the size of the bitfield")
                     
                     signal_data["flags"] = flags
+                elif signal.get("type") == "float":
+                    signal_data["type"] = "float"
+                    signal_data["length"] = signal["length"]
+                    signal_data["min"] = float(signal["min"])
+                    signal_data["max"] = float(signal["max"])
+                
                 else:
                     signal_data["type"] = "standard"
                     signal_data["length"] = signal["length"]
