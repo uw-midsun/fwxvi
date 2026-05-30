@@ -141,7 +141,7 @@ static void hazards_btn_falling_edge_cb(Button *button) {
 }
 
 static void hazards_btn_rising_edge_cb(Button *button) {
-  CONDITIONAL_LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");
+  CONDITIONAL_LOG_DEBUG("ButtonManager - Hazards Rising edge callback\r\n");  
 }
 
 /************************************************************************************************
