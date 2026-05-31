@@ -24,7 +24,7 @@
 #define PRECHARGE_MODE_COMPARE 1U
 #define PRECHARGE_MODE_TIMEOUT 2U
 
-#define PRECHARGE_MODE PRECHARGE_MODE_TIMEOUT
+#define PRECHARGE_MODE PRECHARGE_MODE_COMPARE
 
 #define PRECHARGE_DEBUG 0U
 
@@ -82,6 +82,11 @@ StatusCode precharge_init(Event event, const Task *task, RearControllerStorage *
   rear_controller_storage = storage;
   set_rear_controller_status_triggers_motor_precharge_complete(false);
   valid_cycles = 0;
+#endif
+
+#if (PRECHARGE_MODE == PRECHARGE_MODE_TIMEOUT)
+  rear_controller_storage = storage;
+  rear_controller_storage->precharge_complete = false;
 #endif
 
   return STATUS_CODE_OK;
