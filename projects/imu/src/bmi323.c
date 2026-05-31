@@ -503,7 +503,10 @@ static void s_calculate_gyro_offset() {
 
 static uint8_t s_get_chip_id() {
   uint16_t chip_id = 0U;
-
+  // Chip id = 0x00
+  StatusCode getRegisterResult;
+  getRegisterResult = s_get_register(BMI323_REG_CHIP_ID, &chip_id);
+  LOG_DEBUG("spiResult=%d\r\n", getRegisterResult);
   s_get_register(BMI323_REG_CHIP_ID, &chip_id);
 
   return (chip_id & 0xFFU);
@@ -519,13 +522,14 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
   }
 
   imu_storage = storage;
+  StatusCode spiResult;
 
-  s_set_register(BMI323_REG_CMD, 0xDEAF);  // soft reset
+  spiResult = s_set_register(BMI323_REG_CMD, 0xDEAF);  // soft reset
 
   uint16_t data = DUMMY_BYTE;
 
   /* Write dummy byte to initialize SPI as per datasheet */
-  s_get_register(BMI323_REG_CHIP_ID, &data);
+  spiResult = s_get_register(BMI323_REG_CHIP_ID, &data);
 
   /* BMI323 Startup time */
   delay_ms(10U);
@@ -540,6 +544,26 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
   }
 
   if (data != BMI323_CHIP_ID) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  /* CHECK CORRECT INITALIZATION STATUS
+  * Check device status from reading from register 0x01
+  * Check sensor register
+  *
+   */
+
+  uint16_t device_status; 
+  s_get_register(0x01, &device_status);
+
+  if((device_status & (0xFF)) != 0b0){
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  uint16_t sensor_status; 
+  s_get_register(0x02, &sensor_status);
+
+  if((sensor_status & (0xFF)) != 0b1){
     return STATUS_CODE_INTERNAL_ERROR;
   }
 

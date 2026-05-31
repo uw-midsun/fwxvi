@@ -1,0 +1,19 @@
+{
+    "libs": [
+        "FreeRTOS",
+        "ms-common"
+    ],
+    "x86_libs": [
+        "ms-mpxe"
+    ],
+    "include": [
+        "projects/telemetry/inc"
+    ],
+    "sources": [
+        "projects/telemetry/src/datagram.o",
+         "projects/telemetry/src/imu.o",
+         "projects/telemetry/src/bmi323.o"
+    ],
+    "can": true,
+    "selected_preset": "STM32L433CCU6_legacy_debug"
+}
