@@ -37,8 +37,12 @@
 /* DMA configuration for STM32L4P5 - TIM2_CH3 uses DMA1 Channel2 */
 /* Note: Channel1 is occupied by ADC, so we use Channel2 */
 /* STM32L4P5 uses DMAMUX - TIM2_CH3 is request ID 60 */
-#define LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
-#define LED_DMA_IRQn DMA1_Channel2_IRQn
+#define PWN_LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
+#define PWN_LED_DMA_IRQn DMA1_Channel2_IRQn
+#define LEFT_LED_DMA_CHANNEL_INSTANCE DMA1_Channel2
+#define LEFT_LED_DMA_IRQn DMA1_Channel2_IRQn
+#define RIGHT_LED_DMA_CHANNEL_INSTANCE DMA1_Channel4
+#define RIGHT_LED_DMA_IRQn DMA1_Channel4_IRQn
 
 #ifdef STM32L4P5xx
 #define LED_DMAMUX_REQUEST_TIM2_CH1 DMA_REQUEST_TIM2_CH1
@@ -208,7 +212,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
   }
 
   /* DMA initialization */
-  s_dma_tim2_ch1_handle.Instance = LED_DMA_CHANNEL_INSTANCE;
+  s_dma_tim2_ch1_handle.Instance = LEFT_LED_DMA_CHANNEL_INSTANCE;
   s_dma_tim2_ch1_handle.Init.Request = LED_DMAMUX_REQUEST_TIM2_CH1;
   s_dma_tim2_ch1_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
   s_dma_tim2_ch1_handle.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -222,7 +226,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  s_dma_tim2_ch3_handle.Instance = LED_DMA_CHANNEL_INSTANCE;
+  s_dma_tim2_ch3_handle.Instance = PWN_LED_DMA_CHANNEL_INSTANCE;
   s_dma_tim2_ch3_handle.Init.Request = LED_DMAMUX_REQUEST_TIM2_CH3;
   s_dma_tim2_ch3_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
   s_dma_tim2_ch3_handle.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -236,7 +240,7 @@ static StatusCode button_led_manager_init_timer_dma(void) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  s_dma_tim4_ch2_handle.Instance = LED_DMA_CHANNEL_INSTANCE;
+  s_dma_tim4_ch2_handle.Instance = RIGHT_LED_DMA_CHANNEL_INSTANCE;
   s_dma_tim4_ch2_handle.Init.Request = LED_DMAMUX_REQUEST_TIM4_CH2;
   s_dma_tim4_ch2_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
   s_dma_tim4_ch2_handle.Init.PeriphInc = DMA_PINC_DISABLE;
