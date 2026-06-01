@@ -14,6 +14,11 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "stm32l4xx.h"
+#include "stm32l4xx_hal_conf.h"
+#include "stm32l4xx_hal_dma.h"
+#include "stm32l4xx_hal_rcc.h"
+#include "stm32l4xx_hal_tim.h"
 
 /* Intra-component Headers */
 #include "steering.h"
@@ -55,13 +60,25 @@ typedef struct {
 } LEDPixels;
 
 typedef struct ButtonLEDManager {
-  LEDPixels led_pixels[NUM_STEERING_BUTTONS];               /**< Color data per LED */
-  uint16_t dma_buffer_main[BUTTON_LED_MANAGER_DMA_BUF_LEN]; /**< DMA buffer holds CCR compare values (ticks) */
-  uint16_t dma_buffer_left[BUTTON_LED_MANAGER_DMA_BUF_LEN];
-  uint16_t dma_buffer_right[BUTTON_LED_MANAGER_DMA_BUF_LEN];
-  bool needs_update;    /**< Flag to track if LEDs need updating */
-  bool is_transmitting; /**< Flag to prevent concurrent transmissions */
+  LEDPixels led_pixels[NUM_STEERING_BUTTONS];          /**< Color data per LED */
+  bool needs_update;                                   /**< Flag to track if LEDs need updating */
+  bool is_transmitting;                                /**< Flag to prevent concurrent transmissions */
 } ButtonLEDManager;
+
+typedef struct {
+  uint32_t timer_arr;
+  uint16_t t1_high_ticks;
+  uint16_t t0_high_ticks;
+  uint16_t reset_slots;
+  uint16_t dma_length;
+  GpioAddress gpio_address;
+  TIM_HandleTypeDef tim_handle;
+  DMA_HandleTypeDef dma_handle;
+  uint32_t tim_channel;
+  uint32_t steering_buttons_start;
+  uint32_t steering_buttons_finish;
+  uint16_t dma_buffer[BUTTON_LED_MANAGER_DMA_BUF_LEN]; /**< DMA buffer holds CCR compare values (ticks) */
+} TIMDMABoardManager;
 
 /**
  * @brief   Initialize the button LED manager

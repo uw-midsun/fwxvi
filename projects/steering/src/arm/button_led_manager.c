@@ -55,277 +55,92 @@
 
 #endif
 
-// tim2_ch1 - left
-// tim4_ch2 - right
-
-static uint32_t s_timer_arr = 0U;
-static uint16_t s_t1_high_ticks = 0U;
-static uint16_t s_t0_high_ticks = 0U;
-static uint16_t s_reset_slots = 0U;
-static uint16_t s_dma_length_main = 0U;
-static uint16_t s_dma_length_left = 0U;
-static uint16_t s_dma_length_right = 0U;
-static uint16_t s_timer_arr_16b = 0U;
-static uint16_t s_t1_high_ticks_16b = 0U;
-static uint16_t s_t0_high_ticks_16b = 0U;
-
-static TIM_HandleTypeDef s_tim2_handle = { 0U };
-static DMA_HandleTypeDef s_dma_tim2_ch3_handle = { 0U };
-static TIM_HandleTypeDef s_tim2_handle_left = { 0U };
-static DMA_HandleTypeDef s_dma_tim2_ch1_handle = { 0U };
-static TIM_HandleTypeDef s_tim4_handle = { 0U };
-static DMA_HandleTypeDef s_dma_tim4_ch2_handle = { 0U };
+/*left board TIM2_ch1*/
+/*right board TIM4_ch2*/
+/*main board TIM2_ch3*/
 
 static SteeringStorage *steering_storage = NULL;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
-static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
-static GpioAddress s_button_right_led_pwm_ctrl = GPIO_STEERING_RIGHT_TURN_LED;
-static GpioAddress s_button_left_led_pwm_ctrl = GPIO_STEERING_LEFT_TURN_LED;
+static TIMDMABoardManager s_left_board = {.t1_high_ticks = 0U, .t0_high_ticks = 0U, .reset_slots = 0U, .dma_length = 0U, .gpio_address = GPIO_STEERING_LEFT_TURN_LED, .tim_handle = {0U}, .dma_handle = {0U}, .tim_channel = TIM_CHANNEL_2};
+static TIMDMABoardManager s_right_board = {.t1_high_ticks = 0U, .t0_high_ticks = 0U, .reset_slots = 0U, .dma_length = 0U, .gpio_address = GPIO_STEERING_RIGHT_TURN_LED, .tim_handle = {0U}, .dma_handle = {0U}, .tim_channel = TIM_CHANNEL_4};
+static TIMDMABoardManager s_main_board = {.t1_high_ticks = 0U, .t0_high_ticks = 0U, .reset_slots = 0U, .dma_length = 0U, .gpio_address = GPIO_STEERING_RGB_LIGHTS_PWM_PIN, .tim_handle = {0U}, .dma_handle = {0U}, .tim_channel = TIM_CHANNEL_2};
+
+static uint16_t psc = 0U;
+static uint16_t period = 0U;
+
 
 void DMA1_Channel2_IRQHandler(void) {
-  HAL_DMA_IRQHandler(&s_dma_tim2_ch3_handle);
+  HAL_DMA_IRQHandler(&s_main_board.dma_handle);
 }
 
 void DMA1_Channel3_IRQHandler(void) {
-  HAL_DMA_IRQHandler(&s_dma_tim2_ch1_handle);
+  HAL_DMA_IRQHandler(&s_left_board.dma_handle);
 }
 
 void DMA1_Channel4_IRQHandler(void) {
-  HAL_DMA_IRQHandler(&s_dma_tim4_ch2_handle);
+  HAL_DMA_IRQHandler(&s_right_board.dma_handle);
 }
 
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
-  /* Add a breakpoint here to verify callback is reached */
-  if (htim == &s_tim2_handle) {
-    HAL_TIM_PWM_Stop_DMA(&s_tim2_handle, TIM_CHANNEL_3);
-    s_button_led_manager.is_transmitting = false;
-    s_button_led_manager.needs_update = false;
-  }
-}
+static StatusCode button_led_manager_init_dma(DMA_HandleTypeDef *dma_handle, DMA_Channel_TypeDef *channel_instance, uint32_t dmamux_request, uint32_t dma_periph_alignment){
+  dma_handle->Instance = channel_instance;
+  dma_handle->Init.Request = dmamux_request;
+  dma_handle->Init.Direction = DMA_MEMORY_TO_PERIPH;
+  dma_handle->Init.PeriphInc = DMA_PINC_DISABLE;
+  dma_handle->Init.MemInc = DMA_MINC_ENABLE;
+  dma_handle->Init.Mode = DMA_NORMAL;
+  dma_handle->Init.Priority = DMA_PRIORITY_HIGH;
+  dma_handle->Init.PeriphDataAlignment = dma_periph_alignment;
+  dma_handle->Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
 
-static void button_led_manager_compute_timing_from_clock(void) {
-  /* Get PCLK1 and APB1 prescaler state */
-  RCC_ClkInitTypeDef clkcfg;
-  uint32_t latency;
-  HAL_RCC_GetClockConfig(&clkcfg, &latency);
-
-  uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
-  uint64_t tim_clk = pclk1;
-
-  /* Timer clocks run at PCLK * 2 if APB prescaler != 1 (per RM) */
-  if (clkcfg.APB1CLKDivider != RCC_HCLK_DIV1) {
-    tim_clk = (uint64_t)pclk1 * 2U;
-  }
-
-  /* For SK6812: 1.2µs bit period
-   * Strategy: Use PSC=0 for maximum resolution
-   * ARR = (tim_clk * 1.2µs) - 1
-   *
-   * Example: If tim_clk = 80MHz:
-   * ARR = (80,000,000 * 1.2e-6) - 1 = 96 - 1 = 95
-   */
-
-  uint32_t psc = 0;
-  float target_counts = (float)tim_clk * SK6812_BIT_PERIOD_US * 1e-6f;
-  uint32_t arr_32b = (uint32_t)(target_counts + 0.5f);  // Round
-  uint16_t arr_16b = (uint16_t)(target_counts + 0.5f);  // NOTE: if I cast do I lose precision??
-
-  if (arr_32b > 0) {
-    arr_32b = arr_32b - 1U;
-  } else {
-    arr_32b = 0;
-  }
-
-  if (arr_16b > 0) {                                                                                                │
-    arr_16b = arr_16b - 1U;                                                                                         │
-  } else {                                                                                                          │
-    arr_32b = 0;                                                                                                    │
-  }  
-
-  /* Clamp to 32-bit (TIM2 is 32-bit timer) */
-  if (arr_32b > 0xFFFFFFFFU) {
-    arr_32b = 0xFFFFFFFFU;
-  }
-
-  /* Program into TIM handle */
-  s_tim2_handle.Init.Prescaler = psc;
-  s_tim2_handle.Init.Period = arr_32b;
-
-  s_tim2_handle_left.Init.Prescaler = psc;
-  s_tim2_handle_left.Init.Period = arr_32b;
-
-  s_tim4_handle.Init.Prescaler = (uint16_t)psc;
-  s_tim4_handle.Init.Period = arr_16b;
-
-  /* Generate update event to load new values */
-  //  s_tim2_handle.Instance->PSC = psc;
-  //  s_tim2_handle.Instance->ARR = arr_32b;
-  //  s_tim2_handle.Instance->EGR = TIM_EGR_UG;
-  //  s_tim2_handle.Instance->CNT = 0;
-  //  s_tim2_handle_left.Instance->PSC = psc;
-  //  s_tim2_handle_left.Instance->ARR = arr_32b;
-  //  s_tim2_handle_left.Instance->EGR = TIM_EGR_UG;
-  //  s_tim2_handle_left.Instance->CNT = 0;
-  //  s_tim4_handle.Instance->PSC = (uint16_t)psc;
-  //  s_tim4_handle.Instance->ARR = arr_16b;
-  //  s_tim4_handle.Instance->EGR = TIM_EGR_UG;
-  //  s_tim4_handle.Instance->CNT = 0;
-
-  s_timer_arr = arr_32b;
-  s_timer_arr_16b = arr_16b;
-
-  /* Compute high-time ticks for logical '1' and '0' */
-  float counts_per_bit = (float)(s_timer_arr + 1U);
-  s_t1_high_ticks = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
-  s_t0_high_ticks = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
-
-  float counts_per_bit_16b = (float)(s_timer_arr_16b + 1U);
-  s_t1_high_ticks_16b = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit_16b + 0.5f);
-  s_t0_high_ticks_16b = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit_16b + 0.5f);
-
-  /* Ensure minimum values */
-  if (s_t1_high_ticks == 0) s_t1_high_ticks = 1;
-  if (s_t1_high_ticks > s_timer_arr) s_t1_high_ticks = s_timer_arr;
-
-  /* T0 can be 0 for very short low pulse */
-  if (s_t0_high_ticks > s_timer_arr) s_t0_high_ticks = s_timer_arr / 4;
-
-  /* Reset slots - number of bit-periods to hold line low (~80µs) */
-  s_reset_slots = (uint16_t)((SK6812_RESET_US / SK6812_BIT_PERIOD_US) + 0.5f);
-
-  /* Ensure we don't exceed DMA buffer size */
-  uint32_t required_size = (NUM_STEERING_BUTTONS * BUTTON_LED_MANAGER_BITS_PER_LED) + s_reset_slots;
-  uint16_t required_size_16b = (NUM_STEERING_BUTTONS_SIDE_BOARDS * BUTTON_LED_MANAGER_BITS_PER_LED) + s_reset_slots;
-
-  if (required_size > BUTTON_LED_MANAGER_DMA_BUF_LEN) {
-    s_reset_slots = (uint16_t)(BUTTON_LED_MANAGER_DMA_BUF_LEN - (NUM_STEERING_BUTTONS * BUTTON_LED_MANAGER_BITS_PER_LED));
-  }
-}
-
-static StatusCode button_led_manager_init_timer_dma(void) {
-  /* Enable clocks */
-  __HAL_RCC_TIM2_CLK_ENABLE();
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-  __HAL_RCC_TIM4_CLK_ENABLE();
-#ifdef STM32L4P5xx
-  __HAL_RCC_DMAMUX1_CLK_ENABLE();
-#endif
-
-  /* Compute timing parameters */
-  button_led_manager_compute_timing_from_clock();
-
-  /* TIM base init */
-  s_tim2_handle.Instance = TIM2;
-  s_tim2_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-  s_tim2_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  s_tim2_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-  s_tim2_handle_left.Instance = TIM2;
-  s_tim2_handle_left.Init.CounterMode = TIM_COUNTERMODE_UP;
-  s_tim2_handle_left.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  s_tim2_handle_left.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-  s_tim4_handle.Instance = TIM4;
-  s_tim4_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-  s_tim4_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  s_tim4_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-  if (HAL_TIM_Base_Init(&s_tim2_handle) != HAL_OK) {
+  if (HAL_DMA_Init(&dma_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
-  if (HAL_TIM_PWM_Init(&s_tim2_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_Base_Init(&s_tim2_handle_left) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_PWM_Init(&s_tim2_handle_left) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_Base_Init(&s_tim4_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_PWM_Init(&s_tim4_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  /* PWM channel configuration */
-  TIM_OC_InitTypeDef sConfigOC = { 0U };
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&s_tim2_handle, &sConfigOC, TIM_CHANNEL_3) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_PWM_ConfigChannel(&s_tim2_handle_left, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_TIM_PWM_ConfigChannel(&s_tim4_handle, &sConfigOC, TIM_CHANNEL_2) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  /* DMA initialization */
-  s_dma_tim2_ch3_handle.Instance = LED_DMA_CHANNEL2_INSTANCE;
-  s_dma_tim2_ch3_handle.Init.Request = LED_DMAMUX_REQUEST_TIM2_CH3;
-  s_dma_tim2_ch3_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
-  s_dma_tim2_ch3_handle.Init.PeriphInc = DMA_PINC_DISABLE;
-  s_dma_tim2_ch3_handle.Init.MemInc = DMA_MINC_ENABLE;
-  s_dma_tim2_ch3_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  s_dma_tim2_ch3_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
-  s_dma_tim2_ch3_handle.Init.Mode = DMA_NORMAL;
-  s_dma_tim2_ch3_handle.Init.Priority = DMA_PRIORITY_HIGH;
-
-  s_dma_tim2_ch1_handle.Instance = LED_DMA_CHANNEL3_INSTANCE;
-  s_dma_tim2_ch1_handle.Init.Request = LED_DMAMUX_REQUEST_TIM2_CH1;
-  s_dma_tim2_ch1_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
-  s_dma_tim2_ch1_handle.Init.PeriphInc = DMA_PINC_DISABLE;
-  s_dma_tim2_ch1_handle.Init.MemInc = DMA_MINC_ENABLE;
-  s_dma_tim2_ch1_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  s_dma_tim2_ch1_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
-  s_dma_tim2_ch1_handle.Init.Mode = DMA_NORMAL;
-  s_dma_tim2_ch1_handle.Init.Priority = DMA_PRIORITY_HIGH;
-
-  s_dma_tim4_ch2_handle.Instance = LED_DMA_CHANNEL4_INSTANCE;
-  s_dma_tim4_ch2_handle.Init.Request = LED_DMAMUX_REQUEST_TIM4_CH2;
-  s_dma_tim4_ch2_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
-  s_dma_tim4_ch2_handle.Init.PeriphInc = DMA_PINC_DISABLE;
-  s_dma_tim4_ch2_handle.Init.MemInc = DMA_MINC_ENABLE;
-  s_dma_tim4_ch2_handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-  s_dma_tim4_ch2_handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD; /**< Buffer is uint16_t */
-  s_dma_tim4_ch2_handle.Init.Mode = DMA_NORMAL;
-  s_dma_tim4_ch2_handle.Init.Priority = DMA_PRIORITY_HIGH;
-
-  if (HAL_DMA_Init(&s_dma_tim2_ch3_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_DMA_Init(&s_dma_tim2_ch1_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-  if (HAL_DMA_Init(&s_dma_tim4_ch2_handle) != HAL_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  /* Link DMA to TIM handle */
-  __HAL_LINKDMA(&s_tim2_handle, hdma[TIM_DMA_ID_CC3], s_dma_tim2_ch3_handle);
-  __HAL_LINKDMA(&s_tim2_handle_left, hdma[TIM_DMA_ID_CC3], s_dma_tim2_ch1_handle);
-  __HAL_LINKDMA(&s_tim4_handle, hdma[TIM_DMA_ID_CC3], s_dma_tim4_ch2_handle);  // TODO: this part may break
-
-  /* Enable DMA interrupt */
-  interrupt_nvic_enable(LED_DMA_CH2_IRQn, INTERRUPT_PRIORITY_HIGH);
-  interrupt_nvic_enable(LED_DMA_CH3_IRQn, INTERRUPT_PRIORITY_HIGH);
-  interrupt_nvic_enable(LED_DMA_CH4_IRQn, INTERRUPT_PRIORITY_HIGH);
 
   return STATUS_CODE_OK;
 }
 
-static void button_led_manager_build_main_dma_buffer(void) {
-  uint32_t idx = 0U;
+static StatusCode button_led_manager_init_tim_variables(TIMDMABoardManager *board){
+  
+
+  return STATUS_CODE_OK;
+
+}
+
+static uint16_t button_led_manager_period(){
+  uint32_t clock_frequency = HAL_RCC_GetPCLK1Freq();
+  return (uint16_t)(clock_frequency / (SK6812_BIT_PERIOD_US * (psc + 1)) - 1);
+}
+
+static StatusCode button_led_manager_init_tim(TIMDMABoardManager *board){
+  TIM_HandleTypeDef tim_handle = board->tim_handle;
+  tim_handle.Init.Prescaler = psc;
+  tim_handle.Init.Period = period;
+  tim_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
+  tim_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  tim_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  tim_handle.Init.RepetitionCounter = 0U;
+
+  if (HAL_TIM_Init(&tim_handle) != HAL_OK) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  static TIM_OC_InitTypeDef sConfigOC = {0};
+
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  HAL_TIM_PWM_ConfigChannel(&tim_handle, &sConfigOC, board->tim_channel);
+
+  return STATUS_CODE_OK;
+}
+
+static StatusCode button_led_manager_create_dma_buffer(TIMDMABoardManager *board){
+ uint32_t idx = 0U;
 
   /* Build DMA buffer with GRB data for each LED (SK6812 expects GRB) */
-  for (uint32_t i = 0; i < STEERING_BUTTON_RIGHT_LIGHT && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; ++i) {
+  for (uint32_t i = board->steering_buttons_start; i < (board->steering_buttons_finish + 1) && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - board->reset_slots; ++i) {
     uint8_t g = steering_storage->button_led_manager->led_pixels[i].g;
     uint8_t r = steering_storage->button_led_manager->led_pixels[i].r;
     uint8_t b = steering_storage->button_led_manager->led_pixels[i].b;
@@ -333,73 +148,24 @@ static void button_led_manager_build_main_dma_buffer(void) {
     uint32_t grb = ((uint32_t)g << 16U) | ((uint32_t)r << 8U) | (uint32_t)b;
 
     /* Convert each bit to PWM duty cycle values (MSB first) */
-    for (int8_t bit = BUTTON_LED_MANAGER_BITS_PER_LED - 1; bit >= 0 && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; --bit) {
+    for (int8_t bit = BUTTON_LED_MANAGER_BITS_PER_LED - 1; bit >= 0 && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - board->reset_slots; --bit) {
       uint32_t mask = (1UL << bit);
-      steering_storage->button_led_manager->dma_buffer_main[idx++] = (grb & mask) ? s_t1_high_ticks : s_t0_high_ticks;
+      board->dma_buffer[idx++] = (grb & mask) ? board->t1_high_ticks : board->t0_high_ticks;
     }
   }
 
   /* Append reset period (low signal for >= 80µs) */
-  for (uint32_t s = 0; s < s_reset_slots && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN; ++s) {
-    steering_storage->button_led_manager->dma_buffer_main[idx++] = 0;
+  for (uint32_t s = 0; s < board->reset_slots && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN; ++s) {
+    board->dma_buffer[idx++] = 0;
   }
 
-  s_dma_length_main = (uint16_t)idx;
+  board->dma_length = (uint16_t)idx;
+
+  return STATUS_CODE_OK;
 }
 
-static void button_led_manager_build_right_dma_buffer(void) {
-  uint32_t idx = 0U;
-
-  /* Build DMA buffer with GRB data for each LED (SK6812 expects GRB) */
-  for (uint32_t i = STEERING_BUTTON_RIGHT_LIGHT; i < STEERING_BUTTON_LEFT_LIGHT && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; ++i) {
-    uint8_t g = steering_storage->button_led_manager->led_pixels[i].g;
-    uint8_t r = steering_storage->button_led_manager->led_pixels[i].r;
-    uint8_t b = steering_storage->button_led_manager->led_pixels[i].b;
-
-    uint32_t grb = ((uint32_t)g << 16U) | ((uint32_t)r << 8U) | (uint32_t)b;
-
-    /* Convert each bit to PWM duty cycle values (MSB first) */
-    for (int8_t bit = BUTTON_LED_MANAGER_BITS_PER_LED - 1; bit >= 0 && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; --bit) {
-      uint32_t mask = (1UL << bit);
-      steering_storage->button_led_manager->dma_buffer_right[idx++] = (grb & mask) ? s_t1_high_ticks : s_t0_high_ticks;
-    }
-  }
-
-  /* Append reset period (low signal for >= 80µs) */
-  for (uint32_t s = 0; s < s_reset_slots && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN; ++s) {
-    steering_storage->button_led_manager->dma_buffer_right[idx++] = 0;
-  }
-
-  s_dma_length_right = (uint16_t)idx;
-}
-
-static void button_led_manager_build_left_dma_buffer(void) {
-  uint32_t idx = 0U;
-
-  /* Build DMA buffer with GRB data for each LED (SK6812 expects GRB) */
-  for (uint32_t i = STEERING_BUTTON_LEFT_LIGHT; i < NUM_STEERING_BUTTONS && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; ++i) {
-    uint8_t g = steering_storage->button_led_manager->led_pixels[i].g;
-    uint8_t r = steering_storage->button_led_manager->led_pixels[i].r;
-    uint8_t b = steering_storage->button_led_manager->led_pixels[i].b;
-
-    uint32_t grb = ((uint32_t)g << 16U) | ((uint32_t)r << 8U) | (uint32_t)b;
-
-    /* Convert each bit to PWM duty cycle values (MSB first) */
-    for (int8_t bit = BUTTON_LED_MANAGER_BITS_PER_LED - 1; bit >= 0 && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN - s_reset_slots; --bit) {
-      uint32_t mask = (1UL << bit);
-      steering_storage->button_led_manager->dma_buffer_left[idx++] = (grb & mask) ? s_t1_high_ticks : s_t0_high_ticks;
-    }
-  }
-
-  /* Append reset period (low signal for >= 80µs) */
-  for (uint32_t s = 0; s < s_reset_slots && idx < BUTTON_LED_MANAGER_DMA_BUF_LEN; ++s) {
-    steering_storage->button_led_manager->dma_buffer_left[idx++] = 0;
-  }
-
-  s_dma_length_left = (uint16_t)idx;
-}
-
-StatusCode button_led_manager_init(SteeringStorage *storage) {
+static StatusCode button_led_manager_init(SteeringStorage *storage){
+  /* Steering storage*/
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -412,21 +178,105 @@ StatusCode button_led_manager_init(SteeringStorage *storage) {
   s_button_led_manager.needs_update = false;
   s_button_led_manager.is_transmitting = false;
 
-  /* Initialize GPIO pin for PWM output - TIM2_CH3 can be PA2 or PB10 */
-  StatusCode status = gpio_init_pin_af(&s_button_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);
-  if (status != STATUS_CODE_OK) {
-    return status;
+   /* timer init */
+  __HAL_RCC_TIM2_CLK_ENABLE();
+  __HAL_RCC_TIM4_CLK_ENABLE();  //TODO: Make sure this code acc is going
+
+  period = button_led_manager_period();
+
+  if(button_led_manager_init_tim(&s_main_board) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
   }
-  StatusCode status_right = gpio_init_pin_af(&s_button_right_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4);
-  if (status_right != STATUS_CODE_OK) {
-    return status_right;
+  if(button_led_manager_init_tim(&s_right_board) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
   }
-  StatusCode status_left = gpio_init_pin_af(&s_button_left_led_pwm_ctrl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2);
-  if (status_left != STATUS_CODE_OK) {
-    return status_left;
+  if(button_led_manager_init_tim(&s_left_board) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
   }
 
-  return button_led_manager_init_timer_dma();
+  /*DMA init*/
+  __HAL_RCC_DMA1_CLK_ENABLE();
+  #ifdef STM32L4P5xx
+   __HAL_RCC_DMAMUX1_CLK_ENABLE();
+  #endif
+
+  if(button_led_manager_init_dma(&s_main_board.dma_handle, LED_DMA_CHANNEL2_INSTANCE, LED_DMAMUX_REQUEST_TIM2_CH3, DMA_PDATAALIGN_WORD) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if(button_led_manager_init_dma(&s_left_board.dma_handle, LED_DMA_CHANNEL3_INSTANCE, LED_DMAMUX_REQUEST_TIM2_CH1, DMA_PDATAALIGN_WORD) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if(button_led_manager_init_dma(&s_right_board.dma_handle, LED_DMA_CHANNEL4_INSTANCE, LED_DMAMUX_REQUEST_TIM4_CH2, DMA_PDATAALIGN_HALFWORD) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }  
+
+  /* Enable DMA interrupt */
+  interrupt_nvic_enable(LED_DMA_CH2_IRQn, INTERRUPT_PRIORITY_HIGH);
+  interrupt_nvic_enable(LED_DMA_CH3_IRQn, INTERRUPT_PRIORITY_HIGH);
+  interrupt_nvic_enable(LED_DMA_CH4_IRQn, INTERRUPT_PRIORITY_HIGH);
+
+  /* Link TIM and DMA*/
+  __HAL_LINKDMA(&s_main_board.tim_handle, hdma[TIM_DMA_ID_CC3], s_main_board.dma_handle);
+  __HAL_LINKDMA(&s_left_board.tim_handle, hdma[TIM_DMA_ID_CC3], s_left_board.dma_handle);
+  __HAL_LINKDMA(&s_right_board.tim_handle, hdma[TIM_DMA_ID_CC3], s_right_board.dma_handle); //TODO: this part may break
+
+  /*GPIO pin init*/
+  if(gpio_init_pin_af(&s_main_board.gpio_address, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if(gpio_init_pin_af(&s_left_board.gpio_address, GPIO_ALTFN_PUSH_PULL, GPIO_ALT1_TIM2) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  if(gpio_init_pin_af(&s_right_board.gpio_address, GPIO_ALTFN_PUSH_PULL, GPIO_ALT2_TIM4) != STATUS_CODE_OK){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  
+  return STATUS_CODE_OK;
+}
+
+static StatusCode button_led_manager_update(void){
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if(s_button_led_manager.is_transmitting){
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  button_led_manager_clear_all();
+
+  button_led_manager_create_dma_buffer(&s_main_board);
+  button_led_manager_create_dma_buffer(&s_left_board);
+  button_led_manager_create_dma_buffer(&s_right_board);
+
+  steering_storage->button_led_manager->is_transmitting = true;
+
+  /* HAL_TIM_PWM_Start_DMA*/
+  HAL_TIM_PWM_Start_DMA(&s_main_board.tim_handle, &s_main_board.tim_channel, (uint32_t *)s_main_board.dma_buffer, s_main_board.reset_slots);
+  HAL_TIM_PWM_Start_DMA(&s_left_board.tim_handle, &s_left_board.tim_channel, (uint32_t *)s_left_board.dma_buffer, s_left_board.reset_slots);
+  HAL_TIM_PWM_Start_DMA(&s_right_board.tim_handle, &s_right_board.tim_channel, (uint32_t *)s_right_board.dma_buffer, s_right_board.reset_slots);
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode button_led_manager_clear_all(void) {
+  if (steering_storage == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  /* Set all LEDs to black (off) */
+  memset(steering_storage->button_led_manager->led_pixels, 0U, sizeof(steering_storage->button_led_manager->led_pixels));
+  steering_storage->button_led_manager->needs_update = true;
+
+  return STATUS_CODE_OK;
+}
+
+bool button_led_manager_is_busy(void) {
+  if (steering_storage == NULL) {
+    return false;
+  }
+
+  return steering_storage->button_led_manager->is_transmitting;
 }
 
 StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_code) {
@@ -444,52 +294,12 @@ StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_
   return STATUS_CODE_OK;
 }
 
-StatusCode button_led_manager_update(void) {
-  if (steering_storage == NULL) {
-    return STATUS_CODE_UNINITIALIZED;
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
+  /* Add a breakpoint here to verify callback is reached */
+  if (htim == &s_tim2_handle) {
+    HAL_TIM_PWM_Stop_DMA(&s_tim2_handle, TIM_CHANNEL_3);
+    s_button_led_manager.is_transmitting = false;
+    s_button_led_manager.needs_update = false;
   }
 
-  if (steering_storage->button_led_manager->is_transmitting) {
-    return STATUS_CODE_RESOURCE_EXHAUSTED;
-  }
-
-  /* Build DMA buffer with current LED colors */
-  button_led_manager_build_main_dma_buffer();
-  button_led_manager_build_left_dma_buffer();
-  button_led_manager_build_right_dma_buffer();
-
-  /* Start DMA transmission */
-  steering_storage->button_led_manager->is_transmitting = true;
-
-  /* CRITICAL: Cast to uint32_t* for CCR register (16-bit values but 32-bit register access) */
-  HAL_StatusTypeDef hal_status_left = HAL_TIM_PWM_Start_DMA(&s_tim2_handle_left, TIM_CHANNEL_1, (uint32_t *)steering_storage->button_led_manager->dma_buffer_left, s_dma_length_left);
-  HAL_StatusTypeDef hal_status_right = HAL_TIM_PWM_Start_DMA(&s_tim4_handle, TIM_CHANNEL_2, (uint32_t *)steering_storage->button_led_manager->dma_buffer_right, s_dma_length_right);
-  HAL_StatusTypeDef hal_status_main = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer_main, s_dma_length_main);
-
-  if (hal_status_main != HAL_OK && hal_status_left != HAL_OK && hal_status_right != HAL_OK) {
-    steering_storage->button_led_manager->is_transmitting = false;
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  return STATUS_CODE_OK;
-}
-
-bool button_led_manager_is_busy(void) {
-  if (steering_storage == NULL) {
-    return false;
-  }
-
-  return steering_storage->button_led_manager->is_transmitting;
-}
-
-StatusCode button_led_manager_clear_all(void) {
-  if (steering_storage == NULL) {
-    return STATUS_CODE_UNINITIALIZED;
-  }
-
-  /* Set all LEDs to black (off) */
-  memset(steering_storage->button_led_manager->led_pixels, 0U, sizeof(steering_storage->button_led_manager->led_pixels));
-  steering_storage->button_led_manager->needs_update = true;
-
-  return STATUS_CODE_OK;
 }
