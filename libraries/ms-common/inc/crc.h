@@ -51,7 +51,7 @@ StatusCode crc_init(CRCLength crc_length);
  * @param   length Number of CRC-length words in the buffer
  * @return  Computed CRC-32 checksum
  */
-uint32_t crc_calculate(const uint32_t *data, size_t length);
+uint32_t crc_calculate(const uint32_t* data, size_t length);
 
 /**
  * @brief   Reset the CRC hardware peripheral

@@ -25,21 +25,21 @@
 
 #define SPI_KEY "spi"
 
-const char *spiPortNames[] = {
+const char* spiPortNames[] = {
   "SPI_PORT_1",
   "SPI_PORT_2",
 };
 
-void SPIManager::loadSPIInfo(std::string &projectName) {
+void SPIManager::loadSPIInfo(std::string& projectName) {
   m_spiInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, SPIManager::PortInfo>>(projectName, SPI_KEY);
 }
 
-void SPIManager::saveSPIInfo(std::string &projectName) {
+void SPIManager::saveSPIInfo(std::string& projectName) {
   serverJSONManager.setProjectValue(projectName, SPI_KEY, m_spiInfo);
   m_spiInfo.clear();
 }
 
-std::vector<uint8_t> SPIManager::parseHexData(const std::string &dataStr) {
+std::vector<uint8_t> SPIManager::parseHexData(const std::string& dataStr) {
   std::vector<uint8_t> bytes;
   std::stringstream ss(dataStr);
   std::string token;
@@ -67,7 +67,7 @@ std::vector<uint8_t> SPIManager::parseHexData(const std::string &dataStr) {
   return bytes;
 }
 
-std::string SPIManager::stringifySpiBuffer(const uint8_t *buffer, size_t length) {
+std::string SPIManager::stringifySpiBuffer(const uint8_t* buffer, size_t length) {
   if (length == 0 || buffer == nullptr) {
     return "None";
   }
@@ -81,12 +81,12 @@ std::string SPIManager::stringifySpiBuffer(const uint8_t *buffer, size_t length)
   return ss.str();
 }
 
-void SPIManager::updateSpiReadBuffer(std::string &projectName, std::string &payload) {
+void SPIManager::updateSpiReadBuffer(std::string& projectName, std::string& payload) {
   loadSPIInfo(projectName);
 
   m_spiDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_spiDatagram.getBuffer();
+  const uint8_t* receivedData = m_spiDatagram.getBuffer();
   const uint16_t dataLength = m_spiDatagram.getBufferLength();
 
   using Port = Datagram::SPI::Port;
@@ -102,7 +102,7 @@ void SPIManager::updateSpiReadBuffer(std::string &projectName, std::string &payl
   saveSPIInfo(projectName);
 }
 
-std::string SPIManager::createSpiCommand(CommandCode commandCode, std::string &spiPort, std::string data) {
+std::string SPIManager::createSpiCommand(CommandCode commandCode, std::string& spiPort, std::string data) {
   try {
     if (spiPort.length() <= 9 || spiPort.substr(0, 9) != "SPI_PORT_") {
       throw std::runtime_error("Invalid SPI Port format. Good Example: SPI_PORT_1");
@@ -146,7 +146,7 @@ std::string SPIManager::createSpiCommand(CommandCode commandCode, std::string &s
       }
     }
     return m_spiDatagram.serialize(commandCode);
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';
   }
   return "";

@@ -55,7 +55,7 @@ static uint16_t s_dma_length = 0U;
 static TIM_HandleTypeDef s_tim2_handle = { 0U };
 static DMA_HandleTypeDef s_dma_tim2_ch3_handle = { 0U };
 
-static SteeringStorage *steering_storage = NULL;
+static SteeringStorage* steering_storage = NULL;
 static ButtonLEDManager s_button_led_manager = { 0U };
 
 static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
@@ -64,7 +64,7 @@ void DMA1_Channel2_IRQHandler(void) {
   HAL_DMA_IRQHandler(&s_dma_tim2_ch3_handle);
 }
 
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef* htim) {
   /* Add a breakpoint here to verify callback is reached */
   if (htim == &s_tim2_handle) {
     HAL_TIM_PWM_Stop_DMA(&s_tim2_handle, TIM_CHANNEL_3);
@@ -229,7 +229,7 @@ static void button_led_manager_build_dma_buffer(void) {
   s_dma_length = (uint16_t)idx;
 }
 
-StatusCode button_led_manager_init(SteeringStorage *storage) {
+StatusCode button_led_manager_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -282,7 +282,7 @@ StatusCode button_led_manager_update(void) {
   steering_storage->button_led_manager->is_transmitting = true;
 
   /* CRITICAL: Cast to uint32_t* for CCR register (16-bit values but 32-bit register access) */
-  HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t *)steering_storage->button_led_manager->dma_buffer, s_dma_length);
+  HAL_StatusTypeDef hal_status = HAL_TIM_PWM_Start_DMA(&s_tim2_handle, TIM_CHANNEL_3, (uint32_t*)steering_storage->button_led_manager->dma_buffer, s_dma_length);
 
   if (hal_status != HAL_OK) {
     steering_storage->button_led_manager->is_transmitting = false;

@@ -46,14 +46,14 @@ static I2CPortData s_port[NUM_I2C_PORTS] = {
   [I2C_PORT_2] = {},
 };
 
-static StatusCode s_init_buffer(I2CBuffer *buf) {
+static StatusCode s_init_buffer(I2CBuffer* buf) {
   buf->queue.num_items = I2C_MAX_NUM_DATA;
   buf->queue.item_size = sizeof(uint8_t);
   buf->queue.storage_buf = buf->buf;
   return queue_init(&buf->queue);
 }
 
-StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
+StatusCode i2c_init(I2CPort i2c, const I2CSettings* settings) {
   if (i2c >= NUM_I2C_PORTS || settings->speed >= NUM_I2C_SPEEDS) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -66,7 +66,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t* rx_data, size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   s_port[i2c].num_rx_bytes = rx_len;
@@ -82,7 +82,7 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t* tx_data, size_t tx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   for (size_t i = 0; i < tx_len; i++) {
@@ -98,21 +98,21 @@ StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_l
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* rx_data, size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   status_ok_or_return(i2c_write(i2c, addr, &reg, 1));
   return i2c_read(i2c, addr, rx_data, rx_len);
 }
 
-StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* tx_data, size_t tx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   status_ok_or_return(i2c_write(i2c, addr, &reg, 1));
   return i2c_write(i2c, addr, tx_data, tx_len);
 }
 
-StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t* rx_data, size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   for (size_t i = 0; i < rx_len; i++) {
@@ -124,7 +124,7 @@ StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *rx_data, size_t rx_len) {
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t* tx_data, size_t tx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   for (size_t i = 0; i < tx_len; i++) {
@@ -153,6 +153,6 @@ StatusCode i2c_clear_buffers(I2CPort i2c) {
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t* rx_data, size_t rx_len) {
   return i2c_read_reg(i2c, addr, mem_addr, rx_data, rx_len);
 }

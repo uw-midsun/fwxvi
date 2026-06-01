@@ -30,7 +30,7 @@ static GpioState mock_gpio_states[NUM_STEERING_BUTTONS];
 static LightsSignalState signal_requested;
 static DriveState drive_requested;
 
-GpioState TEST_MOCK(gpio_get_state)(const GpioAddress *addr) {
+GpioState TEST_MOCK(gpio_get_state)(const GpioAddress* addr) {
   return mock_gpio_states[addr->pin];
 }
 

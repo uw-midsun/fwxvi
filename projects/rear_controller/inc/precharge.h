@@ -37,7 +37,7 @@
  * @param   task   Task to notify when event is raised
  * @return  StatusCode indicating success or failure of initialization
  */
-StatusCode precharge_init(Event event, const Task *task, RearControllerStorage *storage);
+StatusCode precharge_init(Event event, const Task* task, RearControllerStorage* storage);
 
 /**
  * @brief   Run the program that checks precharge completion

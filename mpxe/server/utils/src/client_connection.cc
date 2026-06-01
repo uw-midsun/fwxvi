@@ -24,7 +24,7 @@ std::string ClientConnection::getClientAddress() const {
   return std::string(ip_str);
 }
 
-ClientConnection::ClientConnection(Server *server) {
+ClientConnection::ClientConnection(Server* server) {
   this->server = server;
   m_isConnected = false;
 }
@@ -35,7 +35,7 @@ ClientConnection::~ClientConnection() {
 
 bool ClientConnection::acceptClient(int listeningSocket) {
   socklen_t clientLength = sizeof(m_clientAddress);
-  m_clientSocket = accept(listeningSocket, (struct sockaddr *)&m_clientAddress, &clientLength);
+  m_clientSocket = accept(listeningSocket, (struct sockaddr*)&m_clientAddress, &clientLength);
 
   if (m_clientSocket < 0) {
     std::cerr << "Failed to accept client connection" << std::endl;
@@ -54,7 +54,7 @@ bool ClientConnection::acceptClient(int listeningSocket) {
   return true;
 }
 
-void ClientConnection::sendMessage(const std::string &message) {
+void ClientConnection::sendMessage(const std::string& message) {
   if (!m_isConnected) {
     throw std::runtime_error("Attempting to send on unconnected socket");
   }
@@ -69,7 +69,7 @@ std::string ClientConnection::getClientName() const {
   return m_clientName;
 }
 
-void ClientConnection::setClientName(const std::string &name) {
+void ClientConnection::setClientName(const std::string& name) {
   m_clientName = name;
 }
 

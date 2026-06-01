@@ -17,7 +17,7 @@
 /* Intra-component Headers */
 #include "ntp_server.h"
 
-bool NTPServer::queryNTPServer(NTPPacket &response) {
+bool NTPServer::queryNTPServer(NTPPacket& response) {
   struct addrinfo hints = {}, *addrs;
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_DGRAM;
@@ -55,7 +55,7 @@ bool NTPServer::queryNTPServer(NTPPacket &response) {
   sockaddr_storage serverAddr;
   socklen_t serverAddrLen = sizeof(serverAddr);
 
-  ssize_t receivedBytes = recvfrom(ntpSocket, &serverResponse, sizeof(serverResponse), 0, reinterpret_cast<sockaddr *>(&serverAddr), &serverAddrLen);
+  ssize_t receivedBytes = recvfrom(ntpSocket, &serverResponse, sizeof(serverResponse), 0, reinterpret_cast<sockaddr*>(&serverAddr), &serverAddrLen);
 
   freeaddrinfo(addrs);
 
@@ -78,7 +78,7 @@ bool NTPServer::queryNTPServer(NTPPacket &response) {
   return true;
 }
 
-NTPPacket NTPServer::processNTPRequest(const NTPPacket &request) {
+NTPPacket NTPServer::processNTPRequest(const NTPPacket& request) {
   NTPPacket response = {};
   response.flags = (NTP_VERSION << NTP_VERSION_OFFSET) | (NTPLeapIndicator::NTP_LI_NONE << NTP_LEAP_INDICATOR_OFFSET) | (NTPMode::NTP_SERVER_MODE << NTP_MODE_OFFSET);
 
@@ -131,7 +131,7 @@ void NTPServer::NTPServerProcedure() {
   }
 
   struct sockaddr_in serverAddr;
-  memset((char *)&serverAddr, 0U, sizeof(serverAddr));
+  memset((char*)&serverAddr, 0U, sizeof(serverAddr));
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(NTP_PORT);
 
@@ -140,7 +140,7 @@ void NTPServer::NTPServerProcedure() {
     throw std::runtime_error("Error converting IPv4 bind address to binary form");
   }
 
-  if (bind(m_NTPSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+  if (bind(m_NTPSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
     close(m_NTPSocket);
     throw std::runtime_error("Error binding NTP socket");
   }
@@ -152,14 +152,14 @@ void NTPServer::NTPServerProcedure() {
     struct sockaddr_in clientAddress;
     socklen_t clientLength = sizeof(clientAddress);
 
-    if (recvfrom(m_NTPSocket, &request, sizeof(request), 0, (struct sockaddr *)&clientAddress, &clientLength) <= 0) {
+    if (recvfrom(m_NTPSocket, &request, sizeof(request), 0, (struct sockaddr*)&clientAddress, &clientLength) <= 0) {
       std::cerr << "Error receiving NTP request" << std::endl;
       continue;
     }
 
     NTPPacket response = processNTPRequest(request);
     dumpNTPPacketData(response);
-    if (sendto(m_NTPSocket, &response, sizeof(response), 0, (struct sockaddr *)&clientAddress, clientLength) <= 0) {
+    if (sendto(m_NTPSocket, &response, sizeof(response), 0, (struct sockaddr*)&clientAddress, clientLength) <= 0) {
       std::cerr << "Error sending NTP response" << std::endl;
     }
   }
@@ -168,19 +168,19 @@ void NTPServer::NTPServerProcedure() {
   close(m_NTPSocket);
 }
 
-void *NTPServerWrapper(void *param) {
-  NTPServer *server = static_cast<NTPServer *>(param);
+void* NTPServerWrapper(void* param) {
+  NTPServer* server = static_cast<NTPServer*>(param);
 
   try {
     server->NTPServerProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "NTP Server Thread Error: " << e.what() << std::endl;
   }
 
   return nullptr;
 }
 
-void NTPServer::startListening(const std::string &bindAddress, const std::string &NTPServerAddress) {
+void NTPServer::startListening(const std::string& bindAddress, const std::string& NTPServerAddress) {
   if (m_isListening) return;
 
   m_NTPServerAddress = NTPServerAddress;

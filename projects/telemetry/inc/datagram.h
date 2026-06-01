@@ -55,12 +55,12 @@ typedef struct {
  * @param   datagram Pointer to the datagram to be updated
  * @param   msg Pointer to the new CAN data
  */
-StatusCode decode_can_message(Datagram *datagram, CanMessage *msg);
+StatusCode decode_can_message(Datagram* datagram, CanMessage* msg);
 
 /**
  * @brief   Log the decoded datagram for debug purposes
  * @param   datagram Pointer to the datagram to be debugged
  */
-void log_decoded_message(Datagram *datagram);
+void log_decoded_message(Datagram* datagram);
 
 /** @} */

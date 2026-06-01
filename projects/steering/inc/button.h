@@ -38,8 +38,8 @@ typedef struct Button Button;
  * @brief Button Callbacks
  */
 typedef struct {
-  void (*rising_edge_cb)(Button *button);  /**< Called on rising edge (button press) */
-  void (*falling_edge_cb)(Button *button); /**< Called on falling edge (button release) */
+  void (*rising_edge_cb)(Button* button);  /**< Called on rising edge (button press) */
+  void (*falling_edge_cb)(Button* button); /**< Called on falling edge (button release) */
 } ButtonCallbacks;
 
 /**
@@ -56,7 +56,7 @@ typedef struct {
  * @brief Button instance structure
  */
 typedef struct Button {
-  ButtonConfig *config; /**< Pointer to button configuration */
+  ButtonConfig* config; /**< Pointer to button configuration */
   uint8_t last_raw;     /**< Last raw GPIO value */
   uint8_t counter;      /**< Debounce counter */
   ButtonState state;    /**< Current debounced state */
@@ -69,7 +69,7 @@ typedef struct Button {
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode button_init(Button *button, ButtonConfig *config);
+StatusCode button_init(Button* button, ButtonConfig* config);
 
 /**
  * @brief   Update the Button state based on the given GPIO state
@@ -77,6 +77,6 @@ StatusCode button_init(Button *button, ButtonConfig *config);
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode button_update(Button *button);
+StatusCode button_update(Button* button);
 
 /** @} */

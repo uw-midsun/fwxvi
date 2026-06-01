@@ -29,13 +29,13 @@
  * @returns STATUS_CODE_OK if successful
  *          STATUS_CODE_INVALID_ARGS if regen_brake is not initialized
  */
-StatusCode regen_brake_run(float *target_current, bool *direction);
+StatusCode regen_brake_run(float* target_current, bool* direction);
 
 /**
  * @brief   Initializes the regen brake module
  * @returns STATUS_CODE_OK if initialization is successful
  *          STATUS_CODE_INVALID_ARGS if storage is null
  */
-StatusCode regen_brake_init(FrontControllerStorage *storage);
+StatusCode regen_brake_init(FrontControllerStorage* storage);
 
 /** @} */

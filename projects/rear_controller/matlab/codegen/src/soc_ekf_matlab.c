@@ -47,7 +47,7 @@ ExtY rtY;
 
 /* Real-time model */
 static RT_MODEL rtM_;
-RT_MODEL *const rtM = &rtM_;
+RT_MODEL* const rtM = &rtM_;
 
 /* Model step function */
 void soc_ekf_matlab_step(void) {

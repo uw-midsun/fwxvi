@@ -29,7 +29,7 @@ const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
-StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+StatusCode imu_init(Bmi323Storage* storage, Bmi323Settings* settings) {
   if (storage == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -159,7 +159,7 @@ void imu_filter(float ax, float ay, float az, float gx, float gy, float gz) {
  Pitch is about the y axis, represented as theta
  Yaw is about the z axis, represented as psi (trident looking greek symbol)
  */
-void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw) {
+void eulerAngles(struct quaternion q, float* roll, float* pitch, float* yaw) {
   *yaw = atan2f((2 * q.q2 * q.q3 - 2 * q.q1 * q.q4), (2 * q.q1 * q.q1 + 2 * q.q2 * q.q2 - 1));  // equation (7)
   *pitch = -asinf(2 * q.q2 * q.q4 + 2 * q.q1 * q.q3);                                           // equatino (8)
   *roll = atan2f((2 * q.q3 * q.q4 - 2 * q.q1 * q.q2), (2 * q.q1 * q.q1 + 2 * q.q4 * q.q4 - 1));

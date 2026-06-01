@@ -51,7 +51,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfeCell(std::string &payload);
+  void setAfeCell(std::string& payload);
 
   /**
    * @brief   Sets a specific AFE thermistor voltage given the data payload
@@ -59,7 +59,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfeTherm(std::string &payload);
+  void setAfeTherm(std::string& payload);
 
   /**
    * @brief   Sets all AFE cell voltages for a single device given the data payload
@@ -67,7 +67,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfeDevCell(std::string &payload);
+  void setAfeDevCell(std::string& payload);
 
   /**
    * @brief   Sets all AFE thermistor voltages for a single device given the data payload
@@ -75,7 +75,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfeDevTherm(std::string &payload);
+  void setAfeDevTherm(std::string& payload);
 
   /**
    * @brief   Sets all AFE cell voltages across the entire pack given the data payload
@@ -83,7 +83,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfePackCell(std::string &payload);
+  void setAfePackCell(std::string& payload);
 
   /**
    * @brief   Sets all AFE thermistor voltages across the entire pack given the data payload
@@ -91,7 +91,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setAfePackTherm(std::string &payload);
+  void setAfePackTherm(std::string& payload);
 
   /**
    * @brief   Set the Afe Board Thermistor voltage for a specific device
@@ -99,7 +99,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload
    */
-  void setAfeBoardTherm(std::string &payload);
+  void setAfeBoardTherm(std::string& payload);
 
   /**
    * @brief   Sets AFE discharge cells for individual cells
@@ -107,7 +107,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setCellDischarge(std::string &payload);
+  void setCellDischarge(std::string& payload);
 
   /**
    * @brief   Set AFE discharge cells for the whole pack
@@ -115,7 +115,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setCellPackDischarge(std::string &payload);
+  void setCellPackDischarge(std::string& payload);
 
   /**
    * @brief   Process a get AFE cell voltage command given the data payload
@@ -124,7 +124,7 @@ class AfeManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeCell(std::string &payload);
+  std::string processAfeCell(std::string& payload);
 
   /**
    * @brief   Process a get AFE thermistor voltage command given the data payload
@@ -133,7 +133,7 @@ class AfeManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeTherm(std::string &payload);
+  std::string processAfeTherm(std::string& payload);
 
   /**
    * @brief   Process a get AFE device-level cell voltage command given the data payload
@@ -142,7 +142,7 @@ class AfeManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeDevCell(std::string &payload);
+  std::string processAfeDevCell(std::string& payload);
 
   /**
    * @brief   Process a get AFE device-level thermistor voltage command given the data payload
@@ -151,7 +151,7 @@ class AfeManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeDevTherm(std::string &payload);
+  std::string processAfeDevTherm(std::string& payload);
 
   /**
    * @brief   Process a get all AFE cell voltages across the entire pack
@@ -175,7 +175,7 @@ class AfeManager {
    *          This function is not responsible for handling update errors
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processAfeBoardTherm(std::string &payload);
+  std::string processAfeBoardTherm(std::string& payload);
 
   /**
    * @brief   Process a set or toggle cell discharge command from the server.
@@ -185,7 +185,7 @@ class AfeManager {
    * @param   payload Message data payload containing the target cell index and discharge state
    * @return  Serialized response payload to be sent back to the server (may be empty on success)
    */
-  std::string processCellDischarge(std::string &payload);
+  std::string processCellDischarge(std::string& payload);
 
   /**
    * @brief   Process a set or toggle cell pack discharge command from the server

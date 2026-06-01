@@ -47,6 +47,6 @@ StatusCode brake_pedal_run();
  * @return  STATUS_CODE_OK if pedal is initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is provided
  */
-StatusCode brake_pedal_init(FrontControllerStorage *storage);
+StatusCode brake_pedal_init(FrontControllerStorage* storage);
 
 /** @} */

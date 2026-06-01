@@ -29,7 +29,7 @@
 #define PERSIST_COMMIT_TIMEOUT_MS 1000
 
 typedef struct {
-  void *blob;                /**< Pointer to the RAM buffer/struct being persisted */
+  void* blob;                /**< Pointer to the RAM buffer/struct being persisted */
   size_t blob_size;          /**< Size of the buffer/struct being persisted*/
   uintptr_t flash_addr;      /**< Current write pointer within a reserved page */
   uintptr_t prev_flash_addr; /**< Address of the most recent valid record (for invalidation) */
@@ -50,7 +50,7 @@ typedef struct {
  *          STATUS_CODE_OUT_OF_RANGE if an invalid flash page is selected
  *          STATUS_CODE_INVALID_ARGS if invalid parameters are passed
  */
-StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_t blob_size, bool overwrite);
+StatusCode persist_init(PersistStorage* persist, uint8_t page, void* blob, size_t blob_size, bool overwrite);
 
 /**
  * @brief   Force a persist data commit
@@ -59,6 +59,6 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
  * @return  STATUS_CODE_OK if committed successfully
  *          STATUS_CODE_INVALID_ARGS if invalid parameters are passed
  */
-StatusCode persist_commit(PersistStorage *persist);
+StatusCode persist_commit(PersistStorage* persist);
 
 /** @} */

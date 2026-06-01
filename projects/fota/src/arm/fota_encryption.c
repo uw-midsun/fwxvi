@@ -41,12 +41,12 @@ FotaError fota_encryption_init() {
   return FOTA_ERROR_SUCCESS;
 }
 
-uint32_t fota_calculate_crc32(uint8_t *data_start, uint32_t word_size) {
+uint32_t fota_calculate_crc32(uint8_t* data_start, uint32_t word_size) {
   if (data_start == NULL) {
     return 0U;
   }
 
-  return HAL_CRC_Calculate(&s_crc_handle, (uint32_t *)data_start, word_size);
+  return HAL_CRC_Calculate(&s_crc_handle, (uint32_t*)data_start, word_size);
 }
 
 uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_t flash_size) {
@@ -63,7 +63,7 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
   const uint32_t CHUNK_WORDS = 2048U / 4U;
   const uint32_t total_words = flash_size >> 2;  // convert bytes to words
 
-  const uint32_t *p = (const uint32_t *)flash_base_addr;
+  const uint32_t* p = (const uint32_t*)flash_base_addr;
   uint32_t remaining_words = total_words;
   uint32_t crc = 0U;
 
@@ -72,7 +72,7 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
   while (remaining_words > 0U) {
     uint32_t this_words = (remaining_words > CHUNK_WORDS) ? CHUNK_WORDS : remaining_words;
 
-    crc = HAL_CRC_Accumulate(&s_crc_handle, (uint32_t *)p, this_words);
+    crc = HAL_CRC_Accumulate(&s_crc_handle, (uint32_t*)p, this_words);
 
     p += this_words;
     remaining_words -= this_words;
@@ -81,14 +81,14 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
   return crc;
 }
 
-FotaError fota_verify_packet_encryption(FotaPacket *packet) {
+FotaError fota_verify_packet_encryption(FotaPacket* packet) {
   if (packet == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
   uint32_t received_crc32 = packet->crc32;
 
-  uint8_t *crc32_data_start = (uint8_t *)packet->payload;
+  uint8_t* crc32_data_start = (uint8_t*)packet->payload;
   uint32_t crc32_data_size = packet->payload_length;
 
   /* Handle padding */
@@ -106,14 +106,14 @@ FotaError fota_verify_packet_encryption(FotaPacket *packet) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_verify_datagram_encryption(FotaDatagram *datagram) {
+FotaError fota_verify_datagram_encryption(FotaDatagram* datagram) {
   if (datagram == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
   uint32_t received_crc32 = datagram->header.datagram_crc32;
 
-  uint8_t *crc32_data_start = (uint8_t *)datagram->data;
+  uint8_t* crc32_data_start = (uint8_t*)datagram->data;
   uint32_t crc32_data_size = datagram->header.total_length;
 
   /* Handle padding */

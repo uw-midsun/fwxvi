@@ -116,13 +116,13 @@ typedef struct {
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */
   uint8_t light_signal;                     /**< Light signal state (see #LightsSignalState) */
 
-  struct ButtonManager *button_manager;        /**< Button manager */
-  struct ButtonLEDManager *button_led_manager; /**< Button LED manager */
+  struct ButtonManager* button_manager;        /**< Button manager */
+  struct ButtonLEDManager* button_led_manager; /**< Button LED manager */
   DisplayData display_data;                    /**< Data for the display */
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
-  SteeringConfig *config; /**< Pointer to the steering configuration data */
+  SteeringConfig* config; /**< Pointer to the steering configuration data */
 } SteeringStorage;
 
 /**
@@ -132,6 +132,6 @@ typedef struct {
  * @return  STATUS_CODE_OK if steering initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config);
+StatusCode steering_init(SteeringStorage* storage, SteeringConfig* config);
 
 /** @} */

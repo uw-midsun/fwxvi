@@ -26,7 +26,7 @@
 /**
  * @brief Extract maps from adc{...} ex: raw_readings, converted_readings
  */
-inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
+inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant>& input_map, const QString& key_wanted) {
   std::map<QString, QVariant> out;
   std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
 
@@ -41,20 +41,20 @@ inline std::map<QString, QVariant> extractMapInline(const std::map<QString, QVar
   return out;
 }
 
-AdcPage::AdcPage(const std::map<QString, QVariant> &payload, QWidget *parent) :
+AdcPage::AdcPage(const std::map<QString, QVariant>& payload, QWidget* parent) :
     QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_raw_proxy{ nullptr }, m_conv_proxy{ nullptr } {
-  QVBoxLayout *layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(m_tabs);
   rebuild();
 }
 
-void AdcPage::setPayload(const std::map<QString, QVariant> &payload) {
+void AdcPage::setPayload(const std::map<QString, QVariant>& payload) {
   m_payload = payload;
   rebuild();
 }
 
-std::map<QString, QVariant> AdcPage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
+std::map<QString, QVariant> AdcPage::extractMap(const std::map<QString, QVariant>& input_map, const QString& key_wanted) const {
   return extractMapInline(input_map, key_wanted);
 }
 
@@ -66,12 +66,12 @@ void AdcPage::rebuild() {
 
   /* Converted Readings */
   {
-    AdcTableModel *model = new AdcTableModel(conv_map, m_tabs);
+    AdcTableModel* model = new AdcTableModel(conv_map, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_conv_proxy = tws.proxy;
 
     if (tws.table) {
-      QHeaderView *hh = tws.table->horizontalHeader();
+      QHeaderView* hh = tws.table->horizontalHeader();
 
       hh->setStretchLastSection(true);
       hh->setSectionResizeMode(0, QHeaderView::ResizeToContents); /* Channel */
@@ -88,12 +88,12 @@ void AdcPage::rebuild() {
 
   /* Raw Readings */
   {
-    AdcTableModel *model = new AdcTableModel(raw_map, m_tabs);
+    AdcTableModel* model = new AdcTableModel(raw_map, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_raw_proxy = tws.proxy;
 
     if (tws.table) {
-      QHeaderView *hh = tws.table->horizontalHeader();
+      QHeaderView* hh = tws.table->horizontalHeader();
 
       hh->setStretchLastSection(true);
       hh->setSectionResizeMode(0, QHeaderView::ResizeToContents); /* Channel */

@@ -22,7 +22,7 @@
 
 #define XB_TRANSMIT_DEBUG 0U
 
-static TelemetryStorage *s_telemetry_storage = NULL;
+static TelemetryStorage* s_telemetry_storage = NULL;
 
 TASK(can_message_forwarder, TASK_STACK_512) {
   size_t datagram_length = 0U;
@@ -43,9 +43,9 @@ TASK(can_message_forwarder, TASK_STACK_512) {
     if (decode_can_message(&tx_datagram, &message) == STATUS_CODE_OK) {
       datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
 #if (XB_TRANSMIT_DEBUG == 0)
-      uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+      uart_tx(UART_PORT_2, (uint8_t*)&tx_datagram, datagram_length);
 #else
-      status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
+      status = uart_tx(UART_PORT_2, (uint8_t*)&tx_datagram, datagram_length);
       if (status != STATUS_CODE_OK) {
         LOG_DEBUG("Failed to transmit to telemetry transceiver!\r\n");
       } else {
@@ -56,7 +56,7 @@ TASK(can_message_forwarder, TASK_STACK_512) {
   }
 }
 
-StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) {
+StatusCode xb_transmit_init(TelemetryStorage* storage, TelemetryConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

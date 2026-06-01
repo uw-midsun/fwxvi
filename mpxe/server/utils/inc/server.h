@@ -39,9 +39,9 @@
 class Server {
  private:
   /** @brief  The message callback function definition */
-  using messageCallback = std::function<void(Server *srv, ClientConnection *src, std::string &)>;
+  using messageCallback = std::function<void(Server* srv, ClientConnection* src, std::string&)>;
   /** @brief  The connection callback function definition */
-  using connectCallback = std::function<void(Server *srv, ClientConnection *src)>;
+  using connectCallback = std::function<void(Server* srv, ClientConnection* src)>;
 
   static const constexpr unsigned int MAX_SERVER_EPOLL_EVENTS = 64U; /**< Maximum permitted EPOLL events for tracking clients */
   static const constexpr size_t MAX_CLIENT_READ_SIZE = 512U;         /**< Maximum permitted read size for all clients */
@@ -53,7 +53,7 @@ class Server {
   messageCallback m_messageCallback; /**< Function pointer to store the message callback */
   connectCallback m_connectCallback; /**< Function pointer to store the connection callback */
 
-  std::unordered_map<std::string, ClientConnection *> m_connections; /**< Hash-map to store connections based on their string names */
+  std::unordered_map<std::string, ClientConnection*> m_connections; /**< Hash-map to store connections based on their string names */
 
   std::atomic<bool> m_serverListening; /**< Boolean flag to indicate the servers status */
 
@@ -115,40 +115,40 @@ class Server {
    * @param   client Pointer to the client which has received a message
    * @param   message String message value that has been received
    */
-  void messageReceived(ClientConnection *client, std::string &message);
+  void messageReceived(ClientConnection* client, std::string& message);
 
   /**
    * @brief   Function wrapper to transmit a message
    * @param   client Pointer to the client which shall be written to
    * @param   message String message value to be sent
    */
-  void sendMessage(ClientConnection *client, const std::string &message);
+  void sendMessage(ClientConnection* client, const std::string& message);
 
   /**
    * @brief   Function wrapper to broadcast a message to all clients
    * @param   message String message value to be sent
    */
-  void broadcastMessage(const std::string &message);
+  void broadcastMessage(const std::string& message);
 
   /**
    * @brief   Update a clients name
    * @param   client Pointer to the client which shall be updated
    * @param   newName String value of the clients new name
    */
-  void updateClientName(ClientConnection *client, std::string newName);
+  void updateClientName(ClientConnection* client, std::string newName);
 
   /**
    * @brief   Remove a client
    * @param   client Pointer to the client which shall be removed
    */
-  void removeClient(ClientConnection *client);
+  void removeClient(ClientConnection* client);
 
   /**
    * @brief   Get a client by its name
    * @param   clientName String value of the clients name
    * @return  Pointer to the respective client connection object
    */
-  ClientConnection *getClientByName(std::string &clientName);
+  ClientConnection* getClientByName(std::string& clientName);
 
   /**
    * @brief   Print a list of all connected clients

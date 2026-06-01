@@ -55,7 +55,7 @@ StatusCode gpio_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state) {
+StatusCode gpio_init_pin(const GpioAddress* address, const GpioMode pin_mode, GpioState init_state) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -80,7 +80,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
 
   GPIO_InitTypeDef init = { .Pin = 1U << (address->pin), .Mode = s_gpio_mode_map[pin_mode], .Pull = gpio_pull, .Speed = GPIO_SPEED_FREQ_HIGH };
 
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_Init(gpio_port, &init);
 
   if (pin_mode == GPIO_OUTPUT_OPEN_DRAIN || pin_mode == GPIO_OUTPUT_PUSH_PULL) {
@@ -91,7 +91,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
+StatusCode gpio_init_pin_af(const GpioAddress* address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -111,14 +111,14 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
     .Pin = 1U << (address->pin), .Mode = s_gpio_mode_map[pin_mode], .Pull = pin_mode == GPIO_ALTFN_OPEN_DRAIN ? GPIO_PULLUP : GPIO_NOPULL, .Speed = GPIO_SPEED_FREQ_VERY_HIGH, .Alternate = alt_func
   };
 
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_Init(gpio_port, &init);
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
+StatusCode gpio_set_state(const GpioAddress* address, GpioState state) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -128,31 +128,31 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
   }
 
   taskENTER_CRITICAL();
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_WritePin(gpio_port, (1U << (address->pin)), state);
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_toggle_state(const GpioAddress *address) {
+StatusCode gpio_toggle_state(const GpioAddress* address) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   taskENTER_CRITICAL();
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_TogglePin(gpio_port, 1U << (address->pin));
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;
 }
 
-GpioState gpio_get_state(const GpioAddress *address) {
+GpioState gpio_get_state(const GpioAddress* address) {
   if (address == NULL) {
     return GPIO_STATE_LOW;
   }
 
   taskENTER_CRITICAL();
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
   GPIO_PinState state = HAL_GPIO_ReadPin(gpio_port, 1U << (address->pin));
   taskEXIT_CRITICAL();
   return state;

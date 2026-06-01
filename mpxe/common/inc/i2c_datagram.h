@@ -59,7 +59,7 @@ class I2C {
    * @brief   Constructs an I2C object with provided payload data
    * @param   data Reference to payload data
    */
-  explicit I2C(Payload &data);
+  explicit I2C(Payload& data);
 
   /**
    * @brief   Default constructor for I2C object
@@ -71,26 +71,26 @@ class I2C {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing I2C data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief   Deserializes I2C data from payload string
    * @param   i2cDatagramPayload String containing serialized I2C data
    */
-  void deserialize(std::string &i2cDatagramPayload);
+  void deserialize(std::string& i2cDatagramPayload);
 
   /**
    * @brief   Sets the target I2C port
    * @param   i2cPort Port to set as target
    */
-  void setI2CPort(const Port &i2cPort);
+  void setI2CPort(const Port& i2cPort);
 
   /**
    * @brief   Sets data in the I2C buffer
    * @param   data Pointer to data to copy into buffer
    * @param   length Length of data to copy
    */
-  void setBuffer(const uint8_t *data, size_t length);
+  void setBuffer(const uint8_t* data, size_t length);
 
   /**
    * @brief   Clear the I2C data buffer
@@ -113,7 +113,7 @@ class I2C {
    * @brief   Gets the I2C buffer
    * @return  Pointer to the buffer array
    */
-  const uint8_t *getBuffer() const;
+  const uint8_t* getBuffer() const;
 
  private:
   Payload m_i2cDatagram; /**< Private datagram payload */

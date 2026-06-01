@@ -20,35 +20,35 @@
 #include "serialization.h"
 
 namespace Datagram {
-ADBMS_AFE::ADBMS_AFE(Payload &data) {
+ADBMS_AFE::ADBMS_AFE(Payload& data) {
   m_afeDatagram = data;
 }
 
-std::string ADBMS_AFE::serialize(const CommandCode &commandCode) const {
+std::string ADBMS_AFE::serialize(const CommandCode& commandCode) const {
   std::string serializedData;
 
   serializeInteger<uint8_t>(serializedData, m_afeDatagram.index);
   serializeInteger<std::size_t>(serializedData, m_afeDatagram.dev_index);
 
   serializeInteger<uint8_t>(serializedData, AFE_MAX_CELLS * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_voltages), AFE_MAX_CELLS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.cell_voltages), AFE_MAX_CELLS * sizeof(uint16_t));
 
   serializeInteger<uint8_t>(serializedData, AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.therm_voltages), AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.therm_voltages), AFE_MAX_CELL_THERMISTORS * sizeof(uint16_t));
 
   serializeInteger<uint8_t>(serializedData, AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.board_therm_voltages), AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.board_therm_voltages), AFE_MAX_BOARD_THERMISTORS * sizeof(uint16_t));
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(AFE_MAX_CELLS));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cell_discharges), AFE_MAX_CELLS);
+  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.cell_discharges), AFE_MAX_CELLS);
 
   serializeInteger<uint8_t>(serializedData, CACHE_SIZE * sizeof(uint16_t));
-  serializedData.append(reinterpret_cast<const char *>(m_afeDatagram.cache), CACHE_SIZE * sizeof(uint16_t));
+  serializedData.append(reinterpret_cast<const char*>(m_afeDatagram.cache), CACHE_SIZE * sizeof(uint16_t));
 
   return encodeCommand(commandCode, serializedData);
 }
 
-void ADBMS_AFE::deserialize(std::string &afeDatagramPayload) {
+void ADBMS_AFE::deserialize(std::string& afeDatagramPayload) {
   std::size_t offset = 0;
 
   m_afeDatagram.index = deserializeInteger<uint8_t>(afeDatagramPayload, offset);

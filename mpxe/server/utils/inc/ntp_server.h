@@ -56,7 +56,7 @@ class NTPServer {
    * @param   request The incoming NTP request packet
    * @return  The NTP response packet
    */
-  NTPPacket processNTPRequest(const NTPPacket &request);
+  NTPPacket processNTPRequest(const NTPPacket& request);
 
   /**
    * @brief   Queries the remote NTP server and fills the response packet
@@ -65,7 +65,7 @@ class NTPServer {
    * @param   response The NTP response packet that will be filled with data from the server
    * @return  True if the query was successful, otherwise false
    */
-  bool queryNTPServer(NTPPacket &response);
+  bool queryNTPServer(NTPPacket& response);
 
  public:
   /**
@@ -86,7 +86,7 @@ class NTPServer {
    * @param   bindAddress The local address to bind the NTP server
    * @param   NTPServerAddress The external NTP server address to query for time data
    */
-  void startListening(const std::string &bindAddress, const std::string &NTPServerAddress);
+  void startListening(const std::string& bindAddress, const std::string& NTPServerAddress);
 };
 
 /** @} */

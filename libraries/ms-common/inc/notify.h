@@ -41,14 +41,14 @@ typedef uint8_t Event;
  * @return  STATUS_CODE_OK if all events are processed (notification = 0)
  *          STATUS_CODE_INCOPMLETE if some events are not cleared
  */
-StatusCode event_from_notification(uint32_t *notification, Event *event);
+StatusCode event_from_notification(uint32_t* notification, Event* event);
 
 /**
  * @brief   Checks if the notification is available in the event
  * @param   notification Pointer to the notification to
  * @return  True if the notification exists. False if it does not
  */
-bool notify_check_event(uint32_t *notification, Event event);
+bool notify_check_event(uint32_t* notification, Event event);
 
 /**
  * @brief   Get the current notification value for the calilng task without a timeout
@@ -56,7 +56,7 @@ bool notify_check_event(uint32_t *notification, Event event);
  * @return  STATUS_CODE_OK if the value is retrieved successfully
  *          STATUS_CODE_TIMEOUT if the value cannot be retrieved
  */
-StatusCode notify_get(uint32_t *notification);
+StatusCode notify_get(uint32_t* notification);
 
 /**
  * @brief   Get the current notification value for the calilng task with a maximum timeout
@@ -65,7 +65,7 @@ StatusCode notify_get(uint32_t *notification);
  * @return  STATUS_CODE_OK if notification is received successfully
  *          STATUS_CODE_TIMEOUT if a timeout has occurred
  */
-StatusCode notify_wait(uint32_t *notification, uint32_t ms_to_wait);
+StatusCode notify_wait(uint32_t* notification, uint32_t ms_to_wait);
 
 /**
  * @brief   Notify a specific task with an event
@@ -73,13 +73,13 @@ StatusCode notify_wait(uint32_t *notification, uint32_t ms_to_wait);
  * @param   event Numeric value used to signal task
  * @return  STATUS_CODE_OK
  */
-StatusCode notify(Task *task, Event event);
+StatusCode notify(Task* task, Event event);
 
 /**
  * @brief   Sends an event notification from an ISR to a task
  * @param   task Pointer to the task to notify
  * @param   event Numeric value used to signal task
  */
-void notify_from_isr(Task *task, Event event);
+void notify_from_isr(Task* task, Event event);
 
 /** @} */

@@ -52,16 +52,16 @@ void test_superblock_and_first_block_setup(void) {
   TEST_ASSERT_EQUAL(BLOCKS_PER_GROUP, superBlock->blocksPerGroup);
 
   // Test offset is correct
-  TEST_ASSERT_EQUAL_UINT32(sizeof(SuperBlock), (uint32_t)((uint8_t *)blockGroups - (uint8_t *)superBlock));
+  TEST_ASSERT_EQUAL_UINT32(sizeof(SuperBlock), (uint32_t)((uint8_t*)blockGroups - (uint8_t*)superBlock));
 
-  FileEntry *root = &superBlock->rootFolderMetadata;
+  FileEntry* root = &superBlock->rootFolderMetadata;
   TEST_ASSERT_EQUAL_STRING("/", root->fileName);
   TEST_ASSERT_EQUAL(FILETYPE_FOLDER, root->type);
   TEST_ASSERT_EQUAL(1, root->valid);
   TEST_ASSERT_EQUAL_UINT16(0, root->startBlockIndex);
   TEST_ASSERT_EQUAL_UINT32(0, root->size);
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   TEST_ASSERT_EQUAL(FS_NULL_BLOCK_GROUP, group_0->nextBlockGroup);
 
   TEST_ASSERT_EQUAL_UINT8(1, group_0->blockBitmap[0]);
@@ -82,7 +82,7 @@ void test_add_file_with_valid_args_expect_return_success(void) {
   const uint8_t msg[] = "CRCPOLY";
   const uint8_t msg2[] = "CRCPOLY2";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
   }
@@ -129,7 +129,7 @@ void test_add_multi_file_with_valid_args_expect_return_success(void) {
     "/a.txt", "/b.txt", "/c.txt", "/d.txt", "/e.txt", "/f.txt", "/g.txt", "/h.txt", "/i.txt",
   };
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
   }
@@ -148,7 +148,7 @@ void test_add_multi_file_with_valid_args_expect_return_success(void) {
 
   // At this point, block group 0 should be full, and now for any files we add, the content should be written to block group 1
 
-  BlockGroup *group_1 = &blockGroups[1];
+  BlockGroup* group_1 = &blockGroups[1];
   ret = fs_add_file(filenames[BLOCKS_PER_GROUP - 1U], messages[BLOCKS_PER_GROUP - 1U], sizeof(messages[BLOCKS_PER_GROUP - 1U]), FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
   for (int i = 0; i < BLOCKS_PER_GROUP; i++) {
@@ -183,10 +183,10 @@ void test_add_multi_file_with_valid_args_expect_return_success(void) {
 TEST_IN_TASK
 void test_add_file_with_duplicate_name_expect_return_invalid_args(void) {
   StatusCode ret = STATUS_CODE_OK;
-  ret = fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, FILETYPE_FILE);
+  ret = fs_add_file("/crc.txt", (uint8_t*)"CRCPOLY", 8, FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
 
-  ret = fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, FILETYPE_FILE);
+  ret = fs_add_file("/crc.txt", (uint8_t*)"CRCPOLY", 8, FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_INVALID_ARGS, ret);
 }
 
@@ -208,8 +208,8 @@ void test_add_multi_file_past_block_limit_with_valid_args_expect_return_success(
     "/a.txt", "/b.txt", "/c.txt", "/d.txt", "/e.txt", "/f.txt", "/g.txt", "/h.txt", "/i.txt", "/j.txt", "/k.txt", "/l.txt", "/m.txt",
   };
 
-  BlockGroup *group_0 = &blockGroups[0];
-  BlockGroup *group_1 = &blockGroups[1];
+  BlockGroup* group_0 = &blockGroups[0];
+  BlockGroup* group_1 = &blockGroups[1];
 
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
@@ -270,7 +270,7 @@ void test_add_file_with_long_content_expect_return_success(void) {
       "tellus diam, ullamcorper ac sapien at, mattis blandit urna. Integer mi velit, malesuada non luctus eget, mattis feugiat orci. Nulla semper blandit orci, et vestibulum ante ultrices at. Mauris "
       "ornare ut velit ac sodales. Donec dapibus, justo sit amet posuere elementum, libero sem venenatis magna, sit amet fermentum est risus integer.";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
   }
@@ -305,7 +305,7 @@ void test_write_file_with_valid_conditions_expect_return_success(void) {
   const uint8_t msg[] = "CRCPOLY";
   const uint8_t newmsg[] = "Some new message...";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
 
   ret = fs_add_file("/crc.txt", msg, sizeof(msg), FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
@@ -350,7 +350,7 @@ void test_write_file_to_overflow_with_valid_conditions_expect_return_success(voi
       "ornare ut velit ac sodales. Donec dapibus, justo sit amet posuere elementum, libero sem venenatis magna, sit amet";
   const uint8_t newmsg[] = "fermentum est risus integer. CRCPOLY";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
 
   ret = fs_add_file("/crc.txt", msg, sizeof(msg), FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
@@ -396,7 +396,7 @@ void test_write_file_to_overflow_with_no_contiguous_memory_expect_return_success
   const uint8_t newmsg[] = "fermentum est risus integer. CRCPOLY";
   const uint8_t bufmsg[] = "I am blocking the way...";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
 
   ret = fs_add_file("/crc.txt", msg, sizeof(msg), FILETYPE_FILE);
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
@@ -468,7 +468,7 @@ void test_add_and_delete_file_with_valid_args_expect_return_success(void) {
   const uint8_t msg[] = "CRCPOLY";
   const uint8_t msg2[] = "CRCPOLY2";
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
   }
@@ -525,7 +525,7 @@ void test_nested_directories_and_recursive_delete_expect_return_success(void) {
     "CRCPOLY1", "CRCPOLY2", "CRCPOLY3", "CRCPOLY4", "CRCPOLY5", "CRCPOLY6", "CRCPOLY7", "CRCPOLY8", "CRCPOLY9",
   };
 
-  BlockGroup *group_0 = &blockGroups[0];
+  BlockGroup* group_0 = &blockGroups[0];
   for (int i = 1; i < BLOCKS_PER_GROUP; i++) {
     TEST_ASSERT_EQUAL_UINT8(0, group_0->blockBitmap[i]);  // These blocks should be empty at first
   }

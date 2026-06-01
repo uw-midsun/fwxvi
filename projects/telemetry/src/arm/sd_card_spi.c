@@ -33,7 +33,7 @@ static inline void s_enable_spi3(void) {
 
 /** @brief SD SPI Port data */
 typedef struct {
-  SPI_TypeDef *base;
+  SPI_TypeDef* base;
   void (*rcc_cmd)(void);
   uint8_t irq;
   bool initialized;
@@ -54,7 +54,7 @@ static const uint32_t s_spi_baudrate_map[] = {
 
 static SPI_HandleTypeDef s_spi_handles[NUM_SD_SPI_PORTS];
 
-StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings) {
+StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings* settings) {
   if (!settings || spi >= NUM_SD_SPI_PORTS || settings->mode >= NUM_SD_SPI_MODES || settings->baudrate >= NUM_SD_SPI_BAUDRATES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -119,7 +119,7 @@ StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len) {
+StatusCode sd_spi_tx(SdSpiPort spi, uint8_t* tx_data, size_t tx_len) {
   if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || !tx_data || tx_len == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -128,7 +128,7 @@ StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len) {
   return (status == HAL_OK) ? STATUS_CODE_OK : STATUS_CODE_INTERNAL_ERROR;
 }
 
-StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t placeholder) {
+StatusCode sd_spi_rx(SdSpiPort spi, uint8_t* rx_data, size_t rx_len, uint8_t placeholder) {
   if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || !rx_data || rx_len == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -144,7 +144,7 @@ StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t pla
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
+StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
   if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || (tx_len == 0 && rx_len == 0)) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -155,7 +155,7 @@ StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8
     size_t len = (tx_len > rx_len) ? tx_len : rx_len;
     for (size_t i = 0; i < len; i++) {
       uint8_t tx = (i < tx_len) ? tx_data[i] : 0xFF;
-      uint8_t *rx_ptr = (i < rx_len) ? &rx_data[i] : NULL;
+      uint8_t* rx_ptr = (i < rx_len) ? &rx_data[i] : NULL;
       uint8_t dummy_rx;
       status = HAL_SPI_TransmitReceive(&s_spi_handles[spi], &tx, rx_ptr ? rx_ptr : &dummy_rx, 1, HAL_MAX_DELAY);
       if (status != HAL_OK) break;

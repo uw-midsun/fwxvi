@@ -70,7 +70,7 @@ TASK(flash_api, TASK_STACK_2048) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

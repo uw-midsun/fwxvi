@@ -20,7 +20,7 @@
 
 static uint32_t s_next_datagram_id = 1U;
 
-FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSettings *uart_settings, FotaDatagramCompleteCb callback) {
+FotaError packet_manager_init(PacketManager* manager, UartPort uart, UartSettings* uart_settings, FotaDatagramCompleteCb callback) {
   if (manager == NULL || uart_settings == NULL || uart >= NUM_UART_PORTS) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -41,7 +41,7 @@ FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSetting
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError packet_manager_process(PacketManager *manager) {
+FotaError packet_manager_process(PacketManager* manager) {
   if (manager == NULL) return FOTA_ERROR_INVALID_ARGS;
 
   while (!network_buffer_empty(&manager->network_buffer)) {
@@ -74,7 +74,7 @@ FotaError packet_manager_process(PacketManager *manager) {
             break;
           }
 
-          FotaDatagram *datagram = NULL;
+          FotaDatagram* datagram = NULL;
           err = packet_manager_get_datagram(manager, manager->current_packet.datagram_id, &datagram);
 
           if (err == FOTA_ERROR_NO_DATAGRAM_FOUND && manager->current_packet.packet_type == FOTA_PACKET_TYPE_HEADER) {
@@ -119,7 +119,7 @@ FotaError packet_manager_process(PacketManager *manager) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *datagram, FotaError (*send_func)(int8_t *data, uint32_t length)) {
+FotaError packet_manager_send_datagram(PacketManager* manager, FotaDatagram* datagram, FotaError (*send_func)(int8_t* data, uint32_t length)) {
   if (manager == NULL || datagram == NULL || send_func == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -141,7 +141,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
       return err;
     }
 
-    err = send_func((int8_t *)manager->tx_packet_buffer, written);
+    err = send_func((int8_t*)manager->tx_packet_buffer, written);
     if (err != FOTA_ERROR_SUCCESS) {
       return err;
     }
@@ -150,7 +150,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramType type, uint8_t *data, uint32_t length, FotaDatagram **datagram) {
+FotaError packet_manager_create_datagram(PacketManager* manager, FotaDatagramType type, uint8_t* data, uint32_t length, FotaDatagram** datagram) {
   if (manager == NULL || datagram == NULL || (data == NULL && length > 0)) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -171,7 +171,7 @@ FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramTyp
   return FOTA_ERROR_NO_MEMORY;
 }
 
-FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_id, FotaDatagram **datagram) {
+FotaError packet_manager_get_datagram(PacketManager* manager, uint32_t datagram_id, FotaDatagram** datagram) {
   if (manager == NULL || datagram == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -187,7 +187,7 @@ FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_
   return FOTA_ERROR_NO_DATAGRAM_FOUND;
 }
 
-FotaError packet_manager_free_datagram(PacketManager *manager, uint32_t datagram_id) {
+FotaError packet_manager_free_datagram(PacketManager* manager, uint32_t datagram_id) {
   if (manager == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }

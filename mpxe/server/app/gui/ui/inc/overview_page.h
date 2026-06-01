@@ -47,7 +47,7 @@ class OverviewPage : public QWidget {
    * @param   currentIndex  Currently selected client index
    * @param   parent        Parent widget (can be nullptr)
    */
-  explicit OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent = nullptr);
+  explicit OverviewPage(const std::map<QString, QVariant>& payload, const QStringList& clientFiles, int currentIndex, QWidget* parent = nullptr);
 
   static const constexpr unsigned int SPACE_STRETCH_SIZE = 1; /**< Stretch factor for spacing in layouts */
 
@@ -57,21 +57,21 @@ class OverviewPage : public QWidget {
    * @brief   Update the payload and refresh displayed values
    * @param   payload New payload map
    */
-  void setPayload(const std::map<QString, QVariant> &payload);
+  void setPayload(const std::map<QString, QVariant>& payload);
 
   /**
    * @brief   Replace client file list and selection index
    * @param   files New list of client file paths
    * @param   index New selected index (if valid)
    */
-  void setClients(const QStringList &files, int index);
+  void setClients(const QStringList& files, int index);
 
  signals:
   /**
    * @brief   Emitted when a client is chosen from the combobox
    * @param   json_path Path to the selected client JSON
    */
-  void clientSelected(const QString &json_path);
+  void clientSelected(const QString& json_path);
 
  private slots:
   /**
@@ -89,7 +89,7 @@ class OverviewPage : public QWidget {
    * @param   parent Parent widget (can be nullptr)
    * @return  QLabel* Newly created label
    */
-  static QLabel *makeLabel(const QString &text, bool bold, bool mono, QWidget *parent);
+  static QLabel* makeLabel(const QString& text, bool bold, bool mono, QWidget* parent);
 
   QPointer<QComboBox> m_clients;     /**< Client selection combobox */
   QPointer<QLabel> m_project_lbl;    /**< Project name label */

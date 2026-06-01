@@ -120,13 +120,13 @@ static const AdbmsAfeSettings s_afe_settings = {
   .num_thermistors = ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE,
 };
 
-static AdbmsAfeStorage *adbms_afe_storage;
+static AdbmsAfeStorage* adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
-static RearControllerStorage *rear_controller_storage;
+static RearControllerStorage* rear_controller_storage;
 
 static uint8_t s_global_cell_index_1_based(uint8_t device, uint8_t cell) {
   return (uint8_t)(device * ADBMS_AFE_MAX_CELLS_PER_DEVICE + cell + 1U);
@@ -588,7 +588,7 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   }
 }
 
-StatusCode cell_sense_init(RearControllerStorage *storage) {
+StatusCode cell_sense_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

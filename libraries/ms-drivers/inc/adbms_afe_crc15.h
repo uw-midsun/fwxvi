@@ -36,6 +36,6 @@ void crc15_init_table(void);
  * @param len length of the data
  * @return uint16_t Return PEC
  */
-uint16_t crc15_calculate(uint8_t *data, size_t len);
+uint16_t crc15_calculate(uint8_t* data, size_t len);
 
 /** @} */

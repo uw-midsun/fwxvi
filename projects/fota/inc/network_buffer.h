@@ -46,21 +46,21 @@ typedef struct {
  * @return  FOTA_ERROR_SUCCESS if network buffer is initialized successfully
  *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
  */
-FotaError network_buffer_init(NetworkBuffer *network_buffer);
+FotaError network_buffer_init(NetworkBuffer* network_buffer);
 
 /**
  * @brief   Fetches the number of items in the network buffer
  * @param   network_buffer Pointer to the network buffer
  * @return  Number of items in the network buffer
  */
-uint16_t network_buffer_num_items(NetworkBuffer *network_buffer);
+uint16_t network_buffer_num_items(NetworkBuffer* network_buffer);
 
 /**
  * @brief   Fetches the number of empty slots in the network buffer
  * @param   network_buffer Pointer to the network buffer
  * @return  Number of empty slots in the network buffer
  */
-uint16_t network_buffer_num_empty_slots(NetworkBuffer *network_buffer);
+uint16_t network_buffer_num_empty_slots(NetworkBuffer* network_buffer);
 
 /**
  * @brief   Checks if the network buffer is empty
@@ -68,7 +68,7 @@ uint16_t network_buffer_num_empty_slots(NetworkBuffer *network_buffer);
  * @return  TRUE if network buffer is empty
  *          FALSE if network buffer has data
  */
-bool network_buffer_empty(NetworkBuffer *network_buffer);
+bool network_buffer_empty(NetworkBuffer* network_buffer);
 
 /**
  * @brief   Checks if the network buffer is full
@@ -76,7 +76,7 @@ bool network_buffer_empty(NetworkBuffer *network_buffer);
  * @return  TRUE if network buffer is full
  *          FALSE if network buffer is not full
  */
-bool network_buffer_full(NetworkBuffer *network_buffer);
+bool network_buffer_full(NetworkBuffer* network_buffer);
 
 /**
  * @brief   Write data bytes
@@ -85,7 +85,7 @@ bool network_buffer_full(NetworkBuffer *network_buffer);
  * @return  FOTA_ERROR_SUCCESS if network buffer is initialized successfully
  *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
  */
-FotaError network_buffer_write(NetworkBuffer *network_buffer, uint8_t *data);
+FotaError network_buffer_write(NetworkBuffer* network_buffer, uint8_t* data);
 
 /**
  * @brief   Read data bytes
@@ -94,6 +94,6 @@ FotaError network_buffer_write(NetworkBuffer *network_buffer, uint8_t *data);
  * @return  FOTA_ERROR_SUCCESS if network buffer is initialized successfully
  *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
  */
-FotaError network_buffer_read(NetworkBuffer *network_buffer, uint8_t *data);
+FotaError network_buffer_read(NetworkBuffer* network_buffer, uint8_t* data);
 
 /** @} */

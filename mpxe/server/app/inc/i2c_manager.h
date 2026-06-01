@@ -46,19 +46,19 @@ class I2CManager {
    * @param   data Vector of bytes to be stringified
    * @return  String representation of the data in hex format
    */
-  std::string stringifyData(const std::vector<uint8_t> &data);
+  std::string stringifyData(const std::vector<uint8_t>& data);
 
   /**
    * @brief   Loads the Hash-map cache with a projects I2C data
    * @param   projectName Selector for which project shall be loaded into the cache
    */
-  void loadI2CInfo(std::string &projectName);
+  void loadI2CInfo(std::string& projectName);
 
   /**
    * @brief   Saves the Hash-map cache to a projects I2C data
    * @param   projectName Selector for which project shall be updated with the current cache
    */
-  void saveI2CInfo(std::string &projectName);
+  void saveI2CInfo(std::string& projectName);
 
  public:
   /**
@@ -74,7 +74,7 @@ class I2CManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateI2CData(std::string &projectName, std::string &payload);
+  void updateI2CData(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Create an I2C command given a CommandCode and if required, specific port and data
@@ -84,7 +84,7 @@ class I2CManager {
    * @param   data Data payload to be transmitted
    * @return  Fully serialized data payload to be transmitted to the client
    */
-  std::string createI2CCommand(CommandCode commandCode, std::string &i2cPort, std::vector<uint8_t> &data);
+  std::string createI2CCommand(CommandCode commandCode, std::string& i2cPort, std::vector<uint8_t>& data);
 };
 
 /** @} */

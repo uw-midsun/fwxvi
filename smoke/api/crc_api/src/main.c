@@ -36,11 +36,11 @@ TASK(crc_api, TASK_STACK_1024) {
 
     crc_init(CRC_LENGTH_16);
     delay_ms(1000);
-    LOG_DEBUG("CRC16 Calculation: %lu\n", (uint32_t)crc_calculate((uint32_t *)crc16_array, TEST_NUM_CRC16_WORDS));
+    LOG_DEBUG("CRC16 Calculation: %lu\n", (uint32_t)crc_calculate((uint32_t*)crc16_array, TEST_NUM_CRC16_WORDS));
 
     crc_init(CRC_LENGTH_8);
     delay_ms(1000);
-    LOG_DEBUG("CRC8 Calculation: %lu\n", (uint32_t)crc_calculate((uint32_t *)crc8_array, TEST_NUM_CRC8_WORDS));
+    LOG_DEBUG("CRC8 Calculation: %lu\n", (uint32_t)crc_calculate((uint32_t*)crc8_array, TEST_NUM_CRC8_WORDS));
 
     delay_ms(10);
     LOG_DEBUG("Done calculations! Run the python CRC script (python3 smoke/crc_api/scripts/crc.py) to verify these values!\n\n");
@@ -49,7 +49,7 @@ TASK(crc_api, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

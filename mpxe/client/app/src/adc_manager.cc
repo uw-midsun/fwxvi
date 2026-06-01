@@ -24,10 +24,10 @@ extern "C" {
 #include "adc_manager.h"
 #include "app.h"
 
-void AdcManager::setAdcRaw(std::string &payload) {
+void AdcManager::setAdcRaw(std::string& payload) {
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
 
   uint16_t receivedReading = (static_cast<uint16_t>(receivedData[1U]) << 8) | receivedData[0U];
 
@@ -36,10 +36,10 @@ void AdcManager::setAdcRaw(std::string &payload) {
   adc_set_reading(&pinAddress, receivedReading);
 }
 
-void AdcManager::setAdcAllRaw(std::string &payload) {
+void AdcManager::setAdcAllRaw(std::string& payload) {
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
 
   uint16_t receivedReading = (static_cast<uint16_t>(receivedData[1U]) << 8) | receivedData[0U];
 
@@ -62,7 +62,7 @@ void AdcManager::setAdcAllRaw(std::string &payload) {
   }
 }
 
-std::string AdcManager::processReadAdcRaw(std::string &payload) {
+std::string AdcManager::processReadAdcRaw(std::string& payload) {
   m_adcDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_adcDatagram.getGpioPort()), .pin = m_adcDatagram.getGpioPin() };
@@ -126,7 +126,7 @@ std::string AdcManager::processReadAdcAllRaw() {
   return m_adcDatagram.serialize(CommandCode::ADC_GET_ALL_RAW);
 }
 
-std::string AdcManager::processReadAdcConverted(std::string &payload) {
+std::string AdcManager::processReadAdcConverted(std::string& payload) {
   m_adcDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_adcDatagram.getGpioPort()), .pin = m_adcDatagram.getGpioPin() };

@@ -80,7 +80,7 @@ class ADBMS_AFE {
   /**
    * @brief Constructs a ADBMS_AFE object with provided payload data
    */
-  explicit ADBMS_AFE(Payload &data);
+  explicit ADBMS_AFE(Payload& data);
 
   /**
    * @brief Default constructor for ADBMS_AFE object
@@ -92,13 +92,13 @@ class ADBMS_AFE {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing afe data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief Deserializes ltc afe data from payload string
    * @param afeDatagramPayload String containing serialized Ltc Afe data
    */
-  void deserialize(std::string &afeDatagramPayload);
+  void deserialize(std::string& afeDatagramPayload);
 
   /**
    * @brief Sets index of cell to set

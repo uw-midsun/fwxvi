@@ -33,7 +33,7 @@
   } while (0)
 #endif
 
-static SteeringStorage *steering_storage;
+static SteeringStorage* steering_storage;
 
 /* Hold state */
 static uint8_t hold_ticks = 0;
@@ -63,7 +63,7 @@ static uint8_t s_step_from_hold(uint8_t ticks) {
   }
 }
 
-StatusCode cruise_control_init(SteeringStorage *storage) {
+StatusCode cruise_control_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

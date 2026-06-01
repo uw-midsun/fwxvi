@@ -16,11 +16,11 @@
 /* Intra-component Headers */
 #include "command_code.h"
 
-std::string encodeCommand(const CommandCode commandCode, std::string &message) {
+std::string encodeCommand(const CommandCode commandCode, std::string& message) {
   return std::to_string(static_cast<uint8_t>(commandCode)) + '|' + message;
 }
 
-std::pair<CommandCode, std::string> decodeCommand(std::string &message) {
+std::pair<CommandCode, std::string> decodeCommand(std::string& message) {
   size_t delimPosition = message.find('|');
 
   if (delimPosition == std::string::npos) {

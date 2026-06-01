@@ -33,7 +33,7 @@
  * @param   settings Pointer to LTDC/display configuration
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_init(LtdcSettings *settings);
+StatusCode gui_init(LtdcSettings* settings);
 
 /**
  * @brief   Run one GUI processing/render step

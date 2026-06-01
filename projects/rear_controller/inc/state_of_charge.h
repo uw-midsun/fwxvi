@@ -30,7 +30,7 @@
  * @return  STATUS_CODE_OK when initialized successfully
  *          STATUS_CODE_INVALID_ARGS when invalid parameters are passed
  */
-StatusCode state_of_charge_init(RearControllerStorage *storage);
+StatusCode state_of_charge_init(RearControllerStorage* storage);
 
 /**
  * @brief   Run state of charge calculation

@@ -33,7 +33,7 @@
  * Storage definitions
  ************************************************************************************************/
 
-static SteeringStorage *steering_storage;
+static SteeringStorage* steering_storage;
 
 static ButtonManager s_button_manager = { 0 };
 
@@ -52,7 +52,7 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config) {
+StatusCode steering_init(SteeringStorage* storage, SteeringConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

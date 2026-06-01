@@ -81,7 +81,7 @@ TASK(can_communication, TASK_STACK_1024) {
 
     delay_ms(250U);
 
-    volatile CAN_TypeDef *can_reg = CAN1;
+    volatile CAN_TypeDef* can_reg = CAN1;
     LOG_DEBUG(
         "CAN1 REG DUMP:\r\n"
         " MCR: 0x%08lX\r\n"
@@ -99,7 +99,7 @@ TASK(can_communication, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

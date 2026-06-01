@@ -158,12 +158,12 @@ void CanScheduler::startCanScheduler() {
     addr.can_family = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex;
 
-    if (connect(m_bcmCanSocket, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+    if (connect(m_bcmCanSocket, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
       throw std::runtime_error("Error connecting to SocketCAN broadcast manager");
     }
 
     scheduleCanMessages();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Error running CAN Scheduler: " << e.what() << std::endl;
   }
 }
@@ -178,7 +178,7 @@ void CanScheduler::update_steering_cruise_control_target_velocity(uint32_t cruis
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update steering cruise_control_target_velocity}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -190,7 +190,7 @@ void CanScheduler::update_steering_buttons(uint8_t buttons_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update steering buttons}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -205,7 +205,7 @@ void CanScheduler::update_rear_controller_status_triggers(uint32_t triggers_valu
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update rear_controller_status triggers}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -218,7 +218,7 @@ void CanScheduler::update_battery_stats_a_pack_voltage(uint16_t pack_voltage_val
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_a pack_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -231,7 +231,7 @@ void CanScheduler::update_battery_stats_a_pack_current(uint16_t pack_current_val
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_a pack_current}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -244,7 +244,7 @@ void CanScheduler::update_battery_stats_a_pack_soc(uint16_t pack_soc_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_a pack_soc}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -257,7 +257,7 @@ void CanScheduler::update_battery_stats_b_max_cell_voltage(uint16_t max_cell_vol
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_b max_cell_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -270,7 +270,7 @@ void CanScheduler::update_battery_stats_b_min_cell_voltage(uint16_t min_cell_vol
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_b min_cell_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -283,7 +283,7 @@ void CanScheduler::update_battery_stats_b_max_temperature(uint16_t max_temperatu
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update battery_stats_b max_temperature}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -296,7 +296,7 @@ void CanScheduler::update_power_input_stats_input_dcdc_voltage(uint16_t input_dc
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update power_input_stats input_dcdc_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -309,7 +309,7 @@ void CanScheduler::update_power_input_stats_input_dcdc_current(uint16_t input_dc
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update power_input_stats input_dcdc_current}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -322,7 +322,7 @@ void CanScheduler::update_power_input_stats_input_aux_voltage(uint16_t input_aux
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update power_input_stats input_aux_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -335,7 +335,7 @@ void CanScheduler::update_power_input_stats_input_aux_current(uint16_t input_aux
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update power_input_stats input_aux_current}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -347,7 +347,7 @@ void CanScheduler::update_afe1_status_a_id(uint8_t id_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_a id}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -360,7 +360,7 @@ void CanScheduler::update_afe1_status_a_voltage_0(uint16_t voltage_0_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_a voltage_0}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -373,7 +373,7 @@ void CanScheduler::update_afe1_status_a_voltage_1(uint16_t voltage_1_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_a voltage_1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -386,7 +386,7 @@ void CanScheduler::update_afe1_status_a_voltage_2(uint16_t voltage_2_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_a voltage_2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -398,7 +398,7 @@ void CanScheduler::update_afe1_status_b_id(uint8_t id_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_b id}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -411,7 +411,7 @@ void CanScheduler::update_afe1_status_b_voltage_0(uint16_t voltage_0_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_b voltage_0}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -424,7 +424,7 @@ void CanScheduler::update_afe1_status_b_voltage_1(uint16_t voltage_1_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_b voltage_1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -437,7 +437,7 @@ void CanScheduler::update_afe1_status_b_voltage_2(uint16_t voltage_2_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe1_status_b voltage_2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -449,7 +449,7 @@ void CanScheduler::update_afe2_status_a_id(uint8_t id_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_a id}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -462,7 +462,7 @@ void CanScheduler::update_afe2_status_a_voltage_0(uint16_t voltage_0_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_a voltage_0}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -475,7 +475,7 @@ void CanScheduler::update_afe2_status_a_voltage_1(uint16_t voltage_1_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_a voltage_1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -488,7 +488,7 @@ void CanScheduler::update_afe2_status_a_voltage_2(uint16_t voltage_2_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_a voltage_2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -500,7 +500,7 @@ void CanScheduler::update_afe2_status_b_id(uint8_t id_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_b id}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -513,7 +513,7 @@ void CanScheduler::update_afe2_status_b_voltage_0(uint16_t voltage_0_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_b voltage_0}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -526,7 +526,7 @@ void CanScheduler::update_afe2_status_b_voltage_1(uint16_t voltage_1_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_b voltage_1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -539,7 +539,7 @@ void CanScheduler::update_afe2_status_b_voltage_2(uint16_t voltage_2_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe2_status_b voltage_2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -551,7 +551,7 @@ void CanScheduler::update_afe_temperature_id(uint8_t id_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature id}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -563,7 +563,7 @@ void CanScheduler::update_afe_temperature_temperature_0(uint8_t temperature_0_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_0}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -575,7 +575,7 @@ void CanScheduler::update_afe_temperature_temperature_1(uint8_t temperature_1_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -587,7 +587,7 @@ void CanScheduler::update_afe_temperature_temperature_2(uint8_t temperature_2_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -599,7 +599,7 @@ void CanScheduler::update_afe_temperature_temperature_3(uint8_t temperature_3_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_3}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -611,7 +611,7 @@ void CanScheduler::update_afe_temperature_temperature_4(uint8_t temperature_4_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_4}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -623,7 +623,7 @@ void CanScheduler::update_afe_temperature_temperature_5(uint8_t temperature_5_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_5}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -635,7 +635,7 @@ void CanScheduler::update_afe_temperature_temperature_6(uint8_t temperature_6_va
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update afe_temperature temperature_6}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -648,7 +648,7 @@ void CanScheduler::update_fast_one_shot_msg_sig1(uint16_t sig1_value) {
     if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fast_one_shot_msg sig1");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -661,7 +661,7 @@ void CanScheduler::update_fast_one_shot_msg_sig2(uint16_t sig2_value) {
     if (write(m_bcmCanSocket, &canFastCycleBCM, sizeof(canFastCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fast_one_shot_msg sig2");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -674,7 +674,7 @@ void CanScheduler::update_medium_one_shot_msg_sig1(uint16_t sig1_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update medium_one_shot_msg sig1}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -687,7 +687,7 @@ void CanScheduler::update_medium_one_shot_msg_sig2(uint16_t sig2_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update medium_one_shot_msg sig2}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -700,7 +700,7 @@ void CanScheduler::update_slow_one_shot_msg_sig1(uint16_t sig1_value) {
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update slow_one_shot_msg sig1");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -713,7 +713,7 @@ void CanScheduler::update_slow_one_shot_msg_sig2(uint16_t sig2_value) {
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update slow_one_shot_msg sig2");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -726,7 +726,7 @@ void CanScheduler::update_gyro_data_x_axis(uint16_t x_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update gyro_data x_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -739,7 +739,7 @@ void CanScheduler::update_gyro_data_y_axis(uint16_t y_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update gyro_data y_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -752,7 +752,7 @@ void CanScheduler::update_gyro_data_z_axis(uint16_t z_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update gyro_data z_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -765,7 +765,7 @@ void CanScheduler::update_accel_data_x_axis(uint16_t x_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update accel_data x_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -778,7 +778,7 @@ void CanScheduler::update_accel_data_y_axis(uint16_t y_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update accel_data y_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -791,7 +791,7 @@ void CanScheduler::update_accel_data_z_axis(uint16_t z_axis_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update accel_data z_axis}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -804,7 +804,7 @@ void CanScheduler::update_imu_data_g_force(uint16_t g_force_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update imu_data g_force}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -817,7 +817,7 @@ void CanScheduler::update_imu_data_roll(uint16_t roll_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update imu_data roll}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -830,7 +830,7 @@ void CanScheduler::update_imu_data_pitch(uint16_t pitch_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update imu_data pitch}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -843,7 +843,7 @@ void CanScheduler::update_imu_data_yaw(uint16_t yaw_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update imu_data yaw}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -856,7 +856,7 @@ void CanScheduler::update_drive_status_pedal_percentage(uint16_t pedal_percentag
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update drive_status pedal_percentage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -869,7 +869,7 @@ void CanScheduler::update_drive_status_brake_percentage(uint16_t brake_percentag
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update drive_status brake_percentage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -881,7 +881,7 @@ void CanScheduler::update_drive_status_state_data(uint8_t state_data_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update drive_status state_data}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -894,7 +894,7 @@ void CanScheduler::update_motor_stats_a_bus_voltage(uint16_t bus_voltage_value) 
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_a bus_voltage}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -907,7 +907,7 @@ void CanScheduler::update_motor_stats_a_bus_current(uint16_t bus_current_value) 
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_a bus_current}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -920,7 +920,7 @@ void CanScheduler::update_motor_stats_a_rail_15v_supply(uint16_t rail_15v_supply
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_a rail_15v_supply}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -933,7 +933,7 @@ void CanScheduler::update_motor_stats_a_flags(uint16_t flags_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_a flags}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -946,7 +946,7 @@ void CanScheduler::update_motor_stats_b_vehicle_velocity(uint16_t vehicle_veloci
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_b vehicle_velocity}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -959,7 +959,7 @@ void CanScheduler::update_motor_stats_b_motor_velocity(uint16_t motor_velocity_v
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_b motor_velocity}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -972,7 +972,7 @@ void CanScheduler::update_motor_stats_b_heat_sink_temp(uint16_t heat_sink_temp_v
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_b heat_sink_temp}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -985,7 +985,7 @@ void CanScheduler::update_motor_stats_b_motor_temp(uint16_t motor_temp_value) {
     if (write(m_bcmCanSocket, &canMediumCycleBCM, sizeof(canMediumCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update motor_stats_b motor_temp}");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -998,7 +998,7 @@ void CanScheduler::update_fc_power_group_a_rev_cam_current(uint16_t rev_cam_curr
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_a rev_cam_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1011,7 +1011,7 @@ void CanScheduler::update_fc_power_group_a_telem_current(uint16_t telem_current_
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_a telem_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1024,7 +1024,7 @@ void CanScheduler::update_fc_power_group_a_steering_current(uint16_t steering_cu
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_a steering_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1037,7 +1037,7 @@ void CanScheduler::update_fc_power_group_a_driver_fan_current(uint16_t driver_fa
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_a driver_fan_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1050,7 +1050,7 @@ void CanScheduler::update_fc_power_group_b_horn_current(uint16_t horn_current_va
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_b horn_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1063,7 +1063,7 @@ void CanScheduler::update_fc_power_group_b_spare_current(uint16_t spare_current_
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_group_b spare_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1076,7 +1076,7 @@ void CanScheduler::update_fc_power_lights_group_brake_light_sig_current(uint16_t
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_lights_group brake_light_sig_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1089,7 +1089,7 @@ void CanScheduler::update_fc_power_lights_group_bps_light_sig_current(uint16_t b
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_lights_group bps_light_sig_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1102,7 +1102,7 @@ void CanScheduler::update_fc_power_lights_group_right_sig_current(uint16_t right
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_lights_group right_sig_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -1115,7 +1115,7 @@ void CanScheduler::update_fc_power_lights_group_left_sig_current(uint16_t left_s
     if (write(m_bcmCanSocket, &canSlowCycleBCM, sizeof(canSlowCycleBCM)) < 0) {
       throw std::runtime_error("Failed to update fc_power_lights_group left_sig_current");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
 }

@@ -193,7 +193,7 @@ typedef struct {
 
 /** @brief Storage struct for bmi323 */
 typedef struct {
-  Bmi323Settings *settings;
+  Bmi323Settings* settings;
   Axes accel;
   Axes gyro;
   AccelGainOffsetValues accel_go_values;
@@ -207,12 +207,12 @@ typedef struct {
  *          STATUS_CODE_INVALID_ARGS if storage is null
  *          STATUS_CODE_INTERNAL_ERROR if chip ID is incorrect
  */
-StatusCode bmi323_init(Bmi323Storage *storage);
+StatusCode bmi323_init(Bmi323Storage* storage);
 
 /**
  * @brief   Update the gyro/accel data, to be called in medium cycle
  * @return  STATUS_CODE_OK
  */
-StatusCode bmi323_update(Bmi323Storage *storage);
+StatusCode bmi323_update(Bmi323Storage* storage);
 
 /** @} */

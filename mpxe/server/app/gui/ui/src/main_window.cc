@@ -31,7 +31,7 @@
 /* Intra-component headers */
 #include "main_window.h"
 
-std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QVariant> &root, const QString &key) const {
+std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QVariant>& root, const QString& key) const {
   std::map<QString, QVariant> out;
 
   std::map<QString, QVariant>::const_iterator it = root.find(key);
@@ -47,7 +47,7 @@ std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QV
   return out;
 }
 
-MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
+MainWindow::MainWindow(const AppState& app_state, QWidget* parent) :
     QMainWindow{ parent },
     m_state{ app_state },
     m_list{ nullptr },
@@ -62,7 +62,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   resize(1200, 800);
 
   setWindowIcon(QIcon("mpxe/server/app/gui/assets/ms_logo.png"));
-  QToolBar *tb = new QToolBar(QStringLiteral("Main"), this);
+  QToolBar* tb = new QToolBar(QStringLiteral("Main"), this);
   addToolBar(tb);
 
   m_list = new QListWidget(this);
@@ -86,13 +86,13 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
 
   m_spi_page = new QWidget(m_stack);
   {
-    QFormLayout *f = new QFormLayout(m_spi_page);
+    QFormLayout* f = new QFormLayout(m_spi_page);
     f->addRow(new QLabel(QStringLiteral("SPI Page")), new QLabel(QStringLiteral("TODO")));
   }
 
   m_i2c_page = new QWidget(m_stack);
   {
-    QFormLayout *f = new QFormLayout(m_i2c_page);
+    QFormLayout* f = new QFormLayout(m_i2c_page);
     f->addRow(new QLabel(QStringLiteral("I2C Page")), new QLabel(QStringLiteral("TODO")));
   }
 
@@ -108,7 +108,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   QObject::connect(m_list, SIGNAL(currentRowChanged(int)), m_stack, SLOT(setCurrentIndex(int)));
   m_list->setCurrentRow(0);
 
-  QSplitter *split = new QSplitter(this);
+  QSplitter* split = new QSplitter(this);
   split->addWidget(m_list);
   split->addWidget(m_stack);
   split->setStretchFactor(1, 1);
@@ -121,7 +121,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   QObject::connect(m_overview_page, SIGNAL(clientSelected(QString)), this, SLOT(loadClient(QString)));
 }
 
-void MainWindow::loadClient(const QString &path) {
+void MainWindow::loadClient(const QString& path) {
   QVariantMap vm;
   if (!readJsonFileToVariantMap(path, vm)) {
     return;
@@ -137,7 +137,7 @@ void MainWindow::refreshOverview() {
   }
 }
 
-void MainWindow::reloadClientFromFile(const QString &path) {
+void MainWindow::reloadClientFromFile(const QString& path) {
   const bool isCurrent = (m_state.current_client_index >= 0 && m_state.current_client_index < m_state.client_files.size() && m_state.client_files.at(m_state.current_client_index) == path);
 
   if (!isCurrent) {
@@ -152,7 +152,7 @@ void MainWindow::reloadClientFromFile(const QString &path) {
   applyPayload(m_state.payload);
 }
 
-void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
+void MainWindow::applyPayload(const std::map<QString, QVariant>& payload) {
   if (m_overview_page) {
     m_overview_page->setPayload(payload);
   }
@@ -170,7 +170,7 @@ void MainWindow::applyPayload(const std::map<QString, QVariant> &payload) {
   }
 }
 
-void MainWindow::replaceClientFiles(const QStringList &files, int newIndex) {
+void MainWindow::replaceClientFiles(const QStringList& files, int newIndex) {
   m_state.client_files = files;
 
   if (m_overview_page) {
@@ -180,7 +180,7 @@ void MainWindow::replaceClientFiles(const QStringList &files, int newIndex) {
   m_state.current_client_index = (newIndex >= 0 && newIndex < files.size()) ? newIndex : -1;
 }
 
-void MainWindow::onClientsListChanged(const QStringList &files) {
+void MainWindow::onClientsListChanged(const QStringList& files) {
   const QString prevSel = (m_state.current_client_index >= 0 && m_state.current_client_index < m_state.client_files.size()) ? m_state.client_files.at(m_state.current_client_index) : QString();
 
   /* replace list in UI */

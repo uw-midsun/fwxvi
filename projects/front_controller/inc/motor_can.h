@@ -41,12 +41,12 @@ StatusCode motor_can_update_target_current_velocity();
  * @return  STATUS_CODE_OK if front controller is initialized successfully
  *          STATUS_CODE_INVALID_ARGS if storage pointer is invalid
  */
-StatusCode motor_can_init(FrontControllerStorage *storage);
+StatusCode motor_can_init(FrontControllerStorage* storage);
 
 /**
  * @brief retrieve current vehicle drive state
  */
-StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
+StatusCode motor_can_get_current_state(VehicleDriveState* current_state);
 
 /**
  * @brief forward necessary motor data over CAN

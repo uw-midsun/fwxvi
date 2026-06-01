@@ -64,7 +64,7 @@ static InterruptSettings killswitch_settings = {
 static RearControllerStorage s_rear_storage;
 static RearControllerConfig s_rear_config = { 0 };
 
-static const char *print_state_str(RearControllerState state) {
+static const char* print_state_str(RearControllerState state) {
   switch (state) {
     case REAR_CONTROLLER_STATE_IDLE:
       return "IDLE";
@@ -137,7 +137,7 @@ TASK(rear_controller_smoke, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   mpxe_init(argc, argv);
 #else
 int main() {

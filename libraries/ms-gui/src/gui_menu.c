@@ -82,7 +82,7 @@ static lv_color_t s_gui_palette_color(GuiColorId color_id) {
  * @param   index Zero-based menu item index
  * @return  Static label string for the requested row
  */
-static const char *s_get_item_label(uint8_t index) {
+static const char* s_get_item_label(uint8_t index) {
   if (index >= GUI_MENU_ITEM_COUNT) {
     return "";
   }
@@ -96,7 +96,7 @@ static const char *s_get_item_label(uint8_t index) {
  * @param   drive_state Current confirmed vehicle drive state
  * @return  TRUE when the item may be activated, FALSE otherwise
  */
-static bool s_is_item_selectable(const GuiMenuItem *item, VehicleDriveState drive_state) {
+static bool s_is_item_selectable(const GuiMenuItem* item, VehicleDriveState drive_state) {
   if (item == NULL) {
     return false;
   }
@@ -231,7 +231,7 @@ StatusCode gui_menu_process_pending(void) {
 }
 
 StatusCode gui_menu_open(void) {
-  GuiScreen *top_layer;
+  GuiScreen* top_layer;
 
   if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
@@ -384,7 +384,7 @@ StatusCode gui_menu_move_down(void) {
 
 StatusCode gui_menu_select(VehicleDriveState drive_state) {
   StatusCode status = STATUS_CODE_OK;
-  const GuiMenuItem *item;
+  const GuiMenuItem* item;
 
   if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;

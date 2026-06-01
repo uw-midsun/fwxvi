@@ -32,7 +32,7 @@
 
 #define IS_BRAKE_CONNECTED 0U
 
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 
 static VehicleDriveState current_drive_state;
 
@@ -123,7 +123,7 @@ StatusCode motor_can_forward_can_data() {
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_init(FrontControllerStorage *storage) {
+StatusCode motor_can_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -133,7 +133,7 @@ StatusCode motor_can_init(FrontControllerStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_get_current_state(VehicleDriveState *current_state) {
+StatusCode motor_can_get_current_state(VehicleDriveState* current_state) {
   *current_state = current_drive_state;
   return STATUS_CODE_OK;
 }

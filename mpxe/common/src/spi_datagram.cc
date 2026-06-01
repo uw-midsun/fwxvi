@@ -21,21 +21,21 @@
 
 namespace Datagram {
 
-SPI::SPI(Payload &data) {
+SPI::SPI(Payload& data) {
   m_spiDatagram = data;
 }
 
-std::string SPI::serialize(const CommandCode &commandCode) const {
+std::string SPI::serialize(const CommandCode& commandCode) const {
   std::string serializedData;
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_spiDatagram.spiPort));
   serializeInteger(serializedData, static_cast<uint16_t>(m_spiDatagram.bufferLength));
-  serializedData.append(reinterpret_cast<const char *>(m_spiDatagram.buffer), m_spiDatagram.bufferLength);
+  serializedData.append(reinterpret_cast<const char*>(m_spiDatagram.buffer), m_spiDatagram.bufferLength);
 
   return encodeCommand(commandCode, serializedData);
 }
 
-void SPI::deserialize(std::string &spiDatagramPayload) {
+void SPI::deserialize(std::string& spiDatagramPayload) {
   size_t offset = 0;
 
   m_spiDatagram.spiPort = static_cast<Port>(deserializeInteger<uint8_t>(spiDatagramPayload, offset));
@@ -48,11 +48,11 @@ void SPI::deserialize(std::string &spiDatagramPayload) {
   std::memcpy(m_spiDatagram.buffer, spiDatagramPayload.data() + offset, m_spiDatagram.bufferLength);
 }
 
-void SPI::setSPIPort(const Port &spiPort) {
+void SPI::setSPIPort(const Port& spiPort) {
   m_spiDatagram.spiPort = spiPort;
 }
 
-void SPI::setBuffer(const uint8_t *data, size_t length) {
+void SPI::setBuffer(const uint8_t* data, size_t length) {
   std::memcpy(m_spiDatagram.buffer, data, length);
   m_spiDatagram.bufferLength = length;
 }
@@ -69,7 +69,7 @@ size_t SPI::getBufferLength() const {
   return m_spiDatagram.bufferLength;
 }
 
-const uint8_t *SPI::getBuffer() const {
+const uint8_t* SPI::getBuffer() const {
   return m_spiDatagram.buffer;
 }
 

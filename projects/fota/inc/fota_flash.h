@@ -58,7 +58,7 @@
  *          FOTA_ERROR_FLASH_WRITE_OUT_OF_BOUNDS if address is out of bounds
  *          FOTA_ERROR_FLASH_WRITE_NOT_ALIGNED if data is not aligned
  */
-FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len);
+FotaError fota_flash_write(uint32_t address, uint8_t* buffer, size_t buffer_len);
 
 /**
  * @brief   Erase some number of flash pages
@@ -77,7 +77,7 @@ FotaError fota_flash_erase(uint32_t start_page, uint8_t num_pages);
  * @return  FOTA_ERROR_SUCCESS if data is read successfully
  *          FOTA_ERROR_FLASH_READ_FAILED if data read failed
  */
-FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len);
+FotaError fota_flash_read(uint32_t address, uint8_t* buffer, size_t buffer_len);
 
 /**
  * @brief   Verify that the flash memory is not erased

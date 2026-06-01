@@ -32,7 +32,7 @@ static const QRegularExpression cmd_regex(QStringLiteral(R"(^\s*(?:\d+\s*[\.\)])
 /** @brief  Filter out "Example: ..." bullets
  *  @return Bool indicating whether current line is an example line or not
  */
-static inline bool isExampleLine(const QString &str) {
+static inline bool isExampleLine(const QString& str) {
   static const QRegularExpression ex_regex(QStringLiteral(R"(^\s*[-*]\s*example\s*:)"), QRegularExpression::CaseInsensitiveOption);
 
   return ex_regex.match(str).hasMatch();
@@ -44,7 +44,7 @@ static inline bool isExampleLine(const QString &str) {
  * @param first The first token that is passed (Could be empty)
  * @param second The second token that is passed (Could be empty)
  */
-static void extractParams(const QString &tail, QString &first, QString &second) {
+static void extractParams(const QString& tail, QString& first, QString& second) {
   /* simplified() converts all types of spaces into a single space,
      trimmed() removes trailing and leading space */
   QString str = tail.simplified().trimmed();
@@ -69,7 +69,7 @@ static void extractParams(const QString &tail, QString &first, QString &second) 
  * @param   max_chars Maximum number of characters displayed
  * @return  QString
  */
-static inline QString elideMiddle(const QString &str, int max_chars = CommandTableModel::MAX_CHARS_DISPLAYED) {
+static inline QString elideMiddle(const QString& str, int max_chars = CommandTableModel::MAX_CHARS_DISPLAYED) {
   if (str.size() <= max_chars) {
     return str;
   }
@@ -85,18 +85,18 @@ static inline QString elideMiddle(const QString &str, int max_chars = CommandTab
 /*
 -------------------------------------------------------- */
 
-CommandTableModel::CommandTableModel(const QString &markdown_path, QObject *parent) : QAbstractTableModel{ parent }, m_rows{} {
+CommandTableModel::CommandTableModel(const QString& markdown_path, QObject* parent) : QAbstractTableModel{ parent }, m_rows{} {
   if (!markdown_path.isEmpty()) {
     resetFromFile(markdown_path);
   }
 }
 
-int CommandTableModel::rowCount(const QModelIndex &parent) const {
+int CommandTableModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) return 0;
   return static_cast<int>(m_rows.size());
 }
 
-int CommandTableModel::columnCount(const QModelIndex &parent) const {
+int CommandTableModel::columnCount(const QModelIndex& parent) const {
   if (parent.isValid()) return 0;
   return 4; /* Type, Command, Parameter, Additional Parameters */
 }
@@ -129,7 +129,7 @@ QVariant CommandTableModel::headerData(int section, Qt::Orientation orientation,
   return QVariant();
 }
 
-QVariant CommandTableModel::data(const QModelIndex &index, int role) const {
+QVariant CommandTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();
   }
@@ -139,7 +139,7 @@ QVariant CommandTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   }
 
-  const Row &row = m_rows[row_idx];
+  const Row& row = m_rows[row_idx];
 
   /* Replaces things with - if not provided in md file */
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
@@ -176,12 +176,12 @@ QVariant CommandTableModel::data(const QModelIndex &index, int role) const {
   return QVariant();
 }
 
-Qt::ItemFlags CommandTableModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags CommandTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) return Qt::NoItemFlags;
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled; /* read-only */
 }
 
-bool CommandTableModel::resetFromFile(const QString &markdown_path) {
+bool CommandTableModel::resetFromFile(const QString& markdown_path) {
   QFile f(markdown_path);
   if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
     beginResetModel();
@@ -202,7 +202,7 @@ bool CommandTableModel::resetFromFile(const QString &markdown_path) {
   return true;
 }
 
-void CommandTableModel::parseMarkdown(const QString &markdown_text) {
+void CommandTableModel::parseMarkdown(const QString& markdown_text) {
   const QStringList lines = markdown_text.split(QLatin1Char('\n'));
 
   QStringList::const_iterator it = lines.begin();

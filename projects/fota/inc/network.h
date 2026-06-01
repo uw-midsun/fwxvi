@@ -81,7 +81,7 @@ typedef struct {
  *          FOTA_ERROR_INTERNAL_ERROR if HAL initialization fails
  *          FOTA_RESOURCE_EXHAUSTED if already initialized
  */
-FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer);
+FotaError network_init(UartPort uart, UartSettings* settings, NetworkBuffer* network_buffer);
 
 /**
  * @brief   Read data from the network buffer
@@ -95,7 +95,7 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
  *          FOTA_RESOURCE_EXHAUSTED if uart port is not initialized
  *          FOTA_ERROR_INTERNAL_ERROR if reading from network buffer fails or takes too long
  */
-FotaError network_read(UartPort uart, uint8_t *data, size_t len);
+FotaError network_read(UartPort uart, uint8_t* data, size_t len);
 
 /**
  * @brief   Transmit data from the UART port
@@ -110,7 +110,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len);
  *          FOTA_RESOURCE_EXHAUSTED if uart port is not initialized
  *          FOTA_ERROR_INTERNAL_ERROR if HAL transmission fails
  */
-FotaError network_tx(UartPort uart, uint8_t *data, size_t len);
+FotaError network_tx(UartPort uart, uint8_t* data, size_t len);
 
 /**
  * @brief   Checks if tx or rx command has timed out
@@ -130,7 +130,7 @@ bool is_network_timeout(bool is_tx);
  * @return  FOTA_ERROR_SUCCESS if data is simulated succeeded
  *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
  */
-FotaError network_sim_set_rx_data(uint8_t *data, size_t len);
+FotaError network_sim_set_rx_data(uint8_t* data, size_t len);
 
 /**
  * @brief   Gets the TX data that was just transmitted
@@ -138,7 +138,7 @@ FotaError network_sim_set_rx_data(uint8_t *data, size_t len);
  * @return  FOTA_ERROR_SUCCESS if simulated data is read succeeded
  *          FOTA_ERROR_INVALID_ARGS if one of the parameters are incorrect
  */
-FotaError network_sim_get_tx_data(uint8_t *data);
+FotaError network_sim_get_tx_data(uint8_t* data);
 
 #endif
 

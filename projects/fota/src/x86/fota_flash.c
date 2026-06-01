@@ -44,7 +44,7 @@ static FotaError s_validate_address(uint32_t address, size_t size) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_write(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) return FOTA_ERROR_INVALID_ARGS;
 
   if (s_validate_address(address, buffer_len) != FOTA_ERROR_SUCCESS) {
@@ -59,7 +59,7 @@ FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len)
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_read(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) return FOTA_ERROR_INVALID_ARGS;
 
   if (s_validate_address(address, buffer_len) != FOTA_ERROR_SUCCESS) {

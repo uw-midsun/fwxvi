@@ -25,7 +25,7 @@
 #include "telemetry.h"
 #include "telemetry_hw_defs.h"
 
-static TelemetryStorage *telemetry_storage;
+static TelemetryStorage* telemetry_storage;
 
 static TelemetryConfig s_telemetry_config = {
   .uart_port = UART_PORT_2,
@@ -153,19 +153,19 @@ static front_controller_tx_struct s_front_controller_tx_struct = { 0 };
 static rear_controller_tx_struct s_rear_controller_tx_struct = { 0 };
 static steering_tx_struct s_steering_tx_struct = { 0 };
 
-static const char *s_drive_state_strings[] = {
+static const char* s_drive_state_strings[] = {
   [VEHICLE_DRIVE_STATE_INVALID] = "INVALID", [VEHICLE_DRIVE_STATE_NEUTRAL] = "NEUTRAL", [VEHICLE_DRIVE_STATE_DRIVE] = "DRIVE", [VEHICLE_DRIVE_STATE_REVERSE] = "REVERSE",
   [VEHICLE_DRIVE_STATE_CRUISE] = "CRUISE",   [VEHICLE_DRIVE_STATE_BRAKE] = "BRAKE",     [VEHICLE_DRIVE_STATE_REGEN] = "REGEN",
 };
 
-static const char *s_power_state_strings[] = {
+static const char* s_power_state_strings[] = {
   [VEHICLE_POWER_STATE_IDLE] = "IDLE",
   [VEHICLE_POWER_STATE_DRIVE] = "DRIVE",
   [VEHICLE_POWER_STATE_CHARGE] = "CHARGE",
   [VEHICLE_POWER_STATE_FAULT] = "FAULT",
 };
 
-static const char *s_bps_fault_strings[] = {
+static const char* s_bps_fault_strings[] = {
   [BPS_FAULT_OVERVOLTAGE] = "OVERVOLTAGE",
   [BPS_FAULT_UNBALANCE] = "UNBALANCE",
   [BPS_FAULT_OVERTEMP_AMBIENT] = "OVERTEMP_AMBIENT",
@@ -179,7 +179,7 @@ static const char *s_bps_fault_strings[] = {
   [BPS_FAULT_DISCONNECTED] = "DISCONNECTED",
 };
 
-static void print_front_controller(const front_controller_tx_struct *data) {
+static void print_front_controller(const front_controller_tx_struct* data) {
   LOG_DEBUG("  [FRONT CONTROLLER]\r\n");
   LOG_DEBUG("    Pedal %%:             %lu\r\n", (uint32_t)data->pedal_percentage);
   LOG_DEBUG("    Pedal Data (raw):     0x%02X\r\n", (uint16_t)data->pedal_data);
@@ -204,7 +204,7 @@ static void print_front_controller(const front_controller_tx_struct *data) {
   LOG_DEBUG("    Left Sig mA:          %u\r\n", data->fc_power_lights_group_left_sig_current);
 }
 
-static void print_rear_controller(const rear_controller_tx_struct *data) {
+static void print_rear_controller(const rear_controller_tx_struct* data) {
   LOG_DEBUG("  [REAR CONTROLLER]\r\n");
 
   LOG_DEBUG("    Status Triggers:      0x%02X\r\n", (unsigned)data->rear_controller_status_triggers);
@@ -252,22 +252,22 @@ static void print_rear_controller(const rear_controller_tx_struct *data) {
   LOG_DEBUG("      T6:                 %u\r\n", data->AFE_temperature_temperature_6);
 }
 
-static void print_steering(const steering_tx_struct *data) {
+static void print_steering(const steering_tx_struct* data) {
   LOG_DEBUG("  [STEERING]\r\n");
   LOG_DEBUG("    Buttons (raw):        0x%02X\r\n", (uint16_t)data->steering_buttons);
   LOG_DEBUG("    Target Vel:           %llu\r\n", (uint64_t)data->steering_cruise_control_target_velocity);
 }
 
 // Read little-endian from data buffer in messages
-static uint16_t read_u16(const uint8_t *data) {
+static uint16_t read_u16(const uint8_t* data) {
   return (uint16_t)(data[0] | (data[1] << 8));
 }
 
-static uint32_t read_u32(const uint8_t *data) {
+static uint32_t read_u32(const uint8_t* data) {
   return (uint32_t)(data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24));
 }
 
-static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t *data) {
+static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t* data) {
   switch (msg_id) {
     case 21: /* pedal (DLC: 7) */
       if (dlc >= 7) {
@@ -326,7 +326,7 @@ static void parse_front_controller(uint16_t msg_id, uint8_t dlc, uint8_t *data) 
   }
 }
 
-static void parse_rear_controller(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
+static void parse_rear_controller(uint16_t msg_id, const uint8_t* data, uint8_t dlc) {
   switch (msg_id) {
     case 1: /* rear_controller_status (DLC: 2 per YAML; you may still receive 6 from legacy) */
       if (dlc >= 2) {
@@ -419,7 +419,7 @@ static void parse_rear_controller(uint16_t msg_id, const uint8_t *data, uint8_t 
   }
 }
 
-static void parse_steering(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
+static void parse_steering(uint16_t msg_id, const uint8_t* data, uint8_t dlc) {
   switch (msg_id) {
     case 6: /* steering (DLC: 5) */
       if (dlc >= 5) {
@@ -442,7 +442,7 @@ static void parse_steering(uint16_t msg_id, const uint8_t *data, uint8_t dlc) {
 }
 
 // Read datagram, update structs accordingly
-static void update_board_data(Datagram *datagram) {
+static void update_board_data(Datagram* datagram) {
   const uint16_t full_id = datagram->id;
   const uint8_t source_id = (uint8_t)((full_id >> 5U) & 0x1FU);
   const uint8_t msg_id_local = (uint8_t)(full_id & 0x3FU);
@@ -506,7 +506,7 @@ TASK(telemetry_reader, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

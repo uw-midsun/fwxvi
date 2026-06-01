@@ -32,8 +32,8 @@
  * @param   value Value to be appended
  */
 template <typename T>
-void serializeInteger(std::string &target, T value) {
-  target.append(reinterpret_cast<const char *>(&value), sizeof(T));
+void serializeInteger(std::string& target, T value) {
+  target.append(reinterpret_cast<const char*>(&value), sizeof(T));
 }
 
 /**
@@ -44,7 +44,7 @@ void serializeInteger(std::string &target, T value) {
  * @param   target Existing message payload
  * @param   str String to be appended
  */
-void serializeString(std::string &target, const std::string &str);
+void serializeString(std::string& target, const std::string& str);
 
 /**
  * @brief   Deserialize an integer value
@@ -54,7 +54,7 @@ void serializeString(std::string &target, const std::string &str);
  * @return  Deserialized integer value
  */
 template <typename T>
-T deserializeInteger(const std::string &source, size_t &offset) {
+T deserializeInteger(const std::string& source, size_t& offset) {
   T value;
   std::memcpy(&value, source.data() + offset, sizeof(T));
   offset += sizeof(T);
@@ -69,6 +69,6 @@ T deserializeInteger(const std::string &source, size_t &offset) {
  * @param   offset Byte offset from the start of the message payload
  * @return  Deserialized string value
  */
-std::string deserializeString(std::string &source, size_t &offset);
+std::string deserializeString(std::string& source, size_t& offset);
 
 /** @} */

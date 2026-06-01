@@ -36,7 +36,7 @@
   } while (0)
 #endif
 
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 static VehicleDriveState s_current_state = VEHICLE_DRIVE_NUM_STATES;
 static bool is_horn_enabled;
 static BrakeState s_brake_state;
@@ -92,7 +92,7 @@ static void front_controller_state_manager_enter_state(VehicleDriveState new_sta
   s_current_state = new_state;
 }
 
-StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) {
+StatusCode front_controller_state_manager_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

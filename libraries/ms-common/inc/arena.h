@@ -26,9 +26,9 @@
 
 /** @brief  Linear arena allocator state */
 typedef struct {
-  uint8_t *base;    /**< Start of the arena buffer */
-  uint8_t *end;     /**< One-past-end of the arena buffer */
-  uint8_t *current; /**< Current allocation pointer */
+  uint8_t* base;    /**< Start of the arena buffer */
+  uint8_t* end;     /**< One-past-end of the arena buffer */
+  uint8_t* current; /**< Current allocation pointer */
 } Arena;
 
 /**
@@ -38,14 +38,14 @@ typedef struct {
  * @param   cap    Size of the buffer in bytes
  * @return  STATUS_CODE_OK on success, or an error code on failure
  */
-StatusCode arena_init(Arena *a, void *buffer, ptrdiff_t cap);
+StatusCode arena_init(Arena* a, void* buffer, ptrdiff_t cap);
 
 /**
  * @brief   Reset the arena to reuse all capacity
  * @param   a  Arena instance to reset
  * @return  STATUS_CODE_OK on success, or an error code on failure
  */
-StatusCode arena_reset(Arena *a);
+StatusCode arena_reset(Arena* a);
 
 /**
  * @brief   Allocate memory from the arena
@@ -55,6 +55,6 @@ StatusCode arena_reset(Arena *a);
  * @param   count Number of elements to allocate
  * @return  pointer to the address data is stored in, NULL on failure
  */
-void *arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count);
+void* arena_alloc(Arena* a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count);
 
 /** @} */

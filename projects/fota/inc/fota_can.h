@@ -94,7 +94,7 @@ typedef struct {
  * @return  FOTA_ERROR_SUCCESS if the interface is initialized successfully
  *          FOTA_CAN_INIT_ERR if initialization fails
  */
-FotaError fota_can_init(const FotaCanSettings *settings);
+FotaError fota_can_init(const FotaCanSettings* settings);
 
 /**
  * @brief   Transmit a CAN message in FOTA
@@ -105,7 +105,7 @@ FotaError fota_can_init(const FotaCanSettings *settings);
  * @return  FOTA_ERROR_SUCCESS if the message is transmitted successfully
  *          FOTA_CAN_TRANSMISSION_ERROR if transmitting the message fails
  */
-FotaError fota_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len);
+FotaError fota_can_transmit(uint32_t id, bool extended, const uint8_t* data, size_t len);
 
 /**
  * @brief   Receive a CAN message in FOTA
@@ -113,6 +113,6 @@ FotaError fota_can_transmit(uint32_t id, bool extended, const uint8_t *data, siz
  * @return  FOTA_ERROR_SUCCESS if the message is received successfully
  *          FOTA_CAN_RECEIVE_ERROR if receiving the message fails
  */
-FotaError fota_can_receive(FotaCanMessage *const msg);
+FotaError fota_can_receive(FotaCanMessage* const msg);
 
 /** @} */

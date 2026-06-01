@@ -20,15 +20,15 @@
 
 /* Intra-component Headers */
 
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
+static SDL_Window* window = NULL;
+static SDL_Renderer* renderer = NULL;
 
-static void get_test_results_paths(const char *filename, char *out_dir, size_t dir_size, char *out_file, size_t file_size) {
+static void get_test_results_paths(const char* filename, char* out_dir, size_t dir_size, char* out_file, size_t file_size) {
   char file_path[512];
   strncpy(file_path, __FILE__, sizeof(file_path) - 1);
   file_path[sizeof(file_path) - 1] = '\0';
 
-  char *dir = dirname(file_path);
+  char* dir = dirname(file_path);
   snprintf(out_dir, dir_size, "%s/test_results", dir);
   snprintf(out_file, file_size, "%s/%s", out_dir, filename);
 }
@@ -88,7 +88,7 @@ void test_sdl_saves_output_to_file(void) {
     mkdir(out_dir, 0755);
   }
 
-  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, 200, 200, 32, SDL_PIXELFORMAT_RGBA32);
+  SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, 200, 200, 32, SDL_PIXELFORMAT_RGBA32);
   TEST_ASSERT_NOT_NULL_MESSAGE(surface, "SDL_CreateRGBSurfaceWithFormat failed");
 
   TEST_ASSERT_EQUAL_MESSAGE(0, SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA32, surface->pixels, surface->pitch), "SDL_RenderReadPixels failed");

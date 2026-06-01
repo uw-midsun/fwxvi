@@ -60,8 +60,8 @@ typedef struct {
 typedef struct {
   uint16_t width;             /**< Display width in pixels */
   uint16_t height;            /**< Display height in pixels */
-  uint8_t *framebuffer;       /**< Pointer to the RGB565 framebuffer bytes */
-  ClutEntry *clut;            /**< Optional CLUT for legacy indexed drawing helpers */
+  uint8_t* framebuffer;       /**< Pointer to the RGB565 framebuffer bytes */
+  ClutEntry* clut;            /**< Optional CLUT for legacy indexed drawing helpers */
   uint16_t clut_size;         /**< Number of CLUT entries for legacy indexed drawing helpers */
   LtdcTimingConfig timing;    /**< LTDC timing parameters */
   LtdcGpioConfig gpio_config; /**< GPIO configuration */
@@ -72,7 +72,7 @@ typedef struct {
  * @param   settings Pointer to the LTDC settings
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
-StatusCode ltdc_init(LtdcSettings *settings);
+StatusCode ltdc_init(LtdcSettings* settings);
 
 /**
  * @brief   Refresh the framebuffer on the display
@@ -97,7 +97,7 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index);
  * @details Allows direct access to SDL renderer for custom drawing or debugging
  * @return  Pointer to SDL_Renderer (cast from void*)
  */
-void *ltdc_get_renderer(void);
+void* ltdc_get_renderer(void);
 
 /**
  * @brief   Save current framebuffer to a BMP file
@@ -105,7 +105,7 @@ void *ltdc_get_renderer(void);
  * @param   filename Path to output BMP file (e.g., "test_output/frame.bmp")
  * @note    Creates directory if it doesn't exist
  */
-void save_ltdc_frame(const char *filename);
+void save_ltdc_frame(const char* filename);
 
 /**
  * @brief   Process SDL events (keyboard, mouse, window close)

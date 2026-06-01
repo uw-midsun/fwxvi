@@ -37,7 +37,7 @@ typedef struct PowerManagerStorage {
  * @return  STATUS_CODE_OK if initialized succesfully
  *          STATUS_CODE_INVALID_ARGS if an invalid argument is passed in
  */
-StatusCode power_manager_init(FrontControllerStorage *storage);
+StatusCode power_manager_init(FrontControllerStorage* storage);
 
 /**
  * @brief   Set an output group as active or inactive

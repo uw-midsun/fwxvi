@@ -21,7 +21,7 @@ static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0U };
 static IRQn_Type s_pin_to_interrupt_handler[GPIO_PINS_PER_PORT] = { EXTI0_IRQn,   EXTI1_IRQn,   EXTI2_IRQn,     EXTI3_IRQn,     EXTI4_IRQn,     EXTI9_5_IRQn,   EXTI9_5_IRQn,   EXTI9_5_IRQn,
                                                                     EXTI9_5_IRQn, EXTI9_5_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn, EXTI15_10_IRQn };
 
-StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings, const GpioMode pin_mode, GpioState init_state) {
+StatusCode gpio_it_init(const GpioAddress* address, InterruptSettings* settings, const GpioMode pin_mode, GpioState init_state) {
   if (address == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -62,7 +62,7 @@ StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings,
 
   init.Pull = gpio_pull;
   init.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
 
   /* Initialize the GPIO pin for interrupts */
   HAL_GPIO_Init(gpio_port, &init);
@@ -79,7 +79,7 @@ StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings,
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task) {
+StatusCode gpio_register_interrupt(const GpioAddress* address, const InterruptSettings* settings, const Event event, Task* task) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || event >= INVALID_EVENT) {
     return STATUS_CODE_INVALID_ARGS;
   } else if (s_gpio_it_interrupts[address->pin].task != NULL) {
@@ -102,42 +102,42 @@ StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSe
   return STATUS_CODE_OK;
 }
 
-InterruptEdge gpio_it_get_edge(const GpioAddress *address) {
+InterruptEdge gpio_it_get_edge(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.edge;
   }
   return NUM_INTERRUPT_EDGES;
 }
 
-InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
+InterruptPriority gpio_it_get_priority(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.priority;
   }
   return NUM_INTERRUPT_PRIORITIES;
 }
 
-InterruptType gpio_it_get_type(const GpioAddress *address) {
+InterruptType gpio_it_get_type(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.type;
   }
   return NUM_INTERRUPT_TYPES;
 }
 
-Task *gpio_it_get_target_task(const GpioAddress *address) {
+Task* gpio_it_get_target_task(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].task;
   }
   return NULL;
 }
 
-StatusCode gpio_it_mask_interrupt(const GpioAddress *address, bool masked) {
+StatusCode gpio_it_mask_interrupt(const GpioAddress* address, bool masked) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }
   return interrupt_exti_set_mask(address->pin, masked);
 }
 
-StatusCode gpio_trigger_interrupt(const GpioAddress *address) {
+StatusCode gpio_trigger_interrupt(const GpioAddress* address) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }

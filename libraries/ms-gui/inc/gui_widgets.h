@@ -36,7 +36,7 @@ StatusCode gui_widgets_init(void);
  * @param   screen Screen root to populate with common widgets
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_init_screen(GuiScreen *screen);
+StatusCode gui_widgets_init_screen(GuiScreen* screen);
 
 /**
  * @brief   Reset cached common widget handles after their LVGL parent is deleted

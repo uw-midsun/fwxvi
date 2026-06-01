@@ -100,7 +100,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
  * @return  STATUS_CODE_OK if the channel is successfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings);
+StatusCode interrupt_exti_enable(GpioAddress* address, const InterruptSettings* settings);
 
 /**
  * @brief   Triggers a software interrupt on a given external interrupt channel
@@ -117,7 +117,7 @@ StatusCode interrupt_exti_trigger(uint8_t line);
  * @return  STATUS_CODE_OK if the channel is successfully initialized
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit);
+StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t* pending_bit);
 
 /**
  * @brief   Clears the pending flag for an external interrupt
@@ -150,7 +150,7 @@ typedef void (*x86InterruptHandler)(uint8_t interrupt_id);
  * @return  STATUS_CODE_OK if the interrupt handler is registered successfully
  *          STATUS_CODE_INVALID_ARGS if  one of the parameters are incorrect
  */
-StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings);
+StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings* settings);
 
 /**
  * @brief   Register a new EXTI interrupt and its handler
@@ -161,7 +161,7 @@ StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHand
  * @return  STATUS_CODE_OK if the interrupt handler is registered successfully
  *          STATUS_CODE_INVALID_ARGS if  one of the parameters are incorrect
  */
-StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings *settings);
+StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings* settings);
 
 #endif
 

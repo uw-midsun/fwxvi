@@ -17,46 +17,46 @@
 
 static GpioInterrupt s_gpio_it_interrupts[GPIO_PINS_PER_PORT] = { 0U };
 
-StatusCode gpio_register_interrupt(const GpioAddress *address, const InterruptSettings *settings, const Event event, Task *task) {
+StatusCode gpio_register_interrupt(const GpioAddress* address, const InterruptSettings* settings, const Event event, Task* task) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode gpio_it_init(const GpioAddress *address, InterruptSettings *settings, const GpioMode pin_mode, GpioState init_state) {
+StatusCode gpio_it_init(const GpioAddress* address, InterruptSettings* settings, const GpioMode pin_mode, GpioState init_state) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-InterruptEdge gpio_it_get_edge(const GpioAddress *address) {
+InterruptEdge gpio_it_get_edge(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.edge;
   }
   return NUM_INTERRUPT_EDGES;
 }
 
-InterruptPriority gpio_it_get_priority(const GpioAddress *address) {
+InterruptPriority gpio_it_get_priority(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.priority;
   }
   return NUM_INTERRUPT_PRIORITIES;
 }
 
-InterruptType gpio_it_get_type(const GpioAddress *address) {
+InterruptType gpio_it_get_type(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].settings.type;
   }
   return NUM_INTERRUPT_TYPES;
 }
 
-Task *gpio_it_get_target_task(const GpioAddress *address) {
+Task* gpio_it_get_target_task(const GpioAddress* address) {
   if (s_gpio_it_interrupts[address->pin].task != NULL) {
     return s_gpio_it_interrupts[address->pin].task;
   }
   return NULL;
 }
 
-StatusCode gpio_it_mask_interrupt(const GpioAddress *address, bool masked) {
+StatusCode gpio_it_mask_interrupt(const GpioAddress* address, bool masked) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode gpio_trigger_interrupt(const GpioAddress *address) {
+StatusCode gpio_trigger_interrupt(const GpioAddress* address) {
   return STATUS_CODE_UNIMPLEMENTED;
 }

@@ -21,11 +21,11 @@
 
 namespace Datagram {
 
-Adc::Adc(Payload &data) {
+Adc::Adc(Payload& data) {
   m_adcDatagram = data;
 }
 
-std::string Adc::serialize(const CommandCode &commandCode) const {
+std::string Adc::serialize(const CommandCode& commandCode) const {
   std::string serializedData;
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_adcDatagram.gpioPort));
@@ -36,11 +36,11 @@ std::string Adc::serialize(const CommandCode &commandCode) const {
   }
 
   serializeInteger<uint8_t>(serializedData, m_adcDatagram.bufferLength);
-  serializedData.append(reinterpret_cast<const char *>(m_adcDatagram.buffer), m_adcDatagram.bufferLength);
+  serializedData.append(reinterpret_cast<const char*>(m_adcDatagram.buffer), m_adcDatagram.bufferLength);
   return encodeCommand(commandCode, serializedData);
 }
 
-void Adc::deserialize(std::string &AdcDatagramPayload) {
+void Adc::deserialize(std::string& AdcDatagramPayload) {
   if (AdcDatagramPayload.size() < 3U) {
     throw std::runtime_error("Invalid ADC datagram payload");
   }
@@ -57,15 +57,15 @@ void Adc::deserialize(std::string &AdcDatagramPayload) {
   std::memcpy(m_adcDatagram.buffer, AdcDatagramPayload.data() + offset, m_adcDatagram.bufferLength);
 }
 
-void Adc::setGpioPort(const Port &gpioPort) {
+void Adc::setGpioPort(const Port& gpioPort) {
   m_adcDatagram.gpioPort = gpioPort;
 }
 
-void Adc::setGpioPin(const uint8_t &gpioPin) {
+void Adc::setGpioPin(const uint8_t& gpioPin) {
   m_adcDatagram.gpioPin = gpioPin;
 }
 
-void Adc::setBuffer(const uint8_t *data, uint8_t length) {
+void Adc::setBuffer(const uint8_t* data, uint8_t length) {
   std::memcpy(m_adcDatagram.buffer, data, length);
   m_adcDatagram.bufferLength = length;
 }
@@ -86,7 +86,7 @@ uint8_t Adc::getBufferLength() const {
   return m_adcDatagram.bufferLength;
 }
 
-const uint8_t *Adc::getBuffer() const {
+const uint8_t* Adc::getBuffer() const {
   return m_adcDatagram.buffer;
 }
 

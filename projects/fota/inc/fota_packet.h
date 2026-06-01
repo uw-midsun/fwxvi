@@ -85,14 +85,14 @@ typedef struct {
  * @param length Length of actual data (≤ FOTA_PACKET_PAYLOAD_SIZE, multiple of 4)
  * @return FOTA_ERROR_SUCCESS or error
  */
-FotaError fota_packet_init(FotaPacket *packet, FotaPacketType type, uint8_t sequence, uint16_t length);
+FotaError fota_packet_init(FotaPacket* packet, FotaPacketType type, uint8_t sequence, uint16_t length);
 
 /**
  * @brief Compute and set CRC32 of payload
  * @param packet Pointer to packet
  * @return FOTA_ERROR_SUCCESS or error
  */
-FotaError fota_packet_set_crc(FotaPacket *packet);
+FotaError fota_packet_set_crc(FotaPacket* packet);
 
 /**
  * @brief Serialize FOTA packet into buffer
@@ -102,7 +102,7 @@ FotaError fota_packet_set_crc(FotaPacket *packet);
  * @param bytes_written Number of bytes written
  * @return FOTA_ERROR_SUCCESS or error
  */
-FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size, uint32_t *bytes_written);
+FotaError fota_packet_serialize(FotaPacket* packet, uint8_t* buffer, uint32_t buf_size, uint32_t* bytes_written);
 
 /**
  * @brief Deserialize buffer into FOTA packet
@@ -111,6 +111,6 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
  * @param buf_size Size of input buffer
  * @return FOTA_ERROR_SUCCESS or error
  */
-FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size);
+FotaError fota_packet_deserialize(FotaPacket* packet, uint8_t* buffer, uint32_t buf_size);
 
 /** @} */

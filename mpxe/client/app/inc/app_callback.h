@@ -31,13 +31,13 @@
  * @param   client Pointer to the connected client instance
  * @param   message String message value that has been received
  */
-void applicationMessageCallback(Client *client, std::string &message);
+void applicationMessageCallback(Client* client, std::string& message);
 
 /**
  * @brief   Handle connecting to the server
  * @details This shall notify the user about a new server connection
  * @param   client Pointer to the connected client instance
  */
-void applicationConnectCallback(Client *client);
+void applicationConnectCallback(Client* client);
 
 /** @} */

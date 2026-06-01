@@ -36,7 +36,7 @@
  * Storage definitions
  ************************************************************************************************/
 
-static RearControllerStorage *rear_controller_storage;
+static RearControllerStorage* rear_controller_storage;
 
 static CanStorage s_can_storage = { 0 };
 
@@ -55,7 +55,7 @@ static const CanSettings s_can_settings = {
 
 static GpioAddress s_rear_controller_board_led = GPIO_REAR_CONTROLLER_BOARD_LED;
 
-StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config) {
+StatusCode rear_controller_init(RearControllerStorage* storage, RearControllerConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

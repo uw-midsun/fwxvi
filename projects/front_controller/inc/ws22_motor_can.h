@@ -104,7 +104,7 @@ typedef struct Ws22MotorCanStorage {
  * @param   storage Pointer to Front controller storage structure
  * @return  STATUS_CODE_OK on success, error code otherwise
  */
-StatusCode ws22_motor_can_init(FrontControllerStorage *storage);
+StatusCode ws22_motor_can_init(FrontControllerStorage* storage);
 
 /**
  * @brief   Set motor control current command
@@ -131,18 +131,18 @@ StatusCode ws22_motor_can_transmit_drive_command(void);
  * @param   msg Pointer to received CAN message
  * @return  STATUS_CODE_OK on success, STATUS_CODE_UNIMPLEMENTED for unknown message IDs
  */
-StatusCode ws22_motor_can_process_rx(CanMessage *msg);
+StatusCode ws22_motor_can_process_rx(CanMessage* msg);
 
 /**
  * @brief   Get current motor control data
  * @return  Pointer to motor control data (read-only)
  */
-Ws22MotorControlData *ws22_motor_can_get_control_data(void);
+Ws22MotorControlData* ws22_motor_can_get_control_data(void);
 
 /**
  * @brief   Get current motor telemetry data
  * @return  Pointer to motor telemetry data (read-only)
  */
-Ws22MotorTelemetryData *ws22_motor_can_get_telemetry_data(void);
+Ws22MotorTelemetryData* ws22_motor_can_get_telemetry_data(void);
 
 /** @} */

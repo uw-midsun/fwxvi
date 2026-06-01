@@ -63,7 +63,7 @@ class Adc {
    * @brief   Constructs an Adc object with provided payload data
    * @param   data Reference to payload data
    */
-  explicit Adc(Payload &data);
+  explicit Adc(Payload& data);
 
   /**
    * @brief   Default constructor for Adc object
@@ -75,32 +75,32 @@ class Adc {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing Adc data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief   Deserializes Adc data from payload string
    * @param   gpioDatagramPayload String containing serialized Gpio data
    */
-  void deserialize(std::string &AdcDatagramPayload);
+  void deserialize(std::string& AdcDatagramPayload);
 
   /**
    * @brief   Sets the target Gpio port for Adc
    * @param   gpioPort Port to set as target
    */
-  void setGpioPort(const Port &gpioPort);
+  void setGpioPort(const Port& gpioPort);
 
   /**
    * @brief   Sets the target Gpio pin for Adc
    * @param   gpioPin Pin to set as target
    */
-  void setGpioPin(const uint8_t &gpioPin);
+  void setGpioPin(const uint8_t& gpioPin);
 
   /**
    * @brief   Sets data in the Adc buffer
    * @param   data Pointer to data to copy into buffer
    * @param   length Length of data to copy
    */
-  void setBuffer(const uint8_t *data, uint8_t length);
+  void setBuffer(const uint8_t* data, uint8_t length);
 
   /**
    * @brief   Clear the Adc data buffer
@@ -129,7 +129,7 @@ class Adc {
    * @brief   Gets the Adc buffer
    * @return  Pointer to the buffer array
    */
-  const uint8_t *getBuffer() const;
+  const uint8_t* getBuffer() const;
 
  private:
   Payload m_adcDatagram; /**< Private datagram payload */

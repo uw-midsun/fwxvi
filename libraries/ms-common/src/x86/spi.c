@@ -37,14 +37,14 @@ typedef struct {
 static SPIPortData s_port[NUM_SPI_PORTS] = { [SPI_PORT_1] = {}, [SPI_PORT_2] = {} };
 
 // Initalize Queue for Spi Buffer
-static StatusCode s_init_buf(SpiBuffer *buf) {
+static StatusCode s_init_buf(SpiBuffer* buf) {
   buf->queue.num_items = SPI_MAX_NUM_DATA;
   buf->queue.item_size = sizeof(uint8_t);
   buf->queue.storage_buf = buf->buf;
   return queue_init(&buf->queue);
 }
 
-StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
+StatusCode spi_init(SpiPort spi, const SpiSettings* settings) {
   if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -64,7 +64,7 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
+StatusCode spi_exchange(SpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
   if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -79,7 +79,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len) {
+StatusCode spi_read(SpiPort spi, uint8_t* rx_data, uint8_t rx_len) {
   if (spi >= NUM_SPI_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   s_port[spi].num_rx_bytes = rx_len;
@@ -93,7 +93,7 @@ StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len) {
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len) {
+StatusCode spi_write(SpiPort spi, uint8_t* tx_data, uint8_t tx_len) {
   if (spi >= NUM_SPI_PORTS) return STATUS_CODE_INVALID_ARGS;
 
   for (size_t i = 0; i < tx_len; i++) {
@@ -106,7 +106,7 @@ StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len) {
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len) {
+StatusCode spi_get_tx_data(SpiPort spi, uint8_t* data, uint8_t len) {
   if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -125,7 +125,7 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len) {
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len) {
+StatusCode spi_set_rx(SpiPort spi, const uint8_t* data, uint8_t len) {
   if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }

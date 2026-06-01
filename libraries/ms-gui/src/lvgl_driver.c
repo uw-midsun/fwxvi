@@ -22,7 +22,7 @@
 #include "lvgl_driver.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
-static LtdcSettings *s_ltdc_settings;
+static LtdcSettings* s_ltdc_settings;
 
 /* LVGL draw buffer (We use partial... Reccomended is 1/10 display size) */
 #define LV_DRAW_BUF_LINES 25        /* This can be tweaked to improve refresh rate, but may also kill RAM */
@@ -36,10 +36,10 @@ static uint8_t s_draw_buf[DISPLAY_WIDTH * LV_DRAW_BUF_LINES * NUMBER_OF_BYTES_PE
  * @param   area      Area we want to update
  * @param   px_map    Pixels of the new area
  */
-static void s_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
+static void s_flush_cb(lv_display_t* display, const lv_area_t* area, uint8_t* px_map) {
   // TODO Kind of a slow approach could optimize with DMA2d
-  uint16_t *framebuffer = (uint16_t *)s_ltdc_settings->framebuffer;
-  uint16_t *src = (uint16_t *)px_map;
+  uint16_t* framebuffer = (uint16_t*)s_ltdc_settings->framebuffer;
+  uint16_t* src = (uint16_t*)px_map;
   uint16_t width = lv_area_get_width(area);
 
   for (int32_t y = area->y1; y <= area->y2; ++y) {
@@ -61,7 +61,7 @@ static uint32_t s_tick_get_cb(void) {
   return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);
 }
 
-StatusCode lvgl_driver_init(LtdcSettings *settings) {
+StatusCode lvgl_driver_init(LtdcSettings* settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -74,7 +74,7 @@ StatusCode lvgl_driver_init(LtdcSettings *settings) {
   lv_tick_set_cb(s_tick_get_cb);
 
   /* Create display and configure flush callback */
-  lv_display_t *disp = lv_display_create(settings->width, settings->height);
+  lv_display_t* disp = lv_display_create(settings->width, settings->height);
   if (disp == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -91,7 +91,7 @@ StatusCode lvgl_driver_process(void) {
   return STATUS_CODE_OK;
 }
 #else
-StatusCode lvgl_driver_init(LtdcSettings *settings) {
+StatusCode lvgl_driver_init(LtdcSettings* settings) {
   (void)settings;
   return STATUS_CODE_OK;
 }

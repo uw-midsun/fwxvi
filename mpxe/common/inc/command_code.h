@@ -90,13 +90,13 @@ enum class CommandCode {
  * @param   message String data payload to be modified
  * @return  Encoded message
  */
-std::string encodeCommand(const CommandCode commandCode, std::string &message);
+std::string encodeCommand(const CommandCode commandCode, std::string& message);
 
 /**
  * @brief   Decode a command code from existing data
  * @param   message String data payload to be decoded
  * @return  Pair containing <CommandCode, Data payload without the command Code>
  */
-std::pair<CommandCode, std::string> decodeCommand(std::string &message);
+std::pair<CommandCode, std::string> decodeCommand(std::string& message);
 
 /** @} */

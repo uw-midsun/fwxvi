@@ -21,7 +21,7 @@
 #include "front_controller_getters.h"
 #include "ws22_motor_can.h"
 
-static FrontControllerStorage *front_controller_storage;
+static FrontControllerStorage* front_controller_storage;
 static CruiseControlStorage s_cruise_control_storage = { 0 };
 
 #define DT 0.001  // cruise_control_run() is a 1000Hz task
@@ -78,7 +78,7 @@ StatusCode cruise_control_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode cruise_control_init(FrontControllerStorage *storage) {
+StatusCode cruise_control_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

@@ -24,18 +24,18 @@
 #define MAX_CELLS_PER_DEVICE 18
 #define MAX_CELL_THERMISTORS_PER_DEVICE 16
 
-void AfeManager::loadAfeInfo(std::string &projectName) {
+void AfeManager::loadAfeInfo(std::string& projectName) {
   m_afeInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, AfeManager::AfeObjectInfo>>(projectName, AFE_KEY);
 }
 
-void AfeManager::saveAfeInfo(std::string &projectName) {
+void AfeManager::saveAfeInfo(std::string& projectName) {
   serverJSONManager.setProjectValue(projectName, AFE_KEY, m_afeInfo);
 
   /* Upon save, clear the memory */
   m_afeInfo.clear();
 }
 
-void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeCellVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -48,7 +48,7 @@ void AfeManager::updateAfeCellVoltage(std::string &projectName, std::string &pay
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeThermVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeThermVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -61,7 +61,7 @@ void AfeManager::updateAfeThermVoltage(std::string &projectName, std::string &pa
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeCellDevVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -81,7 +81,7 @@ void AfeManager::updateAfeCellDevVoltage(std::string &projectName, std::string &
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeThermDevVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeThermDevVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -101,7 +101,7 @@ void AfeManager::updateAfeThermDevVoltage(std::string &projectName, std::string 
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeCellPackVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -120,7 +120,7 @@ void AfeManager::updateAfeCellPackVoltage(std::string &projectName, std::string 
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeThermPackVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeThermPackVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -139,7 +139,7 @@ void AfeManager::updateAfeThermPackVoltage(std::string &projectName, std::string
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeBoardThermVoltage(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeBoardThermVoltage(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -151,7 +151,7 @@ void AfeManager::updateAfeBoardThermVoltage(std::string &projectName, std::strin
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeCellDischarge(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeCellDischarge(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -165,7 +165,7 @@ void AfeManager::updateAfeCellDischarge(std::string &projectName, std::string &p
   saveAfeInfo(projectName);
 }
 
-void AfeManager::updateAfeCellPackDischarge(std::string &projectName, std::string &payload) {
+void AfeManager::updateAfeCellPackDischarge(std::string& projectName, std::string& payload) {
   loadAfeInfo(projectName);
 
   m_afeDatagram.deserialize(payload);
@@ -321,7 +321,7 @@ std::string AfeManager::createAfeCommand(CommandCode commandCode, std::string in
       }
     }
     return m_afeDatagram.serialize(commandCode);
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cerr << "Afe Manager errror: " << e.what() << std::endl;
   }
   return "";

@@ -20,13 +20,13 @@
 /* Intra-component Headers */
 
 int illegal_instruction_execution(void) {
-  int (*bad_instruction)(void) = (void *)0xE0000000U;
+  int (*bad_instruction)(void) = (void*)0xE0000000U;
   return bad_instruction();
 }
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

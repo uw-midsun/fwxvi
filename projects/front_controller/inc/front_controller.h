@@ -97,14 +97,14 @@ typedef struct {
   float accel_percentage;                /**< Acceleration pedal percentage after OPD algorithm and filtering is applied as a value between 0.0 - 1.0 */
   VehicleDriveState current_drive_state; /**< Current drive state of vehicle, determined by motor_can.c */
 
-  struct PowerManagerStorage *power_manager_storage;   /**< Power manager storage */
-  struct AccelPedalStorage *accel_pedal_storage;       /**< Acceleration pedal storage */
-  struct BrakePedalStorage *brake_pedal_storage;       /**< Brake pedal storage */
-  struct Ws22MotorCanStorage *ws22_motor_can_storage;  /**< Wavesculptor 22 motor CAN storage */
-  struct OpdStorage *opd_storage;                      /**< OPD storage */
-  struct CruiseControlStorage *cruise_control_storage; /**< Cruise control storage */
+  struct PowerManagerStorage* power_manager_storage;   /**< Power manager storage */
+  struct AccelPedalStorage* accel_pedal_storage;       /**< Acceleration pedal storage */
+  struct BrakePedalStorage* brake_pedal_storage;       /**< Brake pedal storage */
+  struct Ws22MotorCanStorage* ws22_motor_can_storage;  /**< Wavesculptor 22 motor CAN storage */
+  struct OpdStorage* opd_storage;                      /**< OPD storage */
+  struct CruiseControlStorage* cruise_control_storage; /**< Cruise control storage */
 
-  FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
+  FrontControllerConfig* config; /**< Pointer to the front controller configuration data */
 } FrontControllerStorage;
 
 /**
@@ -114,6 +114,6 @@ typedef struct {
  * @return  STATUS_CODE_OK if front controller initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config);
+StatusCode front_controller_init(FrontControllerStorage* storage, FrontControllerConfig* config);
 
 /** @} */

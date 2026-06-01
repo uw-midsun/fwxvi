@@ -21,7 +21,7 @@
 
 /* Intra-component Headers */
 
-static inline const char *output_grp_to_str(OutputGroup x) {
+static inline const char* output_grp_to_str(OutputGroup x) {
   switch (x) {
     case OUTPUT_GROUP_ALL:
       return "OUTPUT_GROUP_ALL";
@@ -91,7 +91,7 @@ TASK(cycle_output_groups, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

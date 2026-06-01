@@ -60,7 +60,7 @@ class MainWindow : public QMainWindow {
    * @param   app_state Initial application state (payload, files, selected index)
    * @param   parent    Parent widget (can be nullptr)
    */
-  explicit MainWindow(const AppState &app_state, QWidget *parent = nullptr);
+  explicit MainWindow(const AppState& app_state, QWidget* parent = nullptr);
 
   /**
    * @brief   Returns the list of known client files
@@ -81,23 +81,23 @@ class MainWindow : public QMainWindow {
    * @param   files    New list of files
    * @param   newIndex Index of the current file in files, or -1
    */
-  void replaceClientFiles(const QStringList &files, int newIndex);
+  void replaceClientFiles(const QStringList& files, int newIndex);
 
  public slots:
   /**
    * @brief   Reload the payload from disk and apply it
    * @param   path Absolute path to the JSON file to load
    */
-  void reloadClientFromFile(const QString &path);
+  void reloadClientFromFile(const QString& path);
 
-  void onClientsListChanged(const QStringList &files);
+  void onClientsListChanged(const QStringList& files);
 
  private slots:
   /**
    * @brief   Load a client JSON and update all pages
    * @param   path Absolute path to the JSON file to load
    */
-  void loadClient(const QString &path);
+  void loadClient(const QString& path);
 
  private:
   /**
@@ -107,13 +107,13 @@ class MainWindow : public QMainWindow {
    * @param   key  Key to extract
    * @return  std::map<QString, QVariant> Extracted submap or empty
    */
-  std::map<QString, QVariant> extractSubmap(const std::map<QString, QVariant> &root, const QString &key) const;
+  std::map<QString, QVariant> extractSubmap(const std::map<QString, QVariant>& root, const QString& key) const;
 
   /**
    * @brief   Push a new payload into all relevant pages
    * @param   payload New application payload
    */
-  void applyPayload(const std::map<QString, QVariant> &payload);
+  void applyPayload(const std::map<QString, QVariant>& payload);
 
   /**
    * @brief   Rebuild the Overview page widgets

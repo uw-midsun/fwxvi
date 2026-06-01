@@ -35,7 +35,7 @@ static inline void s_enable_spi3(void) {
 
 /** @brief  SPI Port data */
 typedef struct {
-  SPI_TypeDef *base;     /**< SPI HW Base address */
+  SPI_TypeDef* base;     /**< SPI HW Base address */
   void (*rcc_cmd)(void); /**< Function pointer to enable SPI clock using RCC */
   uint8_t irq;           /**< SPI interrupt number */
   bool initialized;      /**< Initialized flag */
@@ -65,7 +65,7 @@ static StaticSemaphore_t s_spi_cmplt_sem[NUM_SPI_PORTS];
 static SemaphoreHandle_t s_spi_cmplt_handle[NUM_SPI_PORTS];
 
 /* Helper function to get SPI port index from handle */
-static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef *hspi) {
+static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef* hspi) {
   if (hspi->Instance == SPI1) {
     return SPI_PORT_1;
   } else if (hspi->Instance == SPI2) {
@@ -77,7 +77,7 @@ static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef *hspi) {
 
 /* Helper function to release CS pin */
 static void s_release_cs(SpiPort spi) {
-  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
   HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[spi].pin)), 1U);
 }
 
@@ -93,7 +93,7 @@ void SPI3_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_3]);
 }
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   SpiPort spi = s_get_spi_port_from_handle(hspi);
 
@@ -103,7 +103,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
   portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef* hspi) {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   SpiPort spi = s_get_spi_port_from_handle(hspi);
 
@@ -113,7 +113,7 @@ void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
   portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
+StatusCode spi_init(SpiPort spi, const SpiSettings* settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -193,7 +193,7 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
+StatusCode spi_exchange(SpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
   if (!s_port[spi].initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }

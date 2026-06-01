@@ -33,6 +33,6 @@ StatusCode range_estimator_run();
  * @return  STATUS_CODE_OK if initialization is successful
  *          STATUS_CODE_INVALID_ARGS if storage is null
  */
-StatusCode range_estimator_init(SteeringStorage *storage);
+StatusCode range_estimator_init(SteeringStorage* storage);
 
 /** @} */

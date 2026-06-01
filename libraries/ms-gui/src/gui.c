@@ -26,7 +26,7 @@
 
 /* Standard Library Headers */
 
-StatusCode gui_init(LtdcSettings *settings) {
+StatusCode gui_init(LtdcSettings* settings) {
   if (!settings) {
     return STATUS_CODE_INVALID_ARGS;
   }

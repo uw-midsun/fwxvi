@@ -15,19 +15,19 @@
 /* Intra-component Headers */
 #include "sd_card_spi.h"
 
-StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings) {
+StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings* settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len) {
+StatusCode sd_spi_tx(SdSpiPort spi, uint8_t* tx_data, size_t tx_len) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t placeholder) {
+StatusCode sd_spi_rx(SdSpiPort spi, uint8_t* rx_data, size_t rx_len, uint8_t placeholder) {
   return STATUS_CODE_OK;
 }
 
-StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
+StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
   return STATUS_CODE_OK;
 }
 

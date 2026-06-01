@@ -26,16 +26,16 @@
 typedef struct {
   uint16_t width;
   uint16_t height;
-  uint8_t *framebuffer;
-  ClutEntry *clut;
+  uint8_t* framebuffer;
+  ClutEntry* clut;
   uint16_t clut_size;
 
-  SDL_Window *window;
-  SDL_Renderer *renderer;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
 } LtdcSimSettings;
 
 static LtdcSimSettings s_ltdc_sim_settings = { 0 };
-static ClutEntry *s_default_clut;
+static ClutEntry* s_default_clut;
 
 static uint8_t s_rgb565_red(uint16_t pixel) {
   return (uint8_t)((((pixel >> 11U) & 0x1FU) * 255U) / 31U);
@@ -49,7 +49,7 @@ static uint8_t s_rgb565_blue(uint16_t pixel) {
   return (uint8_t)(((pixel & 0x1FU) * 255U) / 31U);
 }
 
-StatusCode ltdc_init(LtdcSettings *settings) {
+StatusCode ltdc_init(LtdcSettings* settings) {
   if (!settings || !settings->framebuffer) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -96,7 +96,7 @@ StatusCode ltdc_draw(void) {
   SDL_SetRenderDrawColor(s_ltdc_sim_settings.renderer, 0, 0, 0, 255);
   SDL_RenderClear(s_ltdc_sim_settings.renderer);
 
-  uint16_t *framebuffer = (uint16_t *)s_ltdc_sim_settings.framebuffer;
+  uint16_t* framebuffer = (uint16_t*)s_ltdc_sim_settings.framebuffer;
   for (uint16_t y = 0; y < s_ltdc_sim_settings.height; y++) {
     for (uint16_t x = 0; x < s_ltdc_sim_settings.width; x++) {
       size_t idx = y * s_ltdc_sim_settings.width + x;
@@ -115,15 +115,15 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
   if (x >= s_ltdc_sim_settings.width || y >= s_ltdc_sim_settings.height) return STATUS_CODE_INVALID_ARGS;
   if (!s_ltdc_sim_settings.clut || color_index >= s_ltdc_sim_settings.clut_size) return STATUS_CODE_INVALID_ARGS;
 
-  ((uint16_t *)s_ltdc_sim_settings.framebuffer)[y * s_ltdc_sim_settings.width + x] = clut_entry_rgb565(s_ltdc_sim_settings.clut[color_index]);
+  ((uint16_t*)s_ltdc_sim_settings.framebuffer)[y * s_ltdc_sim_settings.width + x] = clut_entry_rgb565(s_ltdc_sim_settings.clut[color_index]);
   return STATUS_CODE_OK;
 }
 
-void *ltdc_get_renderer(void) {
-  return (void *)(s_ltdc_sim_settings.renderer);
+void* ltdc_get_renderer(void) {
+  return (void*)(s_ltdc_sim_settings.renderer);
 }
 
-void save_ltdc_frame(const char *filename) {
+void save_ltdc_frame(const char* filename) {
   if (!filename) return;
 
   /* Ensure the directory exists */
@@ -131,7 +131,7 @@ void save_ltdc_frame(const char *filename) {
   strncpy(dir, filename, sizeof(dir) - 1);
   dir[sizeof(dir) - 1] = '\0';
 
-  char *dir_name = dirname(dir);
+  char* dir_name = dirname(dir);
   struct stat st = { 0 };
   if (stat(dir_name, &st) == -1) {
     if (mkdir(dir_name, 0755) != 0) {
@@ -140,8 +140,8 @@ void save_ltdc_frame(const char *filename) {
   }
 
   /* Create surface and read pixels */
-  SDL_Renderer *renderer = ltdc_get_renderer();
-  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, s_ltdc_sim_settings.width, s_ltdc_sim_settings.height, 32, SDL_PIXELFORMAT_RGBA32);
+  SDL_Renderer* renderer = ltdc_get_renderer();
+  SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, s_ltdc_sim_settings.width, s_ltdc_sim_settings.height, 32, SDL_PIXELFORMAT_RGBA32);
 
   if (surface == NULL) {
     LOG_DEBUG("Failed to create SDL surface for saving frame\r\n");

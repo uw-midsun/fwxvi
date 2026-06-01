@@ -31,7 +31,7 @@ static LabelWidget s_cc_label;
 
 static bool s_drive_widgets_initialized;
 
-static StatusCode s_create_speedometer(GuiScreen *screen) {
+static StatusCode s_create_speedometer(GuiScreen* screen) {
   const SpeedometerWidgetConfig speedometer_config = {
     .size = { .width = 220, .height = 220 },
     .position = {
@@ -48,7 +48,7 @@ static StatusCode s_create_speedometer(GuiScreen *screen) {
   return lvgl_widgets_create_speedometer(&s_speedometer, &speedometer_config, screen);
 }
 
-static StatusCode s_create_throttle_bar(GuiScreen *screen) {
+static StatusCode s_create_throttle_bar(GuiScreen* screen) {
   const BarWidgetConfig throttle_bar_config = {
     .size = { .width = 40, .height = 100 },
     .position = {
@@ -64,7 +64,7 @@ static StatusCode s_create_throttle_bar(GuiScreen *screen) {
   return lvgl_widgets_create_bar(&s_throttle_bar, &throttle_bar_config, screen);
 }
 
-static StatusCode s_create_brake_bar(GuiScreen *screen) {
+static StatusCode s_create_brake_bar(GuiScreen* screen) {
   const BarWidgetConfig brake_bar_config = {
     .size = { .width = 40, .height = 100 },
     .position = {
@@ -80,7 +80,7 @@ static StatusCode s_create_brake_bar(GuiScreen *screen) {
   return lvgl_widgets_create_bar(&s_brake_bar, &brake_bar_config, screen);
 }
 
-static StatusCode s_create_cc_label(GuiScreen *screen) {
+static StatusCode s_create_cc_label(GuiScreen* screen) {
   const LabelWidgetConfig cruise_control_label_config = {
     .size = { .width = 100, .height = 20 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = -30 } },
@@ -98,7 +98,7 @@ static StatusCode s_create_cc_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
-static StatusCode s_drive_widgets_init_screen(GuiScreen *screen) {
+static StatusCode s_drive_widgets_init_screen(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -124,7 +124,7 @@ static void s_drive_widgets_deinit(void) {
   s_drive_widgets_initialized = false;
 }
 
-StatusCode gui_drive_screen_init(GuiScreen *screen) {
+StatusCode gui_drive_screen_init(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -199,7 +199,7 @@ StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
 }
 #else
 
-StatusCode gui_drive_screen_init(GuiScreen *screen) {
+StatusCode gui_drive_screen_init(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }

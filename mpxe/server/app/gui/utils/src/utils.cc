@@ -41,7 +41,7 @@
 /* LOCAL HELPERS
 -------------------------------------------------------- */
 
-static QVariant toVariant(const QJsonValue &v) {
+static QVariant toVariant(const QJsonValue& v) {
   switch (v.type()) {
     case QJsonValue::Object: {
       QVariantMap m;
@@ -84,7 +84,7 @@ static QVariant toVariant(const QJsonValue &v) {
 /*
 -------------------------------------------------------- */
 
-bool readJsonFileToVariantMap(const QString &filePath, QVariantMap &out) {
+bool readJsonFileToVariantMap(const QString& filePath, QVariantMap& out) {
   QFile f{ filePath };
   if (!f.open(QIODevice::ReadOnly)) {
     return false;
@@ -113,7 +113,7 @@ bool readJsonFileToVariantMap(const QString &filePath, QVariantMap &out) {
   return true;
 }
 
-std::map<QString, QVariant> toStdMap(const QVariantMap &vm) {
+std::map<QString, QVariant> toStdMap(const QVariantMap& vm) {
   std::map<QString, QVariant> m;
 
   QVariantMap::const_iterator it = vm.constBegin();
@@ -124,7 +124,7 @@ std::map<QString, QVariant> toStdMap(const QVariantMap &vm) {
   return m;
 }
 
-TableWithSearch makeSearchableTable(QAbstractItemModel *model, QWidget *parent) {
+TableWithSearch makeSearchableTable(QAbstractItemModel* model, QWidget* parent) {
   TableWithSearch out;
   out.widget = new QWidget{ parent };
   out.table = new QTableView{ out.widget };
@@ -143,11 +143,11 @@ TableWithSearch makeSearchableTable(QAbstractItemModel *model, QWidget *parent) 
   out.table->verticalHeader()->setVisible(false);
   out.table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-  QLineEdit *search = new QLineEdit{ out.widget };
+  QLineEdit* search = new QLineEdit{ out.widget };
   search->setPlaceholderText(QStringLiteral("Search Commands..."));
   QObject::connect(search, SIGNAL(textChanged(QString)), out.proxy, SLOT(setFilterFixedString(QString)));
 
-  QVBoxLayout *lay = new QVBoxLayout{ out.widget };
+  QVBoxLayout* lay = new QVBoxLayout{ out.widget };
   lay->setContentsMargins(0, 0, 0, 0);
   lay->addWidget(search);
   lay->addWidget(out.table);
@@ -156,7 +156,7 @@ TableWithSearch makeSearchableTable(QAbstractItemModel *model, QWidget *parent) 
 }
 
 /* Apply dark theme */
-void applyDarkTheme(QApplication &app) {
+void applyDarkTheme(QApplication& app) {
   QApplication::setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
   QPalette pal;
@@ -198,7 +198,7 @@ void applyDarkTheme(QApplication &app) {
 }
 
 /* Helper to set one palette group */
-void setPaletteGroup(QPalette &pal, QPalette::ColorGroup g) {
+void setPaletteGroup(QPalette& pal, QPalette::ColorGroup g) {
   pal.setColor(g, QPalette::Window, QColor(37, 37, 38));
   pal.setColor(g, QPalette::WindowText, QColor(220, 220, 220));
   pal.setColor(g, QPalette::Base, QColor(30, 30, 30));
@@ -237,7 +237,7 @@ QStringList findClientJsons() {
 }
 
 /* Load one client JSON into AppState::payload */
-bool loadClientIntoState(const QString &path, AppState &state) {
+bool loadClientIntoState(const QString& path, AppState& state) {
   QVariantMap vm;
   if (!readJsonFileToVariantMap(path, vm)) {
     return false;

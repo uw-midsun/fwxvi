@@ -62,13 +62,13 @@ class AdcManager {
    * @brief   Save cached ADC readings for a project to JSON storage
    * @param   projectName Name of the project whose ADC info should be saved
    */
-  void loadAdcInfo(std::string &projectName);
+  void loadAdcInfo(std::string& projectName);
 
   /**
    * @brief   Save cached ADC readings for a project to JSON storage
    * @param   projectName Name of the project whose ADC info should be saved
    */
-  void saveAdcInfo(std::string &projectName);
+  void saveAdcInfo(std::string& projectName);
 
   /**
    * @brief   Convert GPIO Address to string
@@ -88,7 +88,7 @@ class AdcManager {
    * @param   pin GPIO pin
    * @return  std::string String representation of the buffer
    */
-  std::string stringifyReadings(const uint8_t *&buffer, size_t bufferLength);
+  std::string stringifyReadings(const uint8_t*& buffer, size_t bufferLength);
 
   /**
    * @brief   Get the Adc Channel as a string
@@ -110,28 +110,28 @@ class AdcManager {
    * @param   projectName Project name for which data is updated
    * @param   payload Serialized data payload containing the reading
    */
-  void updateAdcRaw(std::string &projectName, std::string &payload);
+  void updateAdcRaw(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update raw ADC readings for all ADC Channels
    * @param   projectName Project name for which data is updated
    * @param   payload Serialized data payload containing all raw readings
    */
-  void updateAdcRawAll(std::string &projectName, std::string &payload);
+  void updateAdcRawAll(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update a converted ADC reading for a specific ADC Channel
    * @param   projectName Project name for which data is updated
    * @param   payload Serialized data payload containing all raw readings
    */
-  void updateAdcConverted(std::string &projectName, std::string &payload);
+  void updateAdcConverted(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update a converted ADC reading for a all ADC Channel
    * @param   projectName Project name for which data is updated
    * @param   payload Serialized data payload containing all raw readings
    */
-  void updateAdcConvertedAll(std::string &projectName, std::string &payload);
+  void updateAdcConvertedAll(std::string& projectName, std::string& payload);
 
   /**
    * @brief Create an ADC command for raw or converted readings

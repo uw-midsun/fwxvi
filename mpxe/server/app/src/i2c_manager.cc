@@ -25,12 +25,12 @@
 #define I2C_KEY "i2c"
 #define DATA_KEY "data"
 
-const char *i2cPortNames[] = {
+const char* i2cPortNames[] = {
   "I2C1", /* I2C_PORT_1 */
   "I2C2", /* I2C_PORT_2 */
 };
 
-std::string I2CManager::stringifyData(const std::vector<uint8_t> &data) {
+std::string I2CManager::stringifyData(const std::vector<uint8_t>& data) {
   std::stringstream ss;
 
   ss << "[";
@@ -45,24 +45,24 @@ std::string I2CManager::stringifyData(const std::vector<uint8_t> &data) {
   return ss.str();
 }
 
-void I2CManager::loadI2CInfo(std::string &projectName) {
+void I2CManager::loadI2CInfo(std::string& projectName) {
   m_i2cInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, I2CManager::PortInfo>>(projectName, I2C_KEY);
 }
 
-void I2CManager::saveI2CInfo(std::string &projectName) {
+void I2CManager::saveI2CInfo(std::string& projectName) {
   serverJSONManager.setProjectValue(projectName, I2C_KEY, m_i2cInfo);
 
   /* Upon save, clear the memory */
   m_i2cInfo.clear();
 }
 
-void I2CManager::updateI2CData(std::string &projectName, std::string &payload) {
+void I2CManager::updateI2CData(std::string& projectName, std::string& payload) {
   loadI2CInfo(projectName);
 
   m_I2CDatagram.deserialize(payload);
 
   std::string key = i2cPortNames[static_cast<uint8_t>(m_I2CDatagram.getI2CPort())];
-  const uint8_t *receivedData = m_I2CDatagram.getBuffer();
+  const uint8_t* receivedData = m_I2CDatagram.getBuffer();
   size_t length = m_I2CDatagram.getBufferLength();
 
   /* Store data as vector and stringify it for JSON */
@@ -72,7 +72,7 @@ void I2CManager::updateI2CData(std::string &projectName, std::string &payload) {
   saveI2CInfo(projectName);
 }
 
-std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i2cPort, std::vector<uint8_t> &data) {
+std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string& i2cPort, std::vector<uint8_t>& data) {
   try {
     switch (commandCode) {
       case CommandCode::I2C_WRITE_DATA: {
@@ -153,7 +153,7 @@ std::string I2CManager::createI2CCommand(CommandCode commandCode, std::string &i
     }
 
     return m_I2CDatagram.serialize(commandCode);
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "I2C Manager error: " << e.what() << std::endl;
   }
   return "";

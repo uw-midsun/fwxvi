@@ -26,7 +26,7 @@
 /************************************************************************************************
  * Static Variable Declaration
  ************************************************************************************************/
-static Bmi323Storage *imu_storage;
+static Bmi323Storage* imu_storage;
 
 static const float s_accel_lsb_lookup[NUM_IMU_ACCEL_RANGES] = {
   [IMU_ACCEL_RANGE_2G] = 16384.0f,
@@ -43,16 +43,16 @@ static const float s_gyro_lsb_lookup[NUM_IMU_GYRO_RANGES] = {
  * Private Function Declaration
  ************************************************************************************************/
 
-static StatusCode s_get_register(Bmi323Registers reg, uint16_t *data);
-static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len);
+static StatusCode s_get_register(Bmi323Registers reg, uint16_t* data);
+static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t* data, uint8_t len);
 static StatusCode s_set_register(Bmi323Registers reg, uint16_t data);
-static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len);
+static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t* data, uint8_t len);
 
-static StatusCode get_gyroscope_data(Axes *gyro);
-static StatusCode get_accel_data(Axes *accel);
+static StatusCode get_gyroscope_data(Axes* gyro);
+static StatusCode get_accel_data(Axes* accel);
 
-static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values);
-static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values);
+static StatusCode set_gyro_offset_gain(GyroGainOffsetValues* gyro_go_values);
+static StatusCode set_accel_offset_gain(AccelGainOffsetValues* accel_go_values);
 
 static void s_calculate_accel_offset();
 static void s_calculate_gyro_offset();
@@ -62,22 +62,22 @@ static uint8_t s_get_chip_id();
  * Private Function Definition
  ************************************************************************************************/
 
-static StatusCode s_get_register(Bmi323Registers reg, uint16_t *data) {
+static StatusCode s_get_register(Bmi323Registers reg, uint16_t* data) {
   uint8_t tx_buffer[2U];
 
   tx_buffer[0U] = READ_BIT | reg;
   tx_buffer[1U] = DUMMY_BYTE;
 
-  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), (uint8_t *)data, sizeof(uint16_t));
+  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), (uint8_t*)data, sizeof(uint16_t));
 }
 
-static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len) {
+static StatusCode s_get_multi_register(Bmi323Registers reg, uint16_t* data, uint8_t len) {
   uint8_t tx_buffer[2U];
 
   tx_buffer[0U] = READ_BIT | reg;
   tx_buffer[1U] = DUMMY_BYTE;
 
-  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), (uint8_t *)data, sizeof(uint16_t) * len);
+  return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), (uint8_t*)data, sizeof(uint16_t) * len);
 }
 
 static StatusCode s_set_register(Bmi323Registers reg, uint16_t data) {
@@ -90,7 +90,7 @@ static StatusCode s_set_register(Bmi323Registers reg, uint16_t data) {
   return spi_exchange(imu_storage->settings->spi_port, tx_buffer, sizeof(tx_buffer), NULL, 0);
 }
 
-static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint8_t len) {
+static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t* data, uint8_t len) {
   uint16_t tx_buffer[BMI323_MAX_NUM_DATA] = { 0U };
 
   tx_buffer[0U] = WRITE_MASK & reg;
@@ -100,10 +100,10 @@ static StatusCode s_set_multi_register(Bmi323Registers reg, uint16_t *data, uint
     tx_buffer[i] = data[i - 1U];
   }
 
-  return spi_exchange(imu_storage->settings->spi_port, (uint8_t *)tx_buffer, sizeof(tx_buffer), NULL, 0U);
+  return spi_exchange(imu_storage->settings->spi_port, (uint8_t*)tx_buffer, sizeof(tx_buffer), NULL, 0U);
 }
 
-static StatusCode get_gyroscope_data(Axes *gyro) {
+static StatusCode get_gyroscope_data(Axes* gyro) {
   uint16_t data[3] = { 0 };
 
   StatusCode status = s_get_multi_register(BMI323_REG_GYRO_REG_ADDR, data, 3);
@@ -123,7 +123,7 @@ static StatusCode get_gyroscope_data(Axes *gyro) {
   return status;
 }
 
-static StatusCode get_accel_data(Axes *accel) {
+static StatusCode get_accel_data(Axes* accel) {
   uint16_t data[3] = { 0 };
   StatusCode status = s_get_multi_register(BMI323_REG_ACCEL_REG_ADDR, data, 3);
 
@@ -140,7 +140,7 @@ static StatusCode get_accel_data(Axes *accel) {
   return status;
 }
 
-static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
+static StatusCode set_gyro_offset_gain(GyroGainOffsetValues* gyro_go_values) {
   uint16_t data[6U] = { 0U };
 
   uint16_t gyro_off_x, gyro_off_y, gyro_off_z;
@@ -170,7 +170,7 @@ static StatusCode set_gyro_offset_gain(GyroGainOffsetValues *gyro_go_values) {
   return result;
 }
 
-static StatusCode set_accel_offset_gain(AccelGainOffsetValues *accel_go_values) {
+static StatusCode set_accel_offset_gain(AccelGainOffsetValues* accel_go_values) {
   uint16_t data[6U] = { 0U };
 
   uint16_t accel_off_X, accel_off_y, accel_off_z;
@@ -258,7 +258,7 @@ static uint8_t s_get_chip_id() {
  * Public Function Definition
  ************************************************************************************************/
 
-StatusCode bmi323_init(Bmi323Storage *storage) {
+StatusCode bmi323_init(Bmi323Storage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -336,7 +336,7 @@ StatusCode bmi323_init(Bmi323Storage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode bmi323_update(Bmi323Storage *storage) {
+StatusCode bmi323_update(Bmi323Storage* storage) {
   /* Update GYRO/ACCEL readings */
 
   get_accel_data(&storage->accel);

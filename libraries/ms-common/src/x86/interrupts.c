@@ -57,7 +57,7 @@ static void s_default_handler(uint8_t interrupt_id) {
   LOG_DEBUG("Default Handler\r\n");
 }
 
-static void s_nvic_handler(int signum, siginfo_t *info, void *context) {
+static void s_nvic_handler(int signum, siginfo_t* info, void* context) {
   int interrupt_id = info->si_value.sival_int;
 
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_INTERRUPT_CHANNELS) {
@@ -70,7 +70,7 @@ static void s_nvic_handler(int signum, siginfo_t *info, void *context) {
   }
 }
 
-static void s_exti_handler(int signum, siginfo_t *info, void *context) {
+static void s_exti_handler(int signum, siginfo_t* info, void* context) {
   int interrupt_id = info->si_value.sival_int;
 
   if (interrupt_id >= 0 && (uint32_t)interrupt_id < NUM_STM32L433X_EXTI_LINES) {
@@ -83,12 +83,12 @@ static void s_exti_handler(int signum, siginfo_t *info, void *context) {
 
 /* This must be completed in an interrupt handler due to the nature of user-space and kernel isolation */
 /* The signal masks are only modifiable in the kernel space */
-static void s_sig_state_handler(int signum, siginfo_t *info, void *ptr) {
+static void s_sig_state_handler(int signum, siginfo_t* info, void* ptr) {
   // We actually need to manipulate the block mask of the context that is
   // restored for this thread. So we alter |ctx| rather than directly calling
   // |pthread_sigmask| as this gets overridden on context switch after exiting
   // the handler.
-  ucontext_t *ctx = ptr;
+  ucontext_t* ctx = ptr;
 
   /* Based on the sival_int change the state of interrupts. If invalid number silently ignore */
   if (info->si_value.sival_int == X86_INTERRUPT_STATE_MASKED) {
@@ -187,7 +187,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings *settings) {
+StatusCode interrupt_nvic_register_handler(uint8_t irq_channel, x86InterruptHandler handler, const InterruptSettings* settings) {
   /* Validate settings and channel */
   if (settings == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES || irq_channel > NUM_STM32L433X_INTERRUPT_CHANNELS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -221,7 +221,7 @@ StatusCode interrupt_nvic_trigger(uint8_t irq_channel) {
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
+StatusCode interrupt_exti_enable(GpioAddress* address, const InterruptSettings* settings) {
   if (settings == NULL || address == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -237,7 +237,7 @@ StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings *settings) {
+StatusCode interrupt_exti_register_handler(uint8_t line, x86InterruptHandler handler, const InterruptSettings* settings) {
   if (settings == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -265,7 +265,7 @@ StatusCode interrupt_exti_trigger(uint8_t line) {
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
+StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t* pending_bit) {
   if (line > NUM_STM32L433X_EXTI_LINES) {
     return STATUS_CODE_INVALID_ARGS;
   }

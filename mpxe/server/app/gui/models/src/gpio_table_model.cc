@@ -21,7 +21,7 @@
 
 enum Col { PinCol = 0, ModeCol, StateCol, AltFnCol };
 
-inline QString dashIfEmpty(const QString &s) {
+inline QString dashIfEmpty(const QString& s) {
   if (s.isEmpty()) {
     return QStringLiteral("-");
   } else {
@@ -32,7 +32,7 @@ inline QString dashIfEmpty(const QString &s) {
 /*
 -------------------------------------------------------- */
 
-GpioTableModel::GpioTableModel(const std::map<QString, QVariant> &data_map, QObject *parent) : QAbstractTableModel{ parent } {
+GpioTableModel::GpioTableModel(const std::map<QString, QVariant>& data_map, QObject* parent) : QAbstractTableModel{ parent } {
   m_rows.reserve(data_map.size());
 
   std::map<QString, QVariant>::const_iterator it = data_map.begin();
@@ -57,7 +57,7 @@ GpioTableModel::GpioTableModel(const std::map<QString, QVariant> &data_map, QObj
   }
 }
 
-int GpioTableModel::rowCount(const QModelIndex &parent) const {
+int GpioTableModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -65,7 +65,7 @@ int GpioTableModel::rowCount(const QModelIndex &parent) const {
   }
 }
 
-int GpioTableModel::columnCount(const QModelIndex &parent) const {
+int GpioTableModel::columnCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -73,7 +73,7 @@ int GpioTableModel::columnCount(const QModelIndex &parent) const {
   }
 }
 
-QVariant GpioTableModel::data(const QModelIndex &index, int role) const {
+QVariant GpioTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     qDebug() << "Invalid index " << index;
     return QVariant();
@@ -85,7 +85,7 @@ QVariant GpioTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   }
 
-  const Row &row = m_rows[static_cast<std::size_t>(r)];
+  const Row& row = m_rows[static_cast<std::size_t>(r)];
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
     switch (c) {

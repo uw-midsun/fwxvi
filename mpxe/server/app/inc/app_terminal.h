@@ -31,52 +31,52 @@
  */
 class Terminal {
  private:
-  Server *m_Server;                 /**< Pointer to the server instance */
-  ClientConnection *m_targetClient; /**< Pointer to a target client instance */
+  Server* m_Server;                 /**< Pointer to the server instance */
+  ClientConnection* m_targetClient; /**< Pointer to a target client instance */
 
   /**
    * @brief   Convert a string input to lower case
    * @param   input String input to be converted
    * @return  Lower-case version of the input string
    */
-  std::string toLower(const std::string &input);
+  std::string toLower(const std::string& input);
 
   /**
    * @brief   Handle GPIO commands provoidede an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
-  void handleGpioCommands(const std::string &action, std::vector<std::string> &tokens);
+  void handleGpioCommands(const std::string& action, std::vector<std::string>& tokens);
 
   /**
    * @brief   Handle AFE commands provoidede an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
-  void handleAfeCommands(const std::string &action, std::vector<std::string> &tokens);
+  void handleAfeCommands(const std::string& action, std::vector<std::string>& tokens);
 
   /**
    * @brief   Handle ADC commands provoidede an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
-  void handleAdcCommands(const std::string &action, std::vector<std::string> &tokens);
+  void handleAdcCommands(const std::string& action, std::vector<std::string>& tokens);
 
-  void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
+  void handleSpiCommands(const std::string& action, std::vector<std::string>& tokens);
 
   /**
    * @brief   Handle I2C commands provided an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
    * @param   tokens List containing action parameters to format the Remote procedure call
    */
-  void handleI2CCommands(const std::string &action, std::vector<std::string> &tokens);
+  void handleI2CCommands(const std::string& action, std::vector<std::string>& tokens);
 
   /**
    * @brief   Parse the tokens and branch to the appropiate handler function
    * @details This shall branch to handleGpioCommands, handleI2CCommands, handleSPICommands and handleInterruptCommands
    * @param   tokens List containing tokenized input string
    */
-  void parseCommand(std::vector<std::string> &tokens);
+  void parseCommand(std::vector<std::string>& tokens);
 
  public:
   /**
@@ -85,7 +85,7 @@ class Terminal {
    *          The constructor shall bind to the server
    * @param   server Pointer to a server instance
    */
-  explicit Terminal(Server *server);
+  explicit Terminal(Server* server);
 
   /**
    * @brief   While true spin-loop to handle shell inputs

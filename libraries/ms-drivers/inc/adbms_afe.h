@@ -94,7 +94,7 @@ typedef struct AdbmsAfeSettings {
   size_t num_cells;       /**< Number of TOTAL cells across all devices */
   size_t num_thermistors; /**< Number of TOTAL thermistors (thermistor inputs) across all devices */
 
-  SpiSettings *spi_settings; /**< SPI settings for AFE */
+  SpiSettings* spi_settings; /**< SPI settings for AFE */
   const SpiPort spi_port;    /**< Determines which SPI port to use */
 } AdbmsAfeSettings;
 
@@ -113,7 +113,7 @@ typedef struct AdbmsAfeStorage {
   uint16_t cell_result_lookup[ADBMS_AFE_MAX_CELLS];    /**< Map raw cell indices read from AFE to `cell_voltages` */
   uint16_t discharge_cell_lookup[ADBMS_AFE_MAX_CELLS]; /**< Map indicies of `cell_voltages` to raw cell indices */
 
-  AdbmsAfeSettings *settings;                                 /**< Stores settings for AFE devices, set by the user */
+  AdbmsAfeSettings* settings;                                 /**< Stores settings for AFE devices, set by the user */
   AdbmsAfeWriteConfigAPacket config_a[ADBMS_AFE_MAX_DEVICES]; /**< Stores the Configuration of each device in the CFGRA register */
   AdbmsAfeWriteConfigBPacket config_b[ADBMS_AFE_MAX_DEVICES]; /**< Stores the Configuration of each device in the CFGRB register */
 } AdbmsAfeStorage;
@@ -129,7 +129,7 @@ typedef struct AdbmsAfeStorage {
  *          STATUS_CODE_INVALID_ARGS if device, cell, or thermistor counts exceed defined maximums
  *          STATUS_CODE_INTERNAL_ERROR if SPI or configuration writes fail during setup
  */
-StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config);
+StatusCode adbms_afe_init(AdbmsAfeStorage* afe, const AdbmsAfeSettings* config);
 
 /**
  * @brief   Writes configuration bits onto CFGR (Configuration Register Group)
@@ -141,7 +141,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config);
  *          STATUS_CODE_TIMEOUT if transmission/receiving takes too long
  * @note    Only for initial config
  */
-StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
+StatusCode adbms_afe_write_config(AdbmsAfeStorage* afe);
 
 /**
  * @brief   Triggers ADC conversion for all enabled cell voltage inputs
@@ -153,7 +153,7 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
  *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
-StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe);
+StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage* afe);
 
 /**
  * @brief   Triggers ADC conversion for all thermistor GPIO inputs
@@ -165,7 +165,7 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe);
  *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
-StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe);
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage* afe);
 
 /**
  * @brief   Triggers ADC conversion for the specified board temperature thermistor input
@@ -178,7 +178,7 @@ StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe);
  *          STATUS_CODE_INVALID_ARGS if arguments passed to spi_exchange are invalid
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
-StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t device_num);
+StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage* afe, uint8_t device_num);
 
 /**
  * @brief   Reads and stores cell voltages from the voltage cell registers of each afe
@@ -190,7 +190,7 @@ StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t devic
  *          STATUS_CODE_INTERNAL_ERROR if read PEC and calcualted PEC do not match up
  *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `s_read_register`
  */
-StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe);
+StatusCode adbms_afe_read_cells(AdbmsAfeStorage* afe);
 
 /**
  * @brief   Reads and stores thermistor voltages from the aux voltage registers of each afe
@@ -202,7 +202,7 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe);
  *          STATUS_CODE_INTERNAL_ERROR if read PEC and calculated PEC do not match
  *          STATUS_CODE_INVALID_ARGS if arguments are invalid in `s_read_register`
  */
-StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe);
+StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage* afe);
 
 /**
  * @brief   Mark cell for discharging in each device
@@ -215,7 +215,7 @@ StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe);
  * @return  STATUS_CODE_OK if cell discharge was correctly toggled correctly
  *          STATUS_CODE_INVALID_ARGS if `cell` index is invalid
  */
-StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge);
+StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage* afe, uint16_t cell, bool discharge);
 
 /**
  * @brief   Sets the same discharge PWM duty cycle for all cells across all AFE devices
@@ -228,7 +228,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
  *          STATUS_CODE_INVALID_ARGS if parameters passed to spi_exchange are invalid
  *          STATUS_CODE_INTERNAL_ERROR if SPI transmission fails
  */
-StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle);
+StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage* afe, uint8_t duty_cycle);
 
 #ifdef MS_PLATFORM_X86
 
@@ -236,7 +236,7 @@ StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_
  * @brief Get the initialized AFE data storage
  * @return Pointer to the AFE data storage
  */
-AdbmsAfeStorage *adbms_afe_get_storage(void);
+AdbmsAfeStorage* adbms_afe_get_storage(void);
 
 /**
  * @brief Sets the voltage for a specific cell in the AFE.
@@ -245,7 +245,7 @@ AdbmsAfeStorage *adbms_afe_get_storage(void);
  * @param voltage The voltage value to set.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
  */
-StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage);
+StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage* afe, uint8_t cell_index, float voltage);
 
 /**
  * @brief Sets the voltage for a specific thermistor input.
@@ -255,7 +255,7 @@ StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, 
  * @param voltage The voltage value to set.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the index is out of range.
  */
-StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index, float voltage);
+StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage* afe, uint8_t device_num, uint8_t thermistor_index, float voltage);
 
 /**
  * @brief Sets the voltage for all cells on a specific AFE device.
@@ -264,7 +264,7 @@ StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device
  * @param voltage The voltage value to set for each cell.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage);
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage* afe, size_t device_num, float voltage);
 
 /**
  * @brief Sets the voltage for all thermistor inputs on a specific AFE device.
@@ -273,7 +273,7 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t devi
  * @param voltage The voltage value to set for each thermistor channel.
  * @return STATUS_CODE_OK if successful, STATUS_CODE_INVALID_ARGS if the device index is invalid.
  */
-StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage);
+StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage* afe, size_t device_num, float voltage);
 
 /**
  * @brief Sets the voltage for all cells across all AFE devices in the pack.
@@ -281,7 +281,7 @@ StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_
  * @param voltage The voltage value to set for all cells.
  * @return STATUS_CODE_OK always.
  */
-StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage);
+StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage* afe, float voltage);
 
 /**
  * @brief Sets the voltage for all thermistor channels across all AFE devices in the pack.
@@ -289,14 +289,14 @@ StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage)
  * @param voltage The voltage value to set for all thermistor inputs.
  * @return STATUS_CODE_OK always.
  */
-StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float voltage);
+StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage* afe, float voltage);
 
 /**
  * @brief Gets the simulated voltage for a specific cell.
  * @param cell_index Global index of the cell.
  * @return The voltage value of the specified cell.
  */
-uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index);
+uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage* afe, uint16_t cell_index);
 
 /**
  * @brief Gets the simulated voltage for a specific thermistor input.
@@ -304,7 +304,7 @@ uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index);
  * @param thermistor_index Index between 0-8 of the thermistor input.
  * @return The voltage value of the specified thermistor input.
  */
-uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint16_t thermistor_index);
+uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage* afe, uint8_t device_num, uint16_t thermistor_index);
 
 /**
  * @brief   Get the discharge enable state of a single cell.
@@ -312,6 +312,6 @@ uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_n
  * @param   cell Global cell index (0…ADBMS_AFE_MAX_CELLS‑1).
  * @return  Bool returning if cell discharge is enabled or disabled
  */
-bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell);
+bool adbms_afe_get_cell_discharge(AdbmsAfeStorage* afe, uint16_t cell);
 #endif
 /** @} */

@@ -93,7 +93,7 @@ typedef struct {
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
-StatusCode spi_init(SpiPort spi, const SpiSettings *settings);
+StatusCode spi_init(SpiPort spi, const SpiSettings* settings);
 
 /**
  * @brief   Performs a SPI data exchange
@@ -110,7 +110,7 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings);
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission/receiving fails
  *          STATUS_CODE_TIMEOUT if transmission/receiving takes too long
  */
-StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len);
+StatusCode spi_exchange(SpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len);
 
 /**
  * @brief   Transmit data from the SPI port
@@ -141,7 +141,7 @@ StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *r
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_RESOURCE_EXHAUSTED if queue is full
  */
-StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len);
+StatusCode spi_write(SpiPort spi, uint8_t* tx_data, uint8_t tx_len);
 
 /**
  * @brief   Gets data from the spi TX queue
@@ -152,7 +152,7 @@ StatusCode spi_write(SpiPort spi, uint8_t *tx_data, uint8_t tx_len);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  */
-StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len);
+StatusCode spi_read(SpiPort spi, uint8_t* rx_data, uint8_t rx_len);
 
 /**
  * @brief   Gets data from the spi TX queue
@@ -162,7 +162,7 @@ StatusCode spi_read(SpiPort spi, uint8_t *rx_data, uint8_t rx_len);
  * @return  STATUS_CODE_OK if data is retrieved successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
+StatusCode spi_get_tx_data(SpiPort spi, uint8_t* data, uint8_t len);
 
 /**
  * @brief   Sets SPI RX queue with the given data
@@ -172,7 +172,7 @@ StatusCode spi_get_tx_data(SpiPort spi, uint8_t *data, uint8_t len);
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode spi_set_rx(SpiPort spi, const uint8_t *data, uint8_t len);
+StatusCode spi_set_rx(SpiPort spi, const uint8_t* data, uint8_t len);
 
 /**
  * @brief   Gets the number of queued TX bytes available to read

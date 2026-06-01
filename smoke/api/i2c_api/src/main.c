@@ -22,7 +22,7 @@
 
 I2CSettings i2c_test_settings = { .speed = I2C_SPEED_STANDARD, .sda = { .port = GPIO_PORT_B, .pin = 11 }, .scl = { .port = GPIO_PORT_B, .pin = 10 } };
 
-static void print_bytes(const char *label, const uint8_t *data, size_t len) {
+static void print_bytes(const char* label, const uint8_t* data, size_t len) {
   LOG_DEBUG("%s:\n", label);
   for (size_t i = 0; i < len; i++) {
     LOG_DEBUG("  Byte[%zu] = 0x%02X\n", i, data[i]);
@@ -96,7 +96,7 @@ TASK(i2c_api, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

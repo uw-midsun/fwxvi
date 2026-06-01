@@ -55,7 +55,7 @@ typedef struct {
 } Max17261Settings;
 
 typedef struct {
-  Max17261Settings *settings;
+  Max17261Settings* settings;
 } Max17261Storage;
 
 // Storage for parameters learned by fuel guage
@@ -73,65 +73,65 @@ typedef struct Max27261Params {
  * @param soc_pct - state of charge in percentage will be returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_state_of_charge(Max17261Storage *storage, uint16_t *soc_pct);
+StatusCode max17261_state_of_charge(Max17261Storage* storage, uint16_t* soc_pct);
 
 /* @brief Gets the current remaining capactity in micro amp hours
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - remaining capactity in micro amp hours returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_remaining_capacity(Max17261Storage *storage, uint32_t *rem_cap_mAh);
+StatusCode max17261_remaining_capacity(Max17261Storage* storage, uint32_t* rem_cap_mAh);
 
 /* @brief Gets the full charge capacity of the battery in micro amp hours
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - full charge capacitry in micro amp hours returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_full_capacity(Max17261Storage *storage, uint32_t *full_cap_mAh);
+StatusCode max17261_full_capacity(Max17261Storage* storage, uint32_t* full_cap_mAh);
 
 /* @brief Gets the time to empty in milliseconds
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - time to empty in milliseconds returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_time_to_empty(Max17261Storage *storage, uint16_t *tte_ms);
+StatusCode max17261_time_to_empty(Max17261Storage* storage, uint16_t* tte_ms);
 
 /* @brief Gets the time to full in milliseconds
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - time to full in milliseconds returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_time_to_full(Max17261Storage *storage, uint16_t *ttf_ms);
+StatusCode max17261_time_to_full(Max17261Storage* storage, uint16_t* ttf_ms);
 
 /* @brief Gets a current reading in amps
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - current in amps returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_current(Max17261Storage *storage, int32_t *current_a);
+StatusCode max17261_current(Max17261Storage* storage, int32_t* current_a);
 
 /* @brief Gets a single cell's voltage in mV
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - voltage in mV returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_voltage(Max17261Storage *storage, uint16_t *vcell_mv);
+StatusCode max17261_voltage(Max17261Storage* storage, uint16_t* vcell_mv);
 
 /* @brief Gets a temperature reading in celcius
  * @param storage - a pointer to an already initialized Max17261Storage struct
  * @param soc_pct - temperature in celcius returned in this var
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_temp(Max17261Storage *storage, uint16_t *temp_c);
+StatusCode max17261_temp(Max17261Storage* storage, uint16_t* temp_c);
 
 /* @brief Gets the time to full in milliseconds
  * @param storage - a pointer to an uninitialized Max17261Storage struct
  * @param settings - populated settings struct
  * @return STATUS_CODE_OK on success
  */
-StatusCode max17261_init(Max17261Storage *storage, Max17261Settings *settings, Max27261Params *params);
+StatusCode max17261_init(Max17261Storage* storage, Max17261Settings* settings, Max27261Params* params);
 
-StatusCode max17261_set_learned_params(Max17261Storage *storage, Max27261Params *params);
-StatusCode max17261_get_learned_params(Max17261Storage *storage, Max27261Params *params);
+StatusCode max17261_set_learned_params(Max17261Storage* storage, Max27261Params* params);
+StatusCode max17261_get_learned_params(Max17261Storage* storage, Max27261Params* params);
 
 /** @} */

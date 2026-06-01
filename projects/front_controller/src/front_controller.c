@@ -39,7 +39,7 @@
  * Storage definitions
  ************************************************************************************************/
 
-static FrontControllerStorage *front_controller_storage;
+static FrontControllerStorage* front_controller_storage;
 
 static CanStorage s_can_storage = { 0 };
 
@@ -58,7 +58,7 @@ static const CanSettings s_can_settings = {
 
 static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
 
-StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config) {
+StatusCode front_controller_init(FrontControllerStorage* storage, FrontControllerConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

@@ -24,7 +24,7 @@
 #include "app.h"
 #include "app_callback.h"
 
-void applicationMessageCallback(Server *server, ClientConnection *client, std::string &message) {
+void applicationMessageCallback(Server* server, ClientConnection* client, std::string& message) {
   std::string clientName = client->getClientName();
   auto [commandCode, payload] = decodeCommand(message);
   switch (commandCode) {
@@ -133,6 +133,6 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
   }
 }
 
-void applicationConnectCallback(Server *server, ClientConnection *client) {
+void applicationConnectCallback(Server* server, ClientConnection* client) {
   std::cout << "Connected to new client on address: " << client->getClientAddress() << std::endl;
 }

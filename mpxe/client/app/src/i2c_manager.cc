@@ -23,11 +23,11 @@ extern "C" {
 #include "app.h"
 #include "i2c_manager.h"
 
-std::string I2CManager::writeI2CData(std::string &payload) {
+std::string I2CManager::writeI2CData(std::string& payload) {
   m_I2CDatagram.deserialize(payload);
 
   I2CPort port = static_cast<I2CPort>(m_I2CDatagram.getI2CPort());
-  const uint8_t *buffer = m_I2CDatagram.getBuffer();
+  const uint8_t* buffer = m_I2CDatagram.getBuffer();
   size_t length = m_I2CDatagram.getBufferLength();
 
   i2c_set_rx_data(port, buffer, length);
@@ -36,7 +36,7 @@ std::string I2CManager::writeI2CData(std::string &payload) {
   return m_I2CDatagram.serialize(CommandCode::I2C_WRITE_DATA);
 }
 
-std::string I2CManager::readI2CData(std::string &payload) {
+std::string I2CManager::readI2CData(std::string& payload) {
   m_I2CDatagram.deserialize(payload);
 
   I2CPort port = static_cast<I2CPort>(m_I2CDatagram.getI2CPort());
@@ -53,7 +53,7 @@ std::string I2CManager::readI2CData(std::string &payload) {
   return m_I2CDatagram.serialize(CommandCode::I2C_READ_DATA);
 }
 
-std::string I2CManager::clearI2CBuffers(std::string &payload) {
+std::string I2CManager::clearI2CBuffers(std::string& payload) {
   m_I2CDatagram.deserialize(payload);
 
   I2CPort port = static_cast<I2CPort>(m_I2CDatagram.getI2CPort());

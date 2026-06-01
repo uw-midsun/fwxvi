@@ -38,7 +38,7 @@ CanListener serverCanListener;
 CanScheduler serverCanScheduler;
 SPIManager serverSPIManager;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   std::cout << "Running Server" << std::endl;
   Server Server;
   Terminal applicationTerminal(&Server);

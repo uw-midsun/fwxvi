@@ -33,7 +33,7 @@ static FrontControllerStorage mock_storage = { 0 };
 static GpioAddress mock_accel_pedal_gpio = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 static uint16_t mock_raw_adc_reading = 0;
 
-StatusCode TEST_MOCK(adc_read_raw)(GpioAddress *addr, uint16_t *reading) {
+StatusCode TEST_MOCK(adc_read_raw)(GpioAddress* addr, uint16_t* reading) {
   if (reading == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -306,7 +306,7 @@ void test_opd_visualize_curve(void) {
   strncpy(file_path, __FILE__, sizeof(file_path) - 1);
   file_path[sizeof(file_path) - 1] = '\0';
 
-  char *dir = dirname(file_path);
+  char* dir = dirname(file_path);
 
   int remaining_space = sizeof(out_dir) - strlen(dir) - 1;
   if (remaining_space <= 0) {
@@ -322,7 +322,7 @@ void test_opd_visualize_curve(void) {
     mkdir(out_dir, 0755);
   }
 
-  FILE *f = fopen(out_file, "w");
+  FILE* f = fopen(out_file, "w");
   TEST_ASSERT_NOT_NULL(f);
 
   fprintf(f, "adc_input,adc_input_normalized,accel_percentage,accel_state,current_speed\n");

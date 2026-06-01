@@ -48,13 +48,13 @@ class JSONWatcher : public QObject {
    * @brief   Construct a new JSONWatcher object
    * @param   parent A parent object (optional, not used)
    */
-  explicit JSONWatcher(QObject *parent = nullptr);
+  explicit JSONWatcher(QObject* parent = nullptr);
 
   /**
    * @brief   Set list of files to watch
    * @param   files Absolute or relative paths to JSON files
    */
-  void setFiles(const QStringList &files);
+  void setFiles(const QStringList& files);
 
   /**
    * @brief Enable or disable polling for changes
@@ -68,33 +68,33 @@ class JSONWatcher : public QObject {
    *          performs initial scan and emits clientsListChanged().
    * @param   dir_path Path to directory
    */
-  void setDirectory(const QString &dir_path);
+  void setDirectory(const QString& dir_path);
 
  signals:
   /**
    * @brief   Emitted after a file change has been debounced
    * @param   path Absolute path to file
    */
-  void fileChangedDebounced(const QString &path);
+  void fileChangedDebounced(const QString& path);
 
   /**
    * @brief   Emitted when the directory JSON fie set changes
    * @param   files Absolute path to file
    */
-  void clientsListChanged(const QStringList &files);
+  void clientsListChanged(const QStringList& files);
 
  private slots:
   /**
    * @brief   Handle raw file system change
    * @param   path Absolute path to file
    */
-  void onFsChanged(const QString &path);
+  void onFsChanged(const QString& path);
 
   /**
    * @brief   Handle directory membership change
    * @param   dir Path to directory
    */
-  void onDirChanged(const QString &dir);
+  void onDirChanged(const QString& dir);
 
   /**
    * @brief   Flush debounced events

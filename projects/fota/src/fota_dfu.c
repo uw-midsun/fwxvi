@@ -70,12 +70,12 @@ static FotaError fota_dfu_save_application_data() {
   return FOTA_ERROR_SUCCESS;
 }
 
-static FotaError fota_dfu_write_chunk(FotaDatagram *datagram) {
+static FotaError fota_dfu_write_chunk(FotaDatagram* datagram) {
   if (datagram->header.type != FOTA_DATAGRAM_TYPE_FIRMWARE_CHUNK) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  FotaDatagramPayload_FirmwareChunk *chunk = (FotaDatagramPayload_FirmwareChunk *)datagram->data;
+  FotaDatagramPayload_FirmwareChunk* chunk = (FotaDatagramPayload_FirmwareChunk*)datagram->data;
 
   if (datagram->header.datagram_id != fota_dfu_context.expected_datagram_id) {
     return FOTA_ERROR_BOOTLOADER_SEQUENCE_OUT_OF_ORDER;
@@ -98,7 +98,7 @@ static FotaError fota_dfu_write_chunk(FotaDatagram *datagram) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, uintptr_t app_start_addr) {
+FotaError fota_dfu_init(PacketManager* packet_manager, uintptr_t staging_base, uintptr_t app_start_addr) {
   if (packet_manager == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -124,7 +124,7 @@ FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, u
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_dfu_process(FotaDatagram *datagram) {
+FotaError fota_dfu_process(FotaDatagram* datagram) {
   if (!fota_dfu_context.is_initialized) {
     return FOTA_ERROR_BOOTLOADER_UNINITIALIZED;
   }
@@ -140,7 +140,7 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
         return FOTA_ERROR_BOOTLOADER_INVALID_STATE;
       }
 
-      FotaDatagramPayload_FirmwareMetadata *metadata = (FotaDatagramPayload_FirmwareMetadata *)datagram->data;
+      FotaDatagramPayload_FirmwareMetadata* metadata = (FotaDatagramPayload_FirmwareMetadata*)datagram->data;
 
       fota_dfu_context.binary_size = metadata->binary_size;
       fota_dfu_context.expected_crc32 = metadata->expected_binary_crc32;
@@ -179,7 +179,7 @@ FotaError fota_dfu_process(FotaDatagram *datagram) {
 
     /* JUMP APPLICATIONS */
     case FOTA_DATAGRAM_TYPE_JUMP_TO_APP: {
-      FotaDatagramPayload_JumpToApp *jump = (FotaDatagramPayload_JumpToApp *)datagram->data;
+      FotaDatagramPayload_JumpToApp* jump = (FotaDatagramPayload_JumpToApp*)datagram->data;
       if (jump->validation_flag != 1U || jump->magic_number != MIDNIGHT_SUN_MAGIC_NUMBER) {
         return FOTA_ERROR_BOOTLOADER_INVALID_DATAGRAM;
       }

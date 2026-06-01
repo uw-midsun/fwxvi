@@ -68,9 +68,9 @@ typedef struct {
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
   ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
 
-  RearControllerConfig *config;
+  RearControllerConfig* config;
 } RearControllerStorage;
 
-StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerConfig *config);
+StatusCode rear_controller_init(RearControllerStorage* storage, RearControllerConfig* config);
 
 /** @} */

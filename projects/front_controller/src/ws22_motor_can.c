@@ -16,11 +16,11 @@
 /* Intra-component Headers */
 #include "ws22_motor_can.h"
 
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 
 static Ws22MotorCanStorage s_ws22_motor_can_storage = { 0 };
 
-static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanMessage *msg) {
+static StatusCode s_build_drive_command(Ws22MotorControlData* control_data, CanMessage* msg) {
   if (control_data == NULL || msg == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -55,7 +55,7 @@ static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanM
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_status_info(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 4U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -68,7 +68,7 @@ static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, CanMe
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -79,7 +79,7 @@ static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, C
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -93,7 +93,7 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_phase_current(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -104,7 +104,7 @@ static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, Can
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -115,7 +115,7 @@ static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData *telemetry, Can
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_current(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_motor_current(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -126,7 +126,7 @@ static StatusCode s_process_motor_current(Ws22MotorTelemetryData *telemetry, Can
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -137,7 +137,7 @@ static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData *telemetry, Ca
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_rail_15v(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -147,7 +147,7 @@ static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, CanMessa
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, CanMessage *msg) {
+static StatusCode s_process_temperature(Ws22MotorTelemetryData* telemetry, CanMessage* msg) {
   if (telemetry == NULL || msg == NULL || msg->dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -158,7 +158,7 @@ static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, CanMe
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_init(FrontControllerStorage *storage) {
+StatusCode ws22_motor_can_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -198,7 +198,7 @@ StatusCode ws22_motor_can_transmit_drive_command(void) {
   return can_transmit(&msg);
 }
 
-StatusCode ws22_motor_can_process_rx(CanMessage *msg) {
+StatusCode ws22_motor_can_process_rx(CanMessage* msg) {
   if (msg == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -236,10 +236,10 @@ StatusCode ws22_motor_can_process_rx(CanMessage *msg) {
   }
 }
 
-Ws22MotorControlData *ws22_motor_can_get_control_data(void) {
+Ws22MotorControlData* ws22_motor_can_get_control_data(void) {
   return &s_ws22_motor_can_storage.control;
 }
 
-Ws22MotorTelemetryData *ws22_motor_can_get_telemetry_data(void) {
+Ws22MotorTelemetryData* ws22_motor_can_get_telemetry_data(void) {
   return &s_ws22_motor_can_storage.telemetry;
 }

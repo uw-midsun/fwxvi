@@ -33,6 +33,6 @@
  * @param   app_start_addr Address to jump to after flashing
  * @return  FOTA_ERROR_SUCCESS or FOTA_ERROR_INVALID_ARGS
  */
-FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, uintptr_t app_start_addr);
+FotaError fota_dfu_init(PacketManager* packet_manager, uintptr_t staging_base, uintptr_t app_start_addr);
 
 /** @} */

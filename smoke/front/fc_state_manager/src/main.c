@@ -89,7 +89,7 @@ static void set_steering_buttons_horn_enabled(uint16_t val) {
 //   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 7)) | ((val & 0b1) << 7);
 // }
 
-static const char *print_state_str(FrontControllerState state) {
+static const char* print_state_str(FrontControllerState state) {
   switch (state) {
     case FRONT_CONTROLLER_STATE_IDLE:
       return "IDLE";
@@ -198,7 +198,7 @@ TASK(front_controller_simulate_can, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   mpxe_init(argc, argv);
 #else
 int main() {

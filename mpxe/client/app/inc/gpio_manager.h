@@ -50,7 +50,7 @@ class GpioManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setGpioPinState(std::string &payload);
+  void setGpioPinState(std::string& payload);
 
   /**
    * @brief   Sets all Gpio Pin state given the data payload
@@ -58,7 +58,7 @@ class GpioManager {
    *          This function is not responsible for handling update errors
    * @param   payload Message data payload to be parsed
    */
-  void setGpioAllStates(std::string &payload);
+  void setGpioAllStates(std::string& payload);
 
   /**
    * @brief   Process a get Gpio Pin state command given the data payload
@@ -67,7 +67,7 @@ class GpioManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processGpioPinState(std::string &payload);
+  std::string processGpioPinState(std::string& payload);
 
   /**
    * @brief   Process a get all Gpio Pin states command
@@ -84,7 +84,7 @@ class GpioManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processGpioPinMode(std::string &payload);
+  std::string processGpioPinMode(std::string& payload);
 
   /**
    * @brief   Process a get all Gpio Pin modes command
@@ -101,7 +101,7 @@ class GpioManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processGpioPinAltFunction(std::string &payload);
+  std::string processGpioPinAltFunction(std::string& payload);
 
   /**
    * @brief   Process a get all Gpio Pin alternate functions command

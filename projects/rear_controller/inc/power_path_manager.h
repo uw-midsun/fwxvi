@@ -30,7 +30,7 @@
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid argument is passed
  */
-StatusCode power_path_manager_init(RearControllerStorage *storage);
+StatusCode power_path_manager_init(RearControllerStorage* storage);
 
 /**
  * @brief   Run power path manager calculations

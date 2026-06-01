@@ -23,8 +23,8 @@
 
 static UART_HandleTypeDef hard_fault_uart;
 
-int _write(int file, char *ptr, int len) {
-  HAL_UART_Transmit(&hard_fault_uart, (uint8_t *)ptr, len, HAL_MAX_DELAY);
+int _write(int file, char* ptr, int len) {
+  HAL_UART_Transmit(&hard_fault_uart, (uint8_t*)ptr, len, HAL_MAX_DELAY);
   return len;
 }
 
@@ -77,7 +77,7 @@ void HardFault_Handler() {
       ".syntax divided                \n");
 }
 
-void HardFault_HandlerC(uint32_t *hardfault_args) {
+void HardFault_HandlerC(uint32_t* hardfault_args) {
   /* Disable all interrupts and initialize UART */
   __disable_irq();
   retarget_init();
@@ -91,12 +91,12 @@ void HardFault_HandlerC(uint32_t *hardfault_args) {
   volatile uint32_t stacked_pc = hardfault_args[6];
   volatile uint32_t stacked_psr = hardfault_args[7];
 
-  volatile uint32_t _CFSR = (*((volatile uint32_t *)(0xE000ED28U)));
-  volatile uint32_t _HFSR = (*((volatile uint32_t *)(0xE000ED2CU)));
-  volatile uint32_t _DFSR = (*((volatile uint32_t *)(0xE000ED30U)));
-  volatile uint32_t _AFSR = (*((volatile uint32_t *)(0xE000ED3CU)));
-  volatile uint32_t _MMAR = (*((volatile uint32_t *)(0xE000ED34U)));
-  volatile uint32_t _BFAR = (*((volatile uint32_t *)(0xE000ED38U)));
+  volatile uint32_t _CFSR = (*((volatile uint32_t*)(0xE000ED28U)));
+  volatile uint32_t _HFSR = (*((volatile uint32_t*)(0xE000ED2CU)));
+  volatile uint32_t _DFSR = (*((volatile uint32_t*)(0xE000ED30U)));
+  volatile uint32_t _AFSR = (*((volatile uint32_t*)(0xE000ED3CU)));
+  volatile uint32_t _MMAR = (*((volatile uint32_t*)(0xE000ED34U)));
+  volatile uint32_t _BFAR = (*((volatile uint32_t*)(0xE000ED38U)));
 
   printf("R0: 0x%lx\n\r", stacked_r0);
   printf("R1: 0x%lx\n\r", stacked_r1);

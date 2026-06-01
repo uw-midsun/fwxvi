@@ -16,14 +16,14 @@
 #include "status.h"
 #include "uart.h"
 
-StatusCode uart_init(UartPort uart, UartSettings *settings) {
+StatusCode uart_init(UartPort uart, UartSettings* settings) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode uart_rx(UartPort uart, uint8_t* data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode uart_tx(UartPort uart, uint8_t* data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }

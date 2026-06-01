@@ -66,7 +66,7 @@ StatusCode adc_init(void);
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already added
  */
-StatusCode adc_add_channel(GpioAddress *address);
+StatusCode adc_add_channel(GpioAddress* address);
 
 /**
  * @brief   Runs ADC conversions for all added channels
@@ -85,7 +85,7 @@ StatusCode adc_run(void);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if reading fails
  */
-StatusCode adc_read_raw(GpioAddress *address, uint16_t *reading);
+StatusCode adc_read_raw(GpioAddress* address, uint16_t* reading);
 
 /**
  * @brief   Read the most recent converted value for a Gpio address in mV
@@ -95,7 +95,7 @@ StatusCode adc_read_raw(GpioAddress *address, uint16_t *reading);
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if reading fails
  */
-StatusCode adc_read_converted(GpioAddress *address, uint16_t *reading);
+StatusCode adc_read_converted(GpioAddress* address, uint16_t* reading);
 
 /**
  * @brief   Clears the ADC state
@@ -111,7 +111,7 @@ void adc_deinit(void);
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode adc_set_reading(GpioAddress *address, uint16_t reading);
+StatusCode adc_set_reading(GpioAddress* address, uint16_t reading);
 #endif
 
 /** @} */
