@@ -62,11 +62,9 @@ typedef struct {
 
 static const FileStringLut file_string_lut[] = {
     {FILE_TELEMETRY, "telemetry.c"},
-    {FILE_CAN_COMMUNICATION, "can_communication.c"},
     {FILE_STEERING, "steering.c"},
     {FILE_REAR_CONTROLLER, "rear_controller.c"},
     {FILE_FRONT_CONTROLLER, "front_controller.c"},
-    {FILE_IMU, "imu.c"},
 };
 
 
@@ -90,9 +88,6 @@ static const FileStringLut file_string_lut[] = {
             case FILE_FRONT_CONTROLLER:\
                         set_error_front_controller_msg_status_code(status_expr); \
                         set_error_front_controller_msg_file(file_string_lut[i].file);\
-            case FILE_IMU:\
-                        set_error_imu_msg_status_code(status_expr); \
-                        set_error_imu_msg_file(file_string_lut[i].file);\
             case FILE_REAR_CONTROLLER:\
                         set_error_rear_controller_msg_status_code(status_expr); \
                         set_error_rear_controller_msg_file(file_string_lut[i].file);\

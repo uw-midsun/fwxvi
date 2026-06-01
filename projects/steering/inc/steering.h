@@ -115,9 +115,6 @@ typedef struct {
   uint8_t rear_controller_status_code;
   uint32_t rear_controller_file;
 
-  uint8_t imu_status_code;
-  uint32_t imu_file;
-
   uint8_t steering_status_code;
   uint32_t steering_file;
 } DisplayData;

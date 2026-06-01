@@ -293,14 +293,13 @@ StatusCode display_rx_medium() {
   display_data->front_controller_file = get_front_controller_file();
   display_data->rear_controller_status_code = get_rear_controller_status_status_code();
   display_data->rear_controller_file = get_rear_controller_file();
-  display_data->imu_status_code = get_imu_status_status_code();
-  display_data->imu_file = get_imu_file();
   display_data->steering_status_code = get_steering_status_status_code();
   display_data->steering_file = get_steering_file();
 
+  
+
   return STATUS_CODE_OK;
 }
-
 StatusCode display_rx_fast() {
   return STATUS_CODE_OK;
 }
