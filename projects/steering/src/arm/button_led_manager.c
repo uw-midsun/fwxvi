@@ -67,7 +67,7 @@ static TIMDMABoardManager s_right_board = {.t1_high_ticks = 0U, .t0_high_ticks =
 static TIMDMABoardManager s_main_board = {.t1_high_ticks = 0U, .t0_high_ticks = 0U, .reset_slots = 0U, .dma_length = 0U, .gpio_address = GPIO_STEERING_RGB_LIGHTS_PWM_PIN, .tim_handle = {0U}, .dma_handle = {0U}, .tim_channel = TIM_CHANNEL_2};
 
 static uint16_t psc = 0U;
-static uint16_t period = 0U;
+static uint16_t arr = 0U;
 
 
 void DMA1_Channel2_IRQHandler(void) {
@@ -93,7 +93,7 @@ static StatusCode button_led_manager_init_dma(DMA_HandleTypeDef *dma_handle, DMA
   dma_handle->Init.PeriphDataAlignment = dma_periph_alignment;
   dma_handle->Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
 
-  if (HAL_DMA_Init(&dma_handle) != HAL_OK) {
+  if (HAL_DMA_Init(dma_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -101,8 +101,27 @@ static StatusCode button_led_manager_init_dma(DMA_HandleTypeDef *dma_handle, DMA
 }
 
 static StatusCode button_led_manager_init_tim_variables(TIMDMABoardManager *board){
-  
 
+  float counts_per_bit = (float)(board->timer_arr + 1U);
+  board->t1_high_ticks = (uint16_t)((SK6812_T1H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
+  board->t0_high_ticks = (uint16_t)((SK6812_T0H_US / SK6812_BIT_PERIOD_US) * counts_per_bit + 0.5f);
+
+  /* Ensure minimum values */
+  if (board->t1_high_ticks == 0) board->t1_high_ticks = 1;
+  if (board->t1_high_ticks > board->timer_arr) board->t1_high_ticks = board->timer_arr;
+
+  /* T0 can be 0 for very short low pulse */
+  if (board->t0_high_ticks > board->timer_arr) board->t0_high_ticks = board->timer_arr / 4;
+
+  /* Reset slots - number of bit-periods to hold line low (~80µs) */
+  board->reset_slots = (uint16_t)((SK6812_RESET_US / SK6812_BIT_PERIOD_US) + 0.5f);
+
+  /* Ensure we don't exceed DMA buffer size */
+  uint32_t required_size = (NUM_STEERING_BUTTONS * BUTTON_LED_MANAGER_BITS_PER_LED) + board->reset_slots;
+
+  if (required_size > BUTTON_LED_MANAGER_DMA_BUF_LEN) {
+    board->reset_slots = (uint16_t)(BUTTON_LED_MANAGER_DMA_BUF_LEN - (NUM_STEERING_BUTTONS * BUTTON_LED_MANAGER_BITS_PER_LED));
+  }
   return STATUS_CODE_OK;
 
 }
@@ -115,13 +134,13 @@ static uint16_t button_led_manager_period(){
 static StatusCode button_led_manager_init_tim(TIMDMABoardManager *board){
   TIM_HandleTypeDef tim_handle = board->tim_handle;
   tim_handle.Init.Prescaler = psc;
-  tim_handle.Init.Period = period;
+  tim_handle.Init.Period = arr;
   tim_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
   tim_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   tim_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   tim_handle.Init.RepetitionCounter = 0U;
 
-  if (HAL_TIM_Init(&tim_handle) != HAL_OK) {
+  if (HAL_TIM_Base_Init(&tim_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
@@ -164,7 +183,7 @@ static StatusCode button_led_manager_create_dma_buffer(TIMDMABoardManager *board
   return STATUS_CODE_OK;
 }
 
-static StatusCode button_led_manager_init(SteeringStorage *storage){
+StatusCode button_led_manager_init(SteeringStorage *storage){
   /* Steering storage*/
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -182,7 +201,11 @@ static StatusCode button_led_manager_init(SteeringStorage *storage){
   __HAL_RCC_TIM2_CLK_ENABLE();
   __HAL_RCC_TIM4_CLK_ENABLE();  //TODO: Make sure this code acc is going
 
-  period = button_led_manager_period();
+  arr = button_led_manager_period();
+
+  button_led_manager_init_tim_variables(&s_main_board);
+  button_led_manager_init_tim_variables(&s_left_board);
+  button_led_manager_init_tim_variables(&s_right_board);
 
   if(button_led_manager_init_tim(&s_main_board) != STATUS_CODE_OK){
     return STATUS_CODE_INVALID_ARGS;
@@ -234,7 +257,7 @@ static StatusCode button_led_manager_init(SteeringStorage *storage){
   return STATUS_CODE_OK;
 }
 
-static StatusCode button_led_manager_update(void){
+StatusCode button_led_manager_update(void){
   if (steering_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -252,9 +275,9 @@ static StatusCode button_led_manager_update(void){
   steering_storage->button_led_manager->is_transmitting = true;
 
   /* HAL_TIM_PWM_Start_DMA*/
-  HAL_TIM_PWM_Start_DMA(&s_main_board.tim_handle, &s_main_board.tim_channel, (uint32_t *)s_main_board.dma_buffer, s_main_board.reset_slots);
-  HAL_TIM_PWM_Start_DMA(&s_left_board.tim_handle, &s_left_board.tim_channel, (uint32_t *)s_left_board.dma_buffer, s_left_board.reset_slots);
-  HAL_TIM_PWM_Start_DMA(&s_right_board.tim_handle, &s_right_board.tim_channel, (uint32_t *)s_right_board.dma_buffer, s_right_board.reset_slots);
+  HAL_TIM_PWM_Start_DMA(&s_main_board.tim_handle, s_main_board.tim_channel, (uint32_t *)s_main_board.dma_buffer, s_main_board.dma_length);
+  HAL_TIM_PWM_Start_DMA(&s_left_board.tim_handle, s_left_board.tim_channel, (uint32_t *)s_left_board.dma_buffer, s_left_board.dma_length);
+  HAL_TIM_PWM_Start_DMA(&s_right_board.tim_handle, s_right_board.tim_channel, (uint32_t *)s_right_board.dma_buffer, s_right_board.dma_length);
 
   return STATUS_CODE_OK;
 }
@@ -296,8 +319,8 @@ StatusCode button_led_manager_set_color(SteeringButtons button, LEDPixels color_
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
   /* Add a breakpoint here to verify callback is reached */
-  if (htim == &s_tim2_handle) {
-    HAL_TIM_PWM_Stop_DMA(&s_tim2_handle, TIM_CHANNEL_3);
+  if (htim == &s_main_board.tim_handle) {
+    HAL_TIM_PWM_Stop_DMA(&s_main_board.tim_handle, TIM_CHANNEL_3);
     s_button_led_manager.is_transmitting = false;
     s_button_led_manager.needs_update = false;
   }
