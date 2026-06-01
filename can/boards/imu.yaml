@@ -34,15 +34,4 @@ Messages:
         length: 16
       z_axis:
         length: 16
-  imu_error_msg:
-    id: 0
-    critical: true
-    cycle: "fast"
-    target:
-      steering:
-        watchdog: 0
-    signals:
-      status_code:
-        length: 8
-      file:
-        length: 32
+

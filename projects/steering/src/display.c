@@ -151,6 +151,10 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
     status_ok_or_return(gui_widgets_set_temps_stats_label(steering_storage->ws22_motor_can_storage->telemetry.motor_temp, display_data->max_cell_temp));
     status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
+    status_ok_or_return(gui_widgets_set_warning(display_data->telemetry_status_code, display_data->telemetry_file));
+    status_ok_or_return(gui_widgets_set_warning(display_data->front_controller_status_code, display_data->front_controller_file));
+    status_ok_or_return(gui_widgets_set_warning(display_data->rear_controller_status_code, display_data->rear_controller_file));
+    status_ok_or_return(gui_widgets_set_warning(display_data->steering_status_code, display_data->steering_file));  
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
