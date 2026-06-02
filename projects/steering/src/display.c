@@ -135,7 +135,7 @@ static void s_process_pending_menu_input(void) {
   StatusCode menu_status = gui_menu_process_pending();
 
   if (menu_status == STATUS_CODE_INVALID_ARGS) {
-    //TODO
+    // TODO
   } else if (menu_status != STATUS_CODE_OK) {
     LOG_DEBUG("gui menu input failed: %u\r\n", menu_status);
   }
