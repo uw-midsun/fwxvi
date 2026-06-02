@@ -164,7 +164,7 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
 
   } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
+    for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i], display_data->cell_discharging[i]));
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
@@ -298,6 +298,43 @@ StatusCode display_rx_medium() {
   };
 
   memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
+
+  /* Second greatest piece of code ever written */
+  bool cell_discharging[36] = { 0 };
+  cell_discharging[0] = get_AFE_discharge_bitset_AFE1_cell_0();
+  cell_discharging[1] = get_AFE_discharge_bitset_AFE1_cell_1();
+  cell_discharging[2] = get_AFE_discharge_bitset_AFE1_cell_2();
+  cell_discharging[3] = get_AFE_discharge_bitset_AFE1_cell_3();
+  cell_discharging[4] = get_AFE_discharge_bitset_AFE1_cell_4();
+  cell_discharging[5] = get_AFE_discharge_bitset_AFE1_cell_5();
+  cell_discharging[6] = get_AFE_discharge_bitset_AFE1_cell_6();
+  cell_discharging[7] = get_AFE_discharge_bitset_AFE1_cell_7();
+  cell_discharging[8] = get_AFE_discharge_bitset_AFE1_cell_8();
+  cell_discharging[9] = get_AFE_discharge_bitset_AFE1_cell_9();
+  cell_discharging[10] = get_AFE_discharge_bitset_AFE1_cell_10();
+  cell_discharging[11] = get_AFE_discharge_bitset_AFE1_cell_11();
+  cell_discharging[12] = get_AFE_discharge_bitset_AFE1_cell_12();
+  cell_discharging[13] = get_AFE_discharge_bitset_AFE1_cell_13();
+  cell_discharging[14] = get_AFE_discharge_bitset_AFE1_cell_14();
+  cell_discharging[15] = get_AFE_discharge_bitset_AFE1_cell_15();
+  cell_discharging[16] = get_AFE_discharge_bitset_AFE2_cell_0();
+  cell_discharging[17] = get_AFE_discharge_bitset_AFE2_cell_1();
+  cell_discharging[18] = get_AFE_discharge_bitset_AFE2_cell_2();
+  cell_discharging[19] = get_AFE_discharge_bitset_AFE2_cell_3();
+  cell_discharging[20] = get_AFE_discharge_bitset_AFE2_cell_4();
+  cell_discharging[21] = get_AFE_discharge_bitset_AFE2_cell_5();
+  cell_discharging[22] = get_AFE_discharge_bitset_AFE2_cell_6();
+  cell_discharging[23] = get_AFE_discharge_bitset_AFE2_cell_7();
+  cell_discharging[24] = get_AFE_discharge_bitset_AFE2_cell_8();
+  cell_discharging[25] = get_AFE_discharge_bitset_AFE2_cell_9();
+  cell_discharging[26] = get_AFE_discharge_bitset_AFE2_cell_10();
+  cell_discharging[27] = get_AFE_discharge_bitset_AFE2_cell_11();
+  cell_discharging[28] = get_AFE_discharge_bitset_AFE2_cell_12();
+  cell_discharging[29] = get_AFE_discharge_bitset_AFE2_cell_13();
+  cell_discharging[30] = get_AFE_discharge_bitset_AFE2_cell_14();
+  cell_discharging[31] = get_AFE_discharge_bitset_AFE2_cell_15();
+
+  memcpy(display_data->cell_discharging, cell_discharging, sizeof(cell_discharging));
 
   return STATUS_CODE_OK;
 }

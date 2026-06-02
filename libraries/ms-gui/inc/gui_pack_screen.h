@@ -40,9 +40,10 @@ void gui_pack_screen_deinit(void);
  * @brief   Update a pack-voltage table cell
  * @param   cell_idx Zero-based cell index
  * @param   cell_voltage Cell voltage in the same fixed-point mV units used by the BPS CAN signal
+ * @param   is_discharging Whether the cell is currently discharging
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage);
+StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage, bool is_discharging);
 
 /**
  * @brief   Update the speedometer label

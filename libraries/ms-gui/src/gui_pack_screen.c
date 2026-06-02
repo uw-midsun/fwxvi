@@ -133,7 +133,7 @@ void gui_pack_screen_deinit(void) {
   s_pack_widgets_initialized = false;
 }
 
-StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
+StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage, bool is_discharging) {
   if (!s_pack_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -150,7 +150,15 @@ StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t ce
 
   char buf[PACK_CELL_TEXT_LEN];
   s_format_cell(buf, cell_idx);
-  return lvgl_widgets_set_table_cell(&s_pack_table, cell_idx / PACK_TABLE_COLS, cell_idx % PACK_TABLE_COLS, buf);
+  status_ok_or_return(lvgl_widgets_set_table_cell(&s_pack_table, cell_idx / PACK_TABLE_COLS, cell_idx % PACK_TABLE_COLS, buf));
+
+  // Set cell color based on discharge status
+  GuiColorId color_id = GUI_COLOR_TEXT_PRIMARY;
+  if (is_discharging) {
+    color_id = GUI_COLOR_CELL_DISCHARGING;
+  }
+
+  return lvgl_widgets_set_table_cell_color(&s_pack_table, cell_idx / PACK_TABLE_COLS, cell_idx % PACK_TABLE_COLS, color_id);
 }
 
 StatusCode gui_pack_screen_widget_set_speed_label(int16_t speed_kmh) {
@@ -189,9 +197,10 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
 
 void gui_pack_screen_deinit(void) {}
 
-StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage) {
+StatusCode gui_pack_screen_widget_set_pack_voltage(uint8_t cell_idx, uint16_t cell_voltage, bool is_discharging) {
   (void)cell_idx;
   (void)cell_voltage;
+  (void)is_discharging;
   return STATUS_CODE_OK;
 }
 
