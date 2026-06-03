@@ -26,7 +26,7 @@
  * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
-#define IS_REAR_CONNECTED 1U
+#define IS_REAR_CONNECTED 0U
 #define DRIVE_STATE_MANAGER_DEBUG 0U
 
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
@@ -84,6 +84,8 @@ static StatusCode drive_state_manager_reverse(void) {
   button_led_disable(STEERING_BUTTON_NEUTRAL);
   button_led_disable(STEERING_BUTTON_DRIVE);
   button_led_enable(STEERING_BUTTON_REVERSE);
+  button_led_enable(STEERING_BUTTON_LEFT_LIGHT);
+  button_led_enable(STEERING_BUTTON_RIGHT_LIGHT);
   buzzer_play_reverse();
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_REVERSE);
