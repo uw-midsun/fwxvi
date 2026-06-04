@@ -42,7 +42,8 @@
 
 #define GUI_UPDATE_PERIOD_MS 20U
 
-static SteeringStorage s_demo_storage = { 0 };
+static Ws22MotorCanStorage s_demo_motor_can_storage = { 0 };
+static SteeringStorage s_demo_storage = { .ws22_motor_can_storage = &s_demo_motor_can_storage };
 
 #if SHOW_SMOKE_TEST_LOGO_IMAGE
 static LvglImage s_smoke_logo_image = { 0 };
@@ -109,7 +110,9 @@ static void s_update_demo_display_data(uint32_t step) {
   s_demo_storage.display_data.vehicle_velocity = (int16_t)s_triangle_wave(step, 400U, 160U);
   s_demo_storage.display_data.pedal_percentage = (uint8_t)s_triangle_wave(step + 80U, 180U, 100U);
   s_demo_storage.display_data.brake_enabled = ((step / 45U) % 6U) == 0U;
+  s_demo_storage.display_data.brake_percentage = (uint8_t)s_triangle_wave(step + 80U, 180U, 100U);
   s_demo_storage.display_data.motor_heatsink_temp = (int16_t)(25U + s_triangle_wave(step + 120U, 240U, 75U));
+  s_demo_storage.display_data.motor_temp = (int16_t)(20U + s_triangle_wave(step + 100U, 260U, 70U));
   s_demo_storage.display_data.motor_velocity = (int16_t)s_triangle_wave(step + 40U, 160U, 100U);
   s_demo_storage.display_data.pack_voltage = 120U + s_triangle_wave(step + 20U, 300U, 40U);
   s_demo_storage.display_data.motor_bus_voltage = 110U + s_triangle_wave(step + 60U, 260U, 30U);
@@ -136,6 +139,13 @@ static void s_update_demo_display_data(uint32_t step) {
       s_demo_storage.display_data.bps_fault_cell = 0U;
       break;
   }
+
+  s_demo_motor_can_storage.telemetry.bus_voltage = (float)s_demo_storage.display_data.motor_bus_voltage;
+  s_demo_motor_can_storage.telemetry.vehicle_velocity_kph = (float)s_demo_storage.display_data.vehicle_velocity;
+  s_demo_motor_can_storage.telemetry.motor_velocity = (float)s_demo_storage.display_data.motor_velocity;
+  s_demo_motor_can_storage.telemetry.heat_sink_temp = (float)s_demo_storage.display_data.motor_heatsink_temp;
+  s_demo_motor_can_storage.telemetry.motor_temp = (float)s_demo_storage.display_data.motor_temp;
+  s_demo_motor_can_storage.telemetry.merged_flags = s_demo_storage.display_data.ws22_flags;
 }
 
 TASK(sc_gui_api, TASK_STACK_2048) {
