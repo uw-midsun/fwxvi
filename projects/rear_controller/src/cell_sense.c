@@ -260,7 +260,7 @@ static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_
  ************************************************************************************************/
 
 static void s_balance_cells(uint16_t min_voltage) {
-  if (!s_balancing_enabled){
+  if (!s_balancing_enabled) {
     return;
   }
   uint16_t balancing_threshold = min_voltage;

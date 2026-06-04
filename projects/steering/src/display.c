@@ -33,8 +33,8 @@
 /* Intra-component Headers */
 #include "display.h"
 #include "steering_getters.h"
-#include "steering_setters.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
@@ -216,7 +216,6 @@ static StatusCode cell_balancing_toggle(void) {
   gui_menu_set_discharge_label(s_balancing_enabled ? "Cell Discharge: ON" : "Cell Discharge: OFF");
   return STATUS_CODE_OK;
 }
-
 
 StatusCode display_init(SteeringStorage *storage) {
   if (storage == NULL) {
