@@ -28,6 +28,7 @@
 typedef enum {
   REAR_CONTROLLER_STATE_IDLE,  /**< Ready but not driving or charging, cars in neutral */
   REAR_CONTROLLER_STATE_DRIVE, /**< Driving: motor relays closed, LV enabled */
+  REAR_CONTROLLER_STATE_CHARGE,/**< Charging: motor off, battery relays closed, balancing allowed */
   REAR_CONTROLLER_STATE_FAULT, /**< Faulted: relays open, latched until reset */
   REAR_CONTROLLER_STATE_START, /**< Start: relays open, latched until begin */
 } RearControllerState;
@@ -36,6 +37,7 @@ typedef enum {
   REAR_CONTROLLER_EVENT_NONE = 0,
   REAR_CONTROLLER_EVENT_INIT_COMPLETE,
   REAR_CONTROLLER_EVENT_DRIVE_REQUEST,
+  REAR_CONTROLLER_EVENT_CHARGE_REQUEST,
   REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST,
   REAR_CONTROLLER_EVENT_FAULT,
   REAR_CONTROLLER_EVENT_RESET

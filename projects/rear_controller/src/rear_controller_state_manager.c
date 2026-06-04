@@ -17,6 +17,7 @@
 #include "global_enums.h"
 #include "rear_controller_getters.h"
 #include "rear_controller_safety_limits.h"
+#include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
 
@@ -47,6 +48,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
     case REAR_CONTROLLER_STATE_IDLE:
       relays_disable_ws22_lv();
       relays_open_motor();
+      set_rear_controller_status_triggers_power_state(VEHICLE_POWER_STATE_IDLE);
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
@@ -54,18 +56,28 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       if (rear_controller_storage->precharge_complete) {
         relays_enable_ws22_lv();
         relays_close_motor();
+        set_rear_controller_status_triggers_power_state(VEHICLE_POWER_STATE_DRIVE);
       } else {
         rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
       }
 #else
       relays_enable_ws22_lv();
       relays_close_motor();
+      set_rear_controller_status_triggers_power_state(VEHICLE_POWER_STATE_DRIVE);
 #endif
+      break;
+
+    case REAR_CONTROLLER_STATE_CHARGE:
+      relays_disable_ws22_lv();
+      relays_open_motor();
+      set_rear_controller_status_triggers_power_state(VEHICLE_POWER_STATE_CHARGE);
+      CONDITIONAL_LOG_DEBUG("Entering CHARGE state\r\n");
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
       relays_disable_ws22_lv();
       relays_reset();
+      set_rear_controller_status_triggers_power_state(VEHICLE_POWER_STATE_FAULT);
       break;
     case REAR_CONTROLLER_STATE_START:
       relays_close_pos();
@@ -97,11 +109,21 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
     case REAR_CONTROLLER_STATE_IDLE:
       if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
+      else if (event == REAR_CONTROLLER_EVENT_CHARGE_REQUEST)
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_CHARGE);
       else if (event == REAR_CONTROLLER_EVENT_FAULT)
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
+      if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
+      } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
+      }
+      break;
+
+    case REAR_CONTROLLER_STATE_CHARGE:
       if (event == REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
@@ -129,6 +151,8 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
       } else if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_DRIVE);
+      } else if (event == REAR_CONTROLLER_EVENT_CHARGE_REQUEST) {
+        rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_CHARGE);
       } else if (event == REAR_CONTROLLER_EVENT_FAULT) {
         rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_FAULT);
       }
@@ -168,6 +192,8 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
 #else
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_DRIVE_REQUEST);
 #endif
+  } else if (drive_state_from_front == VEHICLE_DRIVE_STATE_CHARGING && s_current_state != REAR_CONTROLLER_STATE_CHARGE) {
+    rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_CHARGE_REQUEST);
   } else if ((drive_state_from_front == VEHICLE_DRIVE_STATE_NEUTRAL || drive_state_from_front == VEHICLE_DRIVE_STATE_FAULT) && s_current_state != REAR_CONTROLLER_STATE_IDLE) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
   }
