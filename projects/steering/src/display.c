@@ -38,7 +38,7 @@
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
-static bool s_balancing_enabled = true;
+static bool s_balancing_enabled = false;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -254,13 +254,13 @@ StatusCode display_init(SteeringStorage *storage) {
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 #else
   status_ok_or_return(gui_init(&settings));
-  gui_menu_set_discharge_label(s_balancing_enabled ? "Cell Discharge: ON" : "Cell Discharge: OFF");
-  status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
-  set_steering_buttons_balancing_enabled(s_balancing_enabled);
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
   LOG_DEBUG("LVGL display initialized\r\n");
 #endif
+  status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
+  set_steering_buttons_balancing_enabled(s_balancing_enabled);
+
   return STATUS_CODE_OK;
 }
 

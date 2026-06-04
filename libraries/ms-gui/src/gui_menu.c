@@ -52,7 +52,7 @@ static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
   },
   [GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE] = {
     .type = GUI_MENU_ITEM_ACTION,
-    .action_label = "Toggle Cell Discharge",
+    .action_label = "Cell Discharge: OFF",
     .target.callback = NULL,
   },
   [GUI_MENU_ITEM_INDEX_PARTY_MODE] = {

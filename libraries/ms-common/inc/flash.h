@@ -17,12 +17,25 @@
 
 /* Intra-component Headers */
 #include "status.h"
+#ifdef MS_PLATFORM_ARM
+#include "stm32l4xx_hal_flash.h"
+#endif
 
 /**
  * @defgroup Flash
  * @brief    Flash library
  * @{
  */
+
+/* Ctrl c + v from stm32l4xx_hal_flash.h (workaround to not including hal for x86 builds) */
+#ifdef MS_PLATFORM_X86
+#if defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
+#define FLASH_PAGE_SIZE                    ((uint32_t)0x1000)
+#define FLASH_PAGE_SIZE_128_BITS           ((uint32_t)0x2000)
+#else
+#define FLASH_PAGE_SIZE                    ((uint32_t)0x800)
+#endif
+#endif
 
 /** @brief  Flash memory must be aligned to 4-bytes since STM32 is 32-bit device */
 #define FLASH_MEMORY_ALIGNMENT 4U
