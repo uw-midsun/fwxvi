@@ -95,6 +95,13 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback);
 StatusCode gui_menu_set_discharge_label(const char *label);
 
 /**
+ * @brief   Register the callback invoked by the Cell Discharge toggle menu item
+ * @param   callback Callback to invoke when Cell Discharge toggle is selected
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback);
+
+/**
  * @brief   Queue a menu toggle request for processing on the display task
  * @return  STATUS_CODE_OK on success, error otherwise
  */
