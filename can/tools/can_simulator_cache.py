@@ -9,79 +9,10 @@ class CanSimulatorDataCache:
     def __init__(self):
         self.data = {
 
-            "can_communication_fast_one_shot_msg": {
-                # fast_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_medium_one_shot_msg": {
-                # medium_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "can_communication_slow_one_shot_msg": {
-                # slow_one_shot_msg cache definitions
-                "sig1": 0,
-                "sig2": 0,
-            },
-
-            "front_controller_drive_status": {
-                # drive_status cache definitions
-                "pedal_percentage": 0,
-                "state_data": 0,
-            },
-
-            "front_controller_motor_stats_a": {
-                # motor_stats_a cache definitions
-                "bus_voltage": 0,
-                "bus_current": 0,
-                "rail_15v_supply": 0,
-            },
-
-            "front_controller_motor_stats_b": {
-                # motor_stats_b cache definitions
-                "vehicle_velocity": 0,
-                "motor_velocity": 0,
-                "heat_sink_temp": 0,
-                "motor_temp": 0,
-            },
-
-            "front_controller_fc_power_group_a": {
-                # fc_power_group_a cache definitions
-                "rev_cam_current": 0,
-                "telem_current": 0,
-                "steering_current": 0,
-                "driver_fan_current": 0,
-            },
-
-            "front_controller_fc_power_group_b": {
-                # fc_power_group_b cache definitions
-                "horn_current": 0,
-                "spare_current": 0,
-            },
-
-            "front_controller_fc_power_lights_group": {
-                # fc_power_lights_group cache definitions
-                "brake_light_sig_current": 0,
-                "bps_light_sig_current": 0,
-                "right_sig_current": 0,
-                "left_sig_current": 0,
-            },
-
-            "imu_gyro_data": {
-                # gyro_data cache definitions
-                "x_axis": 0,
-                "y_axis": 0,
-                "z_axis": 0,
-            },
-
-            "imu_accel_data": {
-                # accel_data cache definitions
-                "x_axis": 0,
-                "y_axis": 0,
-                "z_axis": 0,
+            "steering_steering": {
+                # steering cache definitions
+                "cruise_control_target_velocity": 0,
+                "buttons": 0,
             },
 
             "rear_controller_rear_controller_status": {
@@ -109,6 +40,12 @@ class CanSimulatorDataCache:
                 "input_dcdc_current": 0,
                 "input_aux_voltage": 0,
                 "input_aux_current": 0,
+            },
+
+            "rear_controller_afe_discharge_bitset": {
+                # afe_discharge_bitset cache definitions
+                "AFE1": 0,
+                "AFE2": 0,
             },
 
             "rear_controller_afe1_status_a": {
@@ -266,22 +203,6 @@ class CanSimulatorDataCache:
                 "state_data": 0,
             },
 
-            "front_controller_motor_stats_a": {
-                # motor_stats_a cache definitions
-                "bus_voltage": 0,
-                "bus_current": 0,
-                "rail_15v_supply": 0,
-                "flags": 0,
-            },
-
-            "front_controller_motor_stats_b": {
-                # motor_stats_b cache definitions
-                "vehicle_velocity": 0,
-                "motor_velocity": 0,
-                "heat_sink_temp": 0,
-                "motor_temp": 0,
-            },
-
             "front_controller_fc_power_group_a": {
                 # fc_power_group_a cache definitions
                 "rev_cam_current": 0,
@@ -308,7 +229,7 @@ class CanSimulatorDataCache:
 
     def get(self, message_name, parameter):
         return self.data.get(message_name, {}).get(parameter, 0)
-
+    
     def set(self, message_name, parameter, value):
         if message_name in self.data and parameter in self.data[message_name]:
             self.data[message_name][parameter] = value
