@@ -123,7 +123,7 @@ static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
 
-static bool s_balancing_enabled = true;
+static bool s_balancing_enabled = false;
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
