@@ -49,7 +49,6 @@ typedef enum{
   FILE_STEERING,
   FILE_REAR_CONTROLLER,
   FILE_FRONT_CONTROLLER,
-  FILE_IMU,
   FILE_NUM_FILES
   
 
@@ -78,35 +77,71 @@ static const FileStringLut file_string_lut[] = {
     if (status_expr) return status_expr;   \
   })
 
-  #define status_ok_or_warning(code)          \
+  #define telemetry_status_ok_or_warning(code)          \
   ({                                        \
     __typeof__(code) status_expr = (code);  \
     if (status_expr) {   \
       for (uint8_t i = 0; i < FILE_NUM_FILES; i++){\
         if (strcmp(file_string_lut[i].name, __FILE__) == 0){\
-          switch (file_string_lut[i].file){\
-            case FILE_FRONT_CONTROLLER:\
-                        set_error_front_controller_msg_status_code(status_expr); \
-                        set_error_front_controller_msg_file(file_string_lut[i].file);\
-                        break;\
+          if (file_string_lut[i].file){\
+                        case FILE_TELEMETRY:\
+                        set_telemetry_error__msg_status_code(status_expr); \
+                        set_telemetry_error__msg_file(file_string_lut[i].file);\
             }\
-          break;\
         }\
       }                   \
        \
     }\
   })
-            // case FILE_REAR_CONTROLLER:\
-            //             set_error_rear_controller_msg_status_code(status_expr); \
-            //             set_error_rear_controller_msg_file(file_string_lut[i].file);\
-            //             break;\
-            // case FILE_STEERING:\
-            //             set_error_steering_msg_status_code(status_expr); \
-            //             set_error_steering_msg_file(file_string_lut[i].file);\
-            //             break;\
-            // case FILE_TELEMETRY:\
-            //             set_error_telemetry_msg_status_code(status_expr); \
-            //             set_error_telemetry_msg_file(file_string_lut[i].file);\
-            //             break;\
-            
+
+  #define front_controller_status_ok_or_warning(code)          \
+  ({                                        \
+    __typeof__(code) status_expr = (code);  \
+    if (status_expr) {   \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++){\
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0){\
+          if (file_string_lut[i].file){\
+                        case FILE_FRONT_CONTROLLER:\
+                        set_front_controller_error__msg_status_code(status_expr); \
+                        set_front_controller_error__msg_file(file_string_lut[i].file);\
+            }\
+        }\
+      }                   \
+       \
+    }\
+  })
+
+  #define rear_controller_status_ok_or_warning(code)          \
+  ({                                        \
+    __typeof__(code) status_expr = (code);  \
+    if (status_expr) {   \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++){\
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0){\
+          if (file_string_lut[i].file){\
+                        case FILE_REAR_CONTROLLER:\
+                        set_rear_controller_error__msg_status_code(status_expr); \
+                        set_rear_controller_error__msg_file(file_string_lut[i].file);\
+            }\
+        }\
+      }                   \
+       \
+    }\
+  })
+
+  #define steering_status_ok_or_warning(code)          \
+  ({                                        \
+    __typeof__(code) status_expr = (code);  \
+    if (status_expr) {   \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++){\
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0){\
+          if (file_string_lut[i].file){\
+                        case FILE_STEERING:\
+                        set_steering_error__msg_status_code(status_expr); \
+                        set_steering_error__msg_file(file_string_lut[i].file);\
+            }\
+        }\
+      }                   \
+       \
+    }\
+  })
 /** @} */

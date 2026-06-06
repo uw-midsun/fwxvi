@@ -69,11 +69,6 @@ static const CanSettings s_can_settings = {
 static GpioAddress s_front_controller_board_led = GPIO_FRONT_CONTROLLER_BOARD_LED;
 
 StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config, Ws22MotorCanConfig *motor_can_config) {
-  /*start debug*/
-  //status_ok_or_warning(STATUS_CODE_OUT_OF_RANGE);
-  // LOG_DEBUG("Value: %u\n", g_tx_struct.error_msg_status_code);
-  // LOG_DEBUG("File: %lu\n", g_tx_struct.error_msg_file);
-  /*end debug*/
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
