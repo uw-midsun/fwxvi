@@ -50,7 +50,6 @@ static FrontControllerStorage *front_controller_storage;
 
 static CanStorage s_can_storage = { 0 };
 
-static File s_file = FILE_FRONT_CONTROLLER;
 
 /************************************************************************************************
  * Settings definitions

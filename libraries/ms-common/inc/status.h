@@ -71,10 +71,9 @@ static const FileStringLut file_string_lut[] = {
     if (status_expr) {                                                \
       for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                  \
         if (strcmp(file_string_lut[i].name, __FILE__) == 0) {         \
-          if (file_string_lut[i].file) {                              \
-            case FILE_TELEMETRY:                                      \
-              set_telemetry_error__msg_status_code(status_expr);      \
-              set_telemetry_error__msg_file(file_string_lut[i].file); \
+          if (file_string_lut[i].file) {                              \                                     \
+              set_telemetry_error_msg_status_code(status_expr);      \
+              set_telemetry_error_msg_file(file_string_lut[i].file); \
           }                                                           \
         }                                                             \
       }                                                               \
@@ -87,10 +86,9 @@ static const FileStringLut file_string_lut[] = {
     if (status_expr) {                                                       \
       for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                         \
         if (strcmp(file_string_lut[i].name, __FILE__) == 0) {                \
-          if (file_string_lut[i].file) {                                     \
-            case FILE_FRONT_CONTROLLER:                                      \
-              set_front_controller_error__msg_status_code(status_expr);      \
-              set_front_controller_error__msg_file(file_string_lut[i].file); \
+          if (file_string_lut[i].file) {                                     \                                      \
+              set_front_controller_error_msg_status_code(status_expr);      \
+              set_front_controller_error_msg_file(file_string_lut[i].file); \
           }                                                                  \
         }                                                                    \
       }                                                                      \
@@ -104,9 +102,8 @@ static const FileStringLut file_string_lut[] = {
       for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                        \
         if (strcmp(file_string_lut[i].name, __FILE__) == 0) {               \
           if (file_string_lut[i].file) {                                    \
-            case FILE_REAR_CONTROLLER:                                      \
-              set_rear_controller_error__msg_status_code(status_expr);      \
-              set_rear_controller_error__msg_file(file_string_lut[i].file); \
+              set_rear_controller_error_msg_status_code(status_expr);      \
+              set_rear_controller_error_msg_file(file_string_lut[i].file); \
           }                                                                 \
         }                                                                   \
       }                                                                     \
@@ -119,10 +116,9 @@ static const FileStringLut file_string_lut[] = {
     if (status_expr) {                                               \
       for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                 \
         if (strcmp(file_string_lut[i].name, __FILE__) == 0) {        \
-          if (file_string_lut[i].file) {                             \
-            case FILE_STEERING:                                      \
-              set_steering_error__msg_status_code(status_expr);      \
-              set_steering_error__msg_file(file_string_lut[i].file); \
+          if (file_string_lut[i].file) {                             \                                     \
+              set_steering_error_msg_status_code(status_expr);      \
+              set_steering_error_msg_file(file_string_lut[i].file); \
           }                                                          \
         }                                                            \
       }                                                              \

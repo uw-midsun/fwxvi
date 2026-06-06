@@ -32,6 +32,7 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
+#include "rear_controller_setters.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -41,7 +42,6 @@ static RearControllerStorage *rear_controller_storage;
 
 static CanStorage s_can_storage = { 0 };
 
-static File s_file = FILE_REAR_CONTROLLER;
 
 /************************************************************************************************
  * Settings definitions
