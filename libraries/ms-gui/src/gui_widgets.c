@@ -288,7 +288,7 @@ static StatusCode s_create_warning(GuiScreen *screen) {
     .border_color_id = GUI_COLOR_LABEL_BORDER,
     .border_width = 0,
   };
-  return lvgl_widgets_create_label(&s_cc_label, &warning_label_config, screen);
+  return lvgl_widgets_create_label(&s_warning_label, &warning_label_config, screen);
 }
 
 StatusCode gui_widgets_init_screen(GuiScreen *screen) {
@@ -393,7 +393,7 @@ StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file) {
   }
 
 
-  char* text_buffer[LABEL_MAX_CHARS];
+  char text_buffer[LABEL_MAX_CHARS];
   s_get_warning_text(status_code, file, text_buffer, sizeof(text_buffer));
 
   return lvgl_widgets_set_label_text(&s_warning_label, text_buffer);
@@ -434,6 +434,12 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c) {
   (void)motor_temp_c;
   (void)max_cell_temp_c;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file) {
+  (void)status_code;
+  (void)file;
   return STATUS_CODE_OK;
 }
 

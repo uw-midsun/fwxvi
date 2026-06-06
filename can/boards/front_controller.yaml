@@ -71,7 +71,7 @@ Messages:
       left_sig_current:
         length: 16      
   front_controller_error_msg:
-    id: 0
+    id: 7
     cycle: "fast"
     critical: true
     target:

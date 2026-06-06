@@ -88,15 +88,7 @@ static const FileStringLut file_string_lut[] = {
             case FILE_FRONT_CONTROLLER:\
                         set_error_front_controller_msg_status_code(status_expr); \
                         set_error_front_controller_msg_file(file_string_lut[i].file);\
-            case FILE_REAR_CONTROLLER:\
-                        set_error_rear_controller_msg_status_code(status_expr); \
-                        set_error_rear_controller_msg_file(file_string_lut[i].file);\
-            case FILE_STEERING:\
-                        set_error_steering_msg_status_code(status_expr); \
-                        set_error_steering_msg_file(file_string_lut[i].file);\
-            case FILE_TELEMETRY:\
-                        set_error_telemetry_msg_status_code(status_expr); \
-                        set_error_telemetry_msg_file(file_string_lut[i].file);\
+                        break;\
             }\
           break;\
         }\
@@ -104,4 +96,17 @@ static const FileStringLut file_string_lut[] = {
        \
     }\
   })
+            // case FILE_REAR_CONTROLLER:\
+            //             set_error_rear_controller_msg_status_code(status_expr); \
+            //             set_error_rear_controller_msg_file(file_string_lut[i].file);\
+            //             break;\
+            // case FILE_STEERING:\
+            //             set_error_steering_msg_status_code(status_expr); \
+            //             set_error_steering_msg_file(file_string_lut[i].file);\
+            //             break;\
+            // case FILE_TELEMETRY:\
+            //             set_error_telemetry_msg_status_code(status_expr); \
+            //             set_error_telemetry_msg_file(file_string_lut[i].file);\
+            //             break;\
+            
 /** @} */

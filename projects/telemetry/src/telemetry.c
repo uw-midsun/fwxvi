@@ -32,6 +32,7 @@ static TelemetryStorage *telemetry_storage;
 static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
 static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
 static GpioAddress s_xbee_reset = GPIO_TELEMETRY_XBEE_XRST;
+static File s_file = FILE_TELEMETRY;
 
 static const CanSettings s_can_settings = {
   .device_id = SYSTEM_CAN_DEVICE_TELEMETRY,

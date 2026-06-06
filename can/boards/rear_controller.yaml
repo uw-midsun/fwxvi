@@ -361,7 +361,7 @@ Messages:
         length: 8
         
   rear_controller_error_msg:
-    id: 0
+    id: 11
     cycle: "fast"
     critical: true
     target:

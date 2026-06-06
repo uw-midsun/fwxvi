@@ -41,6 +41,8 @@ static RearControllerStorage *rear_controller_storage;
 
 static CanStorage s_can_storage = { 0 };
 
+static File s_file = FILE_REAR_CONTROLLER;
+
 /************************************************************************************************
  * Settings definitions
  ************************************************************************************************/

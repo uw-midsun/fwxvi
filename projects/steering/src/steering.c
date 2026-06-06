@@ -40,6 +40,8 @@ static ButtonManager s_button_manager = { 0 };
 
 static CanStorage s_can_storage = { 0 };
 
+static File s_file = FILE_STEERING;
+
 /************************************************************************************************
  * Settings definitions
  ************************************************************************************************/

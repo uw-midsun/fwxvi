@@ -25,7 +25,7 @@ Messages:
         flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled]
         length: 8
   steering_error_msg:
-    id: 0
+    id: 5
     critical: true
     cycle: "fast"
     target:

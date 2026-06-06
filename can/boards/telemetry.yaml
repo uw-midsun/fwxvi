@@ -23,7 +23,7 @@ Messages:
       yaw:
         length: 16
   telemetry_error_msg:
-    id: 0
+    id: 13
     critical: true
     cycle: "fast"
     target:

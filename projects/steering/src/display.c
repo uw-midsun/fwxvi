@@ -291,14 +291,14 @@ StatusCode display_rx_medium() {
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
   display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
 
-  display_data->telemetry_status_code = get_telemetry_status_status_code();
-  display_data->telemetry_file = get_telemetry_file();
-  display_data->front_controller_status_code = get_front_controller_status_status_code();
-  display_data->front_controller_file = get_front_controller_file();
-  display_data->rear_controller_status_code = get_rear_controller_status_status_code();
-  display_data->rear_controller_file = get_rear_controller_file();
-  display_data->steering_status_code = get_steering_status_status_code();
-  display_data->steering_file = get_steering_file();
+  display_data->telemetry_status_code = (uint8_t)(get_telemetry_error_msg_status_code());
+  display_data->telemetry_file = (uint32_t)(get_telemetry_error_msg_file());
+  display_data->front_controller_status_code = (uint8_t)(get_front_controller_error_msg_status_code());
+  display_data->front_controller_file = (uint32_t)(get_front_controller_error_msg_file());
+  display_data->rear_controller_status_code = (uint8_t)(get_rear_controller_error_msg_status_code());
+  display_data->rear_controller_file = (uint32_t)(get_rear_controller_error_msg_file());
+  display_data->steering_status_code = (uint8_t)(get_steering_error_msg_status_code());
+  display_data->steering_file = (uint32_t)(get_steering_error_msg_file());
 
   
 
