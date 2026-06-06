@@ -43,14 +43,12 @@ typedef enum {
 } StatusCode;
 
 typedef enum {
-
   FILE_TELEMETRY = 0,
   FILE_CAN_COMMUNICATION,
   FILE_STEERING,
   FILE_REAR_CONTROLLER,
   FILE_FRONT_CONTROLLER,
   FILE_NUM_FILES
-
 } File;
 
 typedef struct {
