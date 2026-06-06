@@ -135,68 +135,52 @@ static const char *s_get_ws22_flag_text(uint16_t flags) {
   return "WS22 FLAG";
 }
 
-
 StatusCode s_get_warning_text(uint8_t status_code, uint32_t file, char *text_buffer, size_t buffer_size) {
-
-  
-  for (uint8_t i = 0; i < FILE_NUM_FILES; i++){
-        if (file_string_lut[i].file == file){
-          snprintf(text_buffer, buffer_size, "%u", file_string_lut[i].name);
-          break;
-        }
-      }
-  
-  if (status_code == 0) {
-    snprintf(text_buffer, buffer_size, "", text_buffer); //Return empty string for STATUS_CODE_OK since it's not actually a warning
-
+  for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {
+    if (file_string_lut[i].file == file) {
+      snprintf(text_buffer, buffer_size, "%u", file_string_lut[i].name);
+      break;
+    }
   }
-  else if (status_code == 1) {
+
+  if (status_code == 0) {
+    snprintf(text_buffer, buffer_size, "", text_buffer);  // Return empty string for STATUS_CODE_OK since it's not actually a warning
+
+  } else if (status_code == 1) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_UNKNOWN%s", text_buffer);
 
-  }
-  else if (status_code == 2) {
+  } else if (status_code == 2) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_INVALID_ARGS%s", text_buffer);
 
-  }
-  else if (status_code == 3) {
+  } else if (status_code == 3) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_RESOURCE_EXHAUSTED%s", text_buffer);
 
-  }
-  else if (status_code == 4) {
+  } else if (status_code == 4) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_UNREACHABLE%s", text_buffer);
 
-  }
-  else if (status_code == 5) {
+  } else if (status_code == 5) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_TIMEOUT%s", text_buffer);
 
-  }
-  else if (status_code == 6) {
+  } else if (status_code == 6) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_EMPTY%s", text_buffer);
 
-  }
-  else if (status_code == 7) {
+  } else if (status_code == 7) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_OUT_OF_RANGE%s", text_buffer);
 
-  }
-  else if (status_code == 8) {
+  } else if (status_code == 8) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_UNIMPLEMENTED%s", text_buffer);
 
-  }
-  else if (status_code == 9) {
+  } else if (status_code == 9) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_UNINITIALIZED%s", text_buffer);
 
-  }
-  else if (status_code == 10) {
+  } else if (status_code == 10) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_INTERNAL_ERROR%s", text_buffer);
 
-  }
-  else if (status_code == 11) {
+  } else if (status_code == 11) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_INCOMPLETE%s", text_buffer);
 
-  }
-  else if (status_code == 12) {
+  } else if (status_code == 12) {
     snprintf(text_buffer, buffer_size, "STATUS_CODE_ALREADY_INITIALIZED%s", text_buffer);
-
   }
   return STATUS_CODE_OK;
 }
@@ -271,10 +255,7 @@ static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_temps_stats_label, &temps_stats_label_config, screen);
 }
 
-
 static StatusCode s_create_warning(GuiScreen *screen) {
-
- 
   const LabelWidgetConfig warning_label_config = {
     .size = { .width = 100, .height = 20 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = -50 } },
@@ -391,7 +372,6 @@ StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
-
 
   char text_buffer[LABEL_MAX_CHARS];
   s_get_warning_text(status_code, file, text_buffer, sizeof(text_buffer));

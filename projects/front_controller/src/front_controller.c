@@ -37,8 +37,8 @@
 #include "opd.h"
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
-#include "ws22_motor_can.h"
 #include "regen_brake.h"
+#include "ws22_motor_can.h"
 /*start debug*/
 #include "front_controller_setters.h"
 #include "front_controller_tx_structs.h"

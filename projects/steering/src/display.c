@@ -154,7 +154,7 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_widgets_set_warning(display_data->telemetry_status_code, display_data->telemetry_file));
     status_ok_or_return(gui_widgets_set_warning(display_data->front_controller_status_code, display_data->front_controller_file));
     status_ok_or_return(gui_widgets_set_warning(display_data->rear_controller_status_code, display_data->rear_controller_file));
-    status_ok_or_return(gui_widgets_set_warning(display_data->steering_status_code, display_data->steering_file));  
+    status_ok_or_return(gui_widgets_set_warning(display_data->steering_status_code, display_data->steering_file));
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
@@ -299,8 +299,6 @@ StatusCode display_rx_medium() {
   display_data->rear_controller_file = (uint32_t)(get_rear_controller_error_msg_file());
   display_data->steering_status_code = (uint8_t)(get_steering_error_msg_status_code());
   display_data->steering_file = (uint32_t)(get_steering_error_msg_file());
-
-  
 
   return STATUS_CODE_OK;
 }

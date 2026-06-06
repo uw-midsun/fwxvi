@@ -29,7 +29,6 @@
 #define POWER_MANAGER_LO_SIDE_CURRENT_SENSE_RATIO 1000
 #define POWER_MANAGER_LO_SIDE_RESISTOR_OHMS 10000
 
-
 static PowerManagerStorage s_power_manager_storage = { 0U };
 
 static FrontControllerStorage *front_controller_storage = NULL;

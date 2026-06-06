@@ -94,7 +94,7 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
 /**
  * @brief   Update the text for the warning label based on a status code and file name from LUT
  * @param   status_code The status code to generate a warning for
- * @param   file The source file where the status code was generated 
+ * @param   file The source file where the status code was generated
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file);
