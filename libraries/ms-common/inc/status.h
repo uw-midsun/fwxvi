@@ -65,63 +65,63 @@ static const FileStringLut file_string_lut[] = {
     if (status_expr) return status_expr;   \
   })
 
-#define telemetry_status_ok_or_warning(code)                          \
-  ({                                                                  \
-    __typeof__(code) status_expr = (code);                            \
-    if (status_expr) {                                                \
-      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                  \
-        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {         \
-          if (file_string_lut[i].file) {                              \                                     \
-              set_telemetry_error_msg_status_code(status_expr);      \
-              set_telemetry_error_msg_file(file_string_lut[i].file); \
-          }                                                           \
-        }                                                             \
-      }                                                               \
-    }                                                                 \
+#define telemetry_status_ok_or_warning(code)                       \
+  ({                                                               \
+    __typeof__(code) status_expr = (code);                         \
+    if (status_expr) {                                             \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {               \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {      \
+          if (file_string_lut[i].file) {                           \
+            \ set_telemetry_error_msg_status_code(status_expr);    \
+            set_telemetry_error_msg_file(file_string_lut[i].file); \
+          }                                                        \
+        }                                                          \
+      }                                                            \
+    }                                                              \
   })
 
-#define front_controller_status_ok_or_warning(code)                          \
-  ({                                                                         \
-    __typeof__(code) status_expr = (code);                                   \
-    if (status_expr) {                                                       \
-      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                         \
-        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {                \
-          if (file_string_lut[i].file) {                                     \                                      \
-              set_front_controller_error_msg_status_code(status_expr);      \
-              set_front_controller_error_msg_file(file_string_lut[i].file); \
-          }                                                                  \
-        }                                                                    \
-      }                                                                      \
-    }                                                                        \
+#define front_controller_status_ok_or_warning(code)                       \
+  ({                                                                      \
+    __typeof__(code) status_expr = (code);                                \
+    if (status_expr) {                                                    \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                      \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {             \
+          if (file_string_lut[i].file) {                                  \
+            \ set_front_controller_error_msg_status_code(status_expr);    \
+            set_front_controller_error_msg_file(file_string_lut[i].file); \
+          }                                                               \
+        }                                                                 \
+      }                                                                   \
+    }                                                                     \
   })
 
-#define rear_controller_status_ok_or_warning(code)                          \
-  ({                                                                        \
-    __typeof__(code) status_expr = (code);                                  \
-    if (status_expr) {                                                      \
-      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                        \
-        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {               \
-          if (file_string_lut[i].file) {                                    \
-              set_rear_controller_error_msg_status_code(status_expr);      \
-              set_rear_controller_error_msg_file(file_string_lut[i].file); \
-          }                                                                 \
-        }                                                                   \
-      }                                                                     \
-    }                                                                       \
+#define rear_controller_status_ok_or_warning(code)                       \
+  ({                                                                     \
+    __typeof__(code) status_expr = (code);                               \
+    if (status_expr) {                                                   \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                     \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {            \
+          if (file_string_lut[i].file) {                                 \
+            set_rear_controller_error_msg_status_code(status_expr);      \
+            set_rear_controller_error_msg_file(file_string_lut[i].file); \
+          }                                                              \
+        }                                                                \
+      }                                                                  \
+    }                                                                    \
   })
 
-#define steering_status_ok_or_warning(code)                          \
-  ({                                                                 \
-    __typeof__(code) status_expr = (code);                           \
-    if (status_expr) {                                               \
-      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                 \
-        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {        \
-          if (file_string_lut[i].file) {                             \                                     \
-              set_steering_error_msg_status_code(status_expr);      \
-              set_steering_error_msg_file(file_string_lut[i].file); \
-          }                                                          \
-        }                                                            \
-      }                                                              \
-    }                                                                \
+#define steering_status_ok_or_warning(code)                       \
+  ({                                                              \
+    __typeof__(code) status_expr = (code);                        \
+    if (status_expr) {                                            \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {              \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {     \
+          if (file_string_lut[i].file) {                          \
+            \ set_steering_error_msg_status_code(status_expr);    \
+            set_steering_error_msg_file(file_string_lut[i].file); \
+          }                                                       \
+        }                                                         \
+      }                                                           \
+    }                                                             \
   })
 /** @} */
