@@ -11,6 +11,7 @@
 
 /* Inter-component Headers */
 #include "can.h"
+#include "global_enums.h"
 #include "log.h"
 #include "tasks.h"
 #include "uart.h"
@@ -37,21 +38,9 @@ TASK(can_message_forwarder, TASK_STACK_512) {
     while (queue_receive(&s_telemetry_storage->can_storage->rx_queue.queue, &message, QUEUE_DELAY_BLOCKING) != STATUS_CODE_OK) {
     }
 
-#if (XB_TRANSMIT_DEBUG != 0)
-    LOG_DEBUG("Received message\r\n");
-#endif
     if (decode_can_message(&tx_datagram, &message) == STATUS_CODE_OK) {
       datagram_length = tx_datagram.dlc + DATAGRAM_METADATA_SIZE;
-#if (XB_TRANSMIT_DEBUG == 0)
       uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-#else
-      status = uart_tx(UART_PORT_2, (uint8_t *)&tx_datagram, datagram_length);
-      if (status != STATUS_CODE_OK) {
-        LOG_DEBUG("Failed to transmit to telemetry transceiver!\r\n");
-      } else {
-        LOG_DEBUG("Transmitted message\r\n");
-      }
-#endif
     }
   }
 }

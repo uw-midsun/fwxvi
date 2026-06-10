@@ -125,7 +125,8 @@ typedef enum {
 #define LIMIT_FLAG_TEMPERATURE_MASK (1U << LIMIT_FLAG_TEMPERATURE)
 
 /** @brief  IDs of WS22 CAN messages to exclude from telemetry datagram forwarding */
-#define IS_EXCLUDED_WS22_CAN_ID(x) ((((x) >= 128U) && ((x) <= 142U)) || ((x) == 151U) || ((x) == 1281U))
+// #define IS_EXCLUDED_WS22_CAN_ID(x) ((((x) >= 128U) && ((x) <= 142U)) || ((x) == 151U) || ((x) == 1281U))
+#define IS_EXCLUDED_WS22_CAN_ID(x) ((x == 1281U))
 
 /************************************************************************************************
  * Front Controller Global Definitions
