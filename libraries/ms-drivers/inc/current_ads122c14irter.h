@@ -30,16 +30,16 @@
 
 //# define I2CAddress ADC_ADDRESS = 0x40; /* A0 and A1 are both wired to GND*/
 
-#define ADS122_NUM_REGS = 16U
+#define ADS122_NUM_REGS 16U
 
 #define _PACKED __attribute__((packed))   
 
-#define REG_MAP_CRC_VALUES = 0
+#define REG_MAP_CRC_VALUES 0
 
 typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
-  uint8_t register_map[ADS122_NUM_REGS];
+  //uint8_t register_map[ADS122_NUM_REGS];
 } ADS122Storage;
 
 typedef enum : uint8_t {
@@ -61,6 +61,23 @@ typedef enum : uint8_t {
   ADS122_REG_REG_MAP_CRC = 0b00001111,
 } ADS122C14ITER_Register;
 
+static uint8_t ADS122_REGISTERS[] = {ADS122_REG_DEVICE_ID,
+  ADS122_REG_REVISION_ID,
+  ADS122_REG_STATUS_MSB,
+  ADS122_REG_STATUS_LSB,
+  ADS122_REG_CONVERSION_CTRL,
+  ADS122_REG_DEVICE_CFG,
+  ADS122_REG_DATA_RATE_CFG,
+  ADS122_REG_MUX_CFG,
+  ADS122_REG_GAIN_CFG,
+  ADS122_REG_REFERENCE_CFG,
+  ADS122_REG_DIGITAL_CFG,
+  ADS122_REG_GPIO_CFG,
+  ADS122_REG_GPIO_DATA_OUTPUT,
+  ADS122_REG_IDAC_MAG_CFG,
+  ADS122_REG_IDAC_MUX_CFG,
+  ADS122_REG_REG_MAP_CRC};
+
 typedef enum : uint8_t{
   ADS122_WRITE_COMMAND = 0b10000000,
   ADS122_READ_COMMAND = 0b01000000,
@@ -73,8 +90,8 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
 // Do I need to include any of the earlier ones?
 
 /*ADS122_REG_STATUS_MSB*/
-#define ADS122_RESET_BITOFFSET 7
-#define ADS122_RESET_MASK (1 << 7)
+#define ADS122_RESETn_BITOFFSET 7
+#define ADS122_RESETn_MASK (1 << 7)
 
 #define ADS122_AVDD_UV_BITOFFSET 6
 #define ADS122_AVDD_UV_MASK (1 << 6)
@@ -86,22 +103,22 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
 #define ADS122_REG_MAP_CRC_FAULT_MASK (1 << 3)
 
 #define ADS122_MEM_FAULT_BITOFFSET 2
-#define ADS122_REG_MAP_CRC_FAULT_MASK (1 << 2)
+#define ADS122_MEM_FAULT_MASK (1 << 2)
 
 #define ADS122_REG_WRITE_FAULT_BITOFFSET 1
-#define ADS122_REG_MAP_CRC_FAULT_MASK (1 << 1)
+#define ADS122_REG_WRITE_FAULT_MASK (1 << 1)
 
 #define ADS122_DRDY_BITOFFSET 0
-#define ADS122_REG_MAP_CRC_FAULT_MASK (1 << 0)
+#define ADS122_DRDY_MASK (1 << 0)
 
 /* ADS122_REG_STATUS_LSB*/
 #define ADS122_CONV_COUNT_BITOFFSET 4 //should this be 4 or 7
-#define ADS122_GPIO3_DAT_IN_MASK (1 << 7) |  (1 << 6) | (1 << 5) | (1 << 4)
+#define ADS122_CONV_COUNT_MASK (1 << 7) |  (1 << 6) | (1 << 5) | (1 << 4)
 
-#define ADS122_GPIO3_DAT_IN 3
+#define ADS122_GPIO3_DAT_IN_BITOFFSET 3
 #define ADS122_GPIO3_DAT_IN_MASK (1 << 3)
 
-#define ADS122_GPIO2_DAT_IN 2
+#define ADS122_GPIO2_DAT_IN_BITOFFSET 2
 #define ADS122_GPIO2_DAT_IN_MASK (1 << 2)
 
 #define ADS122_GPIO1_DAT_IN_BITOFFSET 1
@@ -162,7 +179,6 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
 
 #define ADS122_AINN_BITOFFSET 0
 #define ADS122_AINN_MASK (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)
-
 
 /*ADS122_REG_GAIN_CFG*/
 #define ADS122_REG_GAIN_CFG_DEFAULT ((uint8_t) 0x01)
@@ -267,10 +283,6 @@ typedef enum : uint8_t{
   Iuint_70x,
   Iuint_80x,
   Iuint_90x,
-  Iuint_100x,
-  Iuint_100x,
-  Iuint_100x,
-  Iuint_100x,
   Iuint_100x,
 } ADS122_IUINT;
 
