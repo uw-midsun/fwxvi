@@ -104,8 +104,7 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
     status_ok_or_return(ads122_write_register(storage, reset_status_msb, ADS122_REG_STATUS_MSB));
 
     /* Set init configs */
-    //TODO: change to only write to the config regs <<---- DO THIS
-    status_ok_or_return(ads122_write_multiple_registers(storage, register_map, ADS122_REGISTERS, 11U));
+    status_ok_or_return(ads122_write_multiple_registers(storage, register_map, ADS122_CONFIG_REGISTERS, 11U));
 
     /*Start conversion*/
     status_ok_or_return(ads122_start_conversion(storage));
@@ -141,13 +140,4 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
     return ads122_read_conversion(storage, rx_data);
 }
 
-
-
-/* things for init*/
-//what is the maximum data that can be passed in?? -> should be checked
-
-//need to configure GPIO, what conversion mode
-
-// single poll mode (not continuous)
-
-// no crc, no status -> bare bones
+/* TODO: make a function to interpret the data???? <-- or is this in the another file*/
