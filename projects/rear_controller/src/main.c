@@ -48,6 +48,7 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_motor_back_emf_enabled = false,
   .ws22_rail_15v_enabled = false,
   .ws22_temperature_enabled = false,
+  .ws22_drive_cmd_enabled = false,
 };
 
 void pre_loop_init() {}

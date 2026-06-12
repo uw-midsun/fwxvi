@@ -26,10 +26,6 @@ StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
   datagram->start_frame = DATAGRAM_START_FRAME;
   datagram->id = FLIP_ENDIANESS_2BYTES(msg->id.raw);
 
-  if (IS_EXCLUDED_WS22_CAN_ID(msg->id.raw)) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
   datagram->dlc = msg->dlc;
 
   for (size_t i = 0; i < msg->dlc; ++i) {
@@ -38,6 +34,17 @@ StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
 
   datagram->data[datagram->dlc] = DATAGRAM_END_FRAME;
 
+  return STATUS_CODE_OK;
+}
+
+StatusCode encode_datagram(Datagram *datagram, uint32_t id, uint8_t dlc, const uint8_t *data) {
+  datagram->start_frame = DATAGRAM_START_FRAME;
+  datagram->id = FLIP_ENDIANESS_2BYTES(id);
+  datagram->dlc = dlc;
+  for (size_t i = 0; i < dlc; ++i) {
+    datagram->data[i] = data[i];
+  }
+  datagram->data[dlc] = DATAGRAM_END_FRAME;
   return STATUS_CODE_OK;
 }
 
