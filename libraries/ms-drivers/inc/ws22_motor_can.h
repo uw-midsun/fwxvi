@@ -101,6 +101,7 @@ typedef struct {
   bool ws22_motor_back_emf_enabled;       /**< Flag to indicate if CAN reading motor_back_emf is enabled */
   bool ws22_rail_15v_enabled;             /**< Flag to indicate if CAN reading rail_15v is enabled */
   bool ws22_temperature_enabled;          /**< Flag to indicate if CAN reading temperature is enabled */
+  bool ws22_drive_cmd_enabled;            /**< Flag to enable parsing of drive command (0x501); disabled by default */
 } Ws22MotorCanConfig;
 
 /**

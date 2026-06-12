@@ -124,10 +124,6 @@ typedef enum {
 /** @brief  Temperature limit flag mask */
 #define LIMIT_FLAG_TEMPERATURE_MASK (1U << LIMIT_FLAG_TEMPERATURE)
 
-/** @brief  IDs of WS22 CAN messages to exclude from telemetry datagram forwarding */
-// #define IS_EXCLUDED_WS22_CAN_ID(x) ((((x) >= 128U) && ((x) <= 142U)) || ((x) == 151U) || ((x) == 1281U))
-#define IS_EXCLUDED_WS22_CAN_ID(x) ((x == 1281U))
-
 /************************************************************************************************
  * Front Controller Global Definitions
  ************************************************************************************************/
@@ -243,6 +239,13 @@ typedef enum {
 #define STEERING_CC_DECREASE_MASK (1U << EE_STEERING_CC_DECREASE_BIT)
 /** @brief  Toggle cruise control mask */
 #define STEERING_CC_TOGGLE_MASK (1U << EE_STEERING_CC_TOGGLE_BIT)
+
+/************************************************************************************************
+ * WS22 Motor Controller Global Definitions
+ ************************************************************************************************/
+
+/** @brief  True for any raw CAN ID belonging to the WS22 motor controller (status 0x81-0x8B or drive cmd 0x501). */
+#define IS_WS22_CAN_ID(x) (((x) >= 0x80U && (x) <= 0x8BU) || (x) == 0x501U)
 
 /************************************************************************************************
  * Power Distribution Global Definitions
