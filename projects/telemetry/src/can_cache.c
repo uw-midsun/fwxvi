@@ -37,9 +37,6 @@ CanMessageCache g_can_cache_medium[] = {
   /* imu */
   { .can_id = 1827U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* accel_data             */
   { .can_id = 1843U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* gyro_data              */
-  /* WS22 motor CAN messages are excluded: payloads are raw IEEE 754 floats whose bytes
-     can be 0xAA/0xBB, corrupting datagram framing. WS22 data must be pre-processed
-     through ws22_motor_can_process_rx and re-encoded as scaled integers before adding here. */
   /* rear_controller AFE messages */
   { .can_id = 1825U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_discharge_bitset   */
   { .can_id = 1841U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_A          */
@@ -65,13 +62,13 @@ CanMessageCache g_can_cache_low[] = {
   { .can_id = 1621U, .length = 4U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_group_B      */
 
   /* ---- Telemetry-internal messages (populated by scheduler, not CAN RX) ---- */
-  { .can_id = TELEMETRY_STATS_CAN_ID,    .length = TELEMETRY_STATS_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* telemetry_stats       */
+  { .can_id = TELEMETRY_STATS_CAN_ID, .length = TELEMETRY_STATS_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* telemetry_stats       */
 
   /* ---- WS22 synthetic messages (floats re-encoded as scaled integers) ---- */
-  { .can_id = WS22_TELEMETRY_STATUS_ID,    .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* ws22_status    */
-  { .can_id = WS22_TELEMETRY_BUS_ID,       .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* ws22_bus       */
-  { .can_id = WS22_TELEMETRY_VELOCITY_ID,  .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* ws22_velocity  */
-  { .can_id = WS22_TELEMETRY_TEMP_ID,      .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* ws22_temp      */
+  { .can_id = WS22_TELEMETRY_STATUS_ID, .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW },    /* ws22_status    */
+  { .can_id = WS22_TELEMETRY_BUS_ID, .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW },       /* ws22_bus       */
+  { .can_id = WS22_TELEMETRY_VELOCITY_ID, .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW },  /* ws22_velocity  */
+  { .can_id = WS22_TELEMETRY_TEMP_ID, .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW },      /* ws22_temp      */
   { .can_id = WS22_TELEMETRY_DRIVE_CMD_ID, .length = WS22_TELEMETRY_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* ws22_drive_cmd */
 };
 const size_t g_can_cache_low_size = sizeof(g_can_cache_low) / sizeof(g_can_cache_low[0]);
