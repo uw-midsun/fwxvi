@@ -5,7 +5,7 @@
  *
  * @brief  Header file to implement the current sensing from the ADS122C14ITER ADC
  *
- * @date   2026-06-03
+ * @date   2026-06-16
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -39,9 +39,9 @@
 typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
-  //uint8_t register_map[ADS122_NUM_REGS];
 } ADS122Storage;
 
+/*All registers of ADS122*/
 typedef enum : uint8_t {
   ADS122_REG_DEVICE_ID = 0b00000000,
   ADS122_REG_REVISION_ID = 0b00000001,
@@ -61,6 +61,7 @@ typedef enum : uint8_t {
   ADS122_REG_REG_MAP_CRC = 0b00001111,
 } ADS122C14ITER_Register;
 
+/*All config registers*/
 static uint8_t ADS122_CONFIG_REGISTERS[] = {
   ADS122_REG_DEVICE_CFG,
   ADS122_REG_DATA_RATE_CFG,
@@ -74,16 +75,51 @@ static uint8_t ADS122_CONFIG_REGISTERS[] = {
   ADS122_REG_IDAC_MUX_CFG,
   ADS122_REG_REG_MAP_CRC};
 
+/*Commands*/  
 typedef enum : uint8_t{
   ADS122_WRITE_COMMAND = 0b10000000,
   ADS122_READ_COMMAND = 0b01000000,
   ADS122_READ_CONVERSION_COMMAND = 0b00000000,
 } ADS122C14ITER_Command;
 
+/* Make sure things are the right size*/
 _Static_assert(sizeof(ADS122C14ITER_Register) == 1U );
 _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
 
-// Do I need to include any of the earlier ones?
+/**
+ * @brief Get the conversion data
+ * @param storage - pointer to the initilized ADS122Storage struct
+ * @param rx_Data - data collection array
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]);
+
+/**
+ * @brief Initialize the ADS122 driver
+ * @param storage - pointer to an uninitalized ADS122Storage struct
+ * @param I2CPort - I2C port peripheral
+ * @param I2CAddress - I2C address peripheral
+ * @param register_map - array of register inits
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[]);
+
+/**
+ * @brief Start the conversion of the ADS122 driver
+ * @param storage - pointer to an initalized ADS122Storage struct
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_start_conversion(ADS122Storage * storage);
+
+/**
+ * @brief Stop the conversion of the ADS122 driver
+ * @param storage - pointer to an initalized ADS122Storage struct
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_stop_conversion(ADS122Storage * storage);
+
+
+
 
 /*ADS122_REG_STATUS_MSB*/
 #define ADS122_RESETn_BITOFFSET 7
@@ -315,13 +351,4 @@ typedef enum : uint8_t{
 #define ADS122_REG_REG_MAP_CRC_DEFAULT ((uint8_t) 0x00)
 
 
-
-// /* Registers*/
-// /**
-//  * Device ID
-//  * STATUS_MSB
-//  * Device config regs
-//  * CONVERSION_CTRL
-//  */
-
-// /* What timing mode? <- timing requirements*/
+// /* What timing mode? <- timing requirements <-- how do?*/

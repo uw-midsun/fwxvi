@@ -3,7 +3,7 @@
  *
  * @brief  Source file to implement
  *
- * @date   2026-06-04
+ * @date   2026-06-16
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
@@ -72,7 +72,7 @@ static StatusCode ads122_write_multiple_registers(ADS122Storage * storage, uint8
     return i2c_write(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
 }
 
-static StatusCode ads122_start_conversion(ADS122Storage * storage){
+StatusCode ads122_start_conversion(ADS122Storage * storage){
     uint8_t conversion_ctrl = 0x00;
     status_ok_or_return(ads122_read_register(storage, &conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
     conversion_ctrl |= (1 << 1);
@@ -88,7 +88,7 @@ StatusCode ads122_stop_conversion(ADS122Storage * storage){
     return STATUS_CODE_OK;
 }
 
-StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t ads122_reg_config[], uint8_t register_map[]){
+StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[]){
     storage->i2c_port = i2c_port_storage;
     storage->i2c_address = i2c_address_storage;
 
@@ -103,7 +103,9 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
     uint8_t reset_status_msb = 0xC0;
     status_ok_or_return(ads122_write_register(storage, reset_status_msb, ADS122_REG_STATUS_MSB));
 
-    /* Set init configs */
+    //TODO: add a read?
+
+    /* Set init configs -> put init values into a ADS122_CONFIG_REGISTERS*/
     status_ok_or_return(ads122_write_multiple_registers(storage, register_map, ADS122_CONFIG_REGISTERS, 11U));
 
     /*Start conversion*/
@@ -112,6 +114,7 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
     return STATUS_CODE_OK;
 }
 
+/* get data from board*/
 static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[]){
     if (storage == NULL || data == NULL) {
         return STATUS_CODE_INVALID_ARGS;
@@ -122,12 +125,13 @@ static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[])
     return STATUS_CODE_OK;
 }
 
+
 StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]){
     uint8_t status_msb_data;
     status_ok_or_return(ads122_read_register(storage, &status_msb_data, ADS122_REG_STATUS_MSB));
-    
-    uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
 
+    /*Checks DRDY pin to ensure new data is availible*/
+    uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
     //Does this work?? Does the bit update properly is STATUS header is not enabled?
     if(status_msb_data != 1){
         return STATUS_CODE_OK;
@@ -141,3 +145,4 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
 }
 
 /* TODO: make a function to interpret the data???? <-- or is this in the another file*/
+/* TODO: make sure * and & are where they should be*/
