@@ -26,7 +26,7 @@
  * To test drive_state_manager without rear controller connected, BPS_fault and precharge_complete
  * must be disabled by setting IS_REAR_CONNECTED to 0U. Otherwise set this to 1U.
  */
-#define IS_REAR_CONNECTED 1U
+#define IS_REAR_CONNECTED 0U
 #define DRIVE_STATE_MANAGER_DEBUG 0U
 
 #if (DRIVE_STATE_MANAGER_DEBUG == 1)
@@ -54,6 +54,10 @@ static void s_update_storage_drive_state(VehicleDriveState state) {
 }
 
 static StatusCode drive_state_manager_neutral(void) {
+  if(current_regen_state != REGEN_STATE_ENABLED){
+    button_led_disable(STEERING_BUTTON_REGEN);
+  }
+
   button_led_disable(STEERING_BUTTON_DRIVE);
   button_led_disable(STEERING_BUTTON_REVERSE);
   button_led_enable(STEERING_BUTTON_NEUTRAL);
@@ -81,6 +85,10 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 #endif
+
+  if(current_regen_state != REGEN_STATE_ENABLED){
+    button_led_disable(STEERING_BUTTON_REGEN);
+  }
   button_led_disable(STEERING_BUTTON_NEUTRAL);
   button_led_disable(STEERING_BUTTON_DRIVE);
   button_led_enable(STEERING_BUTTON_REVERSE);
@@ -110,6 +118,9 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 #endif
+  if(current_regen_state!= REGEN_STATE_ENABLED){
+    button_led_disable(STEERING_BUTTON_REGEN);
+  }
 
   button_led_disable(STEERING_BUTTON_REVERSE);
   button_led_disable(STEERING_BUTTON_NEUTRAL);
@@ -118,6 +129,20 @@ static StatusCode drive_state_manager_drive(void) {
 
   set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_DRIVE);
   CONDITIONAL_LOG_DEBUG("Setting drive state to DRIVE\n");
+  return STATUS_CODE_OK;
+}
+
+static StatusCode drive_state_manager_charging(void) {
+  //TODO: change colours of regen/neutral
+  button_led_enable(STEERING_BUTTON_REGEN);
+  button_led_enable(STEERING_BUTTON_NEUTRAL);
+  button_led_disable(STEERING_BUTTON_REVERSE);
+  button_led_disable(STEERING_BUTTON_DRIVE);
+
+  buzzer_play_charging();
+
+  set_steering_buttons_drive_state(VEHICLE_DRIVE_STATE_CHARGING);
+  CONDITIONAL_LOG_DEBUG("Setting drive state to CHARGING\n");
   return STATUS_CODE_OK;
 }
 
@@ -149,7 +174,6 @@ StatusCode drive_state_manager_request(DriveStateRequest req) {
 StatusCode drive_state_manager_update(void) {
   switch (current_request) {
     case DRIVE_STATE_REQUEST_D:
-
       if (current_state != VEHICLE_DRIVE_STATE_DRIVE) {
         StatusCode ret = drive_state_manager_drive();
         if (ret == STATUS_CODE_OK) {
@@ -163,7 +187,6 @@ StatusCode drive_state_manager_update(void) {
       break;
 
     case DRIVE_STATE_REQUEST_N:
-
       if (current_state != VEHICLE_DRIVE_STATE_NEUTRAL) {
         StatusCode ret = drive_state_manager_neutral();
         if (ret == STATUS_CODE_OK) {
@@ -176,6 +199,7 @@ StatusCode drive_state_manager_update(void) {
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
+
       break;
 
     case DRIVE_STATE_REQUEST_R:
@@ -185,6 +209,22 @@ StatusCode drive_state_manager_update(void) {
         if (ret == STATUS_CODE_OK) {
           CONDITIONAL_LOG_DEBUG("Drive state set to REVERSE\n");
           current_state = VEHICLE_DRIVE_STATE_REVERSE;
+          s_update_storage_drive_state(current_state);
+          steering_storage->cruise_control_enabled = false;
+          set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
+          current_request = DRIVE_STATE_REQUEST_NONE;
+        }
+      }
+
+      break;
+
+    case DRIVE_STATE_REQUEST_C:
+
+      if (current_state != VEHICLE_DRIVE_STATE_CHARGING) {
+        StatusCode ret = drive_state_manager_charging();
+        if (ret == STATUS_CODE_OK) {
+          CONDITIONAL_LOG_DEBUG("Drive state set to CHARGING\n");
+          current_state = VEHICLE_DRIVE_STATE_CHARGING;
           s_update_storage_drive_state(current_state);
           steering_storage->cruise_control_enabled = false;
           set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);
@@ -222,7 +262,7 @@ StatusCode drive_state_manager_enter_regen_state(RegenState new_regen_state) {
     buzzer_play_regen_on();
   } else if ((current_regen_state != REGEN_STATE_DISABLED) && (new_regen_state == REGEN_STATE_DISABLED)) {
     set_steering_buttons_regen_enabled(REGEN_STATE_DISABLED);
-    button_led_disable(STEERING_BUTTON_REGEN);
+    button_led_disable(STEERING_BUTTON_REGEN); // This is the reason 
     buzzer_play_regen_off();
   }
 
