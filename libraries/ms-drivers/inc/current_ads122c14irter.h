@@ -34,8 +34,6 @@
 
 #define _PACKED __attribute__((packed))   
 
-#define REG_MAP_CRC_VALUES 0
-
 typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
@@ -74,6 +72,8 @@ static uint8_t ADS122_CONFIG_REGISTERS[] = {
   ADS122_REG_IDAC_MAG_CFG,
   ADS122_REG_IDAC_MUX_CFG,
   ADS122_REG_REG_MAP_CRC};
+
+  #define ADS122_NUM_REG 16U
 
 /*Commands*/  
 typedef enum : uint8_t{
@@ -171,7 +171,7 @@ StatusCode ads122_stop_conversion(ADS122Storage * storage);
 
 /*ADS122_REG_DEVICE_CFG*/
 //which speed??
-#define ADS122_REG_DEVICE_CFG_DEFAULT ((uint8_t) 0b00000100)
+#define ADS122_REG_DEVICE_CFG_DEFAULT ((uint8_t) 0x04)
 
 #define ADS122_PWDN_BITOFFSET 7
 #define ADS122_PWDN_MASK (1 << 7)

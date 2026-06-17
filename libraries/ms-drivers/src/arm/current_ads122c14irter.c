@@ -132,7 +132,7 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
 
     /*Checks DRDY pin to ensure new data is availible*/
     uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
-    //Does this work?? Does the bit update properly is STATUS header is not enabled?
+    //Does this work? Does the bit update properly if STATUS header is not enabled?
     if(status_msb_data != 1){
         return STATUS_CODE_OK;
     }
@@ -143,6 +143,3 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
 
     return ads122_read_conversion(storage, rx_data);
 }
-
-/* TODO: make a function to interpret the data???? <-- or is this in the another file*/
-/* TODO: make sure * and & are where they should be*/
