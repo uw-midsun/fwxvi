@@ -25,6 +25,12 @@
  * @{
  */
 
+#define IS_USING_CURRENT_SENSE_REV_3 1U
+
+#if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
+
+
+#else
 /**
  * @brief   Initializes the current sense sub-system
  * @param   storage Pointer to the rear controller storage
@@ -40,4 +46,5 @@ StatusCode current_sense_init(RearControllerStorage *rear_controller_storage);
  */
 StatusCode current_sense_run();
 
+#endif
 /** @} */
