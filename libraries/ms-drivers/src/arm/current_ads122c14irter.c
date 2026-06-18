@@ -80,13 +80,13 @@ StatusCode ads122_start_conversion(ADS122Storage * storage){
     return STATUS_CODE_OK;
 }
 
-StatusCode ads122_stop_conversion(ADS122Storage * storage){
-    uint8_t conversion_ctrl;
-    status_ok_or_return(ads122_read_register(storage, &conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
-    conversion_ctrl |= (1 << 0);
-    status_ok_or_return(ads122_write_register(storage, conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
-    return STATUS_CODE_OK;
-}
+// StatusCode ads122_stop_conversion(ADS122Storage * storage){
+//     uint8_t conversion_ctrl;
+//     status_ok_or_return(ads122_read_register(storage, &conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
+//     conversion_ctrl |= (1 << 0);
+//     status_ok_or_return(ads122_write_register(storage, conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
+//     return STATUS_CODE_OK;
+// }
 
 StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[]){
     storage->i2c_port = i2c_port_storage;
@@ -142,4 +142,16 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
     //Do I need to reset the DRDY pin?
 
     return ads122_read_conversion(storage, rx_data);
+}
+
+// What is Vref? -> use internal? -> use AVDD?
+
+StatusCode ads122_get_voltage(ADS122Storage * storage){
+
+    return STATUS_CODE_OK;
+}
+
+StatusCode ads122_get_current(ADS122Storage * storage){
+
+    return STATUS_CODE_OK;
 }
