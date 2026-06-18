@@ -36,7 +36,8 @@
 #define PWM_HIGH_DIV_AMT 4
 #define PWM_LOW_DIV_AMT PWM_DIV - PWM_HIGH_DIV_AMT
 
-#define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_A, .pin = 6 }
+#define STEERING_BUZZER_PWM_PIN \
+  { .port = GPIO_PORT_A, .pin = 6 }
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
