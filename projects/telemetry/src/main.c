@@ -18,6 +18,7 @@
 #include "mcu.h"
 #include "tasks.h"
 #include "uart.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "imu.h"
@@ -62,6 +63,20 @@ Bmi323Storage bmi323_storage = {
 
 CanStorage can_storage = { 0 };
 
+Ws22MotorCanStorage ws22_storage = { 0 };
+Ws22MotorCanConfig ws22_config = {
+  .ws22_status_info_enabled = true,
+  .ws22_bus_measurement_enabled = true,
+  .ws22_velocity_measurement_enabled = true,
+  .ws22_phase_current_enabled = false,
+  .ws22_motor_voltage_enabled = false,
+  .ws22_motor_current_enabled = false,
+  .ws22_motor_back_emf_enabled = false,
+  .ws22_rail_15v_enabled = false,
+  .ws22_temperature_enabled = true,
+  .ws22_drive_cmd_enabled = true,
+};
+
 float roll = 0;
 float pitch = 0;
 float yaw = 0;
@@ -94,6 +109,8 @@ int main() {
   tasks_init();
   log_init();
 
+  ws22_motor_can_init(&ws22_storage, &ws22_config);
+  telemetry_storage.ws22_storage = &ws22_storage;
   telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
   init_master_tasks();
 

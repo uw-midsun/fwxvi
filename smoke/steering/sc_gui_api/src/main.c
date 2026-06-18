@@ -11,14 +11,29 @@
 /* Standard library Headers */
 #include <stdint.h>
 
+#ifndef SHOW_SMOKE_TEST_LOGO_IMAGE
+#define SHOW_SMOKE_TEST_LOGO_IMAGE 1
+#endif
+#ifndef SMOKE_TEST_LOGO_MARGIN_PX
+#define SMOKE_TEST_LOGO_MARGIN_PX 8
+#endif
+
 /* Inter-component Headers */
 #include "delay.h"
 #include "display.h"
+#if SHOW_SMOKE_TEST_LOGO_IMAGE
+#include "gui_drive_screen.h"
+#include "gui_screens.h"
+#include "lvgl_image.h"
+#endif
 #include "log.h"
 #include "mcu.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
+#if SHOW_SMOKE_TEST_LOGO_IMAGE
+#include "ms_logo_image.h"
+#endif
 
 /* All lvgl wrappers are wrapped with this */
 #ifndef STM32L4P5xx
@@ -28,6 +43,45 @@
 #define GUI_UPDATE_PERIOD_MS 20U
 
 static SteeringStorage s_demo_storage = { 0 };
+
+#if SHOW_SMOKE_TEST_LOGO_IMAGE
+static LvglImage s_smoke_logo_image = { 0 };
+
+static StatusCode s_create_smoke_logo_image(GuiScreen* screen) {
+  const LvglImageConfig logo_config = {
+    .size = { .width = MS_LOGO_IMAGE_WIDTH, .height = MS_LOGO_IMAGE_HEIGHT },
+    .position = {
+      .type = WIDGET_POSITION_ALIGN,
+      .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -SMOKE_TEST_LOGO_MARGIN_PX, .y_offset = SMOKE_TEST_LOGO_MARGIN_PX },
+    },
+    .source = &s_midnight_sun_logo_image,
+    .recolor_enabled = false,
+  };
+
+  return lvgl_image_create(&s_smoke_logo_image, &logo_config, screen);
+}
+
+static StatusCode s_create_smoke_drive_screen(GuiScreen* screen) {
+  status_ok_or_return(gui_drive_screen_init(screen));
+  return s_create_smoke_logo_image(screen);
+}
+
+static void s_destroy_smoke_drive_screen(void) {
+  gui_drive_screen_deinit();
+  s_smoke_logo_image = (LvglImage){ 0 };
+}
+
+static StatusCode s_register_smoke_logo_screen(void) {
+  const GuiScreenDescriptor smoke_drive_screen = {
+    .id = GUI_SCREEN_DRIVE,
+    .name = "Drive",
+    .create = s_create_smoke_drive_screen,
+    .destroy = s_destroy_smoke_drive_screen,
+  };
+
+  return gui_screens_register(&smoke_drive_screen);
+}
+#endif
 
 /**
  * @brief   Generate a triangle-wave sample for the GUI smoke test
@@ -85,7 +139,19 @@ static void s_update_demo_display_data(uint32_t step) {
 }
 
 TASK(sc_gui_api, TASK_STACK_2048) {
+#if SHOW_SMOKE_TEST_LOGO_IMAGE
+  StatusCode status = s_register_smoke_logo_screen();
+  if (status != STATUS_CODE_OK) {
+    while (true) {
+      LOG_DEBUG("smoke logo screen registration failed: %u\r\n", status);
+      delay_ms(10);
+    }
+  }
+
+  status = display_init(&s_demo_storage);
+#else
   StatusCode status = display_init(&s_demo_storage);
+#endif
 
   if (status != STATUS_CODE_OK) {
     while (true) {

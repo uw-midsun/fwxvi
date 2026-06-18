@@ -61,9 +61,10 @@ static InterruptSettings killswitch_settings = {
   INTERRUPT_EDGE_FALLING,
 };
 
+static Ws22MotorCanStorage s_motor_can_storage = { 0 };
 static RearControllerStorage s_rear_storage;
 static RearControllerConfig s_rear_config = { 0 };
-
+static Ws22MotorCanConfig s_ws22_motor_can_config = { 0 };
 static const char* print_state_str(RearControllerState state) {
   switch (state) {
     case REAR_CONTROLLER_STATE_IDLE:
@@ -89,7 +90,8 @@ static void log_status(void) {
 TASK(rear_controller_smoke, TASK_STACK_1024) {
   LOG_DEBUG("Initializing the rear controller...\n");
   s_rear_storage.config = &s_rear_config;
-  rear_controller_init(&s_rear_storage, &s_rear_config);
+  s_rear_storage.ws22_motor_can_storage = &s_motor_can_storage;
+  rear_controller_init(&s_rear_storage, &s_rear_config, &s_ws22_motor_can_config);
   delay_ms(100U);
   gpio_init_pin(&killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 

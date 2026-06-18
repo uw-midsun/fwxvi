@@ -37,7 +37,7 @@ StatusCode killswitch_init(Event event, const Task* task) {
   gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
   /* 10ms Debounce */
-  delay_ms(10U);
+  delay_ms(100U);
   GpioState state = gpio_get_state(&killswitch_address);
 
   if (state == GPIO_STATE_HIGH) {

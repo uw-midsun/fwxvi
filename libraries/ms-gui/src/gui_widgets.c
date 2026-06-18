@@ -45,40 +45,40 @@ static const char* s_get_bps_fault_text(uint16_t fault, bool* is_cell_fault) {
 
   if (fault & BPS_FAULT_OVERVOLTAGE_MASK) {
     *is_cell_fault = true;
-    return "OVERVOLTAGE";
+    return "BPS OVERVOLTAGE";
   }
   if (fault & BPS_FAULT_UNBALANCE_MASK) {
     *is_cell_fault = true;
-    return "UNBALANCE";
+    return "BPS UNBALANCE";
   }
   if (fault & BPS_FAULT_OVERTEMP_AMBIENT_MASK) {
-    return "OVERTEMP AMBIENT";
+    return "BPS OVERTEMP AMBIENT";
   }
   if (fault & BPS_FAULT_COMMS_LOSS_AFE_MASK) {
-    return "COMMS LOSS AFE";
+    return "BPS COMMS LOSS AFE";
   }
   if (fault & BPS_FAULT_COMMS_LOSS_CURR_SENSE_MASK) {
-    return "COMMS LOSS CURR";
+    return "BPS COMMS LOSS CURR";
   }
   if (fault & BPS_FAULT_OVERTEMP_CELL_MASK) {
     *is_cell_fault = true;
-    return "OVERTEMP CELL";
+    return "BPS OVERTEMP CELL";
   }
   if (fault & BPS_FAULT_OVERCURRENT_MASK) {
-    return "OVERCURRENT";
+    return "BPS OVERCURRENT";
   }
   if (fault & BPS_FAULT_UNDERVOLTAGE_MASK) {
     *is_cell_fault = true;
-    return "UNDERVOLTAGE";
+    return "BPS UNDERVOLTAGE";
   }
   if (fault & BPS_FAULT_KILLSWITCH_MASK) {
-    return "KILLSWITCH";
+    return "BPS KILLSWITCH";
   }
   if (fault & BPS_FAULT_RELAY_CLOSE_FAILED_MASK) {
-    return "RELAY FAILED";
+    return "BPS RELAY FAILED";
   }
   if (fault & BPS_FAULT_DISCONNECTED_MASK) {
-    return "DISCONNECTED";
+    return "BPS DISCONNECTED";
   }
 
   return "BPS FAULT";
@@ -86,49 +86,49 @@ static const char* s_get_bps_fault_text(uint16_t fault, bool* is_cell_fault) {
 
 static const char* s_get_ws22_flag_text(uint16_t flags) {
   if (flags & ERROR_FLAG_HARDWARE_OVERCURRENT_MASK) {
-    return "HARDWARE_OVERCURRENT";
+    return "W22 HARDWARE_OVERCURRENT";
   }
   if (flags & ERROR_FLAG_SOFTWARE_OVERCURRENT_MASK) {
-    return "SOFTWARE_OVERCURRENT";
+    return "W22 SOFTWARE_OVERCURRENT";
   }
   if (flags & ERROR_FLAG_DC_BUS_OV_MASK) {
-    return "DC_BUS_OV";
+    return "W22 DC_BUS_OV";
   }
   if (flags & ERROR_FLAG_BAD_HALL_SEQUENCE_MASK) {
-    return "BAD_HALL_SEQUENCE";
+    return "W22 BAD_HALL_SEQUENCE";
   }
   if (flags & ERROR_FLAG_WATCHDOG_CAUSED_RESET_MASK) {
-    return "WATCHDOG_CAUSED_RESET";
+    return "W22 WATCHDOG_CAUSED_RESET";
   }
   if (flags & ERROR_FLAG_CFG_READ_ERROR_MASK) {
-    return "CFG_READ_ERROR";
+    return "W22 CFG_READ_ERROR";
   }
   if (flags & ERROR_FLAG_DESATURATION_FAULT_MASK) {
-    return "DESATURATION_FAULT";
+    return "W22 DESATURATION_FAULT";
   }
   if (flags & ERROR_FLAG_MOTOR_OVER_SPEED_MASK) {
-    return "MOTOR_OVER_SPEED";
+    return "W22 MOTOR_OVER_SPEED";
   }
   if (flags & LIMIT_FLAG_OUTPUT_VOLTAGE_PWM_MASK) {
-    return "OUTPUT_VOLTAGE_PWM_LIMIT";
+    return "W22 OUTPUT_VOLTAGE_PWM_LIMIT";
   }
   if (flags & LIMIT_FLAG_MOTOR_CURRENT_MASK) {
-    return "MOTOR_CURRENT";
+    return "W22 MOTOR_CURRENT";
   }
   if (flags & LIMIT_FLAG_VELOCITY_MASK) {
-    return "VELOCITY_LIMIT";
+    return "W22 VELOCITY_LIMIT";
   }
   if (flags & LIMIT_FLAG_BUS_CURRENT_MASK) {
-    return "BUS_CURRENT_LIMIT";
+    return "W22 BUS_CURRENT_LIMIT";
   }
   if (flags & LIMIT_FLAG_BUS_VOLTAGE_UPPER_MASK) {
-    return "BUS_VOLTAGE_UPPER_LIMIT";
+    return "W22 BUS_VOLTAGE_UPPER_LIMIT";
   }
   if (flags & LIMIT_FLAG_BUS_VOLTAGE_LOWER_MASK) {
-    return "BUS_VOLTAGE_LOWER_LIMIT";
+    return "W22 BUS_VOLTAGE_LOWER_LIMIT";
   }
   if (flags & LIMIT_FLAG_TEMPERATURE_MASK) {
-    return "TEMPERATURE_LIMIT";
+    return "W22 TEMPERATURE_LIMIT";
   }
 
   return "WS22 FLAG";

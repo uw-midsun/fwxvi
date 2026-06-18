@@ -28,7 +28,9 @@
 #include "power_manager.h"
 #include "ws22_motor_can.h"
 
-FrontControllerStorage front_controller_storage = { 0 };
+Ws22MotorCanStorage motor_can_storage = { 0 };
+
+FrontControllerStorage front_controller_storage = { .ws22_motor_can_storage = &motor_can_storage };
 
 FrontControllerConfig front_controller_config = {
   .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
@@ -37,6 +39,19 @@ FrontControllerConfig front_controller_config = {
   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA,
   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA,
+};
+
+Ws22MotorCanConfig motor_can_config = {
+  .ws22_status_info_enabled = true,
+  .ws22_bus_measurement_enabled = true,
+  .ws22_velocity_measurement_enabled = true,
+  .ws22_phase_current_enabled = true,
+  .ws22_motor_voltage_enabled = true,
+  .ws22_motor_current_enabled = true,
+  .ws22_motor_back_emf_enabled = true,
+  .ws22_rail_15v_enabled = true,
+  .ws22_temperature_enabled = true,
+  .ws22_drive_cmd_enabled = false,
 };
 
 VehicleDriveState drive_state;
@@ -52,11 +67,10 @@ void run_1000hz_cycle() {
   opd_run();
   motor_can_update_target_current_velocity();
 
-  ws22_motor_can_transmit_drive_command();
+  motor_can_transmit_drive_command();
 }
 
 void run_10hz_cycle() {
-  motor_can_forward_can_data();
   front_controller_update_state_manager_medium_cycle();
   run_can_tx_medium();
 }
@@ -76,7 +90,7 @@ int main() {
   tasks_init();
   log_init();
 
-  front_controller_init(&front_controller_storage, &front_controller_config);
+  front_controller_init(&front_controller_storage, &front_controller_config, &motor_can_config);
 
   init_master_tasks();
 
