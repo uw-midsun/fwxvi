@@ -32,7 +32,7 @@
 #endif
 
 static GpioAddress s_brake_gpio = GPIO_FRONT_CONTROLLER_BRAKE_PEDAL;
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 static BrakePedalStorage s_brake_pedal_storage = { 0U };
 
 StatusCode brake_pedal_run() {
@@ -62,7 +62,7 @@ StatusCode brake_pedal_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode brake_pedal_init(FrontControllerStorage *storage) {
+StatusCode brake_pedal_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

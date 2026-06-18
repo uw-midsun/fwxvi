@@ -39,7 +39,7 @@ static inline void s_enable_usart3(void) {
 
 /** @brief  UART Port data */
 typedef struct {
-  USART_TypeDef *base;   /**< UART HW Base address */
+  USART_TypeDef* base;   /**< UART HW Base address */
   void (*rcc_cmd)(void); /**< Function pointer to enable UART clock using RCC */
   uint8_t irq;           /**< UART interrupt number */
   bool initialized;      /**< Initialized flag */
@@ -67,7 +67,7 @@ static StaticSemaphore_t s_uart_cmplt_sem[NUM_UART_PORTS];
 static SemaphoreHandle_t s_uart_cmplt_handle[NUM_UART_PORTS];
 
 /* Private helper for common TX/RX operations */
-static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
+static StatusCode s_uart_transfer(UartPort uart, uint8_t* data, size_t len, bool is_rx) {
   if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -103,7 +103,7 @@ static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool
 }
 
 /* Private helper to handle transfer complete */
-static void s_uart_transfer_complete_callback(UART_HandleTypeDef *huart, bool is_rx) {
+static void s_uart_transfer_complete_callback(UART_HandleTypeDef* huart, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
 
   if (huart->Instance == USART1) {
@@ -130,24 +130,24 @@ void USART3_IRQHandler(void) {
 }
 
 /* Callback functions for HAL UART TX */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
   s_uart_transfer_complete_callback(huart, false);
 }
 
 /* Callback functions for HAL UART RX */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
   s_uart_transfer_complete_callback(huart, true);
 }
 
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode uart_rx(UartPort uart, uint8_t* data, size_t len) {
   return s_uart_transfer(uart, data, len, true);
 }
 
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
+StatusCode uart_tx(UartPort uart, uint8_t* data, size_t len) {
   return s_uart_transfer(uart, data, len, false);
 }
 
-StatusCode uart_init(UartPort uart, UartSettings *settings) {
+StatusCode uart_init(UartPort uart, UartSettings* settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

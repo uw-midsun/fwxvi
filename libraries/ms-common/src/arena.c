@@ -15,18 +15,18 @@
 /* Intra-component Headers */
 #include "arena.h"
 
-StatusCode arena_init(Arena *a, void *buffer, ptrdiff_t cap) {
+StatusCode arena_init(Arena* a, void* buffer, ptrdiff_t cap) {
   if (a == NULL || buffer == NULL || cap <= 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  a->base = (uint8_t *)buffer;
+  a->base = (uint8_t*)buffer;
   a->end = a->base + cap;
   a->current = a->end;
   return STATUS_CODE_OK;
 }
 
-StatusCode arena_reset(Arena *a) {
+StatusCode arena_reset(Arena* a) {
   if (a == NULL || a->base == NULL || a->end == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -34,8 +34,8 @@ StatusCode arena_reset(Arena *a) {
   return STATUS_CODE_OK;
 }
 
-void *arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
-  void *out = NULL;
+void* arena_alloc(Arena* a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
+  void* out = NULL;
 
   if (a == NULL || a->base == NULL || a->end == NULL || a->current == NULL) {
     return NULL;
@@ -63,7 +63,7 @@ void *arena_alloc(Arena *a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count) {
   uintptr_t mask = (uintptr_t)(align - 1);
   start &= ~mask;
 
-  uint8_t *start_ptr = (uint8_t *)start;
+  uint8_t* start_ptr = (uint8_t*)start;
   if (start_ptr < a->base) {
     return NULL;
   }

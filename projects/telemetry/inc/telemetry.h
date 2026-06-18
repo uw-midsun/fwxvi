@@ -43,10 +43,10 @@ typedef struct {
 typedef struct {
   Datagram datagram_buffer[DATAGRAM_BUFFER_SIZE]; /**< Buffer to store the datagram */
   Queue datagram_queue;                           /**< Queue handle for the datagram buffer */
-  Bmi323Storage *bmi323_storage;                  /**< Pointer to BMI323 storage struct */
-  CanStorage *can_storage;                        /**< Pointer to CAN storage struct, to be used in xb_transmit */
-  Ws22MotorCanStorage *ws22_storage;              /**< Pointer to WS22 parsed data; populated before telemetry_init */
-  TelemetryConfig *config;                        /**< Pointer to the telemetry configuration data */
+  Bmi323Storage* bmi323_storage;                  /**< Pointer to BMI323 storage struct */
+  CanStorage* can_storage;                        /**< Pointer to CAN storage struct, to be used in xb_transmit */
+  Ws22MotorCanStorage* ws22_storage;              /**< Pointer to WS22 parsed data; populated before telemetry_init */
+  TelemetryConfig* config;                        /**< Pointer to the telemetry configuration data */
 } TelemetryStorage;
 
 /**
@@ -58,6 +58,6 @@ typedef struct {
  * @return  STATUS_CODE_OK if telemetry initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are NULL/incorrect
  */
-StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage, CanStorage *can_storage);
+StatusCode telemetry_init(TelemetryStorage* telemetry_storage, TelemetryConfig* config, Bmi323Storage* bmi323_storage, CanStorage* can_storage);
 
 /** @} */

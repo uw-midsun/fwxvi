@@ -35,7 +35,7 @@
  * @param   storage Pointer to the rear controller storage
  * @return  STATUS_CODE_OK
  */
-StatusCode relays_init(RearControllerStorage *storage);
+StatusCode relays_init(RearControllerStorage* storage);
 
 /**
  * @brief   Reset relays by disengaging all relays

@@ -52,21 +52,21 @@ class VoltageTableModel : public QAbstractTableModel {
    * @param   max_mv Maximum mV for 100% (default = DEFAULT_MIN_VOLTAGE, replaced at runtime)
    * @param   parent Qt parent object
    */
-  explicit VoltageTableModel(const std::map<QString, QVariant> &data_map, int min_mv = DEFAULT_MIN_VOLTAGE, int max_mv = DEFAULT_MIN_VOLTAGE, QObject *parent = nullptr);
+  explicit VoltageTableModel(const std::map<QString, QVariant>& data_map, int min_mv = DEFAULT_MIN_VOLTAGE, int max_mv = DEFAULT_MIN_VOLTAGE, QObject* parent = nullptr);
 
   /**
    * @brief   Returns number of rows
    * @param   parent Required by Qt (not used here)
    * @return  int Number of rows
    */
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns number of columns
    * @param   parent Required by Qt (not used here)
    * @return  int Always VOLTAGE_COLUMN_COUNT (4)
    */
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns data for a cell
@@ -74,7 +74,7 @@ class VoltageTableModel : public QAbstractTableModel {
    * @param   role Role requested (DisplayRole, AlignmentRole, ForegroundRole, etc.)
    * @return  QVariant Data or formatting for the cell
    */
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
   /**
    * @brief   Returns header labels
@@ -112,7 +112,7 @@ class VoltageTableModel : public QAbstractTableModel {
    * @param   var QVariant (expected to be QString like "50 mv")
    * @return  int Voltage in millivolts
    */
-  static int toIntMV(const QVariant &var);
+  static int toIntMV(const QVariant& var);
 
   /**
    * @brief   Converts a voltage to percentage [0, 100]

@@ -37,7 +37,7 @@ FotaError fota_encryption_init();
  * @param   data_start Pointer to the start of the data
  * @param   length_words Size of the data in words
  */
-uint32_t fota_calculate_crc32(uint8_t *data, uint32_t length_words);
+uint32_t fota_calculate_crc32(uint8_t* data, uint32_t length_words);
 
 /**
  * @brief   Verify a region of flash memory
@@ -52,13 +52,13 @@ uint32_t fota_calculate_crc32_on_flash_memory(uintptr_t flash_base_addr, uint32_
  * @param   packet Pointer to the encrypted packet
  * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
  */
-FotaError fota_verify_packet_encryption(FotaPacket *packet);
+FotaError fota_verify_packet_encryption(FotaPacket* packet);
 
 /**
  * @brief   Verify a FOTA datagrams encryption
  * @param   datagram Pointer to the encrypted datagram
  * @return  FOTA_SUCCESS if encryption is decoded successfully and the datagram is valid
  */
-FotaError fota_verify_datagram_encryption(FotaDatagram *datagram);
+FotaError fota_verify_datagram_encryption(FotaDatagram* datagram);
 
 /** @} */

@@ -67,7 +67,7 @@ typedef struct {
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
-StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings);
+StatusCode i2c_init(I2CPort i2c, const I2CSettings* settings);
 
 /**
  * @brief   Reads data using the I2C port from the specified address
@@ -80,7 +80,7 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings);
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len);
+StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t* rx_data, size_t rx_len);
 
 /**
  * @brief   Writes data using the I2C port to the specified address
@@ -93,7 +93,7 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len);
+StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t* tx_data, size_t tx_len);
 
 /**
  * @brief   Reads data using the I2C port from the specified address and register
@@ -107,7 +107,7 @@ StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_l
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len);
+StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* rx_data, size_t rx_len);
 
 /**
  * @brief   Writes data using the I2C port to the specified address and register
@@ -121,7 +121,7 @@ StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_d
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len);
+StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* tx_data, size_t tx_len);
 
 /**
  * @brief   Reads from a memory address using the I2C port
@@ -136,7 +136,7 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  */
-StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len);
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t* rx_data, size_t rx_len);
 
 #ifdef MS_PLATFORM_X86
 
@@ -148,7 +148,7 @@ StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t 
  * @return  STATUS_CODE_OK if data is set successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
+StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t* data, size_t len);
 
 /**
  * @brief   Gets data from the I2C TX queue
@@ -158,7 +158,7 @@ StatusCode i2c_set_rx_data(I2CPort i2c, const uint8_t *data, size_t len);
  * @return  STATUS_CODE_OK if data is retrieved successfully
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t *data, size_t len);
+StatusCode i2c_get_tx_data(I2CPort i2c, uint8_t* data, size_t len);
 
 /**
  * @brief   Gets the number of queued TX bytes available to read

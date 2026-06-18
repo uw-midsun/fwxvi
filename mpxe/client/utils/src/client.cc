@@ -76,24 +76,24 @@ void Client::receiverProcedure() {
   }
 }
 
-void *processMessagesProcedureWrapper(void *param) {
-  Client *client = static_cast<Client *>(param);
+void* processMessagesProcedureWrapper(void* param) {
+  Client* client = static_cast<Client*>(param);
 
   try {
     client->processMessagesProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Process Messages Thread Error " << e.what() << std::endl;
   }
 
   return nullptr;
 }
 
-void *receiverProcedureWrapper(void *param) {
-  Client *client = static_cast<Client *>(param);
+void* receiverProcedureWrapper(void* param) {
+  Client* client = static_cast<Client*>(param);
 
   try {
     client->receiverProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Receiver Thread Error " << e.what() << std::endl;
   }
 
@@ -114,7 +114,7 @@ void Client::connectServer() {
       throw std::runtime_error("Error converting IPv4 host address to binary form");
     }
 
-    if (connect(m_clientSocket, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
+    if (connect(m_clientSocket, (struct sockaddr*)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
       close(m_clientSocket);
       throw std::runtime_error("Error connecting socket");
     }
@@ -134,7 +134,7 @@ void Client::connectServer() {
       close(m_clientSocket);
       throw std::runtime_error("Failed to create process messages thread");
     }
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Error connecting to the server: " << e.what() << std::endl;
   }
 }
@@ -145,7 +145,7 @@ void Client::disconnectServer() {
   m_clientSocket = 0;
 }
 
-void Client::sendMessage(const std::string &message) {
+void Client::sendMessage(const std::string& message) {
   int n = send(m_clientSocket, message.c_str(), message.size(), 0);
   if (n < 0) throw std::runtime_error("Error sending message");
 }
@@ -154,7 +154,7 @@ bool Client::isConnected() const {
   return m_isConnected;
 }
 
-void Client::setClientName(const std::string &name) {
+void Client::setClientName(const std::string& name) {
   this->m_clientName = name;
 }
 
@@ -162,7 +162,7 @@ std::string Client::getClientName() const {
   return this->m_clientName;
 }
 
-Client::Client(const std::string &host, int port, messageCallback messageCallback, connectCallback connectCallback) {
+Client::Client(const std::string& host, int port, messageCallback messageCallback, connectCallback connectCallback) {
   this->m_host = host;
   this->m_port = port;
   this->m_clientSocket = -1;

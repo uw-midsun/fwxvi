@@ -37,7 +37,7 @@ static FotaError s_validate_address(uint32_t address, size_t size) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_write(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -84,14 +84,14 @@ FotaError fota_flash_erase(uint32_t start_page, uint8_t num_pages) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_flash_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+FotaError fota_flash_read(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
   if (s_validate_address(address, buffer_len) == FOTA_ERROR_SUCCESS) {
     /* Direct memory read */
-    memcpy(buffer, (void *)address, buffer_len);
+    memcpy(buffer, (void*)address, buffer_len);
   }
 
   return FOTA_ERROR_SUCCESS;
@@ -106,7 +106,7 @@ FotaError fota_verify_flash_memory(uintptr_t start_addr, size_t size_bytes) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  volatile uint32_t *flash_pointer = (volatile uint32_t *)start_addr;
+  volatile uint32_t* flash_pointer = (volatile uint32_t*)start_addr;
   uint32_t size_in_words = size_bytes / FOTA_FLASH_WORD_SIZE;
 
   for (uint32_t i = 0U; i < size_in_words; i++) {

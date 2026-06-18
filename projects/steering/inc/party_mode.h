@@ -31,7 +31,7 @@
  * @return  STATUS_CODE_OK on success
  *          STATUS_CODE_INVALID_ARGS when params are invalid
  */
-StatusCode party_mode_init(SteeringStorage *storage);
+StatusCode party_mode_init(SteeringStorage* storage);
 
 /**
  * @brief   Run party mode

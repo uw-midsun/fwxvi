@@ -75,7 +75,7 @@ static SoftTimer s_melody_timer = { 0U };
 static SoftTimer s_signal_timer = { 0U };
 
 /* Melody playback state */
-static const Note *s_current_melody = NULL;
+static const Note* s_current_melody = NULL;
 static uint16_t s_melody_index = 0;
 static bool s_melody_playing = false;
 
@@ -180,7 +180,7 @@ StatusCode buzzer_beep(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode buzzer_play_melody(Note *melody) {
+StatusCode buzzer_play_melody(Note* melody) {
   if (melody == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

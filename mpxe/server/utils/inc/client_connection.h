@@ -42,7 +42,7 @@ class ClientConnection {
   struct sockaddr_in m_clientAddress; /**< The clients address */
   std::string m_clientName;           /**< The clients name */
 
-  Server *server; /**< Pointer to the server instance */
+  Server* server; /**< Pointer to the server instance */
 
  public:
   /**
@@ -51,7 +51,7 @@ class ClientConnection {
    *          variables and prepares the client to accept and communicate
    * @param   server The server that this client will be connected to
    */
-  explicit ClientConnection(Server *server);
+  explicit ClientConnection(Server* server);
 
   /**
    * @brief   Destructs a ClientConnection object
@@ -71,7 +71,7 @@ class ClientConnection {
    * @brief   Sends a message to the client
    * @param   message String message to be sent
    */
-  void sendMessage(const std::string &message);
+  void sendMessage(const std::string& message);
 
   /**
    * @brief   Gets the clients name
@@ -83,7 +83,7 @@ class ClientConnection {
    * @brief   Sets the clients name
    * @param   name The new client name
    */
-  void setClientName(const std::string &name);
+  void setClientName(const std::string& name);
 
   /**
    * @brief   Gets the clients port

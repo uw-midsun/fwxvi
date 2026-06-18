@@ -30,7 +30,7 @@
  * @return  STATUS_CODE_OK if initialized succesfully
  *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
  */
-StatusCode fans_init(RearControllerStorage *storage);
+StatusCode fans_init(RearControllerStorage* storage);
 
 /**
  * @brief   Checks the max board and cell temperatures in storage, compares them against the fan threshold, and turns on or off accordingly

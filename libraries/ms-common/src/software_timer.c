@@ -14,7 +14,7 @@
 /* Intra-component Headers */
 #include "software_timer.h"
 
-StatusCode software_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
+StatusCode software_timer_init(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer* timer) {
   if (timer->id != NULL) {
     /* Timer already exist/inuse, delete the old timer */
     xTimerDelete(timer->id, 0);
@@ -25,7 +25,7 @@ StatusCode software_timer_init(uint32_t duration_ms, SoftTimerCallback callback,
   return STATUS_CODE_OK;
 }
 
-StatusCode software_timer_start(SoftTimer *timer) {
+StatusCode software_timer_start(SoftTimer* timer) {
   if (timer->id == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -35,12 +35,12 @@ StatusCode software_timer_start(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-StatusCode software_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer *timer) {
+StatusCode software_timer_init_and_start(uint32_t duration_ms, SoftTimerCallback callback, SoftTimer* timer) {
   status_ok_or_return(software_timer_init(duration_ms, callback, timer));
   return software_timer_start(timer);
 }
 
-StatusCode software_timer_cancel(SoftTimer *timer) {
+StatusCode software_timer_cancel(SoftTimer* timer) {
   if (xTimerDelete(timer->id, 0) != pdPASS) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -48,7 +48,7 @@ StatusCode software_timer_cancel(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-StatusCode software_timer_reset(SoftTimer *timer) {
+StatusCode software_timer_reset(SoftTimer* timer) {
   if (xTimerReset(timer->id, 0) != pdPASS) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -56,11 +56,11 @@ StatusCode software_timer_reset(SoftTimer *timer) {
   return STATUS_CODE_OK;
 }
 
-bool software_timer_inuse(SoftTimer *timer) {
+bool software_timer_inuse(SoftTimer* timer) {
   return xTimerIsTimerActive(timer->id);
 }
 
-uint32_t software_timer_remaining_time(SoftTimer *timer) {
+uint32_t software_timer_remaining_time(SoftTimer* timer) {
   if (!software_timer_inuse(timer)) {
     return 0;
   }
@@ -69,7 +69,7 @@ uint32_t software_timer_remaining_time(SoftTimer *timer) {
   return (xTimerGetExpiryTime(timer->id) - xTaskGetTickCount()) * 1000U / configTICK_RATE_HZ;
 }
 
-StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms, SoftTimerCallback fault_callback) {
+StatusCode software_watchdog_init(SoftwareWatchdog* watchdog, uint32_t period_ms, SoftTimerCallback fault_callback) {
   if (watchdog == NULL || fault_callback == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -81,7 +81,7 @@ StatusCode software_watchdog_init(SoftwareWatchdog *watchdog, uint32_t period_ms
   return software_timer_init_and_start(period_ms, fault_callback, &watchdog->timer);
 }
 
-StatusCode software_watchdog_kick(SoftwareWatchdog *watchdog) {
+StatusCode software_watchdog_kick(SoftwareWatchdog* watchdog) {
   if (watchdog == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -89,7 +89,7 @@ StatusCode software_watchdog_kick(SoftwareWatchdog *watchdog) {
   return software_timer_reset(&watchdog->timer);
 }
 
-StatusCode software_watchdog_stop(SoftwareWatchdog *watchdog) {
+StatusCode software_watchdog_stop(SoftwareWatchdog* watchdog) {
   if (watchdog == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

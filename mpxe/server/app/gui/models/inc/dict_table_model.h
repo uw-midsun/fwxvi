@@ -48,21 +48,21 @@ class DictTableModel : public QAbstractTableModel {
    * @param   editable_variables Whether the values should be editable
    * @param   parent Pointer to Qt parent
    */
-  explicit DictTableModel(const std::map<QString, QVariant> &data, bool editable_variables, QObject *parent = nullptr);
+  explicit DictTableModel(const std::map<QString, QVariant>& data, bool editable_variables, QObject* parent = nullptr);
 
   /**
    * @brief   Returns the number of rows in the table
    * @param   parent Required by Qt to access row count (unused here)
    * @return  int Number of rows
    */
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns the number of columns in the table (always 2)
    * @param   parent Required by Qt (unused here)
    * @return  int Number of columns
    */
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns header labels
@@ -79,14 +79,14 @@ class DictTableModel : public QAbstractTableModel {
    * @param   role Role of the cell
    * @return  QVariant Value at that cell (string, int, etc.)
    */
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
   /**
    * @brief   Returns flags describing cell behavior (editability, selectability)
    * @param   index Index of the specific cell
    * @return  Qt::ItemFlags Cell flags
    */
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
 
   /**
    * @brief   Update the value at a given row
@@ -95,7 +95,7 @@ class DictTableModel : public QAbstractTableModel {
    * @return  true if row is valid and updated
    * @return  false otherwise
    */
-  bool setValueAtRow(int row, const QVariant &value);
+  bool setValueAtRow(int row, const QVariant& value);
 
   /**
    * @brief   Update the value for a given key
@@ -104,13 +104,13 @@ class DictTableModel : public QAbstractTableModel {
    * @return  true if key exists and updated
    * @return  false otherwise
    */
-  bool setValueForKey(const QString &key, const QVariant &value);
+  bool setValueForKey(const QString& key, const QVariant& value);
 
   /**
    * @brief   Reset the model with new dictionary data
    * @param   data New key/value map
    */
-  void resetFromMap(const std::map<QString, QVariant> &data);
+  void resetFromMap(const std::map<QString, QVariant>& data);
 
  private:
   QStringList m_keys;         /**< Keys of dictionary */

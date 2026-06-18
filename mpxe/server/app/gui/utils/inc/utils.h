@@ -47,22 +47,22 @@ struct AppState; /**< Application-level state struct (defined in main_window.h) 
  * @param   out      Output QVariantMap root object
  * @return  bool     True on success, false on failure
  */
-bool readJsonFileToVariantMap(const QString &filePath, QVariantMap &out);
+bool readJsonFileToVariantMap(const QString& filePath, QVariantMap& out);
 
 /**
  * @brief   Convert a QVariantMap to std::map<QString,QVariant>
  * @param   vm QVariantMap to convert
  * @return  std::map<QString, QVariant> Converted map
  */
-std::map<QString, QVariant> toStdMap(const QVariantMap &vm);
+std::map<QString, QVariant> toStdMap(const QVariantMap& vm);
 
 /**
  * @brief   Small bundle of widgets for a searchable table
  */
 struct TableWithSearch {
-  QWidget *widget;              /**< Container widget that holds search + table */
-  QTableView *table;            /**< Table view showing the data */
-  QSortFilterProxyModel *proxy; /**< Proxy used for filtering the source model */
+  QWidget* widget;              /**< Container widget that holds search + table */
+  QTableView* table;            /**< Table view showing the data */
+  QSortFilterProxyModel* proxy; /**< Proxy used for filtering the source model */
 };
 
 /**
@@ -71,20 +71,20 @@ struct TableWithSearch {
  * @param   parent Optional parent widget
  * @return  TableWithSearch Struct containing container, table, and proxy
  */
-TableWithSearch makeSearchableTable(QAbstractItemModel *model, QWidget *parent = nullptr);
+TableWithSearch makeSearchableTable(QAbstractItemModel* model, QWidget* parent = nullptr);
 
 /**
  * @brief   Apply dark Fusion theme to the application
  * @param   app QApplication reference to modify
  */
-void applyDarkTheme(QApplication &app);
+void applyDarkTheme(QApplication& app);
 
 /**
  * @brief   Set a coherent color palette for a given palette group
  * @param   pal Palette to mutate
  * @param   g Color group (Active / Inactive / Disabled)
  */
-void setPaletteGroup(QPalette &pal, QPalette::ColorGroup g);
+void setPaletteGroup(QPalette& pal, QPalette::ColorGroup g);
 
 /**
  * @brief   Return the base directory containing Simulation JSON files
@@ -104,6 +104,6 @@ QStringList findClientJsons();
  * @param   state AppState to populate (payload field is written)
  * @return  bool  True on success, false otherwise
  */
-bool loadClientIntoState(const QString &path, AppState &state);
+bool loadClientIntoState(const QString& path, AppState& state);
 
 /** @} */

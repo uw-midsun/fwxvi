@@ -43,19 +43,19 @@ void Server::listenNewClientsProcedure() {
   if (setsockopt(m_listeningSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
     throw std::runtime_error("Error setting socket option SO_REUSEADDR");
   }
-  memset((char *)&m_serverAddress, 0U, sizeof(m_serverAddress));
+  memset((char*)&m_serverAddress, 0U, sizeof(m_serverAddress));
   m_serverAddress.sin_family = AF_INET;
   m_serverAddress.sin_port = htons(m_listenPort);
   m_serverAddress.sin_addr.s_addr = INADDR_ANY; /* Listen to all addresses */
 
-  if (bind(m_listeningSocket, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
+  if (bind(m_listeningSocket, (struct sockaddr*)&m_serverAddress, sizeof(m_serverAddress)) < 0) {
     throw std::runtime_error("Error binding socket");
   }
 
   listen(m_listeningSocket, 5);
 
   while (m_serverListening) {
-    ClientConnection *client = new ClientConnection(this);
+    ClientConnection* client = new ClientConnection(this);
 
     if (!client->acceptClient(m_listeningSocket)) {
       delete client;
@@ -104,7 +104,7 @@ void Server::epollClientsProcedure() {
     }
 
     for (int i = 0; i < nfds; i++) {
-      ClientConnection *client = static_cast<ClientConnection *>(m_epollEvents[i].data.ptr);
+      ClientConnection* client = static_cast<ClientConnection*>(m_epollEvents[i].data.ptr);
 
       if (m_epollEvents[i].events & EPOLLIN) {
         numBytes = read(client->getSocketFd(), buffer, MAX_CLIENT_READ_SIZE);
@@ -124,23 +124,23 @@ void Server::epollClientsProcedure() {
   m_serverListening = false;
 }
 
-void *listenNewClientsWrapper(void *param) {
-  Server *server = static_cast<Server *>(param);
+void* listenNewClientsWrapper(void* param) {
+  Server* server = static_cast<Server*>(param);
 
   try {
     server->listenNewClientsProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Listen Thread Error: " << e.what() << std::endl;
   }
 
   return nullptr;
 }
 
-void *epollClientsWrapper(void *param) {
-  Server *server = static_cast<Server *>(param);
+void* epollClientsWrapper(void* param) {
+  Server* server = static_cast<Server*>(param);
   try {
     server->epollClientsProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "EPOLL Clients Error: " << e.what() << std::endl;
   }
   return nullptr;
@@ -168,7 +168,7 @@ void Server::listenClients(int port, messageCallback messageCallback, connectCal
   }
 }
 
-void Server::removeClient(ClientConnection *client) {
+void Server::removeClient(ClientConnection* client) {
   pthread_mutex_lock(&m_mutex);
   if (client) {
     std::cerr << "Removed client: " << client->getClientName() << std::endl;
@@ -179,7 +179,7 @@ void Server::removeClient(ClientConnection *client) {
   pthread_mutex_unlock(&m_mutex);
 }
 
-void Server::updateClientName(ClientConnection *client, std::string newName) {
+void Server::updateClientName(ClientConnection* client, std::string newName) {
   pthread_mutex_lock(&m_mutex);
   std::string oldClientName = client->getClientName();
 
@@ -202,17 +202,17 @@ void Server::updateClientName(ClientConnection *client, std::string newName) {
   pthread_mutex_unlock(&m_mutex);
 }
 
-void Server::messageReceived(ClientConnection *client, std::string &message) {
+void Server::messageReceived(ClientConnection* client, std::string& message) {
   m_messageCallback(this, client, message);
 }
 
-void Server::sendMessage(ClientConnection *client, const std::string &message) {
+void Server::sendMessage(ClientConnection* client, const std::string& message) {
   client->sendMessage(message);
 }
 
-void Server::broadcastMessage(const std::string &message) {
+void Server::broadcastMessage(const std::string& message) {
   pthread_mutex_lock(&m_mutex);
-  for (auto &pair : m_connections) {
+  for (auto& pair : m_connections) {
     if (pair.second->isConnected()) {
       pair.second->sendMessage(message);
     }
@@ -220,7 +220,7 @@ void Server::broadcastMessage(const std::string &message) {
   pthread_mutex_unlock(&m_mutex);
 }
 
-ClientConnection *Server::getClientByName(std::string &clientName) {
+ClientConnection* Server::getClientByName(std::string& clientName) {
   pthread_mutex_lock(&m_mutex);
   if (m_connections.count(clientName)) {
     pthread_mutex_unlock(&m_mutex);
@@ -231,7 +231,7 @@ ClientConnection *Server::getClientByName(std::string &clientName) {
 }
 
 void Server::dumpClientList() {
-  for (auto &pair : m_connections) {
+  for (auto& pair : m_connections) {
     if (pair.second->isConnected()) {
       std::cout << pair.first << std::endl;
     }

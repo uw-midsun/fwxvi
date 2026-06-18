@@ -32,7 +32,7 @@
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef lv_align_t WidgetAlignment;
 typedef lv_bar_orientation_t WidgetOrientation;
-typedef const lv_font_t *WidgetFontSize;
+typedef const lv_font_t* WidgetFontSize;
 
 /** @brief   Struct defining the dimensions of a widget */
 typedef struct {
@@ -79,9 +79,9 @@ typedef struct {
 
 /** @brief   Runtime handles and state for a speedometer widget */
 typedef struct {
-  lv_obj_t *scale;                     /**< LVGL scale object used for the dial */
-  lv_obj_t *needle;                    /**< LVGL line object used as the speedometer needle */
-  lv_obj_t *label;                     /**< LVGL label object showing the current speed */
+  lv_obj_t* scale;                     /**< LVGL scale object used for the dial */
+  lv_obj_t* needle;                    /**< LVGL line object used as the speedometer needle */
+  lv_obj_t* label;                     /**< LVGL label object showing the current speed */
   lv_point_precise_t needle_points[2]; /**< Line endpoints used to draw the needle */
 } SpeedometerWidget;
 
@@ -98,28 +98,28 @@ typedef struct {
 
 /** @brief   Runtime handles for a labeled bar widget */
 typedef struct {
-  lv_obj_t *bar;   /**< LVGL bar object */
-  lv_obj_t *label; /**< LVGL label associated with the bar */
+  lv_obj_t* bar;   /**< LVGL bar object */
+  lv_obj_t* label; /**< LVGL label associated with the bar */
 } BarWidget;
 
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
   WidgetSize size;                 /**< Bounding size of the bar widget */
   WidgetPosition position;         /**< Placement of the bar widget on screen */
-  const char *label_text;          /**< Static label text shown beside the bar */
+  const char* label_text;          /**< Static label text shown beside the bar */
   WidgetAlignment label_alignment; /**< Alignment used for the label relative to the bar */
   WidgetOrientation orientation;   /**< LVGL bar orientation */
   GuiColorId indicator_color_id;   /**< Ccolor used for the bar indicator */
 } BarWidgetConfig;
 
 typedef struct {
-  lv_obj_t *label;
+  lv_obj_t* label;
 } LabelWidget;
 
 typedef struct {
   WidgetSize size;                /**< Bounding size of the label widget, or content-sized when zero */
   WidgetPosition position;        /**< Placement of the label widget on screen */
-  const char *label_text;         /**< Static label text shown */
+  const char* label_text;         /**< Static label text shown */
   WidgetTextAlignment alignment;  /**< Text alignment inside the label */
   GuiColorId text_color_id;       /**< Color used for the label text */
   WidgetFontSize font;            /**< Font used by the label text */
@@ -133,7 +133,7 @@ typedef struct {
 
 /** @brief   Runtime handle for a table widget */
 typedef struct {
-  lv_obj_t *table;
+  lv_obj_t* table;
 } TableWidget;
 
 /** @brief   Configuration used when creating a table widget */
@@ -150,7 +150,7 @@ typedef struct {
 #else
 typedef int16_t WidgetAlignment;
 typedef int16_t WidgetOrientation;
-typedef const int16_t *WidgetFontSize;
+typedef const int16_t* WidgetFontSize;
 
 /** @brief   Struct defining the dimensions of a widget */
 typedef struct {
@@ -197,9 +197,9 @@ typedef struct {
 
 /** @brief   Runtime handles and state for a speedometer widget */
 typedef struct {
-  int16_t *scale;           /**< LVGL scale object used for the dial */
-  int16_t *needle;          /**< LVGL line object used as the speedometer needle */
-  int16_t *label;           /**< LVGL label object showing the current speed */
+  int16_t* scale;           /**< LVGL scale object used for the dial */
+  int16_t* needle;          /**< LVGL line object used as the speedometer needle */
+  int16_t* label;           /**< LVGL label object showing the current speed */
   int16_t needle_points[2]; /**< Line endpoints used to draw the needle */
 } SpeedometerWidget;
 
@@ -216,28 +216,28 @@ typedef struct {
 
 /** @brief   Runtime handles for a labeled bar widget */
 typedef struct {
-  int16_t *bar;   /**< LVGL bar object */
-  int16_t *label; /**< LVGL label associated with the bar */
+  int16_t* bar;   /**< LVGL bar object */
+  int16_t* label; /**< LVGL label associated with the bar */
 } BarWidget;
 
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
   WidgetSize size;                 /**< Bounding size of the bar widget */
   WidgetPosition position;         /**< Placement of the bar widget on screen */
-  const char *label_text;          /**< Static label text shown beside the bar */
+  const char* label_text;          /**< Static label text shown beside the bar */
   WidgetAlignment label_alignment; /**< Alignment used for the label relative to the bar */
   WidgetOrientation orientation;   /**< LVGL bar orientation */
   GuiColorId indicator_color_id;   /**< Ccolor used for the bar indicator */
 } BarWidgetConfig;
 
 typedef struct {
-  int16_t *label;
+  int16_t* label;
 } LabelWidget;
 
 typedef struct {
   WidgetSize size;                /**< Bounding size of the label widget, or content-sized when zero */
   WidgetPosition position;        /**< Placement of the label widget on screen */
-  const char *label_text;         /**< Static label text shown */
+  const char* label_text;         /**< Static label text shown */
   WidgetTextAlignment alignment;  /**< Text alignment inside the label */
   GuiColorId text_color_id;       /**< Color used for the label text */
   WidgetFontSize font;            /**< Font used by the label text */
@@ -251,7 +251,7 @@ typedef struct {
 
 /** @brief   Runtime handle for a table widget */
 typedef struct {
-  int16_t *table;
+  int16_t* table;
 } TableWidget;
 
 /** @brief   Configuration used when creating a table widget */
@@ -302,8 +302,8 @@ typedef struct {
 #define GUI_MEDIUM_TEXT &lv_font_montserrat_26
 #define GUI_BIG_TEXT &lv_font_montserrat_40
 
-StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent);
-StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text);
+StatusCode lvgl_widgets_create_label(LabelWidget* label, const LabelWidgetConfig* config, GuiScreen* parent);
+StatusCode lvgl_widgets_set_label_text(LabelWidget* label, const char* text);
 
 /**
  * @brief   Create and initialize a speedometer widget
@@ -312,7 +312,7 @@ StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text);
  * @param   parent Parent LVGL object that will own the widget
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent);
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget* speedometer, const SpeedometerWidgetConfig* config, GuiScreen* parent);
 
 /**
  * @brief   Update the displayed speed on a speedometer widget
@@ -320,7 +320,7 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
  * @param   speed_kmh Current speed in km/h
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh);
+StatusCode lvgl_widgets_set_speed(SpeedometerWidget* speedometer, float speed_kmh);
 
 /**
  * @brief   Create and initialize a labeled bar widget
@@ -329,7 +329,7 @@ StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_km
  * @param   parent Parent LVGL object that will own the widget
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent);
+StatusCode lvgl_widgets_create_bar(BarWidget* bar_widget, const BarWidgetConfig* config, GuiScreen* parent);
 
 /**
  * @brief   Update the current value of a bar widget
@@ -337,7 +337,7 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
  * @param   value Current bar value
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value);
+StatusCode lvgl_widgets_set_bar_value(BarWidget* bar_widget, int32_t value);
 
 /**
  * @brief   Update the current color of a bar widget
@@ -345,7 +345,7 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value);
  * @param   color_id
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id);
+StatusCode lvgl_widgets_set_bar_color(BarWidget* bar_widget, GuiColorId color_id);
 
 /**
  * @brief   Create and initialize a table widget
@@ -354,7 +354,7 @@ StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id
  * @param   parent Parent LVGL object that will own the widget
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent);
+StatusCode lvgl_widgets_create_table(TableWidget* widget, const TableWidgetConfig* config, GuiScreen* parent);
 
 /**
  * @brief   Set the text of a table cell
@@ -364,6 +364,6 @@ StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfi
  * @param   text Text to display in the cell
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text);
+StatusCode lvgl_widgets_set_table_cell(TableWidget* widget, uint32_t row, uint32_t col, const char* text);
 
 /** @} */

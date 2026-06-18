@@ -43,7 +43,7 @@ typedef enum {
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_RESOURCE_EXHAUSTED if initialized already
  */
-StatusCode front_controller_state_manager_init(FrontControllerStorage *storage);
+StatusCode front_controller_state_manager_init(FrontControllerStorage* storage);
 
 /**
  * @brief   Advance the state machine based on inputs/events.

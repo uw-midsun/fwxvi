@@ -38,7 +38,7 @@ TASK(filesystem_api, TASK_STACK_1024) {
   }
   LOG_DEBUG("filesystem_api test - writer mode\r\n");
   delay_ms(10U);
-  fs_status = fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
+  fs_status = fs_add_file("/crc.txt", (uint8_t*)"CRCPOLY", 8, 0);
   if (fs_status != STATUS_CODE_OK) {
     LOG_DEBUG("fs_add_file() failed with exit code %u\r\n", fs_status);
     delay_ms(10U);

@@ -56,12 +56,12 @@ StatusCode crc_init(CRCLength crc_length) {
   return STATUS_CODE_OK;
 }
 
-uint32_t crc_calculate(const uint32_t *data, size_t length) {
+uint32_t crc_calculate(const uint32_t* data, size_t length) {
   if (data == NULL) {
     return 0U;
   }
 
-  return HAL_CRC_Calculate(&s_crc_handle, (uint32_t *)data, length);
+  return HAL_CRC_Calculate(&s_crc_handle, (uint32_t*)data, length);
 }
 
 void crc_reset(void) {

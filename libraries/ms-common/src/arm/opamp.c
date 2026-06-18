@@ -39,7 +39,7 @@ static OpampStatus s_opamp_status = { 0 };
 static OPAMP_HandleTypeDef s_opamp_handle;
 
 /* Get HAL OPAMP instance */
-static OPAMP_TypeDef *s_get_hal_instance(OpampInstance instance) {
+static OPAMP_TypeDef* s_get_hal_instance(OpampInstance instance) {
   return OPAMP1; /* STM32L433 only has OPAMP1 */
 }
 
@@ -140,7 +140,7 @@ StatusCode opamp_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode opamp_configure(OpampInstance instance, OpampConfig *config) {
+StatusCode opamp_configure(OpampInstance instance, OpampConfig* config) {
   if (!s_opamp_status.initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -151,7 +151,7 @@ StatusCode opamp_configure(OpampInstance instance, OpampConfig *config) {
 
   status_ok_or_return(s_validate_instance(instance));
 
-  OpampState *state = &s_opamp_status.instances[instance];
+  OpampState* state = &s_opamp_status.instances[instance];
 
   /* Take mutex for thread safety */
   if (xSemaphoreTake(state->mutex_handle, portMAX_DELAY) != pdTRUE) {
@@ -207,7 +207,7 @@ StatusCode opamp_start(OpampInstance instance) {
 
   status_ok_or_return(s_validate_instance(instance));
 
-  OpampState *state = &s_opamp_status.instances[instance];
+  OpampState* state = &s_opamp_status.instances[instance];
 
   if (!state->configured) {
     return STATUS_CODE_UNINITIALIZED;
@@ -238,7 +238,7 @@ StatusCode opamp_stop(OpampInstance instance) {
 
   status_ok_or_return(s_validate_instance(instance));
 
-  OpampState *state = &s_opamp_status.instances[instance];
+  OpampState* state = &s_opamp_status.instances[instance];
 
   /* Take mutex for thread safety */
   if (xSemaphoreTake(state->mutex_handle, portMAX_DELAY) != pdTRUE) {

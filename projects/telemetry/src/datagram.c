@@ -19,11 +19,10 @@
 #include "datagram.h"
 #include "telemetry.h"
 
-
 /** @brief  Flip the endianess of 2 bytes. Used to flip the CAN ID from little-endian to big-endian */
 #define FLIP_ENDIANESS_2BYTES(val) (((val & 0xFFU) << 8U) | ((val >> 8U) & 0xFFU))
 
-StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
+StatusCode decode_can_message(Datagram* datagram, CanMessage* msg) {
   datagram->start_frame = DATAGRAM_START_FRAME;
   datagram->id = FLIP_ENDIANESS_2BYTES(msg->id.raw);
 
@@ -38,7 +37,7 @@ StatusCode decode_can_message(Datagram *datagram, CanMessage *msg) {
   return STATUS_CODE_OK;
 }
 
-StatusCode encode_datagram(Datagram *datagram, uint32_t id, uint8_t dlc, const uint8_t *data) {
+StatusCode encode_datagram(Datagram* datagram, uint32_t id, uint8_t dlc, const uint8_t* data) {
   datagram->start_frame = DATAGRAM_START_FRAME;
   datagram->id = FLIP_ENDIANESS_2BYTES(id);
   datagram->dlc = dlc;
@@ -49,7 +48,7 @@ StatusCode encode_datagram(Datagram *datagram, uint32_t id, uint8_t dlc, const u
   return STATUS_CODE_OK;
 }
 
-void log_decoded_message(Datagram *datagram) {
+void log_decoded_message(Datagram* datagram) {
   delay_ms(5);
   LOG_DEBUG("Start frame: 0x%0x. End frame: 0x%0x\n", datagram->start_frame, datagram->data[datagram->dlc]);
   delay_ms(10U);

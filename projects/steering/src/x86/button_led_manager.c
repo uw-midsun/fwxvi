@@ -18,13 +18,13 @@
 #include "steering.h"
 #include "steering_hw_defs.h"
 
-static SteeringStorage *steering_storage;
+static SteeringStorage* steering_storage;
 
 static ButtonLEDManager s_button_led_manager = { 0U };
 
 static GpioAddress s_button_led_pwm_ctrl = GPIO_STEERING_RGB_LIGHTS_PWM_PIN;
 
-StatusCode button_led_manager_init(SteeringStorage *storage) {
+StatusCode button_led_manager_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

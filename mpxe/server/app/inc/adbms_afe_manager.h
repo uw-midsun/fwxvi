@@ -45,13 +45,13 @@ class AfeManager {
    * @brief  Loads the Hash-map cache with a projects Afe data
    * @param  projectName Selector for which project shall be loaded into the cache
    */
-  void loadAfeInfo(std::string &projectName);
+  void loadAfeInfo(std::string& projectName);
 
   /**
    * @brief Saves the Hash-map cache to a projects Afe data
    * @param projectName Selector for which project shall be loaded into the cache
    */
-  void saveAfeInfo(std::string &projectName);
+  void saveAfeInfo(std::string& projectName);
 
  public:
   /**
@@ -67,7 +67,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and index
    */
-  void updateAfeCellVoltage(std::string &projectName, std::string &payload);
+  void updateAfeCellVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update a single thermistor voltage for a project using the provided payload
@@ -76,7 +76,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and index
    */
-  void updateAfeThermVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all cell voltages for a specific AFE device using the provided payload
@@ -85,7 +85,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and device index
    */
-  void updateAfeCellDevVoltage(std::string &projectName, std::string &payload);
+  void updateAfeCellDevVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all thermistor voltages for a specific AFE device using the provided payload
@@ -94,7 +94,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing voltage and device index
    */
-  void updateAfeThermDevVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermDevVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all cell voltages across the entire AFE pack using the provided payload
@@ -103,7 +103,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing shared voltage value
    */
-  void updateAfeCellPackVoltage(std::string &projectName, std::string &payload);
+  void updateAfeCellPackVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all thermistor voltages across the entire AFE pack using the provided payload
@@ -112,14 +112,14 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing shared voltage value
    */
-  void updateAfeThermPackVoltage(std::string &projectName, std::string &payload);
+  void updateAfeThermPackVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update board's thermistor voltage for a specific device
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload containing shared voltage value
    */
-  void updateAfeBoardThermVoltage(std::string &projectName, std::string &payload);
+  void updateAfeBoardThermVoltage(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update the discharge state of a specific AFE cell using the provided payload
@@ -129,7 +129,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Serialized datagram payload containing the target cell index and discharge state
    */
-  void updateAfeCellDischarge(std::string &projectName, std::string &payload);
+  void updateAfeCellDischarge(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update the discharge state of the whole AFE pack using the provided payload
@@ -139,7 +139,7 @@ class AfeManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Serialized datagram payload containting the discharge state
    */
-  void updateAfeCellPackDischarge(std::string &projectName, std::string &payload);
+  void updateAfeCellPackDischarge(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Create a Afe Command object given a CommandCode, and if required specific data

@@ -25,7 +25,7 @@
 static GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
 
-static FrontControllerStorage *front_controller_storage;
+static FrontControllerStorage* front_controller_storage;
 
 static AccelPedalStorage s_accel_pedal_storage = { 0U };
 
@@ -94,7 +94,7 @@ StatusCode accel_pedal_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode accel_pedal_init(FrontControllerStorage *storage) {
+StatusCode accel_pedal_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

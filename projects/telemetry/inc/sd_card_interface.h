@@ -30,6 +30,6 @@
  * @param   settings  pointer to your pre-configured SdSpiSettings
  * @return  STATUS_CODE_OK on success, or an error code.
  */
-StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings);
+StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings* settings);
 
 /** @} */

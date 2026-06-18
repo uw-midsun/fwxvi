@@ -31,7 +31,7 @@ static inline void s_enable_i2c2(void) {
 
 /** @brief  I2C Port data */
 typedef struct {
-  I2C_TypeDef *base;     /**< I2C HW Base address */
+  I2C_TypeDef* base;     /**< I2C HW Base address */
   void (*rcc_cmd)(void); /**< Function pointer to enable I2C clock using RCC */
   uint8_t ev_irqn;       /**< Event interrupt number */
   uint8_t err_irqn;      /**< Error interrupt number */
@@ -63,7 +63,7 @@ static StaticSemaphore_t s_i2c_cmplt_sem[NUM_I2C_PORTS];
 static SemaphoreHandle_t s_i2c_cmplt_handle[NUM_I2C_PORTS];
 
 /* Private helper for common TX/RX operations */
-static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t len, bool is_rx) {
+static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t* data, size_t len, bool is_rx) {
   if (data == NULL || i2c >= NUM_I2C_PORTS || len > I2C_MAX_NUM_DATA) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -104,7 +104,7 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
 }
 
 /* Private helper to handle transfer complete */
-static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef *hi2c, bool is_rx) {
+static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef* hi2c, bool is_rx) {
   BaseType_t higher_priority_task = pdFALSE;
 
   if (hi2c->Instance == I2C1) {
@@ -132,16 +132,16 @@ void I2C2_ER_IRQHandler(void) {
 }
 
 /* Callback functions for HAL I2C TX */
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
   s_i2c_transfer_complete_callback(hi2c, false);
 }
 
 /* Callback functions for HAL I2C RX */
-void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
   s_i2c_transfer_complete_callback(hi2c, true);
 }
 
-void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* hi2c) {
   I2CPort i2c = NUM_I2C_PORTS;
   BaseType_t higher_priority_task = pdFALSE;
 
@@ -182,7 +182,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
   HAL_I2C_Init(hi2c);
 }
 
-StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
+StatusCode i2c_init(I2CPort i2c, const I2CSettings* settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -252,20 +252,20 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t* rx_data, size_t rx_len) {
   return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);
 }
 
-StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t* tx_data, size_t tx_len) {
   return s_i2c_transfer(i2c, addr, tx_data, tx_len, false);
 }
 
-StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* rx_data, size_t rx_len) {
   status_ok_or_return(s_i2c_transfer(i2c, addr, &reg, 1, false));
   return s_i2c_transfer(i2c, addr, rx_data, rx_len, true);
 }
 
-StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_data, size_t tx_len) {
+StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t* tx_data, size_t tx_len) {
   uint8_t write_data[I2C_MAX_NUM_DATA] = { 0 };
   write_data[0] = reg;
   for (size_t i = 1; i < tx_len + 1; i++) {
@@ -275,7 +275,7 @@ StatusCode i2c_write_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *tx_
   return s_i2c_transfer(i2c, addr, write_data, tx_len + 1U, false);
 }
 
-StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t *rx_data, size_t rx_len) {
+StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t* rx_data, size_t rx_len) {
   if (rx_data == NULL || i2c >= NUM_I2C_PORTS || rx_len > I2C_MAX_NUM_DATA) {
     return STATUS_CODE_INVALID_ARGS;
   }

@@ -29,6 +29,6 @@
  * @return  STATUS_CODE_OK if calibration data is read successfully
  *          STATUS_CODE_INVALID_ARGS if storage is NULL
  */
-StatusCode pedal_calib_read(FrontControllerStorage *storage);
+StatusCode pedal_calib_read(FrontControllerStorage* storage);
 
 /** @} */

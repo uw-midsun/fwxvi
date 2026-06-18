@@ -19,10 +19,10 @@
 #include "current_acs37800_defs.h"
 #define ACS37800_NUM_REGISTERS 0x30
 
-static ACS37800Storage *s_storage = NULL;
+static ACS37800Storage* s_storage = NULL;
 static uint32_t s_registers[ACS37800_NUM_REGISTERS] = { 0 };
 
-StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress i2c_address) {
+StatusCode acs37800_init(ACS37800Storage* storage, I2CPort i2c_port, I2CAddress i2c_address) {
   if (storage == NULL || i2c_address > 127) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -41,7 +41,7 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers reg, uint32_t *out_raw) {
+StatusCode acs37800_get_register(ACS37800Storage* storage, ACS37800_Registers reg, uint32_t* out_raw) {
   if (storage == NULL || out_raw == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -50,7 +50,7 @@ StatusCode acs37800_get_register(ACS37800Storage *storage, ACS37800_Registers re
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amps) {
+StatusCode acs37800_get_current(ACS37800Storage* storage, float* out_current_amps) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -69,7 +69,7 @@ StatusCode acs37800_get_current(ACS37800Storage *storage, float *out_current_amp
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV) {
+StatusCode acs37800_get_voltage(ACS37800Storage* storage, float* out_voltage_mV) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -88,7 +88,7 @@ StatusCode acs37800_get_voltage(ACS37800Storage *storage, float *out_voltage_mV)
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_mW) {
+StatusCode acs37800_get_active_power(ACS37800Storage* storage, float* out_power_mW) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -107,7 +107,7 @@ StatusCode acs37800_get_active_power(ACS37800Storage *storage, float *out_power_
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_overcurrent_flag(ACS37800Storage *storage, bool *overcurrent_flag) {
+StatusCode acs37800_get_overcurrent_flag(ACS37800Storage* storage, bool* overcurrent_flag) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -130,7 +130,7 @@ StatusCode acs37800_get_overcurrent_flag(ACS37800Storage *storage, bool *overcur
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage *storage) {
+StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -140,7 +140,7 @@ StatusCode acs37800_reset_overcurrent_flag(ACS37800Storage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvoltage_flag) {
+StatusCode acs37800_get_overvoltage_flag(ACS37800Storage* storage, bool* overvoltage_flag) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -163,7 +163,7 @@ StatusCode acs37800_get_overvoltage_flag(ACS37800Storage *storage, bool *overvol
   return STATUS_CODE_OK;
 }
 
-StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *undervoltage_flag) {
+StatusCode acs37800_get_undervoltage_flag(ACS37800Storage* storage, bool* undervoltage_flag) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -186,7 +186,7 @@ StatusCode acs37800_get_undervoltage_flag(ACS37800Storage *storage, bool *underv
   return STATUS_CODE_OK;
 }
 
-ACS37800Storage *acs37800_get_storage(void) {
+ACS37800Storage* acs37800_get_storage(void) {
   return s_storage;
 }
 

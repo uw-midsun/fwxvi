@@ -36,8 +36,7 @@
 #define PWM_HIGH_DIV_AMT 4
 #define PWM_LOW_DIV_AMT PWM_DIV - PWM_HIGH_DIV_AMT
 
-#define STEERING_BUZZER_PWM_PIN \
-  { .port = GPIO_PORT_A, .pin = 6 }
+#define STEERING_BUZZER_PWM_PIN { .port = GPIO_PORT_A, .pin = 6 }
 
 static GpioAddress s_buzzer_pwm_pin = STEERING_BUZZER_PWM_PIN;
 
@@ -121,7 +120,7 @@ static void hal_timer_init(uint16_t modulation_frequency) {
   HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *h_timer) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* h_timer) {
   if (h_timer->Instance == TIM6) {
     toggle_carrier();
   }
@@ -171,7 +170,7 @@ TASK(play_notes, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

@@ -21,14 +21,14 @@
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
 static PersistStorage persist_storage;
-static RearControllerStorage *rear_controller_storage = NULL;
+static RearControllerStorage* rear_controller_storage = NULL;
 
 static void s_update_bps_fault_can_fields(void) {
   set_rear_controller_status_triggers_bps_fault(rear_controller_storage->bps_fault);
   set_rear_controller_status_triggers_cell_at_fault(rear_controller_storage->bps_fault_cell);
 }
 
-StatusCode bps_fault_init(RearControllerStorage *storage) {
+StatusCode bps_fault_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

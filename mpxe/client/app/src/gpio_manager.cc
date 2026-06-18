@@ -23,19 +23,19 @@ extern "C" {
 #include "app.h"
 #include "gpio_manager.h"
 
-void GpioManager::setGpioPinState(std::string &payload) {
+void GpioManager::setGpioPinState(std::string& payload) {
   m_gpioDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_gpioDatagram.getGpioPort()), .pin = m_gpioDatagram.getGpioPin() };
 
   gpio_set_state(&pinAddress, static_cast<GpioState>(receivedData[0U]));
 }
 
-void GpioManager::setGpioAllStates(std::string &payload) {
+void GpioManager::setGpioAllStates(std::string& payload) {
   m_gpioDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
 
   for (uint8_t i = 0U; i < static_cast<uint8_t>(Datagram::Gpio::Port::NUM_GPIO_PORTS) * Datagram::Gpio::PINS_PER_PORT; i++) {
     GpioAddress pinAddress = { .port = static_cast<GpioPort>(i / 16U), .pin = i % 16U };
@@ -43,7 +43,7 @@ void GpioManager::setGpioAllStates(std::string &payload) {
   }
 }
 
-std::string GpioManager::processGpioPinState(std::string &payload) {
+std::string GpioManager::processGpioPinState(std::string& payload) {
   m_gpioDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_gpioDatagram.getGpioPort()), .pin = m_gpioDatagram.getGpioPin() };
@@ -87,7 +87,7 @@ std::string GpioManager::processGpioAllStates() {
   return m_gpioDatagram.serialize(CommandCode::GPIO_GET_ALL_STATES);
 }
 
-std::string GpioManager::processGpioPinMode(std::string &payload) {
+std::string GpioManager::processGpioPinMode(std::string& payload) {
   m_gpioDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_gpioDatagram.getGpioPort()), .pin = m_gpioDatagram.getGpioPin() };
@@ -135,7 +135,7 @@ std::string GpioManager::processGpioAllModes() {
   return m_gpioDatagram.serialize(CommandCode::GPIO_GET_ALL_MODES);
 }
 
-std::string GpioManager::processGpioPinAltFunction(std::string &payload) {
+std::string GpioManager::processGpioPinAltFunction(std::string& payload) {
   m_gpioDatagram.deserialize(payload);
 
   GpioAddress pinAddress = { .port = static_cast<GpioPort>(m_gpioDatagram.getGpioPort()), .pin = m_gpioDatagram.getGpioPin() };

@@ -15,7 +15,7 @@
 /* Intra-component Headers */
 #include "queues.h"
 
-StatusCode queue_init(Queue *queue) {
+StatusCode queue_init(Queue* queue) {
   queue->handle = xQueueCreateStatic(queue->num_items, queue->item_size, queue->storage_buf, &queue->queue);
 
   if (queue->handle == NULL) {
@@ -25,7 +25,7 @@ StatusCode queue_init(Queue *queue) {
   return STATUS_CODE_OK;
 }
 
-StatusCode queue_send(Queue *queue, const void *item, uint32_t delay_ms) {
+StatusCode queue_send(Queue* queue, const void* item, uint32_t delay_ms) {
   if (queue == NULL || item == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -38,7 +38,7 @@ StatusCode queue_send(Queue *queue, const void *item, uint32_t delay_ms) {
   return STATUS_CODE_OK;
 }
 
-StatusCode queue_send_from_isr(Queue *queue, const void *item, BaseType_t *higher_prio_woken) {
+StatusCode queue_send_from_isr(Queue* queue, const void* item, BaseType_t* higher_prio_woken) {
   if (queue == NULL || item == NULL || higher_prio_woken == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -51,7 +51,7 @@ StatusCode queue_send_from_isr(Queue *queue, const void *item, BaseType_t *highe
   return STATUS_CODE_OK;
 }
 
-StatusCode queue_receive(Queue *queue, void *buf, uint32_t delay_ms) {
+StatusCode queue_receive(Queue* queue, void* buf, uint32_t delay_ms) {
   if (queue == NULL || buf == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -64,7 +64,7 @@ StatusCode queue_receive(Queue *queue, void *buf, uint32_t delay_ms) {
   return STATUS_CODE_OK;
 }
 
-StatusCode queue_receive_from_isr(Queue *queue, void *buf, BaseType_t *higher_prio_woken) {
+StatusCode queue_receive_from_isr(Queue* queue, void* buf, BaseType_t* higher_prio_woken) {
   if (queue == NULL || buf == NULL || higher_prio_woken == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -77,7 +77,7 @@ StatusCode queue_receive_from_isr(Queue *queue, void *buf, BaseType_t *higher_pr
   return STATUS_CODE_OK;
 }
 
-StatusCode queue_peek(Queue *queue, void *buf, uint32_t delay_ms) {
+StatusCode queue_peek(Queue* queue, void* buf, uint32_t delay_ms) {
   if (queue == NULL || buf == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -90,20 +90,20 @@ StatusCode queue_peek(Queue *queue, void *buf, uint32_t delay_ms) {
   return STATUS_CODE_OK;
 }
 
-void queue_reset(Queue *queue) {
+void queue_reset(Queue* queue) {
   if (queue == NULL) {
     return;
   }
   xQueueReset(queue->handle);
 }
 
-uint32_t queue_get_spaces_available(Queue *queue) {
+uint32_t queue_get_spaces_available(Queue* queue) {
   if (queue == NULL) {
     return 0;
   }
   return uxQueueSpacesAvailable(queue->handle);
 }
 
-uint32_t queue_get_num_items(Queue *queue) {
+uint32_t queue_get_num_items(Queue* queue) {
   return queue->num_items;
 }

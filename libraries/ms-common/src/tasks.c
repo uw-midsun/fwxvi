@@ -22,8 +22,8 @@ static StaticSemaphore_t s_end_task_sem;
 static SemaphoreHandle_t s_end_task_handle = NULL;
 
 // Add any setup or teardown that needs to be done for every task here.
-static void s_task(void *params) {
-  Task *task = params;
+static void s_task(void* params) {
+  Task* task = params;
   if (task == NULL) {  // guard just in case, error should have been caught previously
     LOG_CRITICAL("CRITICAL: Tried to start null task!\n");
     return;
@@ -37,7 +37,7 @@ static void s_task(void *params) {
   vTaskDelete(NULL);
 }
 
-StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
+StatusCode tasks_init_task(Task* task, TaskPriority priority, void* context) {
   // Defensively guard against invalid initialization - it's bad to get this wrong.
   if (task == NULL || task->task_func == NULL) {
     LOG_CRITICAL("CRITICAL: Tried to create null task!\n");

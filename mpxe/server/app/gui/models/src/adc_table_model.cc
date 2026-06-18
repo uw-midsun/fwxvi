@@ -21,7 +21,7 @@
 
 enum Col { ChanCol = 0, PinCol, ReadCol };
 
-inline QString dashIfEmpty(const QString &s) {
+inline QString dashIfEmpty(const QString& s) {
   if (s.isEmpty()) {
     return QStringLiteral("-");
   } else {
@@ -32,7 +32,7 @@ inline QString dashIfEmpty(const QString &s) {
 /*
 -------------------------------------------------------- */
 
-AdcTableModel::AdcTableModel(const std::map<QString, QVariant> &data_map, QObject *parent) : QAbstractTableModel{ parent } {
+AdcTableModel::AdcTableModel(const std::map<QString, QVariant>& data_map, QObject* parent) : QAbstractTableModel{ parent } {
   m_rows.reserve(data_map.size());
 
   std::map<QString, QVariant>::const_iterator it = data_map.begin();
@@ -54,7 +54,7 @@ AdcTableModel::AdcTableModel(const std::map<QString, QVariant> &data_map, QObjec
   }
 }
 
-int AdcTableModel::rowCount(const QModelIndex &parent) const {
+int AdcTableModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -62,7 +62,7 @@ int AdcTableModel::rowCount(const QModelIndex &parent) const {
   }
 }
 
-int AdcTableModel::columnCount(const QModelIndex &parent) const {
+int AdcTableModel::columnCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -70,7 +70,7 @@ int AdcTableModel::columnCount(const QModelIndex &parent) const {
   }
 }
 
-QVariant AdcTableModel::data(const QModelIndex &index, int role) const {
+QVariant AdcTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     qDebug() << "Invalid index " << index;
     return QVariant();
@@ -82,7 +82,7 @@ QVariant AdcTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   }
 
-  const Row &row = m_rows[static_cast<std::size_t>(r)];
+  const Row& row = m_rows[static_cast<std::size_t>(r)];
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
     switch (c) {

@@ -21,7 +21,7 @@
 /* Intra-component headers */
 #include "dict_table_model.h"
 
-DictTableModel::DictTableModel(const std::map<QString, QVariant> &data, bool editable_variables, QObject *parent) : QAbstractTableModel{ parent }, m_editable{ editable_variables } {
+DictTableModel::DictTableModel(const std::map<QString, QVariant>& data, bool editable_variables, QObject* parent) : QAbstractTableModel{ parent }, m_editable{ editable_variables } {
   std::map<QString, QVariant>::const_iterator it = data.begin();
   for (; it != data.end(); ++it) {
     m_keys << it->first;
@@ -29,14 +29,14 @@ DictTableModel::DictTableModel(const std::map<QString, QVariant> &data, bool edi
   }
 }
 
-int DictTableModel::rowCount(const QModelIndex &parent) const {
+int DictTableModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   }
   return m_keys.size();
 }
 
-int DictTableModel::columnCount(const QModelIndex &parent) const {
+int DictTableModel::columnCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   }
@@ -65,7 +65,7 @@ QVariant DictTableModel::headerData(int section, Qt::Orientation orientation, in
   return QVariant();
 }
 
-QVariant DictTableModel::data(const QModelIndex &index, int role) const {
+QVariant DictTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) return QVariant();
 
   int row = index.row();
@@ -73,8 +73,8 @@ QVariant DictTableModel::data(const QModelIndex &index, int role) const {
 
   if (row < 0 || row >= m_keys.size()) return QVariant();
 
-  const QString &key = m_keys.at(row);
-  const QVariant &val = m_values.at(row);
+  const QString& key = m_keys.at(row);
+  const QVariant& val = m_values.at(row);
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
     return (col == 0) ? QVariant(key) : val;
@@ -92,7 +92,7 @@ QVariant DictTableModel::data(const QModelIndex &index, int role) const {
   return QVariant();
 }
 
-Qt::ItemFlags DictTableModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags DictTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) return Qt::NoItemFlags;
 
   Qt::ItemFlags base = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -102,7 +102,7 @@ Qt::ItemFlags DictTableModel::flags(const QModelIndex &index) const {
   return base;
 }
 
-bool DictTableModel::setValueAtRow(int row, const QVariant &value) {
+bool DictTableModel::setValueAtRow(int row, const QVariant& value) {
   if (row < 0 || row >= m_values.size()) {
     return false;
   }
@@ -118,13 +118,13 @@ bool DictTableModel::setValueAtRow(int row, const QVariant &value) {
   return true;
 }
 
-bool DictTableModel::setValueForKey(const QString &key, const QVariant &value) {
+bool DictTableModel::setValueForKey(const QString& key, const QVariant& value) {
   int row = m_keys.indexOf(key);
   if (row < 0) return false;
   return setValueAtRow(row, value);
 }
 
-void DictTableModel::resetFromMap(const std::map<QString, QVariant> &data) {
+void DictTableModel::resetFromMap(const std::map<QString, QVariant>& data) {
   beginResetModel();
 
   m_keys.clear();

@@ -30,7 +30,7 @@ std::string Metadata::serialize() const {
   return encodeCommand(CommandCode::METADATA, serializedData);
 }
 
-void Metadata::deserialize(std::string &metadataPayload) {
+void Metadata::deserialize(std::string& metadataPayload) {
   size_t offset = 0;
 
   m_metadata.projectName = deserializeString(metadataPayload, offset);
@@ -38,19 +38,19 @@ void Metadata::deserialize(std::string &metadataPayload) {
   m_metadata.hardwareModel = deserializeString(metadataPayload, offset);
 }
 
-Metadata::Metadata(Payload &data) {
+Metadata::Metadata(Payload& data) {
   m_metadata = data;
 }
 
-void Metadata::setProjectName(const std::string &projectName) {
+void Metadata::setProjectName(const std::string& projectName) {
   m_metadata.projectName = projectName;
 }
 
-void Metadata::setProjectStatus(const std::string &projectStatus) {
+void Metadata::setProjectStatus(const std::string& projectStatus) {
   m_metadata.projectStatus = projectStatus;
 }
 
-void Metadata::setHardwareModel(const std::string &hardwareModel) {
+void Metadata::setHardwareModel(const std::string& hardwareModel) {
   m_metadata.hardwareModel = hardwareModel;
 }
 

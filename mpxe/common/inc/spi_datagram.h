@@ -59,7 +59,7 @@ class SPI {
    * @brief   Constructs a SPI object with provided payload data
    * @param   data Reference to payload data
    */
-  explicit SPI(Payload &data);
+  explicit SPI(Payload& data);
 
   /**
    * @brief   Default constructor for SPI object
@@ -71,26 +71,26 @@ class SPI {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing SPI data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief   Deserializes SPI data from payload string
    * @param   spiDatagramPayload String containing serialized SPI data
    */
-  void deserialize(std::string &spiDatagramPayload);
+  void deserialize(std::string& spiDatagramPayload);
 
   /**
    * @brief   Sets the target SPI port
    * @param   spiPort Port to set as target
    */
-  void setSPIPort(const Port &spiPort);
+  void setSPIPort(const Port& spiPort);
 
   /**
    * @brief   Sets data in the SPI buffer
    * @param   data Pointer to data to copy into buffer
    * @param   length Length of data to copy
    */
-  void setBuffer(const uint8_t *data, size_t length);
+  void setBuffer(const uint8_t* data, size_t length);
 
   /**
    * @brief   Clear the SPI data buffer
@@ -113,7 +113,7 @@ class SPI {
    * @brief   Gets the SPI buffer
    * @return  Pointer to the buffer array
    */
-  const uint8_t *getBuffer() const;
+  const uint8_t* getBuffer() const;
 
  private:
   Payload m_spiDatagram; /**< Private datagram payload */

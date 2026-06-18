@@ -35,8 +35,8 @@
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
-static SteeringStorage *steering_storage = NULL;
-static DisplayData *display_data = NULL;
+static SteeringStorage* steering_storage = NULL;
+static DisplayData* display_data = NULL;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -67,7 +67,7 @@ static DisplayKeyboardState s_keyboard_state = { 0 };
  */
 static void s_process_x86_keyboard_input(void) {
   int num_keys = 0;
-  const uint8_t *key_state = SDL_GetKeyboardState(&num_keys);
+  const uint8_t* key_state = SDL_GetKeyboardState(&num_keys);
   bool left_pressed;
   bool right_pressed;
   bool up_pressed;
@@ -208,7 +208,7 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
   }
 }
 
-StatusCode display_init(SteeringStorage *storage) {
+StatusCode display_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

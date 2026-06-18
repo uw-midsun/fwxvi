@@ -25,7 +25,7 @@ void NTPClient::NTPClientProcedure() {
   }
 
   struct sockaddr_in serverAddr;
-  memset((char *)&serverAddr, 0U, sizeof(serverAddr));
+  memset((char*)&serverAddr, 0U, sizeof(serverAddr));
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(NTP_PORT);
 
@@ -47,7 +47,7 @@ void NTPClient::NTPClientProcedure() {
     /* Obtain the fractional time */
     request.transmitTime.fraction = htonl(static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count() % 1000000));
 
-    if (sendto(ntpSocket, &request, sizeof(request), 0, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) <= 0) {
+    if (sendto(ntpSocket, &request, sizeof(request), 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) <= 0) {
       close(ntpSocket);
       throw std::runtime_error("Error sending NTP request");
     }
@@ -76,19 +76,19 @@ void NTPClient::NTPClientProcedure() {
   close(ntpSocket);
 }
 
-void *NTPClientWrapper(void *param) {
-  NTPClient *client = static_cast<NTPClient *>(param);
+void* NTPClientWrapper(void* param) {
+  NTPClient* client = static_cast<NTPClient*>(param);
 
   try {
     client->NTPClientProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "NTP Client Thread Error: " << e.what() << std::endl;
   }
 
   return nullptr;
 }
 
-void NTPClient::startSynchronization(const std::string &serverAddress) {
+void NTPClient::startSynchronization(const std::string& serverAddress) {
   m_serverAddress = serverAddress;
 
   if (pthread_create(&m_NTPClientThreadId, nullptr, NTPClientWrapper, this)) {

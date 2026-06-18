@@ -26,6 +26,6 @@
  * @{
  */
 
-StatusCode motor_can_process_rx(CanMessage *msg);
+StatusCode motor_can_process_rx(CanMessage* msg);
 
 /** @} */

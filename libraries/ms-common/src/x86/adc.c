@@ -44,7 +44,7 @@ static uint8_t s_adc_ranks[NUM_ADC_CHANNELS];
 /* Channels 5-12 are occupied by pins A0-A7 */
 /* Channels 13-14 are occupied by pins C4-C5 */
 /* Channels 15-16 are occupied by pins B0-B1 */
-static StatusCode s_adc_get_channel(GpioAddress *address, uint8_t *adc_channel) {
+static StatusCode s_adc_get_channel(GpioAddress* address, uint8_t* adc_channel) {
   *adc_channel = address->pin;
   switch (address->port) {
     case GPIO_PORT_A:
@@ -103,7 +103,7 @@ StatusCode adc_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adc_add_channel(GpioAddress *address) {
+StatusCode adc_add_channel(GpioAddress* address) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -138,7 +138,7 @@ StatusCode adc_run(void) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode adc_read_raw(GpioAddress *address, uint16_t *reading) {
+StatusCode adc_read_raw(GpioAddress* address, uint16_t* reading) {
   if (reading == NULL || address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -152,7 +152,7 @@ StatusCode adc_read_raw(GpioAddress *address, uint16_t *reading) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adc_read_converted(GpioAddress *address, uint16_t *reading) {
+StatusCode adc_read_converted(GpioAddress* address, uint16_t* reading) {
   if (reading == NULL || address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -171,7 +171,7 @@ void adc_deinit(void) {
   memset(s_adc_ranks, 0, sizeof(uint8_t) * NUM_ADC_CHANNELS);
 }
 
-StatusCode adc_set_reading(GpioAddress *address, uint16_t reading) {
+StatusCode adc_set_reading(GpioAddress* address, uint16_t reading) {
   if (address == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

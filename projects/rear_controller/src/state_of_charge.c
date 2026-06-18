@@ -46,7 +46,7 @@
 #define SOC_INIT_VOLTAGE_TRIM_PCT (0.05f)
 #define SOC_INIT_SOC_DEFAULT (0.5f)
 
-static RearControllerStorage *rear_controller_storage;
+static RearControllerStorage* rear_controller_storage;
 
 static inline float clamp01(float x) {
   if (x < 0.0f) return 0.0f;
@@ -62,7 +62,7 @@ static inline float clamp01(float x) {
  * @param[in] N          Table size
  * @return SOC [0–1]
  */
-static float ocv_to_soc_c(float v_cell, const float *SOC_table, const float *OCV_table, int N) {
+static float ocv_to_soc_c(float v_cell, const float* SOC_table, const float* OCV_table, int N) {
   if (N < 2 || SOC_table == NULL || OCV_table == NULL) return 0.5f;
 
   if (v_cell <= OCV_table[N - 1]) {
@@ -93,7 +93,7 @@ static float ocv_to_soc_c(float v_cell, const float *SOC_table, const float *OCV
 /**
  * @brief Estimate initial SOC and Vrc using startup voltage samples.
  */
-void estimate_initial_state_c(const float *v_samples, int n_samples, int N_series, const float *SOC_table, const float *OCV_table, int table_size, float x0[2]) {
+void estimate_initial_state_c(const float* v_samples, int n_samples, int N_series, const float* SOC_table, const float* OCV_table, int table_size, float x0[2]) {
   if (v_samples == NULL || n_samples <= 0 || SOC_table == NULL || OCV_table == NULL || N_series <= 0) {
     x0[0] = SOC_INIT_SOC_DEFAULT;
     x0[1] = 0.0f;
@@ -133,7 +133,7 @@ void estimate_initial_state_c(const float *v_samples, int n_samples, int N_serie
   x0[1] = 0.0f;
 }
 
-StatusCode state_of_charge_init(RearControllerStorage *storage) {
+StatusCode state_of_charge_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

@@ -83,7 +83,7 @@ typedef struct {
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  */
-StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings);
+StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings* settings);
 
 /**
  * @brief   Transmit data to SD card via SPI
@@ -97,7 +97,7 @@ StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings);
  *          STATUS_CODE_UNINITIALIZED if SPI is not initialized
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmit fails
  */
-StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len);
+StatusCode sd_spi_tx(SdSpiPort spi, uint8_t* tx_data, size_t tx_len);
 
 /**
  * @brief   Receive data from SD card via SPI
@@ -112,7 +112,7 @@ StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len);
  *          STATUS_CODE_UNINITIALIZED if SPI is not initialized
  *          STATUS_CODE_INTERNAL_ERROR if HAL receive fails
  */
-StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t placeholder);
+StatusCode sd_spi_rx(SdSpiPort spi, uint8_t* rx_data, size_t rx_len, uint8_t placeholder);
 
 /**
  * @brief   Exchange data over SPI
@@ -127,7 +127,7 @@ StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t pla
  *          STATUS_CODE_UNINITIALIZED if SPI not initialized
  *          STATUS_CODE_INTERNAL_ERROR if SPI transfer fails
  */
-StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len);
+StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len);
 
 /**
  * @brief   Set the CS (chip select) GPIO state

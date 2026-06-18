@@ -22,7 +22,7 @@
 #define PIN_MODE_KEY "mode"
 #define PIN_ALT_FUNC_KEY "alternate_function"
 
-const char *gpioPortNames[] = {
+const char* gpioPortNames[] = {
   "A", /* GPIO_PORT_A */
   "B", /* GPIO_PORT_B */
 };
@@ -121,25 +121,25 @@ std::string GpioManager::stringifyPinAltFunction(Datagram::Gpio::AltFunction alt
   return result;
 }
 
-void GpioManager::loadGpioInfo(std::string &projectName) {
+void GpioManager::loadGpioInfo(std::string& projectName) {
   m_gpioInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, GpioManager::PinInfo>>(projectName, GPIO_KEY);
 }
 
-void GpioManager::saveGpioInfo(std::string &projectName) {
+void GpioManager::saveGpioInfo(std::string& projectName) {
   serverJSONManager.setProjectValue(projectName, GPIO_KEY, m_gpioInfo);
 
   /* Upon save, clear the memory */
   m_gpioInfo.clear();
 }
 
-void GpioManager::updateGpioPinState(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioPinState(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
 
   std::string key = gpioPortNames[static_cast<uint8_t>(m_gpioDatagram.getGpioPort())];
   key += std::to_string(m_gpioDatagram.getGpioPin());
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
 
   if (static_cast<Datagram::Gpio::State>(receivedData[0U]) == Datagram::Gpio::State::GPIO_STATE_HIGH) {
     m_gpioInfo[key][PIN_STATE_KEY] = "HIGH";
@@ -152,12 +152,12 @@ void GpioManager::updateGpioPinState(std::string &projectName, std::string &payl
   saveGpioInfo(projectName);
 }
 
-void GpioManager::updateGpioAllStates(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioAllStates(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
 
   for (uint8_t i = 0U; i < static_cast<uint8_t>(Datagram::Gpio::Port::NUM_GPIO_PORTS) * static_cast<uint8_t>(Datagram::Gpio::PINS_PER_PORT); i++) {
     size_t blockIndex = i / 8U;
@@ -176,7 +176,7 @@ void GpioManager::updateGpioAllStates(std::string &projectName, std::string &pay
   saveGpioInfo(projectName);
 }
 
-void GpioManager::updateGpioPinMode(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioPinMode(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
@@ -184,19 +184,19 @@ void GpioManager::updateGpioPinMode(std::string &projectName, std::string &paylo
   std::string key = gpioPortNames[static_cast<uint8_t>(m_gpioDatagram.getGpioPort())];
   key += std::to_string(m_gpioDatagram.getGpioPin());
 
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
 
   m_gpioInfo[key][PIN_MODE_KEY] = stringifyPinMode(static_cast<Datagram::Gpio::Mode>(receivedData[0U]));
 
   saveGpioInfo(projectName);
 }
 
-void GpioManager::updateGpioAllModes(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioAllModes(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
 
-  const uint32_t *receivedData = reinterpret_cast<const uint32_t *>(m_gpioDatagram.getBuffer());
+  const uint32_t* receivedData = reinterpret_cast<const uint32_t*>(m_gpioDatagram.getBuffer());
 
   for (uint8_t i = 0U; i < static_cast<uint8_t>(Datagram::Gpio::Port::NUM_GPIO_PORTS) * static_cast<uint8_t>(Datagram::Gpio::PINS_PER_PORT); i++) {
     size_t blockIndex = (i / 8U);     /* 4 bits per pin so there is only 8 pins per block */
@@ -213,7 +213,7 @@ void GpioManager::updateGpioAllModes(std::string &projectName, std::string &payl
   saveGpioInfo(projectName);
 }
 
-void GpioManager::updateGpioPinAltFunction(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioPinAltFunction(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
@@ -221,19 +221,19 @@ void GpioManager::updateGpioPinAltFunction(std::string &projectName, std::string
   std::string key = gpioPortNames[static_cast<uint8_t>(m_gpioDatagram.getGpioPort())];
   key += std::to_string(m_gpioDatagram.getGpioPin());
 
-  const uint8_t *receivedData = m_gpioDatagram.getBuffer();
+  const uint8_t* receivedData = m_gpioDatagram.getBuffer();
 
   m_gpioInfo[key][PIN_ALT_FUNC_KEY] = stringifyPinAltFunction(static_cast<Datagram::Gpio::AltFunction>(receivedData[0U]));
 
   saveGpioInfo(projectName);
 }
 
-void GpioManager::updateGpioAllAltFunctions(std::string &projectName, std::string &payload) {
+void GpioManager::updateGpioAllAltFunctions(std::string& projectName, std::string& payload) {
   loadGpioInfo(projectName);
 
   m_gpioDatagram.deserialize(payload);
 
-  const uint32_t *receivedData = reinterpret_cast<const uint32_t *>(m_gpioDatagram.getBuffer());
+  const uint32_t* receivedData = reinterpret_cast<const uint32_t*>(m_gpioDatagram.getBuffer());
 
   for (uint8_t i = 0U; i < static_cast<uint8_t>(Datagram::Gpio::Port::NUM_GPIO_PORTS) * static_cast<uint8_t>(Datagram::Gpio::PINS_PER_PORT); i++) {
     size_t blockIndex = (i / 8U);     /* 4 bits per pin so there is only 8 pins per block */
@@ -250,7 +250,7 @@ void GpioManager::updateGpioAllAltFunctions(std::string &projectName, std::strin
   saveGpioInfo(projectName);
 }
 
-std::string GpioManager::createGpioCommand(CommandCode commandCode, std::string &gpioPortPin, std::string data) {
+std::string GpioManager::createGpioCommand(CommandCode commandCode, std::string& gpioPortPin, std::string data) {
   try {
     switch (commandCode) {
       case CommandCode::GPIO_GET_PIN_STATE:
@@ -354,7 +354,7 @@ std::string GpioManager::createGpioCommand(CommandCode commandCode, std::string 
     }
 
     return m_gpioDatagram.serialize(commandCode);
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Gpio Manager error: " << e.what() << std::endl;
   }
   return "";

@@ -15,7 +15,7 @@
 /* Intra-component Headers */
 #include "network_buffer.h"
 
-FotaError network_buffer_init(NetworkBuffer *network_buffer) {
+FotaError network_buffer_init(NetworkBuffer* network_buffer) {
   if (network_buffer == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -28,23 +28,23 @@ FotaError network_buffer_init(NetworkBuffer *network_buffer) {
   return FOTA_ERROR_SUCCESS;
 }
 
-uint16_t network_buffer_num_items(NetworkBuffer *network_buffer) {
+uint16_t network_buffer_num_items(NetworkBuffer* network_buffer) {
   return network_buffer->num_items;
 }
 
-uint16_t network_buffer_num_empty_slots(NetworkBuffer *network_buffer) {
+uint16_t network_buffer_num_empty_slots(NetworkBuffer* network_buffer) {
   return NETWORK_BUFFER_SIZE - network_buffer->num_items;
 }
 
-bool network_buffer_empty(NetworkBuffer *network_buffer) {
+bool network_buffer_empty(NetworkBuffer* network_buffer) {
   return network_buffer->num_items == 0U;
 }
 
-bool network_buffer_full(NetworkBuffer *network_buffer) {
+bool network_buffer_full(NetworkBuffer* network_buffer) {
   return network_buffer->num_items == NETWORK_BUFFER_SIZE;
 }
 
-FotaError network_buffer_write(NetworkBuffer *network_buffer, uint8_t *data) {
+FotaError network_buffer_write(NetworkBuffer* network_buffer, uint8_t* data) {
   if (network_buffer == NULL || data == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -61,7 +61,7 @@ FotaError network_buffer_write(NetworkBuffer *network_buffer, uint8_t *data) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_buffer_read(NetworkBuffer *network_buffer, uint8_t *data) {
+FotaError network_buffer_read(NetworkBuffer* network_buffer, uint8_t* data) {
   if (network_buffer == NULL || data == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }

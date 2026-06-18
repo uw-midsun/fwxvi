@@ -20,17 +20,17 @@
 #include "app.h"
 #include "app_terminal.h"
 
-Terminal::Terminal(Server *server) {
+Terminal::Terminal(Server* server) {
   m_Server = server;
 }
 
-std::string Terminal::toLower(const std::string &input) {
+std::string Terminal::toLower(const std::string& input) {
   std::string lowered = input;
   std::transform(lowered.begin(), lowered.end(), lowered.begin(), [](unsigned char c) { return std::tolower(c); });
   return lowered;
 }
 
-void Terminal::handleGpioCommands(const std::string &action, std::vector<std::string> &tokens) {
+void Terminal::handleGpioCommands(const std::string& action, std::vector<std::string>& tokens) {
   std::string message;
   if (action == "get_pin_state" && tokens.size() >= 3) {
     message = serverGpioManager.createGpioCommand(CommandCode::GPIO_GET_PIN_STATE, tokens[2], "");
@@ -60,7 +60,7 @@ void Terminal::handleGpioCommands(const std::string &action, std::vector<std::st
   m_targetClient = nullptr;
 }
 
-void Terminal::handleI2CCommands(const std::string &action, std::vector<std::string> &tokens) {
+void Terminal::handleI2CCommands(const std::string& action, std::vector<std::string>& tokens) {
   std::string message;
 
   if (action == "write_data" && tokens.size() >= 4) {
@@ -91,7 +91,7 @@ void Terminal::handleI2CCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
-void Terminal::handleAfeCommands(const std::string &action, std::vector<std::string> &tokens) {
+void Terminal::handleAfeCommands(const std::string& action, std::vector<std::string>& tokens) {
   std::string message;
   if (action == "set_cell" && tokens.size() >= 4) {
     message = serverAfeManager.createAfeCommand(CommandCode::AFE_SET_CELL, tokens[2], tokens[3]);
@@ -141,7 +141,7 @@ void Terminal::handleAfeCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
-void Terminal::handleAdcCommands(const std::string &action, std::vector<std::string> &tokens) {
+void Terminal::handleAdcCommands(const std::string& action, std::vector<std::string>& tokens) {
   std::string message;
 
   if (action == "set_raw" && tokens.size() >= 4) {
@@ -169,7 +169,7 @@ void Terminal::handleAdcCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
-void Terminal::handleSpiCommands(const std::string &action, std::vector<std::string> &tokens) {
+void Terminal::handleSpiCommands(const std::string& action, std::vector<std::string>& tokens) {
   std::string message;
 
   std::string dataStr = "";
@@ -199,7 +199,7 @@ void Terminal::handleSpiCommands(const std::string &action, std::vector<std::str
   m_targetClient = nullptr;
 }
 
-void Terminal::parseCommand(std::vector<std::string> &tokens) {
+void Terminal::parseCommand(std::vector<std::string>& tokens) {
   if (tokens.size() < 2) {
     std::cout << "Invalid command. Format: <interface> <action> <args...>\n";
     return;
@@ -222,7 +222,7 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
     } else {
       std::cerr << "Unsupported interface: " << interface << std::endl;
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cerr << "Terminal command error: " << e.what() << std::endl;
   }
 }

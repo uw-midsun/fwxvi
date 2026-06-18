@@ -33,7 +33,7 @@ static InterruptSettings killswitch_settings = {
   INTERRUPT_EDGE_FALLING,
 };
 
-StatusCode killswitch_init(Event event, const Task *task) {
+StatusCode killswitch_init(Event event, const Task* task) {
   gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
   /* 10ms Debounce */

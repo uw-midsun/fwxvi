@@ -188,14 +188,14 @@ typedef struct {
 } Bmi323Settings;
 
 typedef struct {
-  Bmi323Settings *settings;
+  Bmi323Settings* settings;
   Axes accel;
   Axes gyro;
   AccelGainOffsetValues accel_go_values;
   GyroGainOffsetValues gyro_go_values;
 } Bmi323Storage;
 
-StatusCode bmi323_init(Bmi323Storage *storage);
+StatusCode bmi323_init(Bmi323Storage* storage);
 
 StatusCode bmi323_update();
 

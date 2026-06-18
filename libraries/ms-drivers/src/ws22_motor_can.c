@@ -16,10 +16,10 @@
 /* Intra-component Headers */
 #include "ws22_motor_can.h"
 
-static Ws22MotorCanStorage *s_ws22_motor_can_storage = NULL;
-static Ws22MotorCanConfig *s_ws22_motor_can_config = NULL;
+static Ws22MotorCanStorage* s_ws22_motor_can_storage = NULL;
+static Ws22MotorCanConfig* s_ws22_motor_can_config = NULL;
 
-static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_status_info(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 4U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -31,7 +31,7 @@ static StatusCode s_process_status_info(Ws22MotorTelemetryData *telemetry, uint8
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -42,7 +42,7 @@ static StatusCode s_process_bus_measurement(Ws22MotorTelemetryData *telemetry, u
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -56,7 +56,7 @@ static StatusCode s_process_velocity_measurement(Ws22MotorTelemetryData *telemet
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_phase_current(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -67,7 +67,7 @@ static StatusCode s_process_phase_current(Ws22MotorTelemetryData *telemetry, uin
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -78,7 +78,7 @@ static StatusCode s_process_motor_voltage(Ws22MotorTelemetryData *telemetry, uin
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_current(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_motor_current(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -89,7 +89,7 @@ static StatusCode s_process_motor_current(Ws22MotorTelemetryData *telemetry, uin
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -100,7 +100,7 @@ static StatusCode s_process_motor_back_emf(Ws22MotorTelemetryData *telemetry, ui
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_rail_15v(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -110,7 +110,7 @@ static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, uint8_t 
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_drive_cmd(Ws22MotorControlData *control, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_drive_cmd(Ws22MotorControlData* control, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (control == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -121,7 +121,7 @@ static StatusCode s_process_drive_cmd(Ws22MotorControlData *control, uint8_t *ms
   return STATUS_CODE_OK;
 }
 
-static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+static StatusCode s_process_temperature(Ws22MotorTelemetryData* telemetry, uint8_t* msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -132,7 +132,7 @@ static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, uint8
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_init(Ws22MotorCanStorage *storage, Ws22MotorCanConfig *config) {
+StatusCode ws22_motor_can_init(Ws22MotorCanStorage* storage, Ws22MotorCanConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -161,7 +161,7 @@ StatusCode ws22_motor_can_set_velocity(float velocity) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ws22_motor_can_process_rx(uint8_t *msg_data_u8, uint32_t msg_id_raw, uint8_t msg_dlc) {
+StatusCode ws22_motor_can_process_rx(uint8_t* msg_data_u8, uint32_t msg_id_raw, uint8_t msg_dlc) {
   if (msg_data_u8 == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -232,10 +232,10 @@ StatusCode ws22_motor_can_process_rx(uint8_t *msg_data_u8, uint32_t msg_id_raw, 
   }
 }
 
-Ws22MotorControlData *ws22_motor_can_get_control_data(void) {
+Ws22MotorControlData* ws22_motor_can_get_control_data(void) {
   return &s_ws22_motor_can_storage->control;
 }
 
-Ws22MotorTelemetryData *ws22_motor_can_get_telemetry_data(void) {
+Ws22MotorTelemetryData* ws22_motor_can_get_telemetry_data(void) {
   return &s_ws22_motor_can_storage->telemetry;
 }

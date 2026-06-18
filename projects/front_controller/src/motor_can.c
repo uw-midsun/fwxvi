@@ -32,14 +32,14 @@
 
 #define IS_BRAKE_CONNECTED 0U
 
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 
 static VehicleDriveState current_drive_state;
 
 static float regen_strength;
 static bool regen_direction;
 
-static StatusCode s_build_drive_command(Ws22MotorControlData *control_data, CanMessage *msg) {
+static StatusCode s_build_drive_command(Ws22MotorControlData* control_data, CanMessage* msg) {
   if (control_data == NULL || msg == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -151,7 +151,7 @@ StatusCode motor_can_update_target_current_velocity() {
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_init(FrontControllerStorage *storage) {
+StatusCode motor_can_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -161,11 +161,11 @@ StatusCode motor_can_init(FrontControllerStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_get_current_state(VehicleDriveState *current_state) {
+StatusCode motor_can_get_current_state(VehicleDriveState* current_state) {
   *current_state = current_drive_state;
   return STATUS_CODE_OK;
 }
 
-StatusCode motor_can_process_rx(CanMessage *msg) {
+StatusCode motor_can_process_rx(CanMessage* msg) {
   return ws22_motor_can_process_rx(msg->data_u8, msg->id.raw, msg->dlc);
 }

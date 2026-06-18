@@ -51,13 +51,13 @@ void crc32_init(void);
  * Manually computes CRC
  *
  */
-void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest);
+void compute_crc32(const uint8_t* data, size_t length, uint32_t* crc_dest);
 
 /**
  * Reads CRC value from file system
  *
  */
-StatusCode read_crc32(const char *file_path, size_t length, uint8_t *crc_dest);
+StatusCode read_crc32(const char* file_path, size_t length, uint8_t* crc_dest);
 
 /**
  * Main application executed at runtime

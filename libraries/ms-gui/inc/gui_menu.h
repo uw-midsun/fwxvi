@@ -42,7 +42,7 @@ typedef enum {
 /** @brief Union to store info about each menu item */
 typedef struct {
   GuiMenuItemType type;     /**< Type of item (screen or action) */
-  const char *action_label; /**< Label to show up on the menu screen */
+  const char* action_label; /**< Label to show up on the menu screen */
   union {
     GuiScreenId screen_id;          /**< Screen ID (to distinguish between screens) */
     GuiMenuActionCallback callback; /**< Callback function for action item */
@@ -55,11 +55,11 @@ typedef struct {
   uint8_t selected_index;                          /**< Index user is currently "hovering" over */
   GuiMenuActionCallback party_mode_callback;       /**< Callback for party mode */
   GuiMenuActionCallback toggle_discharge_callback; /**< Callback for toggling cell discharge */
-  lv_obj_t *overlay;                               /**< Dimmed backdrop when menu is open */
-  lv_obj_t *panel;                                 /**< Container that holds title + menu rows */
-  lv_obj_t *title;                                 /**< Menu title */
-  lv_obj_t *rows[GUI_MENU_ITEM_COUNT];             /**< LVGL Object to store Menu rows */
-  lv_obj_t *row_labels[GUI_MENU_ITEM_COUNT];       /**< Labels for rows */
+  lv_obj_t* overlay;                               /**< Dimmed backdrop when menu is open */
+  lv_obj_t* panel;                                 /**< Container that holds title + menu rows */
+  lv_obj_t* title;                                 /**< Menu title */
+  lv_obj_t* rows[GUI_MENU_ITEM_COUNT];             /**< LVGL Object to store Menu rows */
+  lv_obj_t* row_labels[GUI_MENU_ITEM_COUNT];       /**< Labels for rows */
 } GuiMenuState;
 
 /** @brief To store pending requests for menu */

@@ -42,7 +42,7 @@
  * @return  STATUS_CODE_OK if initialized succesfully
  *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
  */
-StatusCode cell_sense_init(RearControllerStorage *storage);
+StatusCode cell_sense_init(RearControllerStorage* storage);
 
 /**
  * @brief   Logs the newest cell sense readings

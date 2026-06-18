@@ -49,14 +49,14 @@ class AdcManager {
    * @details This function shall be called upon receiving a pin-specific payload
    * @param   payload Message data payload to be parsed
    */
-  void setAdcRaw(std::string &payload);
+  void setAdcRaw(std::string& payload);
 
   /**
    * @brief   Sets all raw ADC values given the data payload
    * @details This function shall be called upon receiving a payload containing all pin data
    * @param   payload Message data payload to be parsed
    */
-  void setAdcAllRaw(std::string &payload);
+  void setAdcAllRaw(std::string& payload);
 
   /**
    * @brief   Processes a get request for a specific raw ADC channel reading
@@ -64,7 +64,7 @@ class AdcManager {
    * @param   payload Message data payload to be parsed
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processReadAdcRaw(std::string &payload);
+  std::string processReadAdcRaw(std::string& payload);
 
   /**
    * @brief   Processes a get request for all raw ADC channel readings
@@ -79,7 +79,7 @@ class AdcManager {
    * @details This function shall be called upen receiving a pin-specific payload
    * @return  Fully serialized data payload to be transmitted in response to the server
    */
-  std::string processReadAdcConverted(std::string &payload);
+  std::string processReadAdcConverted(std::string& payload);
 
   /**
    * @brief   Processes a get request for all converted ADC channel readings

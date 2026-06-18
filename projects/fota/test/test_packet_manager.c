@@ -30,9 +30,9 @@ static bool s_copied_datagram_valid = false;
 
 static uint8_t s_test_data[FOTA_MAX_DATAGRAM_SIZE];
 static FotaPacket s_packets[FOTA_MAX_PACKETS_PER_DATAGRAM];
-static FotaDatagram *s_last_received_datagram = NULL;
+static FotaDatagram* s_last_received_datagram = NULL;
 
-void datagram_callback(FotaDatagram *datagram) {
+void datagram_callback(FotaDatagram* datagram) {
   memcpy(&s_copied_datagram, datagram, sizeof(FotaDatagram));
   s_last_received_datagram = &s_copied_datagram;
   s_copied_datagram_valid = true;
@@ -163,7 +163,7 @@ TEST_IN_TASK
 void test_packet_manager_returns_invalid_args(void) {
   TEST_ASSERT_EQUAL(FOTA_ERROR_INVALID_ARGS, packet_manager_process(NULL));
 
-  PacketManager *null_mgr = NULL;
+  PacketManager* null_mgr = NULL;
   UartSettings dummy = { 0 };
   TEST_ASSERT_EQUAL(FOTA_ERROR_INVALID_ARGS, packet_manager_init(null_mgr, UART_PORT_2, &dummy, datagram_callback));
   TEST_ASSERT_EQUAL(FOTA_ERROR_INVALID_ARGS, packet_manager_init(&s_manager, UART_PORT_2, NULL, datagram_callback));

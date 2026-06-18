@@ -49,6 +49,6 @@ StatusCode cruise_control_run();
  * @returns STATUS_CODE_OK if initialization is successful
  *          STATUS_CODE_INVALID_ARGS if storage is null
  */
-StatusCode cruise_control_init(FrontControllerStorage *storage);
+StatusCode cruise_control_init(FrontControllerStorage* storage);
 
 /** @} */

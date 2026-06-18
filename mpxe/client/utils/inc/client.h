@@ -40,9 +40,9 @@
 class Client {
  private:
   /** @brief  The message callback function definition */
-  using messageCallback = std::function<void(Client *client, std::string &)>;
+  using messageCallback = std::function<void(Client* client, std::string&)>;
   /** @brief  The connection callback function definition */
-  using connectCallback = std::function<void(Client *client)>;
+  using connectCallback = std::function<void(Client* client)>;
 
   static constexpr size_t MAX_BUFFER_SIZE = 512; /**< Maximum permitted read size for all clients */
 
@@ -76,7 +76,7 @@ class Client {
    * @param   messageCallback Function pointer to a message callback
    * @param   connectCallback Function pointer to a connection callback
    */
-  Client(const std::string &host, int port, messageCallback messageCallback, connectCallback connectCallback);
+  Client(const std::string& host, int port, messageCallback messageCallback, connectCallback connectCallback);
 
   /**
    * @brief   Destructs a Client object
@@ -123,13 +123,13 @@ class Client {
    * @brief   Function wrapper to transmit a message
    * @param   message String message value to be sent
    */
-  void sendMessage(const std::string &message);
+  void sendMessage(const std::string& message);
 
   /**
    * @brief   Set client name
    * @param   name String name for client
    */
-  void setClientName(const std::string &name);
+  void setClientName(const std::string& name);
 
   /**
    * @brief   Get client name

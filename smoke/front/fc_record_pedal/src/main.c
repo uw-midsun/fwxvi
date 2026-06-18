@@ -50,7 +50,7 @@ PedalPersistData persist_data = { 0 };
 PersistStorage persist_storage = { 0 };
 
 // Samples pedal with smoothing
-StatusCode sample_pedal_calibration(GpioAddress *pedal_gpio, int16_t *result_value) {
+StatusCode sample_pedal_calibration(GpioAddress* pedal_gpio, int16_t* result_value) {
   uint16_t adc_reading = 0;
   float smoothed_value = 0.0f;
   bool first_sample = true;
@@ -152,7 +152,7 @@ TASK(read_pedal_calibration, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

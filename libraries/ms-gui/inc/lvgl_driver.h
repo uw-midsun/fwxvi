@@ -32,7 +32,7 @@
  * @param   settings Pointer to the LTDC settings (used for width/height/framebuffer)
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_driver_init(LtdcSettings *settings);
+StatusCode lvgl_driver_init(LtdcSettings* settings);
 
 /**
  * @brief   Run one LVGL processing step

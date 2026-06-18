@@ -66,7 +66,7 @@ typedef struct {
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails
  *          STATUS_CODE_RESOURCE_EXHAUSTED if already initialized
  */
-StatusCode uart_init(UartPort uart, UartSettings *settings);
+StatusCode uart_init(UartPort uart, UartSettings* settings);
 
 /**
  * @brief   Receive data from the UART port
@@ -80,7 +80,7 @@ StatusCode uart_init(UartPort uart, UartSettings *settings);
  *          STATUS_CODE_INTERNAL_ERROR if HAL receiving fails
  *          STATUS_CODE_TIMEOUT if receiving takes too long
  */
-StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
+StatusCode uart_rx(UartPort uart, uint8_t* data, size_t len);
 
 /**
  * @brief   Transmit data from the UART port
@@ -94,6 +94,6 @@ StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
  *          STATUS_CODE_INTERNAL_ERROR if HAL transmission fails
  *          STATUS_CODE_TIMEOUT if transmission takes too long
  */
-StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len);
+StatusCode uart_tx(UartPort uart, uint8_t* data, size_t len);
 
 /** @} */

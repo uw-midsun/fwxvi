@@ -90,7 +90,7 @@ StatusCode opamp_init(void);
  *          STATUS_CODE_UNINITIALIZED if OPAMP not initialized
  *          STATUS_CODE_INTERNAL_ERROR if HAL operation fails
  */
-StatusCode opamp_configure(OpampInstance instance, OpampConfig *config);
+StatusCode opamp_configure(OpampInstance instance, OpampConfig* config);
 
 /**
  * @brief   Start an OPAMP instance (enable output)

@@ -22,7 +22,7 @@
  */
 
 #define SIZEOF_ARRAY(arr) (sizeof((arr)) / sizeof((arr)[0]))
-#define SIZEOF_FIELD(type, field) (sizeof(((type *)0)->field))
+#define SIZEOF_FIELD(type, field) (sizeof(((type*)0)->field))
 #define SWAP_UINT16(x) (uint16_t)(((uint16_t)(x) >> 8) | ((uint16_t)(x) << 8))
 
 #define STRINGIFY_(x) #x

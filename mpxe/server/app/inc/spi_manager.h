@@ -46,20 +46,20 @@ class SPIManager {
    * @brief   Load cached SPI data for a project from JSON storage
    * @param   projectName Name of the project whose SPI info should be loaded
    */
-  void loadSPIInfo(std::string &projectName);
+  void loadSPIInfo(std::string& projectName);
 
   /**
    * @brief   Save cached SPI data for a project to JSON storage
    * @param   projectName Name of the project whose SPI info should be saved
    */
-  void saveSPIInfo(std::string &projectName);
+  void saveSPIInfo(std::string& projectName);
 
   /**
    * @brief   Parse a hex string into a byte vector
    * @param   dataStr Input string containing hex values
    * @return  std::vector<uint8_t> Parsed byte vector
    */
-  std::vector<uint8_t> parseHexData(const std::string &dataStr);
+  std::vector<uint8_t> parseHexData(const std::string& dataStr);
 
   /**
    * @brief   Convert SPI buffer contents to a string
@@ -67,7 +67,7 @@ class SPIManager {
    * @param   length Number of bytes in the buffer
    * @return  std::string String representation of the buffer
    */
-  std::string stringifySpiBuffer(const uint8_t *buffer, size_t length);
+  std::string stringifySpiBuffer(const uint8_t* buffer, size_t length);
 
  public:
   /**
@@ -81,7 +81,7 @@ class SPIManager {
    * @param   projectName Project name for which data is updated
    * @param   payload Serialized data payload containing the buffer
    */
-  void updateSpiReadBuffer(std::string &projectName, std::string &payload);
+  void updateSpiReadBuffer(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Create a serialized SPI command message
@@ -90,7 +90,7 @@ class SPIManager {
    * @param   data Hex string data to transmit
    * @return  std::string Serialized command string
    */
-  std::string createSpiCommand(CommandCode commandCode, std::string &spiPort, std::string data);
+  std::string createSpiCommand(CommandCode commandCode, std::string& spiPort, std::string data);
 };
 
 /** @} */

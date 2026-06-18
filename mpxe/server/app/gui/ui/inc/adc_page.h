@@ -49,14 +49,14 @@ class AdcPage : public QWidget {
    * @param   payload Initial payload containing "adc" map
    * @param   parent  Parent widget (can be nullptr)
    */
-  explicit AdcPage(const std::map<QString, QVariant> &payload, QWidget *parent = nullptr);
+  explicit AdcPage(const std::map<QString, QVariant>& payload, QWidget* parent = nullptr);
 
  public slots:
   /**
    * @brief   Replace the current payload and rebuild the UI
    * @param   payload New payload map
    */
-  void setPayload(const std::map<QString, QVariant> &payload);
+  void setPayload(const std::map<QString, QVariant>& payload);
 
  private:
   /**
@@ -71,14 +71,14 @@ class AdcPage : public QWidget {
    * @param   key_wanted  Key whose nested QVariantMap should be converted
    * @return  std::map<QString, QVariant> Flattened version of the nested QVariantMap
    */
-  std::map<QString, QVariant> extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const;
+  std::map<QString, QVariant> extractMap(const std::map<QString, QVariant>& input_map, const QString& key_wanted) const;
 
  private:
   std::map<QString, QVariant> m_payload; /**< Current payload for this page */
   QPointer<QTabWidget> m_tabs;           /**< Tab widget container for tables */
 
-  QSortFilterProxyModel *m_raw_proxy;  /**< Proxy for raw readings table (can be used for filtering) */
-  QSortFilterProxyModel *m_conv_proxy; /**< Proxy model for the converted readings table */
+  QSortFilterProxyModel* m_raw_proxy;  /**< Proxy for raw readings table (can be used for filtering) */
+  QSortFilterProxyModel* m_conv_proxy; /**< Proxy model for the converted readings table */
 };
 
 /** @} */

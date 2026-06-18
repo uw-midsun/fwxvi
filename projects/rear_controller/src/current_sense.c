@@ -30,7 +30,7 @@ static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
 static int32_t csense_retries;
 
-static RearControllerStorage *rear_controller_storage;
+static RearControllerStorage* rear_controller_storage;
 
 // https://blog.mbedded.ninja/programming/signal-processing/digital-filters/exponential-moving-average-ema-filter/.
 float filter_step(const float alpha, float x, float prev_y) {
@@ -106,7 +106,7 @@ StatusCode current_sense_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode current_sense_init(RearControllerStorage *storage) {
+StatusCode current_sense_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

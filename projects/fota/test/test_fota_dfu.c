@@ -83,7 +83,7 @@ void test_fota_end_to_end() {
     chunk.header.datagram_id = datagram_id++;
     chunk.is_complete = true;
 
-    FotaDatagramPayload_FirmwareChunk *chunk_payload = (FotaDatagramPayload_FirmwareChunk *)chunk.data;
+    FotaDatagramPayload_FirmwareChunk* chunk_payload = (FotaDatagramPayload_FirmwareChunk*)chunk.data;
     memcpy(chunk_payload->data, firmware_data + offset, chunk_len);
 
     err = fota_dfu_process(&chunk);

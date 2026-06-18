@@ -23,7 +23,7 @@
 
 static GpioAddress fans_address = GPIO_REAR_CONTROLLER_MOTOR_FAN_PWM;
 
-static RearControllerStorage *rear_controller_storage;
+static RearControllerStorage* rear_controller_storage;
 
 StatusCode fans_run() {
   if (rear_controller_storage == NULL) {
@@ -39,7 +39,7 @@ StatusCode fans_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode fans_init(RearControllerStorage *storage) {
+StatusCode fans_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

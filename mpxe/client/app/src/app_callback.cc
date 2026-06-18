@@ -24,7 +24,7 @@ AdcManager clientAdcManager;
 SPIManager clientSpiManager;
 I2CManager clientI2CManager;
 
-void applicationMessageCallback(Client *client, std::string &message) {
+void applicationMessageCallback(Client* client, std::string& message) {
   std::string data = message;
   auto [commandCode, payload] = decodeCommand(message);
 
@@ -197,7 +197,7 @@ void applicationMessageCallback(Client *client, std::string &message) {
   }
 }
 
-void applicationConnectCallback(Client *client) {
+void applicationConnectCallback(Client* client) {
   std::cout << "Connected :-)" << std::endl;
 
   std::string projectName = DEFAULT_PROJECT_NAME;

@@ -86,9 +86,9 @@ typedef struct {
  ************************************************************************************************/
 static DSTATUS sd_card_init(BYTE pdrv);
 static DSTATUS sd_card_status(BYTE pdrv);
-static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count);
-static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count);
-static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff);
+static DRESULT sd_read_blocks(BYTE pdrv, BYTE* buff, LBA_t sector, UINT count);
+static DRESULT sd_write_blocks(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count);
+static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void* buff);
 
 /************************************************************************************************
  * Private variables
@@ -104,7 +104,7 @@ static Diskio_drvTypeDef s_disk_driver = {
 static char s_disk_path[4U] = { "/sd" };
 
 static SdSpiPort s_spi_port;
-static SdSpiSettings *s_spi_settings;
+static SdSpiSettings* s_spi_settings;
 static bool s_is_initialized = false;
 
 /************************************************************************************************
@@ -338,7 +338,7 @@ static DSTATUS sd_card_status(BYTE pdrv) {
   return s_is_initialized ? RES_OK : RES_NOTRDY;
 }
 
-static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
+static DRESULT sd_read_blocks(BYTE pdrv, BYTE* buff, LBA_t sector, UINT count) {
   DRESULT result = RES_OK;
 
   while (count--) {
@@ -384,7 +384,7 @@ static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
   return result;
 }
 
-static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count) {
+static DRESULT sd_write_blocks(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count) {
   while (count--) {
     SdResponse r1 = s_send_sd_cmd(SD_CMD_WRITE_SINGLE_BLOCK, sector * 512U, 0xFFU, SD_RESPONSE_R1);
 
@@ -395,7 +395,7 @@ static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT c
     s_read_byte();
 
     sd_spi_tx(s_spi_port, (uint8_t[]){ SD_TOKEN_START_DATA_SINGLE_BLOCK_WRITE }, 1);
-    sd_spi_tx(s_spi_port, (uint8_t *)buff, 512);
+    sd_spi_tx(s_spi_port, (uint8_t*)buff, 512);
     sd_spi_tx(s_spi_port, (uint8_t[]){ 0xFF, 0xFF }, 2);
 
     if (s_sd_get_data_response() != STATUS_CODE_OK) return RES_ERROR;
@@ -409,17 +409,17 @@ static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT c
   return RES_OK;
 }
 
-static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
+static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
   switch (cmd) {
     case CTRL_SYNC:
       return RES_OK;
 
     case GET_SECTOR_SIZE:
-      *(WORD *)buff = 512U;
+      *(WORD*)buff = 512U;
       return RES_OK;
 
     case GET_BLOCK_SIZE:
-      *(DWORD *)buff = 1U;
+      *(DWORD*)buff = 1U;
       return RES_OK;
 
     case GET_SECTOR_COUNT: {
@@ -428,7 +428,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
 
       SdResponse r1 = s_send_sd_cmd(SD_CMD_SEND_CSD, 0U, 0xFFU, SD_RESPONSE_R1);
       if (r1.r1 != SD_R1_NO_ERROR) {
-        *(DWORD *)buff = 32768U;
+        *(DWORD*)buff = 32768U;
         return RES_OK;
       }
 
@@ -439,7 +439,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
         if (--timeout == 0) {
           sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
           s_read_byte();
-          *(DWORD *)buff = 32768;
+          *(DWORD*)buff = 32768;
           return RES_OK;
         }
       } while (token == 0xFF);
@@ -447,7 +447,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
       if (token != SD_TOKEN_START_DATA_SINGLE_BLOCK_READ) {
         sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
         s_read_byte();
-        *(DWORD *)buff = 32768;
+        *(DWORD*)buff = 32768;
         return RES_OK;
       }
 
@@ -473,7 +473,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
         sector_count = (uint32_t)(c_size + 1) << (c_size_mult + read_bl_len - 7);
       }
 
-      *(DWORD *)buff = sector_count;
+      *(DWORD*)buff = sector_count;
       return RES_OK;
     }
 
@@ -486,7 +486,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
  * Public
  ************************************************************************************************/
 
-StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings) {
+StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings* settings) {
   s_spi_settings = settings;
   s_spi_port = spi;
 

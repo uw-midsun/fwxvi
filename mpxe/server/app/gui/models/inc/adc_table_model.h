@@ -47,21 +47,21 @@ class AdcTableModel : public QAbstractTableModel {
    * @param   data_map Input dictionary containing channel data
    * @param   parent Pointer to Qt parent (can be nullptr)
    */
-  explicit AdcTableModel(const std::map<QString, QVariant> &data_map, QObject *parent = nullptr);
+  explicit AdcTableModel(const std::map<QString, QVariant>& data_map, QObject* parent = nullptr);
 
   /**
    * @brief   Returns the number of rows in the table
    * @param   parent Required by Qt (not used here)
    * @return  int Number of rows in the model
    */
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns the number of columns in the table
    * @param   parent Required by Qt (not used here)
    * @return  int Always returns GPIO_COLUMN_COUNT (4)
    */
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns data for a given table cell
@@ -69,7 +69,7 @@ class AdcTableModel : public QAbstractTableModel {
    * @param   role The role of the cell (DisplayRole, EditRole, etc.)
    * @return  QVariant Data to be displayed or used for the given role
    */
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
   /**
    * @brief   Returns header labels for the table

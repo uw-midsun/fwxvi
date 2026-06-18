@@ -47,7 +47,7 @@ static SteeringStorage s_demo_storage = { 0 };
 #if SHOW_SMOKE_TEST_LOGO_IMAGE
 static LvglImage s_smoke_logo_image = { 0 };
 
-static StatusCode s_create_smoke_logo_image(GuiScreen *screen) {
+static StatusCode s_create_smoke_logo_image(GuiScreen* screen) {
   const LvglImageConfig logo_config = {
     .size = { .width = MS_LOGO_IMAGE_WIDTH, .height = MS_LOGO_IMAGE_HEIGHT },
     .position = {
@@ -61,7 +61,7 @@ static StatusCode s_create_smoke_logo_image(GuiScreen *screen) {
   return lvgl_image_create(&s_smoke_logo_image, &logo_config, screen);
 }
 
-static StatusCode s_create_smoke_drive_screen(GuiScreen *screen) {
+static StatusCode s_create_smoke_drive_screen(GuiScreen* screen) {
   status_ok_or_return(gui_drive_screen_init(screen));
   return s_create_smoke_logo_image(screen);
 }
@@ -175,7 +175,7 @@ TASK(sc_gui_api, TASK_STACK_2048) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
   /* TODO: For some reason, this breaks, too much work to figure out why, and we don't need it */
 #else

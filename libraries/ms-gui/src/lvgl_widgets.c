@@ -55,7 +55,7 @@ static lv_text_align_t s_widget_text_alignment(WidgetTextAlignment alignment) {
   }
 }
 
-static void s_apply_position(lv_obj_t *obj, const WidgetPosition *position) {
+static void s_apply_position(lv_obj_t* obj, const WidgetPosition* position) {
   if (obj == NULL || position == NULL) {
     return;
   }
@@ -113,8 +113,8 @@ static void s_init_bar_styles(void) {
   s_bar_styles_initialized = true;
 }
 
-static void s_bar_draw_event_cb(lv_event_t *e) {
-  lv_obj_t *obj = lv_event_get_target(e);
+static void s_bar_draw_event_cb(lv_event_t* e) {
+  lv_obj_t* obj = lv_event_get_target(e);
   lv_draw_label_dsc_t label_dsc;
   lv_draw_label_dsc_init(&label_dsc);
   label_dsc.font = GUI_SMALL_TEXT;
@@ -138,7 +138,7 @@ static void s_bar_draw_event_cb(lv_event_t *e) {
   lv_draw_label(lv_event_get_layer(e), &label_dsc, &label_area);
 }
 
-StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_label(LabelWidget* label, const LabelWidgetConfig* config, GuiScreen* parent) {
   if (label == NULL || config == NULL || parent == NULL || config->label_text == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -186,7 +186,7 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
+StatusCode lvgl_widgets_set_label_text(LabelWidget* label, const char* text) {
   if (label == NULL || text == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -198,7 +198,7 @@ StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget* speedometer, const SpeedometerWidgetConfig* config, GuiScreen* parent) {
   if (speedometer == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -235,7 +235,7 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh) {
+StatusCode lvgl_widgets_set_speed(SpeedometerWidget* speedometer, float speed_kmh) {
   if (speedometer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -260,7 +260,7 @@ StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_km
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_bar(BarWidget* bar_widget, const BarWidgetConfig* config, GuiScreen* parent) {
   if (bar_widget == NULL || config == NULL || parent == NULL || config->label_text == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -292,7 +292,7 @@ StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig 
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
+StatusCode lvgl_widgets_set_bar_value(BarWidget* bar_widget, int32_t value) {
   if (bar_widget == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -312,7 +312,7 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id) {
+StatusCode lvgl_widgets_set_bar_color(BarWidget* bar_widget, GuiColorId color_id) {
   if (bar_widget == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -325,7 +325,7 @@ StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_table(TableWidget* widget, const TableWidgetConfig* config, GuiScreen* parent) {
   if (widget == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -362,7 +362,7 @@ StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfi
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+StatusCode lvgl_widgets_set_table_cell(TableWidget* widget, uint32_t row, uint32_t col, const char* text) {
   if (widget == NULL || text == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -375,53 +375,53 @@ StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32
 }
 
 #else
-StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_label(LabelWidget* label, const LabelWidgetConfig* config, GuiScreen* parent) {
   (void)label;
   (void)config;
   (void)parent;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
+StatusCode lvgl_widgets_set_label_text(LabelWidget* label, const char* text) {
   (void)label;
   (void)text;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget* speedometer, const SpeedometerWidgetConfig* config, GuiScreen* parent) {
   (void)speedometer;
   (void)config;
   (void)parent;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh) {
+StatusCode lvgl_widgets_set_speed(SpeedometerWidget* speedometer, float speed_kmh) {
   (void)speedometer;
   (void)speed_kmh;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_bar(BarWidget *bar_widget, const BarWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_bar(BarWidget* bar_widget, const BarWidgetConfig* config, GuiScreen* parent) {
   (void)bar_widget;
   (void)config;
   (void)parent;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value) {
+StatusCode lvgl_widgets_set_bar_value(BarWidget* bar_widget, int32_t value) {
   (void)bar_widget;
   (void)value;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_create_table(TableWidget *widget, const TableWidgetConfig *config, GuiScreen *parent) {
+StatusCode lvgl_widgets_create_table(TableWidget* widget, const TableWidgetConfig* config, GuiScreen* parent) {
   (void)widget;
   (void)config;
   (void)parent;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_widgets_set_table_cell(TableWidget *widget, uint32_t row, uint32_t col, const char *text) {
+StatusCode lvgl_widgets_set_table_cell(TableWidget* widget, uint32_t row, uint32_t col, const char* text) {
   (void)widget;
   (void)row;
   (void)col;

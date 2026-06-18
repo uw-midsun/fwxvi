@@ -36,7 +36,7 @@ static LabelWidget s_temps_stats_label;
 
 static bool s_widgets_initialized;
 
-static const char *s_get_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
+static const char* s_get_bps_fault_text(uint16_t fault, bool* is_cell_fault) {
   if (is_cell_fault == NULL) {
     return "BPS FAULT";
   }
@@ -84,7 +84,7 @@ static const char *s_get_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
   return "BPS FAULT";
 }
 
-static const char *s_get_ws22_flag_text(uint16_t flags) {
+static const char* s_get_ws22_flag_text(uint16_t flags) {
   if (flags & ERROR_FLAG_HARDWARE_OVERCURRENT_MASK) {
     return "W22 HARDWARE_OVERCURRENT";
   }
@@ -134,7 +134,7 @@ static const char *s_get_ws22_flag_text(uint16_t flags) {
   return "WS22 FLAG";
 }
 
-static StatusCode s_create_soc_bar(GuiScreen *screen) {
+static StatusCode s_create_soc_bar(GuiScreen* screen) {
   const BarWidgetConfig s_soc_bar_config = {
     .size = { .width = 80, .height = 20 },
     .position = {
@@ -150,7 +150,7 @@ static StatusCode s_create_soc_bar(GuiScreen *screen) {
   return lvgl_widgets_create_bar(&s_soc_bar, &s_soc_bar_config, screen);
 }
 
-static StatusCode s_create_top_label(GuiScreen *screen) {
+static StatusCode s_create_top_label(GuiScreen* screen) {
   const LabelWidgetConfig top_label_config = {
     .size = { .width = 300, .height = 30 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 0 } },
@@ -168,7 +168,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_top_label, &top_label_config, screen);
 }
 
-static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
+static StatusCode s_create_cell_stats_label(GuiScreen* screen) {
   const LabelWidgetConfig cell_stats_label_config = {
     .size = { .width = 100, .height = 50 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT, .x_offset = -10, .y_offset = -25 } },
@@ -186,7 +186,7 @@ static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cells_stats_label, &cell_stats_label_config, screen);
 }
 
-static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
+static StatusCode s_create_temps_stats_label(GuiScreen* screen) {
   const LabelWidgetConfig temps_stats_label_config = {
     .size = { .width = 100, .height = 50 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_RIGHT_MID, .x_offset = -10, .y_offset = 10 } },
@@ -204,7 +204,7 @@ static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_temps_stats_label, &temps_stats_label_config, screen);
 }
 
-StatusCode gui_widgets_init_screen(GuiScreen *screen) {
+StatusCode gui_widgets_init_screen(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -232,7 +232,7 @@ void gui_widgets_deinit(void) {
 }
 
 StatusCode gui_widgets_init(void) {
-  GuiScreen *screen = lvgl_get_active_screen();
+  GuiScreen* screen = lvgl_get_active_screen();
 
   if (screen == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
@@ -250,7 +250,7 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_v
 
   if (bps_fault) {
     bool is_cell_fault = false;
-    const char *fault_text = s_get_bps_fault_text(bps_fault, &is_cell_fault);
+    const char* fault_text = s_get_bps_fault_text(bps_fault, &is_cell_fault);
 
     if (is_cell_fault && cell_at_fault != 0U) {
       snprintf(text_buffer, sizeof(text_buffer), "%s, %u", fault_text, cell_at_fault);
@@ -258,7 +258,7 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t motor_bus_v
       snprintf(text_buffer, sizeof(text_buffer), "%s", fault_text);
     }
   } else if (ws22_flags) {
-    const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
+    const char* ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
     snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   Mot: %u V", pack_voltage, motor_bus_voltage);
@@ -303,7 +303,7 @@ StatusCode gui_widgets_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_init_screen(GuiScreen *screen) {
+StatusCode gui_widgets_init_screen(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }

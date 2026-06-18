@@ -32,7 +32,7 @@
  * @param   task   Task to notify when event is raised
  * @return  StatusCode indicating success or failure of initialization
  */
-StatusCode killswitch_init(Event event, const Task *task);
+StatusCode killswitch_init(Event event, const Task* task);
 
 /**
  * @brief   Run the program that checks killswitch

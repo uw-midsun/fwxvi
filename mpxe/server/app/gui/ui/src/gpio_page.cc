@@ -30,7 +30,7 @@
 -------------------------------------------------------- */
 
 /* Extract map from input_map[key_wanted] where value is a QVariantMap */
-static std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant> &input_map, const QString &key_wanted) {
+static std::map<QString, QVariant> extractMapInline(const std::map<QString, QVariant>& input_map, const QString& key_wanted) {
   std::map<QString, QVariant> out;
 
   std::map<QString, QVariant>::const_iterator it = input_map.find(key_wanted);
@@ -49,19 +49,19 @@ static std::map<QString, QVariant> extractMapInline(const std::map<QString, QVar
 /*
 -------------------------------------------------------- */
 
-GpioPage::GpioPage(const std::map<QString, QVariant> &payload, QWidget *parent) : QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_gpio_proxy{ nullptr } {
-  QVBoxLayout *layout = new QVBoxLayout(this);
+GpioPage::GpioPage(const std::map<QString, QVariant>& payload, QWidget* parent) : QWidget{ parent }, m_payload{ payload }, m_tabs{ new QTabWidget(this) }, m_gpio_proxy{ nullptr } {
+  QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->addWidget(m_tabs);
   rebuild();
 }
 
-void GpioPage::setPayload(const std::map<QString, QVariant> &payload) {
+void GpioPage::setPayload(const std::map<QString, QVariant>& payload) {
   m_payload = payload;
   rebuild();
 }
 
-std::map<QString, QVariant> GpioPage::extractMap(const std::map<QString, QVariant> &input_map, const QString &key_wanted) const {
+std::map<QString, QVariant> GpioPage::extractMap(const std::map<QString, QVariant>& input_map, const QString& key_wanted) const {
   return extractMapInline(input_map, key_wanted);
 }
 
@@ -73,12 +73,12 @@ void GpioPage::rebuild() {
 
   /* GPIO table (searchable) */
   {
-    GpioTableModel *model = new GpioTableModel(gpio_map, m_tabs);
+    GpioTableModel* model = new GpioTableModel(gpio_map, m_tabs);
     TableWithSearch tws = makeSearchableTable(model, m_tabs);
     m_gpio_proxy = tws.proxy;
 
     if (tws.table) {
-      QHeaderView *hh = tws.table->horizontalHeader();
+      QHeaderView* hh = tws.table->horizontalHeader();
 
       /* First column fits pin name; others fill sensibly */
       hh->setStretchLastSection(true);

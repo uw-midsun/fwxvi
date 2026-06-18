@@ -39,12 +39,12 @@ void setup_test(void) {
 void teardown_test(void) {}
 
 void test_ltdc_initialization(void) {
-  LtdcSettings cfg = { .width = TEST_WIDTH, .height = TEST_HEIGHT, .framebuffer = framebuffer, .clut = (ClutEntry *)clut_get_table(), .clut_size = NUM_COLOR_INDICES };
+  LtdcSettings cfg = { .width = TEST_WIDTH, .height = TEST_HEIGHT, .framebuffer = framebuffer, .clut = (ClutEntry*)clut_get_table(), .clut_size = NUM_COLOR_INDICES };
 
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ltdc_init(&cfg));
 
   /* Renderer should exist */
-  SDL_Renderer *renderer = (SDL_Renderer *)ltdc_get_renderer();
+  SDL_Renderer* renderer = (SDL_Renderer*)ltdc_get_renderer();
   TEST_ASSERT_NOT_NULL(renderer);
 
   /* Save blank frame */

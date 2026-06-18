@@ -20,7 +20,7 @@
 #define CONV_READINGS "converted_readings"
 #define ADC_KEY "adc"
 
-std::string AdcManager::stringifyReadings(const uint8_t *&buffer, size_t bufferLength) {
+std::string AdcManager::stringifyReadings(const uint8_t*& buffer, size_t bufferLength) {
   if (bufferLength % 2 != 0) {
     throw std::runtime_error("ADC payload length not even");
   }
@@ -48,7 +48,7 @@ std::string AdcManager::stringifyGpioAddress(GpioPort port, uint8_t pin) {
 }
 
 std::string AdcManager::getChannel(GpioPort port, uint8_t pin) {
-  for (const Mapping &entry : channelMap) {
+  for (const Mapping& entry : channelMap) {
     if (entry.port == port && entry.pin == pin) {
       std::string channelNumString = (entry.channel < 10) ? "0" + std::to_string(entry.channel) : std::to_string(entry.channel);
       return "channel " + channelNumString;
@@ -57,21 +57,21 @@ std::string AdcManager::getChannel(GpioPort port, uint8_t pin) {
   return "Invalid Channel";
 }
 
-void AdcManager::loadAdcInfo(std::string &projectName) {
+void AdcManager::loadAdcInfo(std::string& projectName) {
   m_adcInfo = serverJSONManager.getProjectValue<std::unordered_map<std::string, AdcReadingInfo>>(projectName, ADC_KEY);
 }
 
-void AdcManager::saveAdcInfo(std::string &projectName) {
+void AdcManager::saveAdcInfo(std::string& projectName) {
   serverJSONManager.setProjectValue(projectName, ADC_KEY, m_adcInfo);
 
   m_adcInfo.clear();
 }
 
-void AdcManager::updateAdcRaw(std::string &projectName, std::string &payload) {
+void AdcManager::updateAdcRaw(std::string& projectName, std::string& payload) {
   loadAdcInfo(projectName);
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
   const uint8_t dataLength = m_adcDatagram.getBufferLength();
 
   std::string dataString = stringifyReadings(receivedData, dataLength);
@@ -87,14 +87,14 @@ void AdcManager::updateAdcRaw(std::string &projectName, std::string &payload) {
   saveAdcInfo(projectName);
 }
 
-void AdcManager::updateAdcRawAll(std::string &projectName, std::string &payload) {
+void AdcManager::updateAdcRawAll(std::string& projectName, std::string& payload) {
   loadAdcInfo(projectName);
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
   const uint8_t dataLength = m_adcDatagram.getBufferLength();
 
-  for (const Mapping &entry : channelMap) {
+  for (const Mapping& entry : channelMap) {
     std::string channelKey = getChannel(entry.port, entry.pin);
 
     m_adcInfo[RAW_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(entry.port, entry.pin);
@@ -104,11 +104,11 @@ void AdcManager::updateAdcRawAll(std::string &projectName, std::string &payload)
   saveAdcInfo(projectName);
 }
 
-void AdcManager::updateAdcConverted(std::string &projectName, std::string &payload) {
+void AdcManager::updateAdcConverted(std::string& projectName, std::string& payload) {
   loadAdcInfo(projectName);
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
   const uint8_t dataLength = m_adcDatagram.getBufferLength();
 
   std::string dataString = stringifyReadings(receivedData, dataLength);
@@ -123,14 +123,14 @@ void AdcManager::updateAdcConverted(std::string &projectName, std::string &paylo
   saveAdcInfo(projectName);
 }
 
-void AdcManager::updateAdcConvertedAll(std::string &projectName, std::string &payload) {
+void AdcManager::updateAdcConvertedAll(std::string& projectName, std::string& payload) {
   loadAdcInfo(projectName);
   m_adcDatagram.deserialize(payload);
 
-  const uint8_t *receivedData = m_adcDatagram.getBuffer();
+  const uint8_t* receivedData = m_adcDatagram.getBuffer();
   const uint8_t dataLength = m_adcDatagram.getBufferLength();
 
-  for (const Mapping &entry : channelMap) {
+  for (const Mapping& entry : channelMap) {
     std::string channelKey = getChannel(entry.port, entry.pin);
     m_adcInfo[CONV_READINGS][channelKey]["Gpio Port"] = stringifyGpioAddress(entry.port, entry.pin);
     m_adcInfo[CONV_READINGS][channelKey]["Reading"] = stringifyReadings(receivedData, 2);
@@ -154,13 +154,13 @@ std::string AdcManager::createAdcCommand(CommandCode commandCode, std::string gp
 
         m_adcDatagram.setGpioPin(pin);
         m_adcDatagram.setGpioPort(port);
-        m_adcDatagram.setBuffer(reinterpret_cast<const uint8_t *>(&readingValue), 2);
+        m_adcDatagram.setBuffer(reinterpret_cast<const uint8_t*>(&readingValue), 2);
 
         break;
       }
       case CommandCode::ADC_SET_ALL_RAW: {
         uint16_t readingValue = static_cast<uint16_t>(std::stoi(reading));
-        m_adcDatagram.setBuffer(reinterpret_cast<const uint8_t *>(&readingValue), 2);
+        m_adcDatagram.setBuffer(reinterpret_cast<const uint8_t*>(&readingValue), 2);
         break;
       }
       case CommandCode::ADC_GET_RAW:
@@ -188,7 +188,7 @@ std::string AdcManager::createAdcCommand(CommandCode commandCode, std::string gp
       }
     }
     return m_adcDatagram.serialize(commandCode);
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Adc Manager error: " << e.what() << std::endl;
   }
   return "";

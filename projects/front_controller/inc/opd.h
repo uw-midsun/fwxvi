@@ -36,17 +36,17 @@ typedef enum CurveType { CURVE_TYPE_LINEAR, CURVE_TYPE_EXPONENTIAL, CURVE_TYPE_Q
 /**
  * @brief handler for opd_calculate command, runs either linear or quadratic calculation based on CurveType enum
  */
-StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, CurveType curve_type);
+StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading, CurveType curve_type);
 
 /**
  * @brief Perform linear OPD calculation
  */
-StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading);
+StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading);
 
 /**
  * @brief Perform quadratic OPD calculation
  */
-StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading);
+StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading);
 
 /**
  * @brief   Reads the pedal percentage from AccelPedalStorage and saves an adjusted acceleration percentage to front controller based on OPD algorithm
@@ -61,6 +61,6 @@ StatusCode opd_run();
  * @return  STATUS_CODE_OK if opd is initialized successfully
  *          STATUS_CODE_INVALID_ARGS if storage pointer is invalid
  */
-StatusCode opd_init(FrontControllerStorage *storage);
+StatusCode opd_init(FrontControllerStorage* storage);
 
 /** @} */

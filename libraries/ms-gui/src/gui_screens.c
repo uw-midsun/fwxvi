@@ -30,7 +30,7 @@ typedef struct {
 } GuiScreenSlot;
 
 static GuiScreenSlot s_screen_slots[NUM_GUI_SCREENS];
-static GuiScreen *s_screen_root;
+static GuiScreen* s_screen_root;
 static GuiScreenId s_current_screen = GUI_SCREEN_DRIVE;
 static bool s_current_screen_created;
 static bool s_screens_initialized;
@@ -52,9 +52,9 @@ static lv_color_t s_gui_palette_color(GuiColorId color_id) {
  * @param   subtitle Secondary descriptive text
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-static StatusCode s_create_centered_placeholder(GuiScreen *screen, const char *title, const char *subtitle) {
-  lv_obj_t *title_label;
-  lv_obj_t *subtitle_label;
+static StatusCode s_create_centered_placeholder(GuiScreen* screen, const char* title, const char* subtitle) {
+  lv_obj_t* title_label;
+  lv_obj_t* subtitle_label;
 
   if (screen == NULL || title == NULL || subtitle == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -89,7 +89,7 @@ static StatusCode s_create_centered_placeholder(GuiScreen *screen, const char *t
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-static StatusCode s_create_drive_screen(GuiScreen *screen) {
+static StatusCode s_create_drive_screen(GuiScreen* screen) {
   return gui_drive_screen_init(screen);
 }
 
@@ -105,7 +105,7 @@ static void s_destroy_drive_screen(void) {
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-static StatusCode s_create_trip_info_screen(GuiScreen *screen) {
+static StatusCode s_create_trip_info_screen(GuiScreen* screen) {
   return s_create_centered_placeholder(screen, "Trip Info", "Unimplemented");
 }
 
@@ -114,7 +114,7 @@ static StatusCode s_create_trip_info_screen(GuiScreen *screen) {
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-static StatusCode s_create_pack_voltage_screen(GuiScreen *screen) {
+static StatusCode s_create_pack_voltage_screen(GuiScreen* screen) {
   return gui_pack_screen_init(screen);
 }
 
@@ -130,7 +130,7 @@ static void s_destroy_pack_voltage_screen(void) {
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-static StatusCode s_create_pedal_calib_screen(GuiScreen *screen) {
+static StatusCode s_create_pedal_calib_screen(GuiScreen* screen) {
   return s_create_centered_placeholder(screen, "Pedal Calib", "Unimplemented");
 }
 
@@ -179,7 +179,7 @@ static StatusCode s_register_default_screens(void) {
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 static StatusCode s_ensure_screen_created(GuiScreenId screen_id) {
-  GuiScreenSlot *slot;
+  GuiScreenSlot* slot;
   StatusCode status;
 
   if (screen_id >= NUM_GUI_SCREENS) {
@@ -196,7 +196,7 @@ static StatusCode s_ensure_screen_created(GuiScreenId screen_id) {
   }
 
   if (s_current_screen_created) {
-    GuiScreenSlot *current_slot = &s_screen_slots[s_current_screen];
+    GuiScreenSlot* current_slot = &s_screen_slots[s_current_screen];
 
     if (current_slot->descriptor.destroy != NULL) {
       current_slot->descriptor.destroy();
@@ -237,8 +237,8 @@ StatusCode gui_screens_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_screens_register(const GuiScreenDescriptor *descriptor) {
-  GuiScreenSlot *slot;
+StatusCode gui_screens_register(const GuiScreenDescriptor* descriptor) {
+  GuiScreenSlot* slot;
 
   if (descriptor == NULL || descriptor->name == NULL || descriptor->create == NULL || descriptor->id >= NUM_GUI_SCREENS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -268,7 +268,7 @@ GuiScreenId gui_screens_get_current(void) {
   return s_current_screen;
 }
 
-GuiScreen *gui_screens_get_root(GuiScreenId screen_id) {
+GuiScreen* gui_screens_get_root(GuiScreenId screen_id) {
   if (screen_id >= NUM_GUI_SCREENS || !s_current_screen_created || s_current_screen != screen_id) {
     return NULL;
   }
@@ -276,7 +276,7 @@ GuiScreen *gui_screens_get_root(GuiScreenId screen_id) {
   return s_screen_root;
 }
 
-const char *gui_screens_get_name(GuiScreenId screen_id) {
+const char* gui_screens_get_name(GuiScreenId screen_id) {
   if (screen_id >= NUM_GUI_SCREENS || !s_screen_slots[screen_id].registered) {
     return NULL;
   }
@@ -290,7 +290,7 @@ StatusCode gui_screens_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_screens_register(const GuiScreenDescriptor *descriptor) {
+StatusCode gui_screens_register(const GuiScreenDescriptor* descriptor) {
   (void)descriptor;
   return STATUS_CODE_OK;
 }
@@ -304,12 +304,12 @@ GuiScreenId gui_screens_get_current(void) {
   return s_current_screen;
 }
 
-GuiScreen *gui_screens_get_root(GuiScreenId screen_id) {
+GuiScreen* gui_screens_get_root(GuiScreenId screen_id) {
   (void)screen_id;
   return NULL;
 }
 
-const char *gui_screens_get_name(GuiScreenId screen_id) {
+const char* gui_screens_get_name(GuiScreenId screen_id) {
   (void)screen_id;
   return NULL;
 }

@@ -31,7 +31,7 @@
 
 static PowerManagerStorage s_power_manager_storage = { 0U };
 
-static FrontControllerStorage *front_controller_storage = NULL;
+static FrontControllerStorage* front_controller_storage = NULL;
 
 static GpioAddress MUX_SEL_0 = GPIO_FRONT_CONTROLLER_MUX_SEL_0;
 static GpioAddress MUX_SEL_1 = GPIO_FRONT_CONTROLLER_MUX_SEL_1;
@@ -109,7 +109,7 @@ static OutputGroupDef output_group_horn_group = {
   .outputs = { HORN },
 };
 
-OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
+OutputGroupDef* output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
   [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
   [OUTPUT_GROUP_D_R_INDICATORS] = &output_group_d_r_indicators_group,
@@ -155,7 +155,7 @@ static void power_manager_set_telemetry() {
  * Public functions
  ************************************************************************************************/
 
-StatusCode power_manager_init(FrontControllerStorage *storage) {
+StatusCode power_manager_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -187,7 +187,7 @@ StatusCode power_manager_run_current_sense(OutputGroup group) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  OutputGroupDef *mapped_group = output_group_map[group];
+  OutputGroupDef* mapped_group = output_group_map[group];
 
   for (uint16_t i = 0; i < mapped_group->num_outputs; i++) {
     /* Set mux select pins using the bits of i */
@@ -222,7 +222,7 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  OutputGroupDef *mapped_group = output_group_map[group];
+  OutputGroupDef* mapped_group = output_group_map[group];
 
   for (uint8_t i = 0U; i < mapped_group->num_outputs; i++) {
     OutputId output_id = mapped_group->outputs[i];
@@ -246,7 +246,7 @@ StatusCode power_manager_toggle_output_group(OutputGroup group) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  OutputGroupDef *mapped_group = output_group_map[group];
+  OutputGroupDef* mapped_group = output_group_map[group];
 
   if (mapped_group == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;

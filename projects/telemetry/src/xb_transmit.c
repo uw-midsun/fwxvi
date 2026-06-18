@@ -27,7 +27,7 @@
 #define LOG_DEBUG_SUMMARY 0
 #define TELEMETRY_ENABLE_WS22 1U
 
-static TelemetryStorage *s_telemetry_storage = NULL;
+static TelemetryStorage* s_telemetry_storage = NULL;
 
 static size_t s_sched_idx[NUM_CAN_MSG_PRIORITIES];
 
@@ -45,7 +45,7 @@ static uint32_t s_xbee_bytes_sent = 0U;
 
 /* Sends next pending entry from tier; returns bytes transmitted, 0 if none pending.
    Entries with tx_cooldown_ticks > 0 are skipped until the cooldown has elapsed. */
-static size_t s_try_send_from_tier(CanMessageCache *cache, size_t size, size_t *start_idx) {
+static size_t s_try_send_from_tier(CanMessageCache* cache, size_t size, size_t* start_idx) {
   if (size == 0U) {
     return 0U;
   }
@@ -80,7 +80,7 @@ static size_t s_try_send_from_tier(CanMessageCache *cache, size_t size, size_t *
       Datagram tx_datagram = { 0 };
       if (encode_datagram(&tx_datagram, saved_id, saved_dlc, saved_data) == STATUS_CODE_OK) {
         size_t datagram_length = saved_dlc + DATAGRAM_METADATA_SIZE;
-        uart_tx(s_telemetry_storage->config->uart_port, (uint8_t *)&tx_datagram, datagram_length);
+        uart_tx(s_telemetry_storage->config->uart_port, (uint8_t*)&tx_datagram, datagram_length);
         return datagram_length;
       }
     }
@@ -89,7 +89,7 @@ static size_t s_try_send_from_tier(CanMessageCache *cache, size_t size, size_t *
 }
 
 #if TELEMETRY_ENABLE_WS22
-static void s_update_ws22_entry(uint32_t can_id, const uint8_t *data) {
+static void s_update_ws22_entry(uint32_t can_id, const uint8_t* data) {
   uint32_t now = (uint32_t)xTaskGetTickCount();
   for (size_t i = 0U; i < g_can_cache_low_size; i++) {
     if (g_can_cache_low[i].can_id == can_id) {
@@ -110,8 +110,8 @@ static void s_update_ws22_entry(uint32_t can_id, const uint8_t *data) {
 }
 
 static void s_update_ws22_cache(void) {
-  Ws22MotorTelemetryData *tel = ws22_motor_can_get_telemetry_data();
-  Ws22MotorControlData *ctrl = ws22_motor_can_get_control_data();
+  Ws22MotorTelemetryData* tel = ws22_motor_can_get_telemetry_data();
+  Ws22MotorControlData* ctrl = ws22_motor_can_get_control_data();
   uint8_t buf[WS22_TELEMETRY_DLC];
   uint16_t val;
 
@@ -185,7 +185,7 @@ static void s_update_stats_cache(uint16_t can_rx_rate, uint16_t xbee_tx_rate, ui
 
 /* Task A: drains CAN RX queue into the message cache. */
 TASK(can_cache_updater, TASK_STACK_512) {
-  CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
+  CanMessageCache* caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   CanMessage message = { 0 };
 
@@ -235,7 +235,7 @@ TASK(can_cache_updater, TASK_STACK_512) {
 
 /* Task B: round-robin HIGH→MEDIUM→LOW scheduler; updates bus-load stats cache every second. */
 TASK(can_cache_scheduler, TASK_STACK_512) {
-  CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
+  CanMessageCache* caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   uint32_t last_stats_tick = (uint32_t)xTaskGetTickCount();
   uint32_t last_ws22_tick = (uint32_t)xTaskGetTickCount();
@@ -280,9 +280,9 @@ TASK(can_cache_scheduler, TASK_STACK_512) {
 #if (LOG_DEBUG_SUMMARY == 1)
 /* Task C: logs all pending cache entries once per second (debug only). */
 TASK(can_cache_summary, TASK_STACK_512) {
-  CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
+  CanMessageCache* caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
-  static const char *prio_str[] = { "HIGH  ", "MEDIUM", "LOW   " };
+  static const char* prio_str[] = { "HIGH  ", "MEDIUM", "LOW   " };
 
   while (true) {
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -299,16 +299,16 @@ TASK(can_cache_summary, TASK_STACK_512) {
         taskEXIT_CRITICAL();
         if (last_tick == 0U) continue;
         if (is_pending) pending_count++;
-        LOG_DEBUG("  ID=%-4lu [%s] pending=%c last=%lums\r\n", (unsigned long)caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', (unsigned long)(now - last_tick));
+        LOG_DEBUG("  ID=%-4lu [%s] pending=%c last=%lums\r\n", (uint32_t)caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', (uint32_t)(now - last_tick));
       }
     }
-    LOG_DEBUG("  total pending: %lu\r\n", (unsigned long)pending_count);
+    LOG_DEBUG("  total pending: %lu\r\n", (uint32_t)pending_count);
     LOG_DEBUG("=========================\r\n");
   }
 }
 #endif
 
-StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) {
+StatusCode xb_transmit_init(TelemetryStorage* storage, TelemetryConfig* config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
