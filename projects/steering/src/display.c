@@ -34,9 +34,11 @@
 #include "display.h"
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
+static bool s_balancing_enabled = false;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -208,6 +210,13 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
   }
 }
 
+static StatusCode cell_balancing_toggle(void) {
+  s_balancing_enabled = !s_balancing_enabled;
+  set_steering_buttons_balancing_enabled(s_balancing_enabled);
+  gui_menu_set_discharge_label(s_balancing_enabled ? "Cell Discharge: ON" : "Cell Discharge: OFF");
+  return STATUS_CODE_OK;
+}
+
 StatusCode display_init(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -245,11 +254,13 @@ StatusCode display_init(SteeringStorage *storage) {
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 #else
   status_ok_or_return(gui_init(&settings));
-
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 
   LOG_DEBUG("LVGL display initialized\r\n");
 #endif
+  status_ok_or_return(gui_menu_set_toggle_discharge_callback(cell_balancing_toggle));
+  set_steering_buttons_balancing_enabled(s_balancing_enabled);
+
   return STATUS_CODE_OK;
 }
 

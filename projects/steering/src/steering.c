@@ -70,7 +70,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   buzzer_init();
   display_init(steering_storage);
   party_mode_init(steering_storage);
-  gui_menu_set_party_mode_callback(party_mode_toggle);
+  gui_menu_set_party_mode_callback(party_mode_toggle); /* Must be set after party_mode so set here */
   // TODO: FW-520 Add callback here for toggle discharge
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
