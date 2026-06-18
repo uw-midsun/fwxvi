@@ -299,10 +299,10 @@ TASK(can_cache_summary, TASK_STACK_512) {
         taskEXIT_CRITICAL();
         if (last_tick == 0U) continue;
         if (is_pending) pending_count++;
-        LOG_DEBUG("  ID=%-4lu [%s] pending=%c last=%lums\r\n", (unsigned long)caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', (unsigned long)(now - last_tick));
+        LOG_DEBUG("  ID=%-4lu [%s] pending=%c last=%lums\r\n", (uint32_t)caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', (uint32_t)(now - last_tick));
       }
     }
-    LOG_DEBUG("  total pending: %lu\r\n", (unsigned long)pending_count);
+    LOG_DEBUG("  total pending: %lu\r\n", (uint32_t)pending_count);
     LOG_DEBUG("=========================\r\n");
   }
 }
