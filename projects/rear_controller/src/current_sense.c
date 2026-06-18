@@ -33,7 +33,7 @@ static uint8_t register_map[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 
   ADS122_REG_DEVICE_CFG_DEFAULT, //External or internal clock? -> Assuming internal
   ADS122_REG_DATA_RATE_CFG_DEFAULT, //Programmable conversion start delay selection, Global-chop mode, FLTR_OSR
-  ADS122_REG_MUX_CFG_DEFAULT,
+  ADS122_REG_MUX_CFG_DEFAULT, // AINP and AINN are pin 0110b and 111b
   ADS122_REG_GAIN_CFG_DEFAULT,
   ADS122_REG_REFERENCE_CFG_DEFAULT,
   ADS122_REG_DIGITAL_CFG_DEFAULT,
@@ -67,6 +67,29 @@ StatusCode current_sense_init(RearControllerStorage * storage){
 
 StatusCode current_sense_run() {
 
+  /* THIS IS TWO FUNCTIONS*/
+
+  //get conversion data
+
+  // check fault flags??
+
+  //get back V diff <- need FSR
+
+  //back calculate original voltage???
+
+  //back calculate current I = R (shunt) / V diff
+
+  /* ACC CODE FOR THIS FUNCTION STARTS HERE*/
+
+  //What BPS faults do I need to trigger
+  //1. Current sense is gone
+  // Do I need a filter??
+
+  //2. Over volatage
+
+  //Add current / voltage data to placecs
+
+  
   return STATUS_CODE_OK;
 }
 

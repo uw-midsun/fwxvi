@@ -144,7 +144,7 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
     return ads122_read_conversion(storage, rx_data);
 }
 
-// What is Vref? -> use internal? -> use AVDD?
+// What is Vref? -> use internal? (1.25 or 2.5) -> use AVDD?
 
 StatusCode ads122_get_voltage(ADS122Storage * storage){
 
@@ -152,6 +152,7 @@ StatusCode ads122_get_voltage(ADS122Storage * storage){
 }
 
 StatusCode ads122_get_current(ADS122Storage * storage){
+    // I = Vshunt / R shunt <- r shunt = 0.5
 
     return STATUS_CODE_OK;
 }
