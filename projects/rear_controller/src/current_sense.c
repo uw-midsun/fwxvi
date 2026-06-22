@@ -88,7 +88,6 @@ StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
   }
     //TODO: make the edge cases
 
-
   negative = cs_conversion_data_raw[0] & 0x80;
 
   if(negative){
@@ -97,6 +96,15 @@ StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
 
   uint32_t cs_conversion_data = ((uint32_t)cs_conversion_data_raw[0] << 16) | ((uint32_t)cs_conversion_data_raw[1] << 8) | ((uint32_t)cs_conversion_data_raw[2]);
   
+  if(cs_conversion_data == 0x007FFFFF || (cs_conversion_data == 0x00000001 && negative)|| (cs_conversion_data == 0x00000000 && negative)){
+    csense_overvoltages++;
+    if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+      trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+    }
+  } else {
+    csense_overvoltages = 0;
+  }
+
   *output_voltage = (int)(cs_conversion_data * csense_FSR) / 2^23;
 
   if(negative){
