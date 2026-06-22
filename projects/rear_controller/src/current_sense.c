@@ -222,6 +222,8 @@ StatusCode current_sense_run() {
       break;
   }
 
+  set_battery_stats_A_pack_current((int16_t)rear_controller_storage->pack_current);
+  set_battery_stats_A_pack_voltage((int16_t)rear_controller_storage->pack_voltage);
   
   return STATUS_CODE_OK;
 }

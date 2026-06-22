@@ -139,15 +139,6 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
     if(storage == NULL || rx_data == NULL){
         return STATUS_CODE_INVALID_ARGS;
     }
-    uint8_t status_msb_data;
-    status_ok_or_return(ads122_read_register(storage, &status_msb_data, ADS122_REG_STATUS_MSB));
-
-    /*Checks DRDY pin to ensure new data is availible*/
-    uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
-    //Does this work? Does the bit update properly if STATUS header is not enabled?
-    if(status_msb_data != 1){
-        return STATUS_CODE_OK;
-    }
 
     delay_ms(1);
     //TODO: determine if the delay is needed

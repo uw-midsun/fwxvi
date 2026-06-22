@@ -94,7 +94,7 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
  * @param MUX_CFG - AINP and AINN pins
  * @return STATUS_CODE_OK on success
  */
-StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]);
+StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[], uint8_t MUX_CFG);
 
 /**
  * @brief Initialize the ADS122 driver
