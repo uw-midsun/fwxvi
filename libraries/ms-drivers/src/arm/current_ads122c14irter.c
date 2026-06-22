@@ -35,7 +35,7 @@ static StatusCode ads122_read_register(ADS122Storage * storage, uint8_t *rx_data
     return STATUS_CODE_OK;
 }
 
-/* Writes to ONE register, will combine data and register*/
+/* Writes to ONE register*/
 static StatusCode ads122_write_register(ADS122Storage * storage, uint8_t data, ADS122C14ITER_Register reg){
     if(storage == NULL){
         return STATUS_CODE_INVALID_ARGS;
@@ -126,33 +126,24 @@ static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[])
 }
 
 
-StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]){
+StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[],uint8_t MUX_CFG){
     uint8_t status_msb_data;
-    status_ok_or_return(ads122_read_register(storage, &status_msb_data, ADS122_REG_STATUS_MSB));
 
-    /*Checks DRDY pin to ensure new data is availible*/
-    uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
-    //Does this work? Does the bit update properly if STATUS header is not enabled?
-    if(status_msb_data != 1){
-        return STATUS_CODE_OK;
-    }
+    status_ok_or_return(ads122_write_register(storage, MUX_CFG, ADS122_REG_MUX_CFG));\
+    
+    // status_ok_or_return(ads122_read_register(storage, &status_msb_data, ADS122_REG_STATUS_MSB));
 
-    /* reset DRDY pin*/
-    ads122_write_register(storage, status_msb_data & (~DRDY_pin), ADS122_REG_STATUS_MSB);
-    //Do I need to reset the DRDY pin?
+    // /*Checks DRDY pin to ensure new data is availible*/
+    // uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
+    // //Does this work? Does the bit update properly if STATUS header is not enabled?
+    // if(status_msb_data != 1){
+    //     return STATUS_CODE_OK;
+    // }
+
+    // /* reset DRDY pin*/
+    // ads122_write_register(storage, status_msb_data & (~DRDY_pin), ADS122_REG_STATUS_MSB);
+    // //Do I need to reset the DRDY pin?
 
     return ads122_read_conversion(storage, rx_data);
 }
 
-// What is Vref? -> use internal? (1.25 or 2.5) -> use AVDD?
-
-StatusCode ads122_get_voltage(ADS122Storage * storage){
-
-    return STATUS_CODE_OK;
-}
-
-StatusCode ads122_get_current(ADS122Storage * storage){
-    // I = Vshunt / R shunt <- r shunt = 0.5
-
-    return STATUS_CODE_OK;
-}

@@ -90,9 +90,10 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
  * @brief Get the conversion data
  * @param storage - pointer to the initilized ADS122Storage struct
  * @param rx_Data - data collection array
+ * @param MUX_CFG - AINP and AINN pins
  * @return STATUS_CODE_OK on success
  */
-StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]);
+StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[], uint8_t MUX_CFG);
 
 /**
  * @brief Initialize the ADS122 driver
@@ -116,7 +117,7 @@ StatusCode ads122_start_conversion(ADS122Storage * storage);
  * @param storage - pointer to an initalized ADS122Storage struct
  * @return STATUS_CODE_OK on success
  */
-StatusCode ads122_stop_conversion(ADS122Storage * storage);
+// StatusCode ads122_stop_conversion(ADS122Storage * storage);
 
 
 
@@ -204,7 +205,7 @@ StatusCode ads122_stop_conversion(ADS122Storage * storage);
 #define ADS122_FLTR_OSR_MASK (1 << 2) | (1 << 1) | (1 << 0) 
 
 /* ADS122_REG_MUX_CFG*/
-#define ADS122_REG_MUX_CFG_DEFAULT ((uint8_t) 0x01)
+#define ADS122_REG_MUX_CFG_DEFAULT ((uint8_t) 0x00)
 
 #define ADS122_AINP_BITOFFSET 4
 #define ADS122_AINP_MASK (1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)
@@ -302,22 +303,6 @@ StatusCode ads122_stop_conversion(ADS122Storage * storage);
 #define ADS122_I1MAG_BITOFFSET 0
 #define ADS122_I1MAG_MASK (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)
 
-//shift left by 4 for I2MUX
-typedef enum : uint8_t{
-  Disabled = 0,
-  Iuint_1x,
-  Iuint_10x,
-  Iuint_20x,
-  Iuint_30x,
-  Iuint_40x,
-  Iuint_50x,
-  Iuint_60x,
-  Iuint_70x,
-  Iuint_80x,
-  Iuint_90x,
-  Iuint_100x,
-} ADS122_IUINT;
-
 #define ADS122_IUNIT_Length 4
 
 /*ADS122_REG_IDAC_MUX_CFG*/
@@ -332,18 +317,6 @@ typedef enum : uint8_t{
 
 #define ADS122_I1MUX_BITOFFSET 0
 #define ADS122_I1MUX_MASK (1 << 2) | (1 << 1) | (1 << 0)
-
-//shift left by 3 for I2MUX
-typedef enum : uint8_t{
-  AIN0 = 0,
-  AIN1,
-  AIN2,
-  AIN3,
-  AIN4,
-  AIN5,
-  AIN6,
-  AIN7,
-} ADS122_AIN_pins;
 
 #define ADS122_Ain_pins_length 3
 
