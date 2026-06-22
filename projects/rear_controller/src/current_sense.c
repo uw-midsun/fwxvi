@@ -74,6 +74,7 @@ StatusCode current_sense_init(RearControllerStorage * storage){
 StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
   static bool negative;
   static uint8_t cs_conversion_data_raw[3];
+  static uint32_t cs_conversion_data;
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw, MUX_CFG);
 
@@ -86,26 +87,23 @@ StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
       return STATUS_CODE_OK;
     }
   }
-    //TODO: make the edge cases
 
   negative = cs_conversion_data_raw[0] & 0x80;
 
-  if(negative){
-    cs_conversion_data_raw[0] = cs_conversion_data_raw[0] & ~(1 << 7); // TODO: make sure this does what I want it to
-  }
-
   uint32_t cs_conversion_data = ((uint32_t)cs_conversion_data_raw[0] << 16) | ((uint32_t)cs_conversion_data_raw[1] << 8) | ((uint32_t)cs_conversion_data_raw[2]);
   
-  if(cs_conversion_data == 0x007FFFFF || (cs_conversion_data == 0x00000001 && negative)|| (cs_conversion_data == 0x00000000 && negative)){
-    csense_overvoltages++;
-    if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
-      trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+  /*Anything in the 4.9 V range is already in over-voltage, therefore the need for as precicse accuracy is negligible at that point*/
+  if (negative && (cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001)){
+    *output_voltage = csense_FSR;
+  }else if (!negative && cs_conversion_data == 0x7FFFFF){
+    *output_voltage = csense_FSR;
+  }else{
+    if(negative){
+      cs_conversion_data = ~ cs_conversion_data;
+      cs_conversion_data++;
     }
-  } else {
-    csense_overvoltages = 0;
-  }
-
-  *output_voltage = (int)(cs_conversion_data * csense_FSR) / 2^23;
+    *output_voltage = (int)(cs_conversion_data * csense_FSR) / 2^23;
+  }  
 
   if(negative){
     *output_voltage *= -1;
