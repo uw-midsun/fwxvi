@@ -71,7 +71,7 @@ StatusCode current_sense_init(RearControllerStorage * storage){
   return STATUS_CODE_OK;
 }
 
-StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
+static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG){
   static bool negative;
   static uint8_t cs_conversion_data_raw[3];
   static uint32_t cs_conversion_data;
