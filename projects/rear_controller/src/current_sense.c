@@ -90,7 +90,7 @@ static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG)
 
   negative = cs_conversion_data_raw[0] & 0x80;
 
-  uint32_t cs_conversion_data = ((uint32_t)cs_conversion_data_raw[0] << 16) | ((uint32_t)cs_conversion_data_raw[1] << 8) | ((uint32_t)cs_conversion_data_raw[2]);
+  cs_conversion_data = ((uint32_t)cs_conversion_data_raw[0] << 16) | ((uint32_t)cs_conversion_data_raw[1] << 8) | ((uint32_t)cs_conversion_data_raw[2]);
   
   /*Anything in the 4.9 V range is already in over-voltage, therefore the need for as precicse accuracy is negligible at that point*/
   if (negative && (cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001)){
@@ -109,6 +109,7 @@ static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG)
     *output_voltage *= -1;
   }
 
+  return STATUS_CODE_OK;
 }
 
 StatusCode current_sense_run() {
