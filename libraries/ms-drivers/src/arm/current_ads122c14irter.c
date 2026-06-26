@@ -128,7 +128,6 @@ static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[])
         return STATUS_CODE_INVALID_ARGS;
     }
 
-
  
     return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, data, 5U);
 
