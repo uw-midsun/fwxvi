@@ -50,17 +50,19 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_temperature_enabled = false,
 };
 
-void pre_loop_init() {}
+void pre_loop_init() {
+  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
+}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
-  //killswitch_run();
+  killswitch_run();
   precharge_run();
 }
 
 void run_10hz_cycle() {
-  //rear_controller_update_state_manager_medium_cycle();
-  //log_cell_sense();
+  rear_controller_update_state_manager_medium_cycle();
+  log_cell_sense();
   run_can_tx_medium();
 }
 
@@ -80,7 +82,6 @@ int main() {
   tasks_init();
   log_init();
 
-  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
 
   init_master_tasks();
 

@@ -37,6 +37,7 @@
 typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
+  I2CSettings i2c_settings;
 } ADS122Storage;
 
 /*All registers of ADS122*/
@@ -101,9 +102,10 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
  * @param I2CPort - I2C port peripheral
  * @param I2CAddress - I2C address peripheral
  * @param register_map - array of register inits
+ * @param I2CSettings - pointer to settings for i2c init
  * @return STATUS_CODE_OK on success
  */
-StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[]);
+StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings * i2c_settings_storage);
 
 /**
  * @brief Start the conversion of the ADS122 driver
@@ -214,7 +216,7 @@ StatusCode ads122_start_conversion(ADS122Storage * storage);
 #define ADS122_AINN_MASK (1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)
 
 /*ADS122_REG_GAIN_CFG*/
-#define ADS122_REG_GAIN_CFG_DEFAULT ((uint8_t) 0x01)
+#define ADS122_REG_GAIN_CFG_DEFAULT ((uint8_t) 0x00)
 
 #define ADS122_SYS_MON_BITOFFSET 4
 #define ADS122_SYS_MON_MASK (1 << 6) | (1 << 5) | (1 << 4)

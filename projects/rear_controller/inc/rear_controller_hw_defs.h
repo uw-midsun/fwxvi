@@ -90,7 +90,8 @@
  ************************************************************************************************/
 
 /** @brief  Current sense I2C port */
-#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_1
+//#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_1 /* Used for original current sense code */
+#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_2
 
 /** @brief  Current sense I2C serial data pin */
 #define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(B, 11) // Rev 1.0
