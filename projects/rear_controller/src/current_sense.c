@@ -47,9 +47,9 @@ static int32_t csense_overvoltages = 0;
 static int32_t csense_retries = 0;
 
 static uint8_t register_map[] = {
-  ADS122_REG_DEVICE_CFG_DEFAULT, //External or internal clock? -> Assuming internal
-  ADS122_REG_DATA_RATE_CFG_DEFAULT, //Programmable conversion start delay selection, Global-chop mode, FLTR_OSR
-  ADS122_REG_MUX_CFG_DEFAULT, // AINP and AINN are pin 0110b and 111b
+  ADS122_REG_DEVICE_CFG_DEFAULT,
+  ADS122_REG_DATA_RATE_CFG_DEFAULT,
+  ADS122_REG_MUX_CFG_DEFAULT,
   ADS122_REG_GAIN_CFG_DEFAULT, // Gain is 0.5
   (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04), //Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
   ADS122_REG_DIGITAL_CFG_DEFAULT,  /* TODO: CHANGE BACK*/
@@ -69,7 +69,6 @@ StatusCode current_sense_init(RearControllerStorage * storage){
 
   I2CSettings i2c_settings = {.speed = I2C_SPEED_FAST, .sda = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO, .scl = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO};
 
-  // TODO: figure out if the slave address is correct
   status_ok_or_return(ads122_init(&storage->ads122_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR, register_map, &i2c_settings));
 
   return STATUS_CODE_OK;

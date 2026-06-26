@@ -324,6 +324,3 @@ StatusCode ads122_start_conversion(ADS122Storage * storage);
 
 /*ADS122_REG_REG_MAP_CRC*/
 #define ADS122_REG_REG_MAP_CRC_DEFAULT ((uint8_t) 0x00)
-
-
-// /* What timing mode? <- timing requirements <-- how do?*/

@@ -155,15 +155,12 @@ StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]
 
     // /*Checks DRDY pin to ensure new data is availible*/
     // uint8_t DRDY_pin = ((status_msb_data >> ADS122_DRDY_BITOFFSET) & 0x01);
-    // //Does this work? Does the bit update properly if STATUS header is not enabled?
     // if(status_msb_data != 1){
     //     return STATUS_CODE_OK;
     // }
 
-    // /* reset DRDY pin*/
-    // ads122_write_register(storage, status_msb_data & (~DRDY_pin), ADS122_REG_STATUS_MSB);
-    // //Do I need to reset the DRDY pin?
     delay_ms(1);
+    //TODO: determine if the delay is needed
 
     return ads122_read_conversion(storage, rx_data);
 }
