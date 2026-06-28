@@ -22,6 +22,8 @@
 /* Intra-component Headers */
 #include "status.h"
 
+#define KILLSWITCH_ENABLED 0U
+
 static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 
 static uint32_t notification;
@@ -44,7 +46,9 @@ StatusCode killswitch_init(Event event, const Task *task) {
     gpio_register_interrupt(&killswitch_address, &killswitch_settings, event, task);
   } else {
     LOG_DEBUG("KILLSWITCH PRESSED\r\n");
+#if (KILLSWITCH_ENABLED != 0)
     trigger_bps_fault(BPS_FAULT_KILLSWITCH);
+#endif
   }
 
   return STATUS_CODE_OK;
@@ -58,7 +62,9 @@ StatusCode killswitch_run() {
   notify_get(&notification);
   if (notification & (1 << REAR_CONTROLLER_KILLSWITCH_EVENT)) {
     LOG_DEBUG("KILLSWITCH PRESSED\r\n");
+#if (KILLSWITCH_ENABLED != 0)
     trigger_bps_fault(BPS_FAULT_KILLSWITCH);
+#endif
   }
   return STATUS_CODE_OK;
 }
