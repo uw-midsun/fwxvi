@@ -359,3 +359,16 @@ Messages:
         length: 8
       temperature_6:
         length: 8
+        
+  rear_controller_error_msg:
+    id: 11
+    cycle: "fast"
+    critical: true
+    target:
+      steering:
+        watchdog: 0
+    signals:
+      status_code:
+        length: 8
+      file:
+        length: 32

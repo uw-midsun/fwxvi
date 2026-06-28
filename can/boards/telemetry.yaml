@@ -22,3 +22,15 @@ Messages:
         length: 16
       yaw:
         length: 16
+  telemetry_error_msg:
+    id: 13
+    critical: true
+    cycle: "fast"
+    target:
+      steering:
+        watchdog: 0
+    signals:
+      status_code:
+        length: 8
+      file:
+        length: 32

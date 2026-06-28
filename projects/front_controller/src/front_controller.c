@@ -8,6 +8,10 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+/*start debug*/
+#include <stdint.h>
+#include <string.h>
+/*end debug*/
 
 /* Inter-component Headers */
 #include "adc.h"
@@ -34,7 +38,10 @@
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
 #include "regen_brake.h"
-
+/*start debug*/
+#include "front_controller_setters.h"
+#include "front_controller_tx_structs.h"
+/*end debug*/
 /************************************************************************************************
  * Storage definitions
  ************************************************************************************************/

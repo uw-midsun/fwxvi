@@ -30,6 +30,7 @@
 #include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
+#include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
 

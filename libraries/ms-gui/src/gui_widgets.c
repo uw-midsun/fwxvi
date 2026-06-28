@@ -33,6 +33,7 @@ static BarWidget s_soc_bar;
 static LabelWidget s_top_label;
 static LabelWidget s_cells_stats_label;
 static LabelWidget s_temps_stats_label;
+static LabelWidget s_warning_label;
 
 static bool s_widgets_initialized;
 
@@ -134,6 +135,56 @@ static const char *s_get_ws22_flag_text(uint16_t flags) {
   return "WS22 FLAG";
 }
 
+StatusCode s_get_warning_text(uint8_t status_code, uint32_t file, char *text_buffer, size_t buffer_size) {
+  for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {
+    if (file_string_lut[i].file == file) {
+      snprintf(text_buffer, buffer_size, "%u", file_string_lut[i].name);
+      break;
+    }
+  }
+
+  if (status_code == 0) {
+    snprintf(text_buffer, buffer_size, "", text_buffer);  // Return empty string for STATUS_CODE_OK since it's not actually a warning
+
+  } else if (status_code == 1) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_UNKNOWN%s", text_buffer);
+
+  } else if (status_code == 2) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_INVALID_ARGS%s", text_buffer);
+
+  } else if (status_code == 3) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_RESOURCE_EXHAUSTED%s", text_buffer);
+
+  } else if (status_code == 4) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_UNREACHABLE%s", text_buffer);
+
+  } else if (status_code == 5) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_TIMEOUT%s", text_buffer);
+
+  } else if (status_code == 6) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_EMPTY%s", text_buffer);
+
+  } else if (status_code == 7) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_OUT_OF_RANGE%s", text_buffer);
+
+  } else if (status_code == 8) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_UNIMPLEMENTED%s", text_buffer);
+
+  } else if (status_code == 9) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_UNINITIALIZED%s", text_buffer);
+
+  } else if (status_code == 10) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_INTERNAL_ERROR%s", text_buffer);
+
+  } else if (status_code == 11) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_INCOMPLETE%s", text_buffer);
+
+  } else if (status_code == 12) {
+    snprintf(text_buffer, buffer_size, "STATUS_CODE_ALREADY_INITIALIZED%s", text_buffer);
+  }
+  return STATUS_CODE_OK;
+}
+
 static StatusCode s_create_soc_bar(GuiScreen *screen) {
   const BarWidgetConfig s_soc_bar_config = {
     .size = { .width = 80, .height = 20 },
@@ -204,6 +255,23 @@ static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_temps_stats_label, &temps_stats_label_config, screen);
 }
 
+static StatusCode s_create_warning(GuiScreen *screen) {
+  const LabelWidgetConfig warning_label_config = {
+    .size = { .width = 100, .height = 20 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = -50 } },
+    .label_text = "",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_SMALL_TEXT,
+    .background_enabled = false,
+    .background_color_id = 0,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+  return lvgl_widgets_create_label(&s_warning_label, &warning_label_config, screen);
+}
+
 StatusCode gui_widgets_init_screen(GuiScreen *screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -217,6 +285,7 @@ StatusCode gui_widgets_init_screen(GuiScreen *screen) {
   status_ok_or_return(s_create_cell_stats_label(screen));
   status_ok_or_return(s_create_temps_stats_label(screen));
   status_ok_or_return(s_create_soc_bar(screen));
+  status_ok_or_return(s_create_warning(screen));
 
   s_widgets_initialized = true;
 
@@ -228,6 +297,7 @@ void gui_widgets_deinit(void) {
   s_top_label = (LabelWidget){ 0 };
   s_cells_stats_label = (LabelWidget){ 0 };
   s_temps_stats_label = (LabelWidget){ 0 };
+  s_warning_label = (LabelWidget){ 0 };
   s_widgets_initialized = false;
 }
 
@@ -298,6 +368,17 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return lvgl_widgets_set_bar_value(&s_soc_bar, soc_percent);
 }
 
+StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file) {
+  if (!s_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  char text_buffer[LABEL_MAX_CHARS];
+  s_get_warning_text(status_code, file, text_buffer, sizeof(text_buffer));
+
+  return lvgl_widgets_set_label_text(&s_warning_label, text_buffer);
+}
+
 #else
 StatusCode gui_widgets_init(void) {
   return STATUS_CODE_OK;
@@ -333,6 +414,12 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c) {
   (void)motor_temp_c;
   (void)max_cell_temp_c;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_warning(uint8_t status_code, uint32_t file) {
+  (void)status_code;
+  (void)file;
   return STATUS_CODE_OK;
 }
 

@@ -69,4 +69,16 @@ Messages:
       right_sig_current:
         length: 16
       left_sig_current:
-        length: 16
+        length: 16      
+  front_controller_error_msg:
+    id: 7
+    cycle: "fast"
+    critical: true
+    target:
+      steering:
+        watchdog: 0
+    signals:
+      status_code:
+        length: 8
+      file:
+        length: 32

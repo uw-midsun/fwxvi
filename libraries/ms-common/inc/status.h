@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <string.h>
 
 /* Inter-component Headers */
 
@@ -41,6 +42,20 @@ typedef enum {
   NUM_STATUS_CODES,
 } StatusCode;
 
+typedef enum { FILE_TELEMETRY = 0, FILE_CAN_COMMUNICATION, FILE_STEERING, FILE_REAR_CONTROLLER, FILE_FRONT_CONTROLLER, FILE_NUM_FILES } File;
+
+typedef struct {
+  File file;
+  const char *name;
+} FileStringLut;
+
+static const FileStringLut file_string_lut[] = {
+  { FILE_TELEMETRY, "telemetry.c" },
+  { FILE_STEERING, "steering.c" },
+  { FILE_REAR_CONTROLLER, "rear_controller.c" },
+  { FILE_FRONT_CONTROLLER, "front_controller.c" },
+};
+
 /**
  * @brief Use to forward failures or continue on success.
  */
@@ -50,4 +65,63 @@ typedef enum {
     if (status_expr) return status_expr;   \
   })
 
+#define telemetry_status_ok_or_warning(code)                       \
+  ({                                                               \
+    __typeof__(code) status_expr = (code);                         \
+    if (status_expr) {                                             \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {               \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {      \
+          if (file_string_lut[i].file) {                           \
+            \ set_telemetry_error_msg_status_code(status_expr);    \
+            set_telemetry_error_msg_file(file_string_lut[i].file); \
+          }                                                        \
+        }                                                          \
+      }                                                            \
+    }                                                              \
+  })
+
+#define front_controller_status_ok_or_warning(code)                       \
+  ({                                                                      \
+    __typeof__(code) status_expr = (code);                                \
+    if (status_expr) {                                                    \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                      \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {             \
+          if (file_string_lut[i].file) {                                  \
+            \ set_front_controller_error_msg_status_code(status_expr);    \
+            set_front_controller_error_msg_file(file_string_lut[i].file); \
+          }                                                               \
+        }                                                                 \
+      }                                                                   \
+    }                                                                     \
+  })
+
+#define rear_controller_status_ok_or_warning(code)                       \
+  ({                                                                     \
+    __typeof__(code) status_expr = (code);                               \
+    if (status_expr) {                                                   \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {                     \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {            \
+          if (file_string_lut[i].file) {                                 \
+            set_rear_controller_error_msg_status_code(status_expr);      \
+            set_rear_controller_error_msg_file(file_string_lut[i].file); \
+          }                                                              \
+        }                                                                \
+      }                                                                  \
+    }                                                                    \
+  })
+
+#define steering_status_ok_or_warning(code)                       \
+  ({                                                              \
+    __typeof__(code) status_expr = (code);                        \
+    if (status_expr) {                                            \
+      for (uint8_t i = 0; i < FILE_NUM_FILES; i++) {              \
+        if (strcmp(file_string_lut[i].name, __FILE__) == 0) {     \
+          if (file_string_lut[i].file) {                          \
+            \ set_steering_error_msg_status_code(status_expr);    \
+            set_steering_error_msg_file(file_string_lut[i].file); \
+          }                                                       \
+        }                                                         \
+      }                                                           \
+    }                                                             \
+  })
 /** @} */
