@@ -77,6 +77,7 @@ void run_10hz_cycle() {
 
 void run_1hz_cycle() {
   run_can_tx_slow();
+  power_manager_run_current_sense();
 }
 
 #ifdef MS_PLATFORM_X86
