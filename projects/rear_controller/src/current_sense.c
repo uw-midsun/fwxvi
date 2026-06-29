@@ -39,15 +39,12 @@ static RearControllerStorage* rear_controller_storage;
 #define csense_R6_ohm 1000000 /*1M ohm resistor*/
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
 
-
-static csense_retries;
-static uint32_t csense_voltage_diff_V;
 static float csense_HV_voltage_V;
 static float csense_current_A;
 static float csense_voltage_diff_V;
-static int32_t csense_overcurrents = 0;
-static int32_t csense_overvoltages = 0;
-static int32_t csense_retries = 0;
+static uint32_t csense_overcurrents = 0;
+static uint32_t csense_overvoltages = 0;
+static uint32_t csense_retries = 0;
 static float csense_shunt_resistance = 0.0005;
 
 
