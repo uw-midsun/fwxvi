@@ -119,29 +119,29 @@ static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG)
 StatusCode current_sense_run() {
 
   /* Current*/
-  // StatusCode status = csense_interpret_data(&csense_voltage_diff_V, csense_AIN6_AIN7_MUX_CFG);
+  StatusCode status = csense_interpret_data(&csense_voltage_diff_V, csense_AIN6_AIN7_MUX_CFG);
 
-  // if (status != STATUS_CODE_OK) {
-  //   if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
-  //     csense_retries++;
-  //     return STATUS_CODE_OK;
-  //   } else {
-  //     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
-  //     return STATUS_CODE_OK;
-  //   }
-  // }
+  if (status != STATUS_CODE_OK) {
+    if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
+      csense_retries++;
+      return STATUS_CODE_OK;
+    } else {
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+      return STATUS_CODE_OK;
+    }
+  }
 
-  // csense_current_A = csense_shunt_resistance * csense_voltage_diff_V;
+  csense_current_A = csense_shunt_resistance * csense_voltage_diff_V;
 
-  // if(csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A){
-  //   csense_overcurrents++;
-  //   if(csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS){
-  //     trigger_bps_fault(BPS_FAULT_OVERCURRENT);
-  //   }
-  // }
+  if(csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A){
+    csense_overcurrents++;
+    if(csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS){
+      trigger_bps_fault(BPS_FAULT_OVERCURRENT);
+    }
+  }
 
   /* Voltage */
-  StatusCode status = csense_interpret_data(&csense_HV_voltage_V, csense_AIN0_AIN1_MUX_CDF);
+  status = csense_interpret_data(&csense_HV_voltage_V, csense_AIN0_AIN1_MUX_CDF);
 
   if (status != STATUS_CODE_OK) {
     if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
