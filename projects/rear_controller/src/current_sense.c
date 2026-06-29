@@ -12,7 +12,7 @@
 
 /* Inter-component Headers */
 #include "current_sense.h"
-
+#include "current_ads122c14irter.h"
 #include "current_acs37800.h"
 #include "global_enums.h"
 #include "status.h"
@@ -25,6 +25,13 @@
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
+
+
+static RearControllerStorage* rear_controller_storage;
+
+#if(IS_USING_CURRENT_SENSE_REV_3 != 0)
+
+
 /* FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5*/
 #define csense_FSR 5
 #define csense_AIN6_AIN7_MUX_CFG 0x67 /*shunt inputs*/
@@ -32,7 +39,17 @@
 #define csense_R6_ohm 1000000 /*1M ohm resistor*/
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
 
-static RearControllerStorage* rear_controller_storage;
+
+static csense_retries;
+static uint32_t csense_voltage_diff_V;
+static float csense_HV_voltage_V;
+static float csense_current_A;
+static float csense_voltage_diff_V;
+static int32_t csense_overcurrents = 0;
+static int32_t csense_overvoltages = 0;
+static int32_t csense_retries = 0;
+static float csense_shunt_resistance = 0.0005;
+
 
 static uint8_t register_map[] = {
   ADS122_REG_DEVICE_CFG_DEFAULT,
@@ -66,6 +83,7 @@ static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG)
   static bool negative;
   static uint8_t cs_conversion_data_raw[3]; //TODO: change back
   static uint32_t cs_conversion_data;
+
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw, MUX_CFG);
 
@@ -161,6 +179,8 @@ StatusCode current_sense_run() {
   
   return STATUS_CODE_OK;
 }
+
+#else
 
 StatusCode current_sense_init(RearControllerStorage* storage) {
   if (storage == NULL) {
