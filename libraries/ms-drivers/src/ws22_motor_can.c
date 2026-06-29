@@ -110,6 +110,17 @@ static StatusCode s_process_rail_15v(Ws22MotorTelemetryData *telemetry, uint8_t 
   return STATUS_CODE_OK;
 }
 
+static StatusCode s_process_drive_cmd(Ws22MotorControlData *control, uint8_t *msg_data_u8, uint8_t msg_dlc) {
+  if (control == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  memcpy(&control->current, &msg_data_u8[0], sizeof(float));
+  memcpy(&control->velocity, &msg_data_u8[4], sizeof(float));
+
+  return STATUS_CODE_OK;
+}
+
 static StatusCode s_process_temperature(Ws22MotorTelemetryData *telemetry, uint8_t *msg_data_u8, uint8_t msg_dlc) {
   if (telemetry == NULL || msg_data_u8 == NULL || msg_dlc < 8U) {
     return STATUS_CODE_INVALID_ARGS;
@@ -209,6 +220,12 @@ StatusCode ws22_motor_can_process_rx(uint8_t *msg_data_u8, uint32_t msg_id_raw, 
         return STATUS_CODE_OK;
       }
       return s_process_temperature(&s_ws22_motor_can_storage->telemetry, msg_data_u8, msg_dlc);
+
+    case WS22_CAN_ID_DRIVE_CMD:
+      if (!s_ws22_motor_can_config->ws22_drive_cmd_enabled) {
+        return STATUS_CODE_OK;
+      }
+      return s_process_drive_cmd(&s_ws22_motor_can_storage->control, msg_data_u8, msg_dlc);
 
     default:
       return STATUS_CODE_UNIMPLEMENTED;

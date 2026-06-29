@@ -13,6 +13,7 @@
 
 /* Inter-component Headers */
 #include "queue.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "bmi323.h"
@@ -44,6 +45,7 @@ typedef struct {
   Queue datagram_queue;                           /**< Queue handle for the datagram buffer */
   Bmi323Storage *bmi323_storage;                  /**< Pointer to BMI323 storage struct */
   CanStorage *can_storage;                        /**< Pointer to CAN storage struct, to be used in xb_transmit */
+  Ws22MotorCanStorage *ws22_storage;              /**< Pointer to WS22 parsed data; populated before telemetry_init */
   TelemetryConfig *config;                        /**< Pointer to the telemetry configuration data */
 } TelemetryStorage;
 

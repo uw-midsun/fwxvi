@@ -51,6 +51,7 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_motor_back_emf_enabled = true,
   .ws22_rail_15v_enabled = true,
   .ws22_temperature_enabled = true,
+  .ws22_drive_cmd_enabled = false,
 };
 
 VehicleDriveState drive_state;
@@ -76,6 +77,7 @@ void run_10hz_cycle() {
 
 void run_1hz_cycle() {
   run_can_tx_slow();
+  power_manager_run_current_sense();
 }
 
 #ifdef MS_PLATFORM_X86

@@ -45,7 +45,7 @@ TASK(current_sense, TASK_STACK_1024) {
 
   // Step 2: Run current sense
   while (true) {
-    status = power_manager_run_current_sense(OUTPUT_GROUP_ALL);
+    status = power_manager_run_current_sense();
 
     for (uint8_t i = 0; i < NUM_OUTPUTS; i++) {
       printf("G%02d: %3dmA | ", i, front_controller_storage.power_manager_storage->current_readings[i]);

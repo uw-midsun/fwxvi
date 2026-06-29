@@ -33,6 +33,8 @@ static PowerManagerStorage s_power_manager_storage = { 0U };
 
 static FrontControllerStorage *front_controller_storage = NULL;
 
+static bool s_output_pin_enabled[NUM_OUTPUTS] = { false };
+
 static GpioAddress MUX_SEL_0 = GPIO_FRONT_CONTROLLER_MUX_SEL_0;
 static GpioAddress MUX_SEL_1 = GPIO_FRONT_CONTROLLER_MUX_SEL_1;
 static GpioAddress MUX_SEL_2 = GPIO_FRONT_CONTROLLER_MUX_SEL_2;
@@ -137,18 +139,38 @@ static uint16_t power_sense_hi_current_calc(uint16_t sampled_voltage) {
 }
 
 static void power_manager_set_telemetry() {
-  set_fc_power_group_A_rev_cam_current(s_power_manager_storage.current_readings[REV_CAM]);
-  set_fc_power_group_A_telem_current(s_power_manager_storage.current_readings[TELEM]);
-  set_fc_power_group_A_steering_current(s_power_manager_storage.current_readings[STEERING]);
-  set_fc_power_group_A_driver_fan_current(s_power_manager_storage.current_readings[DRIVER_FAN]);
+  if (s_output_pin_enabled[REV_CAM]) {
+    set_fc_power_group_A_rev_cam_current(s_power_manager_storage.current_readings[REV_CAM]);
+  }
+  if (s_output_pin_enabled[TELEM]) {
+    set_fc_power_group_A_telem_current(s_power_manager_storage.current_readings[TELEM]);
+  }
+  if (s_output_pin_enabled[STEERING]) {
+    set_fc_power_group_A_steering_current(s_power_manager_storage.current_readings[STEERING]);
+  }
+  if (s_output_pin_enabled[DRIVER_FAN]) {
+    set_fc_power_group_A_driver_fan_current(s_power_manager_storage.current_readings[DRIVER_FAN]);
+  }
 
-  set_fc_power_group_B_horn_current(s_power_manager_storage.current_readings[HORN]);
-  set_fc_power_group_B_spare_current(s_power_manager_storage.current_readings[SPARE_1]);
+  if (s_output_pin_enabled[HORN]) {
+    set_fc_power_group_B_horn_current(s_power_manager_storage.current_readings[HORN]);
+  }
+  if (s_output_pin_enabled[SPARE_1]) {
+    set_fc_power_group_B_spare_current(s_power_manager_storage.current_readings[SPARE_1]);
+  }
 
-  set_fc_power_lights_group_brake_light_sig_current(s_power_manager_storage.current_readings[BRAKE_LIGHT]);
-  set_fc_power_lights_group_bps_light_sig_current(s_power_manager_storage.current_readings[BPS_LIGHT]);
-  set_fc_power_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
-  set_fc_power_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
+  if (s_output_pin_enabled[BRAKE_LIGHT]) {
+    set_fc_power_lights_group_brake_light_sig_current(s_power_manager_storage.current_readings[BRAKE_LIGHT]);
+  }
+  if (s_output_pin_enabled[BPS_LIGHT]) {
+    set_fc_power_lights_group_bps_light_sig_current(s_power_manager_storage.current_readings[BPS_LIGHT]);
+  }
+  if (s_output_pin_enabled[RIGHT_SIG]) {
+    set_fc_power_lights_group_right_sig_current(s_power_manager_storage.current_readings[RIGHT_SIG]);
+  }
+  if (s_output_pin_enabled[LEFT_SIG]) {
+    set_fc_power_lights_group_left_sig_current(s_power_manager_storage.current_readings[LEFT_SIG]);
+  }
 }
 
 /************************************************************************************************
@@ -178,19 +200,18 @@ StatusCode power_manager_init(FrontControllerStorage *storage) {
   return STATUS_CODE_OK;
 }
 
-StatusCode power_manager_run_current_sense(OutputGroup group) {
+StatusCode power_manager_run_current_sense() {
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (group > NUM_OUTPUT_GROUPS) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  OutputGroupDef *mapped_group = output_group_map[group];
+  OutputGroupDef *mapped_group = output_group_map[OUTPUT_GROUP_ALL];
 
   for (uint16_t i = 0; i < mapped_group->num_outputs; i++) {
     /* Set mux select pins using the bits of i */
+    if (!s_output_pin_enabled[i]) {
+      continue;
+    }
     gpio_set_state(&MUX_SEL_0, (i & 0x1U) ? GPIO_STATE_HIGH : GPIO_STATE_LOW);
     gpio_set_state(&MUX_SEL_1, (i & 0x2U) ? GPIO_STATE_HIGH : GPIO_STATE_LOW);
     gpio_set_state(&MUX_SEL_2, (i & 0x4U) ? GPIO_STATE_HIGH : GPIO_STATE_LOW);
@@ -231,6 +252,7 @@ StatusCode power_manager_set_output_group(OutputGroup group, bool enable) {
     } else if (!enable) {
       gpio_set_state(&output_pins[output_id], GPIO_STATE_LOW);
     }
+    s_output_pin_enabled[output_id] = enable;
     delay_ms(FRONT_OPEN_LOAD_SWITCH_DELAY_MS);
   }
 
@@ -255,7 +277,15 @@ StatusCode power_manager_toggle_output_group(OutputGroup group) {
   for (uint8_t i = 0U; i < mapped_group->num_outputs; i++) {
     OutputId output_id = mapped_group->outputs[i];
     gpio_toggle_state(&output_pins[output_id]);
+    s_output_pin_enabled[output_id] = !s_output_pin_enabled[output_id];
   }
 
   return STATUS_CODE_OK;
+}
+
+bool power_manager_is_output_pin_enabled(OutputId output_id) {
+  if (output_id >= NUM_OUTPUTS) {
+    return false;
+  }
+  return s_output_pin_enabled[output_id];
 }

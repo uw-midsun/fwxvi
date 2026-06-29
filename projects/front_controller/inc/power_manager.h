@@ -52,6 +52,11 @@ StatusCode power_manager_toggle_output_group(OutputGroup group);
 /**
  * @brief   Run current sensing
  */
-StatusCode power_manager_run_current_sense(OutputGroup group);
+StatusCode power_manager_run_current_sense();
+
+/**
+ * @brief   Query whether an output pin is currently enabled
+ */
+bool power_manager_is_output_pin_enabled(OutputId output_id);
 
 /** @} */
