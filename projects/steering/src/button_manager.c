@@ -142,7 +142,6 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
-
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -157,7 +156,6 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
-
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -172,7 +170,6 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  
   drive_state_manager_enter_regen_state(REGEN_STATE_DISABLED);
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
@@ -219,15 +216,8 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  if(drive_state_manager_get_state() == VEHICLE_DRIVE_STATE_NEUTRAL){
-      drive_state_manager_request(DRIVE_STATE_REQUEST_C);
-      return;
-  }else if(drive_state_manager_get_state() == VEHICLE_DRIVE_STATE_CHARGING){
-    drive_state_manager_request(DRIVE_STATE_REQUEST_N);
-  }else{
-    CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
-    drive_state_manager_toggle_regen();
-  } 
+  CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
+  drive_state_manager_toggle_regen();
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {

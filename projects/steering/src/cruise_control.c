@@ -17,7 +17,6 @@
 /* Intra-component Headers */
 #include "button.h"
 #include "button_manager.h"
-#include "button_led.h"
 #include "buzzer.h"
 #include "gui_menu.h"
 #include "steering.h"
@@ -163,14 +162,10 @@ StatusCode cruise_control_run_medium_cycle() {
     }
 
     if (steering_storage->cruise_control_enabled) {
-      button_led_disable(STEERING_BUTTON_CRUISE_CONTROL_UP);
-      button_led_disable(STEERING_BUTTON_CRUISE_CONTROL_DOWN);
       buzzer_play_cruise_control_disable();
       steering_storage->cruise_control_enabled = false;
       return STATUS_CODE_OK;
     } else {
-      button_led_enable(STEERING_BUTTON_CRUISE_CONTROL_UP);
-      button_led_enable(STEERING_BUTTON_CRUISE_CONTROL_DOWN);
       buzzer_play_cruise_control_enable();
       steering_storage->cruise_control_enabled = true;
       return STATUS_CODE_OK;

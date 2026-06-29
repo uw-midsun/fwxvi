@@ -185,11 +185,6 @@ StatusCode buzzer_play_neutral(void);
 StatusCode buzzer_play_reverse(void);
 
 /**
- * @brief Play predefined charging melody
- */
-StatusCode buzzer_play_charging(void);
-
-/**
  * @brief Play predefined invalid melody
  */
 StatusCode buzzer_play_invalid(void);

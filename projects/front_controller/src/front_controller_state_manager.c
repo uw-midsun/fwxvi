@@ -44,7 +44,6 @@ static bool started = false;
 
 static void front_controller_state_manager_enter_state(VehicleDriveState new_state) {
   switch (new_state) {
-    case VEHICLE_DRIVE_STATE_CHARGING:
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       if (s_current_state != VEHICLE_DRIVE_STATE_NEUTRAL || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
