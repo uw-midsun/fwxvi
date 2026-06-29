@@ -81,6 +81,7 @@ static StatusCode drive_state_manager_reverse(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 #endif
+
   button_led_disable(STEERING_BUTTON_NEUTRAL);
   button_led_disable(STEERING_BUTTON_DRIVE);
   button_led_enable(STEERING_BUTTON_REVERSE);
@@ -110,6 +111,9 @@ static StatusCode drive_state_manager_drive(void) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
 #endif
+  if(current_regen_state!= REGEN_STATE_ENABLED){
+    button_led_disable(STEERING_BUTTON_REGEN);
+  }
 
   button_led_disable(STEERING_BUTTON_REVERSE);
   button_led_disable(STEERING_BUTTON_NEUTRAL);
@@ -167,6 +171,7 @@ StatusCode drive_state_manager_update(void) {
       if (current_state != VEHICLE_DRIVE_STATE_NEUTRAL) {
         StatusCode ret = drive_state_manager_neutral();
         if (ret == STATUS_CODE_OK) {
+
           CONDITIONAL_LOG_DEBUG("Drive state set to NEUTRAL\n");
           current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
           s_update_storage_drive_state(current_state);
@@ -176,6 +181,7 @@ StatusCode drive_state_manager_update(void) {
           current_request = DRIVE_STATE_REQUEST_NONE;
         }
       }
+
       break;
 
     case DRIVE_STATE_REQUEST_R:

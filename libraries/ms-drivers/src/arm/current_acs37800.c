@@ -44,7 +44,6 @@ StatusCode acs37800_init(ACS37800Storage *storage, I2CPort i2c_port, I2CAddress 
   status_ok_or_return(acs37800_get_register(storage, ACS37800_REG_DIO_N_CONFIG, &dio_n_config));
   dio_n_config |= ACS37800_MASK_BYPASS_N_EN;
   status_ok_or_return(s_acs37800_write_register(storage, ACS37800_REG_DIO_N_CONFIG, dio_n_config));
-
   return STATUS_CODE_OK;
 }
 

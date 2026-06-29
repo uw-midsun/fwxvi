@@ -90,16 +90,22 @@
  ************************************************************************************************/
 
 /** @brief  Current sense I2C port */
-#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_1
+//#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_1 /* Used for original current sense code */
+#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_2
 
 /** @brief  Current sense I2C serial data pin */
-#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(B, 11)
+#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(B, 11) // Rev 1.0
+//#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(C, 1) // Rev 2.0
 
 /** @brief  Current sense I2C clock pin */
-#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(B, 10)
+#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(B, 10) // Rev 1.0
+//#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(C, 0) // Rev 2.0
 
 /** @brief  Current sense slave address */
 #define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
+
+/** @brief  Current sense slave address */
+# define REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR (64)
 
 /************************************************************************************************
  * AFEs (LTC6811) SPI definitions
