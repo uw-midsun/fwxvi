@@ -83,7 +83,6 @@ int main() {
   tasks_init();
   log_init();
 
-
   init_master_tasks();
 
   tasks_start();

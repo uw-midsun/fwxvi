@@ -23,8 +23,6 @@
  * @{
  */
 
-#define IS_USING_CURRENT_SENSE_REV_3 1U
-
 /**
  * @brief   Initializes the current sense sub-system
  * @param   storage Pointer to the rear controller storage

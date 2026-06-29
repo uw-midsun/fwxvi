@@ -25,6 +25,14 @@
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
+#define CSENSE_FAULTS_ENABLED 0U
+#define IS_USING_CURRENT_SENSE_REV_3 1U
+
+//if the input is above 3V it's above 153 V <- measured on HV_BUS
+//TODO: CHANGE make sure that the conversion is reading the right data -> aka shunt isn't reading HV
+
+#if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
+
 /* FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5*/
 #define csense_FSR 5
 #define csense_AIN6_AIN7_MUX_CFG 0x67 /*shunt inputs*/
@@ -32,11 +40,6 @@
 #define csense_R6_ohm 1000000 /*1M ohm resistor*/
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
 
-
-//if the input is above 3V it's above 153 V <- measured on HV_BUS
-//TODO: CHANGE make sure that the conversion is reading the right data -> aka shunt isn't reading HV
-
-#if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
 static float csense_current_A;
 static float csense_HV_voltage_V;
 static RearControllerStorage *rear_controller_storage;
@@ -81,13 +84,16 @@ static StatusCode csense_interpret_data(float * output_voltage, uint8_t MUX_CFG)
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw, MUX_CFG);
 
+
   if (status != STATUS_CODE_OK) {
     if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
       csense_retries++;
       return STATUS_CODE_OK;
     } else {
+#if(CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
-      return STATUS_CODE_OK;
+#endif
+      return status;
     }
   }
 
@@ -126,7 +132,9 @@ StatusCode current_sense_run() {
       csense_retries++;
       return STATUS_CODE_OK;
     } else {
+#if(CSENSE_FAULTS_ENABLED == 1) 
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
       return STATUS_CODE_OK;
     }
   }
@@ -136,7 +144,9 @@ StatusCode current_sense_run() {
   if(csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A){
     csense_overcurrents++;
     if(csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS){
+#if(CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_OVERCURRENT);
+#endif
     }
   }
 
@@ -148,7 +158,9 @@ StatusCode current_sense_run() {
       csense_retries++;
       return STATUS_CODE_OK;
     } else {
+#if(CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
       return STATUS_CODE_OK;
     }
   }
@@ -158,7 +170,9 @@ StatusCode current_sense_run() {
   if (csense_HV_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
     csense_overvoltages++;
     if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+#if(CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+#endif
     }
   } else {
     csense_overvoltages = 0;
@@ -203,7 +217,9 @@ StatusCode current_sense_run() {
         csense_retries++;
         return STATUS_CODE_OK;
       } else {
+#if(CSENSE_FAULTS_ENABLED == 1)
         trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
         return STATUS_CODE_OK;
       }
     }
@@ -215,7 +231,9 @@ StatusCode current_sense_run() {
     if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {
       csense_overcurrents++;
       if (csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
+#if(CSENSE_FAULTS_ENABLED == 1)
         trigger_bps_fault(BPS_FAULT_OVERCURRENT);
+#endif
       }
     } else {
       csense_overcurrents = 0;
@@ -229,7 +247,9 @@ StatusCode current_sense_run() {
         csense_retries++;
         return STATUS_CODE_OK;
       } else {
+#if(CSENSE_FAULTS_ENABLED == 1)
         trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
         return STATUS_CODE_OK;
       }
     }
@@ -241,7 +261,9 @@ StatusCode current_sense_run() {
     if (voltage_mV > PACK_OVERVOLTAGE_LIMIT_mV) {
       csense_overvoltages++;
       if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+#if(CSENSE_FAULTS_ENABLED == 1)
         trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+#endif
       }
     } else {
       csense_overvoltages = 0;
