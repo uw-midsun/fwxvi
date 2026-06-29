@@ -52,7 +52,7 @@ Ws22MotorCanConfig motor_can_config = {
 };
 
 void pre_loop_init() {
-  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
+    current_sense_init(&rear_controller_storage);
 }
 
 void run_1000hz_cycle() {
@@ -83,6 +83,7 @@ int main() {
   tasks_init();
   log_init();
 
+  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
 
   init_master_tasks();
 

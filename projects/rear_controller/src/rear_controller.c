@@ -88,7 +88,6 @@ StatusCode rear_controller_init(RearControllerStorage* storage, RearControllerCo
   rear_controller_state_manager_init(rear_controller_storage);
   cell_sense_init(rear_controller_storage);
   // power_path_manager_init(rear_controller_storage);
-  current_sense_init(rear_controller_storage);
   precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task(), rear_controller_storage);
 
   gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
