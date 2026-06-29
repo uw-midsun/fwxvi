@@ -23,7 +23,7 @@
 static SoftTimer s_signal_blink_timer;
 static SteeringLightState current_state = STEERING_LIGHTS_OFF_STATE;
 static LightsSignalCommand current_request = LIGHTS_SIGNAL_COMMAND_NONE;
-static SteeringStorage *steering_storage;
+static SteeringStorage* steering_storage;
 
 static bool left_led_state = false;
 static bool right_led_state = false;
@@ -42,7 +42,7 @@ static void s_blink_timer_callback(SoftTimerId timer_id) {
   software_timer_reset(&s_signal_blink_timer);
 }
 
-void lights_signal_manager_init(SteeringStorage *storage) {
+void lights_signal_manager_init(SteeringStorage* storage) {
   steering_storage = storage;
 
   current_state = STEERING_LIGHTS_OFF_STATE;

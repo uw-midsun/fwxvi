@@ -37,7 +37,7 @@
  */
 class JSONManager {
  private:
-  static constexpr const char *DEFAULT_JSON_PATH = "./mpxe/Simulation_JSON/"; /**< Default JSON folder path */
+  static constexpr const char* DEFAULT_JSON_PATH = "./mpxe/Simulation_JSON/"; /**< Default JSON folder path */
   std::filesystem::path m_projectBasePath;                                    /**<  Temporary variable to store project file path */
 
   /**
@@ -45,28 +45,28 @@ class JSONManager {
    * @details The project shall be created within the DEFAULT_JSON_PATH folder
    * @param   projectName Name of the project being created
    */
-  void createDefaultProjectJSON(const std::string &projectName);
+  void createDefaultProjectJSON(const std::string& projectName);
 
   /**
    * @brief   Get the file path of a specified project
    * @param   projectName Name of the project being retrieved
    * @return  File path relative to the root directory
    */
-  std::filesystem::path getProjectFilePath(const std::string &projectName);
+  std::filesystem::path getProjectFilePath(const std::string& projectName);
 
   /**
    * @brief   Loads the JSON of a specified project
    * @param   projectName Name of the project being retrieved
    * @return  JSON object of the selected project
    */
-  nlohmann::json loadProjectJSON(const std::string &projectName);
+  nlohmann::json loadProjectJSON(const std::string& projectName);
 
   /**
    * @brief   Saves JSON data to a specified project
    * @param   projectName Name of the project being written to
    * @param   projectData JSON object of the data to be written
    */
-  void saveProjectJSON(const std::string &projectName, const nlohmann::json &projectData);
+  void saveProjectJSON(const std::string& projectName, const nlohmann::json& projectData);
 
  public:
   /**
@@ -82,13 +82,13 @@ class JSONManager {
    * @returns TRUE if the project JSON exists
    *          FALSE if the project JSON does not exist
    */
-  bool projectExists(const std::string &projectName);
+  bool projectExists(const std::string& projectName);
 
   /**
    * @brief   Delete an existing project JSON
    * @param   projectName Name of the project to delete
    */
-  void deleteProject(const std::string &projectName);
+  void deleteProject(const std::string& projectName);
 
   /**
    * @brief   Sets a value for a given key in the project JSON
@@ -100,14 +100,14 @@ class JSONManager {
    * @param   value The value to set for the given key
    */
   template <typename T>
-  void setProjectValue(const std::string &projectName, const std::string &key, T value) {
+  void setProjectValue(const std::string& projectName, const std::string& key, T value) {
     try {
       nlohmann::json projectJSON = loadProjectJSON(projectName);
 
       projectJSON[key] = value;
 
       saveProjectJSON(projectName, projectJSON);
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "Error setting project value: " << e.what() << std::endl;
     }
   }
@@ -122,11 +122,11 @@ class JSONManager {
    * @param   value The value to set for the given key
    */
   template <typename T>
-  void setProjectNestedValue(const std::string &projectName, const std::vector<std::string> &keyPath, const T &value) {
+  void setProjectNestedValue(const std::string& projectName, const std::vector<std::string>& keyPath, const T& value) {
     try {
       nlohmann::json projectJSON = loadProjectJSON(projectName);
 
-      nlohmann::json *current = &projectJSON;
+      nlohmann::json* current = &projectJSON;
 
       /* Navigate to the desired key location */
       for (size_t i = 0; i < keyPath.size() - 1; ++i) {
@@ -140,7 +140,7 @@ class JSONManager {
       (*current)[keyPath.back()] = value;
 
       saveProjectJSON(projectName, projectJSON);
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "Error setting nested project value: " << e.what() << std::endl;
     }
   }
@@ -154,14 +154,14 @@ class JSONManager {
    * @returns Value saved at the JSON key
    */
   template <typename T>
-  T getProjectValue(const std::string &projectName, const std::string &key) {
+  T getProjectValue(const std::string& projectName, const std::string& key) {
     try {
       nlohmann::json projectJSON = loadProjectJSON(projectName);
 
       if (projectJSON.contains(key)) {
         return projectJSON[key].get<T>();
       }
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "Error getting project value: " << e.what() << std::endl;
     }
     return static_cast<T>(0U);
@@ -176,13 +176,13 @@ class JSONManager {
    * @returns Value saved at the JSON key
    */
   template <typename T = nlohmann::json>
-  T getProjectNestedValue(const std::string &projectName, const std::vector<std::string> &keyPath, const T &defaultValue = T()) {
+  T getProjectNestedValue(const std::string& projectName, const std::vector<std::string>& keyPath, const T& defaultValue = T()) {
     try {
       nlohmann::json projectJSON = loadProjectJSON(projectName);
 
-      const nlohmann::json *current = &projectJSON;
+      const nlohmann::json* current = &projectJSON;
       /* Navigate to the desired key location */
-      for (const auto &key : keyPath) {
+      for (const auto& key : keyPath) {
         if (!current->contains(key)) {
           return defaultValue;
         }
@@ -191,7 +191,7 @@ class JSONManager {
       }
 
       return current->get<T>();
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
       std::cerr << "Error getting nested project value: " << e.what() << std::endl;
       return defaultValue;
     }

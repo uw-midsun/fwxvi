@@ -24,7 +24,7 @@
  * @{
  */
 
-StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings);
+StatusCode imu_init(Bmi323Storage* storage, Bmi323Settings* settings);
 
 StatusCode imu_run();
 
@@ -46,20 +46,20 @@ struct quaternion {
 extern struct quaternion q_est;
 
 struct quaternion quat_mult(struct quaternion q_L, struct quaternion q_R);
-static inline void quat_scalar(struct quaternion *q, float scalar) {
+static inline void quat_scalar(struct quaternion* q, float scalar) {
   q->q1 *= scalar;
   q->q2 *= scalar;
   q->q3 *= scalar;
   q->q4 *= scalar;
 }
-static inline void quat_add(struct quaternion *Sum, struct quaternion L, struct quaternion R) {
+static inline void quat_add(struct quaternion* Sum, struct quaternion L, struct quaternion R) {
   Sum->q1 = L.q1 + R.q1;
   Sum->q2 = L.q2 + R.q2;
   Sum->q3 = L.q3 + R.q3;
   Sum->q4 = L.q4 + R.q4;
 }
 
-static inline void quat_sub(struct quaternion *Sum, struct quaternion L, struct quaternion R) {
+static inline void quat_sub(struct quaternion* Sum, struct quaternion L, struct quaternion R) {
   Sum->q1 = L.q1 - R.q1;
   Sum->q2 = L.q2 - R.q2;
   Sum->q3 = L.q3 - R.q3;
@@ -77,7 +77,7 @@ static inline float quat_Norm(struct quaternion q) {
   return sqrt(q.q1 * q.q1 + q.q2 * q.q2 + q.q3 * q.q3 + q.q4 * q.q4);
 }
 
-static inline void quat_Normalization(struct quaternion *q) {
+static inline void quat_Normalization(struct quaternion* q) {
   float norm = quat_Norm(*q);
   q->q1 /= norm;
   q->q2 /= norm;
@@ -86,6 +86,6 @@ static inline void quat_Normalization(struct quaternion *q) {
 }
 
 void imu_filter(float ax, float ay, float az, float gx, float gy, float gz);
-void eulerAngles(struct quaternion q, float *roll, float *pitch, float *yaw);
+void eulerAngles(struct quaternion q, float* roll, float* pitch, float* yaw);
 
 /** @} */

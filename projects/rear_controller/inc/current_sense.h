@@ -31,7 +31,7 @@
  * @return  STATUS_CODE_OK if initialized succesfully
  *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
  */
-StatusCode current_sense_init(RearControllerStorage *rear_controller_storage);
+StatusCode current_sense_init(RearControllerStorage* rear_controller_storage);
 
 /**
  * @brief   Run a current sensing cycle to update pack voltage and pack current readings

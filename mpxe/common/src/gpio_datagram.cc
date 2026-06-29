@@ -20,7 +20,7 @@
 #include "serialization.h"
 
 namespace Datagram {
-std::string Gpio::serialize(const CommandCode &commandCode) const {
+std::string Gpio::serialize(const CommandCode& commandCode) const {
   std::string serializedData;
 
   serializeInteger<uint8_t>(serializedData, static_cast<uint8_t>(m_gpioDatagram.gpioPort));
@@ -31,11 +31,11 @@ std::string Gpio::serialize(const CommandCode &commandCode) const {
   }
 
   serializeInteger<uint8_t>(serializedData, m_gpioDatagram.bufferLength);
-  serializedData.append(reinterpret_cast<const char *>(m_gpioDatagram.buffer), m_gpioDatagram.bufferLength);
+  serializedData.append(reinterpret_cast<const char*>(m_gpioDatagram.buffer), m_gpioDatagram.bufferLength);
   return encodeCommand(commandCode, serializedData);
 }
 
-void Gpio::deserialize(std::string &gpioDatagramPayload) {
+void Gpio::deserialize(std::string& gpioDatagramPayload) {
   if (gpioDatagramPayload.size() < 3U) {
     throw std::runtime_error("Invalid GPIO datagram payload");
   }
@@ -52,19 +52,19 @@ void Gpio::deserialize(std::string &gpioDatagramPayload) {
   std::memcpy(m_gpioDatagram.buffer, gpioDatagramPayload.data() + offset, m_gpioDatagram.bufferLength);
 }
 
-Gpio::Gpio(Payload &data) {
+Gpio::Gpio(Payload& data) {
   m_gpioDatagram = data;
 }
 
-void Gpio::setGpioPort(const Port &gpioPort) {
+void Gpio::setGpioPort(const Port& gpioPort) {
   m_gpioDatagram.gpioPort = gpioPort;
 }
 
-void Gpio::setGpioPin(const uint8_t &gpioPin) {
+void Gpio::setGpioPin(const uint8_t& gpioPin) {
   m_gpioDatagram.gpioPin = gpioPin;
 }
 
-void Gpio::setBuffer(const uint8_t *data, uint8_t length) {
+void Gpio::setBuffer(const uint8_t* data, uint8_t length) {
   std::memcpy(m_gpioDatagram.buffer, data, length);
   m_gpioDatagram.bufferLength = length;
 }
@@ -85,7 +85,7 @@ uint8_t Gpio::getBufferLength() const {
   return m_gpioDatagram.bufferLength;
 }
 
-const uint8_t *Gpio::getBuffer() const {
+const uint8_t* Gpio::getBuffer() const {
   return m_gpioDatagram.buffer;
 }
 

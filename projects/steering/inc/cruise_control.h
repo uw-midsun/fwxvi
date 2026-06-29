@@ -27,7 +27,7 @@
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode cruise_control_init(SteeringStorage *steering_storage);
+StatusCode cruise_control_init(SteeringStorage* steering_storage);
 
 /**
  * @brief   Cruise control traget speed decrease event handler

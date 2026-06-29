@@ -17,7 +17,7 @@
 #include "fota_encryption.h"
 #include "fota_packet.h"
 
-FotaError fota_packet_init(FotaPacket *packet, FotaPacketType type, uint8_t sequence, uint16_t length) {
+FotaError fota_packet_init(FotaPacket* packet, FotaPacketType type, uint8_t sequence, uint16_t length) {
   if (packet == NULL || length > FOTA_PACKET_PAYLOAD_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -34,12 +34,12 @@ FotaError fota_packet_init(FotaPacket *packet, FotaPacketType type, uint8_t sequ
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_packet_set_crc(FotaPacket *packet) {
+FotaError fota_packet_set_crc(FotaPacket* packet) {
   if (packet == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint8_t *crc32_data_start = (uint8_t *)packet->payload;
+  uint8_t* crc32_data_start = (uint8_t*)packet->payload;
   uint32_t crc32_data_size = packet->payload_length;
 
   /* Handle padding */
@@ -53,7 +53,7 @@ FotaError fota_packet_set_crc(FotaPacket *packet) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size, uint32_t *bytes_written) {
+FotaError fota_packet_serialize(FotaPacket* packet, uint8_t* buffer, uint32_t buf_size, uint32_t* bytes_written) {
   if (packet == NULL || buffer == NULL || bytes_written == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -62,7 +62,7 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint8_t *ptr = buffer;
+  uint8_t* ptr = buffer;
   *bytes_written = 0U;
 
   *(ptr++) = packet->sof;
@@ -71,14 +71,14 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
   *(ptr++) = packet->packet_type;
   (*bytes_written)++;
 
-  *((uint32_t *)ptr) = packet->datagram_id;
+  *((uint32_t*)ptr) = packet->datagram_id;
   ptr += sizeof(packet->datagram_id);
   *bytes_written += sizeof(packet->datagram_id);
 
   *(ptr++) = packet->sequence_num;
   (*bytes_written)++;
 
-  *((uint16_t *)ptr) = packet->payload_length;
+  *((uint16_t*)ptr) = packet->payload_length;
   ptr += sizeof(packet->payload_length);
   *bytes_written += sizeof(packet->payload_length);
 
@@ -86,7 +86,7 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
   ptr += FOTA_PACKET_PAYLOAD_SIZE;
   *bytes_written += FOTA_PACKET_PAYLOAD_SIZE;
 
-  *((uint32_t *)ptr) = packet->crc32;
+  *((uint32_t*)ptr) = packet->crc32;
   ptr += sizeof(packet->crc32);
   *bytes_written += sizeof(packet->crc32);
 
@@ -96,12 +96,12 @@ FotaError fota_packet_serialize(FotaPacket *packet, uint8_t *buffer, uint32_t bu
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t buf_size) {
+FotaError fota_packet_deserialize(FotaPacket* packet, uint8_t* buffer, uint32_t buf_size) {
   if (packet == NULL || buffer == NULL || buf_size < FOTA_PACKET_PAYLOAD_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
 
-  uint8_t *ptr = buffer;
+  uint8_t* ptr = buffer;
 
   packet->sof = *(ptr++);
   if (packet->sof != FOTA_PACKET_SOF) {
@@ -110,12 +110,12 @@ FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t 
 
   packet->packet_type = *(ptr++);
 
-  packet->datagram_id = *((uint32_t *)ptr);
+  packet->datagram_id = *((uint32_t*)ptr);
   ptr += sizeof(packet->datagram_id);
 
   packet->sequence_num = *(ptr++);
 
-  packet->payload_length = *((uint16_t *)ptr);
+  packet->payload_length = *((uint16_t*)ptr);
   ptr += sizeof(packet->payload_length);
 
   if (packet->payload_length > FOTA_PACKET_PAYLOAD_SIZE) {
@@ -125,7 +125,7 @@ FotaError fota_packet_deserialize(FotaPacket *packet, uint8_t *buffer, uint32_t 
   memcpy(packet->payload, ptr, FOTA_PACKET_PAYLOAD_SIZE);
   ptr += FOTA_PACKET_PAYLOAD_SIZE;
 
-  packet->crc32 = *((uint32_t *)ptr);
+  packet->crc32 = *((uint32_t*)ptr);
   ptr += sizeof(packet->crc32);
 
   packet->eof = *(ptr++);

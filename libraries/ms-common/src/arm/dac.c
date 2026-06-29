@@ -135,7 +135,7 @@ StatusCode dac_set_raw(DacChannel channel, uint16_t value) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  DacChannelState *ch_state = &s_dac_status.channels[channel];
+  DacChannelState* ch_state = &s_dac_status.channels[channel];
   uint32_t hal_channel = s_get_hal_channel(channel);
 
   /* Take mutex for thread safety */
@@ -167,7 +167,7 @@ StatusCode dac_set_voltage(DacChannel channel, uint16_t voltage_mv) {
   return dac_set_raw(channel, raw_value);
 }
 
-StatusCode dac_get_raw(DacChannel channel, uint16_t *value) {
+StatusCode dac_get_raw(DacChannel channel, uint16_t* value) {
   if (value == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -179,7 +179,7 @@ StatusCode dac_get_raw(DacChannel channel, uint16_t *value) {
   status_ok_or_return(s_validate_channel(channel));
   status_ok_or_return(s_check_channel_enabled(channel));
 
-  DacChannelState *ch_state = &s_dac_status.channels[channel];
+  DacChannelState* ch_state = &s_dac_status.channels[channel];
 
   /* Take mutex for thread safety */
   if (xSemaphoreTake(ch_state->mutex_handle, portMAX_DELAY) != pdTRUE) {
@@ -193,7 +193,7 @@ StatusCode dac_get_raw(DacChannel channel, uint16_t *value) {
   return STATUS_CODE_OK;
 }
 
-StatusCode dac_get_voltage(DacChannel channel, uint16_t *voltage_mv) {
+StatusCode dac_get_voltage(DacChannel channel, uint16_t* voltage_mv) {
   if (voltage_mv == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

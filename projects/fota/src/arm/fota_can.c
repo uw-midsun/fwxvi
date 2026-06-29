@@ -39,8 +39,8 @@ static FotaError s_can_gpio_init() {
   GPIO_InitTypeDef rx_init = { .Pin = 8, .Mode = GPIO_MODE_AF_PP, .Pull = 0x00000000u, .Speed = 0x00000003u, .Alternate = 0x09 };
   GPIO_InitTypeDef tx_init = { .Pin = 9, .Mode = GPIO_MODE_AF_PP, .Pull = 0x00000000u, .Speed = 0x00000003u, .Alternate = 0x09 };
 
-  GPIO_TypeDef *rx_gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
-  GPIO_TypeDef *tx_gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* rx_gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
+  GPIO_TypeDef* tx_gpio_port = (GPIO_TypeDef*)(AHB2PERIPH_BASE + (GPIO_PORT_B * GPIO_ADDRESS_OFFSET));
 
   HAL_GPIO_Init(rx_gpio_port, &rx_init);
   HAL_GPIO_Init(tx_gpio_port, &tx_init);
@@ -48,7 +48,7 @@ static FotaError s_can_gpio_init() {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_can_init(const FotaCanSettings *settings) {
+FotaError boot_can_init(const FotaCanSettings* settings) {
   if (settings == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -91,7 +91,7 @@ FotaError boot_can_init(const FotaCanSettings *settings) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, size_t len) {
+FotaError boot_can_transmit(uint32_t id, bool extended, const uint8_t* data, size_t len) {
   if (data == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -121,7 +121,7 @@ FotaError boot_can_transmit(uint32_t id, bool extended, const uint8_t *data, siz
   return FOTA_ERROR_INTERNAL_ERROR;
 }
 
-FotaError boot_can_receive(FotaCanMessage *const msg) {
+FotaError boot_can_receive(FotaCanMessage* const msg) {
   if (msg == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }

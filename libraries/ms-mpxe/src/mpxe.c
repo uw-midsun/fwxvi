@@ -20,7 +20,7 @@
 #include "client_interface.h"
 #include "mpxe.h"
 
-static ClientInstance *client = NULL;
+static ClientInstance* client = NULL;
 
 void handle_signal(int sig) {
   printf("Signal %d received, cleaning up...\n", sig);
@@ -33,11 +33,11 @@ void handle_signal(int sig) {
   exit(0);
 }
 
-void mpxe_init(int argc, char *argv[]) {
+void mpxe_init(int argc, char* argv[]) {
   /* Default connection parameters */
-  const char *server_ip = "127.0.0.1";
+  const char* server_ip = "127.0.0.1";
   int server_port = 8080;
-  const char *client_name = NULL;
+  const char* client_name = NULL;
 
   /* Parse command line arguments if provided */
   if (argc >= 2) {

@@ -41,7 +41,7 @@ static VehicleDriveState current_state = VEHICLE_DRIVE_STATE_INVALID;
 static DriveStateRequest current_request = DRIVE_STATE_REQUEST_NONE;
 static RegenState current_regen_state = INVALID_REGEN_STATE;
 
-static SteeringStorage *steering_storage = NULL;
+static SteeringStorage* steering_storage = NULL;
 
 /**
  * @brief   Mirror the current confirmed drive state into steering storage
@@ -125,7 +125,7 @@ static StatusCode drive_state_manager_drive(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode drive_state_manager_init(SteeringStorage *storage) {
+StatusCode drive_state_manager_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

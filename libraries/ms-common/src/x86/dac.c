@@ -47,11 +47,11 @@ StatusCode dac_set_voltage(DacChannel channel, uint16_t voltage_mv) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode dac_get_raw(DacChannel channel, uint16_t *value) {
+StatusCode dac_get_raw(DacChannel channel, uint16_t* value) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode dac_get_voltage(DacChannel channel, uint16_t *voltage_mv) {
+StatusCode dac_get_voltage(DacChannel channel, uint16_t* voltage_mv) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 

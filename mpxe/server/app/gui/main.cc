@@ -18,7 +18,7 @@
 
 /* Intra-component Headers */
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   QApplication app{ argc, argv };
   applyDarkTheme(app);
 
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   MainWindow win{ state };
   win.show();
 
-  JSONWatcher *watcher = new JSONWatcher{ &win };
+  JSONWatcher* watcher = new JSONWatcher{ &win };
 
   /* Watch the directory for adds/removes */
   const QString baseDir = simulationJsonBaseDir();

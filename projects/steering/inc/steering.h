@@ -118,15 +118,15 @@ typedef struct {
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */
   uint8_t light_signal;                     /**< Light signal state (see #LightsSignalState) */
 
-  struct ButtonManager *button_manager;               /**< Button manager */
-  struct ButtonLEDManager *button_led_manager;        /**< Button LED manager */
-  struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
+  struct ButtonManager* button_manager;               /**< Button manager */
+  struct ButtonLEDManager* button_led_manager;        /**< Button LED manager */
+  struct Ws22MotorCanStorage* ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
   DisplayData display_data;                           /**< Data for the display */
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
-  SteeringConfig *config;                    /**< Pointer to the steering configuration data */
-  Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
+  SteeringConfig* config;                    /**< Pointer to the steering configuration data */
+  Ws22MotorCanConfig* ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
 } SteeringStorage;
 
 /**
@@ -136,6 +136,6 @@ typedef struct {
  * @return  STATUS_CODE_OK if steering initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config);
+StatusCode steering_init(SteeringStorage* storage, SteeringConfig* config, Ws22MotorCanConfig* motor_can_config);
 
 /** @} */

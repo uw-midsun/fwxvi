@@ -67,7 +67,7 @@ class NTPClient {
    * @details This function will spawn the NTPClientProcedure thread
    * @param   serverAddress The address of the NTP server to bind to
    */
-  void startSynchronization(const std::string &serverAddress);
+  void startSynchronization(const std::string& serverAddress);
 };
 
 /** @} */

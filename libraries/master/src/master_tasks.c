@@ -26,7 +26,7 @@ void run_10hz_cycle() __attribute__((weak, alias("master_no_op")));
 void run_1hz_cycle() __attribute__((weak, alias("master_no_op")));
 void pre_loop_init() __attribute__((weak, alias("master_no_op")));
 
-void check_late_cycle(Task *task, BaseType_t delay) {
+void check_late_cycle(Task* task, BaseType_t delay) {
   if (delay != pdTRUE) {
     ++s_cycles_over;
     LOG_WARN("%s out of sync!! Currently over by %u cycles\n", task->name, s_cycles_over);
@@ -78,14 +78,14 @@ StatusCode init_master_tasks() {
   return STATUS_CODE_OK;
 }
 
-Task *get_1000hz_task() {
+Task* get_1000hz_task() {
   return master_task_1000hz;
 }
 
-Task *get_10hz_task() {
+Task* get_10hz_task() {
   return master_task_10hz;
 }
 
-Task *get_1hz_task() {
+Task* get_1hz_task() {
   return master_task_1hz;
 }

@@ -44,7 +44,7 @@
 #include "rear_controller_getters.h"
 #endif
 
-static RearControllerStorage *rear_controller_storage = NULL;
+static RearControllerStorage* rear_controller_storage = NULL;
 
 static GpioAddress precharge_address = GPIO_REAR_CONTROLLER_PRECHARGE_MONITOR_GPIO;
 
@@ -60,7 +60,7 @@ static InterruptSettings precharge_settings = {
   INTERRUPT_EDGE_FALLING,
 };
 
-StatusCode precharge_init(Event event, const Task *task, RearControllerStorage *storage) {
+StatusCode precharge_init(Event event, const Task* task, RearControllerStorage* storage) {
 #if (PRECHARGE_MODE == PRECHARGE_MODE_OPTO)
   gpio_init_pin(&precharge_address, GPIO_INPUT_PULL_UP, GPIO_STATE_LOW);
 

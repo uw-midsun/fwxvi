@@ -120,7 +120,7 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
-  const char_T *volatile errorStatus;
+  const char_T* volatile errorStatus;
 };
 
 /* Block signals and states (default storage) */
@@ -137,7 +137,7 @@ extern void soc_ekf_matlab_initialize(void);
 extern void soc_ekf_matlab_step(void);
 
 /* Real-time Model object */
-extern RT_MODEL *const rtM;
+extern RT_MODEL* const rtM;
 
 /*-
  * The generated code includes comments that allow you to trace directly

@@ -14,7 +14,7 @@
 /* Intra-component Headers */
 #include "mpu.h"
 
-StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings) {
+StatusCode mpu_configure_region(MPURegion* region, MPURegionSettings* settings) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 

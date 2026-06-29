@@ -121,7 +121,7 @@ uint32_t unixToNTPTime(time_t unixTime);
  * @brief   Converts an NTP timestamp to its human-readable representation
  * @param   timestamp The NTP timestamp to be converted
  */
-void convertNTPTimestamp(NTPTime &timestamp);
+void convertNTPTimestamp(NTPTime& timestamp);
 
 /**
  * @brief   Dumps the data of an NTP packet for debugging purposes

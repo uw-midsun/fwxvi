@@ -32,12 +32,12 @@ typedef enum {
   NUM_GUI_SCREENS,
 } GuiScreenId;
 
-typedef StatusCode (*GuiScreenCreateFn)(GuiScreen *screen);
+typedef StatusCode (*GuiScreenCreateFn)(GuiScreen* screen);
 typedef void (*GuiScreenDestroyFn)(void);
 
 typedef struct {
   GuiScreenId id;
-  const char *name;
+  const char* name;
   GuiScreenCreateFn create;
   GuiScreenDestroyFn destroy;
 } GuiScreenDescriptor;
@@ -53,7 +53,7 @@ StatusCode gui_screens_init(void);
  * @param   descriptor Screen descriptor to register
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_screens_register(const GuiScreenDescriptor *descriptor);
+StatusCode gui_screens_register(const GuiScreenDescriptor* descriptor);
 
 /**
  * @brief   Show a registered screen
@@ -73,13 +73,13 @@ GuiScreenId gui_screens_get_current(void);
  * @param   screen_id Screen to query
  * @return  Screen root pointer, or NULL when unavailable
  */
-GuiScreen *gui_screens_get_root(GuiScreenId screen_id);
+GuiScreen* gui_screens_get_root(GuiScreenId screen_id);
 
 /**
  * @brief   Get the display name for a registered screen
  * @param   screen_id Screen to query
  * @return  Screen name, or NULL when unavailable
  */
-const char *gui_screens_get_name(GuiScreenId screen_id);
+const char* gui_screens_get_name(GuiScreenId screen_id);
 
 /** @} */

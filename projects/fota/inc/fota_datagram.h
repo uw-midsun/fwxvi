@@ -96,7 +96,7 @@ typedef struct {
  * @param   length Length of data
  * @return  FotaError  Error code
  */
-FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint32_t datagram_id, uint8_t *data, uint32_t length);
+FotaError fota_datagram_init(FotaDatagram* datagram, FotaDatagramType type, uint32_t datagram_id, uint8_t* data, uint32_t length);
 
 /**
  * @brief    Fragment a datagram into packets for transmission
@@ -106,7 +106,7 @@ FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint
  * @param    max_packets Maximum number of packets that can be stored in the array
  * @return   FotaError  Error code
  */
-FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, uint16_t *num_packets, uint16_t max_packets);
+FotaError fota_datagram_to_packets(FotaDatagram* datagram, FotaPacket* packets, uint16_t* num_packets, uint16_t max_packets);
 
 /**
  * @brief    Process a received packet and incorporate it into a datagram
@@ -114,7 +114,7 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
  * @param    packet Received packet
  * @return   FotaError  Error code
  */
-FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *packet);
+FotaError fota_datagram_process_data_packet(FotaDatagram* datagram, FotaPacket* packet);
 
 /**
  * @brief    Process a received header packet and incorporate it into a datagram
@@ -122,7 +122,7 @@ FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *
  * @param    packet Received header packet
  * @return   FotaError  Error code
  */
-FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket *packet);
+FotaError fota_datagram_process_header_packet(FotaDatagram* datagram, FotaPacket* packet);
 
 /**
  * @brief    Check if a datagram has been completely received
@@ -130,13 +130,13 @@ FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket
  * @return   TRUE if datagram is complete
  *           FALSE otherwise
  */
-bool fota_datagram_is_complete(FotaDatagram *datagram);
+bool fota_datagram_is_complete(FotaDatagram* datagram);
 
 /**
  * @brief   Verify the integrity of a complete datagram
  * @param   datagram Datagram to verify
  * @return  FotaError  Error code
  */
-FotaError fota_datagram_verify(FotaDatagram *datagram);
+FotaError fota_datagram_verify(FotaDatagram* datagram);
 
 /** @} */

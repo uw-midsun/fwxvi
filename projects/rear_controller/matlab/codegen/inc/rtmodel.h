@@ -48,7 +48,7 @@
 
 /* Macros generated for backwards compatibility  */
 #ifndef rtmGetStopRequested
-#define rtmGetStopRequested(rtm) ((void *)0)
+#define rtmGetStopRequested(rtm) ((void*)0)
 #endif
 #endif /* RTW_HEADER_rtmodel_h_ */
 

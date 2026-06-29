@@ -44,7 +44,7 @@ static const float test_current_max = 1.0f;
 static const float step_size = (test_current_max - test_current_min) / 5;
 
 #if (MOCK_PEDAL_VALUES == 1)
-static const char *print_state_str(VehicleDriveState state) {
+static const char* print_state_str(VehicleDriveState state) {
   switch (state) {
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       return "VEHICLE_DRIVE_STATE_NEUTRAL";
@@ -156,7 +156,7 @@ TASK(display_ws22_control_data, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

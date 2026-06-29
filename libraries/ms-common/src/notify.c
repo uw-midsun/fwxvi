@@ -16,7 +16,7 @@
 
 #include "log.h"
 
-StatusCode event_from_notification(uint32_t *notification, Event *event) {
+StatusCode event_from_notification(uint32_t* notification, Event* event) {
   if (event == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -39,7 +39,7 @@ StatusCode event_from_notification(uint32_t *notification, Event *event) {
   return STATUS_CODE_INCOMPLETE;
 }
 
-bool notify_check_event(uint32_t *notification, Event event) {
+bool notify_check_event(uint32_t* notification, Event event) {
   if (!notification || event >= INVALID_EVENT) {
     LOG_DEBUG("Provided bad event\n");
     return false;
@@ -53,11 +53,11 @@ bool notify_check_event(uint32_t *notification, Event event) {
   }
 }
 
-StatusCode notify_get(uint32_t *notification) {
+StatusCode notify_get(uint32_t* notification) {
   return notify_wait(notification, 0U);
 }
 
-StatusCode notify_wait(uint32_t *notification, uint32_t ms_to_wait) {
+StatusCode notify_wait(uint32_t* notification, uint32_t ms_to_wait) {
   TickType_t ticks_to_wait = 0U;
   if (ms_to_wait == BLOCK_INDEFINITELY) {
     ticks_to_wait = portMAX_DELAY;
@@ -73,7 +73,7 @@ StatusCode notify_wait(uint32_t *notification, uint32_t ms_to_wait) {
   }
 }
 
-StatusCode notify(Task *task, Event event) {
+StatusCode notify(Task* task, Event event) {
   if (event >= INVALID_EVENT) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -87,7 +87,7 @@ StatusCode notify(Task *task, Event event) {
   }
 }
 
-void notify_from_isr(Task *task, Event event) {
+void notify_from_isr(Task* task, Event event) {
   BaseType_t task_woken = 0U;
   xTaskNotifyFromISR(task->handle, 1U << event, eSetBits, &task_woken);
   portYIELD_FROM_ISR(task_woken);

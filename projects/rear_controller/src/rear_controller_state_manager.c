@@ -20,7 +20,7 @@
 #include "rear_controller_state_manager.h"
 #include "relays.h"
 
-static RearControllerStorage *rear_controller_storage = NULL;
+static RearControllerStorage* rear_controller_storage = NULL;
 static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 
 static StatusCode status;
@@ -76,7 +76,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
   }
 }
 
-StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
+StatusCode rear_controller_state_manager_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

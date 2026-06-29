@@ -59,9 +59,9 @@ static RelayStorage s_relay_storage = {
   .ws22_lv_en = GPIO_REAR_CONTROLLER_MOTOR_LV_ENABLE, /**< Wavesculptor 22 low-voltage enable */
 };
 
-static RearControllerStorage *rear_controller_storage = NULL;
+static RearControllerStorage* rear_controller_storage = NULL;
 
-StatusCode relays_init(RearControllerStorage *storage) {
+StatusCode relays_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

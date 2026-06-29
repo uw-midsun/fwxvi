@@ -19,7 +19,7 @@
 /* Intra-component Headers */
 #include "button.h"
 
-StatusCode button_init(Button *button, ButtonConfig *config) {
+StatusCode button_init(Button* button, ButtonConfig* config) {
   if (button == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -35,7 +35,7 @@ StatusCode button_init(Button *button, ButtonConfig *config) {
   return STATUS_CODE_OK;
 }
 
-StatusCode button_update(Button *button) {
+StatusCode button_update(Button* button) {
   if (button == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

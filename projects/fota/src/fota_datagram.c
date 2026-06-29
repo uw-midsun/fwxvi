@@ -23,7 +23,7 @@
 #define FOTA_DATAGRAM_BYTE_MASK 0xFFU
 #define FOTA_DATAGRAM_WORD_SIZE 4U
 
-FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint32_t datagram_id, uint8_t *data, uint32_t length) {
+FotaError fota_datagram_init(FotaDatagram* datagram, FotaDatagramType type, uint32_t datagram_id, uint8_t* data, uint32_t length) {
   if (datagram == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -52,7 +52,7 @@ FotaError fota_datagram_init(FotaDatagram *datagram, FotaDatagramType type, uint
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, uint16_t *num_packets, uint16_t max_packets) {
+FotaError fota_datagram_to_packets(FotaDatagram* datagram, FotaPacket* packets, uint16_t* num_packets, uint16_t max_packets) {
   if (datagram == NULL || packets == NULL || num_packets == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -62,7 +62,7 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
   }
 
   /* Header packet */
-  FotaPacket *header = &packets[0];
+  FotaPacket* header = &packets[0];
   fota_error_ok_or_return(fota_packet_init(header, FOTA_PACKET_TYPE_HEADER, 0U, FOTA_DATAGRAM_HEADER_PAYLOAD_SIZE));
 
   /* Total length encoded in little-endian */
@@ -90,7 +90,7 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
 
   /* Data packets */
   for (uint16_t i = 0U; i < datagram->header.num_packets; ++i) {
-    FotaPacket *cur = &packets[i + 1U];
+    FotaPacket* cur = &packets[i + 1U];
     uint32_t offset = i * FOTA_PACKET_PAYLOAD_SIZE;
     uint32_t remaining = datagram->header.total_length - offset;
     uint16_t payload_len = (remaining < FOTA_PACKET_PAYLOAD_SIZE) ? (uint16_t)remaining : FOTA_PACKET_PAYLOAD_SIZE;
@@ -106,7 +106,7 @@ FotaError fota_datagram_to_packets(FotaDatagram *datagram, FotaPacket *packets, 
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *packet) {
+FotaError fota_datagram_process_data_packet(FotaDatagram* datagram, FotaPacket* packet) {
   if (datagram == NULL || packet == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -131,7 +131,7 @@ FotaError fota_datagram_process_data_packet(FotaDatagram *datagram, FotaPacket *
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket *packet) {
+FotaError fota_datagram_process_header_packet(FotaDatagram* datagram, FotaPacket* packet) {
   if (datagram == NULL || packet == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -158,7 +158,7 @@ FotaError fota_datagram_process_header_packet(FotaDatagram *datagram, FotaPacket
   return FOTA_ERROR_SUCCESS;
 }
 
-bool fota_datagram_is_complete(FotaDatagram *datagram) {
+bool fota_datagram_is_complete(FotaDatagram* datagram) {
   if (datagram == NULL) {
     return false;
   }
@@ -167,7 +167,7 @@ bool fota_datagram_is_complete(FotaDatagram *datagram) {
   return datagram->is_complete;
 }
 
-FotaError fota_datagram_verify(FotaDatagram *datagram) {
+FotaError fota_datagram_verify(FotaDatagram* datagram) {
   if (datagram == NULL) {
     return FOTA_ERROR_INVALID_ARGS;
   }

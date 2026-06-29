@@ -26,7 +26,7 @@
 static PacketManager packet_manager;
 static UartSettings network_uart_settings = { .tx = { .port = GPIO_PORT_A, .pin = 2U }, .rx = { .port = GPIO_PORT_A, .pin = 3U }, .baudrate = 115200U, .flow_control = UART_FLOW_CONTROL_NONE };
 
-static void fota_datagram_complete_cb(FotaDatagram *datagram) {
+static void fota_datagram_complete_cb(FotaDatagram* datagram) {
   switch (datagram->header.target_node_id) {
     case FOTA_RF_BOARD_NODE_ID: {
       /* Trigger DFU */

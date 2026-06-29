@@ -102,7 +102,7 @@ ClutEntry clut_get_gui_color(GuiColorId color_id);
  * @brief   Get the default indexed CLUT table
  * @return  Pointer to the default CLUT table
  */
-ClutEntry *clut_get_table(void);
+ClutEntry* clut_get_table(void);
 
 /**
  * @brief   Return the red component of a color entry

@@ -18,7 +18,7 @@
 #define MPU_REGION_MIN_SIZE 32U
 #define IS_POWER_OF_TWO(x) (((x) != 0) && (((x) & ((x)-1U)) == 0))
 
-static StatusCode s_validate_region_settings(MPURegion *region, MPURegionSettings *settings) {
+static StatusCode s_validate_region_settings(MPURegion* region, MPURegionSettings* settings) {
   /* Validate region number */
   if (region->number >= NUM_MPU_REGIONS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -50,7 +50,7 @@ static StatusCode s_validate_region_settings(MPURegion *region, MPURegionSetting
   return STATUS_CODE_OK;
 }
 
-StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings) {
+StatusCode mpu_configure_region(MPURegion* region, MPURegionSettings* settings) {
   if ((region == NULL) || (settings == NULL)) {
     return STATUS_CODE_INVALID_ARGS;
   }

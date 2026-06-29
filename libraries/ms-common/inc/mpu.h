@@ -56,7 +56,7 @@ typedef struct {
  * @return  STATUS_CODE_OK if MPU initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode mpu_configure_region(MPURegion *region, MPURegionSettings *settings);
+StatusCode mpu_configure_region(MPURegion* region, MPURegionSettings* settings);
 
 /**
  * @brief   Enables given region

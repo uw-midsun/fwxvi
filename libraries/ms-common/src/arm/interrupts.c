@@ -38,7 +38,7 @@ StatusCode interrupt_nvic_enable(uint8_t irq_channel, InterruptPriority priority
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_enable(GpioAddress *address, const InterruptSettings *settings) {
+StatusCode interrupt_exti_enable(GpioAddress* address, const InterruptSettings* settings) {
   if (settings == NULL || address == NULL || settings->type >= NUM_INTERRUPT_TYPES || settings->edge >= NUM_INTERRUPT_EDGES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -82,7 +82,7 @@ StatusCode interrupt_exti_trigger(uint8_t line) {
   return STATUS_CODE_OK;
 }
 
-StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t *pending_bit) {
+StatusCode interrupt_exti_get_pending(uint8_t line, uint8_t* pending_bit) {
   if (line >= NUM_STM32L433X_INTERRUPT_CHANNELS || pending_bit == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

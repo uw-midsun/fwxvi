@@ -120,7 +120,7 @@ typedef char_T byte_T;
 #define MAX_uint64_T ((uint64_T)(0xFFFFFFFFFFFFFFFFULL))
 
 /* Block D-Work pointer type */
-typedef void *pointer_T;
+typedef void* pointer_T;
 
 #endif /* RTWTYPES_H */
 

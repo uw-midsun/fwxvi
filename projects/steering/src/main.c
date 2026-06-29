@@ -45,6 +45,7 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_motor_back_emf_enabled = false,
   .ws22_rail_15v_enabled = false,
   .ws22_temperature_enabled = true,
+  .ws22_drive_cmd_enabled = false,
 };
 
 void pre_loop_init() {}
@@ -73,7 +74,7 @@ void run_1hz_cycle() {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

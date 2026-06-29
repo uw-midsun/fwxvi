@@ -43,7 +43,7 @@
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode display_init(SteeringStorage *storage);
+StatusCode display_init(SteeringStorage* storage);
 
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();

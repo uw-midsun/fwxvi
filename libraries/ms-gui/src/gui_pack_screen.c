@@ -35,11 +35,11 @@ static bool s_pack_widgets_initialized;
 static LabelWidget s_speed_label;
 static LabelWidget s_cc_label;
 
-static void s_format_cell(char *buf, uint8_t idx) {
+static void s_format_cell(char* buf, uint8_t idx) {
   snprintf(buf, PACK_CELL_TEXT_LEN, "C%02u\n%u.%03u", idx + 1U, s_cell_voltages[idx] / 10000U, (s_cell_voltages[idx] % 10000U) / 10U);
 }
 
-static StatusCode s_create_table(GuiScreen *screen) {
+static StatusCode s_create_table(GuiScreen* screen) {
   const TableWidgetConfig config = {
     .position = {
       .type = WIDGET_POSITION_ALIGN,
@@ -56,7 +56,7 @@ static StatusCode s_create_table(GuiScreen *screen) {
   return lvgl_widgets_create_table(&s_pack_table, &config, screen);
 }
 
-static StatusCode s_create_speed_label(GuiScreen *screen) {
+static StatusCode s_create_speed_label(GuiScreen* screen) {
   const LabelWidgetConfig speed_label_config = {
     .size = { .width = 75, .height = 50 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_LEFT, .x_offset = 0, .y_offset = 0 } },
@@ -74,7 +74,7 @@ static StatusCode s_create_speed_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_speed_label, &speed_label_config, screen);
 }
 
-static StatusCode s_create_cc_label(GuiScreen *screen) {
+static StatusCode s_create_cc_label(GuiScreen* screen) {
   const LabelWidgetConfig cruise_control_label_config = {
     .size = { .width = 75, .height = 20 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_LEFT, .x_offset = 0, .y_offset = 40 } },
@@ -92,7 +92,7 @@ static StatusCode s_create_cc_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
-StatusCode gui_pack_screen_init(GuiScreen *screen) {
+StatusCode gui_pack_screen_init(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -182,7 +182,7 @@ StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh
 
 #else
 
-StatusCode gui_pack_screen_init(GuiScreen *screen) {
+StatusCode gui_pack_screen_init(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }

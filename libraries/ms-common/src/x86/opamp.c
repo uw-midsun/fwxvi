@@ -36,7 +36,7 @@ StatusCode opamp_init(void) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
-StatusCode opamp_configure(OpampInstance instance, OpampConfig *config) {
+StatusCode opamp_configure(OpampInstance instance, OpampConfig* config) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 

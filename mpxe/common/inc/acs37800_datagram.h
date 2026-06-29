@@ -44,7 +44,7 @@ class Acs37800 {
   /**
    * @brief Constructs a Acs37800 object with provided payload data
    */
-  explicit Acs37800(Payload &data);
+  explicit Acs37800(Payload& data);
 
   /**
    * @brief Default constructor for Acs37800 object
@@ -56,13 +56,13 @@ class Acs37800 {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing acs37800 data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief Deserializes ltc acs37800 data from payload string
    * @param acs37800DatagramPayload String containing serialized Ltc Acs37800 data
    */
-  void deserialize(std::string &acs37800DatagramPayload);
+  void deserialize(std::string& acs37800DatagramPayload);
 
   /**
    * @brief   Sets voltage

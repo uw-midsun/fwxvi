@@ -26,7 +26,7 @@ static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
 }
 
-static void s_apply_position(lv_obj_t *obj, const WidgetPosition *position) {
+static void s_apply_position(lv_obj_t* obj, const WidgetPosition* position) {
   if (obj == NULL || position == NULL) {
     return;
   }
@@ -45,7 +45,7 @@ static void s_apply_position(lv_obj_t *obj, const WidgetPosition *position) {
   }
 }
 
-StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, GuiScreen *parent) {
+StatusCode lvgl_image_create(LvglImage* image, const LvglImageConfig* config, GuiScreen* parent) {
   if (image == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -73,7 +73,7 @@ StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, Gu
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_set_source(LvglImage *image, const void *source) {
+StatusCode lvgl_image_set_source(LvglImage* image, const void* source) {
   if (image == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -85,7 +85,7 @@ StatusCode lvgl_image_set_source(LvglImage *image, const void *source) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_set_recolor(LvglImage *image, GuiColorId color_id) {
+StatusCode lvgl_image_set_recolor(LvglImage* image, GuiColorId color_id) {
   if (image == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -98,7 +98,7 @@ StatusCode lvgl_image_set_recolor(LvglImage *image, GuiColorId color_id) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_clear_recolor(LvglImage *image) {
+StatusCode lvgl_image_clear_recolor(LvglImage* image) {
   if (image == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -111,7 +111,7 @@ StatusCode lvgl_image_clear_recolor(LvglImage *image) {
 }
 
 #else
-StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, GuiScreen *parent) {
+StatusCode lvgl_image_create(LvglImage* image, const LvglImageConfig* config, GuiScreen* parent) {
   (void)config;
   (void)parent;
   if (image != NULL) {
@@ -120,19 +120,19 @@ StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, Gu
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_set_source(LvglImage *image, const void *source) {
+StatusCode lvgl_image_set_source(LvglImage* image, const void* source) {
   (void)image;
   (void)source;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_set_recolor(LvglImage *image, GuiColorId color_id) {
+StatusCode lvgl_image_set_recolor(LvglImage* image, GuiColorId color_id) {
   (void)image;
   (void)color_id;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_image_clear_recolor(LvglImage *image) {
+StatusCode lvgl_image_clear_recolor(LvglImage* image) {
   (void)image;
   return STATUS_CODE_OK;
 }

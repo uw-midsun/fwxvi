@@ -50,7 +50,7 @@ void CanListener::listenCanBusProcedure() {
   addr.can_family = AF_CAN;
   addr.can_ifindex = ifr.ifr_ifindex;
 
-  if (bind(m_rawCanSocket, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+  if (bind(m_rawCanSocket, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
     throw std::runtime_error("Error binding raw CAN socket");
   }
 
@@ -86,24 +86,24 @@ void CanListener::updateJSONProcedure() {
   }
 }
 
-void *listenCanBusWrapper(void *param) {
-  CanListener *canListener = static_cast<CanListener *>(param);
+void* listenCanBusWrapper(void* param) {
+  CanListener* canListener = static_cast<CanListener*>(param);
 
   try {
     canListener->listenCanBusProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Can Listener Listener Thread Error: " << e.what() << std::endl;
   }
 
   return nullptr;
 }
 
-void *updateJSONWrapper(void *param) {
-  CanListener *canListener = static_cast<CanListener *>(param);
+void* updateJSONWrapper(void* param) {
+  CanListener* canListener = static_cast<CanListener*>(param);
 
   try {
     canListener->updateJSONProcedure();
-  } catch (std::exception &e) {
+  } catch (std::exception& e) {
     std::cerr << "Can Listener Update JSON Thread Error: " << e.what() << std::endl;
   }
 

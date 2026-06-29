@@ -68,7 +68,7 @@ StatusCode flash_init();
  *          STATUS_CODE_OUT_OF_RANGE if address is out of range
  *          STATUS_CODE_INVALID_ARGS if address or read bytes is not aligned
  */
-StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len);
+StatusCode flash_read(uintptr_t address, uint8_t* buffer, size_t buffer_len);
 
 /**
  * @brief   Write a buffer of data into the flash memory
@@ -81,7 +81,7 @@ StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len);
  *          STATUS_CODE_OUT_OF_RANGE if address is out of range
  *          STATUS_CODE_INTERNAL_ERROR if flash write failed
  */
-StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len);
+StatusCode flash_write(uintptr_t address, uint8_t* buffer, size_t buffer_len);
 
 /**
  * @brief   Erase pages of flash memory

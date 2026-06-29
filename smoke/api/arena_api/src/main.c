@@ -45,8 +45,8 @@ TASK(arena_api, TASK_STACK_1024) {
   }
 
   while (true) {
-    MyStruct *obj = (MyStruct *)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
-    MyStruct *obj_2 = (MyStruct *)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
+    MyStruct* obj = (MyStruct*)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
+    MyStruct* obj_2 = (MyStruct*)arena_alloc(&arena_obj, sizeof(MyStruct), _Alignof(MyStruct), 1);
 
     if (obj == NULL || obj_2 == NULL) {
       LOG_DEBUG("ERROR arena_alloc");
@@ -68,7 +68,7 @@ TASK(arena_api, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

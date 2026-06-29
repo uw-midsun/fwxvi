@@ -42,7 +42,7 @@ typedef enum {
  * @brief   Initialize state variables and timer
  * @param   storage Pointer to the SteeringStorage instance
  */
-void lights_signal_manager_init(SteeringStorage *storage);
+void lights_signal_manager_init(SteeringStorage* storage);
 
 /**
  * @brief   Make a request to change the signal state

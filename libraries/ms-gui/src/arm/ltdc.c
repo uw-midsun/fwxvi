@@ -23,15 +23,15 @@
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 
-static LtdcSettings *s_ltdc_settings;
+static LtdcSettings* s_ltdc_settings;
 static LTDC_HandleTypeDef s_ltdc_handle;
 static bool is_initialized = false;
-static ClutEntry *s_default_clut;
+static ClutEntry* s_default_clut;
 
 /**
  * @brief   Configure GPIO pins for LTDC
  */
-static StatusCode s_configure_gpio(LtdcGpioConfig *config) {
+static StatusCode s_configure_gpio(LtdcGpioConfig* config) {
   if (config == NULL) {
     return STATUS_CODE_OK; /* Skip if no GPIO config provided */
   }
@@ -164,7 +164,7 @@ static StatusCode s_configure_ltdc_pixel_clock(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ltdc_init(LtdcSettings *settings) {
+StatusCode ltdc_init(LtdcSettings* settings) {
   if (is_initialized) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
@@ -227,13 +227,13 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  ClutEntry *clut = s_ltdc_settings->clut != NULL ? s_ltdc_settings->clut : s_default_clut;
+  ClutEntry* clut = s_ltdc_settings->clut != NULL ? s_ltdc_settings->clut : s_default_clut;
   uint16_t clut_size = s_ltdc_settings->clut != NULL ? s_ltdc_settings->clut_size : NUM_COLOR_INDICES;
   if (clut == NULL || color_index >= clut_size) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  uint16_t *framebuffer = (uint16_t *)s_ltdc_settings->framebuffer;
+  uint16_t* framebuffer = (uint16_t*)s_ltdc_settings->framebuffer;
   uint32_t offset = (y * s_ltdc_settings->width) + x;
   framebuffer[offset] = clut_entry_rgb565(clut[color_index]);
 
@@ -242,7 +242,7 @@ StatusCode ltdc_set_pixel(uint16_t x, uint16_t y, ColorIndex color_index) {
 
 #else
 
-StatusCode ltdc_init(LtdcSettings *settings) {
+StatusCode ltdc_init(LtdcSettings* settings) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 

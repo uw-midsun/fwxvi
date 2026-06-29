@@ -20,7 +20,7 @@
 /*
 -------------------------------------------------------- */
 
-VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map, int min_mv, int max_mv, QObject *parent) :
+VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant>& data_map, int min_mv, int max_mv, QObject* parent) :
     QAbstractTableModel{ parent },
     m_min_mv{ min_mv },
     m_max_mv{ std::max(max_mv, min_mv + 1) } /* ensure max > min */
@@ -47,7 +47,7 @@ VoltageTableModel::VoltageTableModel(const std::map<QString, QVariant> &data_map
   }
 }
 
-int VoltageTableModel::rowCount(const QModelIndex &parent) const {
+int VoltageTableModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -55,7 +55,7 @@ int VoltageTableModel::rowCount(const QModelIndex &parent) const {
   }
 }
 
-int VoltageTableModel::columnCount(const QModelIndex &parent) const {
+int VoltageTableModel::columnCount(const QModelIndex& parent) const {
   if (parent.isValid()) {
     return 0;
   } else {
@@ -63,12 +63,12 @@ int VoltageTableModel::columnCount(const QModelIndex &parent) const {
   }
 }
 
-QVariant VoltageTableModel::data(const QModelIndex &index, int role) const {
+QVariant VoltageTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();
   }
 
-  const Row &r = m_rows[static_cast<std::size_t>(index.row())];
+  const Row& r = m_rows[static_cast<std::size_t>(index.row())];
   bool colorize = (index.column() == 1 || index.column() == 2 || index.column() == 3);
 
   if (role == Qt::DisplayRole) {
@@ -125,7 +125,7 @@ void VoltageTableModel::setRange(int min_mv, int max_mv) {
   m_max_mv = std::max(max_mv, min_mv + 1);
 
   for (std::size_t i = 0; i < m_rows.size(); ++i) {
-    Row &r = m_rows[i];
+    Row& r = m_rows[i];
 
     if (r.mv < m_min_mv) {
       r.mv = m_min_mv;
@@ -142,7 +142,7 @@ void VoltageTableModel::setRange(int min_mv, int max_mv) {
   }
 }
 
-int VoltageTableModel::toIntMV(const QVariant &var) {
+int VoltageTableModel::toIntMV(const QVariant& var) {
   if (!var.isValid() || var.isNull()) {
     return 0;
   }

@@ -21,6 +21,6 @@
  * @{
  */
 
-void mpxe_init(int argc, char *argv[]);
+void mpxe_init(int argc, char* argv[]);
 
 /** @} */

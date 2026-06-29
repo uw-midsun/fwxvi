@@ -87,7 +87,7 @@ StatusCode dac_set_voltage(DacChannel channel, uint16_t voltage_mv);
  *          STATUS_CODE_INVALID_ARGS if parameters are invalid
  *          STATUS_CODE_UNINITIALIZED if DAC not initialized or channel not enabled
  */
-StatusCode dac_get_raw(DacChannel channel, uint16_t *value);
+StatusCode dac_get_raw(DacChannel channel, uint16_t* value);
 
 /**
  * @brief   Read back the current DAC setting (voltage in mV)
@@ -97,7 +97,7 @@ StatusCode dac_get_raw(DacChannel channel, uint16_t *value);
  *          STATUS_CODE_INVALID_ARGS if parameters are invalid
  *          STATUS_CODE_UNINITIALIZED if DAC not initialized or channel not enabled
  */
-StatusCode dac_get_voltage(DacChannel channel, uint16_t *voltage_mv);
+StatusCode dac_get_voltage(DacChannel channel, uint16_t* voltage_mv);
 
 /**
  * @brief   Disable a specific DAC channel

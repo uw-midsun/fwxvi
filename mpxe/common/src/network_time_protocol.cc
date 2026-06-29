@@ -26,7 +26,7 @@ uint32_t unixToNTPTime(time_t unixTime) {
   return unixTime + NTP_UNIX_EPOCH_DIFF;
 }
 
-void convertNTPTimestamp(NTPTime &timestamp) {
+void convertNTPTimestamp(NTPTime& timestamp) {
   timestamp.seconds = ntohl(timestamp.seconds);
   timestamp.fraction = ntohl(timestamp.fraction);
 }
@@ -36,9 +36,9 @@ void dumpNTPPacketData(const NTPPacket packet) {
   uint8_t version = (packet.flags >> NTP_VERSION_OFFSET) & 0x07U;
   uint8_t mode = packet.flags & 0x07U;
 
-  const char *leapStrings[] = { "No warning", "Last minute has 61 seconds", "Last minute has 59 seconds", "Alarm: clock not synchronized" };
+  const char* leapStrings[] = { "No warning", "Last minute has 61 seconds", "Last minute has 59 seconds", "Alarm: clock not synchronized" };
 
-  const char *modeStrings[] = { "Reserved", "Symmetric Active", "Symmetric Passive", "Client", "Server", "Broadcast", "NTP Control Message", "Private Use" };
+  const char* modeStrings[] = { "Reserved", "Symmetric Active", "Symmetric Passive", "Client", "Server", "Broadcast", "NTP Control Message", "Private Use" };
 
   std::cout << "NTP Packet Dump:" << std::endl;
   std::cout << "----------------" << std::endl;

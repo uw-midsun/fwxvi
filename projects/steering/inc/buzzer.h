@@ -125,7 +125,7 @@ StatusCode buzzer_beep(void);
  * @param   melody Array of Note structures, terminated by {NOTE_REST, 0}
  * @return  STATUS_CODE_OK on success
  */
-StatusCode buzzer_play_melody(Note *melody);
+StatusCode buzzer_play_melody(Note* melody);
 
 /**
  * @brief   Play predefined startup melody

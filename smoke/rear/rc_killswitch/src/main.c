@@ -38,7 +38,7 @@ static InterruptSettings s_killswitch_settings = {
   INTERRUPT_EDGE_FALLING,
 };
 
-static StatusCode killswitch_api_test_init(Event event, Task *task) {
+static StatusCode killswitch_api_test_init(Event event, Task* task) {
   StatusCode status = STATUS_CODE_OK;
 
   /* Initialize GPIO pin as input with pull-down */
@@ -120,7 +120,7 @@ TASK(killswitch, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {

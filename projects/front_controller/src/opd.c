@@ -27,13 +27,13 @@
 #define REGEN_BRAKING_VOLTAGE_RAMP_OFFSET_MV 50.0f
 #define MAX_CELL_VOLTAGE 4200.0f
 
-static FrontControllerStorage *front_controller_storage;
-static AccelPedalStorage *accel_pedal_storage;
+static FrontControllerStorage* front_controller_storage;
+static AccelPedalStorage* accel_pedal_storage;
 
 static OpdStorage s_one_pedal_storage = { 0U };
 static bool pts_compare_handler(float p, float s, PtsRelationType relation_type);
 #if (IS_OPD_ENABLED == 1)
-static StatusCode opd_limit_regen_when_charged(float *calculated_reading);
+static StatusCode opd_limit_regen_when_charged(float* calculated_reading);
 #endif
 
 static bool pts_compare_handler(float p, float s, PtsRelationType relation_type) {
@@ -68,7 +68,7 @@ static bool pts_compare_handler(float p, float s, PtsRelationType relation_type)
  * Linearly reduce regenerative braking when it's within a certain delta of the max cell voltage
  */
 #if (IS_OPD_ENABLED == 1)
-static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
+static StatusCode opd_limit_regen_when_charged(float* calculated_reading) {
   if (!front_controller_storage->regen_enabled) {
     return STATUS_CODE_OK;
   }
@@ -86,7 +86,7 @@ static StatusCode opd_limit_regen_when_charged(float *calculated_reading) {
 }
 #endif
 
-StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading) {
+StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading) {
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
 
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
@@ -102,7 +102,7 @@ StatusCode opd_linear_calculate(float pedal_percentage, PtsRelationType relation
   return STATUS_CODE_OK;
 }
 
-StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading) {
+StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading) {
   float current_speed = (float)((float)front_controller_storage->vehicle_speed_kph / (float)s_one_pedal_storage.max_vehicle_speed_kph);
   float m;
   if (pts_compare_handler(pedal_percentage, current_speed, relation_type)) {
@@ -117,7 +117,7 @@ StatusCode opd_quadratic_calculate(float pedal_percentage, PtsRelationType relat
   return STATUS_CODE_OK;
 }
 
-StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float *calculated_reading, CurveType curve_type) {
+StatusCode opd_calculate_handler(float pedal_percentage, PtsRelationType relation_type, float* calculated_reading, CurveType curve_type) {
   switch (curve_type) {
     case CURVE_TYPE_LINEAR:
       return opd_linear_calculate(pedal_percentage, relation_type, calculated_reading);
@@ -167,7 +167,7 @@ StatusCode opd_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode opd_init(FrontControllerStorage *storage) {
+StatusCode opd_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

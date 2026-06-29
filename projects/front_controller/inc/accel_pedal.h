@@ -51,7 +51,7 @@ StatusCode accel_pedal_run();
  * @return  STATUS_CODE_OK if pedal is initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is provided
  */
-StatusCode accel_pedal_init(FrontControllerStorage *storage);
+StatusCode accel_pedal_init(FrontControllerStorage* storage);
 
 /**
  * @brief   Enables adc, dac, and opamp

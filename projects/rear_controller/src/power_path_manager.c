@@ -26,7 +26,7 @@
 #define POWER_PATH_MANAGER_R1_OHMS 10000
 #define POWER_PATH_MANAGER_R2_OHMS 3300
 
-static RearControllerStorage *rear_controller_storage = NULL;
+static RearControllerStorage* rear_controller_storage = NULL;
 
 static GpioAddress pcs_vsense_gpio = GPIO_REAR_CONTROLLER_PCS_VSENSE;
 static GpioAddress pcs_isense_gpio = GPIO_REAR_CONTROLLER_PCS_ISENSE;
@@ -38,7 +38,7 @@ static GpioAddress aux_valid1 = GPIO_REAR_CONTROLLER_AUX_VALID1;
 static GpioAddress aux_valid2 = GPIO_REAR_CONTROLLER_AUX_VALID2;
 
 /* V sense */
-static StatusCode s_power_path_voltage_sense(GpioAddress *voltage_address, uint32_t *vin_mV) {
+static StatusCode s_power_path_voltage_sense(GpioAddress* voltage_address, uint32_t* vin_mV) {
   uint16_t v_read_mV = 0;
 
   StatusCode status = adc_read_converted(voltage_address, &v_read_mV);
@@ -54,7 +54,7 @@ static StatusCode s_power_path_voltage_sense(GpioAddress *voltage_address, uint3
 }
 
 /* I sense */
-static StatusCode s_power_path_current_sense(GpioAddress *current_address, int32_t *current_mA) {
+static StatusCode s_power_path_current_sense(GpioAddress* current_address, int32_t* current_mA) {
   uint16_t v_read_mV = 0;
 
   StatusCode status = adc_read_converted(current_address, &v_read_mV);
@@ -79,7 +79,7 @@ static bool s_check_valid(GpioAddress pin_address) {
   }
 }
 
-StatusCode power_path_manager_init(RearControllerStorage *storage) {
+StatusCode power_path_manager_init(RearControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

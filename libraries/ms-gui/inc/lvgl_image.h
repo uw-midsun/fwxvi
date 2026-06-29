@@ -37,14 +37,14 @@ typedef void LvglImageObject;
 
 /** @brief   Runtime handle for an image widget */
 typedef struct {
-  LvglImageObject *image; /**< LVGL image object */
+  LvglImageObject* image; /**< LVGL image object */
 } LvglImage;
 
 /** @brief   Configuration used when creating an image widget */
 typedef struct {
   WidgetSize size;             /**< Bounding size of the image widget, or content-sized when zero */
   WidgetPosition position;     /**< Placement of the image widget on screen */
-  const void *source;          /**< LVGL image source, such as an lv_image_dsc_t pointer or symbol */
+  const void* source;          /**< LVGL image source, such as an lv_image_dsc_t pointer or symbol */
   bool recolor_enabled;        /**< Whetrher to recolor the image source */
   GuiColorId recolor_color_id; /**< Color used for image recoloring when enabled */
 } LvglImageConfig;
@@ -56,7 +56,7 @@ typedef struct {
  * @param   parent Parent LVGL object that will own the image
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, GuiScreen *parent);
+StatusCode lvgl_image_create(LvglImage* image, const LvglImageConfig* config, GuiScreen* parent);
 
 /**
  * @brief   Update the source displayed by an image widget
@@ -64,7 +64,7 @@ StatusCode lvgl_image_create(LvglImage *image, const LvglImageConfig *config, Gu
  * @param   source LVGL image source, such as an lv_imge_dsc_t pointer or symbol
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_image_set_source(LvglImage *image, const void *source);
+StatusCode lvgl_image_set_source(LvglImage* image, const void* source);
 
 /**
  * @brief   Apply a semantic GUI color as an image recolor
@@ -72,13 +72,13 @@ StatusCode lvgl_image_set_source(LvglImage *image, const void *source);
  * @param   color_id Semantic color identifier
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_image_set_recolor(LvglImage *image, GuiColorId color_id);
+StatusCode lvgl_image_set_recolor(LvglImage* image, GuiColorId color_id);
 
 /**
  * @brief   Disable image recoloring
  * @param   image Pointer to the runtime image object
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode lvgl_image_clear_recolor(LvglImage *image);
+StatusCode lvgl_image_clear_recolor(LvglImage* image);
 
 /** @} */

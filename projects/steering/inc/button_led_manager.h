@@ -27,26 +27,16 @@
 #define BUTTON_LED_MANAGER_BITS_PER_LED (24U)
 #define BUTTON_LED_MANAGER_DMA_BUF_LEN (512U)
 
-#define BUTTON_LED_MANAGER_COLOR_RED \
-  { 255, 0, 0 }
-#define BUTTON_LED_MANAGER_COLOR_GREEN \
-  { 0, 255, 0 }
-#define BUTTON_LED_MANAGER_COLOR_BLUE \
-  { 0, 0, 255 }
-#define BUTTON_LED_MANAGER_COLOR_YELLOW \
-  { 255, 200, 0 }
-#define BUTTON_LED_MANAGER_COLOR_ORANGE \
-  { 255, 100, 0 }
-#define BUTTON_LED_MANAGER_COLOR_PURPLE \
-  { 160, 0, 255 }
-#define BUTTON_LED_MANAGER_COLOR_CYAN \
-  { 0, 255, 255 }
-#define BUTTON_LED_MANAGER_COLOR_WHITE \
-  { 255, 255, 255 }
-#define BUTTON_LED_MANAGER_COLOR_PINK \
-  { 255, 80, 150 }
-#define BUTTON_LED_MANAGER_COLOR_OFF \
-  { 0, 0, 0 }
+#define BUTTON_LED_MANAGER_COLOR_RED { 255, 0, 0 }
+#define BUTTON_LED_MANAGER_COLOR_GREEN { 0, 255, 0 }
+#define BUTTON_LED_MANAGER_COLOR_BLUE { 0, 0, 255 }
+#define BUTTON_LED_MANAGER_COLOR_YELLOW { 255, 200, 0 }
+#define BUTTON_LED_MANAGER_COLOR_ORANGE { 255, 100, 0 }
+#define BUTTON_LED_MANAGER_COLOR_PURPLE { 160, 0, 255 }
+#define BUTTON_LED_MANAGER_COLOR_CYAN { 0, 255, 255 }
+#define BUTTON_LED_MANAGER_COLOR_WHITE { 255, 255, 255 }
+#define BUTTON_LED_MANAGER_COLOR_PINK { 255, 80, 150 }
+#define BUTTON_LED_MANAGER_COLOR_OFF { 0, 0, 0 }
 
 typedef struct {
   uint8_t r;
@@ -67,7 +57,7 @@ typedef struct ButtonLEDManager {
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode button_led_manager_init(SteeringStorage *storage);
+StatusCode button_led_manager_init(SteeringStorage* storage);
 
 /**
  * @brief   Update a button's LED color (marks for update but doesn't transmit immediately)

@@ -27,7 +27,7 @@
 /* LOCAL HELPERS
 -------------------------------------------------------- */
 
-static QString valOrDash(const std::map<QString, QVariant> &m, const QString &k) {
+static QString valOrDash(const std::map<QString, QVariant>& m, const QString& k) {
   std::map<QString, QVariant>::const_iterator it = m.find(k);
   if (it != m.end()) {
     return it->second.toString();
@@ -39,8 +39,8 @@ static QString valOrDash(const std::map<QString, QVariant> &m, const QString &k)
 /*
 -------------------------------------------------------- */
 
-QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidget *parent) {
-  QLabel *label = new QLabel(text, parent);
+QLabel* OverviewPage::makeLabel(const QString& text, bool bold, bool mono, QWidget* parent) {
+  QLabel* label = new QLabel(text, parent);
   QString styles;
 
   if (bold) {
@@ -56,7 +56,7 @@ QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
   return label;
 }
 
-OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent) :
+OverviewPage::OverviewPage(const std::map<QString, QVariant>& payload, const QStringList& clientFiles, int currentIndex, QWidget* parent) :
     QWidget{ parent },
     m_clients{ nullptr },
     m_project_lbl{ nullptr },
@@ -69,8 +69,8 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
     m_client_files{ clientFiles },
     m_payload{ payload } {
   /* Top row client selector */
-  QWidget *top = new QWidget(this);
-  QHBoxLayout *h = new QHBoxLayout(top);
+  QWidget* top = new QWidget(this);
+  QHBoxLayout* h = new QHBoxLayout(top);
   h->setContentsMargins(0, 0, 0, 0);
   h->addWidget(new QLabel(QStringLiteral("Clients:"), top));
 
@@ -89,8 +89,8 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   h->addStretch(1);
 
   /* Simulation details */
-  QWidget *widget = new QWidget(this);
-  QFormLayout *form = new QFormLayout(widget);
+  QWidget* widget = new QWidget(this);
+  QFormLayout* form = new QFormLayout(widget);
 
   m_project_lbl = makeLabel(QStringLiteral("-"), true, false, widget);
   m_hardware_lbl = makeLabel(QStringLiteral("-"), false, false, widget);
@@ -99,7 +99,7 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
 
   /* Status row: "● RUNNING" */
   m_status_widget = new QWidget(widget);
-  QHBoxLayout *status_h = new QHBoxLayout(m_status_widget);
+  QHBoxLayout* status_h = new QHBoxLayout(m_status_widget);
   status_h->setContentsMargins(0, 0, 0, 0);
   m_status_dot = new QLabel(QStringLiteral("●"), m_status_widget);
   m_status_text = makeLabel(QStringLiteral("UNKNOWN"), true, false, m_status_widget);
@@ -114,10 +114,10 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   form->addRow(QStringLiteral("Created At:"), m_created_label);
 
   /* Commands table */
-  CommandTableModel *cmd_model = new CommandTableModel(MARKDOWN_PATH, this);
+  CommandTableModel* cmd_model = new CommandTableModel(MARKDOWN_PATH, this);
   TableWithSearch cmds = makeSearchableTable(cmd_model, this);
   if (cmds.table) {
-    QHeaderView *hh = cmds.table->horizontalHeader();
+    QHeaderView* hh = cmds.table->horizontalHeader();
 
     /* Keep widths predictable and the last column narrow */
     hh->setStretchLastSection(true);
@@ -130,7 +130,7 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   }
 
   /* Full layout */
-  QVBoxLayout *outer = new QVBoxLayout(this);
+  QVBoxLayout* outer = new QVBoxLayout(this);
   outer->addWidget(top);
   outer->addWidget(widget);
   outer->addWidget(cmds.widget, 16);
@@ -139,7 +139,7 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   setPayload(payload);
 }
 
-void OverviewPage::setClients(const QStringList &files, int index) {
+void OverviewPage::setClients(const QStringList& files, int index) {
   m_client_files = files;
 
   m_clients->blockSignals(true);
@@ -157,7 +157,7 @@ void OverviewPage::setClients(const QStringList &files, int index) {
   m_clients->blockSignals(false);
 }
 
-void OverviewPage::setPayload(const std::map<QString, QVariant> &payload) {
+void OverviewPage::setPayload(const std::map<QString, QVariant>& payload) {
   m_payload = payload;
 
   QString project = valOrDash(m_payload, QStringLiteral("project_name"));

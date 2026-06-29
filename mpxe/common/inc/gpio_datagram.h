@@ -126,7 +126,7 @@ class Gpio {
    * @brief   Constructs a Gpio object with provided payload data
    * @param   data Reference to payload data
    */
-  explicit Gpio(Payload &data);
+  explicit Gpio(Payload& data);
 
   /**
    * @brief   Default constructor for Gpio object
@@ -138,32 +138,32 @@ class Gpio {
    * @param   commandCode Command code to include in serialized data
    * @return  Serialized string containing Gpio data
    */
-  std::string serialize(const CommandCode &commandCode) const;
+  std::string serialize(const CommandCode& commandCode) const;
 
   /**
    * @brief   Deserializes Gpio data from payload string
    * @param   gpioDatagramPayload String containing serialized Gpio data
    */
-  void deserialize(std::string &gpioDatagramPayload);
+  void deserialize(std::string& gpioDatagramPayload);
 
   /**
    * @brief   Sets the target Gpio port
    * @param   gpioPort Port to set as target
    */
-  void setGpioPort(const Port &gpioPort);
+  void setGpioPort(const Port& gpioPort);
 
   /**
    * @brief   Sets the target Gpio pin
    * @param   gpioPin Pin to set as target
    */
-  void setGpioPin(const uint8_t &gpioPin);
+  void setGpioPin(const uint8_t& gpioPin);
 
   /**
    * @brief   Sets data in the Gpio buffer
    * @param   data Pointer to data to copy into buffer
    * @param   length Length of data to copy
    */
-  void setBuffer(const uint8_t *data, uint8_t length);
+  void setBuffer(const uint8_t* data, uint8_t length);
 
   /**
    * @brief   Clear the Gpio data buffer
@@ -192,7 +192,7 @@ class Gpio {
    * @brief   Gets the Gpio buffer
    * @return  Pointer to the buffer array
    */
-  const uint8_t *getBuffer() const;
+  const uint8_t* getBuffer() const;
 
  private:
   Payload m_gpioDatagram; /**< Private datagram payload */

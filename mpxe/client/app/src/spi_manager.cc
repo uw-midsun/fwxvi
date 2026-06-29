@@ -23,10 +23,10 @@ extern "C" {
 #include "app.h"
 #include "spi_manager.h"
 
-std::string SPIManager::writeSpiData(std::string &payload) {
+std::string SPIManager::writeSpiData(std::string& payload) {
   m_spiDatagram.deserialize(payload);
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
-  const u_int8_t *receivedData = m_spiDatagram.getBuffer();
+  const u_int8_t* receivedData = m_spiDatagram.getBuffer();
   size_t len = m_spiDatagram.getBufferLength();
 
   spi_set_rx(port, receivedData, static_cast<uint8_t>(len));
@@ -36,7 +36,7 @@ std::string SPIManager::writeSpiData(std::string &payload) {
   return m_spiDatagram.serialize(CommandCode::SPI_WRITE_DATA);
 }
 
-std::string SPIManager::processReadSpiData(std::string &payload) {
+std::string SPIManager::processReadSpiData(std::string& payload) {
   m_spiDatagram.deserialize(payload);
 
   // Get Spi Port and Data
@@ -56,20 +56,20 @@ std::string SPIManager::processReadSpiData(std::string &payload) {
   return m_spiDatagram.serialize(CommandCode::SPI_READ_DATA);
 }
 
-std::string SPIManager::transferSpiData(std::string &payload) {
+std::string SPIManager::transferSpiData(std::string& payload) {
   m_spiDatagram.deserialize(payload);
 
   SpiPort port = static_cast<SpiPort>(m_spiDatagram.getSPIPort());
   size_t len = m_spiDatagram.getBufferLength();
 
-  const uint8_t *tx_data = m_spiDatagram.getBuffer();
+  const uint8_t* tx_data = m_spiDatagram.getBuffer();
   std::vector<uint8_t> rx_data(len);
 
-  spi_exchange(port, const_cast<uint8_t *>(tx_data), len, rx_data.data(), len);
+  spi_exchange(port, const_cast<uint8_t*>(tx_data), len, rx_data.data(), len);
   return m_spiDatagram.serialize(CommandCode::SPI_TRANSFER_DATA);
 }
 
-void SPIManager::clearBuffer(std::string &payload) {
+void SPIManager::clearBuffer(std::string& payload) {
   const Datagram::SPI::Port port = m_spiDatagram.getSPIPort();
   m_spiDatagram.setSPIPort(port);
   m_spiDatagram.clearBuffer();

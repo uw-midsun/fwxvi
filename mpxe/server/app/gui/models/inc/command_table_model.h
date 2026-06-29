@@ -50,21 +50,21 @@ class CommandTableModel : public QAbstractTableModel {
    * @param   markdown_path Path to markdown file to parse
    * @param   parent Pointer to Qt parent
    */
-  explicit CommandTableModel(const QString &markdown_path = QString(), QObject *parent = nullptr);
+  explicit CommandTableModel(const QString& markdown_path = QString(), QObject* parent = nullptr);
 
   /**
    * @brief   Returns the number of rows in table
    * @param   parent Required by Qt to access row count (not used here)
    * @return  int Identifying the number of rows
    */
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Returns the number of columns in table (always 4)
    * @param   parent Required by Qt (not used here)
    * @return  int Identifying the number of columns
    */
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
   /**
    * @brief   Tells Qt what text to display in table's header
@@ -81,21 +81,21 @@ class CommandTableModel : public QAbstractTableModel {
    * @param   role The role of the cell
    * @return  QVariant Data return in the cell (could be string, int, etc)
    */
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
   /**
    * @brief   Determine the flag of the cell (non-editable by default)
    * @param   index The index of the specific cell
    * @return  Qt::ItemFlags The flag of the cell
    */
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
 
   /**
    * @brief   Re-parse and reload from the given markdown file
    * @param   markdown_path Path to a markdown file to parse
    * @return  true If the file could be read and parsed, false otherwise
    */
-  bool resetFromFile(const QString &markdown_path);
+  bool resetFromFile(const QString& markdown_path);
 
  private:
   /** @brief Struct representing data in each row */
@@ -112,7 +112,7 @@ class CommandTableModel : public QAbstractTableModel {
    * @brief   Parses given markdown file
    * @param   markdown_text Contents of markdown file in QString
    */
-  void parseMarkdown(const QString &markdown_text);
+  void parseMarkdown(const QString& markdown_text);
 };
 
 /** @} */

@@ -24,7 +24,7 @@
 
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
-StatusCode pedal_calib_read(FrontControllerStorage *storage) {
+StatusCode pedal_calib_read(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

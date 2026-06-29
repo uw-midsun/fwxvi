@@ -19,7 +19,7 @@
 #include "front_controller_getters.h"
 #include "ws22_motor_can.h"
 
-static FrontControllerStorage *front_controller_storage;
+static FrontControllerStorage* front_controller_storage;
 
 static float current_velocity;
 static float regen_percentage;
@@ -36,7 +36,7 @@ static float regen_percentage;
 
 #define REGEN_BRAKE_STOPPING_THRESHOLD 10U
 
-StatusCode regen_brake_run(float *target_current, bool *direction) {
+StatusCode regen_brake_run(float* target_current, bool* direction) {
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -62,7 +62,7 @@ StatusCode regen_brake_run(float *target_current, bool *direction) {
   return STATUS_CODE_OK;
 }
 
-StatusCode regen_brake_init(FrontControllerStorage *storage) {
+StatusCode regen_brake_init(FrontControllerStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

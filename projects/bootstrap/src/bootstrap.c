@@ -17,8 +17,8 @@
 uint32_t crc32_table[256];
 
 void jump_to(uint32_t addr) {
-  uint32_t sp = *((volatile uint32_t *)addr);
-  uint32_t reset_vector = *((volatile uint32_t *)(addr + 4));
+  uint32_t sp = *((volatile uint32_t*)addr);
+  uint32_t reset_vector = *((volatile uint32_t*)(addr + 4));
 
   __disable_irq();
   __set_MSP(sp);
@@ -39,7 +39,7 @@ void crc32_init(void) {
   }
 }
 
-void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest) {
+void compute_crc32(const uint8_t* data, size_t length, uint32_t* crc_dest) {
   uint32_t crc = 0xFFFFFFFF;
 
   for (size_t i = 0; i < length; i++) {
@@ -50,19 +50,19 @@ void compute_crc32(const uint8_t *data, size_t length, uint32_t *crc_dest) {
   *crc_dest = ~crc;
 }
 
-StatusCode read_crc32(const char *file_path, size_t length, uint8_t *crc_dest) {
+StatusCode read_crc32(const char* file_path, size_t length, uint8_t* crc_dest) {
   return fs_read_file(file_path, crc_dest);
 }
 
 void bootstrap_main(void) {
   printf("Initializing file system\n\r");
   fs_init();
-  fs_add_file("/crc.txt", (uint8_t *)"CRCPOLY", 8, 0);
+  fs_add_file("/crc.txt", (uint8_t*)"CRCPOLY", 8, 0);
 
   printf("Computing CRC\n\r");
   uint32_t computed_crc = 0;
   crc32_init();
-  compute_crc32((uint8_t *)BOOTLOADER_ADDR, BOOTLOADER_SIZE, &computed_crc);
+  compute_crc32((uint8_t*)BOOTLOADER_ADDR, BOOTLOADER_SIZE, &computed_crc);
 
   printf("reading stored CRC\n\r");
   uint8_t stored_crc = 0;

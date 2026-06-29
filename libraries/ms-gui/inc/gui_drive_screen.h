@@ -31,7 +31,7 @@
  * @param   screen Screen root to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_drive_screen_init(GuiScreen *screen);
+StatusCode gui_drive_screen_init(GuiScreen* screen);
 
 /**
  * @brief   Reset cached drive widget handles after their LVGL parent is deleted

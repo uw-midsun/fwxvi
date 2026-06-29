@@ -38,7 +38,7 @@
 static bool party_mode = false;
 static uint8_t party_hue = 0;
 
-static SteeringStorage *steering_storage = NULL;
+static SteeringStorage* steering_storage = NULL;
 static LEDPixels saved_colors[NUM_STEERING_BUTTONS];
 static bool saved_valid = false;
 
@@ -246,7 +246,7 @@ static StatusCode s_set_party_mode(bool enabled) {
   return STATUS_CODE_OK;
 }
 
-StatusCode party_mode_init(SteeringStorage *storage) {
+StatusCode party_mode_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

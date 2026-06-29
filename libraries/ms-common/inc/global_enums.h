@@ -45,7 +45,7 @@ typedef enum {
 /**
  * @brief LUT + Macro to help print vehicle drive states
  */
-static const char *vehicle_drive_state_strings[VEHICLE_DRIVE_NUM_STATES] = {
+static const char* vehicle_drive_state_strings[VEHICLE_DRIVE_NUM_STATES] = {
   [VEHICLE_DRIVE_STATE_INVALID] = "INVALID", [VEHICLE_DRIVE_STATE_NEUTRAL] = "NEUTRAL", [VEHICLE_DRIVE_STATE_DRIVE] = "DRIVE", [VEHICLE_DRIVE_STATE_REVERSE] = "REVERSE",
   [VEHICLE_DRIVE_STATE_CRUISE] = "CRUISE",   [VEHICLE_DRIVE_STATE_BRAKE] = "BRAKE",     [VEHICLE_DRIVE_STATE_REGEN] = "REGEN",
 };
@@ -124,9 +124,6 @@ typedef enum {
 #define LIMIT_FLAG_BUS_VOLTAGE_LOWER_MASK (1U << LIMIT_FLAG_BUS_VOLTAGE_LOWER)
 /** @brief  Temperature limit flag mask */
 #define LIMIT_FLAG_TEMPERATURE_MASK (1U << LIMIT_FLAG_TEMPERATURE)
-
-/** @brief  IDs of WS22 CAN messages to exclude from telemetry datagram forwarding */
-#define IS_EXCLUDED_WS22_CAN_ID(x) ((((x) >= 128U) && ((x) <= 142U)) || ((x) == 151U) || ((x) == 1281U))
 
 /************************************************************************************************
  * Front Controller Global Definitions
@@ -218,7 +215,7 @@ typedef enum {
 /**
  * @brief LUT + Macro to help print steering light states
  */
-static const char *steering_light_state_strings[STEERING_LIGHTS_NUM_STATES] = { "OFF", "LEFT", "RIGHT", "HAZARD" };
+static const char* steering_light_state_strings[STEERING_LIGHTS_NUM_STATES] = { "OFF", "LEFT", "RIGHT", "HAZARD" };
 
 #define STEERING_LIGHT_STATE_TO_STR(s) (((s) < STEERING_LIGHTS_NUM_STATES) ? steering_light_state_strings[(s)] : "UNKNOWN")
 
@@ -243,6 +240,13 @@ typedef enum {
 #define STEERING_CC_DECREASE_MASK (1U << EE_STEERING_CC_DECREASE_BIT)
 /** @brief  Toggle cruise control mask */
 #define STEERING_CC_TOGGLE_MASK (1U << EE_STEERING_CC_TOGGLE_BIT)
+
+/************************************************************************************************
+ * WS22 Motor Controller Global Definitions
+ ************************************************************************************************/
+
+/** @brief  True for any raw CAN ID belonging to the WS22 motor controller (status 0x81-0x8B or drive cmd 0x501). */
+#define IS_WS22_CAN_ID(x) (((x) >= 0x80U && (x) <= 0x8BU) || (x) == 0x501U)
 
 /************************************************************************************************
  * Power Distribution Global Definitions

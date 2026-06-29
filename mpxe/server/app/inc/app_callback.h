@@ -33,7 +33,7 @@
  * @param   client Pointer to the connected clientConnection instance
  * @param   message String message value that has been received
  */
-void applicationMessageCallback(Server *server, ClientConnection *client, std::string &message);
+void applicationMessageCallback(Server* server, ClientConnection* client, std::string& message);
 
 /**
  * @brief   Handle connecting to a new client
@@ -42,6 +42,6 @@ void applicationMessageCallback(Server *server, ClientConnection *client, std::s
  * @param   server Pointer to the server
  * @param   client Pointer to the connected clientConnection instance
  */
-void applicationConnectCallback(Server *server, ClientConnection *client);
+void applicationConnectCallback(Server* server, ClientConnection* client);
 
 /** @} */

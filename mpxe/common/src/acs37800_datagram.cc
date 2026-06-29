@@ -21,11 +21,11 @@
 
 namespace Datagram {
 
-Acs37800::Acs37800(Payload &data) {
+Acs37800::Acs37800(Payload& data) {
   m_acs37800Datagram = data;
 }
 
-std::string Acs37800::serialize(const CommandCode &commandCode) const {
+std::string Acs37800::serialize(const CommandCode& commandCode) const {
   std::string serializedData;
 
   uint32_t voltage, current, active_power;
@@ -46,7 +46,7 @@ std::string Acs37800::serialize(const CommandCode &commandCode) const {
   return encodeCommand(commandCode, serializedData);
 }
 
-void Acs37800::deserialize(std::string &acs37800DatagramPayload) {
+void Acs37800::deserialize(std::string& acs37800DatagramPayload) {
   std::size_t offset = 0;
 
   std::memcpy(&m_acs37800Datagram.voltage_mV, acs37800DatagramPayload.data() + offset, sizeof(float));

@@ -32,19 +32,7 @@
 #define csense_R6_ohm 1000000 /*1M ohm resistor*/
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
 
-
-//if the input is above 3V it's above 153 V <- measured on HV_BUS
-//TODO: CHANGE make sure that the conversion is reading the right data -> aka shunt isn't reading HV
-
-#if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
-static float csense_current_A;
-static float csense_HV_voltage_V;
-static RearControllerStorage *rear_controller_storage;
-static float csense_voltage_diff_V;
-static float csense_shunt_resistance = 0.0005;
-static int32_t csense_overcurrents = 0;
-static int32_t csense_overvoltages = 0;
-static int32_t csense_retries = 0;
+static RearControllerStorage* rear_controller_storage;
 
 static uint8_t register_map[] = {
   ADS122_REG_DEVICE_CFG_DEFAULT,
@@ -174,21 +162,9 @@ StatusCode current_sense_run() {
   return STATUS_CODE_OK;
 }
 
-
-
-
-#else
-  static float csense_prev_current_A;
-  static float csense_prev_voltage_mV;
-  static int32_t csense_overcurrents;
-  static int32_t csense_overvoltages;
-  static int32_t csense_retries;
-
-  static RearControllerStorage *rear_controller_storage;
-
-  // https://blog.mbedded.ninja/programming/signal-processing/digital-filters/exponential-moving-average-ema-filter/.
-  float filter_step(const float alpha, float x, float prev_y) {
-    return alpha * x + (1 - alpha) * prev_y;
+StatusCode current_sense_init(RearControllerStorage* storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   StatusCode current_sense_run() {

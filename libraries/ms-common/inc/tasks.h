@@ -36,15 +36,19 @@
  * declarations.
  * @param   task_stack_size is the depth of your task's stack - use your judgement to choose.
  */
-#define TASK(task_name, task_stack_size)                                                                                                                                                    \
-  /* forward declaration so we can reference it in the Task */                                                                                                                              \
-  static void _s_task_impl_##task_name(void *);                                                                                                                                             \
-  static StackType_t _s_stack_##task_name[task_stack_size];                                                                                                                                 \
-  /* use a compound literal so users can use it as a pointer */                                                                                                                             \
-  Task *task_name = &((Task){                                                                                                                                                               \
-      .task_func = _s_task_impl_##task_name, .name = #task_name, .stack = _s_stack_##task_name, .stack_size = task_stack_size, .handle = NULL, /* will be initialized by tasks_init_task */ \
-  });                                                                                                                                                                                       \
-  static void _s_task_impl_##task_name(void *context)
+#define TASK(task_name, task_stack_size)                           \
+  /* forward declaration so we can reference it in the Task */     \
+  static void _s_task_impl_##task_name(void*);                     \
+  static StackType_t _s_stack_##task_name[task_stack_size];        \
+  /* use a compound literal so users can use it as a pointer */    \
+  Task* task_name = &((Task){                                      \
+      .task_func = _s_task_impl_##task_name,                       \
+      .name = #task_name,                                          \
+      .stack = _s_stack_##task_name,                               \
+      .stack_size = task_stack_size,                               \
+      .handle = NULL, /* will be initialized by tasks_init_task */ \
+  });                                                              \
+  static void _s_task_impl_##task_name(void* context)
 
 /**
  * @brief Maximum amount of RTOS tasks supported at a time
@@ -83,11 +87,11 @@ typedef UBaseType_t TaskPriority;
 typedef struct Task {
   TaskHandle_t handle;
   TaskFunction_t task_func;
-  char *name;
-  StackType_t *stack;
+  char* name;
+  StackType_t* stack;
   size_t stack_size;
   StaticTask_t tcb;
-  void *context;
+  void* context;
 } Task;
 
 /**
@@ -98,7 +102,7 @@ typedef struct Task {
  *          is configNUM_TASK_PRIORITIES - 1.
  * @return  STATUS_CODE_OK if successfully initialize task.
  */
-StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context);
+StatusCode tasks_init_task(Task* task, TaskPriority priority, void* context);
 
 /**
  * @brief   Start the FreeRTOS scheduler to run the tasks that were previously initialized.

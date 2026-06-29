@@ -24,7 +24,7 @@
 #include "network_buffer.h"
 
 // Global variables:
-NetworkBuffer *s_network_buffer; /**< Local pointer to the network buffer */
+NetworkBuffer* s_network_buffer; /**< Local pointer to the network buffer */
 uint8_t rx_data;                 /**< Local data reference for receiving */
 
 static uint32_t s_tx_start_time;
@@ -44,7 +44,7 @@ static inline void s_enable_usart2(void) {
 
 /** @brief  UART Port data */
 typedef struct {
-  USART_TypeDef *base;   /**< UART HW Base address */
+  USART_TypeDef* base;   /**< UART HW Base address */
   void (*rcc_cmd)(void); /**< Function pointer to enable UART clock using RCC */
   uint8_t irq;           /**< UART interrupt number */
   bool initialized;      /**< Initialized flag */
@@ -75,12 +75,12 @@ void USART2_IRQHandler(void) {
 }
 
 /* Callback functions for HAL UART TX */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
   s_is_tx = true;
 }
 
 /* Callback functions for HAL UART RX */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
   if (huart->Instance == USART2) {
     network_buffer_write(s_network_buffer, &rx_data);
 
@@ -103,7 +103,7 @@ bool is_network_timeout(bool is_tx) {
   return false;
 }
 
-FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
+FotaError network_read(UartPort uart, uint8_t* data, size_t len) {
   if (data == NULL || uart >= NUM_UART_PORTS || len > NETWORK_BUFFER_SIZE) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -128,7 +128,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
+FotaError network_tx(UartPort uart, uint8_t* data, size_t len) {
   // check params
   if (data == NULL || uart >= NUM_UART_PORTS || len > FOTA_UART_MAX_BUFFER_LEN) {
     return FOTA_ERROR_INVALID_ARGS;
@@ -148,7 +148,7 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer) {
+FotaError network_init(UartPort uart, UartSettings* settings, NetworkBuffer* network_buffer) {
   if (settings == NULL || network_buffer == NULL || uart >= NUM_UART_PORTS) {
     return FOTA_ERROR_INVALID_ARGS;
   }

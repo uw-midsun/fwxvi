@@ -53,7 +53,7 @@ typedef struct {
   uint8_t version_minor;                     /**< Version number (minor) */
   char firmware_id[FOTA_FIRMWARE_ID_LENGTH]; /**< Firmware name/ID */
   FotaDFUState state;                        /**< Current DFU FSM state */
-  PacketManager *packet_manager;             /**< Pointer to packet manager */
+  PacketManager* packet_manager;             /**< Pointer to packet manager */
 } FotaDFUContext;
 
 /**
@@ -63,13 +63,13 @@ typedef struct {
  * @param   app_start_addr Address to jump to after flashing
  * @return  FOTA_ERROR_SUCCESS or FOTA_ERROR_INVALID_ARGS
  */
-FotaError fota_dfu_init(PacketManager *packet_manager, uintptr_t staging_base, uintptr_t app_start_addr);
+FotaError fota_dfu_init(PacketManager* packet_manager, uintptr_t staging_base, uintptr_t app_start_addr);
 
 /**
  * @brief   Process an incoming datagram and write to flash
  * @param   datagram Pointer to fully received, verified datagram
  * @return  FOTA_ERROR_SUCCESS or flash/write errors
  */
-FotaError fota_dfu_process(FotaDatagram *datagram);
+FotaError fota_dfu_process(FotaDatagram* datagram);
 
 /** @} */

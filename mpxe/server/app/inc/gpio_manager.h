@@ -59,13 +59,13 @@ class GpioManager {
    * @brief   Loads the Hash-map cache with a projects Gpio data
    * @param   projectName Selector for which project shall be loaded into the cache
    */
-  void loadGpioInfo(std::string &projectName);
+  void loadGpioInfo(std::string& projectName);
 
   /**
    * @brief   Saves the Hash-map cache to a projects Gpio data
    * @param   projectName Selector for which project shall be updated with the current cache
    */
-  void saveGpioInfo(std::string &projectName);
+  void saveGpioInfo(std::string& projectName);
 
  public:
   /**
@@ -81,7 +81,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioPinState(std::string &projectName, std::string &payload);
+  void updateGpioPinState(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all Gpio Pin states for a provided project given the data payload
@@ -90,7 +90,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioAllStates(std::string &projectName, std::string &payload);
+  void updateGpioAllStates(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update a Gpio Pin mode for a provided project given the data payload
@@ -99,7 +99,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioPinMode(std::string &projectName, std::string &payload);
+  void updateGpioPinMode(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all Gpio Pin modes for a provided project given the data payload
@@ -108,7 +108,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioAllModes(std::string &projectName, std::string &payload);
+  void updateGpioAllModes(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update a Gpio Pin alternate function for a provided project given the data payload
@@ -117,7 +117,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioPinAltFunction(std::string &projectName, std::string &payload);
+  void updateGpioPinAltFunction(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Update all Gpio Pin alternate functions for a provided project given the data payload
@@ -126,7 +126,7 @@ class GpioManager {
    * @param   projectName Name of the project to be updated
    * @param   payload Message data payload to be parsed
    */
-  void updateGpioAllAltFunctions(std::string &projectName, std::string &payload);
+  void updateGpioAllAltFunctions(std::string& projectName, std::string& payload);
 
   /**
    * @brief   Create a Gpio command given a CommandCode and if required, a specific Port/Pin map and data
@@ -137,7 +137,7 @@ class GpioManager {
    * @param   data Data payload to be transmitted. This parameter currently only supports SET_STATE commands and can be set to 'LOW' or 'HIGH'
    * @return  Fully serialized data payload to be transmitted to the client
    */
-  std::string createGpioCommand(CommandCode commandCode, std::string &gpioPortPin, std::string data);
+  std::string createGpioCommand(CommandCode commandCode, std::string& gpioPortPin, std::string data);
 };
 
 /** @} */

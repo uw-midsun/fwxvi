@@ -62,5 +62,5 @@ extern PedalCalibBlob global_calib_blob;
  * @param address - The GPIO address for the adc of the pedal
  * @return STATUS_CODE_OK on success
  */
-StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address);
+StatusCode pedal_calib_sample(PedalCalibrationStorage* calib_storage, PedalCalibrationData* data, PedalState state, GpioAddress* address);
 /** @} */

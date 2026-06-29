@@ -80,18 +80,18 @@ StatusCode init_master_tasks();
  * @brief   Fetch the memory address of the 50hz task
  * @return  Pointer to the 50hz task
  */
-Task *get_1000hz_task();
+Task* get_1000hz_task();
 
 /**
  * @brief   Fetch the memory address of the 3hz task
  * @return  Pointer to the 3hz task
  */
-Task *get_10hz_task();
+Task* get_10hz_task();
 
 /**
  * @brief   Fetch the memory address of the 1hz task
  * @return  Pointer to the 1hz task
  */
-Task *get_1hz_task();
+Task* get_1hz_task();
 
 /** @} */

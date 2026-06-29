@@ -25,14 +25,14 @@
 #define PERSIST_BASE_ADDR FLASH_PAGE_TO_ADDR(persist->page)
 #define PERSIST_END_ADDR (PERSIST_BASE_ADDR + FLASH_PAGE_SIZE)
 
-static PersistStorage *s_context;
+static PersistStorage* s_context;
 
 typedef struct PersistHeader {
   uint32_t marker;
   uint32_t size_bytes;
 } PersistHeader;
 
-StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_t blob_size, bool overwrite) {
+StatusCode persist_init(PersistStorage* persist, uint8_t page, void* blob, size_t blob_size, bool overwrite) {
   if (blob_size > FLASH_PAGE_SIZE || page >= NUM_FLASH_PAGES) {
     return STATUS_CODE_OUT_OF_RANGE;
   } else if (blob_size % FLASH_MEMORY_ALIGNMENT != 0) {
@@ -62,7 +62,7 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
    */
   do {
     /* Read flash memory into the header while theres no valid marker */
-    status_ok_or_return(flash_read(persist->flash_addr, (uint8_t *)&header, sizeof(header)));
+    status_ok_or_return(flash_read(persist->flash_addr, (uint8_t*)&header, sizeof(header)));
 
     if (header.marker != PERSIST_VALID_MARKER) {
       /* If it is an invalid marker, we increment the flash base address and continue */
@@ -94,7 +94,7 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
     LOG_DEBUG("Found valid section at 0x%" PRIx32 " (0x%" PRIx32 " bytes), loading data\n", (uint32_t)persist->flash_addr, (uint32_t)header.size_bytes);
 
     /* Load the blob data from flash memory*/
-    status_ok_or_return(flash_read(persist->flash_addr + sizeof(header), (uint8_t *)persist->blob, persist->blob_size));
+    status_ok_or_return(flash_read(persist->flash_addr + sizeof(header), (uint8_t*)persist->blob, persist->blob_size));
 
     /* Increment flash_addr to the next new section */
     persist->prev_flash_addr = persist->flash_addr;
@@ -106,7 +106,7 @@ StatusCode persist_init(PersistStorage *persist, uint8_t page, void *blob, size_
   return STATUS_CODE_OK;
 }
 
-StatusCode persist_commit(PersistStorage *persist) {
+StatusCode persist_commit(PersistStorage* persist) {
   if (persist == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -114,7 +114,7 @@ StatusCode persist_commit(PersistStorage *persist) {
   /* Mark previous section as invalid */
   if (persist->prev_flash_addr != PERSIST_INVALID_ADDR) {
     uint32_t invalid = 0U;
-    flash_write(persist->prev_flash_addr, (uint8_t *)&invalid, sizeof(invalid));
+    flash_write(persist->prev_flash_addr, (uint8_t*)&invalid, sizeof(invalid));
   }
 
   /* Check if we're overrunning the page */
@@ -125,10 +125,10 @@ StatusCode persist_commit(PersistStorage *persist) {
 
   /* Write header */
   PersistHeader header = { .marker = PERSIST_VALID_MARKER, .size_bytes = persist->blob_size };
-  status_ok_or_return(flash_write(persist->flash_addr, (uint8_t *)&header, sizeof(header)));
+  status_ok_or_return(flash_write(persist->flash_addr, (uint8_t*)&header, sizeof(header)));
 
   /* Write persist blob */
-  status_ok_or_return(flash_write(persist->flash_addr + sizeof(header), (uint8_t *)persist->blob, persist->blob_size));
+  status_ok_or_return(flash_write(persist->flash_addr + sizeof(header), (uint8_t*)persist->blob, persist->blob_size));
 
   persist->prev_flash_addr = persist->flash_addr;
   persist->flash_addr += sizeof(header) + persist->blob_size;

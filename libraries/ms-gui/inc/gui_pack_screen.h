@@ -29,7 +29,7 @@
  * @param   screen Screen root to populate
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_pack_screen_init(GuiScreen *screen);
+StatusCode gui_pack_screen_init(GuiScreen* screen);
 
 /**
  * @brief   Reset cached pack-voltage widget handles after their LVGL parent is deleted

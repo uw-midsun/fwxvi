@@ -28,7 +28,7 @@
 #include "telemetry_hw_defs.h"
 #include "xb_transmit.h"
 
-static TelemetryStorage *telemetry_storage;
+static TelemetryStorage* telemetry_storage;
 static GpioAddress s_telemetry_board_led = GPIO_TELEMETRY_BOARD_LED;
 static GpioAddress s_xbee_sleep = GPIO_TELEMETRY_XBEE_SLEEP_RQ;
 static GpioAddress s_xbee_reset = GPIO_TELEMETRY_XBEE_XRST;
@@ -42,7 +42,7 @@ static const CanSettings s_can_settings = {
   .can_rx_all_cb = NULL,
 };
 
-StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage, CanStorage *can_storage) {
+StatusCode telemetry_init(TelemetryStorage* telemetry_storage, TelemetryConfig* config, Bmi323Storage* bmi323_storage, CanStorage* can_storage) {
   if (telemetry_storage == NULL || config == NULL || bmi323_storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -54,7 +54,7 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
 
   telemetry_storage->datagram_queue.item_size = sizeof(Datagram);
   telemetry_storage->datagram_queue.num_items = DATAGRAM_BUFFER_SIZE;
-  telemetry_storage->datagram_queue.storage_buf = (uint8_t *)telemetry_storage->datagram_buffer;
+  telemetry_storage->datagram_queue.storage_buf = (uint8_t*)telemetry_storage->datagram_buffer;
 
   uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
   can_init(telemetry_storage->can_storage, &s_can_settings);

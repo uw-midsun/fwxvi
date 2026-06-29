@@ -27,7 +27,7 @@
 
 static PersistStorage storage = { 0U };
 
-StatusCode fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size) {
+StatusCode fs_hal_init(uint8_t* fs_memory, size_t fs_memory_size) {
   StatusCode ret = flash_init();
   if (ret != STATUS_CODE_OK) {
     printf("flash_init() failed with exit code %u\r\n", ret);
@@ -43,16 +43,16 @@ StatusCode fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size) {
   return STATUS_CODE_OK;
 }
 
-StatusCode fs_hal_read(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode fs_hal_read(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  memcpy(buffer, (void *)address, buffer_len);
+  memcpy(buffer, (void*)address, buffer_len);
   return STATUS_CODE_OK;
 }
 
-StatusCode fs_hal_write(uint32_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode fs_hal_write(uint32_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL || buffer_len == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }

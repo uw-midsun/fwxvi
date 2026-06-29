@@ -31,7 +31,7 @@ static lv_color_t s_gui_palette_color(GuiColorId color_id) {
   return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
 }
 
-StatusCode lvgl_set_background_color(GuiScreen *screen, GuiColorId screen_color) {
+StatusCode lvgl_set_background_color(GuiScreen* screen, GuiColorId screen_color) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -42,7 +42,7 @@ StatusCode lvgl_set_background_color(GuiScreen *screen, GuiColorId screen_color)
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_create(GuiScreen **screen) {
+StatusCode lvgl_screens_create(GuiScreen** screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -57,7 +57,7 @@ StatusCode lvgl_screens_create(GuiScreen **screen) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_load(GuiScreen *screen) {
+StatusCode lvgl_screens_load(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -66,7 +66,7 @@ StatusCode lvgl_screens_load(GuiScreen *screen) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_destroy(GuiScreen *screen) {
+StatusCode lvgl_screens_destroy(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -75,7 +75,7 @@ StatusCode lvgl_screens_destroy(GuiScreen *screen) {
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_clean(GuiScreen *screen) {
+StatusCode lvgl_screens_clean(GuiScreen* screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -84,49 +84,49 @@ StatusCode lvgl_screens_clean(GuiScreen *screen) {
   return STATUS_CODE_OK;
 }
 
-GuiScreen *lvgl_get_active_screen() {
+GuiScreen* lvgl_get_active_screen() {
   return lv_screen_active();
 }
 
-GuiScreen *lvgl_get_top_layer() {
+GuiScreen* lvgl_get_top_layer() {
   return lv_layer_top();
 }
 #else
-StatusCode lvgl_set_background_color(GuiScreen *screen, GuiColorId screen_color) {
+StatusCode lvgl_set_background_color(GuiScreen* screen, GuiColorId screen_color) {
   (void)screen;
   (void)screen_color;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_create(GuiScreen **screen) {
+StatusCode lvgl_screens_create(GuiScreen** screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  *screen = (GuiScreen *)0;
+  *screen = (GuiScreen*)0;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_load(GuiScreen *screen) {
+StatusCode lvgl_screens_load(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_destroy(GuiScreen *screen) {
+StatusCode lvgl_screens_destroy(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }
 
-StatusCode lvgl_screens_clean(GuiScreen *screen) {
+StatusCode lvgl_screens_clean(GuiScreen* screen) {
   (void)screen;
   return STATUS_CODE_OK;
 }
 
-GuiScreen *lvgl_get_active_screen() {
-  return (GuiScreen *)0;
+GuiScreen* lvgl_get_active_screen() {
+  return (GuiScreen*)0;
 }
 
-GuiScreen *lvgl_get_top_layer() {
-  return (GuiScreen *)0;
+GuiScreen* lvgl_get_top_layer() {
+  return (GuiScreen*)0;
 }
 #endif

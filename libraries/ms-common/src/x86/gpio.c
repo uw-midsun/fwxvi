@@ -31,7 +31,7 @@ StatusCode gpio_init(void) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state) {
+StatusCode gpio_init_pin(const GpioAddress* address, const GpioMode pin_mode, GpioState init_state) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || pin_mode >= NUM_GPIO_MODES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -48,7 +48,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
+StatusCode gpio_init_pin_af(const GpioAddress* address, const GpioMode pin_mode, GpioAlternateFunctions alt_func) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT || pin_mode >= NUM_GPIO_MODES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -68,7 +68,7 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
+StatusCode gpio_set_state(const GpioAddress* address, GpioState state) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -88,7 +88,7 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gpio_toggle_state(const GpioAddress *address) {
+StatusCode gpio_toggle_state(const GpioAddress* address) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -110,7 +110,7 @@ StatusCode gpio_toggle_state(const GpioAddress *address) {
   return STATUS_CODE_OK;
 }
 
-GpioState gpio_get_state(const GpioAddress *address) {
+GpioState gpio_get_state(const GpioAddress* address) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return GPIO_STATE_LOW;
   }
@@ -122,7 +122,7 @@ GpioState gpio_get_state(const GpioAddress *address) {
   return s_gpio_pin_state[index];
 }
 
-GpioMode gpio_peek_mode(GpioAddress *address) {
+GpioMode gpio_peek_mode(GpioAddress* address) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return NUM_GPIO_MODES;
   } else {
@@ -130,7 +130,7 @@ GpioMode gpio_peek_mode(GpioAddress *address) {
   }
 }
 
-GpioAlternateFunctions gpio_peek_alt_function(GpioAddress *address) {
+GpioAlternateFunctions gpio_peek_alt_function(GpioAddress* address) {
   if (address->port >= NUM_GPIO_PORTS || address->pin >= GPIO_PINS_PER_PORT) {
     return GPIO_ALT_NONE;
   } else {

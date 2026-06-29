@@ -22,7 +22,7 @@
 #include "adbms_afe_crc15.h"
 #include "adbms_afe_regs.h"
 
-static AdbmsAfeStorage *p_afe = NULL;
+static AdbmsAfeStorage* p_afe = NULL;
 
 /**
  * Calculate the cell result and discharge cell index mappings for the enabled cells across all AFEs.
@@ -31,12 +31,12 @@ static AdbmsAfeStorage *p_afe = NULL;
  * index for storing cell results.
  */
 
-static void s_calc_offsets(AdbmsAfeStorage *afe) {
+static void s_calc_offsets(AdbmsAfeStorage* afe) {
   if (afe == NULL) {
     return;
   }
 
-  AdbmsAfeSettings *settings = afe->settings;
+  AdbmsAfeSettings* settings = afe->settings;
 
   size_t enabled_cell_index = 0;
 
@@ -52,11 +52,11 @@ static void s_calc_offsets(AdbmsAfeStorage *afe) {
   }
 }
 
-AdbmsAfeStorage *adbms_afe_get_storage(void) {
+AdbmsAfeStorage* adbms_afe_get_storage(void) {
   return p_afe;
 }
 
-StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) {
+StatusCode adbms_afe_init(AdbmsAfeStorage* afe, const AdbmsAfeSettings* config) {
   if (config->num_devices > ADBMS_AFE_MAX_DEVICES) {
     LOG_DEBUG("AFE: Configured device count exceeds user-defined limit. Update ADBMS_AFE_MAX_DEVICES if necessary.");
     return STATUS_CODE_INVALID_ARGS;
@@ -84,31 +84,31 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
   return adbms_afe_write_config(afe);
 }
 
-StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
+StatusCode adbms_afe_write_config(AdbmsAfeStorage* afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
+StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage* afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe) {
+StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage* afe) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t device_num) {
+StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage* afe, uint8_t device_num) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
+StatusCode adbms_afe_read_cells(AdbmsAfeStorage* afe) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  AdbmsAfeSettings *settings = afe->settings;
+  AdbmsAfeSettings* settings = afe->settings;
 
   /* Loop through 4 register groups */
   for (AdbmsAfeVoltageRegister v_reg_group = ADBMS_AFE_VOLTAGE_REGISTER_A; v_reg_group < NUM_ADBMS_AFE_VOLTAGE_REGISTERS; ++v_reg_group) {
@@ -127,7 +127,7 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe) {
+StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage* afe) {
   if (afe == NULL || afe->settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -142,7 +142,7 @@ StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, bool discharge) {
+StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage* afe, uint16_t cell, bool discharge) {
   if (!afe || !afe->settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -164,7 +164,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
 
   if (cell_indx_in_dev == 0) {
     /* Cell 0 belongs to CFGRB */
-    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[dev_idx].cfg;
+    AdbmsAfeConfigRegisterBData* cfgB = &afe->config_b[dev_idx].cfg;
 
     uint8_t bit_index = 6U;
     if (discharge) {
@@ -174,7 +174,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
     }
   } else if (cell_indx_in_dev < 12) {
     /* Cells 1-12 belong to CFGRA */
-    AdbmsAfeConfigRegisterAData *cfgA = &afe->config_a[dev_idx].cfg;
+    AdbmsAfeConfigRegisterAData* cfgA = &afe->config_a[dev_idx].cfg;
 
     uint8_t bit_index = cell_indx_in_dev - 1U;
     if (discharge) {
@@ -184,7 +184,7 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
     }
   } else {
     /* Cells 13-18 belong to CFGRB */
-    AdbmsAfeConfigRegisterBData *cfgB = &afe->config_b[dev_idx].cfg;
+    AdbmsAfeConfigRegisterBData* cfgB = &afe->config_b[dev_idx].cfg;
 
     uint8_t bit_index = cell_indx_in_dev - 13U;
     if (discharge) {
@@ -197,14 +197,14 @@ StatusCode adbms_afe_toggle_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell, 
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage *afe, uint8_t duty_cycle) {
+StatusCode adbms_afe_set_discharge_pwm_cycle(AdbmsAfeStorage* afe, uint8_t duty_cycle) {
   LOG_DEBUG("Discharge PWM duty cycle set to %u", duty_cycle);
   return STATUS_CODE_OK;
 }
 
 /* SETTERS AND GETTERS */
 
-StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, float voltage) {
+StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage* afe, uint8_t cell_index, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -228,7 +228,7 @@ StatusCode adbms_afe_set_cell_voltage(AdbmsAfeStorage *afe, uint8_t cell_index, 
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint8_t thermistor_index, float voltage) {
+StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage* afe, uint8_t device_num, uint8_t thermistor_index, float voltage) {
   if (afe == NULL || thermistor_index >= ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE || device_num >= ADBMS_AFE_MAX_DEVICES) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -239,7 +239,7 @@ StatusCode adbms_afe_set_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage) {
+StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage* afe, size_t device_num, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -261,7 +261,7 @@ StatusCode adbms_afe_set_afe_dev_cell_voltages(AdbmsAfeStorage *afe, size_t devi
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_t device_num, float voltage) {
+StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage* afe, size_t device_num, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -280,7 +280,7 @@ StatusCode adbms_afe_set_afe_dev_thermistor_voltages(AdbmsAfeStorage *afe, size_
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage) {
+StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage* afe, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -292,7 +292,7 @@ StatusCode adbms_afe_set_pack_cell_voltages(AdbmsAfeStorage *afe, float voltage)
   return STATUS_CODE_OK;
 }
 
-StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float voltage) {
+StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage* afe, float voltage) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -304,7 +304,7 @@ StatusCode adbms_afe_set_pack_thermistor_voltages(AdbmsAfeStorage *afe, float vo
   return STATUS_CODE_OK;
 }
 
-uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index) {
+uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage* afe, uint16_t cell_index) {
   if (afe == NULL) {
     return 0;
   }
@@ -312,7 +312,7 @@ uint16_t adbms_afe_get_cell_voltage(AdbmsAfeStorage *afe, uint16_t cell_index) {
   return afe->cell_voltages[cell_index];
 }
 
-uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_num, uint16_t thermistor_index) {
+uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage* afe, uint8_t device_num, uint16_t thermistor_index) {
   if (afe == NULL) {
     return 0;
   }
@@ -321,7 +321,7 @@ uint16_t adbms_afe_get_thermistor_voltage(AdbmsAfeStorage *afe, uint8_t device_n
   return afe->thermistor_voltages[index];
 }
 
-bool adbms_afe_get_cell_discharge(AdbmsAfeStorage *afe, uint16_t cell) {
+bool adbms_afe_get_cell_discharge(AdbmsAfeStorage* afe, uint16_t cell) {
   if (afe == NULL) {
     return 0;
   }

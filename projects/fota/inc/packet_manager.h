@@ -32,7 +32,7 @@
 /** @brief Maximum number of datagrams that can be processed simultaneously */
 #define FOTA_MAX_ACTIVE_DATAGRAMS 2U
 
-typedef void (*FotaDatagramCompleteCb)(FotaDatagram *datagram);
+typedef void (*FotaDatagramCompleteCb)(FotaDatagram* datagram);
 
 /**
  * @brief   State machine states for packet receiving
@@ -72,7 +72,7 @@ typedef struct {
  * @param   callback Callback function for completed datagrams (can be NULL)
  * @return  Error code
  */
-FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSettings *uart_settings, FotaDatagramCompleteCb callback);
+FotaError packet_manager_init(PacketManager* manager, UartPort uart, UartSettings* uart_settings, FotaDatagramCompleteCb callback);
 
 /**
  * @brief   Process received data from the network buffer
@@ -82,7 +82,7 @@ FotaError packet_manager_init(PacketManager *manager, UartPort uart, UartSetting
  * @param   manager Pointer to packet manager structure
  * @return  Error code
  */
-FotaError packet_manager_process(PacketManager *manager);
+FotaError packet_manager_process(PacketManager* manager);
 
 /**
  * @brief   Send a datagram by fragmenting it into packets
@@ -91,7 +91,7 @@ FotaError packet_manager_process(PacketManager *manager);
  * @param   send_func Function to call to send each packet
  * @return  Error code
  */
-FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *datagram, FotaError (*send_func)(int8_t *data, uint32_t length));
+FotaError packet_manager_send_datagram(PacketManager* manager, FotaDatagram* datagram, FotaError (*send_func)(int8_t* data, uint32_t length));
 
 /**
  * @brief   Create a new datagram for sending
@@ -102,7 +102,7 @@ FotaError packet_manager_send_datagram(PacketManager *manager, FotaDatagram *dat
  * @param   datagram Pointer to store the created datagram
  * @return  Error code
  */
-FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramType type, uint8_t *data, uint32_t length, FotaDatagram **datagram);
+FotaError packet_manager_create_datagram(PacketManager* manager, FotaDatagramType type, uint8_t* data, uint32_t length, FotaDatagram** datagram);
 
 /**
  * @brief   Get a pointer to a completed datagram
@@ -111,7 +111,7 @@ FotaError packet_manager_create_datagram(PacketManager *manager, FotaDatagramTyp
  * @param   datagram Pointer to store pointer to datagram
  * @return  Error code
  */
-FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_id, FotaDatagram **datagram);
+FotaError packet_manager_get_datagram(PacketManager* manager, uint32_t datagram_id, FotaDatagram** datagram);
 
 /**
  * @brief   Free a datagram slot
@@ -119,6 +119,6 @@ FotaError packet_manager_get_datagram(PacketManager *manager, uint32_t datagram_
  * @param   datagram_id ID of the datagram to free
  * @return  Error code
  */
-FotaError packet_manager_free_datagram(PacketManager *manager, uint32_t datagram_id);
+FotaError packet_manager_free_datagram(PacketManager* manager, uint32_t datagram_id);
 
 /** @} */

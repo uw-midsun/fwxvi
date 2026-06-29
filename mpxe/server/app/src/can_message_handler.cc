@@ -3,7 +3,7 @@
  *
  * @brief  Source file defining the Can Message Handler function
  *
- * @date   2026-04-25
+ * @date   2026-06-14
  * @author Aryan Kashem
  ************************************************************************************************/
 
@@ -34,7 +34,7 @@ struct steering {
    * @brief   Decode new CAN data and update the storage for steering
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -81,7 +81,7 @@ struct rear_controller_status {
    * @brief   Decode new CAN data and update the storage for rear_controller_status
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -123,7 +123,7 @@ struct battery_stats_a {
    * @brief   Decode new CAN data and update the storage for battery_stats_A
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -179,7 +179,7 @@ struct battery_stats_b {
    * @brief   Decode new CAN data and update the storage for battery_stats_B
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -236,7 +236,7 @@ struct power_input_stats {
    * @brief   Decode new CAN data and update the storage for power_input_stats
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -299,7 +299,7 @@ struct afe_discharge_bitset {
    * @brief   Decode new CAN data and update the storage for AFE_discharge_bitset
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -352,7 +352,7 @@ struct afe1_status_a {
    * @brief   Decode new CAN data and update the storage for AFE1_status_A
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -416,7 +416,7 @@ struct afe1_status_b {
    * @brief   Decode new CAN data and update the storage for AFE1_status_B
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -480,7 +480,7 @@ struct afe1_status_c {
    * @brief   Decode new CAN data and update the storage for AFE1_status_C
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -544,7 +544,7 @@ struct afe1_status_d {
    * @brief   Decode new CAN data and update the storage for AFE1_status_D
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -608,7 +608,7 @@ struct afe1_status_e {
    * @brief   Decode new CAN data and update the storage for AFE1_status_E
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -672,7 +672,7 @@ struct afe1_status_f {
    * @brief   Decode new CAN data and update the storage for AFE1_status_F
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -736,7 +736,7 @@ struct afe2_status_a {
    * @brief   Decode new CAN data and update the storage for AFE2_status_A
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -800,7 +800,7 @@ struct afe2_status_b {
    * @brief   Decode new CAN data and update the storage for AFE2_status_B
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -864,7 +864,7 @@ struct afe2_status_c {
    * @brief   Decode new CAN data and update the storage for AFE2_status_C
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -928,7 +928,7 @@ struct afe2_status_d {
    * @brief   Decode new CAN data and update the storage for AFE2_status_D
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -992,7 +992,7 @@ struct afe2_status_e {
    * @brief   Decode new CAN data and update the storage for AFE2_status_E
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1056,7 +1056,7 @@ struct afe2_status_f {
    * @brief   Decode new CAN data and update the storage for AFE2_status_F
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1124,7 +1124,7 @@ struct afe_temperature {
    * @brief   Decode new CAN data and update the storage for AFE_temperature
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1218,7 +1218,7 @@ struct fast_one_shot_msg {
    * @brief   Decode new CAN data and update the storage for fast_one_shot_msg
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1265,7 +1265,7 @@ struct medium_one_shot_msg {
    * @brief   Decode new CAN data and update the storage for medium_one_shot_msg
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1312,7 +1312,7 @@ struct slow_one_shot_msg {
    * @brief   Decode new CAN data and update the storage for slow_one_shot_msg
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1360,7 +1360,7 @@ struct gyro_data {
    * @brief   Decode new CAN data and update the storage for gyro_data
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1416,7 +1416,7 @@ struct accel_data {
    * @brief   Decode new CAN data and update the storage for accel_data
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1473,7 +1473,7 @@ struct imu_data {
    * @brief   Decode new CAN data and update the storage for imu_data
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1537,7 +1537,7 @@ struct drive_status {
    * @brief   Decode new CAN data and update the storage for drive_status
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1593,7 +1593,7 @@ struct fc_power_group_a {
    * @brief   Decode new CAN data and update the storage for fc_power_group_A
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1656,7 +1656,7 @@ struct fc_power_group_b {
    * @brief   Decode new CAN data and update the storage for fc_power_group_B
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1705,7 +1705,7 @@ struct fc_power_lights_group {
    * @brief   Decode new CAN data and update the storage for fc_power_lights_group
    * @param   data Pointer to the CAN message to be decoded
    */
-  void decode(const uint8_t *data) {
+  void decode(const uint8_t* data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
     {
@@ -1767,178 +1767,178 @@ struct fc_power_lights_group {
  * @param   id Can message ID
  * @param   data Pointer to the CAN message data
  */
-void CanListener::canMessageHandler(uint32_t id, const uint8_t *data) {
+void CanListener::canMessageHandler(uint32_t id, const uint8_t* data) {
   switch (id) {
     case SYSTEM_CAN_MESSAGE_STEERING_STEERING: {
-      steering *message = new steering();
+      steering* message = new steering();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_REAR_CONTROLLER_STATUS: {
-      rear_controller_status *message = new rear_controller_status();
+      rear_controller_status* message = new rear_controller_status();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_BATTERY_STATS_A: {
-      battery_stats_a *message = new battery_stats_a();
+      battery_stats_a* message = new battery_stats_a();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_BATTERY_STATS_B: {
-      battery_stats_b *message = new battery_stats_b();
+      battery_stats_b* message = new battery_stats_b();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_POWER_INPUT_STATS: {
-      power_input_stats *message = new power_input_stats();
+      power_input_stats* message = new power_input_stats();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE_DISCHARGE_BITSET: {
-      afe_discharge_bitset *message = new afe_discharge_bitset();
+      afe_discharge_bitset* message = new afe_discharge_bitset();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_A: {
-      afe1_status_a *message = new afe1_status_a();
+      afe1_status_a* message = new afe1_status_a();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_B: {
-      afe1_status_b *message = new afe1_status_b();
+      afe1_status_b* message = new afe1_status_b();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_C: {
-      afe1_status_c *message = new afe1_status_c();
+      afe1_status_c* message = new afe1_status_c();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_D: {
-      afe1_status_d *message = new afe1_status_d();
+      afe1_status_d* message = new afe1_status_d();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_E: {
-      afe1_status_e *message = new afe1_status_e();
+      afe1_status_e* message = new afe1_status_e();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_F: {
-      afe1_status_f *message = new afe1_status_f();
+      afe1_status_f* message = new afe1_status_f();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_A: {
-      afe2_status_a *message = new afe2_status_a();
+      afe2_status_a* message = new afe2_status_a();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_B: {
-      afe2_status_b *message = new afe2_status_b();
+      afe2_status_b* message = new afe2_status_b();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_C: {
-      afe2_status_c *message = new afe2_status_c();
+      afe2_status_c* message = new afe2_status_c();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_D: {
-      afe2_status_d *message = new afe2_status_d();
+      afe2_status_d* message = new afe2_status_d();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_E: {
-      afe2_status_e *message = new afe2_status_e();
+      afe2_status_e* message = new afe2_status_e();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_F: {
-      afe2_status_f *message = new afe2_status_f();
+      afe2_status_f* message = new afe2_status_f();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE_TEMPERATURE: {
-      afe_temperature *message = new afe_temperature();
+      afe_temperature* message = new afe_temperature();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG: {
-      fast_one_shot_msg *message = new fast_one_shot_msg();
+      fast_one_shot_msg* message = new fast_one_shot_msg();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG: {
-      medium_one_shot_msg *message = new medium_one_shot_msg();
+      medium_one_shot_msg* message = new medium_one_shot_msg();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG: {
-      slow_one_shot_msg *message = new slow_one_shot_msg();
+      slow_one_shot_msg* message = new slow_one_shot_msg();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA: {
-      gyro_data *message = new gyro_data();
+      gyro_data* message = new gyro_data();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_IMU_ACCEL_DATA: {
-      accel_data *message = new accel_data();
+      accel_data* message = new accel_data();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_TELEMETRY_IMU_DATA: {
-      imu_data *message = new imu_data();
+      imu_data* message = new imu_data();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_DRIVE_STATUS: {
-      drive_status *message = new drive_status();
+      drive_status* message = new drive_status();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_A: {
-      fc_power_group_a *message = new fc_power_group_a();
+      fc_power_group_a* message = new fc_power_group_a();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_GROUP_B: {
-      fc_power_group_b *message = new fc_power_group_b();
+      fc_power_group_b* message = new fc_power_group_b();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;
     }
     case SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_FC_POWER_LIGHTS_GROUP: {
-      fc_power_lights_group *message = new fc_power_lights_group();
+      fc_power_lights_group* message = new fc_power_lights_group();
       message->decode(data);
       m_canInfo[message->get_message_name()] = message->to_json();
       break;

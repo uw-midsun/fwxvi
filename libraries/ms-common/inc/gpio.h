@@ -134,7 +134,7 @@ StatusCode gpio_init(void);
  * @return  STATUS_CODE_OK if pin initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, GpioState init_state);
+StatusCode gpio_init_pin(const GpioAddress* address, const GpioMode pin_mode, GpioState init_state);
 
 /**
  * @brief   Initializes an alternate function for a GPIO pin by address
@@ -145,7 +145,7 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
  * @return  STATUS_CODE_OK if pin initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode, GpioAlternateFunctions alt_func);
+StatusCode gpio_init_pin_af(const GpioAddress* address, const GpioMode pin_mode, GpioAlternateFunctions alt_func);
 
 /**
  * @brief   Sets the GPIO pin to a valid state
@@ -154,7 +154,7 @@ StatusCode gpio_init_pin_af(const GpioAddress *address, const GpioMode pin_mode,
  * @return  STATUS_CODE_OK if pin writing succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode gpio_set_state(const GpioAddress *address, GpioState state);
+StatusCode gpio_set_state(const GpioAddress* address, GpioState state);
 
 /**
  * @brief   Toggles the GPIO
@@ -162,7 +162,7 @@ StatusCode gpio_set_state(const GpioAddress *address, GpioState state);
  * @return  STATUS_CODE_OK if pin toggling succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode gpio_toggle_state(const GpioAddress *address);
+StatusCode gpio_toggle_state(const GpioAddress* address);
 
 /**
  * @brief   Gets the GPIO state
@@ -170,7 +170,7 @@ StatusCode gpio_toggle_state(const GpioAddress *address);
  * @return  GPIO_STATE_HIGH if pin is high
  *          GPIO_STATE_LOW if pin is low
  */
-GpioState gpio_get_state(const GpioAddress *address);
+GpioState gpio_get_state(const GpioAddress* address);
 
 #ifdef MS_PLATFORM_X86
 
@@ -179,14 +179,14 @@ GpioState gpio_get_state(const GpioAddress *address);
  * @param   address Pointer to the GPIO address
  * @return  GpioMode of the selected address
  */
-GpioMode gpio_peek_mode(GpioAddress *address);
+GpioMode gpio_peek_mode(GpioAddress* address);
 
 /**
  * @brief   Peeks at the GPIO alternate function
  * @param   address Pointer to the GPIO address
  * @return  GpioAlternateFunctions of the selected address
  */
-GpioAlternateFunctions gpio_peek_alt_function(GpioAddress *address);
+GpioAlternateFunctions gpio_peek_alt_function(GpioAddress* address);
 
 #endif
 

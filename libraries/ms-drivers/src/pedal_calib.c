@@ -23,7 +23,7 @@
 #include "pedal_calib.h"
 
 // Pedal Calibration function
-StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address) {
+StatusCode pedal_calib_sample(PedalCalibrationStorage* calib_storage, PedalCalibrationData* data, PedalState state, GpioAddress* address) {
   // Erase existing data at storage location
   memset(calib_storage, 0, sizeof(*calib_storage));
   delay_ms(1000U);

@@ -27,7 +27,7 @@
 #define FLASH_FILENAME "Midsun_x86_flash"
 
 static pthread_mutex_t s_flash_mutex;
-static FILE *s_flash_fp = NULL;
+static FILE* s_flash_fp = NULL;
 
 #ifndef _flash_start
 #define _flash_start 0x08000000
@@ -57,7 +57,7 @@ static StatusCode s_validate_address(uintptr_t address, size_t size) {
 }
 
 StatusCode flash_init() {
-  char *flash_filename = FLASH_FILENAME;
+  char* flash_filename = FLASH_FILENAME;
 
   LOG_DEBUG("Using flash file: %s\n", flash_filename);
 
@@ -81,7 +81,7 @@ StatusCode flash_init() {
   }
 }
 
-StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode flash_read(uintptr_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL || s_validate_address(address, buffer_len) != 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -101,7 +101,7 @@ StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
   }
 }
 
-StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode flash_write(uintptr_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL || s_validate_address(address, buffer_len) != STATUS_CODE_OK) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -129,7 +129,7 @@ StatusCode flash_erase(uint8_t start_page, uint8_t num_pages) {
   pthread_mutex_lock(&s_flash_mutex);
 
   size_t buffer_size = (num_pages - start_page) * FLASH_PAGE_SIZE;
-  char *buffer = malloc(buffer_size);
+  char* buffer = malloc(buffer_size);
 
   if (buffer == NULL) {
     pthread_mutex_unlock(&s_flash_mutex);

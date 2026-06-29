@@ -16,6 +16,6 @@
 /* Intra-component Headers */
 #include "motor_can.h"
 
-StatusCode motor_can_process_rx(CanMessage *msg) {
+StatusCode motor_can_process_rx(CanMessage* msg) {
   return ws22_motor_can_process_rx(msg->data_u8, msg->id.raw, msg->dlc);
 }

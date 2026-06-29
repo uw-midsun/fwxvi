@@ -29,7 +29,7 @@
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if invalid parameter is passed in
  */
-StatusCode bps_fault_init(RearControllerStorage *storage);
+StatusCode bps_fault_init(RearControllerStorage* storage);
 
 /**
  * @brief   Commit a new BPS fault to persist memory and CAN data

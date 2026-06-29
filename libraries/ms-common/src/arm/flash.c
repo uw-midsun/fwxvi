@@ -52,7 +52,7 @@ StatusCode flash_init() {
   return s_flash_handle == NULL ? STATUS_CODE_INTERNAL_ERROR : STATUS_CODE_OK;
 }
 
-StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode flash_read(uintptr_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -63,14 +63,14 @@ StatusCode flash_read(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
 
   if (s_validate_address(address, buffer_len) == STATUS_CODE_OK) {
     /* Direct memory read */
-    memcpy(buffer, (void *)address, buffer_len);
+    memcpy(buffer, (void*)address, buffer_len);
   }
 
   xSemaphoreGive(s_flash_handle);
   return STATUS_CODE_OK;
 }
 
-StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
+StatusCode flash_write(uintptr_t address, uint8_t* buffer, size_t buffer_len) {
   if (buffer == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

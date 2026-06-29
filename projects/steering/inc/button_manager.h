@@ -39,7 +39,7 @@ typedef struct ButtonManager {
  * @return  STATUS_CODE_OK if initialized successfully
  *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
  */
-StatusCode button_manager_init(SteeringStorage *storage);
+StatusCode button_manager_init(SteeringStorage* storage);
 
 /**
  * @brief   Update the button manager

@@ -22,7 +22,7 @@
 
 #define TX_SIM_BUFFER_SIZE 1024U
 
-static NetworkBuffer *s_network_buffer = NULL;
+static NetworkBuffer* s_network_buffer = NULL;
 static uint8_t s_tx_sim_buffer[TX_SIM_BUFFER_SIZE];
 static size_t s_tx_sim_head = 0U;
 static size_t s_tx_sim_tail = 0U;
@@ -32,7 +32,7 @@ bool is_network_timeout(bool is_tx) {
   return false;
 }
 
-FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *network_buffer) {
+FotaError network_init(UartPort uart, UartSettings* settings, NetworkBuffer* network_buffer) {
   (void)uart;
   (void)settings;
 
@@ -42,7 +42,7 @@ FotaError network_init(UartPort uart, UartSettings *settings, NetworkBuffer *net
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
+FotaError network_tx(UartPort uart, uint8_t* data, size_t len) {
   (void)uart;
 
   if (!data || len == 0U || len > TX_SIM_BUFFER_SIZE) {
@@ -63,7 +63,7 @@ FotaError network_tx(UartPort uart, uint8_t *data, size_t len) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
+FotaError network_read(UartPort uart, uint8_t* data, size_t len) {
   (void)uart;
 
   if (!s_network_buffer || !data) {
@@ -79,7 +79,7 @@ FotaError network_read(UartPort uart, uint8_t *data, size_t len) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_sim_set_rx_data(uint8_t *data, size_t len) {
+FotaError network_sim_set_rx_data(uint8_t* data, size_t len) {
   if (!s_network_buffer || !data || len == 0) {
     return FOTA_ERROR_INVALID_ARGS;
   }
@@ -93,7 +93,7 @@ FotaError network_sim_set_rx_data(uint8_t *data, size_t len) {
   return FOTA_ERROR_SUCCESS;
 }
 
-FotaError network_sim_get_tx_data(uint8_t *data) {
+FotaError network_sim_get_tx_data(uint8_t* data) {
   if (s_tx_sim_tail == s_tx_sim_head) {
     return FOTA_ERROR_RESOURCE_EXHAUSTED;
   }

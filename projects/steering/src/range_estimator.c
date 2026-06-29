@@ -25,7 +25,7 @@
 /* Track is 3.15 miles which is 5.07 kilometers */
 #define DISTANCE_PER_LAP_KM 5.07f
 
-static SteeringStorage *steering_storage;
+static SteeringStorage* steering_storage;
 
 StatusCode range_estimator_run() {
   float cell_voltage = get_battery_stats_B_min_cell_voltage();
@@ -48,7 +48,7 @@ StatusCode range_estimator_run() {
   return STATUS_CODE_OK;
 }
 
-StatusCode range_estimator_init(SteeringStorage *storage) {
+StatusCode range_estimator_init(SteeringStorage* storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }

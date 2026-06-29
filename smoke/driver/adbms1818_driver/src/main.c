@@ -51,7 +51,7 @@ void wakeup() {
   delay_ms(1);
 }
 
-void build_cmd(uint16_t cmd_val, uint8_t *buf) {
+void build_cmd(uint16_t cmd_val, uint8_t* buf) {
   buf[0] = (uint8_t)(cmd_val >> 8);
   buf[1] = (uint8_t)(cmd_val & 0xFF);
   uint16_t crc = crc15_calculate(buf, 2);
@@ -138,7 +138,7 @@ TASK(adbms1818_driver, TASK_STACK_1024) {
 
 #ifdef MS_PLATFORM_X86
 #include "mpxe.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   mpxe_init(argc, argv);
 #else
 int main() {
