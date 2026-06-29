@@ -1,4 +1,4 @@
-# @file    formatter_config.py
+## @file    formatter_config.py
 #  @date    2025-04-20
 #  @author  Midnight Sun Team #24 - MSXVI
 #  @brief   Formatter Python Config

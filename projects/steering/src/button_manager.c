@@ -170,14 +170,13 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
-  drive_state_manager_enter_regen_state(REGEN_STATE_DISABLED);
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
 }
 
 static void neutral_btn_rising_edge_cb(Button *button) {
-  CONDITIONAL_LOG_DEBUG("ButtonsManager - Neutral Rising edge callback\r\n");
+  CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Rising edge callback\r\n");
 }
 
 /************************************************************************************************

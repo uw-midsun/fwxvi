@@ -30,15 +30,14 @@
  * @brief   Vehicle drive states
  */
 typedef enum {
-  VEHICLE_DRIVE_STATE_INVALID = 0,  /**< Wrong State */
-  VEHICLE_DRIVE_STATE_NEUTRAL = 1,  /**< Car Not Actively Moving in Neutral */
-  VEHICLE_DRIVE_STATE_DRIVE = 2,    /**< Car Drive Forward */
-  VEHICLE_DRIVE_STATE_REVERSE = 3,  /**< Car Drive Reverse*/
-  VEHICLE_DRIVE_STATE_CRUISE = 4,   /**< Car Cruise Constant Velocity */
-  VEHICLE_DRIVE_STATE_BRAKE = 5,    /**< Car Brake */
-  VEHICLE_DRIVE_STATE_REGEN = 6,    /**< Car Brake With Regen */
-  VEHICLE_DRIVE_STATE_FAULT = 7,    /**< BPS fault */
-  VEHICLE_DRIVE_STATE_CHARGING = 8, /**< Car Charging */
+  VEHICLE_DRIVE_STATE_INVALID = 0, /**< Wrong State */
+  VEHICLE_DRIVE_STATE_NEUTRAL = 1, /**< Car Not Actively Moving in Neutral */
+  VEHICLE_DRIVE_STATE_DRIVE = 2,   /**< Car Drive Forward */
+  VEHICLE_DRIVE_STATE_REVERSE = 3, /**< Car Drive Reverse*/
+  VEHICLE_DRIVE_STATE_CRUISE = 4,  /**< Car Cruise Constant Velocity */
+  VEHICLE_DRIVE_STATE_BRAKE = 5,   /**< Car Brake */
+  VEHICLE_DRIVE_STATE_REGEN = 6,   /**< Car Brake With Regen */
+  VEHICLE_DRIVE_STATE_FAULT = 7,   /**< BPS fault */
   VEHICLE_DRIVE_NUM_STATES,
 } VehicleDriveState;
 
