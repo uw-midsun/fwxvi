@@ -135,21 +135,20 @@ static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[])
     /*Start conversion*/
     status_ok_or_return(ads122_start_conversion(storage));
 
-    status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, data, 3U));
+    status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, data, 5U));
     // TODO: CHANGE BACK
  
     return STATUS_CODE_OK;
 }
 
 
-StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[],uint8_t MUX_CFG){
+StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]){
     if(storage == NULL || rx_data == NULL){
         return STATUS_CODE_INVALID_ARGS;
     }
     
     uint8_t status_msb_data;
 
-    status_ok_or_return(ads122_write_register(storage, MUX_CFG, ADS122_REG_MUX_CFG));\
     
     // status_ok_or_return(ads122_read_register(storage, &status_msb_data, ADS122_REG_STATUS_MSB));
 
