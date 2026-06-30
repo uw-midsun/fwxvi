@@ -117,6 +117,13 @@ StatusCode adc_init(void) {
 
   __HAL_RCC_ADC_CLK_ENABLE();
 
+  const ADC_OversamplingTypeDef adc_oversampling_config = {
+    .Ratio = ADC_OVERSAMPLING_RATIO_16,
+    .RightBitShift = ADC_RIGHTBITSHIFT_4,
+    .TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER,
+    .OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE,
+  };
+
   /* Initialize ADC1 */
   s_adc_handle.Instance = ADC1;
   s_adc_handle.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
@@ -130,7 +137,8 @@ StatusCode adc_init(void) {
   s_adc_handle.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   s_adc_handle.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIG_EDGE_NONE;
   s_adc_handle.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
-  s_adc_handle.Init.OversamplingMode = DISABLE;
+  s_adc_handle.Init.OversamplingMode = ENABLE;
+  s_adc_handle.Init.Oversampling = adc_oversampling_config;
 
   if (HAL_ADC_Init(&s_adc_handle) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
