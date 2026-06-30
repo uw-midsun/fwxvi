@@ -115,13 +115,12 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
 StatusCode ads122_start_conversion(ADS122Storage * storage);
 
 /**
- * @brief Stop the conversion of the ADS122 driver
+ * @brief Change the MUX of the ADS122 driver
  * @param storage - pointer to an initalized ADS122Storage struct
+ * @param MUX_CFG - the new MUX_CFG (0:3 - AINN, 4:8 - AINP)
  * @return STATUS_CODE_OK on success
  */
-// StatusCode ads122_stop_conversion(ADS122Storage * storage);
-
-
+StatusCode ads122_change_MUX(ADS122Storage * storage, uint8_t MUX_CFG);
 
 
 /*ADS122_REG_STATUS_MSB*/
