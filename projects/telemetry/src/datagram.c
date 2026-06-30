@@ -19,7 +19,6 @@
 #include "datagram.h"
 #include "telemetry.h"
 
-
 /** @brief  Flip the endianess of 2 bytes. Used to flip the CAN ID from little-endian to big-endian */
 #define FLIP_ENDIANESS_2BYTES(val) (((val & 0xFFU) << 8U) | ((val >> 8U) & 0xFFU))
 
