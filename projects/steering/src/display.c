@@ -145,8 +145,8 @@ static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage, display_data->bps_fault, display_data->bps_fault_cell,
-                                                  steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage, display_data->bps_fault,
+                                                  display_data->bps_fault_cell, steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
     status_ok_or_return(gui_widgets_set_temps_stats_label(steering_storage->ws22_motor_can_storage->telemetry.motor_temp, display_data->max_cell_temp));
     status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
