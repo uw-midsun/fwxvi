@@ -43,6 +43,7 @@
 #define GUI_UPDATE_PERIOD_MS 20U
 
 static SteeringStorage s_demo_storage = { 0 };
+static Ws22MotorCanStorage s_demo_motor_storage = { 0 };
 
 #if SHOW_SMOKE_TEST_LOGO_IMAGE
 static LvglImage s_smoke_logo_image = { 0 };
@@ -106,13 +107,16 @@ static uint16_t s_triangle_wave(uint32_t step, uint32_t period_steps, uint16_t m
 static void s_update_demo_display_data(uint32_t step) {
   uint32_t fault_phase = (step / 120U) % 4U;
 
-  s_demo_storage.display_data.vehicle_velocity = (int16_t)s_triangle_wave(step, 400U, 160U);
+  /* Motor telemetry is read from the WS22 storage by the display render path */
+  s_demo_motor_storage.telemetry.vehicle_velocity_kph = (float)s_triangle_wave(step, 400U, 160U);
+  s_demo_motor_storage.telemetry.bus_voltage = (float)(110U + s_triangle_wave(step + 60U, 260U, 30U));
+  s_demo_motor_storage.telemetry.motor_temp = (float)(25U + s_triangle_wave(step + 120U, 240U, 75U));
+
   s_demo_storage.display_data.pedal_percentage = (uint8_t)s_triangle_wave(step + 80U, 180U, 100U);
+  s_demo_storage.display_data.brake_percentage = (uint8_t)s_triangle_wave(step + 100U, 200U, 100U);
   s_demo_storage.display_data.brake_enabled = ((step / 45U) % 6U) == 0U;
-  s_demo_storage.display_data.motor_heatsink_temp = (int16_t)(25U + s_triangle_wave(step + 120U, 240U, 75U));
-  s_demo_storage.display_data.motor_velocity = (int16_t)s_triangle_wave(step + 40U, 160U, 100U);
   s_demo_storage.display_data.pack_voltage = 120U + s_triangle_wave(step + 20U, 300U, 40U);
-  s_demo_storage.display_data.motor_bus_voltage = 110U + s_triangle_wave(step + 60U, 260U, 30U);
+  s_demo_storage.display_data.pack_current = 5U + s_triangle_wave(step + 140U, 280U, 70U);
   s_demo_storage.display_data.min_cell_voltage_mv = 3300U + s_triangle_wave(step + 10U, 220U, 500U);
   s_demo_storage.display_data.max_cell_voltage_mv = 3600U + s_triangle_wave(step + 50U, 220U, 500U);
   s_demo_storage.display_data.max_cell_temp = 30U + s_triangle_wave(step + 90U, 250U, 35U);
@@ -139,6 +143,8 @@ static void s_update_demo_display_data(uint32_t step) {
 }
 
 TASK(sc_gui_api, TASK_STACK_2048) {
+  s_demo_storage.ws22_motor_can_storage = &s_demo_motor_storage;
+
 #if SHOW_SMOKE_TEST_LOGO_IMAGE
   StatusCode status = s_register_smoke_logo_screen();
   if (status != STATUS_CODE_OK) {
