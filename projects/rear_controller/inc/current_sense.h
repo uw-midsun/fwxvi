@@ -16,6 +16,8 @@
 
 /* Intra-component Headers */
 #include "rear_controller.h"
+#include "current_acs37800.h"
+
 
 /**
  * @defgroup Rear_Controller
