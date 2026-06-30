@@ -38,7 +38,7 @@
 #define BAR_MAX_VALUE 100
 
 /* Generic max number of characters */
-#define LABEL_MAX_CHARS 40
+#define LABEL_MAX_CHARS 48
 
 /* For menu */
 #define GUI_MENU_ITEM_COUNT 5U
