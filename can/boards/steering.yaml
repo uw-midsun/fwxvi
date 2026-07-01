@@ -24,3 +24,13 @@ Messages:
         type: bitfield
         flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled]
         length: 8
+  pedal_calib_request:
+    id: 46
+    cycle: "medium"
+    critical: false
+    target:
+      front_controller:
+        watchdog: 0
+    signals:
+      command:
+        length: 8

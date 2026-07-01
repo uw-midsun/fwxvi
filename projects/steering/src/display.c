@@ -32,6 +32,7 @@
 
 /* Intra-component Headers */
 #include "display.h"
+#include "pedal_calib.h"
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
@@ -120,6 +121,10 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
+  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+    if (return_pressed_edge) {
+      steering_pedal_calib_request(steering_storage);
+    }
   }
 
   s_keyboard_state.left_pressed = left_pressed;
@@ -134,11 +139,13 @@ static void s_process_x86_keyboard_input(void) {
 static void s_process_pending_menu_input(void) {
   StatusCode menu_status = gui_menu_process_pending();
 
+#ifndef MS_PLATFORM_X86
   if (menu_status == STATUS_CODE_INVALID_ARGS) {
     // TODO
   } else if (menu_status != STATUS_CODE_OK) {
     LOG_DEBUG("gui menu input failed: %u\r\n", menu_status);
   }
+#endif
 }
 
 static StatusCode s_render_gui_step(void) {
@@ -169,6 +176,9 @@ static StatusCode s_render_gui_step(void) {
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+
+  } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
+    steering_pedal_calib_rx(steering_storage);
   }
 
   return gui_render();

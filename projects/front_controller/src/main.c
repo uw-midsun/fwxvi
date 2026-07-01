@@ -25,6 +25,7 @@
 #include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
+#include "pedal_calib_handler.h"
 #include "power_manager.h"
 #include "ws22_motor_can.h"
 
@@ -63,6 +64,8 @@ void pre_loop_init() {
 void run_1000hz_cycle() {
   run_can_rx_all();
   adc_run();
+
+  pedal_calib_handler_run(&front_controller_storage);
 
   accel_pedal_run();
   brake_pedal_run();

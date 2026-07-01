@@ -22,7 +22,6 @@
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
 
-static GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
 
 static FrontControllerStorage *front_controller_storage;
