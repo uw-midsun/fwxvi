@@ -77,6 +77,6 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   drive_state_manager_init(steering_storage);
 
   buzzer_play_startup();
-  button_led_manager_clear_all();
+  // button_led_manager_clear_all();
   return STATUS_CODE_OK;
 }
