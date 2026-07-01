@@ -42,10 +42,10 @@ struct Ws22MotorCanConfig;
 #define FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT 2.0f
 
 /** @brief  Front controller accel pedal alpha value for low-pass filtering */
-#define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.25f
+#define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.20f
 
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
-#define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.50f
+#define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.20f
 
 /** @brief  Front controller brake pedal set to 15% deadzone  */
 #define FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE 0.15f

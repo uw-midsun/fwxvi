@@ -37,7 +37,7 @@ const SpiSettings spi_config = {
 };
 
 static AdbmsAfeSettings s_settings = { .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
-                                       .num_devices = 1,
+                                       .num_devices = 2U,
                                        .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
                                        .num_thermistors = ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE,
                                        .spi_settings = &spi_config,
