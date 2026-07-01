@@ -56,7 +56,9 @@ Ws22MotorCanConfig motor_can_config = {
 
 VehicleDriveState drive_state;
 
-void pre_loop_init() {}
+void pre_loop_init() {
+  motor_can_transmit_reset_command();
+}
 
 void run_1000hz_cycle() {
   run_can_rx_all();

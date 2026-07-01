@@ -51,5 +51,7 @@ StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
 
 StatusCode motor_can_transmit_drive_command(void);
 
+StatusCode motor_can_transmit_reset_command(void);
+
 StatusCode motor_can_process_rx(CanMessage *msg);
 /** @} */
