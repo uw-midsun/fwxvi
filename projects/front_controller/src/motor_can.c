@@ -85,6 +85,16 @@ StatusCode motor_can_transmit_drive_command(void) {
   return can_transmit(&msg);
 }
 
+StatusCode motor_can_transmit_reset_command(void) {
+  CanMessage msg;
+
+  msg.id.raw = WS22_CAN_ID_RESET;
+  msg.extended = false;
+  msg.dlc = 0U;
+
+  return can_transmit(msg);
+}
+
 StatusCode motor_can_update_target_current_velocity() {
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
