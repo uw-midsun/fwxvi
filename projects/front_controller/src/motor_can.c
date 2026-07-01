@@ -92,7 +92,7 @@ StatusCode motor_can_transmit_reset_command(void) {
   msg.extended = false;
   msg.dlc = 0U;
 
-  return can_transmit(msg);
+  return can_transmit(&msg);
 }
 
 StatusCode motor_can_update_target_current_velocity() {
