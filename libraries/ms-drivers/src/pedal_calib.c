@@ -44,6 +44,11 @@ StatusCode pedal_calib_sample(PedalCalibrationStorage *calib_storage, PedalCalib
     uint16_t adc_reading;
     status = adc_read_raw(address, &adc_reading);
 
+    if (adc_reading <= 10) {
+      LOG_DEBUG("Val too small, skipping: %u\r\n", adc_reading);
+      return STATUS_CODE_OK;
+    }
+
     if (status != STATUS_CODE_OK) {
       return STATUS_CODE_INCOMPLETE;
     }
