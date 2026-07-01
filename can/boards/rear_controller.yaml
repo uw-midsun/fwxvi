@@ -61,9 +61,15 @@ Messages:
         watchdog: 0
     signals:
       max_cell_voltage:
-        length: 16
+        type: "float"
+        min: 20000
+        max: 50000
+        length: 8
       min_cell_voltage:
-        length: 16
+        type: "float"
+        min: 20000
+        max: 50000
+        length: 8
       max_temperature:
         length: 16
 

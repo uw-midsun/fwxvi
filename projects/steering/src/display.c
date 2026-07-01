@@ -263,7 +263,7 @@ static uint16_t prv_safe_cell_voltage(float raw) {
     LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
     return 0U;
   }
-  return (uint16_t)raw;
+  return (uint16_t)(raw);
 }
 
 StatusCode display_rx_slow() {
@@ -295,15 +295,18 @@ StatusCode display_rx_medium() {
 
   /* Greatest piece of code ever written. */
   const uint16_t cell_voltages[36] = {
-    prv_safe_cell_voltage(get_AFE1_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_1()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_2()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_3()),
-    prv_safe_cell_voltage(get_AFE1_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_5()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_7()),
-    prv_safe_cell_voltage(get_AFE1_status_C_voltage_8()),  prv_safe_cell_voltage(get_AFE1_status_D_voltage_9()),  prv_safe_cell_voltage(get_AFE1_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE1_status_D_voltage_11()),
-    prv_safe_cell_voltage(get_AFE1_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_13()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_14()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_15()),
-    prv_safe_cell_voltage(get_AFE1_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_17()), prv_safe_cell_voltage(get_AFE2_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE2_status_A_voltage_1()),
-    prv_safe_cell_voltage(get_AFE2_status_A_voltage_2()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_3()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_5()),
-    prv_safe_cell_voltage(get_AFE2_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_7()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_8()),  prv_safe_cell_voltage(get_AFE2_status_D_voltage_9()),
-    prv_safe_cell_voltage(get_AFE2_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE2_status_D_voltage_11()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_13()),
-    prv_safe_cell_voltage(get_AFE2_status_E_voltage_14()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_15()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_17()),
+    prv_safe_cell_voltage(get_AFE1_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_1()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_2()),
+    prv_safe_cell_voltage(get_AFE1_status_B_voltage_3()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_5()),
+    prv_safe_cell_voltage(get_AFE1_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_7()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_8()),
+    prv_safe_cell_voltage(get_AFE1_status_D_voltage_9()),  prv_safe_cell_voltage(get_AFE1_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE1_status_D_voltage_11()),
+    prv_safe_cell_voltage(get_AFE1_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_13()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_14()),
+    prv_safe_cell_voltage(get_AFE1_status_F_voltage_15()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_17()),
+    prv_safe_cell_voltage(get_AFE2_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE2_status_A_voltage_1()),  prv_safe_cell_voltage(get_AFE2_status_A_voltage_2()),
+    prv_safe_cell_voltage(get_AFE2_status_B_voltage_3()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_5()),
+    prv_safe_cell_voltage(get_AFE2_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_7()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_8()),
+    prv_safe_cell_voltage(get_AFE2_status_D_voltage_9()),  prv_safe_cell_voltage(get_AFE2_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE2_status_D_voltage_11()),
+    prv_safe_cell_voltage(get_AFE2_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_13()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_14()),
+    prv_safe_cell_voltage(get_AFE2_status_F_voltage_15()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_17()),
   };
 
   memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
