@@ -35,8 +35,58 @@ static bool s_pack_widgets_initialized;
 static LabelWidget s_speed_label;
 static LabelWidget s_cc_label;
 
+/* Cell voltage range used for the pack table gradient fill, in the same fixed-point mV units as s_cell_voltages */
+#define PACK_CELL_GRADIENT_MIN_MV 25000U
+#define PACK_CELL_GRADIENT_MAX_MV 45000U
+
 static void s_format_cell(char *buf, uint8_t idx) {
   snprintf(buf, PACK_CELL_TEXT_LEN, "C%02u\n%u.%03u", idx + 1U, s_cell_voltages[idx] / 10000U, (s_cell_voltages[idx] % 10000U) / 10U);
+}
+
+/**
+ * @brief   Interpolate the pack table cell fill color between the low/high gradient colors
+ * @param   cell_voltage Cell voltage in the same fixed-point mV units as s_cell_voltages
+ */
+static lv_color_t s_cell_fill_color(uint16_t cell_voltage) {
+  int32_t clamped = cell_voltage;
+  if (clamped < (int32_t)PACK_CELL_GRADIENT_MIN_MV) {
+    clamped = (int32_t)PACK_CELL_GRADIENT_MIN_MV;
+  } else if (clamped > (int32_t)PACK_CELL_GRADIENT_MAX_MV) {
+    clamped = (int32_t)PACK_CELL_GRADIENT_MAX_MV;
+  }
+
+  float fraction = (float)(clamped - (int32_t)PACK_CELL_GRADIENT_MIN_MV) / (float)(PACK_CELL_GRADIENT_MAX_MV - PACK_CELL_GRADIENT_MIN_MV);
+
+  ClutEntry low = clut_get_gui_color(GUI_COLOR_CELL_VOLTAGE_LOW);
+  ClutEntry high = clut_get_gui_color(GUI_COLOR_CELL_VOLTAGE_HIGH);
+
+  uint8_t red = (uint8_t)((float)low.red + fraction * (float)(high.red - low.red));
+  uint8_t green = (uint8_t)((float)low.green + fraction * (float)(high.green - low.green));
+  uint8_t blue = (uint8_t)((float)low.blue + fraction * (float)(high.blue - low.blue));
+
+  return lv_color_make(red, green, blue);
+}
+
+/**
+ * @brief   Override each pack table cell's fill color based on its voltage
+ * @details LVGL's per-item table styling doesn't support indexed styles in this vendored version,
+ *          so the fill color is patched in via the draw task instead.
+ */
+static void s_table_cell_draw_event_cb(lv_event_t *e) {
+  lv_draw_task_t *draw_task = lv_event_get_draw_task(e);
+  lv_draw_dsc_base_t *base_dsc = lv_draw_task_get_draw_dsc(draw_task);
+
+  if (base_dsc->part != LV_PART_ITEMS || lv_draw_task_get_type(draw_task) != LV_DRAW_TASK_TYPE_FILL) {
+    return;
+  }
+
+  uint32_t cell_idx = (base_dsc->id1 * PACK_TABLE_COLS) + base_dsc->id2;
+  if (cell_idx >= NUMBER_OF_CELLS) {
+    return;
+  }
+
+  lv_draw_fill_dsc_t *fill_dsc = lv_draw_task_get_fill_dsc(draw_task);
+  fill_dsc->color = s_cell_fill_color(s_cell_voltages[cell_idx]);
 }
 
 static StatusCode s_create_table(GuiScreen *screen) {
@@ -53,7 +103,13 @@ static StatusCode s_create_table(GuiScreen *screen) {
     .border_color_id = GUI_COLOR_LABEL_BORDER,
   };
 
-  return lvgl_widgets_create_table(&s_pack_table, &config, screen);
+  status_ok_or_return(lvgl_widgets_create_table(&s_pack_table, &config, screen));
+
+  lv_obj_set_style_bg_opa(s_pack_table.table, LV_OPA_COVER, LV_PART_ITEMS);
+  lv_obj_add_flag(s_pack_table.table, LV_OBJ_FLAG_SEND_DRAW_TASK_EVENTS);
+  lv_obj_add_event_cb(s_pack_table.table, s_table_cell_draw_event_cb, LV_EVENT_DRAW_TASK_ADDED, NULL);
+
+  return STATUS_CODE_OK;
 }
 
 static StatusCode s_create_speed_label(GuiScreen *screen) {
