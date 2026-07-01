@@ -46,7 +46,7 @@
 #define NUM_AFE_TEMPERATURE_MSGS ((ADBMS_AFE_MAX_CELL_THERMISTORS + NUM_AFE_TEMPERATURES_PER_LOG - 1U) / NUM_AFE_TEMPERATURES_PER_LOG)
 
 /** @brief  Number of communication retries before throwing AFE fault */
-#define AFE_NUM_RETRIES 5U
+#define AFE_NUM_RETRIES 10U
 
 /** @brief  Temperature threshold for invalid readings */
 #define CELL_TEMP_OUTLIER_THRESHOLD 80
@@ -82,8 +82,8 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 1U
-#define OVER_UNDER_FAULTS_ENABLED 0U
+#define BALANCING_ENABLED 0U
+#define OVER_UNDER_FAULTS_ENABLED 1U
 
 #define CELL_SENSE_DEBUG 0U
 
@@ -125,6 +125,8 @@ static AdbmsAfeStorage *adbms_afe_storage;
 static bool s_cell_data_updated = false;
 
 static uint8_t s_afe_temperature_message_index = 0U;
+
+static uint8_t retries = 0U;
 
 static RearControllerStorage *rear_controller_storage;
 
@@ -361,80 +363,70 @@ static StatusCode s_check_thermistors() {
 static StatusCode s_cell_sense_conversions() {
   StatusCode status = STATUS_CODE_OK;
 
-  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    RETRY_OPERATION(CELL_SENSE_MAX_RETRIES, RETRY_DELAY_MS, adbms_afe_trigger_cell_conv(adbms_afe_storage), status);
-
-    if (status == STATUS_CODE_OK) {
-      /* If conversion triggered successfully, escape early */
-      break;
-    }
-
-    LOG_DEBUG("Cell trigger conv failed, retrying %d\n", status);
-    delay_ms(RETRY_DELAY_MS);
-  }
+  status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
 
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Cell conv failed): %d\n", status);
+    LOG_DEBUG("Cell conv failed: %d retrying...\n", status);
+    retries++;
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-#endif
+    if (retries >= AFE_NUM_RETRIES) {
+      LOG_DEBUG("Cell conv failed: Status %d\n", status);
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    }
     return status;
+#endif
   }
 
   delay_ms(CONV_DELAY_MS);
 
-  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = adbms_afe_read_cells(adbms_afe_storage);
-    if (status == STATUS_CODE_OK) {
-      break;
-    }
-    LOG_DEBUG("Cell read failed, retrying %d\n", status);
-    delay_ms(RETRY_DELAY_MS);
-  }
+  status = adbms_afe_read_cells(adbms_afe_storage);
+
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Cell read failed %d\n", status);
+    LOG_DEBUG("Cell read failed: %d retrying...\n", status);
+    retries++;
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    if (retries >= AFE_NUM_RETRIES) {
+      LOG_DEBUG("Cell read failed: Status %d\n", status);
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    }
 #endif
     return status;
   }
+
 #if (THERMISTORS_CONNECTED == 1U)
-  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
 
-    if (status == STATUS_CODE_OK) {
-      break;
-    }
-
-    LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
-    delay_ms(RETRY_DELAY_MS);
-  }
+  status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
 
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Thermistor conv failed: Status %d\n", status);
-    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
+    retries++;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    if (retries >= AFE_NUM_RETRIES) {
+      LOG_DEBUG("Thermistor conv failed: Status %d\n", status);
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    }
+#endif
     return status;
   }
 
   delay_ms(AUX_CONV_DELAY_MS);
 
-  for (uint8_t retries = AFE_NUM_RETRIES; retries > 0; retries--) {
-    status = adbms_afe_read_thermistors(adbms_afe_storage);
-
-    if (status == STATUS_CODE_OK) {
-      break;
-    }
-
-    LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
-    delay_ms(RETRY_DELAY_MS);
-  }
+  status = adbms_afe_read_thermistors(adbms_afe_storage);
 
   if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Thermistor read failed: %d\n", status);
-    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
+    retries++;
+#if (OVER_UNDER_FAULTS_ENABLED == 1)
+    if (retries >= AFE_NUM_RETRIES) {
+      LOG_DEBUG("Thermistor read failed, Status: %d\n", status);
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    }
+#endif
     return status;
   }
 #endif
+
+  retries = 0;
   return status;
 }
 
