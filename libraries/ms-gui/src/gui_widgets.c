@@ -154,7 +154,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
   const LabelWidgetConfig top_label_config = {
     .size = { .width = 300, .height = 30 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 0 } },
-    .label_text = "Pack: 0 V   |   0 A   |   Mot: 0 V   |   0 A   |   Solar: 0 A",
+    .label_text = "P: 0V, 0A | M: 0V, 0A | S: 0A",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
@@ -263,7 +263,7 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_curren
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
     int32_t solar_current = (int32_t)motor_bus_current - (int32_t)pack_current;
-    snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   %u A   |   Mot: %u V   |   %u A   |   Solar: %ld A", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, solar_current);
+    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %uA | M: %uV, %uA | S: %ldA", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, solar_current);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
