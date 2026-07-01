@@ -133,7 +133,7 @@ StatusCode drive_state_manager_init(SteeringStorage *storage) {
   current_regen_state = REGEN_STATE_DISABLED;
 
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
-  drive_state_manager_enter_regen_state(REGEN_STATE_DISABLED);
+  drive_state_manager_enter_regen_state(REGEN_STATE_ENABLED);
   return STATUS_CODE_OK;
 }
 
