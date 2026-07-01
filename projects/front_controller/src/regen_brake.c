@@ -21,9 +21,6 @@
 
 static FrontControllerStorage *front_controller_storage;
 
-static float current_velocity;
-static float regen_percentage;
-
 #define REGEN_BRAKE_DEBUG 0U
 
 #if (REGEN_BRAKE_DEBUG == 1)
@@ -35,8 +32,13 @@ static float regen_percentage;
 #endif
 
 #define REGEN_BRAKE_STOPPING_THRESHOLD 10U
+#define REGEN_BRAKE_MAX_PEDAL_PERCENTAGE 0.5f
 
 StatusCode regen_brake_run(float *target_current, bool *direction) {
+  static float current_velocity;
+  static float pedal_percentage;
+
+
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -54,9 +56,14 @@ StatusCode regen_brake_run(float *target_current, bool *direction) {
     return STATUS_CODE_OK;
   }
 
-  // y = 1 - (1-x)^4 to curve the value
-  regen_percentage = 1 - ((front_controller_storage->brake_percentage - front_controller_storage->config->brake_pedal_deadzone) / (1.0f - front_controller_storage->config->brake_pedal_deadzone));
-  *target_current = 1 - (regen_percentage * regen_percentage * regen_percentage * regen_percentage);
+  pedal_percentage = (front_controller_storage->brake_percentage - front_controller_storage->config->brake_pedal_deadzone) / (1.0f - front_controller_storage->config->brake_pedal_deadzone);
+
+  if(pedal_percentage >= REGEN_BRAKE_MAX_PEDAL_PERCENTAGE) {
+    *target_current = 1.0f;
+  } else {
+    // y = 1/max * (x - max) + 1.
+    *target_current = ((1.0f/(REGEN_BRAKE_MAX_PEDAL_PERCENTAGE)) * (pedal_percentage - REGEN_BRAKE_MAX_PEDAL_PERCENTAGE)) + 1.0f;
+  }
 
   return STATUS_CODE_OK;
 }
