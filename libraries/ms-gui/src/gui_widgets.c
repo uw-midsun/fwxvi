@@ -154,7 +154,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
   const LabelWidgetConfig top_label_config = {
     .size = { .width = 300, .height = 30 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 0 } },
-    .label_text = "Pack: 0 V   |   0 A   |   Mot: 0 V",
+    .label_text = "Pack: 0 V   |   0 A   |   Mot: 0 V   |   0 A   |   Solar: 0 A",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
@@ -241,7 +241,8 @@ StatusCode gui_widgets_init(void) {
   return gui_widgets_init_screen(screen);
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
+                                     uint16_t ws22_flags) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -261,7 +262,8 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_curren
     const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
-    snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   %u A   |   Mot: %u V", pack_voltage, pack_current, motor_bus_voltage);
+    int32_t solar_current = (int32_t)motor_bus_current - (int32_t)pack_current;
+    snprintf(text_buffer, sizeof(text_buffer), "Pack: %u V   |   %u A   |   Mot: %u V   |   %u A   |   Solar: %ld A", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, solar_current);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
