@@ -64,6 +64,21 @@ static bool s_handle_menu_light_chord(SteeringButtons button) {
   return gui_menu_request_toggle() == STATUS_CODE_OK;
 }
 
+/**
+ * @brief   Toggle the overlay menu when both drive and reverse buttons are pressed together
+ * @param   button reverse/drive button that triggered the current callback
+ * @return  TRUE when the chord was handled as drive state charging, FALSE otherwise
+ */
+static bool s_charging_up_btns_chord(SteeringButtons button) {
+  SteeringButtons other_button = button == STEERING_BUTTON_DRIVE ? STEERING_BUTTON_REVERSE : STEERING_BUTTON_DRIVE;
+
+  if (!s_button_is_pressed(other_button)) {
+    return false;
+  }
+
+  return drive_state_manager_request(DRIVE_STATE_REQUEST_D) == STATUS_CODE_OK;
+}
+
 #define BUTTON_MANAGER_DEBUG 0 /**< Set to 1 to enable debug prints */
 
 #if (BUTTON_MANAGER_DEBUG == 1)
@@ -142,6 +157,10 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
+  if (s_charging_up_btns_chord(STEERING_BUTTON_DRIVE)) {
+    return;
+  }
+
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -156,6 +175,10 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
+  if (s_charging_up_btns_chord(STEERING_BUTTON_REVERSE)) {
+    return;
+  }
+
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");

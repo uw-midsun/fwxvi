@@ -51,7 +51,9 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_drive_cmd_enabled = false,
 };
 
-void pre_loop_init() {}
+void pre_loop_init() {
+  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
+}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
@@ -66,7 +68,8 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
-  // bps_fault_commit();
+   current_sense_run();
+   bps_fault_commit();
 }
 
 #ifdef MS_PLATFORM_X86
@@ -79,8 +82,6 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
-
-  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
 
   init_master_tasks();
 
