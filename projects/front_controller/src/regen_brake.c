@@ -37,6 +37,7 @@ static FrontControllerStorage *front_controller_storage;
 StatusCode regen_brake_run(float *target_current, bool *direction) {
   static float current_velocity;
   static float pedal_percentage;
+  const float leading_coefficient = (1.0f / (REGEN_BRAKE_MAX_PEDAL_PERCENTAGE * REGEN_BRAKE_MAX_PEDAL_PERCENTAGE))
 
   if (front_controller_storage == NULL) {
     return STATUS_CODE_UNINITIALIZED;
@@ -60,8 +61,8 @@ StatusCode regen_brake_run(float *target_current, bool *direction) {
   if (pedal_percentage >= REGEN_BRAKE_MAX_PEDAL_PERCENTAGE) {
     *target_current = 1.0f;
   } else {
-    // y = 1/max * (x - max) + 1.
-    *target_current = ((1.0f / (REGEN_BRAKE_MAX_PEDAL_PERCENTAGE)) * (pedal_percentage - REGEN_BRAKE_MAX_PEDAL_PERCENTAGE)) + 1.0f;
+    // y = 1/max^2 * x^2
+    *target_current = leading_coefficient * (pedal_percentage * pedal_percentage);
   }
 
   return STATUS_CODE_OK;
