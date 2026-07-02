@@ -68,7 +68,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
-   current_sense_run();
+   // current_sense_run();
    bps_fault_commit();
 }
 
