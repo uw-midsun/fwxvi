@@ -51,7 +51,7 @@ static bool data_ready = false;
 static uint8_t register_map[] = {
   ADS122_REG_DEVICE_CFG_DEFAULT,
   ADS122_REG_DATA_RATE_CFG_DEFAULT,
-  ADS122_REG_MUX_CFG_DEFAULT,
+  (ADS122_REG_MUX_CFG_DEFAULT | csense_AIN0_AIN1_MUX_CDF), //reads voltage first
   ADS122_REG_GAIN_CFG_DEFAULT, // Gain is 0.5
   (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04), //Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
   (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),  /* TODO: CHANGE BACK*/

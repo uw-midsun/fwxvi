@@ -92,7 +92,6 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
         return STATUS_CODE_INVALID_ARGS;
     }
     
-    
     storage->i2c_port = i2c_port_storage;
     storage->i2c_address = i2c_address_storage;
     storage->i2c_settings = *i2c_settings_storage;
@@ -116,7 +115,6 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
     /* Set init configs -> put init values into a ADS122_CONFIG_REGISTERS*/
     status_ok_or_return(ads122_write_multiple_registers(storage, register_map, ADS122_CONFIG_REGISTERS, 11U));
 
-    status_ok_or_return(ads122_change_MUX(storage, 0x01));
     status_ok_or_return(ads122_start_conversion(storage));
 
     return STATUS_CODE_OK;
