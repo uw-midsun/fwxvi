@@ -91,7 +91,6 @@ _Static_assert(sizeof(ADS122C14ITER_Command) == 1U );
  * @brief Get the conversion data
  * @param storage - pointer to the initilized ADS122Storage struct
  * @param rx_Data - data collection array
- * @param MUX_CFG - AINP and AINN pins
  * @return STATUS_CODE_OK on success
  */
 StatusCode ads122_get_conversion_data(ADS122Storage * storage, uint8_t rx_data[]);
