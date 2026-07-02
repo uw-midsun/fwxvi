@@ -115,8 +115,7 @@ struct rear_controller_status {
  * @brief   Storage class for battery_stats_a CAN message
  */
 struct battery_stats_a {
-  uint16_t pack_voltage; /**< CAN signal 'pack_voltage' defined in *.yaml */
-  uint16_t pack_current; /**< CAN signal 'pack_current' defined in *.yaml */
+  int32_t pack_voltage; /**< CAN signal 'pack_voltage' defined in *.yaml */
   uint16_t pack_soc;     /**< CAN signal 'pack_soc' defined in *.yaml */
 
   /**
@@ -131,16 +130,10 @@ struct battery_stats_a {
       start_byte = 0;
       raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
       raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
 
       pack_voltage = raw_val;
-    }
-    {
-      raw_val = 0U;
-      start_byte = 2;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
-
-      pack_current = raw_val;
     }
     {
       raw_val = 0U;
@@ -156,7 +149,7 @@ struct battery_stats_a {
    * @brief   Create a JSON object for battery_stats_A using the storage
    */
   nlohmann::json to_json() const {
-    return { { "pack_voltage", pack_voltage }, { "pack_current", pack_current }, { "pack_soc", pack_soc } };
+    return { { "pack_voltage", pack_voltage }, { "pack_soc", pack_soc } };
   }
 
   /**
@@ -171,6 +164,7 @@ struct battery_stats_a {
  * @brief   Storage class for battery_stats_b CAN message
  */
 struct battery_stats_b {
+  int32_t pack_current; /**< CAN signal 'pack_current' defined in *.yaml */
   uint16_t max_cell_voltage; /**< CAN signal 'max_cell_voltage' defined in *.yaml */
   uint16_t min_cell_voltage; /**< CAN signal 'min_cell_voltage' defined in *.yaml */
   uint16_t max_temperature;  /**< CAN signal 'max_temperature' defined in *.yaml */
@@ -182,6 +176,16 @@ struct battery_stats_b {
   void decode(const uint8_t *data) {
     uint64_t raw_val = 0U;
     uint8_t start_byte = 0U;
+      {
+      raw_val = 0U;
+      start_byte = 2;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 2]) << 16U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 3]) << 24U;
+
+      pack_current = raw_val;
+    }
     {
       raw_val = 0U;
       start_byte = 0;
@@ -201,8 +205,8 @@ struct battery_stats_b {
     {
       raw_val = 0U;
       start_byte = 4;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 0]) << 0U;
-      raw_val |= static_cast<uint64_t>(data[start_byte + 1]) << 8U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 8]) << 0U;
+      raw_val |= static_cast<uint64_t>(data[start_byte + 9]) << 8U;
 
       max_temperature = raw_val;
     }
@@ -212,7 +216,7 @@ struct battery_stats_b {
    * @brief   Create a JSON object for battery_stats_B using the storage
    */
   nlohmann::json to_json() const {
-    return { { "max_cell_voltage", max_cell_voltage }, { "min_cell_voltage", min_cell_voltage }, { "max_temperature", max_temperature } };
+    return {{ "pack_current", pack_current }, { "max_cell_voltage", max_cell_voltage }, { "min_cell_voltage", min_cell_voltage }, { "max_temperature", max_temperature } };
   }
 
   /**

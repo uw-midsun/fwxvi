@@ -164,7 +164,7 @@ class CanScheduler {
    * @brief   Update the CAN value for battery_stats_a pack_current
    * @param   pack_current_value New value for the signal
    */
-  void update_battery_stats_a_pack_current(uint16_t pack_current_value);
+  void update_battery_stats_b_pack_current(uint16_t pack_current_value);
   /**
    * @brief   Update the CAN value for battery_stats_a pack_soc
    * @param   pack_soc_value New value for the signal
