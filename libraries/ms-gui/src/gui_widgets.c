@@ -317,16 +317,6 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
-  (void)pack_voltage;
-  (void)pack_current;
-  (void)motor_bus_voltage;
-  (void)fault;
-  (void)cell_at_fault;
-  (void)ws22_flags;
-  return STATUS_CODE_OK;
-}
-
 StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16_t max_cell_voltage_mv) {
   (void)min_cell_voltage_mv;
   (void)max_cell_voltage_mv;
