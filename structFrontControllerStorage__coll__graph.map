@@ -1,0 +1,6 @@
+<map id="FrontControllerStorage" name="FrontControllerStorage">
+<area shape="rect" id="node1" title="Front Controller storage." alt="" coords="147,167,317,192"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,64,31"/>
+<area shape="rect" id="node3" href="$structFrontControllerConfig.html" title="Front Controller configuration data." alt="" coords="152,5,312,31"/>
+<area shape="rect" id="node4" href="$structWs22MotorCanConfig.html" title=" " alt="" coords="336,5,499,31"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="CanStorage" name="CanStorage">
+<area shape="rect" id="node1" title="Storage class for the device ID and RX data." alt="" coords="5,93,103,119"/>
+<area shape="rect" id="node2" title=" " alt="" coords="25,5,83,31"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="RearControllerStorage" name="RearControllerStorage">
+<area shape="rect" id="node1" title=" " alt="" coords="230,108,397,133"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,64,31"/>
+<area shape="rect" id="node3" href="$structACS37800Storage.html" title=" " alt="" coords="153,5,292,31"/>
+<area shape="rect" id="node4" href="$structRearControllerConfig.html" title=" " alt="" coords="316,5,473,31"/>
+<area shape="rect" id="node5" href="$structWs22MotorCanConfig.html" title=" " alt="" coords="497,5,660,31"/>
+</map>

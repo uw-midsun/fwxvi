@@ -1,0 +1,4 @@
+<map id="IMU" name="IMU">
+<area shape="rect" id="node1" title="IMU Firmware." alt="" coords="5,66,53,91"/>
+<area shape="rect" id="node2" href="$group__imu.html" title="imu Firmware" alt="" coords="249,66,296,91"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="smoke/steering" name="smoke/steering">
+<area shape="rect" id="node2" href="dir_1fd73cbe89261961c32e9fdd80de4f0e.html" title="sc_display" alt="" coords="323,63,413,88"/>
+<area shape="rect" id="node3" href="dir_6191a4c83a862c1baa41f57a0a714cf9.html" title="sc_gui_api" alt="" coords="208,63,299,88"/>
+<area shape="rect" id="node4" href="dir_7bed82ac134b51d7d5e8dca419977538.html" title="sc_piezo_am_pwm" alt="" coords="38,63,183,88"/>
+<area shape="rect" id="clust2" href="dir_6d1e34c0961a6f610379ae079c2455cb.html" alt="" coords="27,52,523,99"/>
+<area shape="rect" id="clust1" href="dir_876af3cb67451e9ee395be6711b378f1.html" title="smoke" alt="" coords="16,16,533,109"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="Bootloader_packet_handler" name="Bootloader_packet_handler">
+<area shape="rect" id="node1" href="$group__FOTA.html" title="Firmware Over the Air (FOTA) Update system." alt="" coords="352,7,408,33"/>
+<area shape="rect" id="node2" title="bootloader_packet_handler Firmware" alt="" coords="5,7,204,33"/>
+</map>

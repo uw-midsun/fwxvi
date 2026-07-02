@@ -1,0 +1,7 @@
+<map id="smoke/rear" name="smoke/rear">
+<area shape="rect" id="node2" href="dir_f69826d9d3ae4bc8b9a870f97f09c9ae.html" title="rc_killswitch" alt="" coords="407,63,510,88"/>
+<area shape="rect" id="node3" href="dir_59e070913ab5054d52eb4c3664164a20.html" title="rc_power_path_manager" alt="" coords="201,63,383,88"/>
+<area shape="rect" id="node4" href="dir_a919eccdd5cca53943b2c32932858966.html" title="rc_state_manager" alt="" coords="37,63,176,88"/>
+<area shape="rect" id="clust2" href="dir_7b011f8b346a6459dd9a29534acddabe.html" alt="" coords="27,52,593,99"/>
+<area shape="rect" id="clust1" href="dir_876af3cb67451e9ee395be6711b378f1.html" title="smoke" alt="" coords="16,16,604,109"/>
+</map>

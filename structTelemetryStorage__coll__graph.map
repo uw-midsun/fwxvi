@@ -1,0 +1,20 @@
+<map id="TelemetryStorage" name="TelemetryStorage">
+<area shape="rect" id="node1" title="Telemetry storage." alt="" coords="1127,132,1264,157"/>
+<area shape="rect" id="node2" href="$structDatagram.html" title="Datagram storage class." alt="" coords="835,5,922,31"/>
+<area shape="rect" id="node3" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="847,55,911,80"/>
+<area shape="rect" id="node4" href="$structBmi323Storage.html" title="Storage struct for bmi323." alt="" coords="817,280,940,305"/>
+<area shape="rect" id="node5" href="$structBmi323Settings.html" title=" " alt="" coords="475,305,600,331"/>
+<area shape="rect" id="node6" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="185,343,280,368"/>
+<area shape="rect" id="node7" title=" " alt="" coords="5,229,64,255"/>
+<area shape="rect" id="node12" href="$structCanStorage.html" title="Storage class for the device ID and RX data." alt="" coords="316,93,413,119"/>
+<area shape="rect" id="node17" href="$structUartSettings.html" title="UART Settings." alt="" coords="181,207,284,232"/>
+<area shape="rect" id="node18" href="$structSdSpiSettings.html" title="Configuration settings for initializing an SD SPI port." alt="" coords="177,157,288,183"/>
+<area shape="rect" id="node8" href="$structAxes.html" title=" " alt="" coords="511,207,564,232"/>
+<area shape="rect" id="node9" href="$structAccelGainOffsetValues.html" title="Struct to store offset and gain values for accelerometer." alt="" coords="453,256,622,281"/>
+<area shape="rect" id="node10" href="$structGyroGainOffsetValues.html" title="Struct to store offset and gain values for gyroscope." alt="" coords="455,355,620,380"/>
+<area shape="rect" id="node11" href="$structBmi323Readings.html" title=" " alt="" coords="471,404,603,429"/>
+<area shape="rect" id="node13" href="$structWs22MotorCanStorage.html" title="WS22 motor CAN interface storage structure." alt="" coords="793,453,964,479"/>
+<area shape="rect" id="node14" href="$structWs22MotorControlData.html" title="Motor control command data structure." alt="" coords="450,503,625,528"/>
+<area shape="rect" id="node15" href="$structWs22MotorTelemetryData.html" title="Motor status and telemetry data structure." alt="" coords="441,453,633,479"/>
+<area shape="rect" id="node16" href="$structTelemetryConfig.html" title="Telemetry configuration data." alt="" coords="473,157,601,183"/>
+</map>
