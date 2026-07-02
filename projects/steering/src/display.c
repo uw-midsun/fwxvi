@@ -145,8 +145,9 @@ static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage, display_data->bps_fault,
-                                                  display_data->bps_fault_cell, steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
+                                                  steering_storage->ws22_motor_can_storage->telemetry.bus_current, display_data->bps_fault, display_data->bps_fault_cell,
+                                                  steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
     status_ok_or_return(gui_widgets_set_temps_stats_label(steering_storage->ws22_motor_can_storage->telemetry.motor_temp, display_data->max_cell_temp));
     status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
@@ -257,6 +258,14 @@ StatusCode display_run() {
   return STATUS_CODE_OK;
 }
 
+static uint16_t prv_safe_cell_voltage(float raw) {
+  if (raw < 20000.0f || raw > 50000.0f) {
+    LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
+    return 0U;
+  }
+  return (uint16_t)(raw);
+}
+
 StatusCode display_rx_slow() {
   return STATUS_CODE_OK;
 }
@@ -286,15 +295,18 @@ StatusCode display_rx_medium() {
 
   /* Greatest piece of code ever written. */
   const uint16_t cell_voltages[36] = {
-    (uint16_t)get_AFE1_status_A_voltage_0(),  (uint16_t)get_AFE1_status_A_voltage_1(),  (uint16_t)get_AFE1_status_A_voltage_2(),  (uint16_t)get_AFE1_status_B_voltage_3(),
-    (uint16_t)get_AFE1_status_B_voltage_4(),  (uint16_t)get_AFE1_status_B_voltage_5(),  (uint16_t)get_AFE1_status_C_voltage_6(),  (uint16_t)get_AFE1_status_C_voltage_7(),
-    (uint16_t)get_AFE1_status_C_voltage_8(),  (uint16_t)get_AFE1_status_D_voltage_9(),  (uint16_t)get_AFE1_status_D_voltage_10(), (uint16_t)get_AFE1_status_D_voltage_11(),
-    (uint16_t)get_AFE1_status_E_voltage_12(), (uint16_t)get_AFE1_status_E_voltage_13(), (uint16_t)get_AFE1_status_E_voltage_14(), (uint16_t)get_AFE1_status_F_voltage_15(),
-    (uint16_t)get_AFE1_status_F_voltage_16(), (uint16_t)get_AFE1_status_F_voltage_17(), (uint16_t)get_AFE2_status_A_voltage_0(),  (uint16_t)get_AFE2_status_A_voltage_1(),
-    (uint16_t)get_AFE2_status_A_voltage_2(),  (uint16_t)get_AFE2_status_B_voltage_3(),  (uint16_t)get_AFE2_status_B_voltage_4(),  (uint16_t)get_AFE2_status_B_voltage_5(),
-    (uint16_t)get_AFE2_status_C_voltage_6(),  (uint16_t)get_AFE2_status_C_voltage_7(),  (uint16_t)get_AFE2_status_C_voltage_8(),  (uint16_t)get_AFE2_status_D_voltage_9(),
-    (uint16_t)get_AFE2_status_D_voltage_10(), (uint16_t)get_AFE2_status_D_voltage_11(), (uint16_t)get_AFE2_status_E_voltage_12(), (uint16_t)get_AFE2_status_E_voltage_13(),
-    (uint16_t)get_AFE2_status_E_voltage_14(), (uint16_t)get_AFE2_status_F_voltage_15(), (uint16_t)get_AFE2_status_F_voltage_16(), (uint16_t)get_AFE2_status_F_voltage_17(),
+    prv_safe_cell_voltage(get_AFE1_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_1()),  prv_safe_cell_voltage(get_AFE1_status_A_voltage_2()),
+    prv_safe_cell_voltage(get_AFE1_status_B_voltage_3()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE1_status_B_voltage_5()),
+    prv_safe_cell_voltage(get_AFE1_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_7()),  prv_safe_cell_voltage(get_AFE1_status_C_voltage_8()),
+    prv_safe_cell_voltage(get_AFE1_status_D_voltage_9()),  prv_safe_cell_voltage(get_AFE1_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE1_status_D_voltage_11()),
+    prv_safe_cell_voltage(get_AFE1_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_13()), prv_safe_cell_voltage(get_AFE1_status_E_voltage_14()),
+    prv_safe_cell_voltage(get_AFE1_status_F_voltage_15()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE1_status_F_voltage_17()),
+    prv_safe_cell_voltage(get_AFE2_status_A_voltage_0()),  prv_safe_cell_voltage(get_AFE2_status_A_voltage_1()),  prv_safe_cell_voltage(get_AFE2_status_A_voltage_2()),
+    prv_safe_cell_voltage(get_AFE2_status_B_voltage_3()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_4()),  prv_safe_cell_voltage(get_AFE2_status_B_voltage_5()),
+    prv_safe_cell_voltage(get_AFE2_status_C_voltage_6()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_7()),  prv_safe_cell_voltage(get_AFE2_status_C_voltage_8()),
+    prv_safe_cell_voltage(get_AFE2_status_D_voltage_9()),  prv_safe_cell_voltage(get_AFE2_status_D_voltage_10()), prv_safe_cell_voltage(get_AFE2_status_D_voltage_11()),
+    prv_safe_cell_voltage(get_AFE2_status_E_voltage_12()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_13()), prv_safe_cell_voltage(get_AFE2_status_E_voltage_14()),
+    prv_safe_cell_voltage(get_AFE2_status_F_voltage_15()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_16()), prv_safe_cell_voltage(get_AFE2_status_F_voltage_17()),
   };
 
   memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));

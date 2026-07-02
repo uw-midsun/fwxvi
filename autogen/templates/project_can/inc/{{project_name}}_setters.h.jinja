@@ -33,6 +33,12 @@
     g_tx_struct.{{message.name}}_{{signal.name}} = \
     (g_tx_struct.{{message.name}}_{{signal.name}} & ~(0b{{"1" * flag["length"]}} << {{flag["offset"]}})) | (((val) & 0b{{"1" * flag["length"]}}) << {{flag["offset"]}})
             {%- endfor %}
+        {%- elif signal.type == "float" %}
+#define set_{{message.name}}_{{signal.name}}(val) \
+    g_tx_struct.{{message.name}}_{{signal.name}} = \
+    ((float)(val) < ({{signal.min}}f)) ? (uint{{signal.length}}_t)0 : \
+    ((float)(val) > ({{signal.max}}f)) ? (uint{{signal.length}}_t){{(2 ** signal.length - 1)}} : \
+    (uint{{signal.length}}_t)(((float)(val) - ({{signal.min}}f)) / ({{signal.max}}f - ({{signal.min}}f)) * {{(2 ** signal.length) - 3}}.0f + 1.0f)
         {%- else %}
 #define set_{{message.name}}_{{signal.name}}(val) \
     g_tx_struct.{{message.name}}_{{signal.name}} = (val)
