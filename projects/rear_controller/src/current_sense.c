@@ -45,7 +45,6 @@ static float csense_voltage_diff_V;
 static float csense_shunt_resistance = 0.0005;
 static int32_t csense_overcurrents = 0;
 static int32_t csense_overvoltages = 0;
-static int32_t csense_retries = 0;
 static bool data_ready = false;
 
 static uint8_t register_map[] = {
@@ -90,13 +89,14 @@ static StatusCode csense_interpret_data(float * output_voltage){
   static bool negative = false;
   static uint8_t cs_conversion_data_raw[5];
   static uint32_t cs_conversion_data;
+  static uint32_t csense_retries;
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw);
 
   if (status != STATUS_CODE_OK) {
     if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
       csense_retries++;
-      return STATUS_CODE_OK;
+      return STATUS_CODE_INTERNAL_ERROR;
     } else {
 #if(CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
@@ -112,15 +112,16 @@ static StatusCode csense_interpret_data(float * output_voltage){
 
     cs_conversion_data = ((uint32_t)cs_conversion_data_raw[2] << 16) | ((uint32_t)cs_conversion_data_raw[3] << 8) | ((uint32_t)cs_conversion_data_raw[4]); //change to right values
     
+    cs_conversion_data = cs_conversion_data & 0xFFFFFF;
+    
     /*Anything in the 4.9 V range is already in over-voltage, therefore the need for as precicse accuracy is negligible at that point*/
-    if (negative && (cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001)){
-      *output_voltage = csense_FSR;
-    }else if (!negative && cs_conversion_data == 0x7FFFFF){
+    if ((cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001 || cs_conversion_data == 0x7FFFFF)){
       *output_voltage = csense_FSR;
     }else{
       if(negative){
         cs_conversion_data = ~ cs_conversion_data;
         cs_conversion_data++;
+        cs_conversion_data = cs_conversion_data & 0xFFFFFF;
       }
       *output_voltage = (float)(cs_conversion_data * csense_FSR) / (float)(1<<23);
     }  
@@ -136,6 +137,8 @@ static StatusCode csense_interpret_data(float * output_voltage){
 
 StatusCode current_sense_run() {
   static StatusCode status;
+    static uint32_t csense_retries;
+
 
   switch (csense_state)
   {
@@ -175,7 +178,7 @@ StatusCode current_sense_run() {
 
         /* Update rear_controller_storage with voltage*/
         rear_controller_storage->pack_current = (int32_t)(csense_current_A * 1000.0f); 
-        set_battery_stats_A_pack_current((int16_t)rear_controller_storage->pack_current);
+        set_battery_stats_B_pack_current((int32_t)rear_controller_storage->pack_current);
       }
 
     break;
@@ -216,14 +219,11 @@ StatusCode current_sense_run() {
         }
 
        /* Update rear_controller_storage with voltage*/
-        rear_controller_storage->pack_voltage = (uint32_t)(csense_HV_voltage_V * 1000.0f);
-        set_battery_stats_A_pack_voltage((int16_t)rear_controller_storage->pack_voltage);
+        rear_controller_storage->pack_voltage = (int32_t)(csense_HV_voltage_V * 1000.0f);
+        set_battery_stats_A_pack_voltage((int32_t)rear_controller_storage->pack_voltage);
       }
       break;
   }
-
-  set_battery_stats_A_pack_current((int16_t)rear_controller_storage->pack_current);
-  set_battery_stats_A_pack_voltage((int16_t)rear_controller_storage->pack_voltage);
   
   return STATUS_CODE_OK;
 }

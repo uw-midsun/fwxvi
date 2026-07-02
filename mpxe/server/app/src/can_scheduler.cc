@@ -243,7 +243,7 @@ void CanScheduler::update_battery_stats_a_pack_voltage(uint16_t pack_voltage_val
     std::cerr << e.what() << std::endl;
   }
 }
-void CanScheduler::update_battery_stats_a_pack_current(uint16_t pack_current_value) {
+void CanScheduler::update_battery_stats_b_pack_current(uint16_t pack_current_value) {
   try {
     unsigned int start_byte = 2;
 

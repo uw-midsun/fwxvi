@@ -75,7 +75,7 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
  * @param   ws22_flags Motor flags bitmask
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
+StatusCode gui_widgets_set_top_label(uint32_t pack_voltage, uint32_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
                                      uint16_t ws22_flags);
 
 /**
