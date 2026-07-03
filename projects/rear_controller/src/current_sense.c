@@ -37,15 +37,15 @@
 #define csense_AIN0_AIN1_MUX_CDF 0x01 /*HV_BUS and BAT_GND*/
 #define csense_R6_ohm 1000000 /*1M ohm resistor*/
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
+#define csense_shunt_resistance 0.0005 /* shunt resistance in ohm*/
 
-static float csense_current_A;
-static float csense_HV_voltage_V;
+static float csense_current_A; /* current through battery in A*/
+static float csense_HV_voltage_V; /* Voltage from HV_BUS in V */
 static RearControllerStorage *rear_controller_storage;
-static float csense_voltage_diff_V;
-static float csense_shunt_resistance = 0.0005;
-static int32_t csense_overcurrents = 0;
-static int32_t csense_overvoltages = 0;
-static bool data_ready = false;
+static float csense_voltage_diff_V; /* voltage differential measured by ADC*/
+static int32_t csense_overcurrents = 0; /* number of over-currents*/ 
+static int32_t csense_overvoltages = 0; /* number of overvoltages*/
+static bool data_ready = false; /* true = data is ready to be read, false = data is not ready*/
 
 static uint8_t register_map[] = {
   ADS122_REG_DEVICE_CFG_DEFAULT,
@@ -86,10 +86,10 @@ StatusCode current_sense_init(RearControllerStorage * storage){
 }
 
 static StatusCode csense_interpret_data(float * output_voltage){
-  static bool negative = false;
-  static uint8_t cs_conversion_data_raw[5];
+  static bool negative = false; /* is the value negative or positive*/
+  static uint8_t cs_conversion_data_raw[5]; 
   static uint32_t cs_conversion_data;
-  static uint32_t csense_retries;
+  static uint32_t csense_retries; /* number of times i2c has failed*/
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw);
 
@@ -105,10 +105,12 @@ static StatusCode csense_interpret_data(float * output_voltage){
     }
   }
 
+  // If Status_MSB DRDY pin (0) is 1 -> data is ready
   data_ready = cs_conversion_data_raw[0] & 0x01;
   
   if(data_ready){
-    negative = cs_conversion_data_raw[2] & 0x80; // change to right values
+    //uses binary two's complements
+    negative = cs_conversion_data_raw[2] & 0x80;
 
     cs_conversion_data = ((uint32_t)cs_conversion_data_raw[2] << 16) | ((uint32_t)cs_conversion_data_raw[3] << 8) | ((uint32_t)cs_conversion_data_raw[4]); //change to right values
     
@@ -137,8 +139,7 @@ static StatusCode csense_interpret_data(float * output_voltage){
 
 StatusCode current_sense_run() {
   static StatusCode status;
-    static uint32_t csense_retries;
-
+  static uint32_t csense_retries;
 
   switch (csense_state)
   {
@@ -160,12 +161,13 @@ StatusCode current_sense_run() {
       }
 
       if(data_ready){
-
+        /* change the state to HV_BUS*/
         status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, csense_AIN0_AIN1_MUX_CDF));
         status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
         csense_state = csense_state ? CSENSE_HV_BUS : CSENSE_SHUNT;
 
-        csense_current_A = csense_shunt_resistance * csense_voltage_diff_V;
+        /* Calculate current */
+        csense_current_A = (float)csense_voltage_diff_V / (float)csense_shunt_resistance;
 
         if(csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A){
           csense_overcurrents++;
@@ -176,7 +178,7 @@ StatusCode current_sense_run() {
           }
         }
 
-        /* Update rear_controller_storage with voltage*/
+        /* Update rear_controller_storage with current*/
         rear_controller_storage->pack_current = (int32_t)(csense_current_A * 1000.0f); 
         set_battery_stats_B_pack_current((int32_t)rear_controller_storage->pack_current);
       }
@@ -200,11 +202,12 @@ StatusCode current_sense_run() {
       }
       
       if(data_ready){
+        /* Change the state to current shunt*/
         status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, csense_AIN6_AIN7_MUX_CFG));
         status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
+        csense_state = csense_state ? CSENSE_HV_BUS : CSENSE_SHUNT;
 
-       csense_state = csense_state ? CSENSE_HV_BUS : CSENSE_SHUNT;
-
+        /* Calculate HV voltage */
         csense_HV_voltage_V *= (csense_R6_ohm + csense_R7_ohm) / csense_R7_ohm;
       
         if (csense_HV_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
