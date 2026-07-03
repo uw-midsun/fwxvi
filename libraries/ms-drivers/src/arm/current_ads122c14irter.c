@@ -21,14 +21,14 @@ static uint8_t ads122_create_command(ADS122C14ITER_Register reg, ADS122C14ITER_C
     return command | reg;
 }
 
-//how big should the read data be
-//read protocol: S-target-WRITE --ACK-- RREG --ACK-- Sr-Target-READ --ACK--DATA-- (-ACK- --CRC--) -ACK-STOP-
+/* Read protocol : address, command, SR, address,  get data*/
 /* Reads a specified register and gets the data */
 static StatusCode ads122_read_register(ADS122Storage * storage, uint8_t *rx_data, ADS122C14ITER_Register reg){
     if(storage == NULL || rx_data == NULL){
         return STATUS_CODE_INVALID_ARGS;
     } 
 
+    /* read command -> [7:4] = 0b0100, [3: 0] -> register to read from */ 
     uint8_t reg_address = ads122_create_command(reg, ADS122_READ_COMMAND);
 
     status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, reg_address, rx_data, 1U));
@@ -36,6 +36,7 @@ static StatusCode ads122_read_register(ADS122Storage * storage, uint8_t *rx_data
     return STATUS_CODE_OK;
 }
 
+/* Write protocol: address, command, tx_data*/
 /* Writes to ONE register*/
 static StatusCode ads122_write_register(ADS122Storage * storage, uint8_t data, ADS122C14ITER_Register reg){
     if(storage == NULL){
@@ -43,7 +44,6 @@ static StatusCode ads122_write_register(ADS122Storage * storage, uint8_t data, A
     }
 
     uint8_t tx_data[2];
-
     tx_data [0] = ads122_create_command(reg, ADS122_WRITE_COMMAND);
     tx_data [1] = data;
 
@@ -55,6 +55,7 @@ static StatusCode ads122_write_register(ADS122Storage * storage, uint8_t data, A
     return STATUS_CODE_OK;
 }
 
+/* Write protocol for mulitple registers: address, command, tx_data, command (for different reg), tx_data...*/
 /* Writes to a series of registers - 8 bits for command - 8 bits for data*/
 static StatusCode ads122_write_multiple_registers(ADS122Storage * storage, uint8_t data[], ADS122C14ITER_Register reg[], uint32_t data_length){
     if(storage == NULL){
@@ -71,14 +72,18 @@ static StatusCode ads122_write_multiple_registers(ADS122Storage * storage, uint8
     return i2c_write(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
 }
 
+/* Start the conversion*/
 StatusCode ads122_start_conversion(ADS122Storage * storage){
     if(storage == NULL){
-
+        return STATUS_CODE_INVALID_ARGS;
     }
+
+    /* Set START pin to 1*/
     uint8_t conversion_ctrl = 0x00;
     status_ok_or_return(ads122_read_register(storage, &conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
     conversion_ctrl |= (1 << 1);
     status_ok_or_return(ads122_write_register(storage, conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
+
     return STATUS_CODE_OK;
 }
 
@@ -115,6 +120,7 @@ StatusCode ads122_init(ADS122Storage * storage, I2CPort i2c_port_storage, I2CAdd
     /* Set init configs -> put init values into a ADS122_CONFIG_REGISTERS*/
     status_ok_or_return(ads122_write_multiple_registers(storage, register_map, ADS122_CONFIG_REGISTERS, 11U));
 
+    /* Start first conversion*/
     status_ok_or_return(ads122_start_conversion(storage));
 
     return STATUS_CODE_OK;

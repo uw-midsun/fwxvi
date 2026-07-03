@@ -59,7 +59,7 @@ Messages:
         watchdog: 0
     signals:
       pack_current:
-        length: 16
+        length: 32
       max_cell_voltage:
         type: "float"
         min: 20000
