@@ -31,18 +31,12 @@
 #define csense_R7_ohm 20000 /*20k ohm resistor*/
 #define LOG_DB_DELAY 10U
 
-static ADS122Storage ads122_storage = { 0 };
+static ADS122Storage ads122_storage;
 
-typedef struct {
-  I2CPort i2c_port;
-  I2CAddress i2c_address;
-  I2CSettings i2c_settings;
-} ADS122Storage;
-
-  const I2CSettings i2c_settings = {
-    .sda = {.port = GPIO_PORT_B, .pin = 11U},
-    .scl = {.port = GPIO_PORT_B, .pin = 10U },
-  };
+const I2CSettings i2c_settings = {
+  .sda = {.port = GPIO_PORT_B, .pin = 11U},
+  .scl = {.port = GPIO_PORT_B, .pin = 10U },
+};
 
 static uint8_t register_map[] = {
   ADS122_REG_DEVICE_CFG_DEFAULT,
@@ -58,6 +52,9 @@ static uint8_t register_map[] = {
   ADS122_REG_REG_MAP_CRC_DEFAULT
 };
 
+static uint8_t ads122_create_command(ADS122C14ITER_Register reg, ADS122C14ITER_Command command){
+    return command | reg;
+}
 
 TASK(current_sense_run_cycle, TASK_STACK_1024) {
   LOG_DEBUG("Initializing current sense...\r\n");
@@ -153,7 +150,7 @@ TASK(current_sense_run_cycle, TASK_STACK_1024) {
 
 
       delay_ms(LOG_DB_DELAY);
-      LOG_DEBUG("Output_voltage_V: %f | voltage: %f\r\n", output_voltage_V, csense_HV_volate_V); //VOLTAGE
+      LOG_DEBUG("Output_voltage_V: %f | voltage: %f\r\n", (double)output_voltage_V, (double)csense_HV_voltage_V); //VOLTAGE
       // LOG_DEBUG("Output_voltage_V: %f | current: %f\r\n", output_voltage_V, output_current_A); //CURRENT
 
       }
