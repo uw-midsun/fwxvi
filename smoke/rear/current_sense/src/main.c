@@ -69,6 +69,7 @@ TASK(current_sense_run_cycle, TASK_STACK_1024) {
   } else {
     LOG_DEBUG("Current Sense cannot be initialized\r\n");
   }
+  
 
   while (true) {
 
@@ -145,7 +146,7 @@ TASK(current_sense_run_cycle, TASK_STACK_1024) {
       }
 
       /* CURRENT */
-      // float output_current_A = 0.0005 * output_voltage_V;
+      // float output_current_A = output_voltage_V / 0.0005;
 
       /* VOLTAGE */
       float csense_HV_voltage_V = output_voltage_V * (1000000 + 20000) / 20000;
