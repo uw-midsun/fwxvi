@@ -153,7 +153,9 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
-  if (rear_controller_storage->bps_fault_record.fault_code != 0 && s_current_state != REAR_CONTROLLER_STATE_FAULT) {
+  /* Only a fault triggered live this power cycle opens the relays. A fault restored from flash on boot
+   * (bps_fault_live == false) is broadcast for the BPS light but must not open the relays. */
+  if (rear_controller_storage->bps_fault_live && s_current_state != REAR_CONTROLLER_STATE_FAULT) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
     return STATUS_CODE_OK;
   }

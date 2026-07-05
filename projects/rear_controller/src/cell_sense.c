@@ -82,7 +82,7 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 0U
+#define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
 
 #define CELL_SENSE_DEBUG 0U
@@ -263,6 +263,10 @@ static void s_set_afe_discharge_status_message(uint8_t dev_index_1_based, uint8_
 static void s_balance_cells(uint16_t min_voltage) {
 #if (BALANCING_ENABLED == 1U)
   uint16_t balancing_threshold = min_voltage;
+
+  if (!get_steering_buttons_balancing_enabled()) {
+    return;
+  }
 
   if (rear_controller_storage->pack_current > MAX_PACK_CURRENT_FOR_CELL_DISCHARGING) {
     return;

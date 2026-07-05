@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "can.h"
 #include "flash.h"
 #include "log.h"
@@ -78,6 +79,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   rear_controller_storage->bps_fault_record.fault_code = 0U;
   rear_controller_storage->bps_fault_record.extra_info.raw = 0U;
   rear_controller_storage->bps_fault_cell = 0U;
+  rear_controller_storage->bps_fault_live = false;
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
@@ -92,11 +94,13 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   cell_sense_init(rear_controller_storage);
   state_of_charge_init(rear_controller_storage);
   fans_init(rear_controller_storage);
-  // power_path_manager_init(rear_controller_storage);
+  power_path_manager_init(rear_controller_storage);
   // current_sense_init(rear_controller_storage);
   precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task(), rear_controller_storage);
 
   gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+
+  adc_init();
 
   LOG_DEBUG("Rear controller initialized\r\n");
 

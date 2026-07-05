@@ -67,6 +67,9 @@ typedef struct {
   bool aux_valid;          /**< Aux valid state */
   BpsFaultRecord bps_fault_record; /**< Latched fault code + detail snapshot (persisted) */
   uint8_t bps_fault_cell;          /**< One-based cell index for cell-related faults */
+  bool bps_fault_live;             /**< TRUE only for a fault triggered live this power cycle; a fault
+                                        restored from flash on boot stays FALSE so it broadcasts the BPS
+                                        light without opening the relays. Never persisted. */
 
   /* Temperature monitoring */
   int16_t max_board_temperature;

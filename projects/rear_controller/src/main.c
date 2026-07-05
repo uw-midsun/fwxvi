@@ -24,6 +24,7 @@
 #include "fans.h"
 #include "killswitch.h"
 #include "precharge.h"
+#include "power_path_manager.h"
 #include "rear_controller.h"
 #include "rear_controller_config.h"
 #include "rear_controller_getters.h"
@@ -73,6 +74,7 @@ void run_10hz_cycle() {
 void run_1hz_cycle() {
   bps_fault_commit();
   state_of_charge_run();
+  power_path_manager_run();
 }
 
 #ifdef MS_PLATFORM_X86

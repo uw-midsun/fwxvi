@@ -53,6 +53,7 @@ typedef struct {
 typedef struct {
   bool is_open;                                    /**< Bool to check if menu is currently open */
   uint8_t selected_index;                          /**< Index user is currently "hovering" over */
+  bool discharge_enabled;                          /**< Mirror of the broadcast cell-discharge request, for the row label */
   GuiMenuActionCallback party_mode_callback;       /**< Callback for party mode */
   GuiMenuActionCallback toggle_discharge_callback; /**< Callback for toggling cell discharge */
   lv_obj_t *overlay;                               /**< Dimmed backdrop when menu is open */
@@ -85,6 +86,13 @@ StatusCode gui_menu_init(void);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback);
+
+/**
+ * @brief   Register the callback invoked by the Toggle Cell Discharge menu item
+ * @param   callback Callback to invoke when Toggle Cell Discharge is selected
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback);
 
 /**
  * @brief   Queue a menu toggle request for processing on the display task

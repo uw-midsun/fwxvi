@@ -89,6 +89,10 @@ StatusCode trigger_bps_fault_with_data(BpsFault fault, uint8_t cell_at_fault, Bp
     rear_controller_storage->bps_fault_cell = cell_at_fault;
   }
 
+  /* Mark this as a live fault so the state manager opens the relays
+   * A fault restored from flash on boot never sets this, so it broadcasts the BPS light without opening relays */
+  rear_controller_storage->bps_fault_live = true;
+
   /* Update CAN fields and persist the latched fault to flash so it survives a power cycle */
   bps_fault_commit();
   rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
@@ -104,6 +108,7 @@ StatusCode bps_fault_clear() {
   rear_controller_storage->bps_fault_record.fault_code = 0U;
   rear_controller_storage->bps_fault_record.extra_info.raw = 0U;
   rear_controller_storage->bps_fault_cell = 0U;
+  rear_controller_storage->bps_fault_live = false;
 
   /* Persist the cleared state so a stale fault is not re-broadcast on the next boot */
   bps_fault_commit();
