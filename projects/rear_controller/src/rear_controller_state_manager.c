@@ -153,7 +153,7 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
-  if (rear_controller_storage->bps_fault != 0 && s_current_state != REAR_CONTROLLER_STATE_FAULT) {
+  if (rear_controller_storage->bps_fault_record.fault_code != 0 && s_current_state != REAR_CONTROLLER_STATE_FAULT) {
     rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_FAULT);
     return STATUS_CODE_OK;
   }

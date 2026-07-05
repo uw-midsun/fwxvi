@@ -37,6 +37,7 @@ typedef uint8_t I2CAddress;
 typedef enum {
   I2C_PORT_1 = 0, /**< SCL: PA9 and SDA: PA10 */
   I2C_PORT_2,     /**< SCL: PB10 and SDA: PB11 */
+  I2C_PORT_3,     /**< SCL: PC0 and SDA: PC1 (STM32L496xx only) */
   NUM_I2C_PORTS,  /**< Number of I2C Ports */
 } I2CPort;
 

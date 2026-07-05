@@ -105,7 +105,7 @@ static uint16_t s_triangle_wave(uint32_t step, uint32_t period_steps, uint16_t m
 }
 
 static void s_update_demo_display_data(uint32_t step) {
-  uint32_t fault_phase = (step / 120U) % 4U;
+  uint32_t fault_phase = (step / 120U) % 6U;
 
   /* Motor telemetry is read from the WS22 storage by the display render path */
   s_demo_motor_storage.telemetry.vehicle_velocity_kph = (float)s_triangle_wave(step, 400U, 160U);
@@ -122,24 +122,49 @@ static void s_update_demo_display_data(uint32_t step) {
   s_demo_storage.display_data.max_cell_temp = 30U + s_triangle_wave(step + 90U, 250U, 35U);
   s_demo_storage.display_data.state_of_charge = (uint8_t)s_triangle_wave(step + 30U, 320U, 100U);
 
+  /* Aux battery voltage in mV (~12.0-12.8 V) and net energy used ramp (Wh) */
+  s_demo_storage.display_data.aux_voltage = (int16_t)(12000 + s_triangle_wave(step + 15U, 240U, 800U));
+  s_demo_storage.display_data.energy_used_wh = (float)s_triangle_wave(step + 5U, 600U, 5000U);
+
+  /* Cycle through the fault types so the pack-screen detail banner exercises every decode branch.
+     Cell voltages are in 100uV units (42000 = 4.200 V), temperature in C, current in A. */
+  BpsFaultData fault_data = { .raw = 0U };
   switch (fault_phase) {
-    case 1:
+    case 1: /* Overvoltage: cell + voltage */
       s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERVOLTAGE_MASK;
-      s_demo_storage.display_data.bps_fault_cell = 1U + (uint8_t)(s_triangle_wave(step, 96U, 23U));
+      s_demo_storage.display_data.bps_fault_cell = 12U;
+      fault_data.cell.cell_index = 12U;
+      fault_data.cell.cell_voltage = (uint16_t)(42000U + s_triangle_wave(step, 96U, 200U));
       break;
-    case 2:
+    case 2: /* Unbalance: both cells + both voltages */
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_UNBALANCE_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 12U;
+      fault_data.unbalance.max_cell_index = 12U;
+      fault_data.unbalance.min_cell_index = 5U;
+      fault_data.unbalance.max_cell_voltage = 42000U;
+      fault_data.unbalance.min_cell_voltage = 31000U;
+      break;
+    case 3: /* Overtemp cell: cell + temperature */
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERTEMP_CELL_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 7U;
+      fault_data.temp.cell_index = 7U;
+      fault_data.temp.temperature_c = (int16_t)(60 + s_triangle_wave(step, 96U, 8U));
+      break;
+    case 4: /* Overcurrent: signed pack current */
+      s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERCURRENT_MASK;
+      s_demo_storage.display_data.bps_fault_cell = 0U;
+      fault_data.current.current_a = 140.0f + (float)s_triangle_wave(step, 96U, 20U);
+      break;
+    case 5: /* Killswitch: name only, no numeric payload */
       s_demo_storage.display_data.bps_fault = BPS_FAULT_KILLSWITCH_MASK;
       s_demo_storage.display_data.bps_fault_cell = 0U;
       break;
-    case 3:
-      s_demo_storage.display_data.bps_fault = BPS_FAULT_OVERTEMP_CELL_MASK;
-      s_demo_storage.display_data.bps_fault_cell = 1U + (uint8_t)(s_triangle_wave(step + 25U, 96U, 23U));
-      break;
-    default:
+    default: /* Healthy: banner hidden */
       s_demo_storage.display_data.bps_fault = 0U;
       s_demo_storage.display_data.bps_fault_cell = 0U;
       break;
   }
+  s_demo_storage.display_data.bps_fault_data = fault_data;
 }
 
 TASK(sc_gui_api, TASK_STACK_2048) {

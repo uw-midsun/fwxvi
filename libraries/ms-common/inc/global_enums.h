@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <assert.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -195,6 +196,57 @@ typedef enum {
 #define BPS_FAULT_HIGH_PRIORITY_MASK (1U << 15U)
 /** @brief  BPS Low priority fault mask */
 #define BPS_FAULT_LOW_PRIORITY_MASK (1U << 14U)
+
+/**
+ * @brief   Per-fault detail snapshot for the BPS fault code
+ * @details 8-byte payload packed into the 64-bit bps_fault_info CAN signal and the rear
+ *          controller persist record. Which union view is valid is determined by the active
+ *          bit(s) in the 32-bit fault code - there is no tag inside the payload itself.
+ */
+typedef struct {
+  uint8_t cell_index;    /**< 1-based faulting cell, 0 if N/A */
+  uint8_t reserved0;
+  uint16_t cell_voltage; /**< Faulting cell voltage [100uV] */
+  uint32_t reserved1;
+} __attribute__((packed)) BpsCellFaultData; /**< OV / UV */
+
+typedef struct {
+  uint8_t max_cell_index;   /**< 1-based highest cell */
+  uint8_t min_cell_index;   /**< 1-based lowest cell */
+  uint16_t max_cell_voltage; /**< Highest cell voltage [100uV] */
+  uint16_t min_cell_voltage; /**< Lowest cell voltage [100uV] */
+  uint16_t reserved;
+} __attribute__((packed)) BpsUnbalanceFaultData; /**< UNBALANCE */
+
+typedef struct {
+  uint8_t cell_index;     /**< 1-based faulting cell/thermistor, 0 if N/A */
+  uint8_t reserved0;
+  int16_t temperature_c;  /**< Faulting temperature [C] */
+  uint32_t reserved1;
+} __attribute__((packed)) BpsTempFaultData; /**< OVERTEMP cell / ambient */
+
+typedef struct {
+  float current_a;    /**< Pack current at fault [A], signed (charging negative) */
+  uint32_t reserved;
+} __attribute__((packed)) BpsCurrentFaultData; /**< OVERCURRENT */
+
+typedef union {
+  uint64_t raw;                    /**< Raw 64-bit payload (CAN / persist) */
+  BpsCellFaultData cell;           /**< OV / UV */
+  BpsUnbalanceFaultData unbalance; /**< UNBALANCE */
+  BpsTempFaultData temp;           /**< OVERTEMP cell / ambient */
+  BpsCurrentFaultData current;     /**< OVERCURRENT */
+} BpsFaultData;
+static_assert(sizeof(BpsFaultData) == 8, "BpsFaultData must be 8 bytes");
+
+/**
+ * @brief   Latched BPS fault state, persisted on the rear controller
+ */
+typedef struct {
+  uint32_t fault_code;     /**< Bitmask of active BpsFault bits */
+  BpsFaultData extra_info; /**< Detail snapshot of the root (first-latched) fault */
+} BpsFaultRecord;
+static_assert(sizeof(BpsFaultRecord) == 16, "BpsFaultRecord must be 16 bytes");
 
 /************************************************************************************************
  * Steering Global Definitions

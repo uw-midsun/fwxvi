@@ -16,6 +16,7 @@
 /* Inter-component Headers */
 #include "adbms_afe.h"
 #include "current_acs37800.h"
+#include "global_enums.h"
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
@@ -41,14 +42,16 @@ typedef struct {
 } RearControllerConfig;
 
 typedef struct {
-  int32_t pack_current;  /**< Pack current reading (mA) */
-  uint32_t pack_voltage; /**< Pack voltage reading (mV) */
+  float pack_current;    /**< Pack current reading (A), signed (charging negative) */
+  float pack_voltage;    /**< Pack voltage reading (V) */
   uint32_t aux_voltage;  /**< Auxiliary bus voltage (mV) */
   uint32_t pcs_voltage;  /**< PCS bus voltage (mV) */
   int32_t aux_current;   /**< Auxiliary bus current (mA) */
   int32_t pcs_current;   /**< PCS bus current (mA) */
 
   float estimated_state_of_charge; /**< Estimated state of charge as a percentage [0 - 100] */
+
+  float hydrogen_concentration; /**< Hydrogen concentration reading [%vol] */
 
   /* Relay states */
   bool pos_relay_closed;   /**< Positive Relay closed state */
@@ -62,8 +65,8 @@ typedef struct {
   bool killswitch_active;  /**< Killswitch active state */
   bool pcs_valid;          /**< PCS input valid state */
   bool aux_valid;          /**< Aux valid state */
-  uint16_t bps_fault;      /**< Fault */
-  uint8_t bps_fault_cell;  /**< One-based cell index for cell-related faults */
+  BpsFaultRecord bps_fault_record; /**< Latched fault code + detail snapshot (persisted) */
+  uint8_t bps_fault_cell;          /**< One-based cell index for cell-related faults */
 
   /* Temperature monitoring */
   int16_t max_board_temperature;

@@ -28,6 +28,11 @@ static inline void s_enable_i2c1(void) {
 static inline void s_enable_i2c2(void) {
   __HAL_RCC_I2C2_CLK_ENABLE();
 }
+#ifdef STM32L496xx
+static inline void s_enable_i2c3(void) {
+  __HAL_RCC_I2C3_CLK_ENABLE();
+}
+#endif
 
 /** @brief  I2C Port data */
 typedef struct {
@@ -41,6 +46,9 @@ typedef struct {
 static I2CPortData s_port[NUM_I2C_PORTS] = {
   [I2C_PORT_1] = { .rcc_cmd = s_enable_i2c1, .base = I2C1, .ev_irqn = I2C1_EV_IRQn, .err_irqn = I2C1_ER_IRQn },
   [I2C_PORT_2] = { .rcc_cmd = s_enable_i2c2, .base = I2C2, .ev_irqn = I2C2_EV_IRQn, .err_irqn = I2C2_ER_IRQn },
+#ifdef STM32L496xx
+  [I2C_PORT_3] = { .rcc_cmd = s_enable_i2c3, .base = I2C3, .ev_irqn = I2C3_EV_IRQn, .err_irqn = I2C3_ER_IRQn },
+#endif
 };
 
 /**
@@ -109,8 +117,12 @@ static void s_i2c_transfer_complete_callback(I2C_HandleTypeDef *hi2c, bool is_rx
 
   if (hi2c->Instance == I2C1) {
     xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_1], &higher_priority_task);
-  } else {
+  } else if (hi2c->Instance == I2C2) {
     xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_2], &higher_priority_task);
+#ifdef STM32L496xx
+  } else if (hi2c->Instance == I2C3) {
+    xSemaphoreGiveFromISR(s_i2c_cmplt_handle[I2C_PORT_3], &higher_priority_task);
+#endif
   }
   portYIELD_FROM_ISR(higher_priority_task);
 }
@@ -131,6 +143,16 @@ void I2C2_ER_IRQHandler(void) {
   HAL_I2C_ER_IRQHandler(&s_i2c_handles[I2C_PORT_2]);
 }
 
+#ifdef STM32L496xx
+void I2C3_EV_IRQHandler(void) {
+  HAL_I2C_EV_IRQHandler(&s_i2c_handles[I2C_PORT_3]);
+}
+
+void I2C3_ER_IRQHandler(void) {
+  HAL_I2C_ER_IRQHandler(&s_i2c_handles[I2C_PORT_3]);
+}
+#endif
+
 /* Callback functions for HAL I2C TX */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
   s_i2c_transfer_complete_callback(hi2c, false);
@@ -147,8 +169,12 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
 
   if (hi2c->Instance == I2C1) {
     i2c = I2C_PORT_1;
-  } else {
+  } else if (hi2c->Instance == I2C2) {
     i2c = I2C_PORT_2;
+#ifdef STM32L496xx
+  } else if (hi2c->Instance == I2C3) {
+    i2c = I2C_PORT_3;
+#endif
   }
 
   uint32_t error = HAL_I2C_GetError(hi2c);
@@ -203,8 +229,8 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   }
 
   /* The I2C pins need to be configured in push pull instead of Open drain mode. TODO: Research why */
-  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
-  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_OPEN_DRAIN, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&settings->sda, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
+  gpio_init_pin_af(&settings->scl, GPIO_ALTFN_PUSH_PULL, GPIO_ALT4_I2C1);
 
   s_i2c_handles[i2c].Instance = s_port[i2c].base;
   s_i2c_handles[i2c].Init.Timing = s_i2c_timing[settings->speed];
@@ -221,6 +247,11 @@ StatusCode i2c_init(I2CPort i2c, const I2CSettings *settings) {
   if (i2c == I2C_PORT_1) {
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
     periph_clk_init.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
+#ifdef STM32L496xx
+  } else if (i2c == I2C_PORT_3) {
+    periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_I2C3;
+    periph_clk_init.I2c3ClockSelection = RCC_I2C3CLKSOURCE_PCLK1;
+#endif
   } else { /* I2C_PORT_2 */
     periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_I2C2;
     periph_clk_init.I2c2ClockSelection = RCC_I2C2CLKSOURCE_PCLK1;
