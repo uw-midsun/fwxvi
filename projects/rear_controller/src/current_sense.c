@@ -173,14 +173,15 @@ StatusCode current_sense_run() {
           csense_overcurrents++;
           if(csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS){
 #if(CSENSE_FAULTS_ENABLED == 1)
-            trigger_bps_fault(BPS_FAULT_OVERCURRENT);
+            BpsFaultData oc_data = { .current = { .current_a =  csense_current_A } };
+            trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
 #endif
           }
         }
 
-        /* Update rear_controller_storage with current*/
-        rear_controller_storage->pack_current = (int32_t)(csense_current_A * 1000.0f); 
-        set_battery_stats_B_pack_current((int32_t)rear_controller_storage->pack_current);
+        /* Update rear_controller_storage with current in amps*/
+        rear_controller_storage->pack_current = (csense_current_A); 
+        set_battery_stats_B_pack_current(rear_controller_storage->pack_current);
       }
 
     break;
@@ -221,9 +222,9 @@ StatusCode current_sense_run() {
           csense_overvoltages = 0;
         }
 
-       /* Update rear_controller_storage with voltage*/
-        rear_controller_storage->pack_voltage = (int32_t)(csense_HV_voltage_V * 1000.0f);
-        set_battery_stats_A_pack_voltage((int32_t)rear_controller_storage->pack_voltage);
+       /* Update rear_controller_storage with voltage in volta*/
+        rear_controller_storage->pack_voltage =(csense_HV_voltage_V);
+        set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
       }
       break;
   }
@@ -312,12 +313,12 @@ StatusCode current_sense_run() {
       csense_overvoltages = 0;
     }
 
-    /* Store current and voltage in mA and mV respectively */
-    rear_controller_storage->pack_current = (int32_t)(current_A * 1000.0f);
-    rear_controller_storage->pack_voltage = (uint32_t)(voltage_reading_mV);
+    /* Store current and voltage in A and V respectively */
+    rear_controller_storage->pack_current = (current_A);
+    rear_controller_storage->pack_voltage = (voltage_reading_mV / 1000);
 
-    set_battery_stats_A_pack_current((int16_t)rear_controller_storage->pack_current);
-    set_battery_stats_A_pack_voltage((int16_t)rear_controller_storage->pack_voltage);
+    set_battery_stats_A_pack_current(rear_controller_storage->pack_current);
+    set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
 
     csense_prev_current_A = current_A;
     csense_prev_voltage_mV = voltage_mV;
