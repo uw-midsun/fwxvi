@@ -56,6 +56,19 @@ StatusCode trigger_bps_fault(BpsFault fault);
 StatusCode trigger_bps_fault_with_cell(BpsFault fault, uint8_t cell_at_fault);
 
 /**
+ * @brief   Trigger a BPS fault with a detail snapshot for the fault data payload
+ * @details The detail is latched only for the first (root) fault while a fault is active.
+ *          The fault code bitmask still accumulates every active fault bit.
+ * @param   fault BPS Fault event
+ * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
+ * @param   data Fault-specific detail snapshot (see BpsFaultData in global_enums.h)
+ * @return  STATUS_CODE_OK if triggered successfully
+ *          STATUS_CODE_UNINITIALIZED if the system is not initialized
+ *          STATUS_CODE_INVALID_ARGS if the fault is out of range
+ */
+StatusCode trigger_bps_fault_with_data(BpsFault fault, uint8_t cell_at_fault, BpsFaultData data);
+
+/**
  * @brief   Clear the BPS fault
  * @param   fault BPS Fault event
  * @return  STATUS_CODE_OK if triggered successfully

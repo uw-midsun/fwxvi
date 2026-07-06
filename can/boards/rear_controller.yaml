@@ -27,6 +27,7 @@ Messages:
           - {name: power_state, length: 2}
           - afe_status
           - motor_precharge_complete
+          - bps_fault_live
         length: 32
 
   battery_stats_A:
@@ -41,9 +42,15 @@ Messages:
       steering:
         watchdog: 0
     signals:
-      pack_voltage:
+      pack_voltage_v:
+        type: "float"
+        min: 0
+        max: 200
         length: 32
       pack_soc:
+        type: "float"
+        min: 0
+        max: 100
         length: 16
 
   battery_stats_B:
@@ -72,6 +79,24 @@ Messages:
         length: 8
       max_temperature:
         length: 16
+      pack_current_a:
+        type: "float"
+        min: -200
+        max: 200
+        length: 32
+
+  bps_fault_info:
+    id: 5
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+      steering:
+        watchdog: 0
+    signals:
+      extra_info:
+        length: 64
 
   power_input_stats:
     id: 4

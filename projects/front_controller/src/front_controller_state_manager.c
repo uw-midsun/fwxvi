@@ -212,10 +212,11 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   /* Get required values from rear */
 #if (IS_REAR_CONNECTED == 0U)
   uint8_t bps_fault_from_rear = 0U;
+  uint8_t bps_fault_live_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
 #else
-  // uint8_t bps_fault_from_rear = 0U;
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
+  uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
   uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
 #endif
 
@@ -234,14 +235,20 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   // Handle BPS fault
   if (bps_fault_from_rear) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
-    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
-    CONDITIONAL_LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
-    return STATUS_CODE_OK;
-  } else if (!bps_fault_from_rear && s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
-    // Logic to turn off BPS fault
-    front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
-    front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);
+    if (bps_fault_live_from_rear) {
+      /* Live runtime fault: block drive until a full power cycle */
+      front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_FAULT);
+      CONDITIONAL_LOG_DEBUG("Rear fault detected, front controller entering fault state\r\n");
+      return STATUS_CODE_OK;
+    }
+    /* Persisted fault restored from flash: keep the BPS light on but allow the driver to
+     * re-enter drive, which clears the fault on the rear. Fall through to normal handling. */
   } else {
+    // No fault (or it was just cleared by re-entering drive): turn the BPS light off
+    front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
+    if (s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
+      front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);
+    }
   }
 
   // Handle brake, brake status is updated by brake_pedal.c and stored in front_controller_storage->brake_enabled

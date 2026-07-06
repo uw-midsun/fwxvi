@@ -33,10 +33,11 @@ static BarWidget s_soc_bar;
 static LabelWidget s_top_label;
 static LabelWidget s_cells_stats_label;
 static LabelWidget s_temps_stats_label;
+static LabelWidget s_aux_energy_label;
 
 static bool s_widgets_initialized;
 
-static const char *s_get_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
+const char *gui_widgets_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
   if (is_cell_fault == NULL) {
     return "BPS FAULT";
   }
@@ -171,7 +172,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
 static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
   const LabelWidgetConfig cell_stats_label_config = {
     .size = { .width = 100, .height = 50 },
-    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_RIGHT, .x_offset = -10, .y_offset = -25 } },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -10, .y_offset = 150 } },
     .label_text = "Cells\n0.000 V\n0.000 V",
     .alignment = WIDGET_TEXT_ALIGN_LEFT,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -189,7 +190,7 @@ static StatusCode s_create_cell_stats_label(GuiScreen *screen) {
 static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   const LabelWidgetConfig temps_stats_label_config = {
     .size = { .width = 100, .height = 50 },
-    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_RIGHT_MID, .x_offset = -10, .y_offset = 10 } },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -10, .y_offset = 86 } },
     .label_text = "Temps\nMot: 0 C\nMax C: 0 C",
     .alignment = WIDGET_TEXT_ALIGN_LEFT,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
@@ -204,6 +205,24 @@ static StatusCode s_create_temps_stats_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_temps_stats_label, &temps_stats_label_config, screen);
 }
 
+static StatusCode s_create_aux_energy_label(GuiScreen *screen) {
+  const LabelWidgetConfig aux_energy_label_config = {
+    .size = { .width = 100, .height = 32 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -10, .y_offset = 210 } },
+    .label_text = "Aux: 0.00V\nNrg: 0 Wh",
+    .alignment = WIDGET_TEXT_ALIGN_LEFT,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_SMALL_TEXT,
+    .background_enabled = false,
+    .background_color_id = 0,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+
+  return lvgl_widgets_create_label(&s_aux_energy_label, &aux_energy_label_config, screen);
+}
+
 StatusCode gui_widgets_init_screen(GuiScreen *screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -216,6 +235,7 @@ StatusCode gui_widgets_init_screen(GuiScreen *screen) {
   status_ok_or_return(s_create_top_label(screen));
   status_ok_or_return(s_create_cell_stats_label(screen));
   status_ok_or_return(s_create_temps_stats_label(screen));
+  status_ok_or_return(s_create_aux_energy_label(screen));
   status_ok_or_return(s_create_soc_bar(screen));
 
   s_widgets_initialized = true;
@@ -228,6 +248,7 @@ void gui_widgets_deinit(void) {
   s_top_label = (LabelWidget){ 0 };
   s_cells_stats_label = (LabelWidget){ 0 };
   s_temps_stats_label = (LabelWidget){ 0 };
+  s_aux_energy_label = (LabelWidget){ 0 };
   s_widgets_initialized = false;
 }
 
@@ -251,7 +272,7 @@ StatusCode gui_widgets_set_top_label(int32_t pack_voltage, int32_t pack_current,
 
   if (bps_fault) {
     bool is_cell_fault = false;
-    const char *fault_text = s_get_bps_fault_text(bps_fault, &is_cell_fault);
+    const char *fault_text = gui_widgets_bps_fault_text(bps_fault, &is_cell_fault);
 
     if (is_cell_fault && cell_at_fault != 0U) {
       snprintf(text_buffer, sizeof(text_buffer), "%s, %u", fault_text, cell_at_fault);
@@ -263,7 +284,7 @@ StatusCode gui_widgets_set_top_label(int32_t pack_voltage, int32_t pack_current,
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
     int32_t solar_current = (int32_t)motor_bus_current - (int32_t)pack_current;
-    snprintf(text_buffer, sizeof(text_buffer), "P: %lumV, %lumA | M: %uV, %uA | S: %ldA", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, solar_current);
+    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %uA | M: %uV, %uA | S: %dA", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, (int)solar_current);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
@@ -300,6 +321,18 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return lvgl_widgets_set_bar_value(&s_soc_bar, soc_percent);
 }
 
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
+  if (!s_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  int16_t aux_abs_mv = (aux_mv < 0) ? (int16_t)-aux_mv : aux_mv;
+  char text_buffer[LABEL_MAX_CHARS];
+  snprintf(text_buffer, sizeof(text_buffer), "Aux: %d.%02dV\nNrg: %d Wh", aux_mv / 1000, (aux_abs_mv % 1000) / 10, (int)energy_wh);
+
+  return lvgl_widgets_set_label_text(&s_aux_energy_label, text_buffer);
+}
+
 #else
 StatusCode gui_widgets_init(void) {
   return STATUS_CODE_OK;
@@ -317,6 +350,18 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
+                                     uint16_t ws22_flags) {
+  (void)pack_voltage;
+  (void)pack_current;
+  (void)motor_bus_voltage;
+  (void)motor_bus_current;
+  (void)bps_fault;
+  (void)cell_at_fault;
+  (void)ws22_flags;
+  return STATUS_CODE_OK;
+}
+
 StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16_t max_cell_voltage_mv) {
   (void)min_cell_voltage_mv;
   (void)max_cell_voltage_mv;
@@ -326,6 +371,12 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c) {
   (void)motor_temp_c;
   (void)max_cell_temp_c;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
+  (void)aux_mv;
+  (void)energy_wh;
   return STATUS_CODE_OK;
 }
 

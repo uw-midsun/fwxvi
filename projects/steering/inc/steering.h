@@ -84,14 +84,17 @@ typedef struct {
   int16_t aux_voltage;  /**< Auxiliary bus voltage (mV) */
   int16_t aux_current;  /**< Auxiliary bus current (mA) */
 
-  uint32_t pack_voltage;        /**< Pack voltage reading (mV) */
-  uint32_t pack_current;        /**< Pack current reading (mA) */
+  float pack_voltage;           /**< Pack voltage reading (V) */
+  float pack_current;           /**< Pack current reading (A), signed (regen negative) */
   uint16_t min_cell_voltage_mv; /**< Minimum cell voltage reading (mV) */
   uint16_t max_cell_voltage_mv; /**< Maximum cell voltage reading (mV) */
   uint16_t max_cell_temp;       /**< Maximum cell temperature reading (C) */
 
-  uint16_t bps_fault;     /**< BPS fault bitfield */
-  uint8_t bps_fault_cell; /**< BPS fault cell number (if it exists) */
+  float energy_used_wh; /**< Net energy drawn from the pack since power-on (Wh), integrated on the display */
+
+  uint16_t bps_fault;          /**< BPS fault bitfield */
+  uint8_t bps_fault_cell;      /**< BPS fault cell number (if it exists) */
+  BpsFaultData bps_fault_data; /**< Fault detail snapshot from bps_fault_info CAN signal */
 
   VehicleDriveState drive_state;
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */

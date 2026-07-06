@@ -52,7 +52,7 @@
 #define CELL_TEMP_OUTLIER_THRESHOLD 80
 
 /** @brief  Maximum pack current for cell discharging current - 7.0A -> 7000mA */
-#define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7000
+#define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7.0f
 
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
@@ -82,7 +82,7 @@
   } while (0)
 
 #define THERMISTORS_CONNECTED 0U
-#define BALANCING_ENABLED 0U
+#define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
 
 #define CELL_SENSE_DEBUG 0U
@@ -264,6 +264,10 @@ static void s_balance_cells(uint16_t min_voltage) {
 #if (BALANCING_ENABLED == 1U)
   uint16_t balancing_threshold = min_voltage;
 
+  if (!get_steering_buttons_balancing_enabled()) {
+    return;
+  }
+
   if (rear_controller_storage->pack_current > MAX_PACK_CURRENT_FOR_CELL_DISCHARGING) {
     return;
   }
@@ -343,14 +347,18 @@ static StatusCode s_check_thermistors() {
         /* Discharging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
+          uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
+          BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)adbms_afe_storage->thermistor_voltages[index] } };
+          trigger_bps_fault_with_data(BPS_FAULT_OVERTEMP_CELL, cell, data);
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       } else {
         /* Charging max temp */
         if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
           LOG_DEBUG("CELL OVERTEMP\n");
-          trigger_bps_fault_with_cell(BPS_FAULT_OVERTEMP_CELL, s_global_thermistor_index_1_based(device, thermistor));
+          uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
+          BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)adbms_afe_storage->thermistor_voltages[index] } };
+          trigger_bps_fault_with_data(BPS_FAULT_OVERTEMP_CELL, cell, data);
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
@@ -464,10 +472,10 @@ static StatusCode s_cell_sense_run() {
     }
   }
 
-  rear_controller_storage->pack_voltage = total_voltage / 10000;
-  //set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
+  rear_controller_storage->pack_voltage = total_voltage / 10000.0f;
+  set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
-  CONDITIONAL_LOG_DEBUG("PACK V: %lu\r\n", rear_controller_storage->pack_voltage);
+  CONDITIONAL_LOG_DEBUG("PACK V: %d\r\n", (int)rear_controller_storage->pack_voltage);
   delay_ms(10U);
   CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
   delay_ms(10U);
@@ -486,7 +494,8 @@ static StatusCode s_cell_sense_run() {
   if (max_voltage >= (CELL_OVERVOLTAGE_LIMIT_mV * 10U)) {
     LOG_DEBUG("FAULT: OVERVOLTAGE: %u\r\n", max_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault_with_cell(BPS_FAULT_OVERVOLTAGE, max_voltage_cell);
+    BpsFaultData ov_data = { .cell = { .cell_index = (uint8_t)max_voltage_cell, .cell_voltage = max_voltage } };
+    trigger_bps_fault_with_data(BPS_FAULT_OVERVOLTAGE, (uint8_t)max_voltage_cell, ov_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -494,7 +503,8 @@ static StatusCode s_cell_sense_run() {
   if (min_voltage <= (CELL_UNDERVOLTAGE_LIMIT_mV * 10U)) {
     LOG_DEBUG("FAULT: UNDERVOLTAGE: %u\r\n", min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault_with_cell(BPS_FAULT_UNDERVOLTAGE, min_voltage_cell);
+    BpsFaultData uv_data = { .cell = { .cell_index = (uint8_t)min_voltage_cell, .cell_voltage = min_voltage } };
+    trigger_bps_fault_with_data(BPS_FAULT_UNDERVOLTAGE, (uint8_t)min_voltage_cell, uv_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -503,7 +513,9 @@ static StatusCode s_cell_sense_run() {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
     LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    trigger_bps_fault_with_cell(BPS_FAULT_UNBALANCE, max_voltage_cell);
+    BpsFaultData unbal_data = { .unbalance = {
+                                    .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
+    trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }

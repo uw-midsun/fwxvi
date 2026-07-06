@@ -48,4 +48,14 @@ StatusCode tcixtma1_init(TCIXTMA1Storage *storage, I2CPort i2c_port, I2CAddress 
  */
 StatusCode tcixtma1_get_hydrogen_concentration(TCIXTMA1Storage *storage, float *out_hydrogen_con);
 
+#ifdef MS_PLATFORM_X86
+
+/**
+ * @brief Sets the simulated hydrogen concentration returned by the x86 mock
+ * @param hydrogen_con - hydrogen concentration to report
+ */
+void tcixtma1_set_hydrogen_concentration(float hydrogen_con);
+
+#endif
+
 /** @} */

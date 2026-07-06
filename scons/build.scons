@@ -82,7 +82,7 @@ autogen_sources = list(Path(AUTOGEN_DIR.abspath).rglob("*"))
 autogen_sources += list(Path(ROOT.abspath).glob("can/boards/*"))
 
 AlwaysBuild(env.Command(
-    LIBRARIES_INC_DIR.File("system_can.h"),
+    ROOT.Dir("can").Dir("inc").File("system_can.h"),
     autogen_sources,
     f"python3 -m autogen system_can -o can/inc"
 ))

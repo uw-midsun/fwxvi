@@ -48,6 +48,9 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((al
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
+/* Medium cycle runs at 10 Hz -> 0.1 s per sample. Converts pack power (V*A) to watt-hours. */
+#define ENERGY_SAMPLE_PERIOD_H (0.1f / 3600.0f)
+
 #ifdef MS_PLATFORM_X86
 typedef struct {
   bool left_pressed;
@@ -145,12 +148,13 @@ static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
+    status_ok_or_return(gui_widgets_set_top_label((uint16_t)display_data->pack_voltage, (uint16_t)(int16_t)display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
                                                   steering_storage->ws22_motor_can_storage->telemetry.bus_current, display_data->bps_fault, display_data->bps_fault_cell,
                                                   steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
     status_ok_or_return(gui_widgets_set_temps_stats_label(steering_storage->ws22_motor_can_storage->telemetry.motor_temp, display_data->max_cell_temp));
     status_ok_or_return(gui_widgets_set_soc_bar(display_data->state_of_charge));
+    status_ok_or_return(gui_widgets_set_aux_energy_label(display_data->aux_voltage, display_data->energy_used_wh));
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
@@ -169,6 +173,7 @@ static StatusCode s_render_gui_step(void) {
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+    status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
   }
 
   return gui_render();
@@ -280,18 +285,24 @@ StatusCode display_rx_medium() {
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
+  display_data->bps_fault_data.raw = get_bps_fault_info_extra_info();
 
   steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
 
-  display_data->pack_voltage = (uint32_t)get_battery_stats_A_pack_voltage();
-  display_data->pack_current = (int32_t)get_battery_stats_B_pack_current();
+  display_data->pack_voltage = get_battery_stats_A_pack_voltage_v();
+  display_data->pack_current = get_battery_stats_B_pack_current_a();
+
+  /* Net energy used: integrate signed pack power so regen/solar subtract (regen keeps current negative).
+     pack_voltage/pack_current are already volts/amps, so power is V*A directly. */
+  display_data->energy_used_wh += display_data->pack_voltage * display_data->pack_current * ENERGY_SAMPLE_PERIOD_H;
   display_data->min_cell_voltage_mv = (uint16_t)get_battery_stats_B_min_cell_voltage();
   display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
-  display_data->state_of_charge = (float)((uint16_t)get_battery_stats_A_pack_soc() / 100);
+  /* pack_soc is now a float percentage (0-100) straight off CAN */
+  display_data->state_of_charge = get_battery_stats_A_pack_soc();
 
   /* Greatest piece of code ever written. */
   const uint16_t cell_voltages[36] = {

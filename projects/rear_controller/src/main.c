@@ -21,12 +21,15 @@
 #include "bps_fault.h"
 #include "cell_sense.h"
 #include "current_sense.h"
+#include "fans.h"
 #include "killswitch.h"
+#include "power_path_manager.h"
 #include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_config.h"
 #include "rear_controller_getters.h"
 #include "rear_controller_state_manager.h"
+#include "state_of_charge.h"
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
 
@@ -64,12 +67,14 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   rear_controller_update_state_manager_medium_cycle();
   log_cell_sense();
+  fans_run();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-   current_sense_run();
-   bps_fault_commit();
+  bps_fault_commit();
+  state_of_charge_run();
+  power_path_manager_run();
 }
 
 #ifdef MS_PLATFORM_X86

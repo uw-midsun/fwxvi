@@ -76,8 +76,14 @@
  * Fan definitions
  ************************************************************************************************/
 
-/** @brief  Rear Controller fan pwm */
-#define GPIO_REAR_CONTROLLER_MOTOR_FAN_PWM REAR_CONTROLLER_GPIO_DEF(B, 2)
+/** @brief  Rear Controller fan pwm 1 */
+#define GPIO_REAR_CONTROLLER_MOTOR_FAN_PWM_1 REAR_CONTROLLER_GPIO_DEF(B, 2)
+
+/** @brief  Rear Controller fan pwm 2 */
+#define GPIO_REAR_CONTROLLER_MOTOR_FAN_PWM_2 REAR_CONTROLLER_GPIO_DEF(B, 3)
+
+/** @brief  Rear Controller fan pwr 1 */
+#define GPIO_REAR_CONTROLLER_MOTOR_FAN_PWR_1 REAR_CONTROLLER_GPIO_DEF(B, 4)
 
 /** @brief  Rear Controller fan sense 2 */
 #define GPIO_REAR_CONTROLLER_MOTOR_FAN_SENSE_1 REAR_CONTROLLER_GPIO_DEF(B, 0)
@@ -90,16 +96,13 @@
  ************************************************************************************************/
 
 /** @brief  Current sense I2C port */
-//#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_1 /* Used for original current sense code */
-#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_2
+#define REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT I2C_PORT_3
 
 /** @brief  Current sense I2C serial data pin */
-#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(B, 11) // Rev 1.0
-//#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(C, 1) // Rev 2.0
+#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(C, 1)
 
 /** @brief  Current sense I2C clock pin */
-#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(B, 10) // Rev 1.0
-//#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(C, 0) // Rev 2.0
+#define GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(C, 0)
 
 /** @brief  Current sense slave address */
 #define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
@@ -108,7 +111,26 @@
 # define REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR (64)
 
 /************************************************************************************************
- * AFEs (LTC6811) SPI definitions
+ * Hydrogen sensor definitions
+ ************************************************************************************************/
+
+/** @brief  Hydrogen sensor I2C port */
+#define REAR_CONTROLLER_HYDROGEN_SENSOR_I2C_PORT I2C_PORT_2
+
+/** @brief  Hydrogen sensor I2C serial data pin */
+#define GPIO_REAR_CONTROLLER_HYDROGEN_SENSOR_I2C_SDA_GPIO REAR_CONTROLLER_GPIO_DEF(B, 11)
+
+/** @brief  Hydrogen sensor I2C clock pin */
+#define GPIO_REAR_CONTROLLER_HYDROGEN_SENSOR_I2C_SCL_GPIO REAR_CONTROLLER_GPIO_DEF(B, 10)
+
+/** @brief  Hydrogen sensor slave address */
+#define REAR_CONTROLLER_HYDROGEN_SENSOR_I2C_ADDR (0x36)
+
+/** @brief  Hydrogen sensor standby */
+#define GPIO_REAR_CONTROLLER_HYDROGEN_SENSOR_STANDBY REAR_CONTROLLER_GPIO_DEF(D, 2)
+
+/************************************************************************************************
+ * AFEs (ADBMS1818) SPI definitions
  ************************************************************************************************/
 
 /** @brief  AFE SPI port */
