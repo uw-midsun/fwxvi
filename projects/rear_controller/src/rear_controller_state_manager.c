@@ -14,6 +14,7 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "bps_fault.h"
 #include "global_enums.h"
 #include "rear_controller_getters.h"
 #include "rear_controller_safety_limits.h"
@@ -50,6 +51,10 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       break;
 
     case REAR_CONTROLLER_STATE_DRIVE:
+      /* Re-entering drive clears any latched fault */
+      if (rear_controller_storage->bps_fault_record.fault_code != 0U) {
+        bps_fault_clear();
+      }
 #if (IS_MOTOR_CONNECTED == 1)
       if (rear_controller_storage->precharge_complete) {
         relays_enable_ws22_lv();

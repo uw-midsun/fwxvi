@@ -513,10 +513,8 @@ static StatusCode s_cell_sense_run() {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
     LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    BpsFaultData unbal_data = { .unbalance = { .max_cell_index = (uint8_t)max_voltage_cell,
-                                               .min_cell_index = (uint8_t)min_voltage_cell,
-                                               .max_cell_voltage = max_voltage,
-                                               .min_cell_voltage = min_voltage } };
+    BpsFaultData unbal_data = { .unbalance = {
+                                    .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
     trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;

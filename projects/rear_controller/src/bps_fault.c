@@ -26,6 +26,8 @@ static RearControllerStorage *rear_controller_storage = NULL;
 static void s_update_bps_fault_can_fields(void) {
   set_rear_controller_status_triggers_bps_fault(rear_controller_storage->bps_fault_record.fault_code);
   set_rear_controller_status_triggers_cell_at_fault(rear_controller_storage->bps_fault_cell);
+  /* Live faults block drive; a fault restored from flash (live == false) only shows the BPS light */
+  set_rear_controller_status_triggers_bps_fault_live(rear_controller_storage->bps_fault_live);
   set_bps_fault_info_extra_info(rear_controller_storage->bps_fault_record.extra_info.raw);
 }
 
@@ -37,8 +39,8 @@ StatusCode bps_fault_init(RearControllerStorage *storage) {
   rear_controller_storage = storage;
   rear_controller_storage->bps_fault_cell = 0U;
 
-  status_ok_or_return(
-      persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
+  // TODO: Uncomment this when ready to test BPS faults
+  // status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
 
   /* If a fault was latched before power-down, broadcast it on the first medium cycle so the
    * front controller blinks the BPS light on startup until drive state is entered */

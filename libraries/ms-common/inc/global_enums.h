@@ -204,29 +204,29 @@ typedef enum {
  *          bit(s) in the 32-bit fault code - there is no tag inside the payload itself.
  */
 typedef struct {
-  uint8_t cell_index;    /**< 1-based faulting cell, 0 if N/A */
+  uint8_t cell_index; /**< 1-based faulting cell, 0 if N/A */
   uint8_t reserved0;
   uint16_t cell_voltage; /**< Faulting cell voltage [100uV] */
   uint32_t reserved1;
 } __attribute__((packed)) BpsCellFaultData; /**< OV / UV */
 
 typedef struct {
-  uint8_t max_cell_index;   /**< 1-based highest cell */
-  uint8_t min_cell_index;   /**< 1-based lowest cell */
+  uint8_t max_cell_index;    /**< 1-based highest cell */
+  uint8_t min_cell_index;    /**< 1-based lowest cell */
   uint16_t max_cell_voltage; /**< Highest cell voltage [100uV] */
   uint16_t min_cell_voltage; /**< Lowest cell voltage [100uV] */
   uint16_t reserved;
 } __attribute__((packed)) BpsUnbalanceFaultData; /**< UNBALANCE */
 
 typedef struct {
-  uint8_t cell_index;     /**< 1-based faulting cell/thermistor, 0 if N/A */
+  uint8_t cell_index; /**< 1-based faulting cell/thermistor, 0 if N/A */
   uint8_t reserved0;
-  int16_t temperature_c;  /**< Faulting temperature [C] */
+  int16_t temperature_c; /**< Faulting temperature [C] */
   uint32_t reserved1;
 } __attribute__((packed)) BpsTempFaultData; /**< OVERTEMP cell / ambient */
 
 typedef struct {
-  float current_a;    /**< Pack current at fault [A], signed (charging negative) */
+  float current_a; /**< Pack current at fault [A], signed (charging negative) */
   uint32_t reserved;
 } __attribute__((packed)) BpsCurrentFaultData; /**< OVERCURRENT */
 

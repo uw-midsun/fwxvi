@@ -27,6 +27,7 @@ Messages:
           - {name: power_state, length: 2}
           - afe_status
           - motor_precharge_complete
+          - bps_fault_live
         length: 32
 
   battery_stats_A:

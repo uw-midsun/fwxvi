@@ -42,12 +42,12 @@ typedef struct {
 } RearControllerConfig;
 
 typedef struct {
-  float pack_current;    /**< Pack current reading (A), signed (charging negative) */
-  float pack_voltage;    /**< Pack voltage reading (V) */
-  uint32_t aux_voltage;  /**< Auxiliary bus voltage (mV) */
-  uint32_t pcs_voltage;  /**< PCS bus voltage (mV) */
-  int32_t aux_current;   /**< Auxiliary bus current (mA) */
-  int32_t pcs_current;   /**< PCS bus current (mA) */
+  float pack_current;   /**< Pack current reading (A), signed (charging negative) */
+  float pack_voltage;   /**< Pack voltage reading (V) */
+  uint32_t aux_voltage; /**< Auxiliary bus voltage (mV) */
+  uint32_t pcs_voltage; /**< PCS bus voltage (mV) */
+  int32_t aux_current;  /**< Auxiliary bus current (mA) */
+  int32_t pcs_current;  /**< PCS bus current (mA) */
 
   float estimated_state_of_charge; /**< Estimated state of charge as a percentage [0 - 100] */
 
@@ -61,10 +61,10 @@ typedef struct {
   bool motor_lv_enabled;   /**< Motor LV enabled state */
 
   /* Safety monitors */
-  bool precharge_complete; /**< Precharge complete state */
-  bool killswitch_active;  /**< Killswitch active state */
-  bool pcs_valid;          /**< PCS input valid state */
-  bool aux_valid;          /**< Aux valid state */
+  bool precharge_complete;         /**< Precharge complete state */
+  bool killswitch_active;          /**< Killswitch active state */
+  bool pcs_valid;                  /**< PCS input valid state */
+  bool aux_valid;                  /**< Aux valid state */
   BpsFaultRecord bps_fault_record; /**< Latched fault code + detail snapshot (persisted) */
   uint8_t bps_fault_cell;          /**< One-based cell index for cell-related faults */
   bool bps_fault_live;             /**< TRUE only for a fault triggered live this power cycle; a fault
