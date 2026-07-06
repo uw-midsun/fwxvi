@@ -34,6 +34,11 @@ static void s_enable_periph_clock(PwmTimer timer) {
     case PWM_TIMER_2:
       __HAL_RCC_TIM2_CLK_ENABLE();
       break;
+    case PWM_TIMER_3:
+#ifdef STM32L4P5xx
+      __HAL_RCC_TIM3_CLK_ENABLE();
+#endif
+      break;
     case PWM_TIMER_4:
 #ifdef STM32L4P5xx
       __HAL_RCC_TIM4_CLK_ENABLE();
@@ -65,6 +70,11 @@ StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
     case PWM_TIMER_2:
       s_timer_handle[timer].Instance = TIM2;
       break;
+    case PWM_TIMER_3:
+#ifdef STM32L4P5xx
+      s_timer_handle[timer].Instance = TIM3;
+#endif
+      break;
     case PWM_TIMER_4:
 #ifdef STM32L4P5xx
       s_timer_handle[timer].Instance = TIM4;
@@ -82,7 +92,7 @@ StatusCode pwm_init(PwmTimer timer, uint16_t period_us) {
 
   uint32_t clock_freq;
   /* Based on Pg 36 of datasheet. Clock tree */
-  if (timer == PWM_TIMER_2 || timer == PWM_TIMER_4) {
+  if (timer == PWM_TIMER_2 || timer == PWM_TIMER_3 || timer == PWM_TIMER_4) {
     clock_freq = HAL_RCC_GetPCLK1Freq();
   } else {
     clock_freq = HAL_RCC_GetPCLK2Freq();
@@ -119,6 +129,10 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
       /* TIM2 supports all 4 channels */
       channel_supported = (channel < 4);
       break;
+    case PWM_TIMER_3:
+      /* TIM3 supports all 4 channels */
+      channel_supported = (channel < 4);
+      break;
     case PWM_TIMER_4:
       /* TIM4 supports all 4 channels */
       channel_supported = (channel < 4);
@@ -141,7 +155,8 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
   }
 
   bool has_complementary = true;
-  if (timer == PWM_TIMER_2) {
+  if (timer == PWM_TIMER_2 || timer == PWM_TIMER_3) {
+    /* General-purpose timers have no complementary (CHxN) outputs */
     has_complementary = false;
   }
 

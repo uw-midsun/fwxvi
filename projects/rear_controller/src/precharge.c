@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <math.h>
 
 /* Inter-component Headers */
 #include "delay.h"
@@ -125,7 +126,7 @@ StatusCode precharge_run() {
   }
 
   // Check difference in voltage
-  if ((uint32_t)abs(rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
+  if (fabsf(rear_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage - rear_controller_storage->pack_voltage) < PRECHARGE_THRESHOLD_VOLTS) {
     valid_cycles++;
 
     // We should be within precharge threshold for a given amount of cycles

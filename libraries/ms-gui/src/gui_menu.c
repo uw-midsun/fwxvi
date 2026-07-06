@@ -10,6 +10,7 @@
 /* Standard library Headers */
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "status.h"
 
@@ -87,6 +88,13 @@ static const char *s_get_item_label(uint8_t index) {
     return "";
   }
 
+  /* The discharge row reflects the current broadcast state so the driver can see it at a glance */
+  if (index == GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE) {
+    static char s_discharge_label[24];
+    snprintf(s_discharge_label, sizeof(s_discharge_label), "Cell Discharge: %s", s_menu.discharge_enabled ? "ON" : "OFF");
+    return s_discharge_label;
+  }
+
   return s_menu_items[index].action_label;
 }
 
@@ -132,15 +140,17 @@ StatusCode gui_menu_init(void) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
-  /* Save callback state */
+  /* Save callback + toggle state */
   GuiMenuActionCallback party_mode_callback = s_menu.party_mode_callback;
   GuiMenuActionCallback toggle_discharge_callback = s_menu.toggle_discharge_callback;
+  bool discharge_enabled = s_menu.discharge_enabled;
 
   s_menu = (GuiMenuState){ 0 };
   s_pending_requests = (GuiMenuPendingRequests){ 0 };
 
   s_menu.party_mode_callback = party_mode_callback;
   s_menu.toggle_discharge_callback = toggle_discharge_callback;
+  s_menu.discharge_enabled = discharge_enabled;
 
   s_is_initalized = true;
   return STATUS_CODE_OK;
@@ -412,6 +422,7 @@ StatusCode gui_menu_select(VehicleDriveState drive_state) {
             if (status != STATUS_CODE_OK) {
               return status;
             }
+            s_menu.discharge_enabled = !s_menu.discharge_enabled;
           }
           break;
 

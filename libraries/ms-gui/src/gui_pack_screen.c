@@ -21,6 +21,7 @@
 /* Intra-component Headers */
 #include "clut.h"
 #include "display_defs.h"
+#include "global_enums.h"
 #include "gui_pack_screen.h"
 #include "gui_widgets.h"
 
@@ -34,6 +35,7 @@ static bool s_pack_widgets_initialized;
 
 static LabelWidget s_speed_label;
 static LabelWidget s_cc_label;
+static LabelWidget s_fault_label;
 
 /* Cell voltage range used for the pack table gradient fill, in the same fixed-point mV units as s_cell_voltages */
 #define PACK_CELL_GRADIENT_MIN_MV 25000U
@@ -148,6 +150,24 @@ static StatusCode s_create_cc_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
+static StatusCode s_create_fault_label(GuiScreen *screen) {
+  const LabelWidgetConfig fault_label_config = {
+    .size = { .width = DISPLAY_WIDTH, .height = 20 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = 0 } },
+    .label_text = "",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_SMALL_TEXT,
+    .background_enabled = true,
+    .background_color_id = GUI_COLOR_BRAKE_FILL,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+
+  return lvgl_widgets_create_label(&s_fault_label, &fault_label_config, screen);
+}
+
 StatusCode gui_pack_screen_init(GuiScreen *screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -161,6 +181,7 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
 
   status_ok_or_return(s_create_speed_label(screen));
   status_ok_or_return(s_create_cc_label(screen));
+  status_ok_or_return(s_create_fault_label(screen));
 
   status_ok_or_return(s_create_table(screen));
   StatusCode status = gui_widgets_init_screen(screen);
@@ -176,6 +197,9 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
     status_ok_or_return(lvgl_widgets_set_table_cell(&s_pack_table, i / PACK_TABLE_COLS, i % PACK_TABLE_COLS, buf));
   }
 
+  /* Fault banner stays hidden until a fault is latched */
+  lv_obj_add_flag(s_fault_label.label, LV_OBJ_FLAG_HIDDEN);
+
   s_pack_widgets_initialized = true;
   return STATUS_CODE_OK;
 }
@@ -183,6 +207,7 @@ StatusCode gui_pack_screen_init(GuiScreen *screen) {
 void gui_pack_screen_deinit(void) {
   gui_widgets_deinit();
   s_pack_table = (TableWidget){ 0 };
+  s_fault_label = (LabelWidget){ 0 };
   for (uint8_t i = 0U; i < NUMBER_OF_CELLS; ++i) {
     s_cell_voltages[i] = 0U;
   }
@@ -236,6 +261,56 @@ StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh
   return lvgl_widgets_set_label_text(&s_cc_label, text_buffer);
 }
 
+StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data) {
+  (void)cell_at_fault;
+
+  if (!s_pack_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if (fault_code == 0U) {
+    lv_obj_add_flag(s_fault_label.label, LV_OBJ_FLAG_HIDDEN);
+    return STATUS_CODE_OK;
+  }
+
+  char buf[LABEL_MAX_CHARS];
+
+  /* Decode the highest-priority active fault, mirroring gui_widgets_bps_fault_text's ordering so the
+     banner detail always corresponds to the fault named in the top status label. Cell voltages are in
+     100uV units (value/10000 = V, (value%10000)/10 = mV); current is scaled to avoid %f (float printf
+     is disabled in nano-newlib). */
+  if (fault_code & BPS_FAULT_OVERVOLTAGE_MASK) {
+    uint16_t mv = data.cell.cell_voltage;
+    snprintf(buf, sizeof(buf), "OV C%u  %u.%03u V", data.cell.cell_index, mv / 10000U, (mv % 10000U) / 10U);
+  } else if (fault_code & BPS_FAULT_UNBALANCE_MASK) {
+    uint16_t maxv = data.unbalance.max_cell_voltage;
+    uint16_t minv = data.unbalance.min_cell_voltage;
+    snprintf(buf, sizeof(buf), "IMB C%u %u.%03uV / C%u %u.%03uV", data.unbalance.max_cell_index, maxv / 10000U, (maxv % 10000U) / 10U, data.unbalance.min_cell_index, minv / 10000U,
+             (minv % 10000U) / 10U);
+  } else if (fault_code & (BPS_FAULT_OVERTEMP_AMBIENT_MASK | BPS_FAULT_COMMS_LOSS_AFE_MASK | BPS_FAULT_COMMS_LOSS_CURR_SENSE_MASK)) {
+    /* Higher priority than OT_CELL/OC/UV and carry no numeric payload - show the name */
+    snprintf(buf, sizeof(buf), "%s", gui_widgets_bps_fault_text(fault_code, NULL));
+  } else if (fault_code & BPS_FAULT_OVERTEMP_CELL_MASK) {
+    snprintf(buf, sizeof(buf), "OT C%u  %d C", data.temp.cell_index, data.temp.temperature_c);
+  } else if (fault_code & BPS_FAULT_OVERCURRENT_MASK) {
+    int deci_a = (int)(data.current.current_a * 10.0f);
+    int frac = deci_a % 10;
+    if (frac < 0) {
+      frac = -frac;
+    }
+    snprintf(buf, sizeof(buf), "OC  %d.%01d A", deci_a / 10, frac);
+  } else if (fault_code & BPS_FAULT_UNDERVOLTAGE_MASK) {
+    uint16_t mv = data.cell.cell_voltage;
+    snprintf(buf, sizeof(buf), "UV C%u  %u.%03u V", data.cell.cell_index, mv / 10000U, (mv % 10000U) / 10U);
+  } else {
+    /* Killswitch / relay / disconnect / fallback - name only */
+    snprintf(buf, sizeof(buf), "%s", gui_widgets_bps_fault_text(fault_code, NULL));
+  }
+
+  lv_obj_clear_flag(s_fault_label.label, LV_OBJ_FLAG_HIDDEN);
+  return lvgl_widgets_set_label_text(&s_fault_label, buf);
+}
+
 #else
 
 StatusCode gui_pack_screen_init(GuiScreen *screen) {
@@ -259,6 +334,13 @@ StatusCode gui_pack_screen_widget_set_speed_label(int16_t speed_kmh) {
 StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled) {
   (void)cruise_control_speed_kmh;
   (void)is_cc_enabled;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data) {
+  (void)fault_code;
+  (void)cell_at_fault;
+  (void)data;
   return STATUS_CODE_OK;
 }
 

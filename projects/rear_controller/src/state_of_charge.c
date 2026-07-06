@@ -186,7 +186,7 @@ StatusCode state_of_charge_init(RearControllerStorage *storage) {
   float v_samples[1U];
   int n_samples = 1U;
 
-  v_samples[0U] = (float)(rear_controller_storage->pack_voltage) / 1000.0;
+  v_samples[0U] = rear_controller_storage->pack_voltage;
 
   estimate_initial_state_c(v_samples, n_samples, rtU.params.N_series, soc_vals, ocv_vals, SOC_OCV_TABLE_SIZE, x0);
 
@@ -203,12 +203,15 @@ StatusCode state_of_charge_run() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  rtU.u_k = (real_T)(rear_controller_storage->pack_current) / 1000.0;
-  rtU.z_k = (real_T)(rear_controller_storage->pack_voltage) / 1000.0;
+  rtU.u_k = (real_T)rear_controller_storage->pack_current;
+  rtU.z_k = (real_T)rear_controller_storage->pack_voltage;
 
   soc_ekf_matlab_step();
 
   rear_controller_storage->estimated_state_of_charge = rtY.x_new[0U];
+
+  /* SOC EKF state is a 0-1 fraction; CAN pack_soc is a float percentage (0-100) */
+  set_battery_stats_A_pack_soc(rear_controller_storage->estimated_state_of_charge * 100.0f);
 
   memcpy(rtU.x_prev, rtY.x_new, sizeof(rtY.x_new));
   memcpy(rtU.P_prev, rtY.P_new, sizeof(rtU.P_prev));

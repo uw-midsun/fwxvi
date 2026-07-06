@@ -30,6 +30,7 @@
 #include "range_estimator.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
+#include "steering_setters.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -40,6 +41,22 @@ static SteeringStorage *steering_storage;
 static ButtonManager s_button_manager = { 0 };
 
 static CanStorage s_can_storage = { 0 };
+
+/** @brief   Cell-balancing request broadcast to the rear controller (rear gates balancing on this) */
+static bool s_cell_discharge_requested = false;
+
+/**
+ * @brief   Toggle the cell-discharge request broadcast in the steering buttons bitfield
+ * @details Invoked by the "Toggle Cell Discharge" overlay menu item. The rear controller only
+ *          balances when its local BALANCING_ENABLED master is set AND this request is true.
+ * @return  STATUS_CODE_OK on success
+ */
+static StatusCode s_toggle_cell_discharge(void) {
+  s_cell_discharge_requested = !s_cell_discharge_requested;
+  set_steering_buttons_balancing_enabled(s_cell_discharge_requested);
+  buzzer_play_success();
+  return STATUS_CODE_OK;
+}
 
 /************************************************************************************************
  * Settings definitions
@@ -71,7 +88,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   display_init(steering_storage);
   party_mode_init(steering_storage);
   gui_menu_set_party_mode_callback(party_mode_toggle);
-  // TODO: FW-520 Add callback here for toggle discharge
+  gui_menu_set_toggle_discharge_callback(s_toggle_cell_discharge);
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
   drive_state_manager_init(steering_storage);

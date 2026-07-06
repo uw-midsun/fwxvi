@@ -87,10 +87,10 @@ StatusCode power_path_manager_init(RearControllerStorage *storage) {
   rear_controller_storage = storage;
 
   /* Initialize pins */
-  gpio_init_pin(&pcs_vsense_gpio, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&pcs_isense_gpio, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&aux_vsense_gpio, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&aux_isense_gpio, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
+  gpio_init_pin(&pcs_vsense_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
+  gpio_init_pin(&pcs_isense_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
+  gpio_init_pin(&aux_vsense_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
+  gpio_init_pin(&aux_isense_gpio, GPIO_ANALOG, GPIO_STATE_LOW);
   gpio_init_pin(&pcs_valid1, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH);
   gpio_init_pin(&pcs_valid2, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH);
   gpio_init_pin(&aux_valid1, GPIO_INPUT_FLOATING, GPIO_STATE_HIGH);
@@ -138,7 +138,7 @@ StatusCode power_path_manager_run(void) {
 
   set_power_input_stats_input_dcdc_voltage((int16_t)rear_controller_storage->pcs_voltage);
   set_power_input_stats_input_dcdc_current((int16_t)rear_controller_storage->pcs_current);
-  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->aux_voltage);
+  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->pcs_voltage);
   set_power_input_stats_input_aux_current((int16_t)rear_controller_storage->aux_current);
 
   return STATUS_CODE_OK;

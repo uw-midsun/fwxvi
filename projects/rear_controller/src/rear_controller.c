@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "adc.h"
 #include "can.h"
 #include "flash.h"
 #include "log.h"
@@ -24,6 +25,7 @@
 #include "bps_fault.h"
 #include "cell_sense.h"
 #include "current_sense.h"
+#include "fans.h"
 #include "killswitch.h"
 #include "motor_can.h"
 #include "power_path_manager.h"
@@ -32,6 +34,7 @@
 #include "rear_controller_hw_defs.h"
 #include "rear_controller_state_manager.h"
 #include "relays.h"
+#include "state_of_charge.h"
 
 /************************************************************************************************
  * Storage definitions
@@ -73,8 +76,10 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   rear_controller_storage->killswitch_active = false;
   rear_controller_storage->pcs_valid = false;
   rear_controller_storage->aux_valid = false;
-  rear_controller_storage->bps_fault = 0U;
+  rear_controller_storage->bps_fault_record.fault_code = 0U;
+  rear_controller_storage->bps_fault_record.extra_info.raw = 0U;
   rear_controller_storage->bps_fault_cell = 0U;
+  rear_controller_storage->bps_fault_live = false;
 
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
@@ -87,11 +92,15 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   relays_init(rear_controller_storage);
   rear_controller_state_manager_init(rear_controller_storage);
   cell_sense_init(rear_controller_storage);
-  // power_path_manager_init(rear_controller_storage);
+  state_of_charge_init(rear_controller_storage);
+  fans_init(rear_controller_storage);
+  power_path_manager_init(rear_controller_storage);
   // current_sense_init(rear_controller_storage);
   precharge_init(REAR_CONTROLLER_PRECHARGE_EVENT, get_10hz_task(), rear_controller_storage);
 
   gpio_init_pin(&s_rear_controller_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+
+  adc_init();
 
   LOG_DEBUG("Rear controller initialized\r\n");
 

@@ -21,12 +21,15 @@
 #include "bps_fault.h"
 #include "cell_sense.h"
 #include "current_sense.h"
+#include "fans.h"
 #include "killswitch.h"
+#include "power_path_manager.h"
 #include "precharge.h"
 #include "rear_controller.h"
 #include "rear_controller_config.h"
 #include "rear_controller_getters.h"
 #include "rear_controller_state_manager.h"
+#include "state_of_charge.h"
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
 
@@ -51,7 +54,9 @@ Ws22MotorCanConfig motor_can_config = {
   .ws22_drive_cmd_enabled = false,
 };
 
-void pre_loop_init() {}
+void pre_loop_init() {
+  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
+}
 
 void run_1000hz_cycle() {
   run_can_rx_all();
@@ -62,11 +67,14 @@ void run_1000hz_cycle() {
 void run_10hz_cycle() {
   rear_controller_update_state_manager_medium_cycle();
   log_cell_sense();
+  fans_run();
   run_can_tx_medium();
 }
 
 void run_1hz_cycle() {
-  // bps_fault_commit();
+  bps_fault_commit();
+  state_of_charge_run();
+  power_path_manager_run();
 }
 
 #ifdef MS_PLATFORM_X86
@@ -79,8 +87,6 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
-
-  rear_controller_init(&rear_controller_storage, &rear_controller_config, &motor_can_config);
 
   init_master_tasks();
 

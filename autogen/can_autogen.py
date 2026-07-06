@@ -126,7 +126,9 @@ def get_data(args):
         "total" : 0,
     }
 
-    for yaml_path in Path("can/boards").glob("*.yaml"):
+    # Sort board files so the SystemCanDevice enum indices (used as the CAN
+    # source id) are assigned deterministically across machines/filesystems.
+    for yaml_path in sorted(Path("can/boards").glob("*.yaml")):
         # read yaml
         with open(yaml_path, "r") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
