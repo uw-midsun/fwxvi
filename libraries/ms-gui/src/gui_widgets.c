@@ -374,4 +374,10 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
+  (void)aux_mv;
+  (void)energy_wh;
+  return STATUS_CODE_OK;
+}
+
 #endif
