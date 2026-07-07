@@ -128,22 +128,10 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   return STATUS_CODE_OK;
 }
 
-/* get data from board*/
-static StatusCode ads122_read_conversion(ADS122Storage *storage, uint8_t data[]) {
-  if (storage == NULL || data == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, data, 5U);
-}
-
 StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]) {
   if (storage == NULL || rx_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  delay_ms(1);
-  // TODO: determine if the delay is needed
-
-  return ads122_read_conversion(storage, rx_data);
+  return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
 }
