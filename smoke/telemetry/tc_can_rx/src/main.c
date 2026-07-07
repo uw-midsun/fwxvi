@@ -63,7 +63,7 @@ typedef struct {
   uint8_t motor_precharge_complete;
   /**> */
   uint16_t battery_stats_A_pack_voltage;
-  uint16_t battery_stats_B_pack_current;
+  uint16_t battery_stats_A_pack_current;
   uint16_t battery_stats_A_pack_soc;
   uint16_t battery_stats_B_max_cell_voltage;
   uint16_t battery_stats_B_min_cell_voltage;
@@ -210,7 +210,7 @@ static void print_rear_controller(const rear_controller_tx_struct *data) {
   LOG_DEBUG("    Status Triggers:      0x%02X\r\n", (unsigned)data->rear_controller_status_triggers);
 
   LOG_DEBUG("    Pack Voltage:         %u mV\r\n", data->battery_stats_A_pack_voltage);
-  LOG_DEBUG("    Pack Current:         %u mA\r\n", data->battery_stats_B_pack_current);
+  LOG_DEBUG("    Pack Current:         %u mA\r\n", data->battery_stats_A_pack_current);
   LOG_DEBUG("    Pack SOC:             %u %%\r\n", data->battery_stats_A_pack_soc);
 
   LOG_DEBUG("    Max Cell V:           %u mV\r\n", data->battery_stats_B_max_cell_voltage);
@@ -342,14 +342,14 @@ static void parse_rear_controller(uint16_t msg_id, const uint8_t *data, uint8_t 
 
     case 2: /* battery_stats_A (DLC: 6) */
       if (dlc >= 6) {
-        s_rear_controller_tx_struct.battery_stats_A_pack_voltage = read_u32(&data[0]);
+        s_rear_controller_tx_struct.battery_stats_A_pack_voltage = read_u16(&data[0]);
+        s_rear_controller_tx_struct.battery_stats_A_pack_current = read_u16(&data[2]);
         s_rear_controller_tx_struct.battery_stats_A_pack_soc = read_u16(&data[4]);
       }
       break;
 
     case 3: /* battery_stats_B (DLC: 6) */
       if (dlc >= 6) {
-        s_rear_controller_tx_struct.battery_stats_B_pack_current = read_u32(&data[2]);
         s_rear_controller_tx_struct.battery_stats_B_max_cell_voltage = read_u16(&data[0]);
         s_rear_controller_tx_struct.battery_stats_B_min_cell_voltage = read_u16(&data[2]);
         s_rear_controller_tx_struct.battery_stats_B_max_temperature = read_u16(&data[4]);

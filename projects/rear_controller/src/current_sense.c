@@ -8,7 +8,6 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <math.h>
 
 /* Inter-component Headers */
 #include "current_sense.h"

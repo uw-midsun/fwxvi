@@ -262,7 +262,7 @@ StatusCode gui_widgets_init(void) {
   return gui_widgets_init_screen(screen);
 }
 
-StatusCode gui_widgets_set_top_label(int32_t pack_voltage, int32_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
                                      uint16_t ws22_flags) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
