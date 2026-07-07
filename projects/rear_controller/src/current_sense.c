@@ -181,7 +181,7 @@ StatusCode current_sense_run() {
 
         /* Update rear_controller_storage with current in amps*/
         rear_controller_storage->pack_current = (csense_current_A); 
-        set_battery_stats_B_pack_current(rear_controller_storage->pack_current);
+        set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
       }
 
     break;
@@ -224,7 +224,7 @@ StatusCode current_sense_run() {
 
        /* Update rear_controller_storage with voltage in volta*/
         rear_controller_storage->pack_voltage =(csense_HV_voltage_V);
-        set_battery_stats_A_pack_voltage(rear_controller_storage->pack_voltage);
+        set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
       }
       break;
   }
