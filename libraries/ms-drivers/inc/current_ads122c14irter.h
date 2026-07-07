@@ -305,3 +305,5 @@ StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG);
 
 /*ADS122_REG_REG_MAP_CRC*/
 #define ADS122_REG_REG_MAP_CRC_DEFAULT ((uint8_t)0x00)
+
+/** @} */

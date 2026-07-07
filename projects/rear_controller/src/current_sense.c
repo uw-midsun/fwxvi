@@ -11,6 +11,7 @@
 
 /* Inter-component Headers */
 #include "current_sense.h"
+
 #include "global_enums.h"
 #include "status.h"
 
