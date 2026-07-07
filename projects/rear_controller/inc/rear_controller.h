@@ -16,9 +16,9 @@
 /* Inter-component Headers */
 #include "adbms_afe.h"
 #include "current_acs37800.h"
+#include "current_ads122c14irter.h"
 #include "global_enums.h"
 #include "ws22_motor_can.h"
-#include "current_ads122c14irter.h"
 
 /* Intra-component Headers */
 
@@ -78,7 +78,7 @@ typedef struct {
 
   AdbmsAfeStorage adbms_afe_storage; /**< ADBMS AFE storage */
   ACS37800Storage acs37800_storage;  /**< ACS37800 current sense storage */
-  ADS122Storage ads122_storage; /**< ADS122C14ITER current sense storage */
+  ADS122Storage ads122_storage;      /**< ADS122C14ITER current sense storage */
 
   RearControllerConfig *config;
   Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */

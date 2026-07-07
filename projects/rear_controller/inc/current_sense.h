@@ -15,16 +15,14 @@
 #include "status.h"
 
 /* Intra-component Headers */
-#include "rear_controller.h"
 #include "current_acs37800.h"
-
+#include "rear_controller.h"
 
 /**
  * @defgroup Rear_Controller
  * @brief    Rear Controller Board Firmware
  * @{
  */
-
 
 /**
  * @brief   Initializes the current sense sub-system

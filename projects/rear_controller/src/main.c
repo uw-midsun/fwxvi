@@ -62,6 +62,7 @@ void run_1000hz_cycle() {
   run_can_rx_all();
   killswitch_run();
   precharge_run();
+  current_sense_run();
 }
 
 void run_10hz_cycle() {
