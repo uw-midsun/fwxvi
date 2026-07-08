@@ -34,7 +34,7 @@ typedef struct {
   float shunt_resistance_ohm; /* shunt resistance in ohms*/
   uint32_t resistance_R6_ohm; /* resistance of R6 in ohms*/
   uint32_t resistance_R7_ohm; /* resistance of R7 in ohms */
-} CurrentSenseConfigs
+} CurrentSenseConfigs;
 
 #endif
 
