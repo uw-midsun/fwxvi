@@ -31,6 +31,7 @@
 #include "front_lights_signal.h"
 #include "motor_can.h"
 #include "opd.h"
+#include "pedal_calib_handler.h"
 #include "pedal_calib_reader.h"
 #include "power_manager.h"
 #include "regen_brake.h"
@@ -77,6 +78,7 @@ StatusCode front_controller_init(FrontControllerStorage *storage, FrontControlle
   brake_pedal_init(front_controller_storage);
   accel_pedal_init(front_controller_storage);
   pedal_calib_read(front_controller_storage);
+  pedal_calib_handler_init(front_controller_storage);
   opd_init(front_controller_storage);
   ws22_motor_can_init(front_controller_storage->ws22_motor_can_storage, motor_can_config);
   motor_can_init(front_controller_storage);

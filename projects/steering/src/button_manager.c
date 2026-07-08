@@ -26,8 +26,10 @@
 #include "drive_state_manager.h"
 #include "global_enums.h"
 #include "gui_menu.h"
+#include "gui_screens.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
+#include "pedal_calib.h"
 #include "steering.h"
 #include "steering_hw_defs.h"
 #include "steering_setters.h"
@@ -126,6 +128,11 @@ static void right_turn_btn_rising_edge_cb(Button *button) {
 static void hazards_btn_falling_edge_cb(Button *button) {
   if (gui_menu_is_open()) {
     gui_menu_request_select(drive_state_manager_get_state());
+    return;
+  }
+
+  if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+    steering_pedal_calib_request(steering_storage);
     return;
   }
 

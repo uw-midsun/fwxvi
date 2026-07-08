@@ -15,6 +15,7 @@
 
 /* Inter-component Headers */
 #include "global_enums.h"
+#include "persist.h"
 #include "status.h"
 #include "ws22_motor_can.h"
 
@@ -108,6 +109,8 @@ typedef struct {
 
   FrontControllerConfig *config;             /**< Pointer to the front controller configuration data */
   Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
+  PersistStorage *persist_storage;
+  PedalPersistData *pedal_persist_data;
 } FrontControllerStorage;
 
 /**

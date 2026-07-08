@@ -16,6 +16,7 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
+#include "persist.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -25,12 +26,20 @@
 #include "front_controller_state_manager.h"
 #include "motor_can.h"
 #include "opd.h"
+#include "pedal_calib_handler.h"
 #include "power_manager.h"
 #include "ws22_motor_can.h"
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
 
-FrontControllerStorage front_controller_storage = { .ws22_motor_can_storage = &motor_can_storage };
+PedalPersistData pedal_persist_data = { 0 };
+PersistStorage persist_storage = { 0 };
+
+FrontControllerStorage front_controller_storage = {
+  .ws22_motor_can_storage = &motor_can_storage,
+  .persist_storage = &persist_storage,
+  .pedal_persist_data = &pedal_persist_data,
+};
 
 FrontControllerConfig front_controller_config = {
   .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
@@ -63,6 +72,8 @@ void pre_loop_init() {
 void run_1000hz_cycle() {
   run_can_rx_all();
   adc_run();
+
+  pedal_calib_handler_run(&front_controller_storage);
 
   accel_pedal_run();
   brake_pedal_run();

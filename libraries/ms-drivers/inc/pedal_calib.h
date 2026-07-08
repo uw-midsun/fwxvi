@@ -25,7 +25,9 @@
  */
 
 /** @brief The number of data samples we should take when calibrating the pedal */
-#define NUM_SAMPLES 1000
+#define NUM_SAMPLES_ONE_SHOT 1000U
+
+#define NUM_SAMPLES_SINGLE_READ 100U
 
 /**
  * @brief Stores the possible pedal states that the pedal could be in
@@ -52,6 +54,8 @@ typedef struct PedalCalibrationStorage {
 
 /** @brief A global struct that stores the throttle pedal and calibration data */
 extern PedalCalibBlob global_calib_blob;
+
+StatusCode pedal_calib_sample_single(PedalCalibrationStorage *calib_storage, PedalCalibrationData *data, PedalState state, GpioAddress *address, bool first_sample);
 
 /**
  * @brief Reads data from ADC and calculates appropriate pedal calibration values
