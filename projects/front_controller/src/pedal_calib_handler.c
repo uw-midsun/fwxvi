@@ -30,6 +30,7 @@
 #include "front_controller.h"
 #include "front_controller_hw_defs.h"
 #include "pedal_calib_handler.h"
+#include "pedal_calib_reader.h"
 
 /**
  * @brief State machine for pedal calibration
@@ -38,13 +39,16 @@ typedef struct {
   bool active;
   PedalCalibStatus current_step;
   uint32_t step_start_time_ms;
-  PedalCalibrationStorage calib_storage;
-  PedalPersistData pedal_persist_data;
-  PersistStorage persist_storage;
+  PedalCalibrationStorage calib_storage; /**< Transient scratch storage for sampling */
+  FrontControllerStorage *storage;       /**< Pointer to the shared front controller storage */
+  PedalPersistData *pedal_persist_data;  /**< Pointer to the shared pedal persist data in front controller storage */
+  PersistStorage *persist_storage;       /**< Pointer to the shared persist storage (initialized by pedal_calib_reader) */
 } PedalCalibrationState;
 
-static PedalCalibrationState s_calib_state = { 0 };
+static PedalCalibrationState s_calib_state_storage;
+static PedalCalibrationState *s_calib_state = &s_calib_state_storage;
 static bool command_active = false;
+static bool calib_running = false;
 
 /**
  * @brief   Get current time in milliseconds
@@ -80,95 +84,145 @@ static StatusCode s_send_calib_status(PedalCalibStatus status) {
 static StatusCode s_execute_calib_step(void) {
   uint32_t elapsed_time = s_get_current_time_ms();  // Get current time
 
-  switch (s_calib_state.current_step) {
+  switch (s_calib_state->current_step) {
     case PEDAL_CALIB_STATUS_IDLE:
-      adc_add_channel(&s_accel_pedal_gpio_raw);
-      s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED;
-      s_calib_state.step_start_time_ms = s_get_current_time_ms();
+      s_calib_state->current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED;
+      s_calib_state->step_start_time_ms = s_get_current_time_ms();
       s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED);
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_RAW_UNPRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling accel pedal raw (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
-        s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED;
-        s_calib_state.step_start_time_ms = s_get_current_time_ms();
-        s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED);
+      if ((s_get_current_time_ms() - s_calib_state->step_start_time_ms) >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_raw, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw, true);
+          calib_running = true;
+        } else {
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_raw, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw, false) ==
+              STATUS_CODE_OK) {
+            s_calib_state->current_step = PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED;
+            s_calib_state->step_start_time_ms = s_get_current_time_ms();
+            s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED);
+            calib_running = false;
+          }
+        }
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_RAW_PRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling accel pedal raw (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_raw, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw);
+      if (s_get_current_time_ms() - s_calib_state->step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_raw, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw, true);
+          calib_running = true;
+        } else {
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_raw, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_raw, false) ==
+              STATUS_CODE_OK) {
+            // Setup OPAMP for next phase
+            uint16_t min_raw_reading = (s_calib_state->pedal_persist_data->accel_pedal_data_raw.lower_value < s_calib_state->pedal_persist_data->accel_pedal_data_raw.upper_value)
+                                           ? s_calib_state->pedal_persist_data->accel_pedal_data_raw.lower_value
+                                           : s_calib_state->pedal_persist_data->accel_pedal_data_raw.upper_value;
 
-        // Setup OPAMP for next phase
-        uint16_t min_raw_reading = (s_calib_state.pedal_persist_data.accel_pedal_data_raw.lower_value < s_calib_state.pedal_persist_data.accel_pedal_data_raw.upper_value)
-                                       ? s_calib_state.pedal_persist_data.accel_pedal_data_raw.lower_value
-                                       : s_calib_state.pedal_persist_data.accel_pedal_data_raw.upper_value;
+            LOG_DEBUG("Setting MIN raw reading: %u\r\n", min_raw_reading);
 
-        LOG_DEBUG("Setting MIN raw reading: %u\r\n", min_raw_reading);
+            dac_enable_channel(PEDAL_CALIB_DAC_CHANNEL);
+            dac_set_voltage(PEDAL_CALIB_DAC_CHANNEL, min_raw_reading);
 
-        dac_enable_channel(PEDAL_CALIB_DAC_CHANNEL);
-        dac_set_voltage(PEDAL_CALIB_DAC_CHANNEL, min_raw_reading);
+            OpampConfig config = { .vinp_sel = OPAMP_NONINVERTING_IO0, .vinm_sel = OPAMP_INVERTING_IO0, .output_to_adc = true };
 
-        OpampConfig config = { .vinp_sel = OPAMP_NONINVERTING_IO0, .vinm_sel = OPAMP_INVERTING_IO0, .output_to_adc = true };
+            opamp_configure(PEDAL_CALIB_OPAMP, &config);
+            opamp_start(PEDAL_CALIB_OPAMP);
 
-        opamp_configure(PEDAL_CALIB_OPAMP, &config);
-        opamp_start(PEDAL_CALIB_OPAMP);
-
-        s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED;
-        s_calib_state.step_start_time_ms = s_get_current_time_ms();
-        s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED);
+            s_calib_state->current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED;
+            s_calib_state->step_start_time_ms = s_get_current_time_ms();
+            s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED);
+            calib_running = false;
+          }
+        }
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_AMP_UNPRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling accel pedal amplified (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
-        s_calib_state.current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED;
-        s_calib_state.step_start_time_ms = s_get_current_time_ms();
-        s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED);
+      if (s_get_current_time_ms() - s_calib_state->step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_amplified, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp, true);
+          calib_running = true;
+        } else {
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_amplified, PEDAL_UNPRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp,
+                                        false) == STATUS_CODE_OK) {
+            s_calib_state->current_step = PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED;
+            s_calib_state->step_start_time_ms = s_get_current_time_ms();
+            s_send_calib_status(PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED);
+            calib_running = false;
+          }
+        }
       }
       break;
 
     case PEDAL_CALIB_STATUS_ACCEL_AMP_PRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling accel pedal amplified (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.accel_pedal_data_amplified, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp);
-        s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_UNPRESSED;
-        s_calib_state.step_start_time_ms = s_get_current_time_ms();
-        s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_UNPRESSED);
+      if (s_get_current_time_ms() - s_calib_state->step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_amplified, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp, true);
+          calib_running = true;
+        } else {
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->accel_pedal_data_amplified, PEDAL_PRESSED, (GpioAddress *)&s_accel_pedal_gpio_opamp,
+                                        false) == STATUS_CODE_OK) {
+            s_calib_state->current_step = PEDAL_CALIB_STATUS_BRAKE_UNPRESSED;
+            s_calib_state->step_start_time_ms = s_get_current_time_ms();
+            s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_UNPRESSED);
+            calib_running = false;
+          }
+        }
       }
       break;
 
     case PEDAL_CALIB_STATUS_BRAKE_UNPRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling brake pedal (unpressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio);
-        s_calib_state.current_step = PEDAL_CALIB_STATUS_BRAKE_PRESSED;
-        s_calib_state.step_start_time_ms = s_get_current_time_ms();
-        s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_PRESSED);
+      if (s_get_current_time_ms() - s_calib_state->step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->brake_pedal_data, PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio, true);
+          calib_running = true;
+        } else {
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->brake_pedal_data, PEDAL_UNPRESSED, (GpioAddress *)&s_brake_pedal_gpio, false) ==
+              STATUS_CODE_OK) {
+            s_calib_state->current_step = PEDAL_CALIB_STATUS_BRAKE_PRESSED;
+            s_calib_state->step_start_time_ms = s_get_current_time_ms();
+            s_send_calib_status(PEDAL_CALIB_STATUS_BRAKE_PRESSED);
+            calib_running = false;
+          }
+        }
       }
       break;
 
     case PEDAL_CALIB_STATUS_BRAKE_PRESSED:
-      if (s_get_current_time_ms() - s_calib_state.step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
-        LOG_DEBUG("Sampling brake pedal (pressed)\r\n");
-        pedal_calib_sample(&s_calib_state.calib_storage, &s_calib_state.pedal_persist_data.brake_pedal_data, PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio);
-
-        // Commit to persist storage
-        StatusCode status = persist_commit(&s_calib_state.persist_storage);
-        if (status != STATUS_CODE_OK) {
-          LOG_DEBUG("persist_commit() failed with status %u\r\n", status);
-          s_calib_state.current_step = PEDAL_CALIB_STATUS_ERROR;
-          s_send_calib_status(PEDAL_CALIB_STATUS_ERROR);
+      if (s_get_current_time_ms() - s_calib_state->step_start_time_ms >= DELAY_BEFORE_SAMPLING_MS) {
+        if (!calib_running) {
+          pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->brake_pedal_data, PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio, true);
+          calib_running = true;
         } else {
-          LOG_DEBUG("Pedal calibration complete!\r\n");
-          s_calib_state.current_step = PEDAL_CALIB_STATUS_COMPLETE;
-          s_send_calib_status(PEDAL_CALIB_STATUS_COMPLETE);
+          if (pedal_calib_sample_single(&s_calib_state->calib_storage, &s_calib_state->pedal_persist_data->brake_pedal_data, PEDAL_PRESSED, (GpioAddress *)&s_brake_pedal_gpio, false) ==
+              STATUS_CODE_OK) {
+            calib_running = false;
+
+            /* A calibration replaces the stored data wholesale. STM32L4 flash cannot be
+             * reprogrammed without erasing, so erase the persist page and re-initialize with
+             * overwrite=true, which commits the freshly-sampled blob into clean flash.
+             * This mirrors the standalone pedal_calib project's flash_erase + persist_init flow. */
+            PersistStorage *persist = s_calib_state->persist_storage;
+            StatusCode status = flash_erase(persist->page, 1U);
+            if (status == STATUS_CODE_OK) {
+              status = persist_init(persist, persist->page, s_calib_state->pedal_persist_data, sizeof(*s_calib_state->pedal_persist_data), true);
+            }
+            LOG_DEBUG("persist save %u\r\n", status);
+            delay_ms(10U);
+            if (status != STATUS_CODE_OK) {
+              s_calib_state->current_step = PEDAL_CALIB_STATUS_ERROR;
+              s_send_calib_status(PEDAL_CALIB_STATUS_ERROR);
+            } else {
+              /* Re-apply the freshly-sampled calibration so it takes effect without a reboot */
+              pedal_calib_apply(s_calib_state->storage);
+              // LOG_DEBUG("Pedal calibration complete!\r\n");
+              s_calib_state->current_step = PEDAL_CALIB_STATUS_COMPLETE;
+              s_send_calib_status(PEDAL_CALIB_STATUS_COMPLETE);
+            }
+          }
         }
       }
       break;
@@ -186,14 +240,18 @@ static StatusCode s_execute_calib_step(void) {
 }
 
 StatusCode pedal_calib_handler_init(FrontControllerStorage *storage) {
-  if (storage == NULL) {
+  if (storage == NULL || storage->persist_storage == NULL || storage->pedal_persist_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  s_calib_state.active = false;
-  s_calib_state.current_step = PEDAL_CALIB_STATUS_IDLE;
-  s_calib_state.calib_storage = (PedalCalibrationStorage){ 0 };
-  s_calib_state.pedal_persist_data = (PedalPersistData){ 0 };
+  s_calib_state->active = false;
+  s_calib_state->current_step = PEDAL_CALIB_STATUS_IDLE;
+  s_calib_state->calib_storage = (PedalCalibrationStorage){ 0 };
+
+  /* Point at the single shared persist instances owned by main.c (initialized by pedal_calib_reader) */
+  s_calib_state->storage = storage;
+  s_calib_state->pedal_persist_data = storage->pedal_persist_data;
+  s_calib_state->persist_storage = storage->persist_storage;
 
   return STATUS_CODE_OK;
 }
@@ -204,9 +262,9 @@ StatusCode pedal_calib_handler_start(FrontControllerStorage *storage) {
   }
 
   // Activate the calibration state machine
-  if (!s_calib_state.active) {
-    s_calib_state.active = true;
-    s_calib_state.current_step = PEDAL_CALIB_STATUS_IDLE;
+  if (!s_calib_state->active) {
+    s_calib_state->active = true;
+    s_calib_state->current_step = PEDAL_CALIB_STATUS_IDLE;
     LOG_DEBUG("Pedal calibration started\r\n");
   }
 
@@ -214,7 +272,7 @@ StatusCode pedal_calib_handler_start(FrontControllerStorage *storage) {
 }
 
 StatusCode pedal_calib_handler_run(FrontControllerStorage *storage) {
-  LOG_DEBUG("%d | %d\r\n", command_active, get_pedal_calib_request_command());
+  // LOG_DEBUG("%d | %d\r\n", command_active, get_pedal_calib_request_command());
 
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -222,7 +280,7 @@ StatusCode pedal_calib_handler_run(FrontControllerStorage *storage) {
 
   command_active = get_pedal_calib_request_command() != 0;
 
-  if (!s_calib_state.active) {
+  if (!s_calib_state->active) {
     if (command_active) {
       status_ok_or_return(pedal_calib_handler_start(storage));
     }
@@ -230,13 +288,14 @@ StatusCode pedal_calib_handler_run(FrontControllerStorage *storage) {
   }
 
   // Allow re-run after completion once steering clears the command
-  if (!command_active && (s_calib_state.current_step == PEDAL_CALIB_STATUS_COMPLETE || s_calib_state.current_step == PEDAL_CALIB_STATUS_ERROR)) {
-    LOG_DEBUG("Resetting\r\n");
-    s_calib_state.active = false;
-    s_calib_state.current_step = PEDAL_CALIB_STATUS_IDLE;
+  if (!command_active && (s_calib_state->current_step == PEDAL_CALIB_STATUS_COMPLETE || s_calib_state->current_step == PEDAL_CALIB_STATUS_ERROR)) {
+    LOG_DEBUG("Resetting %d\r\n", s_calib_state->current_step);
+    s_calib_state->active = false;
+    s_calib_state->current_step = PEDAL_CALIB_STATUS_IDLE;
+    s_send_calib_status(PEDAL_CALIB_STATUS_IDLE);
     return STATUS_CODE_OK;
   }
-  
-  LOG_DEBUG("executing step\r\n");
+
+  // LOG_DEBUG("executing step\r\n");
   return s_execute_calib_step();
 }

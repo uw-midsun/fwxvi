@@ -22,7 +22,8 @@
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
 
-static GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
+static const GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
+static const GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
 
 static FrontControllerStorage *front_controller_storage;
 
@@ -106,6 +107,7 @@ StatusCode accel_pedal_init(FrontControllerStorage *storage) {
 
 StatusCode accel_pedal_start() {
   /* Initialize hardware */
+  adc_add_channel(&s_accel_pedal_gpio_raw);
   adc_add_channel(&s_accel_pedal_gpio_opamp_out);
 
   dac_enable_channel(FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_VREF_DAC);

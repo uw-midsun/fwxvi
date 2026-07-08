@@ -16,6 +16,7 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
+#include "persist.h"
 #include "tasks.h"
 
 /* Intra-component Headers */
@@ -31,7 +32,14 @@
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
 
-FrontControllerStorage front_controller_storage = { .ws22_motor_can_storage = &motor_can_storage };
+PedalPersistData pedal_persist_data = { 0 };
+PersistStorage persist_storage = { 0 };
+
+FrontControllerStorage front_controller_storage = {
+  .ws22_motor_can_storage = &motor_can_storage,
+  .persist_storage = &persist_storage,
+  .pedal_persist_data = &pedal_persist_data,
+};
 
 FrontControllerConfig front_controller_config = {
   .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
