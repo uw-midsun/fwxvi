@@ -12,7 +12,6 @@
 /* Inter-component Headers */
 #include "current_sense.h"
 
-#include "current_acs37800.h"
 #include "global_enums.h"
 #include "status.h"
 
@@ -24,10 +23,191 @@
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
-static float csense_prev_current_A;
-static float csense_prev_voltage_mV;
+#define CSENSE_FAULTS_ENABLED 0U
+
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
+
+#if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
+
+typedef enum {
+  CSENSE_HV_BUS,
+  CSENSE_SHUNT,
+} CsenseStates;
+
+static RearControllerStorage *rear_controller_storage;
+/*FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5, mux_config_shunt -> AIN6 and AIN7, mux_config_hv -> AIN0 and AIN1*/
+static CurrentSenseConfigs current_sense_configs = {
+  .fsr = 5, .mux_config_shunt = 0x67, .mux_config_hv = 0x01, .shunt_resistance_ohm = 0.0005, .resistance_R6_ohm = 1000000U, .resistance_R7_ohm = 20000U
+};
+static CsenseStates csense_state = CSENSE_HV_BUS;
+
+static uint8_t register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
+                                  ADS122_REG_DATA_RATE_CFG_DEFAULT,
+                                  (ADS122_REG_MUX_CFG_DEFAULT | 0x01),        // reads voltage first
+                                  ADS122_REG_GAIN_CFG_DEFAULT,                // Gain is 0.5
+                                  (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04),  // Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
+                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
+                                  ADS122_REG_GPIO_CFG_DEFAULT,
+                                  ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
+                                  ADS122_REG_IDAC_MAG_CFG_DEFAULT,
+                                  ADS122_REG_IDAC_MUX_CFG_DEFAULT,
+                                  ADS122_REG_REG_MAP_CRC_DEFAULT };
+
+StatusCode current_sense_init(RearControllerStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  rear_controller_storage = storage;
+
+  I2CSettings i2c_settings = { .speed = I2C_SPEED_FAST, .sda = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO, .scl = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO };
+
+  status_ok_or_return(ads122_init(&storage->ads122_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR, register_map, &i2c_settings));
+
+  return STATUS_CODE_OK;
+}
+
+/* returns STATUS_CODE_RESOURCE_EXHAUSTED when data is ready*/
+/* returns STATUS_CODE_OK when data is returned, but data is not ready*/
+static StatusCode csense_interpret_data(float *output_voltage) {
+  bool negative = false; /* is the value negative or positive*/
+  bool data_ready;
+  uint8_t cs_conversion_data_raw[5];
+  uint32_t cs_conversion_data;
+  static uint32_t csense_retries; /* number of times i2c has failed*/
+
+  StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw);
+
+  if (status != STATUS_CODE_OK) {
+    if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
+      csense_retries++;
+      return STATUS_CODE_INTERNAL_ERROR;
+    } else {
+#if (CSENSE_FAULTS_ENABLED == 1)
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
+      return status;
+    }
+  }
+
+  // If Status_MSB DRDY pin (0) is 1 -> data is ready
+  data_ready = cs_conversion_data_raw[0] & 0x01;
+
+  if (data_ready) {
+    // uses binary two's complements
+    negative = cs_conversion_data_raw[2] & 0x80;
+
+    cs_conversion_data = ((uint32_t)cs_conversion_data_raw[2] << 16) | ((uint32_t)cs_conversion_data_raw[3] << 8) | ((uint32_t)cs_conversion_data_raw[4]);  // change to right values
+
+    cs_conversion_data = cs_conversion_data & 0xFFFFFF;
+
+    /*Anything in the 4.9 V range is already in over-voltage, therefore the need for as precicse accuracy is negligible at that point*/
+    if ((cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001 || cs_conversion_data == 0x7FFFFF)) {
+      *output_voltage = current_sense_configs.fsr;
+    } else {
+      if (negative) {
+        cs_conversion_data = ~cs_conversion_data;
+        cs_conversion_data++;
+        cs_conversion_data = cs_conversion_data & 0xFFFFFF;
+      }
+      *output_voltage = (float)(cs_conversion_data * current_sense_configs.fsr) / (float)(1 << 23);
+    }
+
+    if (negative) {
+      *output_voltage *= -1;
+    }
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode current_sense_run() {
+  StatusCode status;
+  static uint32_t csense_retries;
+  float csense_voltage_diff_V; /* voltage differential measured by ADC*/
+
+  status = csense_interpret_data(&csense_voltage_diff_V);
+
+  if (status != STATUS_CODE_OK || status != STATUS_CODE_RESOURCE_EXHAUSTED) {
+    if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
+      csense_retries++;
+      return STATUS_CODE_OK;
+    } else {
+#if (CSENSE_FAULTS_ENABLED == 1)
+      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
+      return STATUS_CODE_OK;
+    }
+  } else if (status == STATUS_CODE_RESOURCE_EXHAUSTED) {
+    switch (csense_state) {
+      /* Current*/
+      case CSENSE_SHUNT:
+        static float csense_current_A; /* current through battery in A*/
+
+        /* change the state to HV_BUS*/
+        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_hv));
+        status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
+        csense_state = CSENSE_HV_BUS;
+
+        /* Calculate current */
+        csense_current_A = (float)csense_voltage_diff_V / (float)current_sense_configs.shunt_resistance_ohm;
+
+        if (csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A) {
+          csense_overcurrents++;
+          if (csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
+#if (CSENSE_FAULTS_ENABLED == 1)
+            BpsFaultData oc_data = { .current = { .current_a = csense_current_A } };
+            trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
+#endif
+          }
+        } else {
+          csense_overcurrents = 0;
+        }
+
+        /* Update rear_controller_storage with current in amps*/
+        rear_controller_storage->pack_current = (csense_current_A);
+        set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
+
+        break;
+      /*Voltage*/
+      case CSENSE_HV_BUS:
+        static float csense_HV_voltage_V; /* Voltage from HV_BUS in V */
+
+        /* Change the state to current shunt*/
+        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_shunt));
+        status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
+        csense_state = CSENSE_SHUNT;
+
+        /* Calculate HV voltage */
+        csense_HV_voltage_V = csense_voltage_diff_V * (current_sense_configs.resistance_R6_ohm + current_sense_configs.resistance_R7_ohm) / current_sense_configs.resistance_R7_ohm;
+
+        if (csense_HV_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
+          csense_overvoltages++;
+          if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+#if (CSENSE_FAULTS_ENABLED == 1)
+            trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+#endif
+          }
+        } else {
+          csense_overvoltages = 0;
+        }
+
+        /* Update rear_controller_storage with voltage in volts*/
+        rear_controller_storage->pack_voltage = (csense_HV_voltage_V);
+        set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
+
+        break;
+    }
+  }
+
+  return STATUS_CODE_OK;
+}
+
+#else
+static float csense_prev_current_A;
+static float csense_prev_voltage_mV;
 static int32_t csense_retries;
 
 static RearControllerStorage *rear_controller_storage;
@@ -49,7 +229,9 @@ StatusCode current_sense_run() {
       csense_retries++;
       return STATUS_CODE_OK;
     } else {
+#if (CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
       return STATUS_CODE_OK;
     }
   }
@@ -61,8 +243,9 @@ StatusCode current_sense_run() {
   if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {
     csense_overcurrents++;
     if (csense_overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
-      BpsFaultData oc_data = { .current = { .current_a = current_A } };
-      trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
+#if (CSENSE_FAULTS_ENABLED == 1)
+      trigger_bps_fault(BPS_FAULT_OVERCURRENT);
+#endif
     }
   } else {
     csense_overcurrents = 0;
@@ -76,7 +259,9 @@ StatusCode current_sense_run() {
       csense_retries++;
       return STATUS_CODE_OK;
     } else {
+#if (CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+#endif
       return STATUS_CODE_OK;
     }
   }
@@ -88,15 +273,17 @@ StatusCode current_sense_run() {
   if (voltage_mV > PACK_OVERVOLTAGE_LIMIT_mV) {
     csense_overvoltages++;
     if (csense_overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+#if (CSENSE_FAULTS_ENABLED == 1)
       trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
+#endif
     }
   } else {
     csense_overvoltages = 0;
   }
 
-  /* Store current and voltage in amps and volts respectively */
-  rear_controller_storage->pack_current = current_A;
-  rear_controller_storage->pack_voltage = voltage_reading_mV / 1000.0f;
+  /* Store current and voltage in A and V respectively */
+  rear_controller_storage->pack_current = (current_A);
+  rear_controller_storage->pack_voltage = (voltage_reading_mV / 1000.0f);
 
   set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
   set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
@@ -118,3 +305,4 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
 
   return STATUS_CODE_OK;
 }
+#endif

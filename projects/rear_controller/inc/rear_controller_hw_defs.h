@@ -107,6 +107,9 @@
 /** @brief  Current sense slave address */
 #define REAR_CONTROLLER_CURRENT_SENSE_ACS37800_I2C_ADDR (96)
 
+/** @brief  Current sense slave address */
+#define REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR (64)
+
 /************************************************************************************************
  * Hydrogen sensor definitions
  ************************************************************************************************/
