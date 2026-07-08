@@ -1,4 +1,4 @@
-from scons.common import parse_config, flash_run
+from scons.common import parse_config, flash_run, ms_bootloader_dirs
 import subprocess
 from pathlib import Path
 
@@ -33,6 +33,16 @@ def get_smoke_entries():
         entries.append(ROOT.Dir(str(rel_dir)))
     return entries
 
+
+def get_test_files(entry):
+    # ms-bootloader keeps tests in each layer (common/test, bootloader/test, ...)
+    if entry.path == LIB_DIR.Dir('ms-bootloader').path:
+        files = []
+        for layer in ms_bootloader_dirs(LIB_DIR, PLATFORM):
+            files += layer.glob('test/*.c')
+        return files
+    return entry.glob('test/*.c')
+
 ###########################################################
 # Create appropriate test targets, (when lib/proj target is defined)
 ###########################################################
@@ -55,7 +65,7 @@ def add_test_targets(target, source, env):
     sources_no_main = list(filter(lambda f: f.name != "main.o", source))
 
     # create target for every test
-    for test_file in entry.glob('test/*.c'):
+    for test_file in get_test_files(entry):
         test_module_name = Path(test_file.path).stem
 
         mocks = config.get("mocks", {}).get(test_module_name, [])
@@ -122,7 +132,7 @@ env.Append(LIBEMITTER=add_test_targets)
 # generate all test target names
 all_tests = []
 for entry in PROJ_DIR.glob('*') + LIB_DIR.glob('*') + get_smoke_entries():
-    for test_file in entry.glob('test/*.c'):
+    for test_file in get_test_files(entry):
         test_module_name = Path(test_file.path).stem
         all_tests.append(f"test/{entry.path}/{test_module_name}")
 

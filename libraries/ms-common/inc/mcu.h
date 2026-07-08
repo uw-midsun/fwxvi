@@ -28,6 +28,13 @@
 #define USE_INTERNAL_OSCILLATOR 1U
 
 /**
+ * @brief   Configure the system clock (PLL to 80 MHz, flash latency, bus dividers)
+ * @details Standalone from mcu_init so a minimal client (for example the bootloader) can bring the
+ *          clock up after HAL_Init without pulling in GPIO and printf retargeting
+ */
+StatusCode mcu_clock_init(void);
+
+/**
  * @brief   Initialize MCU system clock and HAL.
  * @details Call this function once at the start of your application.
  */

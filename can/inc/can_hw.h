@@ -123,6 +123,21 @@ CanHwBusStatus can_hw_bus_status(void);
 StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint8_t len);
 
 /**
+ * @brief   Transmits one CAN frame without blocking, safe to call from an ISR
+ * @details Loads a free TX mailbox if one is available and never waits on the TX semaphore, so
+ *          it is safe from the receive interrupt, drops the frame when every mailbox is busy,
+ *          intended for best effort traffic such as the bootloader probe reply
+ * @param   id CAN message ID
+ * @param   extended Boolean to use CAN extended ID feature
+ * @param   data Pointer to the data to transmit
+ * @param   len Size of the data to transfer
+ * @return  STATUS_CODE_OK if the frame was queued
+ *          STATUS_CODE_RESOURCE_EXHAUSTED if no mailbox was free
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode can_hw_transmit_nonblocking(uint32_t id, bool extended, const uint8_t *data, uint8_t len);
+
+/**
  * @brief   Receives CAN data from the bus
  * @param   id Pointer to store the CAN ID received
  * @param   extended Pointer to a flag to indicate CAN extended ID feature

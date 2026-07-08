@@ -24,6 +24,10 @@
 #include "ws22_motor_can.h"
 #include "xb_transmit.h"
 
+#ifdef MS_PLATFORM_ARM
+#include "bl_entry_shim.h"
+#endif
+
 #define LOG_DEBUG_SUMMARY 0
 #define TELEMETRY_ENABLE_WS22 1U
 
@@ -308,6 +312,20 @@ TASK(can_cache_summary, TASK_STACK_512) {
 }
 #endif
 
+#ifdef MS_PLATFORM_ARM
+/* Forward XBee bytes to the bootloader entry shim so a host can drop us into the bootloader */
+TASK(xbee_bl_listener, TASK_STACK_512) {
+  uint8_t buf[32];
+  while (true) {
+    size_t n = uart_get_rx_bytes(s_telemetry_storage->config->uart_port, buf, sizeof(buf));
+    for (size_t i = 0U; i < n; i++) {
+      bl_entry_shim_feed(buf[i]);
+    }
+    vTaskDelay(pdMS_TO_TICKS(5));
+  }
+}
+#endif
+
 StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) {
   if (storage == NULL || config == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -317,6 +335,9 @@ StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) 
   s_telemetry_storage->config = config;
   tasks_init_task(can_cache_updater, TASK_PRIORITY(2), NULL);
   tasks_init_task(can_cache_scheduler, TASK_PRIORITY(2), NULL);
+#ifdef MS_PLATFORM_ARM
+  tasks_init_task(xbee_bl_listener, TASK_PRIORITY(1), NULL);
+#endif
 #if (LOG_DEBUG_SUMMARY == 1)
   tasks_init_task(can_cache_summary, TASK_PRIORITY(1), NULL);
 #endif

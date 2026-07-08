@@ -1,0 +1,27 @@
+# Board definition for the STM32L496RGT6 (1M flash, 320K RAM)
+# device_params.cfg, bootloader_user_config.h, and can_bl_entry.h
+
+name = "STM32L496RGT6"
+
+[flash]
+base        = 0x08000000
+size_kb     = 1024
+page_size_b = 2048
+
+[regions]
+bootstrap_kb  = 8
+bootloader_kb = 32
+# app and config are derived: app = everything left over, config = one page at the end
+
+[sram]
+base    = 0x20000000
+size_kb = 320
+
+[can]
+bitrate_kbps = 500
+enter_id     = 0x010
+xfer_id_base = 0x100
+node_id      = 0
+
+[identity]
+board_name = "STM32L496RGT6"

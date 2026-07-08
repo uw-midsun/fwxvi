@@ -34,7 +34,6 @@
 #define FLASH_BASE_ADDR (0x08000000U)
 
 #ifndef FLASH_PAGE_SIZE
-/** @brief  Flash page size is 2Kbyte as per table 63. in STM32L433xx datasheet */
 #define FLASH_PAGE_SIZE 0x800U
 #endif
 
@@ -52,6 +51,33 @@
 
 /** @brief  Last flash page number in the STM32L433CCU6 */
 #define FLASH_LAST_PAGE_NUM (NUM_FLASH_PAGES - 1U)
+
+/**
+ * @brief  Application region bounds from the linker map
+ * @details Defined by the generated map only when an app is built to run under the bootloader,
+ *          declared weak so a standalone or legacy build, where the map omits them, links with the
+ *          addresses resolving to zero instead of failing
+ */
+extern uint32_t _app_start __attribute__((weak));
+extern uint32_t _app_size __attribute__((weak));
+
+/**
+ * @brief   Highest flash page an application may use for persistent storage
+ * @details The bootloader reserves the pages above the app region for its BootConfig, so an app
+ *          running under it must keep its storage inside the app region, one page below where the
+ *          reserved region begins, the page is derived from the linker geometry at runtime, so
+ *          there is one source of truth and no build time flag, a standalone or legacy app (no app
+ *          region symbols) owns the whole flash and uses the chip's last page
+ * @return  Page number to hand to persist_init or flash_erase for application storage
+ */
+static inline uint8_t flash_app_storage_page(void) {
+  uintptr_t app_start = (uintptr_t)&_app_start;
+  uintptr_t app_size = (uintptr_t)&_app_size;
+  if (app_size != 0U) {
+    return (uint8_t)(FLASH_ADDR_TO_PAGE(app_start + app_size) - 1U);
+  }
+  return FLASH_LAST_PAGE_NUM;
+}
 
 /**
  * @brief   Initialize flash API

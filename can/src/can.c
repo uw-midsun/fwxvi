@@ -19,6 +19,7 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "bl_responder.h"
 #include "can.h"
 #include "can_hw.h"
 #include "can_watchdog.h"
@@ -168,6 +169,10 @@ StatusCode run_can_tx_slow() {
 }
 
 StatusCode run_can_rx_all() {
+  /* Pace out any pending bootloader discovery reply from task context, outside the rx lock so a
+     multi frame QUERY_RESPONSE waiting on a transmit mailbox never stalls rx processing */
+  bl_responder_poll();
+
   if (xSemaphoreTake(s_can_rx_handle, pdMS_TO_TICKS(CAN_TIMEOUT_MS)) != pdTRUE) {
     return STATUS_CODE_TIMEOUT;
   }

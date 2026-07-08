@@ -18,6 +18,7 @@ MEMORY
   APP_ACTIVE   (rx)  : ORIGIN = 0x08000000, LENGTH = 1M
   APP_STAGING  (rx)  : ORIGIN = 0x08000000, LENGTH = 0
   FS_STORAGE   (rx)  : ORIGIN = 0x08000000, LENGTH = 0
+  CONFIG       (rw)  : ORIGIN = 0x08000000, LENGTH = 0
   RAM          (rwx) : ORIGIN = 0x20000000, LENGTH = 320K
 }
 
@@ -39,6 +40,9 @@ _app_staging_size      = LENGTH(APP_STAGING);
 
 _fs_storage_start      = ORIGIN(FS_STORAGE);
 _fs_storage_size       = LENGTH(FS_STORAGE);
+
+_config_start          = ORIGIN(CONFIG);
+_config_size           = LENGTH(CONFIG);
 
 /* RAM info */
 _vector_table_size     = 0x14C;

@@ -5,7 +5,7 @@
     ],
     "arm_libs": [
         "CMSIS",
-        "HAL",
+        "HAL", 
         "core"
     ],
     "include": [

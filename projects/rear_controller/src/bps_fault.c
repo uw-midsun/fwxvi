@@ -18,8 +18,6 @@
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
-#define LAST_PAGE (NUM_FLASH_PAGES - 1)
-
 static PersistStorage persist_storage;
 static RearControllerStorage *rear_controller_storage = NULL;
 
@@ -40,7 +38,7 @@ StatusCode bps_fault_init(RearControllerStorage *storage) {
   rear_controller_storage->bps_fault_cell = 0U;
 
   // TODO: Uncomment this when ready to test BPS faults
-  // status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
+  status_ok_or_return(persist_init(&persist_storage, flash_app_storage_page(), &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
 
   /* If a fault was latched before power-down, broadcast it on the first medium cycle so the
    * front controller blinks the BPS light on startup until drive state is entered */
