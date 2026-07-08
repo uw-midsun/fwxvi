@@ -68,7 +68,7 @@ StatusCode steering_pedal_calib_init(SteeringStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  
+
   set_pedal_calib_request_command(0);
 
   s_calib_state.active = false;
