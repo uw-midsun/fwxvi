@@ -229,7 +229,7 @@
 #define ADS122_REG_REG_MAP_CRC_DEFAULT ((uint8_t)0x00)
 
 /*All registers of ADS122*/
-typedef enum : uint8_t {
+typedef enum {
   ADS122_REG_DEVICE_ID = 0b00000000,
   ADS122_REG_REVISION_ID = 0b00000001,
   ADS122_REG_STATUS_MSB = 0b00000010,
@@ -249,7 +249,7 @@ typedef enum : uint8_t {
 } ADS122C14ITER_Register;
 
 /*Commands*/
-typedef enum : uint8_t {
+typedef enum {
   ADS122_WRITE_COMMAND = 0b10000000,
   ADS122_READ_COMMAND = 0b01000000,
   ADS122_READ_CONVERSION_COMMAND = 0b00000000,
