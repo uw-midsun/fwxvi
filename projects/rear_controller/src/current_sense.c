@@ -24,34 +24,30 @@
 #include "rear_controller_state_manager.h"
 
 #define CSENSE_FAULTS_ENABLED 0U
-#define IS_USING_CURRENT_SENSE_REV_3 1U
 
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
 
 #if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
 
-/* FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5*/
-#define CSENSE_FSR 5
-#define CSENSE_AIN6_AIN7_MUX_CFG 0x67  /*shunt inputs*/
-#define CSENSE_AIN0_AIN1_MUX_CDF 0x01  /*HV_BUS and BAT_GND*/
-#define CSENSE_SHUNT_RESISTANCE 0.0005 /* shunt resistance in ohm*/
-
 typedef enum {
   CSENSE_HV_BUS,
   CSENSE_SHUNT,
-} Csense_configs;
+} CsenseStates;
 
 static RearControllerStorage *rear_controller_storage;
-static bool data_ready = false; /* true = data is ready to be read, false = data is not ready*/
-static Csense_configs csense_state = CSENSE_HV_BUS;
+/*FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5, mux_config_shunt -> AIN6 and AIN7, mux_config_hv -> AIN0 and AIN1*/
+static CurrentSenseConfigs current_sense_configs = {
+  .fsr = 5, .mux_config_shunt = 0x67, .mux_config_hv = 0x01, .shunt_resistance_ohm = 0.0005, .resistance_R6_ohm = 1000000U, .resistance_R7_ohm = 20000U
+};
+static CsenseStates csense_state = CSENSE_HV_BUS;
 
 static uint8_t register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
-                                  (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_AIN0_AIN1_MUX_CDF),  // reads voltage first
-                                  ADS122_REG_GAIN_CFG_DEFAULT,                              // Gain is 0.5
-                                  (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04),                // Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
-                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),                  /* TODO: CHANGE BACK*/
+                                  (ADS122_REG_MUX_CFG_DEFAULT | 0x01),        // reads voltage first
+                                  ADS122_REG_GAIN_CFG_DEFAULT,                // Gain is 0.5
+                                  (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04),  // Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
+                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
                                   ADS122_REG_GPIO_CFG_DEFAULT,
                                   ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                   ADS122_REG_IDAC_MAG_CFG_DEFAULT,
@@ -75,10 +71,10 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
 /* returns STATUS_CODE_RESOURCE_EXHAUSTED when data is ready*/
 /* returns STATUS_CODE_OK when data is returned, but data is not ready*/
 static StatusCode csense_interpret_data(float *output_voltage) {
-  static bool negative = false; /* is the value negative or positive*/
-  static bool data_ready;
-  static uint8_t cs_conversion_data_raw[5];
-  static uint32_t cs_conversion_data;
+  bool negative = false; /* is the value negative or positive*/
+  bool data_ready;
+  uint8_t cs_conversion_data_raw[5];
+  uint32_t cs_conversion_data;
   static uint32_t csense_retries; /* number of times i2c has failed*/
 
   StatusCode status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, cs_conversion_data_raw);
@@ -108,14 +104,14 @@ static StatusCode csense_interpret_data(float *output_voltage) {
 
     /*Anything in the 4.9 V range is already in over-voltage, therefore the need for as precicse accuracy is negligible at that point*/
     if ((cs_conversion_data == 0x800000 || cs_conversion_data == 0x800001 || cs_conversion_data == 0x7FFFFF)) {
-      *output_voltage = CSENSE_FSR;
+      *output_voltage = current_sense_configs.fsr;
     } else {
       if (negative) {
         cs_conversion_data = ~cs_conversion_data;
         cs_conversion_data++;
         cs_conversion_data = cs_conversion_data & 0xFFFFFF;
       }
-      *output_voltage = (float)(cs_conversion_data * CSENSE_FSR) / (float)(1 << 23);
+      *output_voltage = (float)(cs_conversion_data * current_sense_configs.fsr) / (float)(1 << 23);
     }
 
     if (negative) {
@@ -128,11 +124,9 @@ static StatusCode csense_interpret_data(float *output_voltage) {
 }
 
 StatusCode current_sense_run() {
-  static StatusCode status;
+  StatusCode status;
   static uint32_t csense_retries;
-  static const uint32_t csense_r6_ohm = 1000000U; /*1M ohm resistor*/
-  static const uint32_t csense_r7_ohm = 20000U;   /*20k ohm resistor*/
-  static float csense_voltage_diff_V;             /* voltage differential measured by ADC*/
+  float csense_voltage_diff_V; /* voltage differential measured by ADC*/
 
   status = csense_interpret_data(&csense_voltage_diff_V);
 
@@ -153,12 +147,12 @@ StatusCode current_sense_run() {
         static float csense_current_A; /* current through battery in A*/
 
         /* change the state to HV_BUS*/
-        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, CSENSE_AIN0_AIN1_MUX_CDF));
+        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_hv));
         status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
         csense_state = CSENSE_HV_BUS;
 
         /* Calculate current */
-        csense_current_A = (float)csense_voltage_diff_V / (float)CSENSE_SHUNT_RESISTANCE;
+        csense_current_A = (float)csense_voltage_diff_V / (float)current_sense_configs.shunt_resistance_ohm;
 
         if (csense_current_A < PACK_MAX_DISCHARGE_CURRENT_A || csense_current_A > PACK_MAX_CHARGE_CURRENT_A) {
           csense_overcurrents++;
@@ -182,12 +176,12 @@ StatusCode current_sense_run() {
         static float csense_HV_voltage_V; /* Voltage from HV_BUS in V */
 
         /* Change the state to current shunt*/
-        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, CSENSE_AIN6_AIN7_MUX_CFG));
+        status_ok_or_return(ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_shunt));
         status_ok_or_return(ads122_start_conversion(&rear_controller_storage->ads122_storage));
         csense_state = CSENSE_SHUNT;
 
         /* Calculate HV voltage */
-        csense_HV_voltage_V = csense_voltage_diff_V * (csense_r6_ohm + csense_r7_ohm) / csense_r7_ohm;
+        csense_HV_voltage_V = csense_voltage_diff_V * (current_sense_configs.resistance_R6_ohm + current_sense_configs.resistance_R7_ohm) / current_sense_configs.resistance_R7_ohm;
 
         if (csense_HV_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
           csense_overvoltages++;
