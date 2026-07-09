@@ -6,8 +6,10 @@ record so the freshly flashed bootloader (see libraries/ms-bootloader) recognize
 valid instead of looping bl_dfu_check_app() forever on a stale/blank record.
 
 The node id is never typed in by hand: it is read from can/inc/system_can.h's SystemCanDevice
-enum, the same id the running application already uses for its own CAN identity (can_hw.c), so
-the bootloader build this triggers can never drift from the app it is meant to serve.
+enum, the same id the running application already uses for its own CAN identity (can_hw.c).
+bootstrap and the bootloader are built once per chip, not per board -- node_id is provisioned
+at flash time via the CONFIG page, not compiled in, so the same binary serves every board on
+that chip (see resolve_node_id() in can_bootloader/fota's main.c).
 """
 
 import json
@@ -77,16 +79,15 @@ def _preset_exists(preset_name):
     return preset_name in presets
 
 
-def _build_project(project_name, node_id, preset_override=None):
+def _build_project(project_name, preset_override=None):
     env = os.environ.copy()
-    env['MS_BL_NODE_ID'] = str(node_id)
-    label = f"{project_name}"
+    label = project_name
     if preset_override:
         if not _preset_exists(preset_override):
             sys.exit(f"scons image: no preset '{preset_override}' in build_presets.json")
         env['MS_BL_PRESET_OVERRIDE'] = preset_override
         label += f" (preset {preset_override})"
-    print(f"--- scons image: building {label} (node id {node_id}) ---")
+    print(f"--- scons image: building {label} ---")
     subprocess.run(['scons', f'--project={project_name}'], cwd=ROOT, check=True, env=env)
 
 
@@ -141,20 +142,19 @@ def image_run(target):
         sys.exit(f"scons image: '{project_name}' is a bootloader stage, image an application project instead")
 
     node_id = _derive_node_id(project_name)
-    # The target app's own config.json is the one authoritative source for which physical chip
-    # this board is -- bootstrap and can_bootloader are not board specific, their config.json
-    # just hardcodes STM32L433CCU6, so they must be forced onto whatever chip the app is (e.g.
-    # rear_controller is STM32L496RGT6, steering is STM32L4P5VET6) via MS_BL_PRESET_OVERRIDE
-    # rather than trusting their own preset.
+    # bootstrap and can_bootloader are not board specific, their config.json just hardcodes
+    # STM32L433CCU6, so force them onto whatever chip the app actually is (e.g. rear_controller
+    # is STM32L496RGT6) via MS_BL_PRESET_OVERRIDE instead of trusting their own preset. Neither
+    # needs node_id at build time any more -- that's runtime-provisioned from the CONFIG page.
     app_hardware, app_flash = _project_preset(project_name)
     bootloader_project = 'fota' if project_name == 'telemetry' else 'can_bootloader'
 
     bootstrap_preset = f'{app_hardware}_bootstrap_debug'
     bootloader_preset = f'{app_hardware}_bootloader_debug'
 
-    _build_project('bootstrap', node_id, preset_override=bootstrap_preset)
-    _build_project(bootloader_project, node_id, preset_override=bootloader_preset)
-    _build_project(project_name, node_id)  # the app already carries its own correct preset
+    _build_project('bootstrap', preset_override=bootstrap_preset)
+    _build_project(bootloader_project, preset_override=bootloader_preset)
+    _build_project(project_name)  # the app already carries its own correct preset
 
     flash_run(_bin_path('bootstrap'), app_hardware, 'bootstrap')
     flash_run(_bin_path(bootloader_project), app_hardware, 'bootloader')

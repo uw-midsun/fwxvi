@@ -5,11 +5,8 @@
     ],
     "arm_libs": [
         "CMSIS",
-        "HAL", 
+        "HAL",
         "core"
-    ],
-    "include": [
-        "platform/hardware/STM32L433CCU6"
     ],
     "no_lint": true,
     "can": false,

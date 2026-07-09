@@ -62,12 +62,12 @@ void run_1000hz_cycle() {
   run_can_rx_all();
   killswitch_run();
   precharge_run();
-  current_sense_run();
+  // current_sense_run();
 }
 
 void run_10hz_cycle() {
   rear_controller_update_state_manager_medium_cycle();
-  log_cell_sense();
+  // log_cell_sense();
   fans_run();
   run_can_tx_medium();
 }

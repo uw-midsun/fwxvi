@@ -1,5 +1,4 @@
 import os
-import re
 import shutil
 import subprocess
 
@@ -123,25 +122,12 @@ def generate_default_memory_map(hardware):
 def generate_board_headers(hardware):
     """Regenerate the C headers driven by board.toml (geometry knobs and app side CAN ids)."""
     repo_root = os.path.dirname(PLATFORM_DIR)
-    user_config_path = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'bootloader_user_config.h')
-    run_board_generator(hardware, 'user-config', user_config_path)
+    run_board_generator(
+        hardware, 'user-config',
+        os.path.join(PLATFORM_DIR, 'hardware', hardware, 'bootloader_user_config.h'))
     run_board_generator(
         hardware, 'can-entry',
         os.path.join(repo_root, 'can', 'inc', 'can_bl_entry.h'))
-
-    # board.toml's [can] node_id is a per-chip placeholder (always 0): the same chip is shared
-    # by several distinct physical boards, so it cannot carry a real per-board id. `scons image`
-    # derives the real id from can/inc/system_can.h (the same SystemCanDevice id the app already
-    # uses for its own CAN identity, see can_hw.c) and passes it here via the environment so the
-    # bootloader build it triggers agrees with the app instead of always linking BL_NODE_ID=0.
-    node_id_override = os.environ.get('MS_BL_NODE_ID')
-    if node_id_override is not None:
-        with open(user_config_path, 'r') as f:
-            content = f.read()
-        patched = re.sub(r'#define BL_NODE_ID(\s+)\d+U', rf'#define BL_NODE_ID\g<1>{node_id_override}U', content)
-        if patched != content:
-            with open(user_config_path, 'w') as f:
-                f.write(patched)
 
 
 def get_link_flags(hardware, flash_type='legacy'):
