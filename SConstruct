@@ -113,12 +113,19 @@ if build_presets_file.exists():
         build_preset = json.load(f)
 
     # Determine which preset to use:
-    # 1. Check if target's config.json has a selected_preset
-    # 2. Fall back to the global selected_preset in build_presets.json
+    # 1. MS_BL_PRESET_OVERRIDE env var wins outright (scons image builds bootstrap/can_bootloader
+    #    for whatever chip the target board actually is, not whatever their own config.json says --
+    #    those two projects only carry one hardcoded chip since they're not board specific)
+    # 2. Check if target's config.json has a selected_preset
+    # 3. Fall back to the global selected_preset in build_presets.json
     selected_build_preset = None
     preset_source = None
 
-    if TARGET:
+    if os.environ.get("MS_BL_PRESET_OVERRIDE"):
+        selected_build_preset = os.environ["MS_BL_PRESET_OVERRIDE"]
+        preset_source = "MS_BL_PRESET_OVERRIDE"
+
+    if not selected_build_preset and TARGET:
         target_config_file = File(f"{TARGET}/config.json")
         if target_config_file.exists():
             with open(target_config_file.abspath, "r") as f:

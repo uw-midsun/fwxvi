@@ -72,10 +72,21 @@ def _derive_node_id(project_name):
     return int(match.group(1))
 
 
-def _build_project(project_name, node_id):
+def _preset_exists(preset_name):
+    presets = _load_json(os.path.join(ROOT, 'build_presets.json'))['presets']
+    return preset_name in presets
+
+
+def _build_project(project_name, node_id, preset_override=None):
     env = os.environ.copy()
     env['MS_BL_NODE_ID'] = str(node_id)
-    print(f"--- scons image: building {project_name} (node id {node_id}) ---")
+    label = f"{project_name}"
+    if preset_override:
+        if not _preset_exists(preset_override):
+            sys.exit(f"scons image: no preset '{preset_override}' in build_presets.json")
+        env['MS_BL_PRESET_OVERRIDE'] = preset_override
+        label += f" (preset {preset_override})"
+    print(f"--- scons image: building {label} (node id {node_id}) ---")
     subprocess.run(['scons', f'--project={project_name}'], cwd=ROOT, check=True, env=env)
 
 
@@ -130,24 +141,29 @@ def image_run(target):
         sys.exit(f"scons image: '{project_name}' is a bootloader stage, image an application project instead")
 
     node_id = _derive_node_id(project_name)
+    # The target app's own config.json is the one authoritative source for which physical chip
+    # this board is -- bootstrap and can_bootloader are not board specific, their config.json
+    # just hardcodes STM32L433CCU6, so they must be forced onto whatever chip the app is (e.g.
+    # rear_controller is STM32L496RGT6, steering is STM32L4P5VET6) via MS_BL_PRESET_OVERRIDE
+    # rather than trusting their own preset.
+    app_hardware, app_flash = _project_preset(project_name)
     bootloader_project = 'fota' if project_name == 'telemetry' else 'can_bootloader'
 
-    for name in ('bootstrap', bootloader_project, project_name):
-        _build_project(name, node_id)
+    bootstrap_preset = f'{app_hardware}_bootstrap_debug'
+    bootloader_preset = f'{app_hardware}_bootloader_debug'
 
-    bootstrap_hw, bootstrap_flash = _project_preset('bootstrap')
-    flash_run(_bin_path('bootstrap'), bootstrap_hw, bootstrap_flash)
+    _build_project('bootstrap', node_id, preset_override=bootstrap_preset)
+    _build_project(bootloader_project, node_id, preset_override=bootloader_preset)
+    _build_project(project_name, node_id)  # the app already carries its own correct preset
 
-    bl_hw, bl_flash = _project_preset(bootloader_project)
-    flash_run(_bin_path(bootloader_project), bl_hw, bl_flash)
-
-    app_hw, app_flash = _project_preset(project_name)
-    flash_run(_bin_path(project_name), app_hw, app_flash)
+    flash_run(_bin_path('bootstrap'), app_hardware, 'bootstrap')
+    flash_run(_bin_path(bootloader_project), app_hardware, 'bootloader')
+    flash_run(_bin_path(project_name), app_hardware, app_flash)
 
     config_blob = _build_boot_config(node_id, project_name, _bin_path(bootloader_project), _bin_path(project_name))
     config_path = os.path.join(ROOT, 'build', 'arm', 'bin', 'projects', 'boot_config.bin')
     with open(config_path, 'wb') as f:
         f.write(config_blob)
-    flash_run(config_path, app_hw, 'config')
+    flash_run(config_path, app_hardware, 'config')
 
     print(f"--- scons image: {project_name} imaged with node id {node_id} ---")
