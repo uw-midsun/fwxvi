@@ -14,7 +14,6 @@
 #include "log.h"
 
 /* Intra-component Headers */
-#include "cruise_control.h"
 #include "front_controller.h"
 #include "front_controller_getters.h"
 #include "ws22_motor_can.h"
