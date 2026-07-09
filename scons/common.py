@@ -108,6 +108,7 @@ def flash_run(entry, hardware, flash_type):
         'application': 'stm_flash_app_active',
         'app_staging': 'stm_flash_app_staging',
         'fs_storage': 'stm_flash_fs_storage',
+        'config': 'stm_flash_config',
     }
 
     tcl_flash_proc = flash_proc_map.get(flash_type)

@@ -252,6 +252,21 @@ elif COMMAND == "clean":
     AlwaysBuild(Command("#/clean", [], "rm -rf build/*"))
 
 ###########################################################
+# Image a board: build bootstrap + bootloader + app, flash all three, stamp the config page.
+# Node id is derived from can/inc/system_can.h, never typed in.  e.g. scons image --project=front_controller
+###########################################################
+elif COMMAND == "image":
+    if not TARGET:
+        print("scons image requires --project=<name>, e.g. scons image --project=front_controller")
+        Exit(1)
+
+    def image_run_target(target, source, env, target_name=TARGET):
+        from scons.image import image_run
+        image_run(target_name)
+
+    AlwaysBuild(Command("#/image", [], image_run_target))
+
+###########################################################
 # Linting and Formatting
 ###########################################################
 elif COMMAND == "lint" or COMMAND == "format":
