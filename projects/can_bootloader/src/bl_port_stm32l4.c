@@ -141,21 +141,25 @@ BlStatus bl_port_can_init(uint32_t bitrate_kbps) {
   if (HAL_CAN_Start(&s_can) != HAL_OK) {
     return BL_ERR_CAN;
   }
+  /* Drain the hardware FIFO into the software ring the instant a frame lands, so the 3 deep
+     hardware FIFO never has to survive an entire superloop iteration before being serviced */
+  if (HAL_CAN_ActivateNotification(&s_can, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+    return BL_ERR_CAN;
+  }
+  HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0U, 0U);
+  NVIC_EnableIRQ(CAN1_RX0_IRQn);
   return BL_OK;
 }
 
 BlStatus bl_port_can_rx(uint32_t *id, uint8_t data[8], uint8_t *dlc) {
-  if (HAL_CAN_GetRxFifoFillLevel(&s_can, CAN_RX_FIFO0) == 0U) {
+  if (s_rx_tail == s_rx_head) {
     return BL_EMPTY;
   }
-  CAN_RxHeaderTypeDef header;
-  uint8_t buf[8] = { 0 };
-  if (HAL_CAN_GetRxMessage(&s_can, CAN_RX_FIFO0, &header, buf) != HAL_OK) {
-    return BL_ERR_CAN;
-  }
-  *id = (header.IDE == CAN_ID_EXT) ? header.ExtId : header.StdId;
-  *dlc = (uint8_t)header.DLC;
-  memcpy(data, buf, 8U);
+  uint32_t tail = s_rx_tail;
+  *id = s_rx_ring[tail].id;
+  *dlc = s_rx_ring[tail].dlc;
+  memcpy(data, (const void *)s_rx_ring[tail].data, 8U);
+  s_rx_tail = (tail + 1U) & (RX_RING_SIZE - 1U);
   return BL_OK;
 }
 
