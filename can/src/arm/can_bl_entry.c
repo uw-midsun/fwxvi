@@ -38,14 +38,15 @@ void bl_port_reset(void) {
   NVIC_SystemReset();
 }
 
-/* The app owns CAN through can_hw, it is already initialized by the time the responder inits its
-   transport, so the transport's init becomes a no-op here instead of touching the peripheral */
+/* The app owns CAN through can_hw, it is already up by the time the announcer inits, so the
+   transport's init becomes a no-op here instead of touching the peripheral */
 BlStatus bl_port_can_init(uint32_t bitrate_kbps) {
   (void)bitrate_kbps;
   return BL_OK;
 }
 
-/* The driver feeds the shim and responder with the *_feed_can calls, so neither reads CAN itself */
+/* The driver feeds the shim with bl_entry_shim_feed_can, and the announcer only transmits, so
+   neither reads CAN itself */
 BlStatus bl_port_can_rx(uint32_t *id, uint8_t data[8], uint8_t *dlc) {
   (void)id;
   (void)data;
@@ -53,20 +54,19 @@ BlStatus bl_port_can_rx(uint32_t *id, uint8_t data[8], uint8_t *dlc) {
   return BL_EMPTY;
 }
 
-/* The responder transport uses this only to discard a stale partial datagram after an idle gap,
-   HAL_GetTick is a plain volatile read, safe to call from the receive ISR where frames are fed */
+/* HAL_GetTick is a plain volatile read, safe to call from the receive ISR where frames are fed */
 uint32_t bl_port_now_ms(void) {
   return HAL_GetTick();
 }
 
-/* The app owns CAN through can_hw, the responder paces its multi frame reply from bl_responder_poll
+/* The app owns CAN through can_hw, the announcer paces its multi frame heartbeat from can_tx_board_info
    in task context, not the receive ISR, so use the blocking transmit which waits on a free mailbox,
-   that is what lets the whole QUERY_RESPONSE go out, a non blocking send would drop all but the first
-   few frames once the three mailboxes fill */
+   that is what lets the whole ANNOUNCE go out, a non blocking send would drop all but the first few
+   frames once the three mailboxes fill */
 BlStatus bl_port_can_tx(uint32_t id, const uint8_t *data, uint8_t dlc) {
   /* can_hw_transmit can spuriously return busy when its mailbox-free semaphore holds stale credit,
      the failed call drains that credit so a retry blocks for a real slot, this keeps a multi frame
-     reply from truncating once the three mailboxes fill */
+     announce from truncating once the three mailboxes fill */
   for (uint8_t i = 0; i < 4U; i++) {
     if (can_hw_transmit(id, false, data, dlc) == STATUS_CODE_OK) {
       return BL_OK;

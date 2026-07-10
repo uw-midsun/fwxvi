@@ -36,6 +36,41 @@ static uint32_t __attribute__((section(".bl_noinit"))) s_boot_flag;
 
 static CAN_HandleTypeDef s_can;
 
+/* Interrupt filled software RX ring. Polling the 3 deep hardware FIFO from the superloop overruns on
+   a long fragment burst (a 2 KB chunk is 345 frames), so the RX ISR drains the hardware FIFO into
+   this deeper ring the moment frames arrive, decoupled from how fast the superloop services them */
+typedef struct {
+  uint32_t id;
+  uint8_t data[8];
+  uint8_t dlc;
+} RxFrame;
+
+#define RX_RING_SIZE 64U /* power of two, ample slack over the 3 deep hardware FIFO */
+
+static volatile RxFrame s_rx_ring[RX_RING_SIZE];
+static volatile uint32_t s_rx_head; /* written by the ISR */
+static volatile uint32_t s_rx_tail; /* written by the superloop */
+
+/* Drain every pending hardware frame into the ring, dropping only if the ring itself fills (it will
+   not on a stop and wait flash). Draining here keeps the hardware FIFO empty so it never overruns */
+void CAN1_RX0_IRQHandler(void) {
+  while (HAL_CAN_GetRxFifoFillLevel(&s_can, CAN_RX_FIFO0) > 0U) {
+    CAN_RxHeaderTypeDef header;
+    uint8_t buf[8] = { 0 };
+    if (HAL_CAN_GetRxMessage(&s_can, CAN_RX_FIFO0, &header, buf) != HAL_OK) {
+      break;
+    }
+    uint32_t next = (s_rx_head + 1U) & (RX_RING_SIZE - 1U);
+    if (next == s_rx_tail) {
+      continue; /* ring full, drop this frame rather than block the ISR */
+    }
+    s_rx_ring[s_rx_head].id = (header.IDE == CAN_ID_EXT) ? header.ExtId : header.StdId;
+    s_rx_ring[s_rx_head].dlc = (uint8_t)header.DLC;
+    memcpy((void *)s_rx_ring[s_rx_head].data, buf, 8U);
+    s_rx_head = next;
+  }
+}
+
 typedef struct {
   uint32_t prescaler;
   uint32_t bs1;
@@ -77,7 +112,10 @@ BlStatus bl_port_can_init(uint32_t bitrate_kbps) {
   s_can.Init.TimeTriggeredMode = DISABLE;
   s_can.Init.AutoBusOff = ENABLE;
   s_can.Init.AutoWakeUp = DISABLE;
-  s_can.Init.AutoRetransmission = DISABLE;
+  /* Retransmit on arbitration loss. One-shot would silently drop a heartbeat that loses the bus to a
+     lower id (e.g. a lower node's announce), so the highest node id would never get discovered when
+     several boards announce at once. The datagram layer still handles whole-datagram loss on top */
+  s_can.Init.AutoRetransmission = ENABLE;
   s_can.Init.ReceiveFifoLocked = DISABLE;
   s_can.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&s_can) != HAL_OK) {

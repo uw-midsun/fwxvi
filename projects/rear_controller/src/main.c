@@ -76,6 +76,7 @@ void run_1hz_cycle() {
   bps_fault_commit();
   state_of_charge_run();
   power_path_manager_run();
+  run_can_tx_slow();
 }
 
 #ifdef MS_PLATFORM_X86

@@ -104,6 +104,13 @@ StatusCode run_can_tx_medium();
 StatusCode run_can_tx_slow();
 
 /**
+ * @brief   Broadcast this board's bootloader identity heartbeat for host discovery
+ * @details Emits the multi frame ANNOUNCE on this board's own arbitration id, called from the slow
+ *          CAN cycle so a host discovers the board by listening, no solicited query is needed
+ */
+void can_tx_board_info();
+
+/**
  * @brief   Receive all CAN data
  * @return  STATUS_CODE_OK if the cache is cleared successfully
  *          STATUS_CODE_INTERNAL_ERROR if HAL initialization fails

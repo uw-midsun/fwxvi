@@ -1,5 +1,12 @@
 # 07 — Protocol & Decisions Spec
 
+> **Superseded (discovery):** the solicited QUERY / QUERY_RESPONSE / PING / PONG discovery described
+> below was replaced by an unsolicited per node heartbeat. Every node broadcasts a single 8 byte
+> heartbeat frame on its own arbitration id (`xfer_id_base + 0x40 + node`), ACKs moved to
+> `xfer_id_base + 0x80 + node`, and the client only listens. See **doc 11 (announce discovery
+> redesign)** and `PROTOCOL.md`, which win over the discovery sections here. The flash / datagram /
+> BootConfig content below is current.
+
 The agreed, implementable spec. Consolidates the decisions from the Q&A rounds.
 Where this doc and 01–06 disagree, **this doc wins** (it's newer).
 
