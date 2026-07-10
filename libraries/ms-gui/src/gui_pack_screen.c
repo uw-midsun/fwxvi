@@ -159,7 +159,7 @@ static StatusCode s_create_fault_label(GuiScreen *screen) {
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
     .background_enabled = true,
-    .background_color_id = GUI_COLOR_BRAKE_FILL,
+    .background_color_id = GUI_COLOR_FAULT_LIVE,
     .border_enabled = false,
     .border_color_id = GUI_COLOR_LABEL_BORDER,
     .border_width = 0,
@@ -261,7 +261,7 @@ StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh
   return lvgl_widgets_set_label_text(&s_cc_label, text_buffer);
 }
 
-StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data) {
+StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data, bool fault_live) {
   (void)cell_at_fault;
 
   if (!s_pack_widgets_initialized) {
@@ -272,6 +272,8 @@ StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at
     lv_obj_add_flag(s_fault_label.label, LV_OBJ_FLAG_HIDDEN);
     return STATUS_CODE_OK;
   }
+
+  status_ok_or_return(lvgl_widgets_set_label_bg_color(&s_fault_label, fault_live ? GUI_COLOR_FAULT_LIVE : GUI_COLOR_FAULT_LATCHED));
 
   char buf[LABEL_MAX_CHARS];
 
@@ -337,10 +339,11 @@ StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data) {
+StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data, bool fault_live) {
   (void)fault_code;
   (void)cell_at_fault;
   (void)data;
+  (void)fault_live;
   return STATUS_CODE_OK;
 }
 

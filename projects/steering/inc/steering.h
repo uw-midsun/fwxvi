@@ -95,6 +95,7 @@ typedef struct {
   uint16_t bps_fault;          /**< BPS fault bitfield */
   uint8_t bps_fault_cell;      /**< BPS fault cell number (if it exists) */
   BpsFaultData bps_fault_data; /**< Fault detail snapshot from bps_fault_info CAN signal */
+  uint8_t bps_fault_live;      /**< Whether the BPS fault is live (blocking drive) vs. a latched fault restored from flash */
 
   VehicleDriveState drive_state;
   uint8_t pedal_percentage; /**< Pedal percentage, from (0, 100) */

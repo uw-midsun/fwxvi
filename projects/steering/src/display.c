@@ -180,7 +180,7 @@ static StatusCode s_render_gui_step(void) {
 
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
-    status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
+    status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data, display_data->bps_fault_live));
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_rx(steering_storage);
@@ -296,6 +296,7 @@ StatusCode display_rx_medium() {
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
   display_data->bps_fault_data.raw = get_bps_fault_info_extra_info();
+  display_data->bps_fault_live = get_rear_controller_status_triggers_bps_fault_live();
 
   steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
 
