@@ -44,6 +44,9 @@ struct Ws22MotorCanConfig;
 /** @brief  Front controller accel pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_ACCEL_LPF_ALPHA 0.20f
 
+/** @brief  Accel pedal press threshold above which cruise control is temporarily overridden by direct pedal control */
+#define FRONT_CONTROLLER_ACCEL_CC_OVERRIDE_DEADZONE 0.10f
+
 /** @brief  Front controller brake pedal alpha value for low-pass filtering */
 #define FRONT_CONTROLLER_BRAKE_LPF_ALPHA 0.20f
 
@@ -74,6 +77,7 @@ typedef struct {
   float accel_input_remap_min;       /**< Pedal input value mapped to zero torque (e.g. 0.2 to avoid dead torque zone) */
   float accel_input_curve_exponent;  /**< Exponent for non-linear pedal mapping (1.0 = linear, >1 = exponential) */
   float accel_low_pass_filter_alpha; /**< Alpha value for accel pedal low pass filter */
+  float accel_cc_override_deadzone;  /**< Accel pedal press threshold [0.0 - 1.0] above which cruise control is temporarily overridden by direct pedal control */
   float brake_pedal_deadzone;        /**< Deadzone for brake pedal input [0.0 - 1.0]  */
   float brake_pedal_activation_zone; /**< Activation zone for brake pedal input [0.0 - 1.0]  */
   float brake_low_pass_filter_alpha; /**< Alpha value for brake pedal low pass filter */
