@@ -70,6 +70,7 @@ void run_1hz_cycle() {
   range_estimator_run();
   display_rx_slow();
   display_run();
+  run_can_tx_slow();
 }
 
 #ifdef MS_PLATFORM_X86

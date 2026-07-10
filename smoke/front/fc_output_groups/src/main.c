@@ -17,7 +17,9 @@
 #include "mcu.h"
 #include "power_manager.h"
 #include "status.h"
+#include "system_can.h"
 #include "tasks.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 
@@ -48,6 +50,7 @@ static inline const char *output_grp_to_str(OutputGroup x) {
   }
 }
 FrontControllerStorage front_controller_storage = { 0 };
+Ws22MotorCanConfig ws22_motor_can_config = { 0 };
 
 FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE,
                                                   .accel_input_remap_min = FRONT_CONTROLLER_ACCEL_REMAP_MIN,
@@ -58,7 +61,7 @@ TASK(cycle_output_groups, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
-  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  status = front_controller_init(&front_controller_storage, &front_controller_config, &ws22_motor_can_config);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\n");
   } else {

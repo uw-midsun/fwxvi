@@ -15,5 +15,5 @@
         "test_state_manager": ["power_manager_set_output_group", "front_lights_signal_process_event", "front_lights_signal_set_bps_light"]
     },
     "can": true, 
-    "selected_preset": "STM32L433CCU6_legacy_debug" 
+    "selected_preset": "STM32L433CCU6_application_debug" 
 }

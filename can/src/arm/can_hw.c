@@ -22,6 +22,9 @@
 #include "interrupts.h"
 
 /* Intra-component Headers */
+#include "bl_announce.h"
+#include "bl_entry_shim.h"
+#include "can_bl_entry.h"
 #include "can_hw.h"
 
 /* CAN has 3 transmit mailboxes and 2 receive FIFOs */
@@ -141,6 +144,15 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
+  /* Set up the rx queue and the tx mailbox semaphore before enabling any interrupt. Enabling the TX
+     mailbox empty notification below fires the TX complete ISR immediately (all three mailboxes
+     start empty), and that ISR signals this semaphore, so it must already exist or the ISR gives to
+     a NULL handle and traps in configASSERT */
+  s_g_rx_queue = rx_queue;
+  s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, 0, &s_can_tx_ready_sem);
+  configASSERT(s_can_tx_ready_sem_handle);
+  s_tx_full = false;
+
   /* Enable all interrupts */
   interrupt_nvic_enable(CAN1_TX_IRQn, INTERRUPT_PRIORITY_HIGH);
   interrupt_nvic_enable(CAN1_RX0_IRQn, INTERRUPT_PRIORITY_HIGH);
@@ -152,20 +164,50 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
                                           CAN_IT_RX_FIFO1_MSG_PENDING |
                                           CAN_IT_ERROR);
 
-  /* Initialize CAN queue */
-  s_g_rx_queue = rx_queue;
+  /* Arm the bootloader entry shim so a host can drop this board back into the bootloader, the node
+     id is a fallback, the shim prefers the config page id */
+  BlEntryShimConfig shim_cfg = {
+    .node_id = (uint16_t)settings->device_id,
+    .can_enter_id = CAN_BL_ENTER_ID,
+  };
+  bl_entry_shim_init(&shim_cfg);
 
-  /* Create available mailbox semaphore */
-  s_can_tx_ready_sem_handle = xSemaphoreCreateCountingStatic(CAN_NUM_MAILBOXES, 0, &s_can_tx_ready_sem);
-  configASSERT(s_can_tx_ready_sem_handle);
-  s_tx_full = false;
+  /* Arm the discovery announcer so a host sees this board's full identity while it runs the app, the
+     same heartbeat the bootloader emits (tagged application mode). It is transmit only, paced from
+     the slow CAN cycle by can_tx_board_info, bitrate is unused since can_hw already owns the peripheral */
+  BlCanSettings announce_cfg = {
+    .bitrate_kbps = 0U,
+    .xfer_id_base = CAN_BL_XFER_ID_BASE,
+    .enter_id = CAN_BL_ENTER_ID,
+    .node_id = (uint16_t)settings->device_id,
+  };
+  bl_announce_init(&announce_cfg);
 
   return STATUS_CODE_OK;
+}
+
+/* Encode an id and mask into the bxCAN filter register layout and claim the next bank */
+static void s_install_filter(uint32_t mask, uint32_t filter, bool extended) {
+  size_t offset = extended ? 3 : 21;
+  uint32_t mask_val = (mask << offset) | (1 << 2);
+  uint32_t filter_val = (filter << offset) | ((uint32_t)extended << 2);
+
+  s_add_filter_in(s_num_filters, mask_val, filter_val);
+  s_num_filters++;
+}
+
+/* Enabling hardware filtering evicts the accept-all default, which would drop the bootloader
+   fragment and enter frames before the shim ever sees them. Keep them by reserving a bank for each
+   id the board receives on. ANNOUNCE and ACK are transmit only, so not needed */
+static void s_reserve_bootloader_filters(void) {
+  s_install_filter(0x7FFU, CAN_BL_XFER_ID_BASE, false);
+  s_install_filter(0x7FFU, CAN_BL_ENTER_ID, false);
 }
 
 StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended) {
   if (s_can_filter_en == 0) {
     s_can_filter_en = 1;
+    s_reserve_bootloader_filters();
   }
 
   if (s_num_filters >= CAN_HW_NUM_FILTER_BANKS) {
@@ -174,12 +216,7 @@ StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  size_t offset = extended ? 3 : 21;
-  uint32_t mask_val = (mask << offset) | (1 << 2);
-  uint32_t filter_val = (filter << offset) | ((uint32_t)extended << 2);
-
-  s_add_filter_in(s_num_filters, mask_val, filter_val);
-  s_num_filters++;
+  s_install_filter(mask, filter, extended);
   return STATUS_CODE_OK;
 }
 
@@ -256,6 +293,31 @@ StatusCode can_hw_transmit(uint32_t id, bool extended, const uint8_t *data, uint
   }
   
   return STATUS_CODE_RESOURCE_EXHAUSTED;
+}
+
+StatusCode can_hw_transmit_nonblocking(uint32_t id, bool extended, const uint8_t *data, uint8_t len) {
+  if (data == NULL || len > 8U) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (HAL_CAN_GetTxMailboxesFreeLevel(&s_can_handle) == 0U) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+
+  CAN_TxHeaderTypeDef tx_header = {
+    .StdId = id,
+    .ExtId = id,
+    .IDE = extended ? CAN_ID_EXT : CAN_ID_STD,
+    .RTR = CAN_RTR_DATA,
+    .DLC = len,
+    .TransmitGlobalTime = DISABLE
+  };
+
+  uint32_t tx_mailbox = 0;
+  if (HAL_CAN_AddTxMessage(&s_can_handle, &tx_header, (uint8_t *)data, &tx_mailbox) != HAL_OK) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode can_hw_receive(uint32_t *id, bool *extended, uint64_t *data, uint8_t *len) {
@@ -357,6 +419,10 @@ static void s_process_rx_fifo(uint32_t fifo) {
     rx_msg.id.raw = rx_msg.extended ? rx_header.ExtId : rx_header.StdId;
     rx_msg.dlc = rx_header.DLC;
     memcpy(&rx_msg.data, rx_data, rx_header.DLC);
+
+    /* Offer every frame to the bootloader entry shim before software filtering, discovery is a
+       broadcast the announcer transmits, so there is nothing to feed it here */
+    bl_entry_shim_feed_can(rx_msg.id.raw, rx_msg.data_u8, rx_msg.dlc);
 
     bool s_filter_id_match = false;
     for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {

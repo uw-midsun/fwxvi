@@ -306,6 +306,14 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
 StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text);
 
 /**
+ * @brief   Update the background color of a label widget
+ * @param   label_widget Pointer to the label widget runtime object
+ * @param   color_id Semantic GUI color ID to apply as the label background
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode lvgl_widgets_set_label_bg_color(LabelWidget *label_widget, GuiColorId color_id);
+
+/**
  * @brief   Create and initialize a speedometer widget
  * @param   speedometer Pointer to the runtime speedometer object to initialize
  * @param   config Pointer to the widget configuration

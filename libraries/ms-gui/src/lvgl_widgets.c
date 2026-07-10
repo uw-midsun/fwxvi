@@ -198,6 +198,19 @@ StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
   return STATUS_CODE_OK;
 }
 
+StatusCode lvgl_widgets_set_label_bg_color(LabelWidget *label_widget, GuiColorId color_id) {
+  if (label_widget == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (label_widget->label == NULL) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  lv_obj_set_style_bg_color(label_widget->label, s_gui_palette_color(color_id), 0);
+  return STATUS_CODE_OK;
+}
+
 StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const SpeedometerWidgetConfig *config, GuiScreen *parent) {
   if (speedometer == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -385,6 +398,12 @@ StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig
 StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text) {
   (void)label;
   (void)text;
+  return STATUS_CODE_OK;
+}
+
+StatusCode lvgl_widgets_set_label_bg_color(LabelWidget *label_widget, GuiColorId color_id) {
+  (void)label_widget;
+  (void)color_id;
   return STATUS_CODE_OK;
 }
 

@@ -58,6 +58,20 @@ SECTIONS
     /* This is used by the startup in order to initialize the .data section */
     _sidata = .;
 
+    /* No-init RAM for the bootloader entry magic. Pinned at the very start of RAM so it lands at the
+    same address in every image (app, bootloader, bootstrap) no matter how their .data and .bss differ
+    in size. A fixed block is reserved even when an image has no .bl_noinit input (the bootstrap), so
+    that image still keeps this RAM off limits and does not clobber the magic with its own .data/.bss
+    before the bootloader reads it. NOLOAD and outside the zeroed .bss range, so a warm reset keeps it. */
+    .bl_noinit (NOLOAD) :
+    {
+        . = ALIGN(4);
+        _bl_noinit_start = .;
+        *(.bl_noinit)
+        . = _bl_noinit_start + 32;
+        . = ALIGN(4);
+    } >RAM
+
     /* This is the initialized data section
     The program executes knowing that the data is in the RAM
     but the loader puts the initial values in the FLASH (inidata).

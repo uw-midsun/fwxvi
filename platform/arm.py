@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 
 Import ('HARDWARE_TYPE')
 Import ('FLASH_TYPE')
@@ -94,6 +95,41 @@ common_flags = [
     '-mcpu=cortex-m4'
 ]
 
+def board_config_path(hardware):
+    """Path to the declarative board.toml that drives every generated artifact."""
+    return os.path.join(PLATFORM_DIR, 'hardware', hardware, 'board.toml')
+
+
+def run_board_generator(hardware, emitter, out_path):
+    """Emit one artifact from the chip's board.toml via generate.py."""
+    repo_root = os.path.dirname(PLATFORM_DIR)
+    generator = os.path.join(repo_root, 'libraries', 'ms-bootloader', 'tools', 'generate.py')
+    board = board_config_path(hardware)
+
+    if not os.path.exists(board):
+        raise FileNotFoundError(f"board.toml not found for {hardware}: {board}")
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    subprocess.run(['python3', generator, emitter, board, '-o', out_path, '-q'], check=True)
+    return out_path
+
+
+def generate_default_memory_map(hardware):
+    out_path = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'default', 'memory_map.ld')
+    return run_board_generator(hardware, 'linker', out_path)
+
+
+def generate_board_headers(hardware):
+    """Regenerate the C headers driven by board.toml (geometry knobs and app side CAN ids)."""
+    repo_root = os.path.dirname(PLATFORM_DIR)
+    run_board_generator(
+        hardware, 'user-config',
+        os.path.join(PLATFORM_DIR, 'hardware', hardware, 'bootloader_user_config.h'))
+    run_board_generator(
+        hardware, 'can-entry',
+        os.path.join(repo_root, 'can', 'inc', 'can_bl_entry.h'))
+
+
 def get_link_flags(hardware, flash_type='legacy'):
     supported_hardware = ['STM32L433CCU6', 'STM32L4P5VET6', 'STM32L496RGT6']
     if hardware not in supported_hardware:
@@ -101,13 +137,11 @@ def get_link_flags(hardware, flash_type='legacy'):
 
     memory_map_mode = 'default' if flash_type != 'legacy' else 'legacy'
 
-    memory_script_path = os.path.join(
-        PLATFORM_DIR,
-        'hardware',
-        hardware,
-        memory_map_mode,
-        'memory_map.ld'
-    )
+    if memory_map_mode == 'default':
+        # Generate the default map from the chip's board.toml (single source of geometry)
+        memory_script_path = generate_default_memory_map(hardware)
+    else:
+        memory_script_path = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'legacy', 'memory_map.ld')
 
     if not os.path.exists(memory_script_path):
         raise FileNotFoundError(f"Memory map linker script not found: {memory_script_path}")
@@ -166,6 +200,8 @@ def get_defines(hardware, build_config):
 
 
 def create_arm_env(hardware, flash_type='default', build_config='debug'):
+    # board.toml is the single source: regenerate the derived C headers before any compile
+    generate_board_headers(hardware)
     env_defines = get_defines(hardware, build_config)
     if build_config == 'debug':
         build_config_flags = debug_flags

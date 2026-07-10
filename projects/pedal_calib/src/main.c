@@ -36,8 +36,6 @@ PersistStorage persist_storage = { 0U };
 
 static StatusCode status;
 
-#define LAST_PAGE (NUM_FLASH_PAGES - 1)
-
 #define PEDAL_CALIB_DAC_CHANNEL DAC_CHANNEL1
 #define PEDAL_CALIB_OPAMP OPAMP_1
 
@@ -52,13 +50,13 @@ TASK(pedal_calib, TASK_STACK_1024) {
     delay_ms(10U);
   }
 
-  status = flash_erase(NUM_FLASH_PAGES - 1U, 1U);
+  status = flash_erase(flash_app_storage_page(), 1U);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("flash_erase() failed with exit code %u\r\n", status);
     delay_ms(10U);
   }
 
-  status = persist_init(&persist_storage, LAST_PAGE, &pedal_persist_data, sizeof(pedal_persist_data), true);
+  status = persist_init(&persist_storage, flash_app_storage_page(), &pedal_persist_data, sizeof(pedal_persist_data), true);
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("persist_init() failed with exit code %u\r\n", status);

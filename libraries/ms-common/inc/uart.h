@@ -83,6 +83,15 @@ StatusCode uart_init(UartPort uart, UartSettings *settings);
 StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len);
 
 /**
+ * @brief   Drain received bytes from the port RX ring without blocking
+ * @param   uart Specifies which UART port to read from
+ * @param   data Pointer to the destination buffer
+ * @param   maxlen Maximum number of bytes to read
+ * @return  Number of bytes actually read
+ */
+size_t uart_get_rx_bytes(UartPort uart, uint8_t *data, size_t maxlen);
+
+/**
  * @brief   Transmit data from the UART port
  * @details Sends length bytes of data from UART TX queue to specified UART port.
  *          Sends up to UART_MAX_BUFFER_LEN.

@@ -23,8 +23,6 @@
     _a < _b ? _a : _b;      \
   })
 
-#define LAST_PAGE (NUM_FLASH_PAGES - 1)
-
 static PersistStorage storage = { 0U };
 
 StatusCode fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size) {
@@ -34,7 +32,7 @@ StatusCode fs_hal_init(uint8_t *fs_memory, size_t fs_memory_size) {
     return STATUS_CODE_INCOMPLETE;
   }
 
-  ret = persist_init(&storage, LAST_PAGE, fs_memory, fs_memory_size, true);
+  ret = persist_init(&storage, flash_app_storage_page(), fs_memory, fs_memory_size, true);
   if (ret != STATUS_CODE_OK) {
     printf("persist_init() failed with exit code %u\r\n", ret);
     return STATUS_CODE_INCOMPLETE;

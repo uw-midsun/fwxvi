@@ -1,7 +1,8 @@
 {
     "libs": [
         "FreeRTOS",
-        "ms-common"
+        "ms-common",
+        "ms-drivers"
     ],
     "x86_libs": [
         "ms-mpxe"
@@ -20,7 +21,8 @@
         "projects/front_controller/src/power_manager.o",
         "projects/front_controller/src/front_controller_state_manager.o",
         "projects/front_controller/src/brake_pedal.o",
-        "projects/front_controller/src/cruise_control.o"
+        "projects/front_controller/src/cruise_control.o",
+        "projects/front_controller/src/ws22_motor_can.o"
     ],
     "can": true,
     "selected_preset": "STM32L433CCU6_legacy_debug"

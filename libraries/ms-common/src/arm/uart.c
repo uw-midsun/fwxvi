@@ -12,6 +12,7 @@
 /* Inter-component Headers */
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "task.h"
 #include "stm32l4xx.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
@@ -65,6 +66,32 @@ static SemaphoreHandle_t s_uart_port_handle[NUM_UART_PORTS];
 /* Semaphore to signal event complete */
 static StaticSemaphore_t s_uart_cmplt_sem[NUM_UART_PORTS];
 static SemaphoreHandle_t s_uart_cmplt_handle[NUM_UART_PORTS];
+
+/* RX ring filled by an always armed one byte receive */
+#define UART_RX_RING_SIZE 256U
+static volatile uint8_t s_rx_ring[NUM_UART_PORTS][UART_RX_RING_SIZE];
+static volatile uint16_t s_rx_head[NUM_UART_PORTS];
+static volatile uint16_t s_rx_tail[NUM_UART_PORTS];
+static uint8_t s_rx_byte[NUM_UART_PORTS];
+
+static UartPort s_port_from_handle(UART_HandleTypeDef *huart) {
+  if (huart->Instance == USART1) {
+    return UART_PORT_1;
+  }
+  if (huart->Instance == USART2) {
+    return UART_PORT_2;
+  }
+  return UART_PORT_3;
+}
+
+/* Push a byte into the ring, drop it when full */
+static void s_rx_ring_push(UartPort uart, uint8_t byte) {
+  uint16_t next = (uint16_t)((s_rx_head[uart] + 1U) % UART_RX_RING_SIZE);
+  if (next != s_rx_tail[uart]) {
+    s_rx_ring[uart][s_rx_head[uart]] = byte;
+    s_rx_head[uart] = next;
+  }
+}
 
 /* Private helper for common TX/RX operations */
 static StatusCode s_uart_transfer(UartPort uart, uint8_t *data, size_t len, bool is_rx) {
@@ -136,11 +163,53 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 /* Callback functions for HAL UART RX */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-  s_uart_transfer_complete_callback(huart, true);
+  UartPort uart = s_port_from_handle(huart);
+  s_rx_ring_push(uart, s_rx_byte[uart]);
+  (void)HAL_UART_Receive_IT(huart, &s_rx_byte[uart], 1U);
+}
+
+/* Re-arm the receive after an overrun */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+  UartPort uart = s_port_from_handle(huart);
+  (void)HAL_UART_Receive_IT(huart, &s_rx_byte[uart], 1U);
+}
+
+/* Drain up to maxlen bytes from the ring without blocking, returns the count read */
+size_t uart_get_rx_bytes(UartPort uart, uint8_t *data, size_t maxlen) {
+  if (data == NULL || uart >= NUM_UART_PORTS) {
+    return 0U;
+  }
+  size_t n = 0U;
+  while (n < maxlen && s_rx_tail[uart] != s_rx_head[uart]) {
+    data[n] = s_rx_ring[uart][s_rx_tail[uart]];
+    s_rx_tail[uart] = (uint16_t)((s_rx_tail[uart] + 1U) % UART_RX_RING_SIZE);
+    n++;
+  }
+  return n;
 }
 
 StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
-  return s_uart_transfer(uart, data, len, true);
+  if (data == NULL || uart >= NUM_UART_PORTS || len > UART_MAX_BUFFER_LEN) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (!s_port[uart].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  TickType_t deadline = xTaskGetTickCount() + pdMS_TO_TICKS(UART_TIMEOUT_MS) + 1U;
+  size_t got = 0U;
+  while (got < len) {
+    got += uart_get_rx_bytes(uart, &data[got], len - got);
+    if (got >= len) {
+      break;
+    }
+    if (xTaskGetTickCount() >= deadline) {
+      return STATUS_CODE_TIMEOUT;
+    }
+    taskYIELD();
+  }
+  return STATUS_CODE_OK;
 }
 
 StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
@@ -211,6 +280,11 @@ StatusCode uart_init(UartPort uart, UartSettings *settings) {
   interrupt_nvic_enable(s_port[uart].irq, INTERRUPT_PRIORITY_HIGH);
 
   s_port[uart].initialized = true;
+
+  /* Arm the continuous one byte receive */
+  s_rx_head[uart] = 0U;
+  s_rx_tail[uart] = 0U;
+  (void)HAL_UART_Receive_IT(&s_uart_handles[uart], &s_rx_byte[uart], 1U);
 
   return STATUS_CODE_OK;
 }

@@ -18,13 +18,48 @@ def get_device_params_mode(flash_type):
     return 'default' if flash_type != 'legacy' else 'legacy'
 
 
+def generate_default_device_params(hardware):
+    """Generate device_params.cfg from the chip's board.toml."""
+    generator = os.path.join('libraries', 'ms-bootloader', 'tools', 'generate.py')
+    board = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'board.toml')
+
+    if not os.path.exists(board):
+        raise FileNotFoundError(f"board.toml not found for {hardware}: {board}")
+
+    out_path = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'default', 'device_params.cfg')
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+    subprocess.run(['python3', generator, 'flash-params', board, '-o', out_path, '-q'], check=True)
+    return out_path
+
+
 def get_hardware_paths(hardware, flash_type):
     """Get paths for hardware-specific configuration files."""
-    device_params_mode = get_device_params_mode(flash_type)
+    if get_device_params_mode(flash_type) == 'legacy':
+        device_params = os.path.join(PLATFORM_DIR, 'hardware', hardware, 'legacy', 'device_params.cfg')
+    else:
+        device_params = generate_default_device_params(hardware)
     return {
-        'device_params': os.path.join(PLATFORM_DIR, 'hardware', hardware, device_params_mode, 'device_params.cfg'),
+        'device_params': device_params,
         'flash_procs': os.path.join(PLATFORM_DIR, 'hardware', 'templates', 'stm32_flash_procs.tcl'),
     }
+
+def ms_bootloader_dirs(lib_dir, platform):
+    """Return the layered ms-bootloader source/include subdirectories for a platform."""
+    base = lib_dir.Dir('ms-bootloader')
+    dirs = [
+        base.Dir('common'),
+        base.Dir('bootloader'),
+        base.Dir('bootstrap'),
+        base.Dir('entry'),
+        base.Dir('transport').Dir('can'),
+        base.Dir('transport').Dir('uart'),
+    ]
+    # x86 ships the reference port for unit tests; on ARM the consumer project supplies bl_port_*
+    if platform == 'x86':
+        dirs.append(base.Dir('port').Dir('x86'))
+    return dirs
+
 
 def parse_config(entry):
     # Default config to empty for fields that don't exist
@@ -73,6 +108,7 @@ def flash_run(entry, hardware, flash_type):
         'application': 'stm_flash_app_active',
         'app_staging': 'stm_flash_app_staging',
         'fs_storage': 'stm_flash_fs_storage',
+        'config': 'stm_flash_config',
     }
 
     tcl_flash_proc = flash_proc_map.get(flash_type)

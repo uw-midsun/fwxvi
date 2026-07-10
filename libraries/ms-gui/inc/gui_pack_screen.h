@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 #include <stdint.h>
 
 /* Inter-component Headers */
@@ -63,12 +64,15 @@ StatusCode gui_pack_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh
 /**
  * @brief   Update (or hide) the pack-screen BPS fault detail banner
  * @details Hidden when fault_code is 0. Otherwise decodes the extra_info payload for the
- *          highest-priority active fault and shows the detail in a red bottom banner.
+ *          highest-priority active fault and shows the detail in a bottom banner, colored
+ *          red while the fault is live (blocking drive) or yellow once it is a latched
+ *          fault restored from flash (not live, drive is allowed).
  * @param   fault_code Active BPS fault bitmask
  * @param   cell_at_fault One-based cell index (currently unused; detail comes from data)
  * @param   data Fault detail snapshot from the bps_fault_info CAN signal
+ * @param   fault_live Whether the fault is currently live (blocking drive) vs. latched only
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data);
+StatusCode gui_pack_screen_widget_set_fault(uint16_t fault_code, uint8_t cell_at_fault, BpsFaultData data, bool fault_live);
 
 /** @} */

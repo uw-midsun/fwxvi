@@ -19,6 +19,7 @@
 #include "system_can.h"
 
 /* Intra-component Headers */
+#include "bl_announce.h"
 #include "can.h"
 #include "can_hw.h"
 #include "can_watchdog.h"
@@ -159,12 +160,20 @@ StatusCode run_can_tx_slow() {
 
   can_tx_slow_cycle();
 
+  /* Broadcast this board's bootloader identity heartbeat so a host discovers it by listening, paced
+     here in the slow cycle from task context where it may block briefly on a transmit mailbox */
+  can_tx_board_info();
+
   /* Check slow cycle watchdogs, and update internal states */
   check_slow_can_watchdogs();
   clear_slow_rx_received();
 
   xSemaphoreGive(s_can_tx_handle);
   return STATUS_CODE_OK;
+}
+
+void can_tx_board_info() {
+  bl_announce_emit();
 }
 
 StatusCode run_can_rx_all() {

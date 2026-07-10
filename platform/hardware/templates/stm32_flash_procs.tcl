@@ -66,6 +66,24 @@ proc stm_flash_app_active {IMGFILE} {
     reset run
 }
 
+proc stm_flash_config {IMGFILE} {
+    reset halt
+    sleep 100
+    wait_halt 2
+
+    set START_ADDR [expr {
+        $::FLASH_START +
+        $::BOOTSTRAP_SIZE +
+        $::BOOTLOADER_SIZE +
+        $::APP_ACTIVE_SIZE
+    }]
+
+    flash write_image erase $IMGFILE $START_ADDR
+    verify_image $IMGFILE $START_ADDR
+
+    reset run
+}
+
 proc stm_flash_fs_storage {IMGFILE} {
     reset halt
     sleep 100

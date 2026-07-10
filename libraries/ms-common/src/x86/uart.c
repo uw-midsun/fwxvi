@@ -24,6 +24,10 @@ StatusCode uart_rx(UartPort uart, uint8_t *data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
+size_t uart_get_rx_bytes(UartPort uart, uint8_t *data, size_t maxlen) {
+  return 0U;
+}
+
 StatusCode uart_tx(UartPort uart, uint8_t *data, size_t len) {
   return STATUS_CODE_UNIMPLEMENTED;
 }

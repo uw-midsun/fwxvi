@@ -1,13 +1,14 @@
 {
-    "x86_libs": [
-        "ms-common"
+    "libs": [
+        "ms-bootloader"
     ],
-
     "arm_libs": [
-        "core",
         "CMSIS",
-        "HAL"
+        "HAL",
+        "core"
     ],
+    "no_lint": true,
     "can": false,
-    "arm_only": true
+    "arm_only": true,
+    "selected_preset": "STM32L433CCU6_bootstrap_debug"
 }

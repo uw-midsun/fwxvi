@@ -74,7 +74,7 @@ StatusCode pedal_calib_read(FrontControllerStorage *storage) {
   }
 
   /* Load the persisted calibration from flash into the shared pedal persist data */
-  status_ok_or_return(persist_init(storage->persist_storage, LAST_PAGE, storage->pedal_persist_data, sizeof(*storage->pedal_persist_data), false));
+  status_ok_or_return(persist_init(storage->persist_storage, flash_app_storage_page(), storage->pedal_persist_data, sizeof(*storage->pedal_persist_data), false));
 
   /* Apply the loaded values (or defaults) to the pedal storage */
   return pedal_calib_apply(storage);
