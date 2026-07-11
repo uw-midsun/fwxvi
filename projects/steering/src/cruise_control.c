@@ -114,8 +114,8 @@ StatusCode cruise_control_run_medium_cycle() {
   // Cruise control should only work when we are in VehicleDriveState VEHICLE_DRIVE_STATE_DRIVE
   VehicleDriveState drive_state_from_front = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
-  if (drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE && steering_storage->cruise_control_enabled) {
-    CONDITIONAL_LOG_DEBUG("BRAKE from front\r\n");
+  if ((drive_state_from_front == VEHICLE_DRIVE_STATE_BRAKE || drive_state_from_front == VEHICLE_DRIVE_STATE_REGEN) && steering_storage->cruise_control_enabled) {
+    CONDITIONAL_LOG_DEBUG("BRAKE/REGEN from front\r\n");
     steering_storage->cruise_control_enabled = false;
     buzzer_play_cruise_control_disable();
     set_steering_buttons_cruise_control_enabled(steering_storage->cruise_control_enabled);

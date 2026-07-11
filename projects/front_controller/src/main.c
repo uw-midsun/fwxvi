@@ -46,6 +46,7 @@ FrontControllerConfig front_controller_config = {
   .accel_input_remap_min = FRONT_CONTROLLER_ACCEL_REMAP_MIN,
   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA,
+  .accel_cc_override_deadzone = FRONT_CONTROLLER_ACCEL_CC_OVERRIDE_DEADZONE,
   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA,
 };
