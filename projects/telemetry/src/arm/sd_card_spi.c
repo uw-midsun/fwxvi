@@ -120,7 +120,7 @@ StatusCode sd_spi_init(SdSpiPort spi, const SdSpiSettings *settings) {
 }
 
 StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len) {
-  if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || !tx_data || tx_len == 0) {
+  if (spi >= NUM_SD_SPI_PORTS || !s_port[spi].initialized || !tx_data || tx_len == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -129,7 +129,7 @@ StatusCode sd_spi_tx(SdSpiPort spi, uint8_t *tx_data, size_t tx_len) {
 }
 
 StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t placeholder) {
-  if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || !rx_data || rx_len == 0) {
+  if (spi >= NUM_SD_SPI_PORTS || !s_port[spi].initialized || !rx_data || rx_len == 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -145,7 +145,7 @@ StatusCode sd_spi_rx(SdSpiPort spi, uint8_t *rx_data, size_t rx_len, uint8_t pla
 }
 
 StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
-  if (!s_port[spi].initialized || spi >= NUM_SD_SPI_PORTS || (tx_len == 0 && rx_len == 0)) {
+  if (spi >= NUM_SD_SPI_PORTS || !s_port[spi].initialized || (tx_len == 0 && rx_len == 0)) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -182,7 +182,7 @@ StatusCode sd_spi_cs_set_state(SdSpiPort spi, GpioState state) {
 
 GpioState sd_spi_cs_get_state(SdSpiPort spi) {
   if (spi >= NUM_SD_SPI_PORTS || !s_port[spi].initialized) {
-    return STATUS_CODE_INVALID_ARGS;
+    return GPIO_STATE_HIGH;
   }
   return gpio_get_state(&s_port[spi].cs);
 }

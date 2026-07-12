@@ -67,6 +67,12 @@
     set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
   } while (0)
 
+#define AFE_THERMISTOR_TX(offset) \
+  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
+
+#define AFE_TEMPERATURE_TX(offset) \
+  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
+
 /** @brief  Max number of retries for reading cell*/
 #define CELL_SENSE_MAX_RETRIES 10U
 
@@ -81,9 +87,11 @@
     }                                                                     \
   } while (0)
 
-#define THERMISTORS_CONNECTED 0U
+  
+#define THERMISTORS_CONNECTED 1U
 #define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
+#define THERMISTOR_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
 
@@ -326,6 +334,7 @@ static void s_disable_balancing() {
 static StatusCode s_check_thermistors() {
   StatusCode status = STATUS_CODE_OK;
 #if (THERMISTORS_CONNECTED == 1U)
+#if 0
   uint16_t max_temp = 0U;
 
   /* Loop over all devices and thermistors */
@@ -365,6 +374,7 @@ static StatusCode s_check_thermistors() {
     }
   }
 #endif
+#endif
   return status;
 }
 
@@ -401,14 +411,16 @@ static StatusCode s_cell_sense_conversions() {
     return status;
   }
 
+  retries = 0;
+
 #if (THERMISTORS_CONNECTED == 1U)
 
   status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
+#if (THERMISTOR_FAULTS_ENABLED == 1)
     retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
     if (retries >= AFE_NUM_RETRIES) {
       LOG_DEBUG("Thermistor conv failed: Status %d\n", status);
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
@@ -423,8 +435,8 @@ static StatusCode s_cell_sense_conversions() {
 
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
+#if (THERMISTOR_FAULTS_ENABLED == 1)
     retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
     if (retries >= AFE_NUM_RETRIES) {
       LOG_DEBUG("Thermistor read failed, Status: %d\n", status);
       trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
@@ -513,9 +525,9 @@ static StatusCode s_cell_sense_run() {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
     LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    BpsFaultData unbal_data = { .unbalance = {
-                                    .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
-    trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
+    // BpsFaultData unbal_data = { .unbalance = {
+    //                                 .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
+    // trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -525,7 +537,7 @@ static StatusCode s_cell_sense_run() {
 #endif
   s_cell_data_updated = true;
 
-#if (THERMISTORS_CONNECTED == 1U)
+#if (THERMISTOR_FAULTS_ENABLED == 1U)
   status_ok_or_return(s_check_thermistors());
 #endif
 
@@ -559,13 +571,13 @@ StatusCode log_cell_sense() {
   size_t thermistor_start = s_afe_temperature_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
 
   set_AFE_temperature_id(s_afe_temperature_message_index);
-  set_AFE_temperature_temperature_0((thermistor_start + 0U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 0U] : 0U);
-  set_AFE_temperature_temperature_1((thermistor_start + 1U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 1U] : 0U);
-  set_AFE_temperature_temperature_2((thermistor_start + 2U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 2U] : 0U);
-  set_AFE_temperature_temperature_3((thermistor_start + 3U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 3U] : 0U);
-  set_AFE_temperature_temperature_4((thermistor_start + 4U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 4U] : 0U);
-  set_AFE_temperature_temperature_5((thermistor_start + 5U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 5U] : 0U);
-  set_AFE_temperature_temperature_6((thermistor_start + 6U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 6U] : 0U);
+  set_AFE_temperature_temperature_0(AFE_THERMISTOR_TX(0U));
+  set_AFE_temperature_temperature_1(AFE_THERMISTOR_TX(1U));
+  set_AFE_temperature_temperature_2(AFE_THERMISTOR_TX(2U));
+  set_AFE_temperature_temperature_3(AFE_THERMISTOR_TX(3U));
+  set_AFE_temperature_temperature_4(AFE_THERMISTOR_TX(4U));
+  set_AFE_temperature_temperature_5(AFE_THERMISTOR_TX(5U));
+  set_AFE_temperature_temperature_6(AFE_THERMISTOR_TX(6U));
 
   s_afe_temperature_message_index = (s_afe_temperature_message_index + 1U) % NUM_AFE_TEMPERATURE_MSGS;
 
