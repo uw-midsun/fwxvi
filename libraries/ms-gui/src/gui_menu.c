@@ -35,9 +35,10 @@ static bool s_is_initalized = false;
 typedef enum {
   GUI_MENU_ITEM_INDEX_DRIVE = 0,
   GUI_MENU_ITEM_INDEX_PACK_MONITOR = 1,
-  GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE = 2,
-  GUI_MENU_ITEM_INDEX_PARTY_MODE = 3,
-  GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 4,
+  GUI_MENU_ITEM_INDEX_THERMISTORS = 2,
+  GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE = 3,
+  GUI_MENU_ITEM_INDEX_PARTY_MODE = 4,
+  GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 5,
 } GuiMenuIndex;
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
@@ -65,6 +66,11 @@ static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
     .type = GUI_MENU_ITEM_SCREEN,
     .action_label = "Pedal Calib",
     .target.screen_id = GUI_SCREEN_PEDAL_CALIB,
+  },
+  [GUI_MENU_ITEM_INDEX_THERMISTORS] = {
+    .type = GUI_MENU_ITEM_SCREEN,
+    .action_label = "Thermistor Monitor",
+    .target.screen_id = GUI_SCREEN_THERMISTORS,
   },
 };
 

@@ -66,14 +66,14 @@ static OutputGroupDef output_group_idle_group = {
   .outputs = { STEERING, TELEM, REV_CAM },
 };
 
-static OutputGroupDef output_group_d_r_indicators_group = {
-  .num_outputs = 2,
-  .outputs = { SPARE_1, DRIVER_FAN },
+static OutputGroupDef output_group_mppt_en_group = {
+  .num_outputs = 1,
+  .outputs = { SPARE_1 },
 };
 
 static OutputGroupDef output_group_drive_group = {
-  .num_outputs = 4,
-  .outputs = { STEERING, TELEM, REV_CAM, SPARE_1 },
+  .num_outputs = 3,
+  .outputs = { STEERING, TELEM, REV_CAM },
 };
 
 static OutputGroupDef output_group_reverse_group = {
@@ -114,7 +114,7 @@ static OutputGroupDef output_group_horn_group = {
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
   [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
-  [OUTPUT_GROUP_D_R_INDICATORS] = &output_group_d_r_indicators_group,
+  [OUTPUT_GROUP_MPPT_EN] = &output_group_mppt_en_group,
   [OUTPUT_GROUP_DRIVE] = &output_group_drive_group,
   [OUTPUT_GROUP_REVERSE] = &output_group_reverse_group,
   [OUTPUT_GROUP_LEFT_LIGHTS] = &output_group_left_lights_group,

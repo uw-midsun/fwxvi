@@ -42,40 +42,36 @@ static VehicleDriveState s_current_state = VEHICLE_DRIVE_NUM_STATES;
 static bool is_horn_enabled;
 static BrakeState s_brake_state;
 static bool started = false;
+static bool s_mppt_enabled = false;
 
 static void front_controller_state_manager_enter_state(VehicleDriveState new_state) {
   switch (new_state) {
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       if (s_current_state != VEHICLE_DRIVE_STATE_NEUTRAL || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_BRAKE:
       if (s_current_state != VEHICLE_DRIVE_STATE_BRAKE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_REGEN:
       if (s_current_state != VEHICLE_DRIVE_STATE_REGEN || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_DRIVE:
       if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_DRIVE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_REVERSE:
       if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_REVERSE, true);
       }
       break;
@@ -234,10 +230,12 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_from_rear = 0U;
   uint8_t bps_fault_live_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
+  uint8_t solar_relay_closed_from_rear = 0U;
 #else
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
   uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
+  uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
 #endif
 
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
@@ -310,6 +308,17 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   } else if (horn_enabled_from_steering == 0 && is_horn_enabled == true) {
     power_manager_set_output_group(OUTPUT_GROUP_HORN, false);
     is_horn_enabled = false;
+  }
+
+  // Handle MPPT / solar precharge sequencing. The MPPT load switch (SPARE_1) may only close once
+  // the rear solar relay is closed - otherwise the MPPTs free-run up to ~150V and dump their output
+  // capacitance across the relay when it later closes, arcing the contacts
+  if (solar_relay_closed_from_rear && !s_mppt_enabled) {
+    power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, true);
+    s_mppt_enabled = true;
+  } else if (!solar_relay_closed_from_rear && s_mppt_enabled) {
+    power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, false);
+    s_mppt_enabled = false;
   }
 
   // Handle lights
