@@ -28,18 +28,18 @@
 #include "lvgl_widgets.h"
 
 static TableWidget s_therm_table;
-static uint16_t s_thermistor_temp_c[NUMBER_OF_THERMISTORS];
+static uint16_t s_thermistor_mv[NUMBER_OF_THERMISTORS];
 static bool s_therm_widgets_initialized;
 
 static void s_format_cell(char *buf, uint8_t idx) {
-  snprintf(buf, THERM_CELL_TEXT_LEN, "T%02u\n%uC", idx + 1U, s_thermistor_temp_c[idx]);
+  snprintf(buf, THERM_CELL_TEXT_LEN, "T%02u\n%u.%03u", idx + 1U, s_thermistor_mv[idx] / 1000U, s_thermistor_mv[idx] % 1000U);
 }
 
 static StatusCode s_create_title_label(GuiScreen *screen) {
   const LabelWidgetConfig title_config = {
     .size = { .width = DISPLAY_WIDTH, .height = 20 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 4 } },
-    .label_text = "Thermistor Monitor (C)",
+    .label_text = "Thermistor Monitor (V)",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
@@ -99,12 +99,12 @@ StatusCode gui_therm_screen_init(GuiScreen *screen) {
 void gui_therm_screen_deinit(void) {
   s_therm_table = (TableWidget){ 0 };
   for (uint8_t i = 0U; i < NUMBER_OF_THERMISTORS; ++i) {
-    s_thermistor_temp_c[i] = 0U;
+    s_thermistor_mv[i] = 0U;
   }
   s_therm_widgets_initialized = false;
 }
 
-StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_temp_c) {
+StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_mv) {
   if (!s_therm_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -113,11 +113,11 @@ StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t th
     return STATUS_CODE_OUT_OF_RANGE;
   }
 
-  if (s_thermistor_temp_c[therm_idx] == thermistor_temp_c) {
+  if (s_thermistor_mv[therm_idx] == thermistor_mv) {
     return STATUS_CODE_OK;
   }
 
-  s_thermistor_temp_c[therm_idx] = thermistor_temp_c;
+  s_thermistor_mv[therm_idx] = thermistor_mv;
 
   char buf[THERM_CELL_TEXT_LEN];
   s_format_cell(buf, therm_idx);
@@ -133,9 +133,9 @@ StatusCode gui_therm_screen_init(GuiScreen *screen) {
 
 void gui_therm_screen_deinit(void) {}
 
-StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_temp_c) {
+StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_mv) {
   (void)therm_idx;
-  (void)thermistor_temp_c;
+  (void)thermistor_mv;
   return STATUS_CODE_OK;
 }
 

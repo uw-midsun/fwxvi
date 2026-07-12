@@ -39,9 +39,9 @@ void gui_therm_screen_deinit(void);
 /**
  * @brief   Update a thermistor table cell
  * @param   therm_idx Zero-based thermistor index
- * @param   thermistor_temp_c AFE thermistor temperature in whole degrees C
+ * @param   thermistor_mv Raw AFE thermistor voltage in mV (not temperature)
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_temp_c);
+StatusCode gui_therm_screen_widget_set_thermistor(uint8_t therm_idx, uint16_t thermistor_mv);
 
 /** @} */

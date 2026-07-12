@@ -67,9 +67,11 @@
     set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
   } while (0)
 
-#define AFE_THERMISTOR_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
+#define AFE_THERMISTOR_TX(offset) \
+  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
 
-#define AFE_TEMPERATURE_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
+#define AFE_TEMPERATURE_TX(offset) \
+  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
 
 /** @brief  Max number of retries for reading cell*/
 #define CELL_SENSE_MAX_RETRIES 10U
@@ -85,10 +87,11 @@
     }                                                                     \
   } while (0)
 
+  
 #define THERMISTORS_CONNECTED 1U
 #define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
-#define THERMISTOR_FAULTS_ENABLED 1U
+#define THERMISTOR_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 0U
 
@@ -331,16 +334,22 @@ static void s_disable_balancing() {
 static StatusCode s_check_thermistors() {
   StatusCode status = STATUS_CODE_OK;
 #if (THERMISTORS_CONNECTED == 1U)
-  /* Convert each raw thermistor reading to a temperature in-place so the AFE temperature message transmits degrees C */
+#if 0
+  uint16_t max_temp = 0U;
+
+  /* Loop over all devices and thermistors */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
       uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
       adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U);
 
-#if (THERMISTOR_FAULTS_ENABLED == 1U)
       /* Ignore temperature readings outside of the valid temperature range */
       if (adbms_afe_storage->thermistor_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
         continue;
+      }
+
+      if (adbms_afe_storage->thermistor_voltages[index] > max_temp) {
+        max_temp = adbms_afe_storage->thermistor_voltages[index];
       }
 
       if (rear_controller_storage->pack_current < 0) {
@@ -362,9 +371,9 @@ static StatusCode s_check_thermistors() {
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       }
-#endif
     }
   }
+#endif
 #endif
   return status;
 }
@@ -450,13 +459,14 @@ static StatusCode s_cell_sense_run() {
   uint8_t max_voltage_cell = 0U;
   uint8_t min_voltage_cell = 0U;
 #endif
-  // uint32_t total_voltage = 0;
+  uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
-      // total_voltage += current_cell_voltage;
+      total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
+      delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
@@ -474,17 +484,18 @@ static StatusCode s_cell_sense_run() {
     }
   }
 
-  // rear_controller_storage->pack_voltage = total_voltage / 10000.0f;
-  // set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
+  rear_controller_storage->pack_voltage = total_voltage / 10000.0f;
+  set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
   CONDITIONAL_LOG_DEBUG("PACK V: %d\r\n", (int)rear_controller_storage->pack_voltage);
+  delay_ms(10U);
   CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
+  delay_ms(10U);
 
   set_battery_stats_B_max_cell_voltage(max_voltage);
   set_battery_stats_B_min_cell_voltage(min_voltage);
 
-  /* BPS disabled from steering is a manual override: leave solar connected so it does not fight the RESET re-close */
-  if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD && !bps_is_disabled()) {
+  if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD) {
     relays_open_solar();
   }
 
@@ -526,7 +537,7 @@ static StatusCode s_cell_sense_run() {
 #endif
   s_cell_data_updated = true;
 
-#if (THERMISTORS_CONNECTED == 1U)
+#if (THERMISTOR_FAULTS_ENABLED == 1U)
   status_ok_or_return(s_check_thermistors());
 #endif
 
@@ -560,13 +571,13 @@ StatusCode log_cell_sense() {
   size_t thermistor_start = s_afe_temperature_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
 
   set_AFE_temperature_id(s_afe_temperature_message_index);
-  set_AFE_temperature_temperature_0(AFE_TEMPERATURE_TX(0U));
-  set_AFE_temperature_temperature_1(AFE_TEMPERATURE_TX(1U));
-  set_AFE_temperature_temperature_2(AFE_TEMPERATURE_TX(2U));
-  set_AFE_temperature_temperature_3(AFE_TEMPERATURE_TX(3U));
-  set_AFE_temperature_temperature_4(AFE_TEMPERATURE_TX(4U));
-  set_AFE_temperature_temperature_5(AFE_TEMPERATURE_TX(5U));
-  set_AFE_temperature_temperature_6(AFE_TEMPERATURE_TX(6U));
+  set_AFE_temperature_temperature_0(AFE_THERMISTOR_TX(0U));
+  set_AFE_temperature_temperature_1(AFE_THERMISTOR_TX(1U));
+  set_AFE_temperature_temperature_2(AFE_THERMISTOR_TX(2U));
+  set_AFE_temperature_temperature_3(AFE_THERMISTOR_TX(3U));
+  set_AFE_temperature_temperature_4(AFE_THERMISTOR_TX(4U));
+  set_AFE_temperature_temperature_5(AFE_THERMISTOR_TX(5U));
+  set_AFE_temperature_temperature_6(AFE_THERMISTOR_TX(6U));
 
   s_afe_temperature_message_index = (s_afe_temperature_message_index + 1U) % NUM_AFE_TEMPERATURE_MSGS;
 
