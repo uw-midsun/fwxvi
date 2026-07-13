@@ -25,16 +25,8 @@ static PersistStorage persist_storage;
 static RearControllerStorage *rear_controller_storage = NULL;
 
 bool bps_is_disabled(void) {
-  static bool s_steering_seen = false;
-  static bool s_bps_enabled_latched = true;
-
-  if (get_received_steering()) {
-    s_steering_seen = true;
-    s_bps_enabled_latched = get_steering_buttons_bps_enabled();
-  }
-
   /* Default to enabled until steering has been heard, so a zero-default bitfield never disables BPS at boot */
-  return s_steering_seen && !s_bps_enabled_latched;
+  return get_received_steering() && !get_steering_buttons_bps_enabled();
 }
 
 static void s_update_bps_fault_can_fields(void) {

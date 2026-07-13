@@ -39,6 +39,7 @@ typedef enum {
   GUI_MENU_ITEM_INDEX_TOGGLE_DISCHARGE = 3,
   GUI_MENU_ITEM_INDEX_PARTY_MODE = 4,
   GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 5,
+  GUI_MENU_ITEM_INDEX_TOGGLE_BPS = 6,
 } GuiMenuIndex;
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
@@ -72,6 +73,11 @@ static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
     .action_label = "Thermistor Monitor",
     .target.screen_id = GUI_SCREEN_THERMISTORS,
   },
+  [GUI_MENU_ITEM_INDEX_TOGGLE_BPS] = {
+    .type = GUI_MENU_ITEM_ACTION,
+    .action_label = "Toggle BPS",
+    .target.callback = NULL,
+  },
 };
 
 /**
@@ -99,6 +105,13 @@ static const char *s_get_item_label(uint8_t index) {
     static char s_discharge_label[24];
     snprintf(s_discharge_label, sizeof(s_discharge_label), "Cell Discharge: %s", s_menu.discharge_enabled ? "ON" : "OFF");
     return s_discharge_label;
+  }
+
+  /* The BPS row reflects the current broadcast state so the driver can see it at a glance */
+  if (index == GUI_MENU_ITEM_INDEX_TOGGLE_BPS) {
+    static char s_bps_label[16];
+    snprintf(s_bps_label, sizeof(s_bps_label), "BPS: %s", s_menu.bps_enabled ? "ON" : "OFF");
+    return s_bps_label;
   }
 
   return s_menu_items[index].action_label;
@@ -149,6 +162,7 @@ StatusCode gui_menu_init(void) {
   /* Save callback + toggle state */
   GuiMenuActionCallback party_mode_callback = s_menu.party_mode_callback;
   GuiMenuActionCallback toggle_discharge_callback = s_menu.toggle_discharge_callback;
+  GuiMenuActionCallback toggle_bps_callback = s_menu.toggle_bps_callback;
   bool discharge_enabled = s_menu.discharge_enabled;
 
   s_menu = (GuiMenuState){ 0 };
@@ -156,7 +170,9 @@ StatusCode gui_menu_init(void) {
 
   s_menu.party_mode_callback = party_mode_callback;
   s_menu.toggle_discharge_callback = toggle_discharge_callback;
+  s_menu.toggle_bps_callback = toggle_bps_callback;
   s_menu.discharge_enabled = discharge_enabled;
+  s_menu.bps_enabled = true;
 
   s_is_initalized = true;
   return STATUS_CODE_OK;
@@ -169,6 +185,11 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
 
 StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
   s_menu.toggle_discharge_callback = callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback) {
+  s_menu.toggle_bps_callback = callback;
   return STATUS_CODE_OK;
 }
 
@@ -441,6 +462,16 @@ StatusCode gui_menu_select(VehicleDriveState drive_state) {
           }
           break;
 
+        case GUI_MENU_ITEM_INDEX_TOGGLE_BPS:
+          if (s_menu.toggle_bps_callback != NULL) {
+            status = s_menu.toggle_bps_callback();
+            if (status != STATUS_CODE_OK) {
+              return status;
+            }
+            s_menu.bps_enabled = !s_menu.bps_enabled;
+          }
+          break;
+
         default:
           return STATUS_CODE_UNREACHABLE;
       }
@@ -468,6 +499,11 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback) {
 }
 
 StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback) {
+  (void)callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback) {
   (void)callback;
   return STATUS_CODE_OK;
 }

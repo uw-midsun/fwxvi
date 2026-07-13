@@ -184,7 +184,7 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
 
   } else if (current_screen == GUI_SCREEN_THERMISTORS) {
-    for (uint8_t i = 0; i < NUMBER_OF_THERMISTORS; ++i) status_ok_or_return(gui_therm_screen_widget_set_thermistor(i, display_data->thermistor_mv[i]));
+    for (uint8_t i = 0; i < NUMBER_OF_THERMISTORS; ++i) status_ok_or_return(gui_therm_screen_widget_set_thermistor(i, display_data->thermistor_temp_c[i]));
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_rx(steering_storage);
@@ -336,10 +336,9 @@ StatusCode display_rx_medium() {
 
   memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
 
-  /* AFE_temperature is paginated: each frame carries 7 raw thermistor readings for page `id`
-     (global index = id*7 + n). The rear controller sends the raw voltage's high byte (voltage >> 8,
-     ~25.6 mV/LSB), so reconstruct millivolts as byte * 256 / 10. These are raw voltages, not
-     temperatures - the conversion is unverified so we only display the uninterpreted reading. */
+  /* AFE_temperature is paginated: each frame carries 7 thermistor readings for page `id`
+     (global index = id*7 + n). The rear controller sends each reading already converted to a
+     temperature in whole degrees C, so store the byte directly. */
   uint16_t therm_base = (uint16_t)get_AFE_temperature_id() * 7U;
   const uint8_t therm_page[7] = {
     get_AFE_temperature_temperature_0(), get_AFE_temperature_temperature_1(), get_AFE_temperature_temperature_2(), get_AFE_temperature_temperature_3(),
@@ -348,7 +347,7 @@ StatusCode display_rx_medium() {
   for (uint8_t i = 0U; i < 7U; ++i) {
     uint16_t therm_idx = therm_base + i;
     if (therm_idx < NUMBER_OF_THERMISTORS) {
-      display_data->thermistor_mv[therm_idx] = (uint16_t)((uint32_t)therm_page[i] * 256U / 10U);
+      display_data->thermistor_temp_c[therm_idx] = therm_page[i];
     }
   }
 
