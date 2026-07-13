@@ -225,12 +225,14 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t is_regen_enabled_from_steering = get_steering_buttons_regen_enabled();
   uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
   uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
+  /* Default to BPS enabled until the first steering frame arrives so faults are honored at boot */
+  uint8_t bps_enabled_from_steering = !get_received_steering() || get_steering_buttons_bps_enabled();
 
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
                         front_controller_storage->brake_state);
 
-  // Handle BPS fault
-  if (bps_fault_from_rear) {
+  // Handle BPS fault. BPS disabled from steering is a manual override: ignore faults and allow drive
+  if (bps_fault_from_rear && bps_enabled_from_steering) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     if (bps_fault_live_from_rear) {
       /* Live runtime fault: block drive until a full power cycle */
@@ -241,7 +243,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     /* Persisted fault restored from flash: keep the BPS light on but allow the driver to
      * re-enter drive, which clears the fault on the rear. Fall through to normal handling. */
   } else {
-    // No fault (or it was just cleared by re-entering drive): turn the BPS light off
+    // No fault, cleared by re-entering drive, or BPS disabled: turn the BPS light off and recover from fault
     front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
     if (s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);

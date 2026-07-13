@@ -91,7 +91,7 @@ typedef struct {
   uint16_t max_cell_voltage_mv; /**< Maximum cell voltage reading (mV) */
   uint16_t max_cell_temp;       /**< Maximum cell temperature reading (C) */
 
-  uint16_t thermistor_mv[NUMBER_OF_THERMISTORS]; /**< Raw AFE thermistor voltages (mV), reconstructed from the 8-bit CAN scale (not temperature) */
+  uint16_t thermistor_temp_c[NUMBER_OF_THERMISTORS]; /**< AFE thermistor temperatures (whole degrees C) from the AFE_temperature message */
 
   float energy_used_wh; /**< Net energy drawn from the pack since power-on (Wh), integrated on the display */
 
