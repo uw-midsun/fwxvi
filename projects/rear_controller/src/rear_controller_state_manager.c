@@ -70,7 +70,10 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
 
     case REAR_CONTROLLER_STATE_FAULT:
       relays_disable_ws22_lv();
-      relays_reset();
+      /* Never physically open the contactors while BPS is overridden from steering */
+      if (!bps_is_disabled()) {
+        relays_reset();
+      }
       break;
     case REAR_CONTROLLER_STATE_START:
       relays_close_pos();
