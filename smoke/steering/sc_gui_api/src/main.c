@@ -122,10 +122,10 @@ static void s_update_demo_display_data(uint32_t step) {
   s_demo_storage.display_data.max_cell_temp = 30U + s_triangle_wave(step + 90U, 250U, 35U);
   s_demo_storage.display_data.state_of_charge = (uint8_t)s_triangle_wave(step + 30U, 320U, 100U);
 
-  /* Raw thermistor voltages (mV) for the Thermistors screen - stagger each channel so the table
-     shows independent motion, matching the ~0.5-4.5 V range a real NTC divider produces */
+  /* Thermistor temperatures (C) for the Thermistors screen - stagger each channel so the table
+     shows independent motion across a plausible ~20-45 C pack range */
   for (uint8_t i = 0U; i < NUMBER_OF_THERMISTORS; ++i) {
-    s_demo_storage.display_data.thermistor_mv[i] = 500U + s_triangle_wave(step + (uint32_t)i * 20U, 200U, 4000U);
+    s_demo_storage.display_data.thermistor_temp_c[i] = 20U + s_triangle_wave(step + (uint32_t)i * 20U, 200U, 25U);
   }
 
   /* Aux battery voltage in mV (~12.0-12.8 V) and net energy used ramp (Wh) */

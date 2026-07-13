@@ -14,7 +14,6 @@
 #include "log.h"
 
 /* Intra-component Headers */
-#include "accel_pedal.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
 #include "front_controller_state_manager.h"
@@ -202,28 +201,8 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
-  /* Get required values from steering */
-  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
-  uint8_t lights_from_steering = get_steering_buttons_lights();
-  uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
-
-  uint8_t is_regen_enabled_from_steering = get_steering_buttons_regen_enabled();
-  uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
-  uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
-
-  VehicleDriveState effective_drive_state = s_current_state;
-
-  if (s_current_state == VEHICLE_DRIVE_STATE_DRIVE && is_cruise_control_enabled) {
-    /* Raw filtered pedal value - the same field motor_can.c reads directly for DRIVE current control */
-    if (front_controller_storage->accel_pedal_storage->accel_percentage > front_controller_storage->config->accel_cc_override_deadzone) {
-      effective_drive_state = VEHICLE_DRIVE_STATE_DRIVE; /* Driver override: pedal controls current */
-    } else {
-      effective_drive_state = VEHICLE_DRIVE_STATE_CRUISE; /* Pedal released: resume speed control */
-    }
-  }
-
-  front_controller_storage->current_drive_state = effective_drive_state;
-  set_drive_status_state_data_drive_state(effective_drive_state);
+  front_controller_storage->current_drive_state = s_current_state;
+  set_drive_status_state_data_drive_state(front_controller_storage->current_drive_state);
 
   /* Get required values from rear */
 #if (IS_REAR_CONNECTED == 0U)
@@ -238,11 +217,22 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
 #endif
 
+  /* Get required values from steering */
+  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
+  uint8_t lights_from_steering = get_steering_buttons_lights();
+  uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
+
+  uint8_t is_regen_enabled_from_steering = get_steering_buttons_regen_enabled();
+  uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
+  uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
+  /* Default to BPS enabled until the first steering frame arrives so faults are honored at boot */
+  uint8_t bps_enabled_from_steering = !get_received_steering() || get_steering_buttons_bps_enabled();
+
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
                         front_controller_storage->brake_state);
 
-  // Handle BPS fault
-  if (bps_fault_from_rear) {
+  // Handle BPS fault. BPS disabled from steering is a manual override: ignore faults and allow drive
+  if (bps_fault_from_rear && bps_enabled_from_steering) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     if (bps_fault_live_from_rear) {
       /* Live runtime fault: block drive until a full power cycle */
@@ -253,7 +243,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     /* Persisted fault restored from flash: keep the BPS light on but allow the driver to
      * re-enter drive, which clears the fault on the rear. Fall through to normal handling. */
   } else {
-    // No fault (or it was just cleared by re-entering drive): turn the BPS light off
+    // No fault, cleared by re-entering drive, or BPS disabled: turn the BPS light off and recover from fault
     front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
     if (s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);

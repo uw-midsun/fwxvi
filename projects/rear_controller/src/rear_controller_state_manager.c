@@ -74,8 +74,8 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       break;
     case REAR_CONTROLLER_STATE_START:
       relays_close_pos();
-      relays_close_solar();
       relays_close_neg();
+      relays_close_solar();
       started = true;
       break;
   }
@@ -116,9 +116,10 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
 
     case REAR_CONTROLLER_STATE_FAULT:
       if (event == REAR_CONTROLLER_EVENT_RESET) {
+        /* Establish both pack contactors first, then connect solar last */
         StatusCode status = relays_close_pos();
-        status = relays_close_solar();
         status = relays_close_neg();
+        status = relays_close_solar();
 
         if (status == STATUS_CODE_OK) {
           rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_IDLE);
@@ -155,6 +156,15 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
   CONDITIONAL_LOG_DEBUG("Current state: %d\r\n", s_current_state);
   if (s_current_state == REAR_CONTROLLER_STATE_START && started == false) {
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_START);
+    return STATUS_CODE_OK;
+  }
+
+  /* BPS disabled from steering is a full manual reset: clear the latched + persisted fault and re-close relays */
+  if (bps_is_disabled() && (rear_controller_storage->bps_fault_record.fault_code != 0U || s_current_state == REAR_CONTROLLER_STATE_FAULT)) {
+    if (rear_controller_storage->bps_fault_record.fault_code != 0U) {
+      bps_fault_clear();
+    }
+    rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_RESET);
     return STATUS_CODE_OK;
   }
 

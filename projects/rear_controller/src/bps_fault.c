@@ -15,6 +15,7 @@
 /* Intra-component Headers */
 #include "bps_fault.h"
 #include "rear_controller.h"
+#include "rear_controller_getters.h"
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
@@ -22,6 +23,11 @@
 
 static PersistStorage persist_storage;
 static RearControllerStorage *rear_controller_storage = NULL;
+
+bool bps_is_disabled(void) {
+  /* Default to enabled until steering has been heard, so a zero-default bitfield never disables BPS at boot */
+  return get_received_steering() && !get_steering_buttons_bps_enabled();
+}
 
 static void s_update_bps_fault_can_fields(void) {
   set_rear_controller_status_triggers_bps_fault(rear_controller_storage->bps_fault_record.fault_code);
@@ -40,7 +46,7 @@ StatusCode bps_fault_init(RearControllerStorage *storage) {
   rear_controller_storage->bps_fault_cell = 0U;
 
   // TODO: Uncomment this when ready to test BPS faults
-  // status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
+  status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
 
   /* If a fault was latched before power-down, broadcast it on the first medium cycle so the
    * front controller blinks the BPS light on startup until drive state is entered */
@@ -79,6 +85,11 @@ StatusCode trigger_bps_fault_with_data(BpsFault fault, uint8_t cell_at_fault, Bp
 
   if (fault >= NUM_BPS_FAULTS) {
     return STATUS_CODE_INVALID_ARGS;
+  }
+
+  /* BPS disabled from steering: fully ignore the fault (no latch, no broadcast, no relay open) */
+  if (bps_is_disabled()) {
+    return STATUS_CODE_OK;
   }
 
   /* Latch the detail snapshot of the first (root) fault; do not overwrite while a fault is active */
