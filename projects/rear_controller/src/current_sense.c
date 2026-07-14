@@ -107,9 +107,8 @@ static StatusCode csense_interpret_data(float *output_voltage) {
       *output_voltage = current_sense_configs.fsr;
     } else {
       if (negative) {
-        cs_conversion_data = ~cs_conversion_data;
-        cs_conversion_data++;
-        cs_conversion_data = cs_conversion_data & 0xFFFFFF;
+        cs_conversion_data = (cs_conversion_data << 24) ^ 1;
+        cs_conversion_data = (cs_conversion_data << 32) ^ 1;
       }
       *output_voltage = (float)(cs_conversion_data * current_sense_configs.fsr) / (float)(1 << 23);
     }
@@ -130,7 +129,7 @@ StatusCode current_sense_run() {
 
   status = csense_interpret_data(&csense_voltage_diff_V);
 
-  if (status != STATUS_CODE_OK || status != STATUS_CODE_RESOURCE_EXHAUSTED) {
+  if (status != STATUS_CODE_OK && status != STATUS_CODE_RESOURCE_EXHAUSTED) {
     if (csense_retries < REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
       csense_retries++;
       return STATUS_CODE_OK;
