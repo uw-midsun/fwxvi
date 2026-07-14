@@ -89,8 +89,8 @@ StatusCode ads122_start_conversion(ADS122Storage *storage) {
 }
 
 StatusCode ads122_reset(ADS122Storage *storage) {
-  if(storage == NULL) {
-	return STATUS_CODE_INVALID_ARGS;
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   uint8_t conversion_ctrl = 0b010110;
@@ -100,8 +100,8 @@ StatusCode ads122_reset(ADS122Storage *storage) {
 }
 
 StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
-  if(storage == NULL) {
-	return STATUS_CODE_INVALID_ARGS;
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
   }
 
   status_ok_or_return(ads122_write_register(storage, MUX_CFG, ADS122_REG_MUX_CFG));
