@@ -101,10 +101,6 @@ StatusCode rear_controller_state_manager_step(RearControllerEvent event) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  if (event == REAR_CONTROLLER_EVENT_FAULT && bps_is_disabled()) {
-    return STATUS_CODE_OK;
-  }
-
   switch (s_current_state) {
     case REAR_CONTROLLER_STATE_IDLE:
       if (event == REAR_CONTROLLER_EVENT_DRIVE_REQUEST)
