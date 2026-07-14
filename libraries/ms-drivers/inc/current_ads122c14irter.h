@@ -299,4 +299,6 @@ StatusCode ads122_start_conversion(ADS122Storage *storage);
  */
 StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG);
 
+StatusCode ads122_reset(ADS122Storage *storage);
+
 /** @} */
