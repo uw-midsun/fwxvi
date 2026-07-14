@@ -304,8 +304,7 @@ StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, flo
     s_format_signed_1dp(pack_current_str, sizeof(pack_current_str), pack_current);
     s_format_signed_1dp(motor_current_str, sizeof(motor_current_str), motor_bus_current);
     s_format_signed_1dp(solar_current_str, sizeof(solar_current_str), motor_bus_current - pack_current);
-    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %sA | M: %uV, %sA | S: %sA", (unsigned)pack_voltage, pack_current_str, (unsigned)motor_bus_voltage, motor_current_str,
-             solar_current_str);
+    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %sA | M: %uV, %sA | S: %sA", (unsigned)pack_voltage, pack_current_str, (unsigned)motor_bus_voltage, motor_current_str, solar_current_str);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);

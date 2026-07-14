@@ -67,11 +67,9 @@
     set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
   } while (0)
 
-#define AFE_THERMISTOR_TX(offset) \
-  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
+#define AFE_THERMISTOR_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
 
-#define AFE_TEMPERATURE_TX(offset) \
-  (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
+#define AFE_TEMPERATURE_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
 
 /** @brief  Max number of retries for reading cell*/
 #define CELL_SENSE_MAX_RETRIES 10U
@@ -87,7 +85,6 @@
     }                                                                     \
   } while (0)
 
-  
 #define THERMISTORS_CONNECTED 1U
 #define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
