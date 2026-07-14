@@ -74,3 +74,7 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
   memset(s_conversion_data, *rx_data, 5U);
   return STATUS_CODE_OK;
 }
+
+StatusCode ads122_reset(ADS122Storage *storage) {
+  return STATUS_CODE_OK;
+}
