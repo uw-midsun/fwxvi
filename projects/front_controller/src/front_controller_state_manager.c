@@ -14,6 +14,7 @@
 #include "log.h"
 
 /* Intra-component Headers */
+#include "accel_pedal.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
 #include "front_controller_state_manager.h"
@@ -201,8 +202,28 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
-  front_controller_storage->current_drive_state = s_current_state;
-  set_drive_status_state_data_drive_state(front_controller_storage->current_drive_state);
+  /* Get required values from steering */
+  uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
+  uint8_t lights_from_steering = get_steering_buttons_lights();
+  uint8_t horn_enabled_from_steering = get_steering_buttons_horn_enabled();
+
+  uint8_t is_regen_enabled_from_steering = get_steering_buttons_regen_enabled();
+  uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
+  uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
+
+  VehicleDriveState effective_drive_state = s_current_state;
+
+  if (s_current_state == VEHICLE_DRIVE_STATE_DRIVE && is_cruise_control_enabled) {
+    /* Raw filtered pedal value - the same field motor_can.c reads directly for DRIVE current control */
+    if (front_controller_storage->accel_pedal_storage->accel_percentage > front_controller_storage->config->accel_cc_override_deadzone) {
+      effective_drive_state = VEHICLE_DRIVE_STATE_DRIVE; /* Driver override: pedal controls current */
+    } else {
+      effective_drive_state = VEHICLE_DRIVE_STATE_CRUISE; /* Pedal released: resume speed control */
+    }
+  }
+
+  front_controller_storage->current_drive_state = effective_drive_state;
+  set_drive_status_state_data_drive_state(effective_drive_state);
 
   /* Get required values from rear */
 #if (IS_REAR_CONNECTED == 0U)
