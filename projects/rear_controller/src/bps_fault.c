@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <string.h>
 
 /* Inter-component Headers */
 #include "persist.h"
@@ -24,9 +25,14 @@
 static PersistStorage persist_storage;
 static RearControllerStorage *rear_controller_storage = NULL;
 
+static BpsFaultRecord s_committed_record;
+
 bool bps_is_disabled(void) {
-  /* Default to enabled until steering has been heard, so a zero-default bitfield never disables BPS at boot */
-  return get_received_steering() && !get_steering_buttons_bps_enabled();
+  static bool s_steering_ever_heard = false;
+  if (get_received_steering()) {
+    s_steering_ever_heard = true;
+  }
+  return s_steering_ever_heard && !get_steering_buttons_bps_enabled();
 }
 
 static void s_update_bps_fault_can_fields(void) {
@@ -48,6 +54,9 @@ StatusCode bps_fault_init(RearControllerStorage *storage) {
   // TODO: Uncomment this when ready to test BPS faults
   status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
 
+  /* Flash now matches the loaded record; seed the shadow so bps_fault_commit() skips redundant writes */
+  s_committed_record = rear_controller_storage->bps_fault_record;
+
   /* If a fault was latched before power-down, broadcast it on the first medium cycle so the
    * front controller blinks the BPS light on startup until drive state is entered */
   if (rear_controller_storage->bps_fault_record.fault_code != 0U) {
@@ -62,8 +71,13 @@ StatusCode bps_fault_commit() {
     return STATUS_CODE_UNINITIALIZED;
   }
 
+  /* Always refresh the broadcast fields; only touch flash when the persisted record actually changed */
   s_update_bps_fault_can_fields();
-  persist_commit(&persist_storage);
+
+  if ( mp(&s_committed_record, &rear_controller_storage->bps_fault_record, sizeof(s_committed_record)) != 0) {
+    persist_commit(&persist_storage);
+    s_committed_record = rear_controller_storage->bps_fault_record;
+  }
 
   return STATUS_CODE_OK;
 }
