@@ -74,7 +74,7 @@ StatusCode bps_fault_commit() {
   /* Always refresh the broadcast fields; only touch flash when the persisted record actually changed */
   s_update_bps_fault_can_fields();
 
-  if ( mp(&s_committed_record, &rear_controller_storage->bps_fault_record, sizeof(s_committed_record)) != 0) {
+  if (mp(&s_committed_record, &rear_controller_storage->bps_fault_record, sizeof(s_committed_record)) != 0) {
     persist_commit(&persist_storage);
     s_committed_record = rear_controller_storage->bps_fault_record;
   }
