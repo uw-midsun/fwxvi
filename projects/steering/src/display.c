@@ -155,6 +155,9 @@ static void s_process_pending_menu_input(void) {
 static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
 
+  /* BPS fault warning floats above every screen (ASC 2026 8.7.B), independent of the current screen */
+  status_ok_or_return(gui_widgets_bps_popup_update(display_data->bps_fault, display_data->bps_fault_cell));
+
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     status_ok_or_return(gui_widgets_set_top_label((uint16_t)display_data->pack_voltage, (uint16_t)(int16_t)display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
                                                   steering_storage->ws22_motor_can_storage->telemetry.bus_current, display_data->bps_fault, display_data->bps_fault_cell,

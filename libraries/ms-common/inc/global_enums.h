@@ -63,10 +63,17 @@ typedef enum {
 } VehiclePowerStates;
 
 /**
- * @brief   Signal and BPS light blink period in milliseconds
+ * @brief   Blink frequency for all indicator/strobe lights (turn signals + BPS strobe).
+ * @details Regulation requires 60-120 pulses per minute (1-2 Hz); 1.5 Hz = 90 ppm sits mid-band.
+ *          One pulse is a full on+off cycle and the software timer toggles the output every
+ *          callback, so the toggle period is half the pulse period: 1000 / (2 * freq) ms.
  */
-#define GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS 400U
-#define GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS 200U
+#define GLOBAL_LIGHTS_BLINK_FREQUENCY_HZ 1.5f
+#define GLOBAL_LIGHTS_BLINK_PERIOD_MS ((uint32_t)(1000.0f / (2.0f * GLOBAL_LIGHTS_BLINK_FREQUENCY_HZ)))
+
+/* Both signal and BPS lights share the one in-spec rate above */
+#define GLOBAL_SIGNAL_LIGHTS_BLINK_PERIOD_MS GLOBAL_LIGHTS_BLINK_PERIOD_MS
+#define GLOBAL_BPS_LIGHTS_BLINK_PERIOD_MS GLOBAL_LIGHTS_BLINK_PERIOD_MS
 
 /**
  * @brief   WS22 motor limit and error flags

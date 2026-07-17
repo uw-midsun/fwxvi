@@ -319,7 +319,7 @@ StatusCode i2c_read_mem(I2CPort i2c, I2CAddress addr, uint8_t mem_addr, uint8_t 
     return STATUS_CODE_TIMEOUT;
   }
 
-  HAL_StatusTypeDef hal_status = HAL_I2C_Mem_Read(&s_i2c_handles[i2c], addr << 1U, mem_addr, I2C_MEMADD_SIZE_8BIT, rx_data, rx_len, HAL_MAX_DELAY);
+  HAL_StatusTypeDef hal_status = HAL_I2C_Mem_Read(&s_i2c_handles[i2c], addr << 1U, mem_addr, I2C_MEMADD_SIZE_8BIT, rx_data, rx_len, I2C_TIMEOUT_MS);
 
   xSemaphoreGive(s_i2c_port_handle[i2c]);
 

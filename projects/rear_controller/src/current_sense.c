@@ -23,7 +23,7 @@
 #include "rear_controller_setters.h"
 #include "rear_controller_state_manager.h"
 
-#define CSENSE_FAULTS_ENABLED 0U
+#define CSENSE_FAULTS_ENABLED 1U
 
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
@@ -41,6 +41,19 @@ static CurrentSenseConfigs current_sense_configs = {
   .fsr = 5, .mux_config_shunt = 0x67, .mux_config_hv = 0x01, .shunt_resistance_ohm = 0.0005, .resistance_R6_ohm = 1000000U, .resistance_R7_ohm = 20000U
 };
 static CsenseStates csense_state = CSENSE_HV_BUS;
+
+/**
+ * @brief   Consecutive-event counters for current-sense fault debouncing.
+ * @details Mirrors the cell-sense counter pattern: each counter grows while its condition holds and
+ *          clears on the first good sample, and the fault latches once the streak crosses threshold.
+ */
+typedef struct {
+  uint32_t comms_retries; /**< consecutive ADS122 I2C transaction failures */
+  uint32_t overcurrents;  /**< consecutive over-limit pack-current samples */
+  uint32_t overvoltages;  /**< consecutive over-limit pack-voltage samples */
+} CsenseFaultCounters;
+
+static CsenseFaultCounters s_csense_counters = { 0U };
 
 static uint8_t register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
@@ -88,9 +101,6 @@ static inline StatusCode csense_handle_retries(uint32_t *retries, StatusCode sta
 }
 
 StatusCode current_sense_run() {
-  static uint32_t retries = 0U;
-  static uint32_t overcurrents = 0U;
-  static uint32_t overvoltages = 0U;
   static bool is_reading = false;
   static bool read_current = true;
 
@@ -98,7 +108,7 @@ StatusCode current_sense_run() {
   if (is_reading) {
     uint8_t conversion_data_raw[5U];
     status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
-    status_ok_or_return(csense_handle_retries(&retries, status));
+    status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
     bool data_ready = conversion_data_raw[0] & 0x01;
     if (!data_ready) {
@@ -116,30 +126,34 @@ StatusCode current_sense_run() {
       rear_controller_storage->pack_current = current_A;
       set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
 
+      /* Debounce: require several consecutive over-limit current samples before latching a fault */
       if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {
-        overcurrents++;
-        if (overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
+        s_csense_counters.overcurrents++;
+        if (s_csense_counters.overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
 #if (CSENSE_FAULTS_ENABLED == 1)
-          BpsFaultData oc_data = { .current = { .current_a = csense_current_A } };
+          BpsFaultData oc_data = { .current = { .current_a = current_A } };
           trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
 #endif
         }
       } else {
-        overcurrents = 0U;
+        s_csense_counters.overcurrents = 0U;
         read_current = false;
       }
     } else {
       float hv_voltage_V = voltage_V * (current_sense_configs.resistance_R6_ohm + current_sense_configs.resistance_R7_ohm) / current_sense_configs.resistance_R7_ohm;
 
+      rear_controller_storage->pack_voltage = hv_voltage_V;
+      set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
+
       if (hv_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
-        overvoltages++;
-        if (overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
+        s_csense_counters.overvoltages++;
+        if (s_csense_counters.overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
 #if (CSENSE_FAULTS_ENABLED == 1)
           trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
 #endif
         }
       } else {
-        overvoltages = 0U;
+        s_csense_counters.overvoltages = 0U;
         read_current = true;
       }
     }
@@ -147,14 +161,14 @@ StatusCode current_sense_run() {
   } else {
     if (read_current) {
       status = ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_shunt);
-      status_ok_or_return(csense_handle_retries(&retries, status));
+      status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
     } else {
-      status = ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_shunt);
-      status_ok_or_return(csense_handle_retries(&retries, status));
+      status = ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_hv);
+      status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
     }
 
     status = ads122_start_conversion(&rear_controller_storage->ads122_storage);
-    status_ok_or_return(csense_handle_retries(&retries, status));
+    status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
     is_reading = true;
   }
