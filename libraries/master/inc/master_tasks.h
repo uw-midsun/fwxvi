@@ -25,17 +25,17 @@
 
 #ifndef MASTER_TASK_50HZ_SIZE
 /** @brief  Number of bytes statically allocated for 50hz task */
-#define MASTER_TASK_50HZ_SIZE (TASK_STACK_512)
+#define MASTER_TASK_50HZ_SIZE (TASK_STACK_1024)
 #endif
 
 #ifndef MASTER_TASK_3HZ_SIZE
 /** @brief  Number of bytes statically allocated for 3hz task */
-#define MASTER_TASK_3HZ_SIZE (TASK_STACK_512)
+#define MASTER_TASK_3HZ_SIZE (TASK_STACK_1024)
 #endif
 
 #ifndef MASTER_TASK_1HZ_SIZE
 /** @brief  Number of bytes statically allocated for 1hz task */
-#define MASTER_TASK_1HZ_SIZE (TASK_STACK_256)
+#define MASTER_TASK_1HZ_SIZE (TASK_STACK_1024)
 #endif
 
 #define MASTER_50HZ_TO_MS 20U

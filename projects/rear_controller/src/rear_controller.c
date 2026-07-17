@@ -81,6 +81,7 @@ StatusCode rear_controller_init(RearControllerStorage *storage, RearControllerCo
   rear_controller_storage->bps_fault_cell = 0U;
   rear_controller_storage->bps_fault_live = false;
 
+
   /* Initialize hardware peripherals */
   can_init(&s_can_storage, &s_can_settings);
   flash_init();
