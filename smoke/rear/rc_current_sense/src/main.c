@@ -30,18 +30,18 @@
 #include "rear_controller_hw_defs.h"
 
 /* ADS122 config mirrored from current_sense.c (rev 3 / IS_USING_CURRENT_SENSE_REV_3) */
-#define CSENSE_FSR 5                          /**< Full-scale range: Vref(2.5V) / Gain(0.5) */
-#define CSENSE_MUX_SHUNT 0x67                 /**< AIN6 (+) / AIN7 (-): shunt current path */
-#define CSENSE_MUX_HV 0x01                    /**< AIN0 (+) / AIN1 (-): HV divider path */
-#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f   /**< 0.5 mOhm current-sense shunt */
-#define CSENSE_R6_OHM 1000000.0f              /**< HV divider top resistor */
-#define CSENSE_R7_OHM 20000.0f                /**< HV divider bottom resistor */
+#define CSENSE_FSR 5                        /**< Full-scale range: Vref(2.5V) / Gain(0.5) */
+#define CSENSE_MUX_SHUNT 0x67               /**< AIN6 (+) / AIN7 (-): shunt current path */
+#define CSENSE_MUX_HV 0x01                  /**< AIN0 (+) / AIN1 (-): HV divider path */
+#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f /**< 0.5 mOhm current-sense shunt */
+#define CSENSE_R6_OHM 1000000.0f            /**< HV divider top resistor */
+#define CSENSE_R7_OHM 20000.0f              /**< HV divider bottom resistor */
 
 #define CSENSE_CONVERSION_FULL_SCALE (1 << 23) /**< 24-bit signed ADC full-scale */
 #define CSENSE_DATA_READY_MASK 0x01U
 #define CSENSE_DRDY_POLL_TIMEOUT_MS 100U
 #define CSENSE_SAMPLE_PERIOD_MS 500U
-#define CSENSE_CLOSE_RELAYS_DELAY_MS 250U     /**< Settle time after driving a relay enable (mirrors relays.c) */
+#define CSENSE_CLOSE_RELAYS_DELAY_MS 250U /**< Settle time after driving a relay enable (mirrors relays.c) */
 
 static ADS122Storage s_ads122_storage;
 
@@ -58,9 +58,9 @@ static GpioAddress s_neg_relay_en = GPIO_REAR_CONTROLLER_NEG_RELAY_ENABLE;
 
 static uint8_t s_register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                     ADS122_REG_DATA_RATE_CFG_DEFAULT,
-                                    (ADS122_REG_MUX_CFG_DEFAULT | 0x01),        /* reads voltage first */
-                                    ADS122_REG_GAIN_CFG_DEFAULT,                /* Gain = 0.5 */
-                                    (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04),  /* Vref = 2.5 V -> +-5 V range */
+                                    (ADS122_REG_MUX_CFG_DEFAULT | 0x01),       /* reads voltage first */
+                                    ADS122_REG_GAIN_CFG_DEFAULT,               /* Gain = 0.5 */
+                                    (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04), /* Vref = 2.5 V -> +-5 V range */
                                     (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
                                     ADS122_REG_GPIO_CFG_DEFAULT,
                                     ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
