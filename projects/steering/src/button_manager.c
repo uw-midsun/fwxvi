@@ -26,6 +26,7 @@
 #include "drive_state_manager.h"
 #include "global_enums.h"
 #include "gui_menu.h"
+#include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
@@ -131,7 +132,8 @@ static void hazards_btn_falling_edge_cb(Button *button) {
     return;
   }
 
-  if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+  if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
+    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
     steering_pedal_calib_request(steering_storage);
     return;
   }

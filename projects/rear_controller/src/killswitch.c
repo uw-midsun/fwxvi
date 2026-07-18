@@ -22,7 +22,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-#define KILLSWITCH_ENABLED 0U
+#define KILLSWITCH_ENABLED 1U
 
 static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 

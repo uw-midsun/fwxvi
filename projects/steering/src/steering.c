@@ -69,6 +69,13 @@ static StatusCode s_toggle_bps(void) {
   return STATUS_CODE_OK;
 }
 
+StatusCode steering_force_disable_bps(void) {
+  s_bps_enabled = false;
+  set_steering_buttons_bps_enabled(false);
+  gui_menu_set_bps_enabled(false);
+  return STATUS_CODE_OK;
+}
+
 /************************************************************************************************
  * Settings definitions
  ************************************************************************************************/

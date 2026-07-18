@@ -138,4 +138,13 @@ typedef struct {
  */
 StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config);
 
+/**
+ * @brief   Force BPS protection off (SECURE MODE OFF) regardless of the current state
+ * @details Broadcasts the disabled BPS-enable state to the rear controller and syncs the menu's
+ *          mirrored SECURE MODE label. Used when the driver acknowledges a BPS fault by leaving the
+ *          fault takeover screen.
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode steering_force_disable_bps(void);
+
 /** @} */

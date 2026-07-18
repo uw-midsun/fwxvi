@@ -193,6 +193,11 @@ StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback) {
   return STATUS_CODE_OK;
 }
 
+StatusCode gui_menu_set_bps_enabled(bool enabled) {
+  s_menu.bps_enabled = enabled;
+  return STATUS_CODE_OK;
+}
+
 StatusCode gui_menu_request_toggle(void) {
   taskENTER_CRITICAL();
   s_pending_requests.toggle_requested = true;
@@ -505,6 +510,11 @@ StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback
 
 StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback) {
   (void)callback;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_menu_set_bps_enabled(bool enabled) {
+  (void)enabled;
   return STATUS_CODE_OK;
 }
 

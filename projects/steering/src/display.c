@@ -19,6 +19,7 @@
 #include "gui_drive_screen.h"
 #include "gui_menu.h"
 #include "gui_pack_screen.h"
+#include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
 #include "gui_therm_screen.h"
 #include "gui_widgets.h"
@@ -39,6 +40,23 @@
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
+
+/* BPS-fault takeover lifecycle. Instead of a dedicated fault screen (extra RAM), a live BPS fault
+ * reuses the pedal-calib screen with fault styling forced on. */
+typedef enum {
+  FAULT_UI_IDLE = 0,     /* No fault handling in progress */
+  FAULT_UI_ACTIVE,       /* Fault takeover shown on the pedal-calib screen */
+  FAULT_UI_ACKNOWLEDGED, /* Driver dismissed the takeover (BPS disabled); waiting for the fault to clear */
+} FaultUiState;
+
+static FaultUiState s_fault_ui_state = FAULT_UI_IDLE;
+
+/* Screen the driver was viewing before a BPS fault forced the takeover screen, restored on clear */
+static GuiScreenId s_screen_before_fault = GUI_SCREEN_DRIVE;
+
+/* Last fault detail pushed to the takeover screen, so we only re-render on change */
+static uint16_t s_last_fault_code;
+static uint8_t s_last_fault_cell;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -125,7 +143,8 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
-  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
+    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
     if (return_pressed_edge) {
       steering_pedal_calib_request(steering_storage);
     }
@@ -154,6 +173,56 @@ static void s_process_pending_menu_input(void) {
 
 static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
+  bool fault_live = (display_data->bps_fault != 0U);
+
+  /* A live BPS fault takes over the whole display (ASC 2026 8.7.B). Rather than allocate a dedicated
+   * fault screen, we reuse the pedal-calib screen with fault styling forced on. The driver dismisses
+   * the takeover by navigating away (which disables BPS), or it clears automatically if the fault
+   * goes away on its own. */
+  switch (s_fault_ui_state) {
+    case FAULT_UI_IDLE:
+      if (fault_live) {
+        s_screen_before_fault = current_screen;
+        status_ok_or_return(gui_screens_show(GUI_SCREEN_PEDAL_CALIB));
+        s_last_fault_code = display_data->bps_fault;
+        s_last_fault_cell = display_data->bps_fault_cell;
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, s_last_fault_code, s_last_fault_cell));
+        s_fault_ui_state = FAULT_UI_ACTIVE;
+        return gui_render();
+      }
+      break;
+
+    case FAULT_UI_ACTIVE:
+      if (!fault_live) {
+        /* Fault cleared on its own: drop the fault styling and return to the prior screen. */
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(false, 0U, 0U));
+        status_ok_or_return(gui_screens_show(s_screen_before_fault));
+        s_fault_ui_state = FAULT_UI_IDLE;
+        current_screen = gui_screens_get_current();
+        break;
+      }
+      if (current_screen != GUI_SCREEN_PEDAL_CALIB) {
+        /* Driver navigated away = acknowledged the fault: force SECURE MODE off and stop forcing the
+         * takeover until the fault re-asserts. The pedal-calib screen (and its fault flag) was torn
+         * down by the navigation, so no styling teardown is needed here. */
+        status_ok_or_return(steering_force_disable_bps());
+        s_fault_ui_state = FAULT_UI_ACKNOWLEDGED;
+        break;
+      }
+      /* Still on the takeover screen: refresh the fault detail only when it changes. */
+      if (display_data->bps_fault != s_last_fault_code || display_data->bps_fault_cell != s_last_fault_cell) {
+        s_last_fault_code = display_data->bps_fault;
+        s_last_fault_cell = display_data->bps_fault_cell;
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, s_last_fault_code, s_last_fault_cell));
+      }
+      return gui_render();
+
+    case FAULT_UI_ACKNOWLEDGED:
+      if (!fault_live) {
+        s_fault_ui_state = FAULT_UI_IDLE;
+      }
+      break;
+  }
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     status_ok_or_return(gui_widgets_set_top_label((uint16_t)display_data->pack_voltage, (uint16_t)(int16_t)display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,

@@ -104,6 +104,15 @@ StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback
 StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback);
 
 /**
+ * @brief   Force the menu's mirrored BPS-enable state (SECURE MODE row label)
+ * @details Used when BPS is disabled outside the menu (e.g. acknowledging a BPS fault) so the row
+ *          label reflects the true broadcast state without invoking the toggle callback.
+ * @param   enabled New BPS-enable state to mirror in the menu
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_menu_set_bps_enabled(bool enabled);
+
+/**
  * @brief   Queue a menu toggle request for processing on the display task
  * @return  STATUS_CODE_OK on success, error otherwise
  */

@@ -27,6 +27,13 @@
 static LabelWidget s_status_label;
 static LabelWidget s_subtitle_label;
 static bool s_pedal_calib_widgets_initialized;
+static GuiScreen *s_screen;
+static bool s_fault_active;
+
+static lv_color_t s_gui_palette_color(GuiColorId color_id) {
+  ClutEntry color = clut_get_gui_color(color_id);
+  return lv_color_make(clut_entry_red(color), clut_entry_green(color), clut_entry_blue(color));
+}
 
 static StatusCode s_create_status_label(GuiScreen *screen) {
   const LabelWidgetConfig status_label_config = {
@@ -84,6 +91,8 @@ StatusCode gui_pedal_calib_screen_init(GuiScreen *screen) {
   status_ok_or_return(s_create_status_label(screen));
   status_ok_or_return(s_create_subtitle_label(screen));
 
+  s_screen = screen;
+  s_fault_active = false;
   s_pedal_calib_widgets_initialized = true;
   return STATUS_CODE_OK;
 }
@@ -91,7 +100,53 @@ StatusCode gui_pedal_calib_screen_init(GuiScreen *screen) {
 void gui_pedal_calib_screen_deinit(void) {
   s_status_label = (LabelWidget){ 0 };
   s_subtitle_label = (LabelWidget){ 0 };
+  s_screen = NULL;
+  s_fault_active = false;
   s_pedal_calib_widgets_initialized = false;
+}
+
+StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_code, uint8_t cell_at_fault) {
+  if (!s_pedal_calib_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if (fault_active) {
+    lv_color_t fg_color = s_gui_palette_color(GUI_COLOR_BPS_FAULT_TEXT);
+
+    status_ok_or_return(lvgl_set_background_color(s_screen, GUI_COLOR_BPS_FAULT_BACKGROUND));
+
+    lv_obj_set_style_text_color(s_status_label.label, fg_color, 0);
+    lv_obj_set_style_text_color(s_subtitle_label.label, fg_color, 0);
+    lv_obj_set_style_text_font(s_subtitle_label.label, GUI_MEDIUM_TEXT, 0);
+    status_ok_or_return(lvgl_widgets_set_label_text(&s_status_label, "BPS FAULT"));
+
+    bool is_cell_fault = false;
+    const char *fault_text = gui_widgets_bps_fault_text(fault_code, &is_cell_fault);
+    char detail_buffer[LABEL_MAX_CHARS];
+    if (is_cell_fault && cell_at_fault != 0U) {
+      snprintf(detail_buffer, sizeof(detail_buffer), "%s\nCell %u", fault_text, cell_at_fault);
+    } else {
+      snprintf(detail_buffer, sizeof(detail_buffer), "%s", fault_text);
+    }
+    status_ok_or_return(lvgl_widgets_set_label_text(&s_subtitle_label, detail_buffer));
+  } else {
+    lv_color_t fg_color = s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY);
+
+    status_ok_or_return(lvgl_set_background_color(s_screen, GUI_COLOR_SCREEN_BACKGROUND));
+
+    lv_obj_set_style_text_color(s_status_label.label, fg_color, 0);
+    lv_obj_set_style_text_color(s_subtitle_label.label, fg_color, 0);
+    lv_obj_set_style_text_font(s_subtitle_label.label, GUI_SMALL_TEXT, 0);
+    status_ok_or_return(lvgl_widgets_set_label_text(&s_status_label, "Pedal Calibration"));
+    status_ok_or_return(lvgl_widgets_set_label_text(&s_subtitle_label, "press to continue"));
+  }
+
+  s_fault_active = fault_active;
+  return STATUS_CODE_OK;
+}
+
+bool gui_pedal_calib_screen_is_fault_active(void) {
+  return s_fault_active;
 }
 
 StatusCode gui_pedal_calib_widget_big_text(const char *text) {
@@ -135,6 +190,17 @@ StatusCode gui_pedal_calib_widget_big_text(const char *text) {
 StatusCode gui_pedal_calib_widget_subtitle_text(const char *text) {
   (void)text;
   return STATUS_CODE_OK;
+}
+
+StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_code, uint8_t cell_at_fault) {
+  (void)fault_active;
+  (void)fault_code;
+  (void)cell_at_fault;
+  return STATUS_CODE_OK;
+}
+
+bool gui_pedal_calib_screen_is_fault_active(void) {
+  return false;
 }
 
 #endif
