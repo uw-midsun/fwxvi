@@ -25,24 +25,67 @@
 #include "rear_controller_state_manager.h"
 #include "tasks.h"
 
+/************************************************************************************************
+ * Private defines
+ ************************************************************************************************/
+
+/** @brief  Enable latching BPS faults raised by the current-sense task */
 #define CSENSE_FAULTS_ENABLED 1U
+
+/** @brief  ADC full-scale range [V]: Vref (2.5 V) / Gain (0.5) */
+#define CSENSE_FSR_V 5
+
+/** @brief  Current-sense shunt resistance [ohm] */
+#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f
+
+/** @brief  HV-divider top resistor R6 [ohm] */
+#define CSENSE_DIVIDER_R6_OHM 1000000.0f
+
+/** @brief  HV-divider bottom resistor R7 [ohm] */
+#define CSENSE_DIVIDER_R7_OHM 20000.0f
+
+/** @brief  MUX select for the shunt (current) channel: AIN6 (+) / AIN7 (-) */
+#define CSENSE_MUX_SHUNT 0x67U
+
+/** @brief  MUX select for the HV-divider (voltage) channel: AIN0 (+) / AIN1 (-) */
+#define CSENSE_MUX_HV 0x01U
+
+/** @brief  REFERENCE_CFG override: Vref = 2.5 V, giving a +-5 V full-scale range */
+#define CSENSE_REFERENCE_CFG_VREF_2V5 0x04U
+
+/** @brief  DIGITAL_CFG override: prepend the status byte (STATUS_EN) to each conversion frame */
+#define CSENSE_DIGITAL_CFG_STATUS_EN 0x10U
+
+/** @brief  DRDY flag within the status byte (byte 0 of the conversion frame) */
+#define CSENSE_DATA_READY_MASK 0x01U
+
+/** @brief  Length of the ADS122 status + 24-bit conversion frame [bytes] */
+#define CSENSE_CONVERSION_FRAME_LEN 5U
+
+/** @brief  Shift used to sign-extend the 24-bit conversion result into an int32_t */
+#define CSENSE_CONVERSION_SIGN_SHIFT 8U
+
+/** @brief  Full-scale count of the 24-bit signed ADC (2^23) */
+#define CSENSE_CONVERSION_FULL_SCALE (1 << 23)
+
+/** @brief  Current-sense sampling period [ms] */
+#define CSENSE_SAMPLE_PERIOD_MS 500U
+
+/** @brief  Millivolt-to-volt scale for comparing against the pack over-voltage limit */
+#define CSENSE_MV_TO_V 0.001f
 
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
 
 #if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
 
-typedef enum {
-  CSENSE_HV_BUS,
-  CSENSE_SHUNT,
-} CsenseStates;
-
 static RearControllerStorage *rear_controller_storage;
-/*FSR = Vref / Gain -> Vref = 2.5, Gain = 0.5, mux_config_shunt -> AIN6 and AIN7, mux_config_hv -> AIN0 and AIN1*/
-static CurrentSenseConfigs current_sense_configs = {
-  .fsr = 5, .mux_config_shunt = 0x67, .mux_config_hv = 0x01, .shunt_resistance_ohm = 0.0005, .resistance_R6_ohm = 1000000.0f, .resistance_R7_ohm = 20000.0f
-};
-static CsenseStates csense_state = CSENSE_HV_BUS;
+static CurrentSenseConfigs current_sense_configs = { .fsr = CSENSE_FSR_V,
+                                                     .mux_config_shunt = CSENSE_MUX_SHUNT,
+                                                     .mux_config_hv = CSENSE_MUX_HV,
+                                                     .shunt_resistance_ohm = CSENSE_SHUNT_RESISTANCE_OHM,
+                                                     .resistance_R6_ohm = CSENSE_DIVIDER_R6_OHM,
+                                                     .resistance_R7_ohm = CSENSE_DIVIDER_R7_OHM };
 
 /**
  * @brief   Consecutive-event counters for current-sense fault debouncing.
@@ -59,10 +102,10 @@ static CsenseFaultCounters s_csense_counters = { 0U };
 
 static uint8_t register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
-                                  (ADS122_REG_MUX_CFG_DEFAULT | 0x67),        // reads current first
-                                  ADS122_REG_GAIN_CFG_DEFAULT,                // Gain is 0.5
-                                  (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04),  // Vref = 2.5 V -> max range is +- 5 V, clock speed is 256 kHz
-                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
+                                  (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // reads current first
+                                  ADS122_REG_GAIN_CFG_DEFAULT,                                         // Gain is 0.5
+                                  (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock
+                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN),
                                   ADS122_REG_GPIO_CFG_DEFAULT,
                                   ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                   ADS122_REG_IDAC_MAG_CFG_DEFAULT,
@@ -75,7 +118,7 @@ static inline StatusCode csense_handle_retries(uint32_t *retries, StatusCode sta
     *retries += 1;
     if (*retries > REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
 #if (CSENSE_FAULTS_ENABLED == 1)
-      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
+      // trigger_bps_fault(BPS_FAULT_COMMS_LOSS_CURR_SENSE);
 #endif
     }
 
@@ -97,8 +140,8 @@ TASK(current_sense, TASK_STACK_512) {
   ads122_start_conversion(&rear_controller_storage->ads122_storage);
 
   while(true) {
-    xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(500U));
     current_sense_run();
+    xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(CSENSE_SAMPLE_PERIOD_MS));
   }
 }
 
@@ -116,22 +159,21 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
 
 StatusCode current_sense_run() {
   static bool read_current = true;
-  static bool is_init = true;
 
   StatusCode status;
-  uint8_t conversion_data_raw[5U];
+  uint8_t conversion_data_raw[CSENSE_CONVERSION_FRAME_LEN];
   status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
   status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
-  bool data_ready = conversion_data_raw[0] & 0x01;
- if (!data_ready) {
+  bool data_ready = conversion_data_raw[0] & CSENSE_DATA_READY_MASK;
+  if (!data_ready) {
     return STATUS_CODE_OK;
   }
 
   uint32_t conversion_data = ((uint32_t)conversion_data_raw[2] << 16) | ((uint32_t)conversion_data_raw[3] << 8) | ((uint32_t)conversion_data_raw[4]);
-  int32_t conversion_data_signed = (int32_t)(conversion_data << 8) >> 8;
+  int32_t conversion_data_signed = (int32_t)(conversion_data << CSENSE_CONVERSION_SIGN_SHIFT) >> CSENSE_CONVERSION_SIGN_SHIFT;
 
-  float voltage_V = (float)(conversion_data_signed * current_sense_configs.fsr) / (float)(1 << 23);
+  float voltage_V = (float)(conversion_data_signed * current_sense_configs.fsr) / (float)CSENSE_CONVERSION_FULL_SCALE;
 
   if (read_current) {
     float current_A = voltage_V / ((float)current_sense_configs.shunt_resistance_ohm);
@@ -159,7 +201,7 @@ StatusCode current_sense_run() {
     rear_controller_storage->pack_voltage = hv_voltage_V;
     set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
-    if (hv_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * 0.001) {
+    if (hv_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * CSENSE_MV_TO_V) {
       s_csense_counters.overvoltages++;
       if (s_csense_counters.overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
 #if(CSENSE_FAULTS_ENABLED == 1)

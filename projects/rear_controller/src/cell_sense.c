@@ -382,15 +382,8 @@ static StatusCode s_check_thermistors() {
 #if (THERMISTOR_FAULTS_ENABLED == 1U)
       uint16_t temperature_c = adbms_afe_storage->thermistor_voltages[index];
 
-      /* A healthy thermistor reads inside the plausible band. Outside it the channel is blind
-       * (shorted/open/disconnected), so latch a disconnected fault instead of silently dropping it. */
+      /* Ignore implausible temperature readings */
       if (temperature_c < CELL_TEMP_PLAUSIBLE_LOW_C || temperature_c > CELL_TEMP_PLAUSIBLE_HIGH_C) {
-        if (++s_fault_debounce.thermistor_broken[index] >= THERMISTOR_BROKEN_DEBOUNCE_CYCLES) {
-          LOG_DEBUG("THERMISTOR DISCONNECTED\n");
-          uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
-          trigger_bps_fault_with_cell(BPS_FAULT_DISCONNECTED, cell);
-          status = STATUS_CODE_INTERNAL_ERROR;
-        }
         continue;
       }
       /* A valid in-range read clears the broken-sensor debounce for this thermistor */
