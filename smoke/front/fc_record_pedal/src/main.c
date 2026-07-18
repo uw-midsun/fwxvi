@@ -44,6 +44,7 @@ typedef struct PedalCalibrationData {
 typedef struct __attribute__((aligned(4))) PedalPersistData {
   PedalCalibrationData accel_pedal_data;
   PedalCalibrationData brake_pedal_data;
+  int32_t power_consumption_wh;
 } PedalPersistData;
 
 PedalPersistData persist_data = { 0 };
