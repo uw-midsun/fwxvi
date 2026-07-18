@@ -479,12 +479,12 @@ static StatusCode s_cell_sense_run() {
   uint8_t max_voltage_cell = 0U;
   uint8_t min_voltage_cell = 0U;
 #endif
-  // uint32_t total_voltage = 0;
+  uint32_t total_voltage = 0;
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
-      // total_voltage += current_cell_voltage;
+      total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
       delay_ms(12U);
 
@@ -504,8 +504,8 @@ static StatusCode s_cell_sense_run() {
     }
   }
 
-  // rear_controller_storage->pack_voltage = total_voltage / 10000.0f;
-  // set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
+  rear_controller_storage->pack_voltage = total_voltage / 10000.0f;
+  set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
   CONDITIONAL_LOG_DEBUG("PACK V: %d\r\n", (int)rear_controller_storage->pack_voltage);
   delay_ms(10U);

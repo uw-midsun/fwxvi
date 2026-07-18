@@ -285,6 +285,18 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
 StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage);
 
 /**
+ * @brief Configure (or re-configure) the ADS122 device registers
+ * @details Runs the device-side bring-up only (ID check, reset, fault-flag clear, register map
+ *          write) without touching the I2C peripheral. Safe to re-run after the device has been
+ *          power-cycled, unlike ads122_init which also calls i2c_init. Requires ads122_init to
+ *          have populated the storage i2c_port / i2c_address beforehand.
+ * @param storage - pointer to an ADS122Storage struct with i2c_port / i2c_address populated
+ * @param register_map - array of register inits
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]);
+
+/**
  * @brief Start the conversion of the ADS122 driver
  * @param storage - pointer to an initalized ADS122Storage struct
  * @return STATUS_CODE_OK on success

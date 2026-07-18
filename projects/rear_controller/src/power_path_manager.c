@@ -138,7 +138,7 @@ StatusCode power_path_manager_run(void) {
 
   set_power_input_stats_input_dcdc_voltage((int16_t)rear_controller_storage->pcs_voltage);
   set_power_input_stats_input_dcdc_current((int16_t)rear_controller_storage->pcs_current);
-  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->pcs_voltage);
+  set_power_input_stats_input_aux_voltage((int16_t)rear_controller_storage->aux_voltage);
   set_power_input_stats_input_aux_current((int16_t)rear_controller_storage->aux_current);
 
   return STATUS_CODE_OK;

@@ -87,17 +87,6 @@ StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, flo
 const char *gui_widgets_bps_fault_text(uint16_t fault, bool *is_cell_fault);
 
 /**
- * @brief   Show/refresh/hide the full-screen BPS fault popup based on the live fault bitmask
- * @details Draws a high-visibility overlay on the LVGL top layer so a BPS fault is warned on every
- *          screen (ASC 2026 8.7.B), and tears it down once the fault bitmask clears. Safe to call
- *          every render cycle; the overlay is created lazily on the first fault.
- * @param   bps_fault Active BPS fault bitmask (0 = no fault)
- * @param   cell_at_fault One-based cell index for cell-related faults, or 0 if not applicable
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_widgets_bps_popup_update(uint16_t bps_fault, uint8_t cell_at_fault);
-
-/**
  * @brief   Update the text for the cell stats label
  * @param   min_cell_voltage_mv The minimum cell voltage in mV
  * @param   max_cell_voltage_mv The maximum cell voltage in mV

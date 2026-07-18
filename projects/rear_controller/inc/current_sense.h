@@ -30,10 +30,7 @@
 typedef struct {
   int32_t fsr;                /* FSR = Vref / Gain */
   uint8_t mux_config_shunt;   /* shunt inputs */
-  uint8_t mux_config_hv;      /* HV_bus inputs*/
   float shunt_resistance_ohm; /* shunt resistance in ohms*/
-  float resistance_R6_ohm; /* resistance of R6 in ohms*/
-  float resistance_R7_ohm; /* resistance of R7 in ohms */
 } CurrentSenseConfigs;
 
 #endif

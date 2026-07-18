@@ -38,17 +38,11 @@
 /** @brief  Current-sense shunt resistance [ohm] */
 #define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f
 
-/** @brief  HV-divider top resistor R6 [ohm] */
-#define CSENSE_DIVIDER_R6_OHM 1000000.0f
-
-/** @brief  HV-divider bottom resistor R7 [ohm] */
-#define CSENSE_DIVIDER_R7_OHM 20000.0f
-
 /** @brief  MUX select for the shunt (current) channel: AIN6 (+) / AIN7 (-) */
 #define CSENSE_MUX_SHUNT 0x67U
 
-/** @brief  MUX select for the HV-divider (voltage) channel: AIN0 (+) / AIN1 (-) */
-#define CSENSE_MUX_HV 0x01U
+/** @brief  DEVICE_CFG override: CONV_MODE = 0 -> continuous conversion, speed mode 0 */
+#define CSENSE_DEVICE_CFG_CONTINUOUS 0x00U
 
 /** @brief  REFERENCE_CFG override: Vref = 2.5 V, giving a +-5 V full-scale range */
 #define CSENSE_REFERENCE_CFG_VREF_2V5 0x04U
@@ -71,21 +65,13 @@
 /** @brief  Current-sense sampling period [ms] */
 #define CSENSE_SAMPLE_PERIOD_MS 500U
 
-/** @brief  Millivolt-to-volt scale for comparing against the pack over-voltage limit */
-#define CSENSE_MV_TO_V 0.001f
-
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
 
 #if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
 
 static RearControllerStorage *rear_controller_storage;
-static CurrentSenseConfigs current_sense_configs = { .fsr = CSENSE_FSR_V,
-                                                     .mux_config_shunt = CSENSE_MUX_SHUNT,
-                                                     .mux_config_hv = CSENSE_MUX_HV,
-                                                     .shunt_resistance_ohm = CSENSE_SHUNT_RESISTANCE_OHM,
-                                                     .resistance_R6_ohm = CSENSE_DIVIDER_R6_OHM,
-                                                     .resistance_R7_ohm = CSENSE_DIVIDER_R7_OHM };
+static CurrentSenseConfigs current_sense_configs = { .fsr = CSENSE_FSR_V, .mux_config_shunt = CSENSE_MUX_SHUNT, .shunt_resistance_ohm = CSENSE_SHUNT_RESISTANCE_OHM };
 
 /**
  * @brief   Consecutive-event counters for current-sense fault debouncing.
@@ -95,14 +81,13 @@ static CurrentSenseConfigs current_sense_configs = { .fsr = CSENSE_FSR_V,
 typedef struct {
   uint32_t comms_retries; /**< consecutive ADS122 I2C transaction failures */
   uint32_t overcurrents;  /**< consecutive over-limit pack-current samples */
-  uint32_t overvoltages;  /**< consecutive over-limit pack-voltage samples */
 } CsenseFaultCounters;
 
 static CsenseFaultCounters s_csense_counters = { 0U };
 
-static uint8_t register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
+static uint8_t register_map[] = { CSENSE_DEVICE_CFG_CONTINUOUS,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
-                                  (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // reads current first
+                                  (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
                                   ADS122_REG_GAIN_CFG_DEFAULT,                                         // Gain is 0.5
                                   (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock
                                   (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN),
@@ -158,8 +143,6 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
 }
 
 StatusCode current_sense_run() {
-  static bool read_current = true;
-
   StatusCode status;
   uint8_t conversion_data_raw[CSENSE_CONVERSION_FRAME_LEN];
   status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
@@ -174,48 +157,23 @@ StatusCode current_sense_run() {
   int32_t conversion_data_signed = (int32_t)(conversion_data << CSENSE_CONVERSION_SIGN_SHIFT) >> CSENSE_CONVERSION_SIGN_SHIFT;
 
   float voltage_V = (float)(conversion_data_signed * current_sense_configs.fsr) / (float)CSENSE_CONVERSION_FULL_SCALE;
+  float current_A = voltage_V / ((float)current_sense_configs.shunt_resistance_ohm);
 
-  if (read_current) {
-    float current_A = voltage_V / ((float)current_sense_configs.shunt_resistance_ohm);
+  rear_controller_storage->pack_current = current_A;
+  set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
 
-    rear_controller_storage->pack_current = current_A;
-    set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
-
-    /* Debounce: require several consecutive over-limit current samples before latching a fault */
-    if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {
-      s_csense_counters.overcurrents++;
-      if (s_csense_counters.overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
-#if(CSENSE_FAULTS_ENABLED == 1)
-        BpsFaultData oc_data = { .current = { .current_a = current_A } };
-        trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
+  /* Debounce: require several consecutive over-limit current samples before latching a fault */
+  if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {
+    s_csense_counters.overcurrents++;
+    if (s_csense_counters.overcurrents > OVERCURRENT_RESPONSE_LOOPS) {
+#if (CSENSE_FAULTS_ENABLED == 1)
+      BpsFaultData oc_data = { .current = { .current_a = current_A } };
+      trigger_bps_fault_with_data(BPS_FAULT_OVERCURRENT, 0U, oc_data);
 #endif
-      }
-    } else {
-      s_csense_counters.overcurrents = 0U;
-      ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_hv);
-      read_current = false;
     }
   } else {
-    float hv_voltage_V = voltage_V * (current_sense_configs.resistance_R6_ohm + current_sense_configs.resistance_R7_ohm) / current_sense_configs.resistance_R7_ohm;
-
-    rear_controller_storage->pack_voltage = hv_voltage_V;
-    set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
-
-    if (hv_voltage_V > PACK_OVERVOLTAGE_LIMIT_mV * CSENSE_MV_TO_V) {
-      s_csense_counters.overvoltages++;
-      if (s_csense_counters.overvoltages > OVERCURRENT_RESPONSE_LOOPS) {
-#if(CSENSE_FAULTS_ENABLED == 1)
-        trigger_bps_fault(BPS_FAULT_OVERVOLTAGE);
-#endif
-      }
-    } else {
-      s_csense_counters.overvoltages = 0U;
-      ads122_change_MUX(&rear_controller_storage->ads122_storage, current_sense_configs.mux_config_shunt);
-      read_current = true;
-    }
+    s_csense_counters.overcurrents = 0U;
   }
-
-  ads122_start_conversion(&rear_controller_storage->ads122_storage);
 
   return STATUS_CODE_OK;
 }

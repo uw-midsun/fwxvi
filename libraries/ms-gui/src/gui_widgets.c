@@ -37,13 +37,6 @@ static LabelWidget s_aux_energy_label;
 
 static bool s_widgets_initialized;
 
-/* Top-layer BPS fault popup, floated above every screen so a fault is warned regardless of the
- * screen the driver is on (ASC 2026 8.7.B). Torn down when the fault bitmask clears. */
-static lv_obj_t *s_bps_popup_overlay;
-static lv_obj_t *s_bps_popup_title;
-static lv_obj_t *s_bps_popup_detail;
-static bool s_bps_popup_shown;
-
 const char *gui_widgets_bps_fault_text(uint16_t fault, bool *is_cell_fault) {
   if (is_cell_fault == NULL) {
     return "BPS FAULT";
@@ -367,87 +360,6 @@ StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
   return lvgl_widgets_set_label_text(&s_aux_energy_label, text_buffer);
 }
 
-StatusCode gui_widgets_bps_popup_update(uint16_t bps_fault, uint8_t cell_at_fault) {
-  /* No live fault: tear the overlay down if it is up and we are done */
-  if (bps_fault == 0U) {
-    if (s_bps_popup_shown) {
-      lv_obj_delete(s_bps_popup_overlay);
-      s_bps_popup_overlay = NULL;
-      s_bps_popup_title = NULL;
-      s_bps_popup_detail = NULL;
-      s_bps_popup_shown = false;
-    }
-    return STATUS_CODE_OK;
-  }
-
-  /* Lazily build the popup on the top layer so it floats above every screen (and under the menu,
-   * which is created later, so the driver can still navigate while the warning stays up) */
-  if (!s_bps_popup_shown) {
-    GuiScreen *top_layer = lvgl_get_top_layer();
-    if (top_layer == NULL) {
-      return STATUS_CODE_INTERNAL_ERROR;
-    }
-
-    ClutEntry bg = clut_get_gui_color(GUI_COLOR_BPS_FAULT_BACKGROUND);
-    ClutEntry fg = clut_get_gui_color(GUI_COLOR_BPS_FAULT_TEXT);
-    lv_color_t bg_color = lv_color_make(clut_entry_red(bg), clut_entry_green(bg), clut_entry_blue(bg));
-    lv_color_t fg_color = lv_color_make(clut_entry_red(fg), clut_entry_green(fg), clut_entry_blue(fg));
-
-    s_bps_popup_overlay = lv_obj_create(top_layer);
-    if (s_bps_popup_overlay == NULL) {
-      return STATUS_CODE_INTERNAL_ERROR;
-    }
-    lv_obj_remove_style_all(s_bps_popup_overlay);
-    lv_obj_set_size(s_bps_popup_overlay, LV_PCT(84), LV_PCT(56));
-    lv_obj_center(s_bps_popup_overlay);
-    lv_obj_clear_flag(s_bps_popup_overlay, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_scrollbar_mode(s_bps_popup_overlay, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_bg_color(s_bps_popup_overlay, bg_color, 0);
-    lv_obj_set_style_bg_opa(s_bps_popup_overlay, LV_OPA_COVER, 0);
-    lv_obj_set_style_border_color(s_bps_popup_overlay, fg_color, 0);
-    lv_obj_set_style_border_width(s_bps_popup_overlay, 3, 0);
-    lv_obj_set_style_radius(s_bps_popup_overlay, 10, 0);
-
-    s_bps_popup_title = lv_label_create(s_bps_popup_overlay);
-    if (s_bps_popup_title == NULL) {
-      lv_obj_delete(s_bps_popup_overlay);
-      s_bps_popup_overlay = NULL;
-      return STATUS_CODE_INTERNAL_ERROR;
-    }
-    lv_label_set_text(s_bps_popup_title, "BPS FAULT");
-    lv_obj_set_style_text_color(s_bps_popup_title, fg_color, 0);
-    lv_obj_set_style_text_font(s_bps_popup_title, GUI_BIG_TEXT, 0);
-    lv_obj_align(s_bps_popup_title, LV_ALIGN_CENTER, 0, -30);
-
-    s_bps_popup_detail = lv_label_create(s_bps_popup_overlay);
-    if (s_bps_popup_detail == NULL) {
-      lv_obj_delete(s_bps_popup_overlay);
-      s_bps_popup_overlay = NULL;
-      s_bps_popup_title = NULL;
-      return STATUS_CODE_INTERNAL_ERROR;
-    }
-    lv_obj_set_style_text_color(s_bps_popup_detail, fg_color, 0);
-    lv_obj_set_style_text_font(s_bps_popup_detail, GUI_MEDIUM_TEXT, 0);
-    lv_obj_set_style_text_align(s_bps_popup_detail, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_align(s_bps_popup_detail, LV_ALIGN_CENTER, 0, 30);
-
-    s_bps_popup_shown = true;
-  }
-
-  /* Refresh the detail line each cycle so the specific fault (and cell) always reflect latest state */
-  bool is_cell_fault = false;
-  const char *fault_text = gui_widgets_bps_fault_text(bps_fault, &is_cell_fault);
-  char detail_buffer[LABEL_MAX_CHARS];
-  if (is_cell_fault && cell_at_fault != 0U) {
-    snprintf(detail_buffer, sizeof(detail_buffer), "%s\nCell %u", fault_text, cell_at_fault);
-  } else {
-    snprintf(detail_buffer, sizeof(detail_buffer), "%s", fault_text);
-  }
-  lv_label_set_text(s_bps_popup_detail, detail_buffer);
-
-  return STATUS_CODE_OK;
-}
-
 #else
 StatusCode gui_widgets_init(void) {
   return STATUS_CODE_OK;
@@ -491,12 +403,6 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
 StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
   (void)aux_mv;
   (void)energy_wh;
-  return STATUS_CODE_OK;
-}
-
-StatusCode gui_widgets_bps_popup_update(uint16_t bps_fault, uint8_t cell_at_fault) {
-  (void)bps_fault;
-  (void)cell_at_fault;
   return STATUS_CODE_OK;
 }
 

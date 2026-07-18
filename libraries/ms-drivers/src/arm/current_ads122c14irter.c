@@ -108,18 +108,9 @@ StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage) {
-  if (storage == NULL || register_map == NULL || i2c_settings_storage == NULL) {
+StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]) {
+  if (storage == NULL || register_map == NULL) {
     return STATUS_CODE_INVALID_ARGS;
-  }
-
-  storage->i2c_port = i2c_port_storage;
-  storage->i2c_address = i2c_address_storage;
-  storage->i2c_settings = *i2c_settings_storage;
-
-  StatusCode status = i2c_init(i2c_port_storage, i2c_settings_storage);
-  if (status != STATUS_CODE_OK) {
-    return status;
   }
 
   /* Ensure the device is powered on and communicating*/
@@ -140,6 +131,20 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   status_ok_or_return(ads122_write_all_registers(storage, register_map, ADS122_CONFIG_REGISTERS));
 
   return STATUS_CODE_OK;
+}
+
+StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage) {
+  if (storage == NULL || register_map == NULL || i2c_settings_storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  storage->i2c_port = i2c_port_storage;
+  storage->i2c_address = i2c_address_storage;
+  storage->i2c_settings = *i2c_settings_storage;
+
+  status_ok_or_return(i2c_init(i2c_port_storage, i2c_settings_storage));
+
+  return ads122_configure(storage, register_map);
 }
 
 StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]) {

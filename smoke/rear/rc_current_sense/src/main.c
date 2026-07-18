@@ -112,13 +112,12 @@ static void s_close_pack_relays(void) {
 }
 
 TASK(rc_current_sense_smoke, TASK_STACK_1024) {
-  i2c_init(REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, &s_i2c_settings);
+  /* Close the relays FIRST so relay bring-up never depends on the ADC. */
+  s_close_pack_relays();
 
   if (ads122_init(&s_ads122_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR, s_register_map, &s_i2c_settings) != STATUS_CODE_OK) {
     LOG_DEBUG("ADS122 init FAILED\r\n");
   }
-
-  s_close_pack_relays();
 
   while (true) {
     LOG_DEBUG("---- RC CURRENT SENSE SMOKE ----\r\n");
