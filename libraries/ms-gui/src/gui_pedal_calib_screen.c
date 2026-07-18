@@ -17,6 +17,7 @@
 /* Intra-component Headers */
 #include "clut.h"
 #include "display_defs.h"
+#include "global_enums.h"
 #include "gui_pedal_calib_screen.h"
 #include "gui_widgets.h"
 
@@ -124,6 +125,10 @@ StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_co
     const char *fault_text = gui_widgets_bps_fault_text(fault_code, &is_cell_fault);
     char detail_buffer[LABEL_MAX_CHARS];
     if (is_cell_fault && cell_at_fault != 0U) {
+      if (fault_code & BPS_FAULT_OVERTEMP_CELL_MASK && (cell_at_fault == 8U || cell_at_fault == 17U)) {
+        snprintf(detail_buffer, sizeof(detail_buffer), "\nExternal Thermistor %u", cell_at_fault);
+      }
+
       snprintf(detail_buffer, sizeof(detail_buffer), "%s\nCell %u", fault_text, cell_at_fault);
     } else {
       snprintf(detail_buffer, sizeof(detail_buffer), "%s", fault_text);
