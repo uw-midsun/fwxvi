@@ -41,8 +41,8 @@
 /** @brief  MUX select for the shunt (current) channel: AIN6 (+) / AIN7 (-) */
 #define CSENSE_MUX_SHUNT 0x67U
 
-/** @brief  DEVICE_CFG override: CONV_MODE = 0 -> continuous conversion, speed mode 0 */
-#define CSENSE_DEVICE_CFG_CONTINUOUS 0x00U
+/** @brief  DEVICE_CFG: CONV_MODE = 1 -> single-shot; START each sample and poll DRDY (mirrors the working smoke test) */
+#define CSENSE_DEVICE_CFG_SINGLE_SHOT ADS122_REG_DEVICE_CFG_DEFAULT
 
 /** @brief  REFERENCE_CFG override: Vref = 2.5 V, giving a +-5 V full-scale range */
 #define CSENSE_REFERENCE_CFG_VREF_2V5 0x04U
@@ -65,6 +65,13 @@
 /** @brief  Current-sense sampling period [ms] */
 #define CSENSE_SAMPLE_PERIOD_MS 500U
 
+/** @brief  Delay between ADC bring-up retries when the initial config fails [ms] */
+#define CSENSE_CONFIG_RETRY_MS 50U
+
+/** @brief  Timeout / step while polling DRDY for a single-shot conversion to complete [ms] */
+#define CSENSE_DRDY_POLL_TIMEOUT_MS 100U
+#define CSENSE_DRDY_POLL_STEP_MS 2U
+
 static int32_t csense_overcurrents;
 static int32_t csense_overvoltages;
 
@@ -85,7 +92,7 @@ typedef struct {
 
 static CsenseFaultCounters s_csense_counters = { 0U };
 
-static uint8_t register_map[] = { CSENSE_DEVICE_CFG_CONTINUOUS,
+static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
                                   (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
                                   ADS122_REG_GAIN_CFG_DEFAULT,                                         // Gain is 0.5
@@ -119,9 +126,11 @@ TASK(current_sense, TASK_STACK_512) {
 
   I2CSettings i2c_settings = { .speed = I2C_SPEED_FAST, .sda = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SDA_GPIO, .scl = GPIO_REAR_CONTROLLER_CURRENT_SENSE_I2C_SCL_GPIO };
 
-  ads122_init(&rear_controller_storage->ads122_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR, register_map, &i2c_settings);
-
-  ads122_start_conversion(&rear_controller_storage->ads122_storage);
+  StatusCode status = ads122_init(&rear_controller_storage->ads122_storage, REAR_CONTROLLER_CURRENT_SENSE_I2C_PORT, REAR_CONTOLLER_CURRENT_SENSE_ADC122_I2C_ADDR, register_map, &i2c_settings);
+  while (status != STATUS_CODE_OK) {
+    delay_ms(CSENSE_CONFIG_RETRY_MS);
+    status = ads122_configure(&rear_controller_storage->ads122_storage, register_map);
+  }
 
   while (true) {
     current_sense_run();
@@ -142,14 +151,25 @@ StatusCode current_sense_init(RearControllerStorage *storage) {
 }
 
 StatusCode current_sense_run() {
-  StatusCode status;
   uint8_t conversion_data_raw[CSENSE_CONVERSION_FRAME_LEN];
-  status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
+
+  StatusCode status = ads122_start_conversion(&rear_controller_storage->ads122_storage);
   status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
-  bool data_ready = conversion_data_raw[0] & CSENSE_DATA_READY_MASK;
+  bool data_ready = false;
+  for (uint32_t elapsed = 0U; elapsed < CSENSE_DRDY_POLL_TIMEOUT_MS; elapsed += CSENSE_DRDY_POLL_STEP_MS) {
+    status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
+    status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
+
+    if (conversion_data_raw[0] & CSENSE_DATA_READY_MASK) {
+      data_ready = true;
+      break;
+    }
+    delay_ms(CSENSE_DRDY_POLL_STEP_MS);
+  }
+
   if (!data_ready) {
-    return STATUS_CODE_OK;
+    return STATUS_CODE_TIMEOUT;
   }
 
   uint32_t conversion_data = ((uint32_t)conversion_data_raw[2] << 16) | ((uint32_t)conversion_data_raw[3] << 8) | ((uint32_t)conversion_data_raw[4]);

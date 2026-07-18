@@ -30,6 +30,9 @@
 
 #define ADS122_NUM_REG 16U
 
+/** @brief  Settle time after a software reset before the device accepts further comms [ms] */
+#define ADS122_RESET_SETTLE_MS 20U
+
 /*ADS122_REG_STATUS_MSB*/
 #define ADS122_RESETn_BITOFFSET 7
 #define ADS122_RESETn_MASK (1 << 7)
