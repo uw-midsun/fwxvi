@@ -71,6 +71,8 @@
 
 #define ADBMS1818_ADC_DC_OFFSET_10UV 500
 
+#define THERMISTOR_TEMP_OFFSET_C 4U
+
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
 
@@ -379,7 +381,7 @@ static StatusCode s_check_thermistors() {
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
       uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
-      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U);
+      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U) - THERMISTOR_TEMP_OFFSET_C;
 
 #if (THERMISTOR_FAULTS_ENABLED == 1U)
       uint16_t temperature_c = adbms_afe_storage->thermistor_voltages[index];
