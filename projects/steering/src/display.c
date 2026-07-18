@@ -173,7 +173,7 @@ static void s_process_pending_menu_input(void) {
 
 static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
-  bool fault_live = (display_data->bps_fault != 0U);
+  bool fault_present = (display_data->bps_fault != 0U);
 
   /* A live BPS fault takes over the whole display (ASC 2026 8.7.B). Rather than allocate a dedicated
    * fault screen, we reuse the pedal-calib screen with fault styling forced on. The driver dismisses
@@ -181,21 +181,21 @@ static StatusCode s_render_gui_step(void) {
    * goes away on its own. */
   switch (s_fault_ui_state) {
     case FAULT_UI_IDLE:
-      if (fault_live) {
+      if (fault_present) {
         s_screen_before_fault = current_screen;
         status_ok_or_return(gui_screens_show(GUI_SCREEN_PEDAL_CALIB));
         s_last_fault_code = display_data->bps_fault;
         s_last_fault_cell = display_data->bps_fault_cell;
-        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, s_last_fault_code, s_last_fault_cell));
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, display_data->bps_fault_live, s_last_fault_code, s_last_fault_cell));
         s_fault_ui_state = FAULT_UI_ACTIVE;
         return gui_render();
       }
       break;
 
     case FAULT_UI_ACTIVE:
-      if (!fault_live) {
+      if (!fault_present) {
         /* Fault cleared on its own: drop the fault styling and return to the prior screen. */
-        status_ok_or_return(gui_pedal_calib_screen_set_fault(false, 0U, 0U));
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(false, false, 0U, 0U));
         status_ok_or_return(gui_screens_show(s_screen_before_fault));
         s_fault_ui_state = FAULT_UI_IDLE;
         current_screen = gui_screens_get_current();
@@ -213,12 +213,12 @@ static StatusCode s_render_gui_step(void) {
       if (display_data->bps_fault != s_last_fault_code || display_data->bps_fault_cell != s_last_fault_cell) {
         s_last_fault_code = display_data->bps_fault;
         s_last_fault_cell = display_data->bps_fault_cell;
-        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, s_last_fault_code, s_last_fault_cell));
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, display_data->bps_fault_live, s_last_fault_code, s_last_fault_cell));
       }
       return gui_render();
 
     case FAULT_UI_ACKNOWLEDGED:
-      if (!fault_live) {
+      if (!fault_present) {
         s_fault_ui_state = FAULT_UI_IDLE;
       }
       break;
@@ -368,6 +368,7 @@ StatusCode display_rx_medium() {
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
+  display_data->bps_fault_live = (bool)get_rear_controller_status_triggers_bps_fault_live();
   display_data->bps_fault_data.raw = get_bps_fault_info_extra_info();
 
   steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);

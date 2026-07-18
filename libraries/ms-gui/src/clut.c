@@ -45,7 +45,8 @@ static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = { [GUI_COLOR_SCREE
                                                                 [GUI_COLOR_CELL_VOLTAGE_LOW] = { .red = 0x99U, .green = 0xBBU, .blue = 0x99U },
                                                                 [GUI_COLOR_CELL_VOLTAGE_HIGH] = { .red = 0x01U, .green = 0x21U, .blue = 0x08U },
                                                                 [GUI_COLOR_BPS_FAULT_TEXT] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU },
-                                                                [GUI_COLOR_BPS_FAULT_BACKGROUND] = { .red = 0xFFU, .green = 0x6BU, .blue = 0x6BU } };
+                                                                [GUI_COLOR_BPS_FAULT_BACKGROUND] = { .red = 0xFFU, .green = 0x6BU, .blue = 0x6BU },
+                                                                [GUI_COLOR_BPS_FAULT_NONLIVE_BACKGROUND] = { .red = 0xFFU, .green = 0xA5U, .blue = 0x00U } };
 ClutEntry *clut_get_table(void) {
   return s_clut_table;
 }

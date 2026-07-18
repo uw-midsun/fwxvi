@@ -97,6 +97,7 @@ typedef struct {
 
   uint16_t bps_fault;          /**< BPS fault bitfield */
   uint8_t bps_fault_cell;      /**< BPS fault cell number (if it exists) */
+  bool bps_fault_live;         /**< TRUE if the fault is live (blocks drive); FALSE for a fault restored from flash */
   BpsFaultData bps_fault_data; /**< Fault detail snapshot from bps_fault_info CAN signal */
 
   VehicleDriveState drive_state;

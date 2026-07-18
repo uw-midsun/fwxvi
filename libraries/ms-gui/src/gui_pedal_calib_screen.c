@@ -106,7 +106,7 @@ void gui_pedal_calib_screen_deinit(void) {
   s_pedal_calib_widgets_initialized = false;
 }
 
-StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_code, uint8_t cell_at_fault) {
+StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, bool fault_live, uint16_t fault_code, uint8_t cell_at_fault) {
   if (!s_pedal_calib_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -114,7 +114,9 @@ StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_co
   if (fault_active) {
     lv_color_t fg_color = s_gui_palette_color(GUI_COLOR_BPS_FAULT_TEXT);
 
-    status_ok_or_return(lvgl_set_background_color(s_screen, GUI_COLOR_BPS_FAULT_BACKGROUND));
+    /* Live faults (which block drive) show red; a non-live fault (e.g. restored from flash) shows orange. */
+    GuiColorId background_color_id = fault_live ? GUI_COLOR_BPS_FAULT_BACKGROUND : GUI_COLOR_BPS_FAULT_NONLIVE_BACKGROUND;
+    status_ok_or_return(lvgl_set_background_color(s_screen, background_color_id));
 
     lv_obj_set_style_text_color(s_status_label.label, fg_color, 0);
     lv_obj_set_style_text_color(s_subtitle_label.label, fg_color, 0);
@@ -197,8 +199,9 @@ StatusCode gui_pedal_calib_widget_subtitle_text(const char *text) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, uint16_t fault_code, uint8_t cell_at_fault) {
+StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, bool fault_live, uint16_t fault_code, uint8_t cell_at_fault) {
   (void)fault_active;
+  (void)fault_live;
   (void)fault_code;
   (void)cell_at_fault;
   return STATUS_CODE_OK;
