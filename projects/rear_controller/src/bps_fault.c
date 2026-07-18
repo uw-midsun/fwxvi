@@ -52,7 +52,7 @@ StatusCode bps_fault_init(RearControllerStorage *storage) {
   rear_controller_storage->bps_fault_cell = 0U;
 
   // TODO: Uncomment this when ready to test BPS faults
-  status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
+  // status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &(rear_controller_storage->bps_fault_record), sizeof(rear_controller_storage->bps_fault_record), false));
 
   /* Flash now matches the loaded record; seed the shadow so bps_fault_commit() skips redundant writes */
   s_committed_record = rear_controller_storage->bps_fault_record;

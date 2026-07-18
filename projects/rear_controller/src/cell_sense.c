@@ -46,7 +46,7 @@
 #define NUM_AFE_TEMPERATURE_MSGS ((ADBMS_AFE_MAX_CELL_THERMISTORS + NUM_AFE_TEMPERATURES_PER_LOG - 1U) / NUM_AFE_TEMPERATURES_PER_LOG)
 
 /** @brief  Number of communication retries before throwing AFE fault */
-#define AFE_NUM_RETRIES 10U
+#define AFE_NUM_RETRIES 3U
 
 /** @brief  Plausible thermistor reading band [C]. A healthy sensor never reads below the low bound,
  *          nor above the high bound (a real hot cell trips the 60 C over-temp limit long before
@@ -64,10 +64,12 @@
 
 /** @brief  Consecutive out-of-range reads required before a cell over/under-voltage latches a fault.
  *          Debounces single noisy samples. cell_sense runs every 5 s, so 2 cycles ~= 10 s to trip. */
-#define CELL_VOLTAGE_FAULT_DEBOUNCE_CYCLES 2U
+#define CELL_VOLTAGE_FAULT_DEBOUNCE_CYCLES 1U
 
 /** @brief  Maximum pack current for cell discharging current - 7.0A -> 7000mA */
 #define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7.0f
+
+#define ADBMS1818_ADC_DC_OFFSET_10UV 500
 
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
@@ -87,7 +89,7 @@
 #define AFE_TEMPERATURE_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
 
 /** @brief  Max number of retries for reading cell*/
-#define CELL_SENSE_MAX_RETRIES 10U
+#define CELL_SENSE_MAX_RETRIES 5U
 
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
@@ -105,7 +107,7 @@
 #define OVER_UNDER_FAULTS_ENABLED 1U
 #define THERMISTOR_FAULTS_ENABLED 1U
 
-#define CELL_SENSE_DEBUG 0U
+#define CELL_SENSE_DEBUG 1U
 
 #if (CELL_SENSE_DEBUG == 1)
 #define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
@@ -483,6 +485,7 @@ static StatusCode s_cell_sense_run() {
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      CELL_VOLTAGE_LOOKUP(dev, cell) += ADBMS1818_ADC_DC_OFFSET_10UV;
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
