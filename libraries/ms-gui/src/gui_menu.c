@@ -109,7 +109,7 @@ static const char *s_get_item_label(uint8_t index) {
 
   /* The BPS row reflects the current broadcast state so the driver can see it at a glance */
   if (index == GUI_MENU_ITEM_INDEX_TOGGLE_BPS) {
-    static char s_bps_label[16];
+    static char s_bps_label[24];
     snprintf(s_bps_label, sizeof(s_bps_label), "SECURE MODE: %s", s_menu.bps_enabled ? "ON" : "OFF");
     return s_bps_label;
   }

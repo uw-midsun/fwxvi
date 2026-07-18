@@ -18,7 +18,6 @@
 /* Intra-component Headers */
 #include "clut.h"
 #include "gui_drive_screen.h"
-#include "gui_fault_screen.h"
 #include "gui_pack_screen.h"
 #include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
@@ -161,22 +160,6 @@ static void s_destroy_pedal_calib_screen(void) {
 }
 
 /**
- * @brief   Build the full-screen BPS fault takeover screen
- * @param   screen Root screen object to populate
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-static StatusCode s_create_fault_screen(GuiScreen *screen) {
-  return gui_fault_screen_init(screen);
-}
-
-/**
- * @brief   Reset fault-screen widget handles after the active root is cleaned
- */
-static void s_destroy_fault_screen(void) {
-  gui_fault_screen_deinit();
-}
-
-/**
  * @brief   Register the default built-in GUI screens
  * @return  STATUS_CODE_OK on success, error otherwise
  */
@@ -210,12 +193,6 @@ static StatusCode s_register_default_screens(void) {
       .name = "Pedal Calib",
       .create = s_create_pedal_calib_screen,
       .destroy = s_destroy_pedal_calib_screen,
-    },
-    [GUI_SCREEN_FAULT] = {
-      .id = GUI_SCREEN_FAULT,
-      .name = "Fault",
-      .create = s_create_fault_screen,
-      .destroy = s_destroy_fault_screen,
     },
   };
 

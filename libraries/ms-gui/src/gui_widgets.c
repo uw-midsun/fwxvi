@@ -296,11 +296,16 @@ StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, flo
 
   char text_buffer[LABEL_MAX_CHARS];
 
-  /* BPS faults are surfaced by the full-screen popup (gui_widgets_bps_popup_update), not this banner */
-  (void)bps_fault;
-  (void)cell_at_fault;
+  if (bps_fault) {
+    bool is_cell_fault = false;
+    const char *fault_text = gui_widgets_bps_fault_text(bps_fault, &is_cell_fault);
 
-  if (ws22_flags) {
+    if (is_cell_fault && cell_at_fault != 0U) {
+      snprintf(text_buffer, sizeof(text_buffer), "%s, %u", fault_text, cell_at_fault);
+    } else {
+      snprintf(text_buffer, sizeof(text_buffer), "%s", fault_text);
+    }
+  } else if (ws22_flags) {
     const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {

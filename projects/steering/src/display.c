@@ -17,7 +17,6 @@
 #include "gpio.h"
 #include "gui.h"
 #include "gui_drive_screen.h"
-#include "gui_fault_screen.h"
 #include "gui_menu.h"
 #include "gui_pack_screen.h"
 #include "gui_screens.h"
@@ -40,9 +39,6 @@
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
-
-/* Screen the driver was viewing before a BPS fault forced the takeover screen, restored on clear */
-static GuiScreenId s_screen_before_fault = GUI_SCREEN_DRIVE;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -158,23 +154,6 @@ static void s_process_pending_menu_input(void) {
 
 static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
-
-  /* A live BPS fault takes over the whole display (ASC 2026 8.7.B): force the dedicated fault
-   * screen regardless of what the driver was viewing, and restore the prior screen on clear. */
-  bool fault_live = (display_data->bps_fault != 0U);
-  if (fault_live) {
-    if (current_screen != GUI_SCREEN_FAULT) {
-      s_screen_before_fault = current_screen;
-      status_ok_or_return(gui_screens_show(GUI_SCREEN_FAULT));
-    }
-    status_ok_or_return(gui_fault_screen_widget_set(display_data->bps_fault, display_data->bps_fault_cell));
-    return gui_render();
-  }
-
-  if (current_screen == GUI_SCREEN_FAULT) {
-    status_ok_or_return(gui_screens_show(s_screen_before_fault));
-    current_screen = s_screen_before_fault;
-  }
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     status_ok_or_return(gui_widgets_set_top_label((uint16_t)display_data->pack_voltage, (uint16_t)(int16_t)display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
