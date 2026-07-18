@@ -97,7 +97,6 @@ static uint8_t register_map[] = { CSENSE_DEVICE_CFG_CONTINUOUS,
                                   ADS122_REG_IDAC_MUX_CFG_DEFAULT,
                                   ADS122_REG_REG_MAP_CRC_DEFAULT };
 
-
 static inline StatusCode csense_handle_retries(uint32_t *retries, StatusCode status) {
   if (status != STATUS_CODE_OK) {
     *retries += 1;
@@ -124,7 +123,7 @@ TASK(current_sense, TASK_STACK_512) {
 
   ads122_start_conversion(&rear_controller_storage->ads122_storage);
 
-  while(true) {
+  while (true) {
     current_sense_run();
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(CSENSE_SAMPLE_PERIOD_MS));
   }
