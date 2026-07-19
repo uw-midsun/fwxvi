@@ -107,7 +107,7 @@
 #define THERMISTORS_CONNECTED 1U
 #define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
-#define THERMISTOR_FAULTS_ENABLED 1U
+#define THERMISTOR_FAULTS_ENABLED 0U
 
 #define CELL_SENSE_DEBUG 1U
 
@@ -399,7 +399,7 @@ static StatusCode s_check_thermistors() {
       if (temperature_c >= overtemp_limit) {
         /* Debounce: only latch after several consecutive over-limit reads to reject a single noisy sample */
         if (++s_fault_debounce.thermistor_overtemp[index] >= THERMISTOR_OVERTEMP_DEBOUNCE_CYCLES) {
-          LOG_DEBUG("CELL OVERTEMP\n");
+          // LOG_DEBUG("CELL OVERTEMP\n");
           uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
           BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)temperature_c } };
           trigger_bps_fault_with_data(BPS_FAULT_OVERTEMP_CELL, cell, data);

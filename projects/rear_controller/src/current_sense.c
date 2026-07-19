@@ -46,7 +46,7 @@
 #define CSENSE_SHUNT_RESISTANCE_OHM 0.001f
 
 /** @brief  Empirical calibration: ADC input path under-reads the true shunt voltage; I = V/R * factor */
-#define CSENSE_CURRENT_CAL_FACTOR 2.195f
+#define CSENSE_CURRENT_CAL_FACTOR 2.25f
 
 /** @brief  Light EMA smoothing on pack current: y = a*x + (1-a)*y_prev */
 #define CSENSE_EMA_ALPHA 0.7f
