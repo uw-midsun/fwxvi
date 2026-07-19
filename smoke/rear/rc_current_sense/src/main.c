@@ -35,17 +35,17 @@
 #define CSENSE_MUX_HV 0x01    /**< AIN0 (+) / AIN1 (-): HV divider path */
 
 /* Gain is set per read: high on the small shunt signal, low on the HV divider so it doesn't clip. FSR = Vref / gain */
-#define CSENSE_GAIN_SHUNT_CFG 0x04U             /**< gain = 8 */
+#define CSENSE_GAIN_SHUNT_CFG 0x04U /**< gain = 8 */
 #define CSENSE_FSR_SHUNT (CSENSE_VREF_V / 8.0f)
-#define CSENSE_GAIN_HV_CFG 0x00U                /**< gain = 0.5 */
+#define CSENSE_GAIN_HV_CFG 0x00U /**< gain = 0.5 */
 #define CSENSE_FSR_HV (CSENSE_VREF_V / 0.5f)
 
 #define CSENSE_SHUNT_RESISTANCE_OHM 0.001f /**< 1 mOhm current-sense shunt */
 #define CSENSE_CURRENT_CAL_FACTOR 2.2f     /**< Empirical: ADC input path under-reads the true shunt voltage; I = V/R * factor */
 
-#define CSENSE_EMA_ALPHA 0.2f /**< Light EMA on pack current: y = a*x + (1-a)*y_prev */
-#define CSENSE_R6_OHM 1000000.0f            /**< HV divider top resistor */
-#define CSENSE_R7_OHM 20000.0f              /**< HV divider bottom resistor */
+#define CSENSE_EMA_ALPHA 0.2f    /**< Light EMA on pack current: y = a*x + (1-a)*y_prev */
+#define CSENSE_R6_OHM 1000000.0f /**< HV divider top resistor */
+#define CSENSE_R7_OHM 20000.0f   /**< HV divider bottom resistor */
 
 #define CSENSE_CONVERSION_FULL_SCALE (1 << 23) /**< 24-bit signed ADC full-scale */
 #define CSENSE_DATA_READY_MASK 0x01U
