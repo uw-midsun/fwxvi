@@ -98,6 +98,14 @@ StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_l
   return STATUS_CODE_OK;
 }
 
+StatusCode i2c_read_blocking(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
+  return i2c_read(i2c, addr, rx_data, rx_len);
+}
+
+StatusCode i2c_write_blocking(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
+  return i2c_write(i2c, addr, tx_data, tx_len);
+}
+
 StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len) {
   if (i2c >= NUM_I2C_PORTS) return STATUS_CODE_INVALID_ARGS;
 

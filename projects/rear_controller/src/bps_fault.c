@@ -28,7 +28,11 @@ static RearControllerStorage *rear_controller_storage = NULL;
 static BpsFaultRecord s_committed_record;
 
 bool bps_is_disabled(void) {
-  return false;
+  static bool s_steering_ever_heard = false;
+  if (get_received_steering()) {
+    s_steering_ever_heard = true;
+  }
+  return s_steering_ever_heard && !get_steering_buttons_bps_enabled();
 }
 
 static void s_update_bps_fault_can_fields(void) {

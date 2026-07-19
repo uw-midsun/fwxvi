@@ -314,6 +314,14 @@ StatusCode ads122_start_conversion(ADS122Storage *storage);
  */
 StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG);
 
+/**
+ * @brief Change the PGA gain of the ADS122 driver
+ * @param storage - pointer to an initalized ADS122Storage struct
+ * @param GAIN_CFG - the new GAIN_CFG (bits [3:0] = GAIN field, [6:4] = SYS_MON)
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG);
+
 StatusCode ads122_reset(ADS122Storage *storage);
 
 /** @} */

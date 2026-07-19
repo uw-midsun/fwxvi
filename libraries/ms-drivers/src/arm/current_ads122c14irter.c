@@ -47,7 +47,7 @@ static StatusCode ads122_write_register(ADS122Storage *storage, uint8_t data, AD
   tx_data[0] = ads122_create_command(reg, ADS122_WRITE_COMMAND);
   tx_data[1] = data;
 
-  StatusCode status = i2c_write(storage->i2c_port, storage->i2c_address, tx_data, 2U);
+  StatusCode status = i2c_write_blocking(storage->i2c_port, storage->i2c_address, tx_data, 2U);
   if (status != STATUS_CODE_OK) {
     return status;
   }
@@ -71,7 +71,7 @@ static StatusCode ads122_write_all_registers(ADS122Storage *storage, uint8_t dat
     tx_data[i * 2 + 1] = data[i];
   }
 
-  return i2c_write(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
+  return i2c_write_blocking(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
 }
 
 /* Start the conversion*/
@@ -105,6 +105,15 @@ StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
   }
 
   status_ok_or_return(ads122_write_register(storage, MUX_CFG, ADS122_REG_MUX_CFG));
+  return STATUS_CODE_OK;
+}
+
+StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  status_ok_or_return(ads122_write_register(storage, GAIN_CFG, ADS122_REG_GAIN_CFG));
   return STATUS_CODE_OK;
 }
 

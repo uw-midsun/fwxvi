@@ -30,10 +30,20 @@
 #include "rear_controller_hw_defs.h"
 
 /* ADS122 config mirrored from current_sense.c (rev 3 / IS_USING_CURRENT_SENSE_REV_3) */
-#define CSENSE_FSR 5                        /**< Full-scale range: Vref(2.5V) / Gain(0.5) */
-#define CSENSE_MUX_SHUNT 0x67               /**< AIN6 (+) / AIN7 (-): shunt current path */
-#define CSENSE_MUX_HV 0x01                  /**< AIN0 (+) / AIN1 (-): HV divider path */
-#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f /**< 0.5 mOhm current-sense shunt */
+#define CSENSE_VREF_V 2.5f    /**< ADC reference voltage */
+#define CSENSE_MUX_SHUNT 0x68 /**< AIN6 (+) / GND (-): shunt current path */
+#define CSENSE_MUX_HV 0x01    /**< AIN0 (+) / AIN1 (-): HV divider path */
+
+/* Gain is set per read: high on the small shunt signal, low on the HV divider so it doesn't clip. FSR = Vref / gain */
+#define CSENSE_GAIN_SHUNT_CFG 0x04U             /**< gain = 8 */
+#define CSENSE_FSR_SHUNT (CSENSE_VREF_V / 8.0f)
+#define CSENSE_GAIN_HV_CFG 0x00U                /**< gain = 0.5 */
+#define CSENSE_FSR_HV (CSENSE_VREF_V / 0.5f)
+
+#define CSENSE_SHUNT_RESISTANCE_OHM 0.001f /**< 1 mOhm current-sense shunt */
+#define CSENSE_CURRENT_CAL_FACTOR 2.2f     /**< Empirical: ADC input path under-reads the true shunt voltage; I = V/R * factor */
+
+#define CSENSE_EMA_ALPHA 0.2f /**< Light EMA on pack current: y = a*x + (1-a)*y_prev */
 #define CSENSE_R6_OHM 1000000.0f            /**< HV divider top resistor */
 #define CSENSE_R7_OHM 20000.0f              /**< HV divider bottom resistor */
 
@@ -44,6 +54,8 @@
 #define CSENSE_CLOSE_RELAYS_DELAY_MS 250U /**< Settle time after driving a relay enable (mirrors relays.c) */
 
 static ADS122Storage s_ads122_storage;
+
+static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 
 static I2CSettings s_i2c_settings = {
   .speed = I2C_SPEED_FAST,
@@ -76,8 +88,9 @@ static void s_log_fixed_3dp(const char *label, const char *unit, float value) {
   LOG_DEBUG("%s: %s%u.%03u %s\r\n", label, milli < 0 ? "-" : "", (unsigned)whole, (unsigned)frac, unit);
 }
 
-/* Blocking single-shot read on the given MUX; returns the raw differential voltage in volts */
-static StatusCode s_read_channel(uint8_t mux_config, float *voltage_V) {
+/* Blocking single-shot read on the given MUX/gain; returns the raw differential voltage in volts */
+static StatusCode s_read_channel(uint8_t mux_config, uint8_t gain_cfg, float fsr, float *voltage_V) {
+  status_ok_or_return(ads122_change_gain(&s_ads122_storage, gain_cfg));
   status_ok_or_return(ads122_change_MUX(&s_ads122_storage, mux_config));
   status_ok_or_return(ads122_start_conversion(&s_ads122_storage));
 
@@ -87,13 +100,26 @@ static StatusCode s_read_channel(uint8_t mux_config, float *voltage_V) {
     if (raw[0] & CSENSE_DATA_READY_MASK) {
       uint32_t conversion_data = ((uint32_t)raw[2] << 16) | ((uint32_t)raw[3] << 8) | ((uint32_t)raw[4]);
       int32_t conversion_signed = (int32_t)(conversion_data << 8) >> 8;
-      *voltage_V = (float)(conversion_signed * CSENSE_FSR) / (float)CSENSE_CONVERSION_FULL_SCALE;
+      *voltage_V = (float)(conversion_signed * fsr) / (float)CSENSE_CONVERSION_FULL_SCALE;
       return STATUS_CODE_OK;
     }
     delay_ms(2U);
   }
 
   return STATUS_CODE_TIMEOUT;
+}
+
+/* Light EMA on the current reading; seeded on the first good sample */
+static float s_apply_current_ema(float current_A) {
+  static float ema_A = 0.0f;
+  static bool ema_seeded = false;
+  if (!ema_seeded) {
+    ema_A = current_A;
+    ema_seeded = true;
+  } else {
+    ema_A = CSENSE_EMA_ALPHA * current_A + (1.0f - CSENSE_EMA_ALPHA) * ema_A;
+  }
+  return ema_A;
 }
 
 static void s_close_pack_relays(void) {
@@ -112,6 +138,8 @@ static void s_close_pack_relays(void) {
 }
 
 TASK(rc_current_sense_smoke, TASK_STACK_1024) {
+  gpio_init_pin(&killswitch_address, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
+
   /* Close the relays FIRST so relay bring-up never depends on the ADC. */
   s_close_pack_relays();
 
@@ -123,15 +151,15 @@ TASK(rc_current_sense_smoke, TASK_STACK_1024) {
     LOG_DEBUG("---- RC CURRENT SENSE SMOKE ----\r\n");
 
     float shunt_voltage_V = 0.0f;
-    if (s_read_channel(CSENSE_MUX_SHUNT, &shunt_voltage_V) == STATUS_CODE_OK) {
-      float current_A = shunt_voltage_V / CSENSE_SHUNT_RESISTANCE_OHM;
-      s_log_fixed_3dp("PACK_CURRENT", "A", current_A);
+    if (s_read_channel(CSENSE_MUX_SHUNT, CSENSE_GAIN_SHUNT_CFG, CSENSE_FSR_SHUNT, &shunt_voltage_V) == STATUS_CODE_OK) {
+      float current_A = shunt_voltage_V / CSENSE_SHUNT_RESISTANCE_OHM * CSENSE_CURRENT_CAL_FACTOR;
+      s_log_fixed_3dp("PACK_CURRENT", "A", s_apply_current_ema(current_A));
     } else {
       LOG_DEBUG("ERROR reading shunt (current)\r\n");
     }
 
     float hv_voltage_V = 0.0f;
-    if (s_read_channel(CSENSE_MUX_HV, &hv_voltage_V) == STATUS_CODE_OK) {
+    if (s_read_channel(CSENSE_MUX_HV, CSENSE_GAIN_HV_CFG, CSENSE_FSR_HV, &hv_voltage_V) == STATUS_CODE_OK) {
       float pack_voltage_V = hv_voltage_V * (CSENSE_R6_OHM + CSENSE_R7_OHM) / CSENSE_R7_OHM;
       s_log_fixed_3dp("PACK_VOLTAGE", "V", pack_voltage_V);
     } else {

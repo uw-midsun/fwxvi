@@ -46,6 +46,17 @@ StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
   return STATUS_CODE_OK;
 }
 
+StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  /* ARM code writes the new GAIN_CFG to the ADS122_REG_GAIN_CFG register*/
+  s_registers[ADS122_REG_GAIN_CFG] = GAIN_CFG;
+
+  return STATUS_CODE_OK;
+}
+
 StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]) {
   if (storage == NULL || register_map == NULL) {
     return STATUS_CODE_INVALID_ARGS;

@@ -32,14 +32,27 @@
 /** @brief  Enable latching BPS faults raised by the current-sense task */
 #define CSENSE_FAULTS_ENABLED 1U
 
-/** @brief  ADC full-scale range [V]: Vref (2.5 V) / Gain (0.5) */
-#define CSENSE_FSR_V 5
+/** @brief  ADC reference voltage [V] */
+#define CSENSE_VREF_V 2.5f
+
+/** @brief  ADS122 PGA gain and its GAIN-field code (gain = 8) */
+#define CSENSE_PGA_GAIN 8.0f
+#define CSENSE_GAIN_CFG_CODE 0x04U
+
+/** @brief  ADC full-scale range [V] = Vref / gain */
+#define CSENSE_FSR_V (CSENSE_VREF_V / CSENSE_PGA_GAIN)
 
 /** @brief  Current-sense shunt resistance [ohm] */
-#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f
+#define CSENSE_SHUNT_RESISTANCE_OHM 0.001f
 
-/** @brief  MUX select for the shunt (current) channel: AIN6 (+) / AIN7 (-) */
-#define CSENSE_MUX_SHUNT 0x67U
+/** @brief  Empirical calibration: ADC input path under-reads the true shunt voltage; I = V/R * factor */
+#define CSENSE_CURRENT_CAL_FACTOR 2.195f
+
+/** @brief  Light EMA smoothing on pack current: y = a*x + (1-a)*y_prev */
+#define CSENSE_EMA_ALPHA 0.7f
+
+/** @brief  MUX select for the shunt (current) channel: AIN6 (+) / GND (-) */
+#define CSENSE_MUX_SHUNT 0x68U
 
 /** @brief  DEVICE_CFG: CONV_MODE = 1 -> single-shot; START each sample and poll DRDY (mirrors the working smoke test) */
 #define CSENSE_DEVICE_CFG_SINGLE_SHOT ADS122_REG_DEVICE_CFG_DEFAULT
@@ -92,10 +105,13 @@ typedef struct {
 
 static CsenseFaultCounters s_csense_counters = { 0U };
 
+static float s_csense_ema_A;      /**< EMA-filtered pack current [A] */
+static bool s_csense_ema_seeded;  /**< false until the EMA is seeded with the first good sample */
+
 static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
                                   ADS122_REG_DATA_RATE_CFG_DEFAULT,
                                   (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
-                                  ADS122_REG_GAIN_CFG_DEFAULT,                                         // Gain is 0.5
+                                  (ADS122_REG_GAIN_CFG_DEFAULT | CSENSE_GAIN_CFG_CODE),                 // PGA gain (see CSENSE_PGA_GAIN)
                                   (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock
                                   (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN),
                                   ADS122_REG_GPIO_CFG_DEFAULT,
@@ -176,7 +192,16 @@ StatusCode current_sense_run() {
   int32_t conversion_data_signed = (int32_t)(conversion_data << CSENSE_CONVERSION_SIGN_SHIFT) >> CSENSE_CONVERSION_SIGN_SHIFT;
 
   float voltage_V = (float)(conversion_data_signed * current_sense_configs.fsr) / (float)CSENSE_CONVERSION_FULL_SCALE;
-  float current_A = voltage_V / ((float)current_sense_configs.shunt_resistance_ohm);
+  float current_A = voltage_V / ((float)current_sense_configs.shunt_resistance_ohm) * CSENSE_CURRENT_CAL_FACTOR;
+
+  /* Light EMA to tame shunt/ADC noise; seeded on the first good sample */
+  if (!s_csense_ema_seeded) {
+    s_csense_ema_A = current_A;
+    s_csense_ema_seeded = true;
+  } else {
+    s_csense_ema_A = CSENSE_EMA_ALPHA * current_A + (1.0f - CSENSE_EMA_ALPHA) * s_csense_ema_A;
+  }
+  current_A = s_csense_ema_A;
 
   rear_controller_storage->pack_current = current_A;
   set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);

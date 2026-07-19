@@ -93,6 +93,9 @@ static StatusCode s_i2c_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, si
   }
 
   if (status != HAL_OK) {
+    /* Clear a latched BUSY / wedged state machine so the next transfer recovers (toggling PE resets the I2C peripheral) */
+    __HAL_I2C_DISABLE(&s_i2c_handles[i2c]);
+    __HAL_I2C_ENABLE(&s_i2c_handles[i2c]);
     xSemaphoreGive(s_i2c_port_handle[i2c]);
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -289,6 +292,47 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
 
 StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
   return s_i2c_transfer(i2c, addr, tx_data, tx_len, false);
+}
+
+/* Blocking (polled) TX/RX that bypasses the IT path entirely; shares the per-port mutex */
+static StatusCode s_i2c_blocking_transfer(I2CPort i2c, I2CAddress addr, uint8_t *data, size_t len, bool is_rx) {
+  if (data == NULL || i2c >= NUM_I2C_PORTS || len > I2C_MAX_NUM_DATA) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (!s_port[i2c].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  if (xSemaphoreTake(s_i2c_port_handle[i2c], pdMS_TO_TICKS(I2C_TIMEOUT_MS)) != pdTRUE) {
+    return STATUS_CODE_TIMEOUT;
+  }
+
+  HAL_StatusTypeDef status;
+  if (is_rx) {
+    status = HAL_I2C_Master_Receive(&s_i2c_handles[i2c], addr << 1U, data, len, I2C_TIMEOUT_MS);
+  } else {
+    status = HAL_I2C_Master_Transmit(&s_i2c_handles[i2c], addr << 1U, data, len, I2C_TIMEOUT_MS);
+  }
+
+  if (status != HAL_OK) {
+    /* Clear a latched BUSY / wedged state machine so the next transfer recovers (toggling PE resets the I2C peripheral) */
+    __HAL_I2C_DISABLE(&s_i2c_handles[i2c]);
+    __HAL_I2C_ENABLE(&s_i2c_handles[i2c]);
+    xSemaphoreGive(s_i2c_port_handle[i2c]);
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  xSemaphoreGive(s_i2c_port_handle[i2c]);
+  return STATUS_CODE_OK;
+}
+
+StatusCode i2c_read_blocking(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len) {
+  return s_i2c_blocking_transfer(i2c, addr, rx_data, rx_len, true);
+}
+
+StatusCode i2c_write_blocking(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len) {
+  return s_i2c_blocking_transfer(i2c, addr, tx_data, tx_len, false);
 }
 
 StatusCode i2c_read_reg(I2CPort i2c, I2CAddress addr, uint8_t reg, uint8_t *rx_data, size_t rx_len) {

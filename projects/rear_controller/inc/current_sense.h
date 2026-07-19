@@ -28,7 +28,7 @@
 
 #if (IS_USING_CURRENT_SENSE_REV_3 != 0U)
 typedef struct {
-  int32_t fsr;                /* FSR = Vref / Gain */
+  float fsr;                  /* FSR [V] = Vref / Gain (fractional for gain > 1) */
   uint8_t mux_config_shunt;   /* shunt inputs */
   float shunt_resistance_ohm; /* shunt resistance in ohms*/
 } CurrentSenseConfigs;
