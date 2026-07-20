@@ -260,10 +260,12 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
   }
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+  set_steering_buttons_horn_enabled(true);
 }
 
 static void cruise_control_down_btn_rising_edge_cb(Button *button) {
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
+  set_steering_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
