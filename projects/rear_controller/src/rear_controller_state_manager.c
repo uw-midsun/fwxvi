@@ -46,7 +46,6 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
 
   switch (new_state) {
     case REAR_CONTROLLER_STATE_IDLE:
-      relays_disable_ws22_lv();
       relays_open_motor();
       break;
 
@@ -57,19 +56,16 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       }
 #if (IS_MOTOR_CONNECTED == 1)
       if (rear_controller_storage->precharge_complete) {
-        relays_enable_ws22_lv();
         relays_close_motor();
       } else {
         rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_NEUTRAL_REQUEST);
       }
 #else
-      relays_enable_ws22_lv();
       relays_close_motor();
 #endif
       break;
 
     case REAR_CONTROLLER_STATE_FAULT:
-      relays_disable_ws22_lv();
       /* Never physically open the contactors while BPS is overridden from steering */
       if (!bps_is_disabled()) {
         relays_reset();
@@ -79,6 +75,7 @@ static void rear_controller_state_manager_enter_state(RearControllerState new_st
       relays_close_pos();
       relays_close_neg();
       relays_close_solar();
+      relays_enable_ws22_lv();
       started = true;
       break;
   }

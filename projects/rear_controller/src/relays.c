@@ -113,6 +113,7 @@ StatusCode relays_reset(void) {
 }
 
 StatusCode relays_enable_ws22_lv(void) {
+  delay_ms(REAR_POWER_WS22_DELAY_MS);
   return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_HIGH);
 }
 

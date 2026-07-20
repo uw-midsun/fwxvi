@@ -96,6 +96,7 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
   front_controller_storage = storage;
 
   s_current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
+  is_horn_enabled = false;
   started = false;
 
   return STATUS_CODE_OK;

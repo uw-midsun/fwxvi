@@ -432,11 +432,11 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
     return true;
   }
 
-  (*retry_count)++;
-  LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
+  // (*retry_count)++;
+  // LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
 
   if (fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
-    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    // trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
   }
 
   return false;
@@ -521,9 +521,9 @@ static StatusCode s_cell_sense_run() {
   set_battery_stats_B_min_cell_voltage(min_voltage);
 
   /* BPS disabled from steering is a manual override: leave solar connected so it does not fight the RESET re-close */
-  if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD && !bps_is_disabled()) {
-    relays_open_solar();
-  }
+  // if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD && !bps_is_disabled()) {
+  //   relays_open_solar();
+  // }
 
   /*
    * Compare max and min voltages to safety limits

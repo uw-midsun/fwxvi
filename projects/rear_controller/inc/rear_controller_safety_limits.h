@@ -31,7 +31,7 @@
 /************************************************************************************************
  * Voltage Limits [mV]
  ************************************************************************************************/
-#define CELL_OVERVOLTAGE_LIMIT_mV 4200  /**< Over-voltage cutoff */
+#define CELL_OVERVOLTAGE_LIMIT_mV 4210  /**< Over-voltage cutoff */
 #define CELL_UNDERVOLTAGE_LIMIT_mV 2500 /**< Under-voltage cutoff */
 #define CELL_UNBALANCED_LIMIT_mV 500    /**< Cell imbalance cutoff */
 #define PACK_OVERVOLTAGE_LIMIT_mV 151200
