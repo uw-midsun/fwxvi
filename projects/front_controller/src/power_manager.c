@@ -62,8 +62,8 @@ static OutputGroupDef output_group_all = {
 };
 
 static OutputGroupDef output_group_idle_group = {
-  .num_outputs = 3,
-  .outputs = { STEERING, TELEM, REV_CAM },
+  .num_outputs = 2,
+  .outputs = { STEERING, TELEM },
 };
 
 static OutputGroupDef output_group_mppt_en_group = {
@@ -72,8 +72,8 @@ static OutputGroupDef output_group_mppt_en_group = {
 };
 
 static OutputGroupDef output_group_drive_group = {
-  .num_outputs = 3,
-  .outputs = { STEERING, TELEM, REV_CAM },
+  .num_outputs = 4,
+  .outputs = { STEERING, TELEM, REV_CAM, DRIVER_FAN },
 };
 
 static OutputGroupDef output_group_reverse_group = {
@@ -111,6 +111,11 @@ static OutputGroupDef output_group_horn_group = {
   .outputs = { HORN },
 };
 
+static OutputGroupDef output_group_camera_group = {
+  .num_outputs = 2,
+  .outputs = { REV_CAM, DRIVER_FAN },
+};
+
 OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_ALL] = &output_group_all,
   [OUTPUT_GROUP_IDLE] = &output_group_idle_group,
@@ -123,6 +128,7 @@ OutputGroupDef *output_group_map[NUM_OUTPUT_GROUPS] = {
   [OUTPUT_GROUP_BPS_LIGHTS] = &output_group_bps_lights_group,
   [OUTPUT_GROUP_BRAKE_LIGHTS] = &output_group_brake_lights_group,
   [OUTPUT_GROUP_HORN] = &output_group_horn_group,
+  [OUTPUT_GROUP_CAMERA] = &output_group_camera_group,
 };
 
 /************************************************************************************************

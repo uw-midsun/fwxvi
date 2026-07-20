@@ -78,6 +78,7 @@ static void front_controller_state_manager_enter_state(VehicleDriveState new_sta
     case VEHICLE_DRIVE_STATE_FAULT:
       if (s_current_state != VEHICLE_DRIVE_STATE_FAULT || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+        power_manager_set_output_group(OUTPUT_GROUP_CAMERA, true);
       }
       break;
 
