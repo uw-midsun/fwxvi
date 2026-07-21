@@ -20,6 +20,7 @@
 
 /* Intra-component Headers */
 #include "status.h"
+#include "tasks.h"
 
 /**
  * @defgroup steering
@@ -106,6 +107,9 @@ typedef struct {
   uint8_t brake_enabled;
   uint8_t regen_enabled;
   uint8_t precharge_complete;
+
+  TickType_t display_rx_medium_last_start;
+  int64_t power_usage;
 } DisplayData;
 
 /**

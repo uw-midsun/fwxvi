@@ -359,6 +359,25 @@ StatusCode display_rx_slow() {
 }
 
 StatusCode display_rx_medium() {
+
+  // All math here in 47/16 fixed point :).
+  TickType_t now = xTaskGetTickCount();
+
+  TickType_t elapsed = now - display_data->display_rx_medium_last_start;
+  display_data->display_rx_medium_last_start = now;
+
+
+  // This line a little sketch.
+  int64_t elapsed_ms = ((int64_t)(uint16_t)elapsed * portTICK_PERIOD_MS) << 16;
+  int64_t elapsed_hr = (elapsed_ms) / ((int64_t)3600 * 1000);
+
+  int64_t current = (int64_t)(steering_storage->pack_current * (1 << 16));
+  int64_t voltage = (int64_t)(steering_storage->pack_voltage * (1 << 16));
+  int64_t power = (current * voltage) >> 16;
+
+  display_data->power_usage += (elapsed_hr * power) >> 16U;
+  display_data->energy_used_wh = (float)(display_data->power_usage) / (1 << 16);
+
   display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
   display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
   display_data->regen_enabled = get_drive_status_state_data_regen_enabled();
@@ -379,9 +398,6 @@ StatusCode display_rx_medium() {
   display_data->pack_voltage = get_battery_stats_A_pack_voltage_v();
   display_data->pack_current = get_battery_stats_B_pack_current_a();
 
-  /* Net energy used: integrate signed pack power so regen/solar subtract (regen keeps current negative).
-     pack_voltage/pack_current are already volts/amps, so power is V*A directly. */
-  display_data->energy_used_wh += display_data->pack_voltage * display_data->pack_current * ENERGY_SAMPLE_PERIOD_H;
   display_data->min_cell_voltage_mv = (uint16_t)get_battery_stats_B_min_cell_voltage();
   display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
