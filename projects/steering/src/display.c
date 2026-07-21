@@ -359,13 +359,11 @@ StatusCode display_rx_slow() {
 }
 
 StatusCode display_rx_medium() {
-
   // All math here in 47/16 fixed point :).
   TickType_t now = xTaskGetTickCount();
 
   TickType_t elapsed = now - display_data->display_rx_medium_last_start;
   display_data->display_rx_medium_last_start = now;
-
 
   // This line a little sketch.
   int64_t elapsed_ms = ((int64_t)(uint16_t)elapsed * portTICK_PERIOD_MS) << 16;
