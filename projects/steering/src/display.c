@@ -369,8 +369,8 @@ StatusCode display_rx_medium() {
   int64_t elapsed_ms = ((int64_t)(uint16_t)elapsed * portTICK_PERIOD_MS) << 16;
   int64_t elapsed_hr = (elapsed_ms) / ((int64_t)3600 * 1000);
 
-  int64_t current = (int64_t)(steering_storage->pack_current * (1 << 16));
-  int64_t voltage = (int64_t)(steering_storage->pack_voltage * (1 << 16));
+  int64_t current = (int64_t)(display_data->pack_current * (1 << 16));
+  int64_t voltage = (int64_t)(display_data->pack_voltage * (1 << 16));
   int64_t power = (current * voltage) >> 16;
 
   display_data->power_usage += (elapsed_hr * power) >> 16U;
