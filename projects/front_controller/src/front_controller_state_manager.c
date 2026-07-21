@@ -212,11 +212,13 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_live_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
   uint8_t solar_relay_closed_from_rear = 0U;
+  float max_cell_voltage_mv = 0U;
 #else
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
   uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
   uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
+  float max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
 #endif
 
   /* Get required values from steering */
@@ -305,17 +307,17 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   // Handle MPPT / solar precharge sequencing. The MPPT load switch (SPARE_1) may only close once
   // the rear solar relay is closed - otherwise the MPPTs free-run up to ~150V and dump their output
   // capacitance across the relay when it later closes, arcing the contacts
-  if (solar_relay_closed_from_rear && !s_mppt_enabled) {
+  if (solar_relay_closed_from_rear && !s_mppt_enabled && max_cell_voltage_mv < 42000) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, true);
     s_mppt_enabled = true;
-  } else if (!solar_relay_closed_from_rear && s_mppt_enabled) {
+  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled) || max_cell_voltage_mv >= 42000) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, false);
     s_mppt_enabled = false;
   }
 
   // Handle lights
   if (lights_from_steering < STEERING_LIGHTS_NUM_STATES) {
-    front_lights_signal_process_event(lights_from_steering);
+    front_lights_signal_process_event(lights_from_steering);`
   } else {
     CONDITIONAL_LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");
   }
