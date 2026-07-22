@@ -15,8 +15,8 @@
 #include "gui_menu.h"
 #include "log.h"
 #include "mcu.h"
-#include "system_can.h"
 #include "persist.h"
+#include "system_can.h"
 
 /* Intra-component Headers */
 #include "button_led_manager.h"

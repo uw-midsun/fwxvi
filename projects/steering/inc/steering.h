@@ -16,8 +16,8 @@
 /* Inter-component Headers */
 #include "display_defs.h"
 #include "global_enums.h"
-#include "ws22_motor_can.h"
 #include "persist.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "status.h"
