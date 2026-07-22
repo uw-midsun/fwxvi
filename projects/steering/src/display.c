@@ -355,6 +355,8 @@ static uint16_t prv_safe_cell_voltage(float raw) {
 }
 
 StatusCode display_rx_slow() {
+  persist_commit(steering_storage->persist_storage);
+
   return STATUS_CODE_OK;
 }
 
@@ -373,8 +375,8 @@ StatusCode display_rx_medium() {
   int64_t voltage = (int64_t)(display_data->pack_voltage * (1 << 16));
   int64_t power = (current * voltage) >> 16;
 
-  display_data->power_usage += (elapsed_hr * power) >> 16U;
-  display_data->energy_used_wh = (float)(display_data->power_usage) / (1 << 16);
+  steering_storage->persist_data.power_usage_wh += (elapsed_hr * power) >> 16U;
+  display_data->energy_used_wh = (float)(steering_storage->persist_data.power_usage_wh) / (1 << 16);
 
   display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
   display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
