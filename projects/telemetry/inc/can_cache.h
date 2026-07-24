@@ -24,17 +24,18 @@
  * @{
  */
 
-/** @brief  Synthetic XBee-only ID for the telemetry bus-load stats datagram (device=4, msg_id=62). */
+/** @brief  Synthetic XBee-only ID for the telemetry bus-load stats datagram. */
 #define TELEMETRY_STATS_CAN_ID 2020U
 /** @brief  DLC of the telemetry stats datagram (3 × uint16_t). */
 #define TELEMETRY_STATS_DLC 6U
 
-/** @brief  Synthetic XBee-only IDs for WS22 re-encoded telemetry (floats → scaled integers). */
-#define WS22_TELEMETRY_STATUS_ID 2034U    /**< error_flags (u16) + limit_flags (u16) */
-#define WS22_TELEMETRY_BUS_ID 2035U       /**< bus_voltage_cV (u16) + bus_current_cA (i16) */
-#define WS22_TELEMETRY_VELOCITY_ID 2036U  /**< motor_velocity_rpm×10 (i16) + vehicle_kph×100 (u16) */
-#define WS22_TELEMETRY_TEMP_ID 2037U      /**< motor_temp_°C×10 (i16) + heatsink_temp_°C×10 (i16) */
-#define WS22_TELEMETRY_DRIVE_CMD_ID 2038U /**< drive_current×10000 (u16) + drive_velocity_rpm (i16) */
+/** @brief  Synthetic XBee-only IDs for WS22 re-encoded telemetry (floats → scaled integers).
+ *          2039–2043 sit above the highest system CAN ID (AFE_temperature, 2035). */
+#define WS22_TELEMETRY_STATUS_ID 2039U    /**< error_flags (u16) + limit_flags (u16) */
+#define WS22_TELEMETRY_BUS_ID 2040U       /**< bus_voltage_cV (u16) + bus_current_cA (i16) */
+#define WS22_TELEMETRY_VELOCITY_ID 2041U  /**< motor_velocity_rpm×10 (i16) + vehicle_kph×100 (u16) */
+#define WS22_TELEMETRY_TEMP_ID 2042U      /**< motor_temp_°C×10 (i16) + heatsink_temp_°C×10 (i16) */
+#define WS22_TELEMETRY_DRIVE_CMD_ID 2043U /**< drive_current×10000 (u16) + drive_velocity_rpm (i16) */
 #define WS22_TELEMETRY_DLC 4U             /**< DLC for all WS22 synthetic entries (2 × uint16_t) */
 
 /**
@@ -74,14 +75,15 @@ extern const size_t g_can_cache_high_size;
 
 /**
  * @brief   Medium-priority (medium-cycle) message cache
- * @details Contains 22 entries from rear_controller, steering, front_controller, and IMU.
+ * @details Contains 23 entries from rear_controller, steering, front_controller, and IMU.
  */
 extern CanMessageCache g_can_cache_medium[];
 extern const size_t g_can_cache_medium_size;
 
 /**
  * @brief   Low-priority (slow-cycle) message cache
- * @details Contains 3 entries from front_controller power group messages.
+ * @details Contains 3 front_controller power group entries plus the telemetry-internal
+ *          stats datagram and 5 WS22 synthetic entries.
  */
 extern CanMessageCache g_can_cache_low[];
 extern const size_t g_can_cache_low_size;

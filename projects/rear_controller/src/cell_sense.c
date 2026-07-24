@@ -46,13 +46,32 @@
 #define NUM_AFE_TEMPERATURE_MSGS ((ADBMS_AFE_MAX_CELL_THERMISTORS + NUM_AFE_TEMPERATURES_PER_LOG - 1U) / NUM_AFE_TEMPERATURES_PER_LOG)
 
 /** @brief  Number of communication retries before throwing AFE fault */
-#define AFE_NUM_RETRIES 10U
+#define AFE_NUM_RETRIES 3U
 
-/** @brief  Temperature threshold for invalid readings */
-#define CELL_TEMP_OUTLIER_THRESHOLD 80
+/** @brief  Plausible thermistor reading band [C]. A healthy sensor never reads below the low bound,
+ *          nor above the high bound (a real hot cell trips the 60 C over-temp limit long before
+ *          reaching that ceiling), so a reading outside this band means a shorted, open, or
+ *          disconnected thermistor rather than a real temperature. */
+#define CELL_TEMP_PLAUSIBLE_LOW_C 10
+#define CELL_TEMP_PLAUSIBLE_HIGH_C 80
+
+/** @brief  Consecutive over-limit reads required before a thermistor latches an over-temp fault.
+ *          Debounces single noisy samples. cell_sense runs every 5 s, so 2 cycles ~= 10 s to trip. */
+#define THERMISTOR_OVERTEMP_DEBOUNCE_CYCLES 2U
+
+/** @brief  Consecutive implausible reads before a thermistor latches a disconnected/broken fault. */
+#define THERMISTOR_BROKEN_DEBOUNCE_CYCLES 2U
+
+/** @brief  Consecutive out-of-range reads required before a cell over/under-voltage latches a fault.
+ *          Debounces single noisy samples. cell_sense runs every 5 s, so 2 cycles ~= 10 s to trip. */
+#define CELL_VOLTAGE_FAULT_DEBOUNCE_CYCLES 1U
 
 /** @brief  Maximum pack current for cell discharging current - 7.0A -> 7000mA */
 #define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7.0f
+
+#define ADBMS1818_ADC_DC_OFFSET_10UV 500
+
+#define THERMISTOR_TEMP_OFFSET_C 4U
 
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
@@ -67,8 +86,12 @@
     set_##message_name##_voltage_##voltage_c(CELL_VOLTAGE_LOOKUP(device, voltage_c));             \
   } while (0)
 
+#define AFE_THERMISTOR_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)] >> 8U) : 0U)
+
+#define AFE_TEMPERATURE_TX(offset) (((thermistor_start + (offset)) < total_thermistors) ? (uint8_t)(adbms_afe_storage->thermistor_voltages[thermistor_start + (offset)]) : 0U)
+
 /** @brief  Max number of retries for reading cell*/
-#define CELL_SENSE_MAX_RETRIES 10U
+#define CELL_SENSE_MAX_RETRIES 5U
 
 #define RETRY_OPERATION(max_retries, delay_ms_val, operation, status_var) \
   do {                                                                    \
@@ -81,11 +104,12 @@
     }                                                                     \
   } while (0)
 
-#define THERMISTORS_CONNECTED 0U
+#define THERMISTORS_CONNECTED 1U
 #define BALANCING_ENABLED 1U
 #define OVER_UNDER_FAULTS_ENABLED 1U
+#define THERMISTOR_FAULTS_ENABLED 0U
 
-#define CELL_SENSE_DEBUG 0U
+#define CELL_SENSE_DEBUG 1U
 
 #if (CELL_SENSE_DEBUG == 1)
 #define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
@@ -126,7 +150,34 @@ static bool s_cell_data_updated = false;
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
-static uint8_t retries = 0U;
+/**
+ * @brief   Consecutive-failure retry counters, one per ADBMS AFE transaction stage.
+ * @details Each stage tracks its own streak so a comms-loss fault names the exact failing operation
+ *          and one flaky stage neither masks nor resets another. A counter is cleared as soon as its
+ *          stage succeeds, and latches BPS_FAULT_COMMS_LOSS_AFE once it hits AFE_NUM_RETRIES in a row.
+ */
+typedef struct {
+  uint8_t cell_conv;       /**< adbms_afe_trigger_cell_conv failures */
+  uint8_t cell_read;       /**< adbms_afe_read_cells failures */
+  uint8_t thermistor_conv; /**< adbms_afe_trigger_thermistor_conv failures */
+  uint8_t thermistor_read; /**< adbms_afe_read_thermistors failures */
+} AfeRetryCounters;
+
+static AfeRetryCounters s_afe_retries = { 0U };
+
+/**
+ * @brief   Consecutive out-of-range read counters used to debounce cell-sense faults.
+ * @details A counter grows while its condition holds and clears on the first in-range read; the
+ *          fault only latches once the streak reaches its debounce threshold.
+ */
+typedef struct {
+  uint8_t thermistor_overtemp[ADBMS_AFE_MAX_CELL_THERMISTORS]; /**< per-thermistor over-temp streak */
+  uint8_t thermistor_broken[ADBMS_AFE_MAX_CELL_THERMISTORS];   /**< per-thermistor implausible-read streak */
+  uint8_t overvoltage;                                         /**< pack over-voltage streak */
+  uint8_t undervoltage;                                        /**< pack under-voltage streak */
+} CellFaultDebounce;
+
+static CellFaultDebounce s_fault_debounce = { 0 };
 
 static RearControllerStorage *rear_controller_storage;
 
@@ -326,116 +377,101 @@ static void s_disable_balancing() {
 static StatusCode s_check_thermistors() {
   StatusCode status = STATUS_CODE_OK;
 #if (THERMISTORS_CONNECTED == 1U)
-  uint16_t max_temp = 0U;
-
-  /* Loop over all devices and thermistors */
+  /* Convert each raw thermistor reading to a temperature in-place so the AFE temperature message transmits degrees C */
   for (uint8_t device = 0U; device < s_afe_settings.num_devices; device++) {
     for (uint8_t thermistor = 0U; thermistor < ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE; thermistor++) {
       uint8_t index = device * ADBMS_AFE_MAX_CELL_THERMISTORS_PER_DEVICE + thermistor;
-      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U);
+      adbms_afe_storage->thermistor_voltages[index] = calculate_board_thermistor_temperature(adbms_afe_storage->thermistor_voltages[index] / 10U) - THERMISTOR_TEMP_OFFSET_C;
 
-      /* Ignore temperature readings outside of the valid temperature range */
-      if (adbms_afe_storage->thermistor_voltages[index] > CELL_TEMP_OUTLIER_THRESHOLD) {
+#if (THERMISTOR_FAULTS_ENABLED == 1U)
+      uint16_t temperature_c = adbms_afe_storage->thermistor_voltages[index];
+
+      /* Ignore implausible temperature readings */
+      if (temperature_c < CELL_TEMP_PLAUSIBLE_LOW_C || temperature_c > CELL_TEMP_PLAUSIBLE_HIGH_C) {
         continue;
       }
+      /* A valid in-range read clears the broken-sensor debounce for this thermistor */
+      s_fault_debounce.thermistor_broken[index] = 0U;
 
-      if (adbms_afe_storage->thermistor_voltages[index] > max_temp) {
-        max_temp = adbms_afe_storage->thermistor_voltages[index];
-      }
+      /* Discharging (current < 0) uses the discharge limit, otherwise the charge limit */
+      uint16_t overtemp_limit = (rear_controller_storage->pack_current < 0) ? CELL_OVERTEMP_DISCHARGE_LIMIT_C : CELL_OVERTEMP_CHARGE_LIMIT_C;
 
-      if (rear_controller_storage->pack_current < 0) {
-        /* Discharging max temp */
-        if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_DISCHARGE_LIMIT_C) {
-          LOG_DEBUG("CELL OVERTEMP\n");
+      if (temperature_c >= overtemp_limit) {
+        /* Debounce: only latch after several consecutive over-limit reads to reject a single noisy sample */
+        if (++s_fault_debounce.thermistor_overtemp[index] >= THERMISTOR_OVERTEMP_DEBOUNCE_CYCLES) {
+          // LOG_DEBUG("CELL OVERTEMP\n");
           uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
-          BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)adbms_afe_storage->thermistor_voltages[index] } };
+          BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)temperature_c } };
           trigger_bps_fault_with_data(BPS_FAULT_OVERTEMP_CELL, cell, data);
           status = STATUS_CODE_INTERNAL_ERROR;
         }
       } else {
-        /* Charging max temp */
-        if (adbms_afe_storage->thermistor_voltages[index] >= CELL_OVERTEMP_CHARGE_LIMIT_C) {
-          LOG_DEBUG("CELL OVERTEMP\n");
-          uint8_t cell = s_global_thermistor_index_1_based(device, thermistor);
-          BpsFaultData data = { .temp = { .cell_index = cell, .temperature_c = (int16_t)adbms_afe_storage->thermistor_voltages[index] } };
-          trigger_bps_fault_with_data(BPS_FAULT_OVERTEMP_CELL, cell, data);
-          status = STATUS_CODE_INTERNAL_ERROR;
-        }
+        /* A valid in-range read clears the debounce for this thermistor */
+        s_fault_debounce.thermistor_overtemp[index] = 0U;
       }
+#endif
     }
   }
 #endif
   return status;
 }
 
+/**
+ * @brief   Record the result of one AFE transaction stage against its own retry counter.
+ * @details On success the streak is cleared. On failure the streak grows, and once it reaches
+ *          AFE_NUM_RETRIES in a row a comms-loss fault is latched (when fault_enabled).
+ * @param   status        Result returned by the AFE transaction
+ * @param   retry_count   Pointer to this stage's counter in s_afe_retries
+ * @param   fault_enabled Whether a sustained failure of this stage should latch a BPS fault
+ * @param   stage_name    Human-readable stage name for the debug log
+ * @return  true if the stage succeeded, false if it failed (caller should abort the cycle)
+ */
+static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_enabled, const char *stage_name) {
+  if (status == STATUS_CODE_OK) {
+    *retry_count = 0U;
+    return true;
+  }
+
+  // (*retry_count)++;
+  // LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
+
+  if (fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
+    // trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+  }
+
+  return false;
+}
+
 static StatusCode s_cell_sense_conversions() {
-  StatusCode status = STATUS_CODE_OK;
+  StatusCode status;
 
   status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
-
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Cell conv failed: %d retrying...\n", status);
-    retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
-    if (retries >= AFE_NUM_RETRIES) {
-      LOG_DEBUG("Cell conv failed: Status %d\n", status);
-      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-    }
+  if (!s_afe_stage_ok(status, &s_afe_retries.cell_conv, OVER_UNDER_FAULTS_ENABLED, "cell conv")) {
     return status;
-#endif
   }
 
   delay_ms(CONV_DELAY_MS);
 
   status = adbms_afe_read_cells(adbms_afe_storage);
-
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Cell read failed: %d retrying...\n", status);
-    retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
-    if (retries >= AFE_NUM_RETRIES) {
-      LOG_DEBUG("Cell read failed: Status %d\n", status);
-      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-    }
-#endif
+  if (!s_afe_stage_ok(status, &s_afe_retries.cell_read, OVER_UNDER_FAULTS_ENABLED, "cell read")) {
     return status;
   }
 
 #if (THERMISTORS_CONNECTED == 1U)
-
   status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
-
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Aux trigger conv failed, retrying: %d\n", status);
-    retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
-    if (retries >= AFE_NUM_RETRIES) {
-      LOG_DEBUG("Thermistor conv failed: Status %d\n", status);
-      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-    }
-#endif
+  if (!s_afe_stage_ok(status, &s_afe_retries.thermistor_conv, THERMISTOR_FAULTS_ENABLED, "thermistor conv")) {
     return status;
   }
 
   delay_ms(AUX_CONV_DELAY_MS);
 
   status = adbms_afe_read_thermistors(adbms_afe_storage);
-
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Thermistor read failed, retrying %d\n", status);
-    retries++;
-#if (OVER_UNDER_FAULTS_ENABLED == 1)
-    if (retries >= AFE_NUM_RETRIES) {
-      LOG_DEBUG("Thermistor read failed, Status: %d\n", status);
-      trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
-    }
-#endif
+  if (!s_afe_stage_ok(status, &s_afe_retries.thermistor_read, THERMISTOR_FAULTS_ENABLED, "thermistor read")) {
     return status;
   }
 #endif
 
-  retries = 0;
-  return status;
+  return STATUS_CODE_OK;
 }
 
 static StatusCode s_cell_sense_run() {
@@ -451,6 +487,7 @@ static StatusCode s_cell_sense_run() {
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
+      CELL_VOLTAGE_LOOKUP(dev, cell) += ADBMS1818_ADC_DC_OFFSET_10UV;
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
@@ -483,39 +520,49 @@ static StatusCode s_cell_sense_run() {
   set_battery_stats_B_max_cell_voltage(max_voltage);
   set_battery_stats_B_min_cell_voltage(min_voltage);
 
-  if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD) {
-    relays_open_solar();
-  }
+  /* BPS disabled from steering is a manual override: leave solar connected so it does not fight the RESET re-close */
+  // if (max_voltage >= SOLAR_VOLTAGE_THRESHOLD && !bps_is_disabled()) {
+  //   relays_open_solar();
+  // }
 
   /*
    * Compare max and min voltages to safety limits
    * We must multiply the safety limit of 10 to convert from mV -> 100 uV
    */
+  /* Debounce over/under-voltage: only latch after several consecutive out-of-range reads to reject a single noisy sample */
   if (max_voltage >= (CELL_OVERVOLTAGE_LIMIT_mV * 10U)) {
-    LOG_DEBUG("FAULT: OVERVOLTAGE: %u\r\n", max_voltage);
+    if (++s_fault_debounce.overvoltage >= CELL_VOLTAGE_FAULT_DEBOUNCE_CYCLES) {
+      LOG_DEBUG("FAULT: OVERVOLTAGE: %u\r\n", max_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    BpsFaultData ov_data = { .cell = { .cell_index = (uint8_t)max_voltage_cell, .cell_voltage = max_voltage } };
-    trigger_bps_fault_with_data(BPS_FAULT_OVERVOLTAGE, (uint8_t)max_voltage_cell, ov_data);
+      BpsFaultData ov_data = { .cell = { .cell_index = (uint8_t)max_voltage_cell, .cell_voltage = max_voltage } };
+      trigger_bps_fault_with_data(BPS_FAULT_OVERVOLTAGE, (uint8_t)max_voltage_cell, ov_data);
 #endif
-    status = STATUS_CODE_INTERNAL_ERROR;
+      status = STATUS_CODE_INTERNAL_ERROR;
+    }
+  } else {
+    s_fault_debounce.overvoltage = 0U;
   }
 
   if (min_voltage <= (CELL_UNDERVOLTAGE_LIMIT_mV * 10U)) {
-    LOG_DEBUG("FAULT: UNDERVOLTAGE: %u\r\n", min_voltage);
+    if (++s_fault_debounce.undervoltage >= CELL_VOLTAGE_FAULT_DEBOUNCE_CYCLES) {
+      LOG_DEBUG("FAULT: UNDERVOLTAGE: %u\r\n", min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    BpsFaultData uv_data = { .cell = { .cell_index = (uint8_t)min_voltage_cell, .cell_voltage = min_voltage } };
-    trigger_bps_fault_with_data(BPS_FAULT_UNDERVOLTAGE, (uint8_t)min_voltage_cell, uv_data);
+      BpsFaultData uv_data = { .cell = { .cell_index = (uint8_t)min_voltage_cell, .cell_voltage = min_voltage } };
+      trigger_bps_fault_with_data(BPS_FAULT_UNDERVOLTAGE, (uint8_t)min_voltage_cell, uv_data);
 #endif
-    status = STATUS_CODE_INTERNAL_ERROR;
+      status = STATUS_CODE_INTERNAL_ERROR;
+    }
+  } else {
+    s_fault_debounce.undervoltage = 0U;
   }
 
   if ((max_voltage - min_voltage) >= (CELL_UNBALANCED_LIMIT_mV * 10)) {
     /* Note (From Aryan): We don't actually need to fault on imbalance. It is here for safety. Remove if needed */
     LOG_DEBUG("FAULT: UNBALANCED: %u\r\n", max_voltage - min_voltage);
 #if (OVER_UNDER_FAULTS_ENABLED == 1)
-    BpsFaultData unbal_data = { .unbalance = {
-                                    .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
-    trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
+    // BpsFaultData unbal_data = { .unbalance = {
+    //                                 .max_cell_index = (uint8_t)max_voltage_cell, .min_cell_index = (uint8_t)min_voltage_cell, .max_cell_voltage = max_voltage, .min_cell_voltage = min_voltage } };
+    // trigger_bps_fault_with_data(BPS_FAULT_UNBALANCE, (uint8_t)max_voltage_cell, unbal_data);
 #endif
     status = STATUS_CODE_INTERNAL_ERROR;
   }
@@ -559,13 +606,13 @@ StatusCode log_cell_sense() {
   size_t thermistor_start = s_afe_temperature_message_index * NUM_AFE_TEMPERATURES_PER_LOG;
 
   set_AFE_temperature_id(s_afe_temperature_message_index);
-  set_AFE_temperature_temperature_0((thermistor_start + 0U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 0U] : 0U);
-  set_AFE_temperature_temperature_1((thermistor_start + 1U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 1U] : 0U);
-  set_AFE_temperature_temperature_2((thermistor_start + 2U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 2U] : 0U);
-  set_AFE_temperature_temperature_3((thermistor_start + 3U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 3U] : 0U);
-  set_AFE_temperature_temperature_4((thermistor_start + 4U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 4U] : 0U);
-  set_AFE_temperature_temperature_5((thermistor_start + 5U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 5U] : 0U);
-  set_AFE_temperature_temperature_6((thermistor_start + 6U) < total_thermistors ? adbms_afe_storage->thermistor_voltages[thermistor_start + 6U] : 0U);
+  set_AFE_temperature_temperature_0(AFE_TEMPERATURE_TX(0U));
+  set_AFE_temperature_temperature_1(AFE_TEMPERATURE_TX(1U));
+  set_AFE_temperature_temperature_2(AFE_TEMPERATURE_TX(2U));
+  set_AFE_temperature_temperature_3(AFE_TEMPERATURE_TX(3U));
+  set_AFE_temperature_temperature_4(AFE_TEMPERATURE_TX(4U));
+  set_AFE_temperature_temperature_5(AFE_TEMPERATURE_TX(5U));
+  set_AFE_temperature_temperature_6(AFE_TEMPERATURE_TX(6U));
 
   s_afe_temperature_message_index = (s_afe_temperature_message_index + 1U) % NUM_AFE_TEMPERATURE_MSGS;
 

@@ -23,7 +23,10 @@ Messages:
         flags:
           - {name: bps_fault, length: 11}
           - {name: cell_at_fault, length: 8}
-          - relay_state
+          - solar_relay_closed
+          - motor_relay_closed
+          - pos_relay_closed
+          - neg_relay_closed
           - {name: power_state, length: 2}
           - afe_status
           - motor_precharge_complete

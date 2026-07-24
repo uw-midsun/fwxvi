@@ -41,9 +41,9 @@
 #define LABEL_MAX_CHARS 64
 
 /* For menu */
-#define GUI_MENU_ITEM_COUNT 5U
+#define GUI_MENU_ITEM_COUNT 7U
 #define GUI_MENU_PANEL_WIDTH 240
-#define GUI_MENU_PANEL_HEIGHT 180
+#define GUI_MENU_PANEL_HEIGHT 224
 #define GUI_MENU_ROW_WIDTH 188
 #define GUI_MENU_ROW_HEIGHT 24
 
@@ -53,5 +53,12 @@
 #define PACK_TABLE_COLS 6U
 #define PACK_TABLE_COL_W 51
 #define PACK_CELL_TEXT_LEN 16U
+
+/* For thermistor monitoring screen (2 AFEs x 9 thermistors) */
+#define NUMBER_OF_THERMISTORS 18U
+#define THERM_TABLE_ROWS 6U
+#define THERM_TABLE_COLS 3U
+#define THERM_TABLE_COL_W 150
+#define THERM_CELL_TEXT_LEN 16U
 
 /** @} */

@@ -87,6 +87,12 @@ data = bytearray(pack(can_data_cache.get("front_controller_fc_power_lights_group
 
 messages_slow.append(system_can_message_front_controller_fc_power_lights_group)
 
+system_can_message_front_controller_pedal_calib_status = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_FRONT_CONTROLLER_PEDAL_CALIB_STATUS_ID,
+data = bytearray(pack(can_data_cache.get("front_controller_pedal_calib_status", "status"), 8)))
+
+messages_medium.append(system_can_message_front_controller_pedal_calib_status)
+
 system_can_message_imu_gyro_data = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_IMU_GYRO_DATA_ID,
 data = bytearray(pack(can_data_cache.get("imu_gyro_data", "x_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "y_axis"), 16) + pack(can_data_cache.get("imu_gyro_data", "z_axis"), 16)))
@@ -215,9 +221,15 @@ messages_medium.append(system_can_message_rear_controller_afe_temperature)
 
 system_can_message_steering_steering = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_STEERING_ID,
-data = bytearray(pack(can_data_cache.get("steering_steering", "cruise_control_target_velocity"), 32) + pack(can_data_cache.get("steering_steering", "buttons"), 8)))
+data = bytearray(pack(can_data_cache.get("steering_steering", "cruise_control_target_velocity"), 32) + pack(can_data_cache.get("steering_steering", "buttons"), 16)))
 
 messages_medium.append(system_can_message_steering_steering)
+
+system_can_message_steering_pedal_calib_request = Message(
+arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_STEERING_PEDAL_CALIB_REQUEST_ID,
+data = bytearray(pack(can_data_cache.get("steering_pedal_calib_request", "command"), 8)))
+
+messages_medium.append(system_can_message_steering_pedal_calib_request)
 
 system_can_message_telemetry_imu_data = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_TELEMETRY_IMU_DATA_ID,

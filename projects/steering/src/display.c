@@ -19,7 +19,9 @@
 #include "gui_drive_screen.h"
 #include "gui_menu.h"
 #include "gui_pack_screen.h"
+#include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
+#include "gui_therm_screen.h"
 #include "gui_widgets.h"
 #include "log.h"
 #include "ltdc.h"
@@ -38,6 +40,23 @@
 
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
+
+/* BPS-fault takeover lifecycle. Instead of a dedicated fault screen (extra RAM), a live BPS fault
+ * reuses the pedal-calib screen with fault styling forced on. */
+typedef enum {
+  FAULT_UI_IDLE = 0,     /* No fault handling in progress */
+  FAULT_UI_ACTIVE,       /* Fault takeover shown on the pedal-calib screen */
+  FAULT_UI_ACKNOWLEDGED, /* Driver dismissed the takeover (BPS disabled); waiting for the fault to clear */
+} FaultUiState;
+
+static FaultUiState s_fault_ui_state = FAULT_UI_IDLE;
+
+/* Screen the driver was viewing before a BPS fault forced the takeover screen, restored on clear */
+static GuiScreenId s_screen_before_fault = GUI_SCREEN_DRIVE;
+
+/* Last fault detail pushed to the takeover screen, so we only re-render on change */
+static uint16_t s_last_fault_code;
+static uint8_t s_last_fault_cell;
 
 /* Enable display when high */
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
@@ -124,7 +143,8 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
-  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
+  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
+    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
     if (return_pressed_edge) {
       steering_pedal_calib_request(steering_storage);
     }
@@ -153,9 +173,59 @@ static void s_process_pending_menu_input(void) {
 
 static StatusCode s_render_gui_step(void) {
   GuiScreenId current_screen = gui_screens_get_current();
+  bool fault_present = (display_data->bps_fault != 0U);
+
+  /* A live BPS fault takes over the whole display (ASC 2026 8.7.B). Rather than allocate a dedicated
+   * fault screen, we reuse the pedal-calib screen with fault styling forced on. The driver dismisses
+   * the takeover by navigating away (which disables BPS), or it clears automatically if the fault
+   * goes away on its own. */
+  switch (s_fault_ui_state) {
+    case FAULT_UI_IDLE:
+      if (fault_present) {
+        s_screen_before_fault = current_screen;
+        status_ok_or_return(gui_screens_show(GUI_SCREEN_PEDAL_CALIB));
+        s_last_fault_code = display_data->bps_fault;
+        s_last_fault_cell = display_data->bps_fault_cell;
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, display_data->bps_fault_live, s_last_fault_code, s_last_fault_cell));
+        s_fault_ui_state = FAULT_UI_ACTIVE;
+        return gui_render();
+      }
+      break;
+
+    case FAULT_UI_ACTIVE:
+      if (!fault_present) {
+        /* Fault cleared on its own: drop the fault styling and return to the prior screen. */
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(false, false, 0U, 0U));
+        status_ok_or_return(gui_screens_show(s_screen_before_fault));
+        s_fault_ui_state = FAULT_UI_IDLE;
+        current_screen = gui_screens_get_current();
+        break;
+      }
+      if (current_screen != GUI_SCREEN_PEDAL_CALIB) {
+        /* Driver navigated away = acknowledged the fault: force SECURE MODE off and stop forcing the
+         * takeover until the fault re-asserts. The pedal-calib screen (and its fault flag) was torn
+         * down by the navigation, so no styling teardown is needed here. */
+        status_ok_or_return(steering_force_disable_bps());
+        s_fault_ui_state = FAULT_UI_ACKNOWLEDGED;
+        break;
+      }
+      /* Still on the takeover screen: refresh the fault detail only when it changes. */
+      if (display_data->bps_fault != s_last_fault_code || display_data->bps_fault_cell != s_last_fault_cell) {
+        s_last_fault_code = display_data->bps_fault;
+        s_last_fault_cell = display_data->bps_fault_cell;
+        status_ok_or_return(gui_pedal_calib_screen_set_fault(true, display_data->bps_fault_live, s_last_fault_code, s_last_fault_cell));
+      }
+      return gui_render();
+
+    case FAULT_UI_ACKNOWLEDGED:
+      if (!fault_present) {
+        s_fault_ui_state = FAULT_UI_IDLE;
+      }
+      break;
+  }
 
   if (current_screen == GUI_SCREEN_DRIVE || current_screen == GUI_SCREEN_PACK_VOLTAGE) {
-    status_ok_or_return(gui_widgets_set_top_label((uint16_t)display_data->pack_voltage, (uint16_t)(int16_t)display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
+    status_ok_or_return(gui_widgets_set_top_label(display_data->pack_voltage, display_data->pack_current, steering_storage->ws22_motor_can_storage->telemetry.bus_voltage,
                                                   steering_storage->ws22_motor_can_storage->telemetry.bus_current, display_data->bps_fault, display_data->bps_fault_cell,
                                                   steering_storage->ws22_motor_can_storage->telemetry.merged_flags));
     status_ok_or_return(gui_widgets_set_cell_stats_label(display_data->min_cell_voltage_mv, display_data->max_cell_voltage_mv));
@@ -181,6 +251,9 @@ static StatusCode s_render_gui_step(void) {
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
     status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
+
+  } else if (current_screen == GUI_SCREEN_THERMISTORS) {
+    for (uint8_t i = 0; i < NUMBER_OF_THERMISTORS; ++i) status_ok_or_return(gui_therm_screen_widget_set_thermistor(i, display_data->thermistor_temp_c[i]));
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_rx(steering_storage);
@@ -282,10 +355,29 @@ static uint16_t prv_safe_cell_voltage(float raw) {
 }
 
 StatusCode display_rx_slow() {
+  persist_commit(steering_storage->persist_storage);
+
   return STATUS_CODE_OK;
 }
 
 StatusCode display_rx_medium() {
+  // All math here in 47/16 fixed point :).
+  TickType_t now = xTaskGetTickCount();
+
+  TickType_t elapsed = now - display_data->display_rx_medium_last_start;
+  display_data->display_rx_medium_last_start = now;
+
+  // This line a little sketch.
+  int64_t elapsed_ms = ((int64_t)(uint16_t)elapsed * portTICK_PERIOD_MS) << 16;
+  int64_t elapsed_hr = (elapsed_ms) / ((int64_t)3600 * 1000);
+
+  int64_t current = (int64_t)(display_data->pack_current * (1 << 16));
+  int64_t voltage = (int64_t)(display_data->pack_voltage * (1 << 16));
+  int64_t power = (current * voltage) >> 16;
+
+  steering_storage->persist_data.power_usage_wh += (elapsed_hr * power) >> 16U;
+  display_data->energy_used_wh = (float)(steering_storage->persist_data.power_usage_wh) / (1 << 16);
+
   display_data->precharge_complete = get_rear_controller_status_triggers_motor_precharge_complete();
   display_data->brake_enabled = get_drive_status_state_data_brake_enabled();
   display_data->regen_enabled = get_drive_status_state_data_regen_enabled();
@@ -295,6 +387,7 @@ StatusCode display_rx_medium() {
 
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
+  display_data->bps_fault_live = (bool)get_rear_controller_status_triggers_bps_fault_live();
   display_data->bps_fault_data.raw = get_bps_fault_info_extra_info();
 
   steering_storage->ws22_motor_can_storage->telemetry.motor_velocity = (float)(steering_storage->ws22_motor_can_storage->telemetry.motor_velocity * 3.141f * 0.558f * 0.001 * 60);
@@ -305,9 +398,6 @@ StatusCode display_rx_medium() {
   display_data->pack_voltage = get_battery_stats_A_pack_voltage_v();
   display_data->pack_current = get_battery_stats_B_pack_current_a();
 
-  /* Net energy used: integrate signed pack power so regen/solar subtract (regen keeps current negative).
-     pack_voltage/pack_current are already volts/amps, so power is V*A directly. */
-  display_data->energy_used_wh += display_data->pack_voltage * display_data->pack_current * ENERGY_SAMPLE_PERIOD_H;
   display_data->min_cell_voltage_mv = (uint16_t)get_battery_stats_B_min_cell_voltage();
   display_data->max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
   display_data->max_cell_temp = (uint16_t)get_battery_stats_B_max_temperature();
@@ -331,6 +421,21 @@ StatusCode display_rx_medium() {
   };
 
   memcpy(display_data->cell_voltages, cell_voltages, sizeof(cell_voltages));
+
+  /* AFE_temperature is paginated: each frame carries 7 thermistor readings for page `id`
+     (global index = id*7 + n). The rear controller sends each reading already converted to a
+     temperature in whole degrees C, so store the byte directly. */
+  uint16_t therm_base = (uint16_t)get_AFE_temperature_id() * 7U;
+  const uint8_t therm_page[7] = {
+    get_AFE_temperature_temperature_0(), get_AFE_temperature_temperature_1(), get_AFE_temperature_temperature_2(), get_AFE_temperature_temperature_3(),
+    get_AFE_temperature_temperature_4(), get_AFE_temperature_temperature_5(), get_AFE_temperature_temperature_6(),
+  };
+  for (uint8_t i = 0U; i < 7U; ++i) {
+    uint16_t therm_idx = therm_base + i;
+    if (therm_idx < NUMBER_OF_THERMISTORS) {
+      display_data->thermistor_temp_c[therm_idx] = therm_page[i];
+    }
+  }
 
   return STATUS_CODE_OK;
 }

@@ -97,6 +97,34 @@ StatusCode i2c_read(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_le
 StatusCode i2c_write(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len);
 
 /**
+ * @brief   Blocking (polled) I2C read, bypassing the interrupt-driven path
+ * @details Uses HAL blocking transfers, so it is immune to the IT-mode completion/state races
+ * @param   i2c Specifies which I2C port to read with
+ * @param   addr The I2C address to read from
+ * @param   rx_data Pointer to a buffer to receive data
+ * @param   rx_len Length of data to receive
+ * @return  STATUS_CODE_OK if reading succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if the HAL transfer fails
+ *          STATUS_CODE_TIMEOUT if the port is busy or the transfer times out
+ */
+StatusCode i2c_read_blocking(I2CPort i2c, I2CAddress addr, uint8_t *rx_data, size_t rx_len);
+
+/**
+ * @brief   Blocking (polled) I2C write, bypassing the interrupt-driven path
+ * @details Uses HAL blocking transfers, so it is immune to the IT-mode completion/state races
+ * @param   i2c Specifies which I2C port to write with
+ * @param   addr Specifies the I2C address to write to
+ * @param   tx_data Pointer to a buffer to transmit data
+ * @param   tx_len Length of the data to transmit
+ * @return  STATUS_CODE_OK if writing succeeded
+ *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *          STATUS_CODE_INTERNAL_ERROR if the HAL transfer fails
+ *          STATUS_CODE_TIMEOUT if the port is busy or the transfer times out
+ */
+StatusCode i2c_write_blocking(I2CPort i2c, I2CAddress addr, uint8_t *tx_data, size_t tx_len);
+
+/**
  * @brief   Reads data using the I2C port from the specified address and register
  * @param   i2c Specifies which I2C port to read with
  * @param   addr Specifies the I2C address to read from

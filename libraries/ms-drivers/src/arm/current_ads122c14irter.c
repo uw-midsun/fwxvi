@@ -47,7 +47,7 @@ static StatusCode ads122_write_register(ADS122Storage *storage, uint8_t data, AD
   tx_data[0] = ads122_create_command(reg, ADS122_WRITE_COMMAND);
   tx_data[1] = data;
 
-  StatusCode status = i2c_write(storage->i2c_port, storage->i2c_address, tx_data, 2U);
+  StatusCode status = i2c_write_blocking(storage->i2c_port, storage->i2c_address, tx_data, 2U);
   if (status != STATUS_CODE_OK) {
     return status;
   }
@@ -71,7 +71,7 @@ static StatusCode ads122_write_all_registers(ADS122Storage *storage, uint8_t dat
     tx_data[i * 2 + 1] = data[i];
   }
 
-  return i2c_write(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
+  return i2c_write_blocking(storage->i2c_port, storage->i2c_address, tx_data, data_length * 2U);
 }
 
 /* Start the conversion*/
@@ -82,15 +82,63 @@ StatusCode ads122_start_conversion(ADS122Storage *storage) {
 
   /* Set START pin to 1*/
   uint8_t conversion_ctrl = 0x00;
-  status_ok_or_return(ads122_read_register(storage, &conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
   conversion_ctrl |= (1 << 1);
   status_ok_or_return(ads122_write_register(storage, conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
 
   return STATUS_CODE_OK;
 }
 
+StatusCode ads122_reset(ADS122Storage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  uint8_t conversion_ctrl = 0b010110;
+  status_ok_or_return(ads122_write_register(storage, conversion_ctrl, ADS122_REG_CONVERSION_CTRL));
+
+  return STATUS_CODE_OK;
+}
+
 StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
   status_ok_or_return(ads122_write_register(storage, MUX_CFG, ADS122_REG_MUX_CFG));
+  return STATUS_CODE_OK;
+}
+
+StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  status_ok_or_return(ads122_write_register(storage, GAIN_CFG, ADS122_REG_GAIN_CFG));
+  return STATUS_CODE_OK;
+}
+
+StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]) {
+  if (storage == NULL || register_map == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  /* Ensure the device is powered on and communicating*/
+  uint8_t device_id;
+  status_ok_or_return(ads122_read_register(storage, &device_id, ADS122_REG_DEVICE_ID));
+  if (device_id == 0) {
+    return STATUS_CODE_UNREACHABLE;
+  }
+
+  /* Clear the device */
+  status_ok_or_return(ads122_reset(storage));
+
+  /* Reset RESETn and AVDD_UVn fault flags*/
+  uint8_t reset_status_msb = 0xC0;
+  status_ok_or_return(ads122_write_register(storage, reset_status_msb, ADS122_REG_STATUS_MSB));
+
+  /* Set init configs -> put init values into a ADS122_CONFIG_REGISTERS*/
+  status_ok_or_return(ads122_write_all_registers(storage, register_map, ADS122_CONFIG_REGISTERS));
+
   return STATUS_CODE_OK;
 }
 
@@ -103,29 +151,9 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   storage->i2c_address = i2c_address_storage;
   storage->i2c_settings = *i2c_settings_storage;
 
-  StatusCode status = i2c_init(i2c_port_storage, i2c_settings_storage);
-  if (status != STATUS_CODE_OK) {
-    return status;
-  }
+  status_ok_or_return(i2c_init(i2c_port_storage, i2c_settings_storage));
 
-  /* Ensure the device is powered on and communicating*/
-  uint8_t device_id;
-  status_ok_or_return(ads122_read_register(storage, &device_id, ADS122_REG_DEVICE_ID));
-  if (device_id == 0) {
-    return STATUS_CODE_UNREACHABLE;
-  }
-
-  /* Reset RESETn and AVDD_UVn fault flags*/
-  uint8_t reset_status_msb = 0xC0;
-  status_ok_or_return(ads122_write_register(storage, reset_status_msb, ADS122_REG_STATUS_MSB));
-
-  /* Set init configs -> put init values into a ADS122_CONFIG_REGISTERS*/
-  status_ok_or_return(ads122_write_all_registers(storage, register_map, ADS122_CONFIG_REGISTERS));
-
-  /* Start first conversion*/
-  status_ok_or_return(ads122_start_conversion(storage));
-
-  return STATUS_CODE_OK;
+  return ads122_configure(storage, register_map);
 }
 
 StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]) {

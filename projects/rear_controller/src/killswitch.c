@@ -22,7 +22,7 @@
 /* Intra-component Headers */
 #include "status.h"
 
-#define KILLSWITCH_ENABLED 0U
+#define KILLSWITCH_ENABLED 1U
 
 static GpioAddress killswitch_address = GPIO_REAR_CONTROLLER_KILLSWITCH_MONITOR;
 
@@ -38,7 +38,7 @@ static InterruptSettings killswitch_settings = {
 StatusCode killswitch_init(Event event, const Task *task) {
   gpio_it_init(&killswitch_address, &killswitch_settings, GPIO_INPUT_PULL_UP, GPIO_STATE_HIGH);
 
-  /* 10ms Debounce */
+  /* 100ms Debounce */
   delay_ms(100U);
   GpioState state = gpio_get_state(&killswitch_address);
 

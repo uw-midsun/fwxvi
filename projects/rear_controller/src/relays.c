@@ -18,6 +18,7 @@
 /* Intra-component Headers */
 #include "rear_controller.h"
 #include "rear_controller_hw_defs.h"
+#include "rear_controller_setters.h"
 #include "relays.h"
 
 /**
@@ -61,6 +62,15 @@ static RelayStorage s_relay_storage = {
 
 static RearControllerStorage *rear_controller_storage = NULL;
 
+/* Mirror every relay's latched state onto the rear_controller_status triggers bitfield so the rest
+ * of the bus (front controller sequencing, telemetry, dash) can see relay state directly. */
+static void s_update_relay_can_fields(void) {
+  set_rear_controller_status_triggers_solar_relay_closed(rear_controller_storage->solar_relay_closed);
+  set_rear_controller_status_triggers_motor_relay_closed(rear_controller_storage->motor_relay_closed);
+  set_rear_controller_status_triggers_pos_relay_closed(rear_controller_storage->pos_relay_closed);
+  set_rear_controller_status_triggers_neg_relay_closed(rear_controller_storage->neg_relay_closed);
+}
+
 StatusCode relays_init(RearControllerStorage *storage) {
   if (storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -83,6 +93,7 @@ StatusCode relays_init(RearControllerStorage *storage) {
   rear_controller_storage->neg_relay_closed = false;
   rear_controller_storage->solar_relay_closed = false;
   rear_controller_storage->motor_relay_closed = false;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -97,10 +108,12 @@ StatusCode relays_reset(void) {
   rear_controller_storage->neg_relay_closed = false;
   rear_controller_storage->solar_relay_closed = false;
   rear_controller_storage->motor_relay_closed = false;
+  s_update_relay_can_fields();
   return STATUS_CODE_OK;
 }
 
 StatusCode relays_enable_ws22_lv(void) {
+  delay_ms(REAR_POWER_WS22_DELAY_MS);
   return gpio_set_state(&s_relay_storage.ws22_lv_en, GPIO_STATE_HIGH);
 }
 
@@ -119,6 +132,7 @@ StatusCode relays_close_motor(void) {
 #endif
 
   rear_controller_storage->motor_relay_closed = true;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -133,6 +147,7 @@ StatusCode relays_open_motor(void) {
 #endif
 
   rear_controller_storage->motor_relay_closed = false;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -148,6 +163,7 @@ StatusCode relays_close_solar(void) {
 #endif
 
   rear_controller_storage->solar_relay_closed = true;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -162,6 +178,7 @@ StatusCode relays_open_solar(void) {
 #endif
 
   rear_controller_storage->solar_relay_closed = false;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -177,6 +194,7 @@ StatusCode relays_close_pos(void) {
 #endif
 
   rear_controller_storage->pos_relay_closed = true;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -191,6 +209,7 @@ StatusCode relays_open_pos(void) {
 #endif
 
   rear_controller_storage->pos_relay_closed = false;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -206,6 +225,7 @@ StatusCode relays_close_neg(void) {
 #endif
 
   rear_controller_storage->neg_relay_closed = true;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
@@ -220,6 +240,7 @@ StatusCode relays_open_neg(void) {
 #endif
 
   rear_controller_storage->neg_relay_closed = false;
+  s_update_relay_can_fields();
 
   return STATUS_CODE_OK;
 }
