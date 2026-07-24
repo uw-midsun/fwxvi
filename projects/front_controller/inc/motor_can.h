@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
+#include "can.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -48,9 +49,7 @@ StatusCode motor_can_init(FrontControllerStorage *storage);
  */
 StatusCode motor_can_get_current_state(VehicleDriveState *current_state);
 
-/**
- * @brief forward necessary motor data over CAN
- */
-StatusCode motor_can_forward_can_data();
+StatusCode motor_can_transmit_drive_command(void);
 
+StatusCode motor_can_process_rx(CanMessage *msg);
 /** @} */

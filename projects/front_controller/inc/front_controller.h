@@ -16,6 +16,7 @@
 /* Inter-component Headers */
 #include "global_enums.h"
 #include "status.h"
+#include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 
@@ -29,6 +30,7 @@
 struct PowerSenseStorage;
 struct AccelPedalStorage;
 struct Ws22MotorCanStorage;
+struct Ws22MotorCanConfig;
 
 /** @brief  Front controller pedal set to 10% deadzone  */
 #define FRONT_CONTROLLER_ACCEL_INPUT_DEADZONE 0.05f
@@ -104,7 +106,8 @@ typedef struct {
   struct OpdStorage *opd_storage;                      /**< OPD storage */
   struct CruiseControlStorage *cruise_control_storage; /**< Cruise control storage */
 
-  FrontControllerConfig *config; /**< Pointer to the front controller configuration data */
+  FrontControllerConfig *config;             /**< Pointer to the front controller configuration data */
+  Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
 } FrontControllerStorage;
 
 /**
@@ -114,6 +117,5 @@ typedef struct {
  * @return  STATUS_CODE_OK if front controller initialization succeeded
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
-StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config);
-
+StatusCode front_controller_init(FrontControllerStorage *storage, FrontControllerConfig *config, Ws22MotorCanConfig *motor_can_config);
 /** @} */

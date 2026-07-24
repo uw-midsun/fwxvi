@@ -19,7 +19,9 @@
         "projects/rear_controller/src/precharge.o",
         "projects/rear_controller/src/rear_controller.o",
         "projects/rear_controller/src/rear_controller_state_manager.o",
-        "projects/rear_controller/src/relays.o"
+        "projects/rear_controller/src/relays.o",
+        "projects/rear_controller/src/motor_can.o",
+        "projects/rear_controller/src/cell_sense.o"
     ],
     "can": true,
     "selected_preset": "STM32L496RGT6_legacy_debug"
