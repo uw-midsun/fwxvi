@@ -26,6 +26,12 @@
  */
 #define IS_REAR_CONNECTED 1U
 
+/**
+ * @brief   Max cell voltage at which the MPPTs are cut to protect the pack from over-charge (~4.2 V)
+ * @details Expressed in the same units as the battery_stats_B max_cell_voltage CAN signal
+ */
+#define MPPT_CELL_OVERVOLTAGE_THRESHOLD 42000.0f
+
 #define FRONT_STATE_MANAGER_DEBUG 0U
 
 #if (FRONT_STATE_MANAGER_DEBUG == 1)
@@ -212,13 +218,13 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t bps_fault_live_from_rear = 0U;
   uint8_t is_precharge_complete_from_rear = 1U;
   uint8_t solar_relay_closed_from_rear = 0U;
-  float max_cell_voltage_mv = 0U;
+  float max_cell_voltage = 0.0f;
 #else
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
   uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
   uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
-  float max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
+  float max_cell_voltage = get_battery_stats_B_max_cell_voltage();
 #endif
 
   /* Get required values from steering */
@@ -307,10 +313,10 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   // Handle MPPT / solar precharge sequencing. The MPPT load switch (SPARE_1) may only close once
   // the rear solar relay is closed - otherwise the MPPTs free-run up to ~150V and dump their output
   // capacitance across the relay when it later closes, arcing the contacts
-  if (solar_relay_closed_from_rear && !s_mppt_enabled && max_cell_voltage_mv < 42000) {
+  if (solar_relay_closed_from_rear && !s_mppt_enabled && max_cell_voltage < MPPT_CELL_OVERVOLTAGE_THRESHOLD) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, true);
     s_mppt_enabled = true;
-  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled) || max_cell_voltage_mv >= 42000) {
+  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled) || max_cell_voltage >= MPPT_CELL_OVERVOLTAGE_THRESHOLD) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, false);
     s_mppt_enabled = false;
   }
