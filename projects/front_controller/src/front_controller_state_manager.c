@@ -9,6 +9,7 @@
 
 /* Standard library Headers */
 #include <stdio.h>
+#include <math.h>
 
 /* Inter-component Headers */
 #include "log.h"
@@ -34,6 +35,8 @@
 
 #define FRONT_STATE_MANAGER_DEBUG 0U
 
+#define PRECHARGE_VALID_CYCLES 50U
+
 #if (FRONT_STATE_MANAGER_DEBUG == 1)
 #define CONDITIONAL_LOG_DEBUG(...) LOG_DEBUG(__VA_ARGS__)
 #else
@@ -54,6 +57,7 @@ static void front_controller_state_manager_enter_state(VehicleDriveState new_sta
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       if (s_current_state != VEHICLE_DRIVE_STATE_NEUTRAL || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+        power_manager_set_output_group(OUTPUT_GROUP_CAMERA, false);
       }
       break;
 
@@ -198,6 +202,39 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
   return STATUS_CODE_OK;
 }
 
+
+StatusCode precharge_run(uint8_t *is_precharge_complete, uint8_t motor_voltage_v, uint8_t pack_voltage_v) {
+  static uint8_t valid_cycles = 0;
+
+  // If precharge is already complete, we are done
+  if (*is_precharge_complete) {
+    return STATUS_CODE_OK;
+  }
+
+  // If either voltage reading is zero, we should exit immediately
+  if (pack_voltage_v == 0 || motor_voltage_v == 0) {
+    valid_cycles = 0;
+    *is_precharge_complete = false;
+    return STATUS_CODE_OK;
+  }
+
+  // Check difference in voltage
+  if (fabsf(motor_voltage_v - pack_voltage_v) < 6U) {
+    valid_cycles++;
+
+    // We should be within precharge threshold for a given amount of cycles
+    if (valid_cycles >= PRECHARGE_VALID_CYCLES) {
+      *is_precharge_complete = true;
+    }
+  } else {
+    valid_cycles = 0;
+    *is_precharge_complete = false;
+  }
+
+  return STATUS_CODE_OK;
+}
+
+
 VehicleDriveState front_controller_state_manager_get_state(void) {
   return s_current_state;
 }
@@ -222,7 +259,10 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
 #else
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
-  uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
+  uint8_t is_precharge_complete_from_rear = 0U;
+  uint8_t ws22_motor_voltage_v = front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage;
+  uint8_t pack_voltage_v = get_battery_stats_A_pack_voltage_v();
+  float max_cell_voltage_mv = get_battery_stats_B_max_cell_voltage();
   uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
   float max_cell_voltage = get_battery_stats_B_max_cell_voltage();
 #endif
@@ -240,6 +280,8 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
 
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
                         front_controller_storage->brake_state);
+
+  precharge_run(&is_precharge_complete_from_rear, ws22_motor_voltage_v, pack_voltage_v);
 
   // Handle BPS fault. BPS disabled from steering is a manual override: ignore faults and allow drive
   if (bps_fault_from_rear && bps_enabled_from_steering) {
