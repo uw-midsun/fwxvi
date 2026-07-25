@@ -122,7 +122,7 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   steering_pedal_calib_init(steering_storage);
 
   buzzer_play_startup();
-  
+
   steering_force_disable_bps();
 
   // button_led_manager_clear_all();

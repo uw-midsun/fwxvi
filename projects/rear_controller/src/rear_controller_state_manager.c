@@ -160,15 +160,15 @@ StatusCode rear_controller_update_state_manager_medium_cycle() {
   }
 
   /* BPS disabled from steering is a full manual reset: clear the latched + persisted fault and re-close relays */
-  if(rear_controller_storage->bps_fault_record.fault_code != BPS_FAULT_KILLSWITCH_MASK ){
-   if (bps_is_disabled() && (rear_controller_storage->bps_fault_record.fault_code != 0U || s_current_state == REAR_CONTROLLER_STATE_FAULT)) {
-    if (rear_controller_storage->bps_fault_record.fault_code != 0U ) {
+  if (rear_controller_storage->bps_fault_record.fault_code != BPS_FAULT_KILLSWITCH_MASK) {
+    if (bps_is_disabled() && (rear_controller_storage->bps_fault_record.fault_code != 0U || s_current_state == REAR_CONTROLLER_STATE_FAULT)) {
+      if (rear_controller_storage->bps_fault_record.fault_code != 0U) {
         bps_fault_clear();
       }
-    
-    rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_RESET);
-    return STATUS_CODE_OK;
-   }
+
+      rear_controller_state_manager_step(REAR_CONTROLLER_EVENT_RESET);
+      return STATUS_CODE_OK;
+    }
   }
 
   /* Only a fault triggered live this power cycle opens the relays. A fault restored from flash on boot

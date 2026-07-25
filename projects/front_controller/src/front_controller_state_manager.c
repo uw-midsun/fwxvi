@@ -8,8 +8,8 @@
  ***********************************************************************************************/
 
 /* Standard library Headers */
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
 /* Inter-component Headers */
 #include "log.h"
@@ -202,7 +202,6 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event) {
   return STATUS_CODE_OK;
 }
 
-
 StatusCode precharge_run(uint8_t *is_precharge_complete, uint8_t motor_voltage_v, uint8_t pack_voltage_v) {
   static uint8_t valid_cycles = 0;
 
@@ -233,7 +232,6 @@ StatusCode precharge_run(uint8_t *is_precharge_complete, uint8_t motor_voltage_v
 
   return STATUS_CODE_OK;
 }
-
 
 VehicleDriveState front_controller_state_manager_get_state(void) {
   return s_current_state;
