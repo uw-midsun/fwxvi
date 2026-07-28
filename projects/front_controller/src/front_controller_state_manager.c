@@ -257,7 +257,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
 #else
   uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
   uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
-  uint8_t is_precharge_complete_from_rear = 0U;
+  uint8_t is_precharge_complete_from_rear = 1U;
   uint8_t ws22_motor_voltage_v = front_controller_storage->ws22_motor_can_storage->telemetry.bus_voltage;
   uint8_t pack_voltage_v = get_battery_stats_A_pack_voltage_v();
   float max_cell_voltage_mv = get_battery_stats_B_max_cell_voltage();
@@ -279,7 +279,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
                         front_controller_storage->brake_state);
 
-  precharge_run(&is_precharge_complete_from_rear, ws22_motor_voltage_v, pack_voltage_v);
+  // precharge_run(&is_precharge_complete_from_rear, ws22_motor_voltage_v, pack_voltage_v);
 
   // Handle BPS fault. BPS disabled from steering is a manual override: ignore faults and allow drive
   if (bps_fault_from_rear && bps_enabled_from_steering) {
@@ -353,10 +353,10 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   // Handle MPPT / solar precharge sequencing. The MPPT load switch (SPARE_1) may only close once
   // the rear solar relay is closed - otherwise the MPPTs free-run up to ~150V and dump their output
   // capacitance across the relay when it later closes, arcing the contacts
-  if (solar_relay_closed_from_rear && !s_mppt_enabled && max_cell_voltage < MPPT_CELL_OVERVOLTAGE_THRESHOLD) {
+  if (solar_relay_closed_from_rear && !s_mppt_enabled) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, true);
     s_mppt_enabled = true;
-  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled) || max_cell_voltage >= MPPT_CELL_OVERVOLTAGE_THRESHOLD) {
+  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled)) {
     power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, false);
     s_mppt_enabled = false;
   }
