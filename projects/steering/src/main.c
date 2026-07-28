@@ -27,8 +27,8 @@
 #include "party_mode.h"
 #include "range_estimator.h"
 #include "steering.h"
-#include "steering_setters.h"
 #include "steering_getters.h"
+#include "steering_setters.h"
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
 
