@@ -151,6 +151,7 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -165,6 +166,7 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -179,6 +181,7 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
@@ -225,8 +228,8 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity += 0.1f;
   CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
-  drive_state_manager_toggle_regen();
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {

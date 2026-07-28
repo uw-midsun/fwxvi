@@ -128,6 +128,8 @@ typedef struct {
   uint8_t drive_state;                      /**< Drive state (see #DriveState) */
   uint8_t light_signal;                     /**< Light signal state (see #LightsSignalState) */
 
+  float target_velocity;
+
   struct ButtonManager *button_manager;               /**< Button manager */
   struct ButtonLEDManager *button_led_manager;        /**< Button LED manager */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */

@@ -27,6 +27,7 @@
 #include "party_mode.h"
 #include "range_estimator.h"
 #include "steering.h"
+#include "steering_setters.h"
 #include "steering_getters.h"
 
 Ws22MotorCanStorage motor_can_storage = { 0 };
@@ -62,6 +63,7 @@ void run_10hz_cycle() {
   drive_state_manager_update();
   lights_signal_manager_update();
   cruise_control_run_medium_cycle();
+  set_steering_cruise_control_target_velocity((uint32_t)(steering_storage.target_velocity));
   run_can_tx_medium();
 }
 
