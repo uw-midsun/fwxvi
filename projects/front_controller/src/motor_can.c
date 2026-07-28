@@ -108,12 +108,12 @@ StatusCode motor_can_update_target_current_velocity() {
   switch (current_drive_state) {
     case VEHICLE_DRIVE_STATE_DRIVE:
       CONDITIONAL_LOG_DEBUG("DRIVE, Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
-      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
+      ws22_motor_can_set_current((float)get_steering_cruise_control_target_velocity());
       ws22_motor_can_set_velocity((-1) * WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_REVERSE:
       CONDITIONAL_LOG_DEBUG("REVERSE Accel percentage: %ld\r\n", (int32_t)(front_controller_storage->accel_pedal_storage->accel_percentage * 100));
-      ws22_motor_can_set_current(front_controller_storage->accel_pedal_storage->accel_percentage);
+      ws22_motor_can_set_current((float)get_steering_cruise_control_target_velocity());
       ws22_motor_can_set_velocity(WS22_CONTROLLER_MAX_VELOCITY);
       break;
     case VEHICLE_DRIVE_STATE_CRUISE:
