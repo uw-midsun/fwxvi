@@ -42,6 +42,12 @@ static ButtonManager s_button_manager = { 0U };
 static SoftTimer s_hazard_blink_timer;
 static bool hazard_light_state = false;
 
+//  Source - https://stackoverflow.com/a/14769936
+// Posted by hfossli
+// Retrieved 2026-07-28, License - CC BY-SA 3.0
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+
 /**
  * @brief   Check whether a steering button is currently pressed
  * @param   button Steering button to inspect
@@ -229,6 +235,7 @@ static void horn_btn_rising_edge_cb(Button *button) {
 
 static void regen_btn_falling_edge_cb(Button *button) {
   steering_storage->target_velocity += 0.1f;
+  steering_storage->target_velocity = CLAMP(steering_storage->target_velocity, 0.0, 1.0);
   CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 }
 
