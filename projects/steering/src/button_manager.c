@@ -45,8 +45,7 @@ static bool hazard_light_state = false;
 //  Source - https://stackoverflow.com/a/14769936
 // Posted by hfossli
 // Retrieved 2026-07-28, License - CC BY-SA 3.0
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-
+#define CLAMP(x, low, high) (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
 /**
  * @brief   Check whether a steering button is currently pressed
