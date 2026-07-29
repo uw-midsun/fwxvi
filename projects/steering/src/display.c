@@ -236,7 +236,7 @@ static StatusCode s_render_gui_step(void) {
 
   if (current_screen == GUI_SCREEN_DRIVE) {
     status_ok_or_return(gui_drive_screen_widget_set_speed(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
-    status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(display_data->pedal_percentage));
+    status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(steering_storage->target_velocity));
     status_ok_or_return(gui_drive_screen_widget_set_brake_bar(display_data->brake_percentage));
     if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
       gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
