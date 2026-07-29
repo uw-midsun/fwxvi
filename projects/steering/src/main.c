@@ -63,7 +63,7 @@ void run_10hz_cycle() {
   drive_state_manager_update();
   lights_signal_manager_update();
   cruise_control_run_medium_cycle();
-  set_steering_cruise_control_target_velocity((uint32_t)(steering_storage.target_velocity));
+  set_steering_cruise_control_target_velocity((uint32_t)(steering_storage.target_velocity * 100.0f));
   run_can_tx_medium();
 }
 
