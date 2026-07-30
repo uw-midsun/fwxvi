@@ -219,7 +219,7 @@ StatusCode cruise_control_run_medium_cycle() {
   }
 
   // CAN TX
-  set_steering_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
+  // set_steering_cruise_control_target_velocity(steering_storage->cruise_control_target_speed_kmh);
 
   return STATUS_CODE_OK;
 }
