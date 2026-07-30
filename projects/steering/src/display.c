@@ -68,6 +68,8 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((al
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
+#define IS_IN_METRIC 0U
+
 /* Medium cycle runs at 10 Hz -> 0.1 s per sample. Converts pack power (V*A) to watt-hours. */
 #define ENERGY_SAMPLE_PERIOD_H (0.1f / 3600.0f)
 
@@ -235,21 +237,33 @@ static StatusCode s_render_gui_step(void) {
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
+#if(IS_USING_METRIC == 1U)
     status_ok_or_return(gui_drive_screen_widget_set_speed(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
-    status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(steering_storage->target_velocity));
+#else
+    status_ok_or_return(gui_drive_screen_widget_set_speed(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph) * 0.621371);
+#endif
+    status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(steering_storage->target_velocity * 100.0f));
     status_ok_or_return(gui_drive_screen_widget_set_brake_bar(display_data->brake_percentage));
     if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
       gui_widgets_set_brake_bar_color(GUI_COLOR_REGEN_BRAKE_FILL);
     } else {
       gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
     }
+#if(IS_USING_METRIC == 1U)
     status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+#else
+    status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh * 0.621371, steering_storage->cruise_control_enabled));
+#endif
 
   } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
-
+#if(IS_USING_METRIC == 1U)
     status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+#else
+    status_ok_or_return(gui_pack_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph  * 0.621371));
+    status_ok_or_return(gui_pack_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh  * 0.621371, steering_storage->cruise_control_enabled));
+#endif
     status_ok_or_return(gui_pack_screen_widget_set_fault(display_data->bps_fault, display_data->bps_fault_cell, display_data->bps_fault_data));
 
   } else if (current_screen == GUI_SCREEN_THERMISTORS) {
