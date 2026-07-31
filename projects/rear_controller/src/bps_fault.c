@@ -102,7 +102,7 @@ StatusCode trigger_bps_fault_with_data(BpsFault fault, uint8_t cell_at_fault, Bp
   }
 
   /* BPS disabled from steering: fully ignore the fault (no latch, no broadcast, no relay open) */
-  if (bps_is_disabled()) {
+  if (bps_is_disabled() && fault != BPS_FAULT_KILLSWITCH) {
     return STATUS_CODE_OK;
   }
 

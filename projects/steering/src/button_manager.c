@@ -42,6 +42,11 @@ static ButtonManager s_button_manager = { 0U };
 static SoftTimer s_hazard_blink_timer;
 static bool hazard_light_state = false;
 
+//  Source - https://stackoverflow.com/a/14769936
+// Posted by hfossli
+// Retrieved 2026-07-28, License - CC BY-SA 3.0
+#define CLAMP(x, low, high) (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 /**
  * @brief   Check whether a steering button is currently pressed
  * @param   button Steering button to inspect
@@ -151,6 +156,7 @@ static void hazards_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void drive_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_D);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Drive Falling edge callback\r\n");
@@ -165,6 +171,7 @@ static void drive_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void reverse_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_R);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Reverse Falling edge callback\r\n");
@@ -179,6 +186,7 @@ static void reverse_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void neutral_btn_falling_edge_cb(Button *button) {
+  steering_storage->target_velocity = 0.0f;
   drive_state_manager_request(DRIVE_STATE_REQUEST_N);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - Neutral Falling edge callback\r\n");
@@ -212,12 +220,10 @@ static void s_horn_set_enabled(bool enabled) {
 
 static void horn_btn_falling_edge_cb(Button *button) {
   CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
-  s_horn_set_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
   CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
-  s_horn_set_enabled(false);
 }
 
 /************************************************************************************************
@@ -225,8 +231,8 @@ static void horn_btn_rising_edge_cb(Button *button) {
  ************************************************************************************************/
 
 static void regen_btn_falling_edge_cb(Button *button) {
-  CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
   drive_state_manager_toggle_regen();
+  CONDITIONAL_LOG_DEBUG("ButtonManager - Regen Falling edge callback\r\n");
 }
 
 static void regen_btn_rising_edge_cb(Button *button) {
@@ -242,7 +248,8 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
     gui_menu_request_move_up();
     return;
   }
-
+  steering_storage->target_velocity += 0.1f;
+  steering_storage->target_velocity = CLAMP(steering_storage->target_velocity, 0.0, 1.0);
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 }
 
