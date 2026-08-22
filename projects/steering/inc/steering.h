@@ -16,7 +16,6 @@
 /* Inter-component Headers */
 #include "display_defs.h"
 #include "global_enums.h"
-#include "persist.h"
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
@@ -73,10 +72,6 @@ typedef struct {
   uint16_t cruise_max_speed_kmh; /**< Max cruise control speed in kilometers per hour */
 } SteeringConfig;
 
-typedef struct __attribute__((aligned(4))) PersistData {
-  int64_t power_usage_wh;
-} PersistData;
-
 /**
  * @brief   Data for the display, CAN RX or internal
  */
@@ -114,6 +109,7 @@ typedef struct {
   uint8_t precharge_complete;
 
   TickType_t display_rx_medium_last_start;
+  int64_t power_usage;
 } DisplayData;
 
 /**
@@ -131,8 +127,6 @@ typedef struct {
   struct ButtonLEDManager *button_led_manager;        /**< Button LED manager */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
   DisplayData display_data;                           /**< Data for the display */
-  PersistData persist_data;
-  PersistStorage *persist_storage;
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
