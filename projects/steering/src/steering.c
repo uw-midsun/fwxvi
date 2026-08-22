@@ -59,6 +59,23 @@ static StatusCode s_toggle_cell_discharge(void) {
   return STATUS_CODE_OK;
 }
 
+/** @brief   BPS enable broadcast to the rear controller. Defaults enabled so protection is on from boot */
+static bool s_bps_enabled = true;
+
+static StatusCode s_toggle_bps(void) {
+  s_bps_enabled = !s_bps_enabled;
+  set_steering_buttons_bps_enabled(s_bps_enabled);
+  buzzer_play_success();
+  return STATUS_CODE_OK;
+}
+
+StatusCode steering_force_disable_bps(void) {
+  s_bps_enabled = false;
+  set_steering_buttons_bps_enabled(false);
+  gui_menu_set_bps_enabled(false);
+  return STATUS_CODE_OK;
+}
+
 /************************************************************************************************
  * Settings definitions
  ************************************************************************************************/
@@ -90,12 +107,16 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
   party_mode_init(steering_storage);
   gui_menu_set_party_mode_callback(party_mode_toggle);
   gui_menu_set_toggle_discharge_callback(s_toggle_cell_discharge);
+  gui_menu_set_toggle_bps_callback(s_toggle_bps);
+  set_steering_buttons_bps_enabled(s_bps_enabled);
   cruise_control_init(steering_storage);
   range_estimator_init(steering_storage);
   drive_state_manager_init(steering_storage);
   steering_pedal_calib_init(steering_storage);
 
   buzzer_play_startup();
+  // steering_force_disable_bps();
+
   // button_led_manager_clear_all();
   return STATUS_CODE_OK;
 }

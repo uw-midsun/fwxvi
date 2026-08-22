@@ -14,7 +14,6 @@
 #include "log.h"
 
 /* Intra-component Headers */
-#include "accel_pedal.h"
 #include "front_controller_getters.h"
 #include "front_controller_setters.h"
 #include "front_controller_state_manager.h"
@@ -42,40 +41,36 @@ static VehicleDriveState s_current_state = VEHICLE_DRIVE_NUM_STATES;
 static bool is_horn_enabled;
 static BrakeState s_brake_state;
 static bool started = false;
+static bool s_mppt_enabled = false;
 
 static void front_controller_state_manager_enter_state(VehicleDriveState new_state) {
   switch (new_state) {
     case VEHICLE_DRIVE_STATE_NEUTRAL:
       if (s_current_state != VEHICLE_DRIVE_STATE_NEUTRAL || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_BRAKE:
       if (s_current_state != VEHICLE_DRIVE_STATE_BRAKE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_REGEN:
       if (s_current_state != VEHICLE_DRIVE_STATE_REGEN || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_DRIVE:
       if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_DRIVE, true);
       }
       break;
 
     case VEHICLE_DRIVE_STATE_REVERSE:
       if (s_current_state != VEHICLE_DRIVE_STATE_DRIVE || !started) {
-        power_manager_set_output_group(OUTPUT_GROUP_D_R_INDICATORS, false);
         power_manager_set_output_group(OUTPUT_GROUP_REVERSE, true);
       }
       break;
@@ -83,6 +78,7 @@ static void front_controller_state_manager_enter_state(VehicleDriveState new_sta
     case VEHICLE_DRIVE_STATE_FAULT:
       if (s_current_state != VEHICLE_DRIVE_STATE_FAULT || !started) {
         power_manager_set_output_group(OUTPUT_GROUP_IDLE, true);
+        power_manager_set_output_group(OUTPUT_GROUP_CAMERA, true);
       }
       break;
 
@@ -100,6 +96,7 @@ StatusCode front_controller_state_manager_init(FrontControllerStorage *storage) 
   front_controller_storage = storage;
 
   s_current_state = VEHICLE_DRIVE_STATE_NEUTRAL;
+  is_horn_enabled = false;
   started = false;
 
   return STATUS_CODE_OK;
@@ -206,6 +203,24 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     return STATUS_CODE_OK;
   }
 
+  front_controller_storage->current_drive_state = s_current_state;
+  set_drive_status_state_data_drive_state(front_controller_storage->current_drive_state);
+
+  /* Get required values from rear */
+#if (IS_REAR_CONNECTED == 0U)
+  uint8_t bps_fault_from_rear = 0U;
+  uint8_t bps_fault_live_from_rear = 0U;
+  uint8_t is_precharge_complete_from_rear = 1U;
+  uint8_t solar_relay_closed_from_rear = 0U;
+  float max_cell_voltage_mv = 0U;
+#else
+  uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
+  uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
+  uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
+  uint8_t solar_relay_closed_from_rear = get_rear_controller_status_triggers_solar_relay_closed();
+  float max_cell_voltage_mv = (uint16_t)get_battery_stats_B_max_cell_voltage();
+#endif
+
   /* Get required values from steering */
   uint8_t drive_state_from_steering = get_steering_buttons_drive_state();
   uint8_t lights_from_steering = get_steering_buttons_lights();
@@ -214,37 +229,14 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   uint8_t is_regen_enabled_from_steering = get_steering_buttons_regen_enabled();
   uint8_t is_cruise_control_enabled = get_steering_buttons_cruise_control_enabled();
   uint8_t is_hazard_enabled = get_steering_buttons_hazard_enabled();
-
-  VehicleDriveState effective_drive_state = s_current_state;
-
-  if (s_current_state == VEHICLE_DRIVE_STATE_DRIVE && is_cruise_control_enabled) {
-    /* Raw filtered pedal value - the same field motor_can.c reads directly for DRIVE current control */
-    if (front_controller_storage->accel_pedal_storage->accel_percentage > front_controller_storage->config->accel_cc_override_deadzone) {
-      effective_drive_state = VEHICLE_DRIVE_STATE_DRIVE; /* Driver override: pedal controls current */
-    } else {
-      effective_drive_state = VEHICLE_DRIVE_STATE_CRUISE; /* Pedal released: resume speed control */
-    }
-  }
-
-  front_controller_storage->current_drive_state = effective_drive_state;
-  set_drive_status_state_data_drive_state(effective_drive_state);
-
-  /* Get required values from rear */
-#if (IS_REAR_CONNECTED == 0U)
-  uint8_t bps_fault_from_rear = 0U;
-  uint8_t bps_fault_live_from_rear = 0U;
-  uint8_t is_precharge_complete_from_rear = 1U;
-#else
-  uint16_t bps_fault_from_rear = get_rear_controller_status_triggers_bps_fault();
-  uint8_t bps_fault_live_from_rear = get_rear_controller_status_triggers_bps_fault_live();
-  uint8_t is_precharge_complete_from_rear = get_rear_controller_status_triggers_motor_precharge_complete();
-#endif
+  /* Default to BPS enabled until the first steering frame arrives so faults are honored at boot */
+  uint8_t bps_enabled_from_steering = !get_received_steering() || get_steering_buttons_bps_enabled();
 
   CONDITIONAL_LOG_DEBUG("STATE MANAGER MEDIUM CYCLE \r\nDS: %u REG: %u BRKS: %u BRKS(F): %u\r\n", s_current_state, is_regen_enabled_from_steering, s_brake_state,
                         front_controller_storage->brake_state);
 
-  // Handle BPS fault
-  if (bps_fault_from_rear) {
+  // Handle BPS fault. BPS disabled from steering is a manual override: ignore faults and allow drive
+  if (bps_fault_from_rear && bps_enabled_from_steering) {
     front_lights_signal_set_bps_light(BPS_LIGHT_ON_STATE);
     if (bps_fault_live_from_rear) {
       /* Live runtime fault: block drive until a full power cycle */
@@ -255,7 +247,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     /* Persisted fault restored from flash: keep the BPS light on but allow the driver to
      * re-enter drive, which clears the fault on the rear. Fall through to normal handling. */
   } else {
-    // No fault (or it was just cleared by re-entering drive): turn the BPS light off
+    // No fault, cleared by re-entering drive, or BPS disabled: turn the BPS light off and recover from fault
     front_lights_signal_set_bps_light(BPS_LIGHT_OFF_STATE);
     if (s_current_state == VEHICLE_DRIVE_STATE_FAULT) {
       front_controller_state_manager_step(FRONT_CONTROLLER_EVENT_RESET);
@@ -312,9 +304,21 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     is_horn_enabled = false;
   }
 
+  // Handle MPPT / solar precharge sequencing. The MPPT load switch (SPARE_1) may only close once
+  // the rear solar relay is closed - otherwise the MPPTs free-run up to ~150V and dump their output
+  // capacitance across the relay when it later closes, arcing the contacts
+  if (solar_relay_closed_from_rear && !s_mppt_enabled && max_cell_voltage_mv < 42000) {
+    power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, true);
+    s_mppt_enabled = true;
+  } else if ((!solar_relay_closed_from_rear && s_mppt_enabled) || max_cell_voltage_mv >= 42000) {
+    power_manager_set_output_group(OUTPUT_GROUP_MPPT_EN, false);
+    s_mppt_enabled = false;
+  }
+
   // Handle lights
   if (lights_from_steering < STEERING_LIGHTS_NUM_STATES) {
     front_lights_signal_process_event(lights_from_steering);
+    `
   } else {
     CONDITIONAL_LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");
   }

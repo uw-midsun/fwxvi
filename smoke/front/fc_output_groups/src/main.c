@@ -11,7 +11,6 @@
 
 /* Inter-component Headers */
 #include "delay.h"
-#include "front_controller.h"
 #include "gpio.h"
 #include "log.h"
 #include "mcu.h"
@@ -25,8 +24,8 @@ static inline const char *output_grp_to_str(OutputGroup x) {
   switch (x) {
     case OUTPUT_GROUP_ALL:
       return "OUTPUT_GROUP_ALL";
-    case OUTPUT_GROUP_D_R_INDICATORS:
-      return "OUTPUT_GROUP_D_R_INDICATORS";
+    case OUTPUT_GROUP_MPPT_EN:
+      return "OUTPUT_GROUP_MPPT_EN";
     case OUTPUT_GROUP_DRIVE:
       return "OUTPUT_GROUP_DRIVE";
     case OUTPUT_GROUP_REVERSE:
@@ -54,11 +53,13 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+Ws22MotorCanConfig ws22_motor_can_config = { 0 };
+
 TASK(cycle_output_groups, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
-  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  status = power_manager_init(&front_controller_storage);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\n");
   } else {
@@ -71,22 +72,24 @@ TASK(cycle_output_groups, TASK_STACK_1024) {
   OutputGroup num_output_group = OUTPUT_GROUP_ALL;
   bool state = false;
 
-  while (true) {
-    power_manager_set_output_group(num_output_group, state);
-    printf("Setting output group %s to state %d\r\n", output_grp_to_str(num_output_group), state);
+  power_manager_set_output_group(OUTPUT_GROUP_ALL, true);
 
-    if (state == true) {
-      state = false;
-    } else {
-      num_output_group++;
-      if (num_output_group >= NUM_OUTPUT_GROUPS) {
-        num_output_group %= NUM_OUTPUT_GROUPS;
-      }
-      state = true;
-    }
+  // while (true) {
+  //   power_manager_set_output_group(num_output_group, state);
+  //   printf("Setting output group %s to state %d\r\n", output_grp_to_str(num_output_group), state);
 
-    delay_ms(500);
-  }
+  //   if (state == true) {
+  //     state = false;
+  //   } else {
+  //     num_output_group++;
+  //     if (num_output_group >= NUM_OUTPUT_GROUPS) {
+  //       num_output_group %= NUM_OUTPUT_GROUPS;
+  //     }
+  //     state = true;
+  //   }
+
+  //   delay_ms(500);
+  // }
 }
 
 #ifdef MS_PLATFORM_X86

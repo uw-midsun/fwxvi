@@ -30,6 +30,9 @@
 
 #define ADS122_NUM_REG 16U
 
+/** @brief  Settle time after a software reset before the device accepts further comms [ms] */
+#define ADS122_RESET_SETTLE_MS 20U
+
 /*ADS122_REG_STATUS_MSB*/
 #define ADS122_RESETn_BITOFFSET 7
 #define ADS122_RESETn_MASK (1 << 7)
@@ -285,6 +288,18 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
 StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage);
 
 /**
+ * @brief Configure (or re-configure) the ADS122 device registers
+ * @details Runs the device-side bring-up only (ID check, reset, fault-flag clear, register map
+ *          write) without touching the I2C peripheral. Safe to re-run after the device has been
+ *          power-cycled, unlike ads122_init which also calls i2c_init. Requires ads122_init to
+ *          have populated the storage i2c_port / i2c_address beforehand.
+ * @param storage - pointer to an ADS122Storage struct with i2c_port / i2c_address populated
+ * @param register_map - array of register inits
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]);
+
+/**
  * @brief Start the conversion of the ADS122 driver
  * @param storage - pointer to an initalized ADS122Storage struct
  * @return STATUS_CODE_OK on success
@@ -298,5 +313,15 @@ StatusCode ads122_start_conversion(ADS122Storage *storage);
  * @return STATUS_CODE_OK on success
  */
 StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG);
+
+/**
+ * @brief Change the PGA gain of the ADS122 driver
+ * @param storage - pointer to an initalized ADS122Storage struct
+ * @param GAIN_CFG - the new GAIN_CFG (bits [3:0] = GAIN field, [6:4] = SYS_MON)
+ * @return STATUS_CODE_OK on success
+ */
+StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG);
+
+StatusCode ads122_reset(ADS122Storage *storage);
 
 /** @} */

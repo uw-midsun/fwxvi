@@ -262,8 +262,34 @@ StatusCode gui_widgets_init(void) {
   return gui_widgets_init_screen(screen);
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
-                                     uint16_t ws22_flags) {
+/* Format a signed float as "<sign><whole>.<1dp>" into buf. Currents are signed (regen/solar go
+   negative), and the embedded printf is built without %f support, so decompose by hand and carry
+   the sign explicitly to keep small negatives (e.g. -0.5) from dropping their sign. */
+static void s_format_signed_1dp(char *buf, size_t len, float value) {
+  const char *sign = (value < 0.0f) ? "-" : "";
+  float magnitude = (value < 0.0f) ? -value : value;
+  int whole = (int)magnitude;
+  int frac = (int)((magnitude - (float)whole) * 10.0f + 0.5f);
+  if (frac >= 10) {
+    whole += 1;
+    frac -= 10;
+  }
+  /* Clamp both fields to provably small ranges so neither %d can overflow the caller's fixed-size
+   * buffer (also bounds a bogus out-of-range reading); magnitude is already non-negative. */
+  if (whole < 0) {
+    whole = 0;
+  } else if (whole > 99999) {
+    whole = 99999;
+  }
+  if (frac < 0) {
+    frac = 0;
+  } else if (frac > 9) {
+    frac = 9;
+  }
+  snprintf(buf, len, "%s%d.%d", sign, whole, frac);
+}
+
+StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, float motor_bus_voltage, float motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -283,8 +309,14 @@ StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_curren
     const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
-    int32_t solar_current = (int32_t)motor_bus_current - (int32_t)pack_current;
-    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %uA | M: %uV, %uA | S: %dA", pack_voltage, pack_current, motor_bus_voltage, motor_bus_current, (int)solar_current);
+    /* Currents arrive as signed floats; format each with one decimal so regen/solar read correctly */
+    char pack_current_str[12];
+    char motor_current_str[12];
+    char solar_current_str[12];
+    s_format_signed_1dp(pack_current_str, sizeof(pack_current_str), pack_current);
+    s_format_signed_1dp(motor_current_str, sizeof(motor_current_str), motor_bus_current);
+    s_format_signed_1dp(solar_current_str, sizeof(solar_current_str), motor_bus_current - pack_current);
+    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %sA | M: %uV, %sA | S: %sA", (unsigned)pack_voltage, pack_current_str, (unsigned)motor_bus_voltage, motor_current_str, solar_current_str);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
@@ -350,8 +382,7 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
-                                     uint16_t ws22_flags) {
+StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, float motor_bus_voltage, float motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
   (void)pack_voltage;
   (void)pack_current;
   (void)motor_bus_voltage;
