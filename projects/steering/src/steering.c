@@ -15,7 +15,6 @@
 #include "gui_menu.h"
 #include "log.h"
 #include "mcu.h"
-#include "persist.h"
 #include "system_can.h"
 
 /* Intra-component Headers */
@@ -34,8 +33,6 @@
 #include "steering_hw_defs.h"
 #include "steering_setters.h"
 
-#define LAST_PAGE (NUM_FLASH_PAGES - 1U)
-
 /************************************************************************************************
  * Storage definitions
  ************************************************************************************************/
@@ -45,7 +42,6 @@ static SteeringStorage *steering_storage;
 static ButtonManager s_button_manager = { 0 };
 
 static CanStorage s_can_storage = { 0 };
-static PersistStorage persist_storage = { 0 };
 
 /** @brief   Cell-balancing request broadcast to the rear controller (rear gates balancing on this) */
 static bool s_cell_discharge_requested = false;
@@ -100,9 +96,6 @@ StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22M
 
   steering_storage = storage;
   steering_storage->config = config;
-
-  persist_init(&persist_storage, LAST_PAGE, &(steering_storage->persist_data), sizeof(steering_storage->persist_data), false);
-  steering_storage->persist_storage = &persist_storage;
 
   can_init(&s_can_storage, &s_can_settings);
   ws22_motor_can_init(storage->ws22_motor_can_storage, motor_can_config);
