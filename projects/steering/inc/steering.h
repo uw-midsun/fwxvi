@@ -14,14 +14,11 @@
 #include <stdint.h>
 
 /* Inter-component Headers */
-#include "display_defs.h"
 #include "global_enums.h"
-#include "persist.h"
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "status.h"
-#include "tasks.h"
 
 /**
  * @defgroup steering
@@ -73,10 +70,6 @@ typedef struct {
   uint16_t cruise_max_speed_kmh; /**< Max cruise control speed in kilometers per hour */
 } SteeringConfig;
 
-typedef struct __attribute__((aligned(4))) PersistData {
-  int64_t power_usage_wh;
-} PersistData;
-
 /**
  * @brief   Data for the display, CAN RX or internal
  */
@@ -97,13 +90,10 @@ typedef struct {
   uint16_t max_cell_voltage_mv; /**< Maximum cell voltage reading (mV) */
   uint16_t max_cell_temp;       /**< Maximum cell temperature reading (C) */
 
-  uint16_t thermistor_temp_c[NUMBER_OF_THERMISTORS]; /**< AFE thermistor temperatures (whole degrees C) from the AFE_temperature message */
-
   float energy_used_wh; /**< Net energy drawn from the pack since power-on (Wh), integrated on the display */
 
   uint16_t bps_fault;          /**< BPS fault bitfield */
   uint8_t bps_fault_cell;      /**< BPS fault cell number (if it exists) */
-  bool bps_fault_live;         /**< TRUE if the fault is live (blocks drive); FALSE for a fault restored from flash */
   BpsFaultData bps_fault_data; /**< Fault detail snapshot from bps_fault_info CAN signal */
 
   VehicleDriveState drive_state;
@@ -112,8 +102,6 @@ typedef struct {
   uint8_t brake_enabled;
   uint8_t regen_enabled;
   uint8_t precharge_complete;
-
-  TickType_t display_rx_medium_last_start;
 } DisplayData;
 
 /**
@@ -131,8 +119,6 @@ typedef struct {
   struct ButtonLEDManager *button_led_manager;        /**< Button LED manager */
   struct Ws22MotorCanStorage *ws22_motor_can_storage; /**< Wavesculptor 22 motor CAN storage */
   DisplayData display_data;                           /**< Data for the display */
-  PersistData persist_data;
-  PersistStorage *persist_storage;
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
@@ -148,14 +134,5 @@ typedef struct {
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
  */
 StatusCode steering_init(SteeringStorage *storage, SteeringConfig *config, Ws22MotorCanConfig *motor_can_config);
-
-/**
- * @brief   Force BPS protection off (SECURE MODE OFF) regardless of the current state
- * @details Broadcasts the disabled BPS-enable state to the rear controller and syncs the menu's
- *          mirrored SECURE MODE label. Used when the driver acknowledges a BPS fault by leaving the
- *          fault takeover screen.
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode steering_force_disable_bps(void);
 
 /** @} */

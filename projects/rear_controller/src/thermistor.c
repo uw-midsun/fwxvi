@@ -16,12 +16,6 @@
 
 #define BOARD_THERMISTOR_LUT_SIZE 102U
 
-/** @brief  Reference voltage (mV) supplying the divider: 3V -> 10k -> NTC -> GND */
-#define THERMISTOR_VREF_MV 3000.0f
-
-/** @brief  Fixed high-side series resistor (ohms) in the divider */
-#define THERMISTOR_SERIES_RESISTANCE_OHMS 10000.0f
-
 typedef struct {
   float resistance;
 } ThermistorDataPoint;
@@ -47,8 +41,8 @@ uint16_t calculate_board_thermistor_temperature(uint16_t thermistor_voltage_mv) 
   float resistance = 0;
   uint16_t temperature = 0;
 
-  /* Voltage divider formula (NTC on low side): R_ntc = R_series * Vmeas / (Vref - Vmeas) */
-  resistance = ((float)thermistor_voltage_mv * THERMISTOR_SERIES_RESISTANCE_OHMS) / (THERMISTOR_VREF_MV - (float)thermistor_voltage_mv);
+  /* Voltage divider formula */
+  resistance = ((float)thermistor_voltage_mv * 10000.0f) / (5000.0f - thermistor_voltage_mv);
 
   for (uint16_t i = 0; i < BOARD_THERMISTOR_LUT_SIZE - 1; i++) {
     float resistance_1 = board_thermistor_lut[i].resistance;

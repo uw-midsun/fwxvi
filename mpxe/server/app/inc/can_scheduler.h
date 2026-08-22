@@ -36,7 +36,7 @@
  */
 
 #define NUM_FAST_CYCLE_MESSAGES 1U    /**< Number of fast cycle messages */
-#define NUM_MEDIUM_CYCLE_MESSAGES 27U /**< Number of medium cycle messages */
+#define NUM_MEDIUM_CYCLE_MESSAGES 24U /**< Number of medium cycle messages */
 #define NUM_SLOW_CYCLE_MESSAGES 4U    /**< Number of slow cycle messages */
 
 /**
@@ -82,38 +82,35 @@ class CanScheduler {
   static const constexpr unsigned int MEDIUM_CYCLE_BCM_ID = 1U; /**< Linux Broadcast Manager Id for tracking medium cycle messages */
   static const constexpr unsigned int FAST_CYCLE_BCM_ID = 2U;   /**< Linux Broadcast Manager Id for tracking slow cycle messages */
 
-  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 32U; /**< Total number of messages */
+  static const constexpr unsigned int NUM_TOTAL_MESSAGES = 29U; /**< Total number of messages */
   static const constexpr unsigned int MAX_MESSAGE_LENGTH = 8U;  /**< Max message length in bytes */
 
   static const constexpr unsigned int FAST_CAN_COMMUNICATION_FAST_ONE_SHOT_MSG_FRAME_INDEX = 0U; /**< Broadcast Manager fast_one_shot_msg to Frame index mapping */
 
-  static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 0U;  /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX = 1U;          /**< Broadcast Manager drive_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_PEDAL_CALIB_STATUS_FRAME_INDEX = 2U;    /**< Broadcast Manager pedal_calib_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 3U;                          /**< Broadcast Manager gyro_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 4U;                         /**< Broadcast Manager accel_data to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX = 5U; /**< Broadcast Manager rear_controller_status to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_A_FRAME_INDEX = 6U;        /**< Broadcast Manager battery_stats_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_B_FRAME_INDEX = 7U;        /**< Broadcast Manager battery_stats_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BPS_FAULT_INFO_FRAME_INDEX = 8U;         /**< Broadcast Manager bps_fault_info to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_POWER_INPUT_STATS_FRAME_INDEX = 9U;      /**< Broadcast Manager power_input_stats to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_DISCHARGE_BITSET_FRAME_INDEX = 10U;  /**< Broadcast Manager afe_discharge_bitset to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_A_FRAME_INDEX = 11U;         /**< Broadcast Manager afe1_status_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_B_FRAME_INDEX = 12U;         /**< Broadcast Manager afe1_status_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_C_FRAME_INDEX = 13U;         /**< Broadcast Manager afe1_status_c to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_D_FRAME_INDEX = 14U;         /**< Broadcast Manager afe1_status_d to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_E_FRAME_INDEX = 15U;         /**< Broadcast Manager afe1_status_e to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_F_FRAME_INDEX = 16U;         /**< Broadcast Manager afe1_status_f to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_A_FRAME_INDEX = 17U;         /**< Broadcast Manager afe2_status_a to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_B_FRAME_INDEX = 18U;         /**< Broadcast Manager afe2_status_b to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_C_FRAME_INDEX = 19U;         /**< Broadcast Manager afe2_status_c to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_D_FRAME_INDEX = 20U;         /**< Broadcast Manager afe2_status_d to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_E_FRAME_INDEX = 21U;         /**< Broadcast Manager afe2_status_e to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_F_FRAME_INDEX = 22U;         /**< Broadcast Manager afe2_status_f to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_TEMPERATURE_FRAME_INDEX = 23U;       /**< Broadcast Manager afe_temperature to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_STEERING_STEERING_FRAME_INDEX = 24U;                     /**< Broadcast Manager steering to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_STEERING_PEDAL_CALIB_REQUEST_FRAME_INDEX = 25U;          /**< Broadcast Manager pedal_calib_request to Frame index mapping */
-  static const constexpr unsigned int MEDIUM_TELEMETRY_IMU_DATA_FRAME_INDEX = 26U;                    /**< Broadcast Manager imu_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_STEERING_STEERING_FRAME_INDEX = 0U;                      /**< Broadcast Manager steering to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_REAR_CONTROLLER_STATUS_FRAME_INDEX = 1U; /**< Broadcast Manager rear_controller_status to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_A_FRAME_INDEX = 2U;        /**< Broadcast Manager battery_stats_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_BATTERY_STATS_B_FRAME_INDEX = 3U;        /**< Broadcast Manager battery_stats_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_POWER_INPUT_STATS_FRAME_INDEX = 4U;      /**< Broadcast Manager power_input_stats to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_DISCHARGE_BITSET_FRAME_INDEX = 5U;   /**< Broadcast Manager afe_discharge_bitset to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_A_FRAME_INDEX = 6U;          /**< Broadcast Manager afe1_status_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_B_FRAME_INDEX = 7U;          /**< Broadcast Manager afe1_status_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_C_FRAME_INDEX = 8U;          /**< Broadcast Manager afe1_status_c to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_D_FRAME_INDEX = 9U;          /**< Broadcast Manager afe1_status_d to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_E_FRAME_INDEX = 10U;         /**< Broadcast Manager afe1_status_e to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE1_STATUS_F_FRAME_INDEX = 11U;         /**< Broadcast Manager afe1_status_f to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_A_FRAME_INDEX = 12U;         /**< Broadcast Manager afe2_status_a to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_B_FRAME_INDEX = 13U;         /**< Broadcast Manager afe2_status_b to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_C_FRAME_INDEX = 14U;         /**< Broadcast Manager afe2_status_c to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_D_FRAME_INDEX = 15U;         /**< Broadcast Manager afe2_status_d to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_E_FRAME_INDEX = 16U;         /**< Broadcast Manager afe2_status_e to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE2_STATUS_F_FRAME_INDEX = 17U;         /**< Broadcast Manager afe2_status_f to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_REAR_CONTROLLER_AFE_TEMPERATURE_FRAME_INDEX = 18U;       /**< Broadcast Manager afe_temperature to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_CAN_COMMUNICATION_MEDIUM_ONE_SHOT_MSG_FRAME_INDEX = 19U; /**< Broadcast Manager medium_one_shot_msg to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_GYRO_DATA_FRAME_INDEX = 20U;                         /**< Broadcast Manager gyro_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_IMU_ACCEL_DATA_FRAME_INDEX = 21U;                        /**< Broadcast Manager accel_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_TELEMETRY_IMU_DATA_FRAME_INDEX = 22U;                    /**< Broadcast Manager imu_data to Frame index mapping */
+  static const constexpr unsigned int MEDIUM_FRONT_CONTROLLER_DRIVE_STATUS_FRAME_INDEX = 23U;         /**< Broadcast Manager drive_status to Frame index mapping */
 
   static const constexpr unsigned int SLOW_CAN_COMMUNICATION_SLOW_ONE_SHOT_MSG_FRAME_INDEX = 0U;    /**< Broadcast Manager slow_one_shot_msg to Frame index mapping */
   static const constexpr unsigned int SLOW_FRONT_CONTROLLER_FC_POWER_GROUP_A_FRAME_INDEX = 1U;      /**< Broadcast Manager fc_power_group_a to Frame index mapping */
@@ -144,6 +141,361 @@ class CanScheduler {
    */
   void startCanScheduler();
   /**
+   * @brief   Update the CAN value for steering cruise_control_target_velocity
+   * @param   cruise_control_target_velocity_value New value for the signal
+   */
+  void update_steering_cruise_control_target_velocity(uint32_t cruise_control_target_velocity_value);
+  /**
+   * @brief   Update the CAN value for steering buttons
+   * @param   buttons_value New value for the signal
+   */
+  void update_steering_buttons(uint8_t buttons_value);
+  /**
+   * @brief   Update the CAN value for rear_controller_status triggers
+   * @param   triggers_value New value for the signal
+   */
+  void update_rear_controller_status_triggers(uint32_t triggers_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_a pack_voltage
+   * @param   pack_voltage_value New value for the signal
+   */
+  void update_battery_stats_a_pack_voltage(uint16_t pack_voltage_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_a pack_current
+   * @param   pack_current_value New value for the signal
+   */
+  void update_battery_stats_a_pack_current(uint16_t pack_current_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_a pack_soc
+   * @param   pack_soc_value New value for the signal
+   */
+  void update_battery_stats_a_pack_soc(uint16_t pack_soc_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_b max_cell_voltage
+   * @param   max_cell_voltage_value New value for the signal
+   */
+  void update_battery_stats_b_max_cell_voltage(uint16_t max_cell_voltage_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_b min_cell_voltage
+   * @param   min_cell_voltage_value New value for the signal
+   */
+  void update_battery_stats_b_min_cell_voltage(uint16_t min_cell_voltage_value);
+  /**
+   * @brief   Update the CAN value for battery_stats_b max_temperature
+   * @param   max_temperature_value New value for the signal
+   */
+  void update_battery_stats_b_max_temperature(uint16_t max_temperature_value);
+  /**
+   * @brief   Update the CAN value for power_input_stats input_dcdc_voltage
+   * @param   input_dcdc_voltage_value New value for the signal
+   */
+  void update_power_input_stats_input_dcdc_voltage(uint16_t input_dcdc_voltage_value);
+  /**
+   * @brief   Update the CAN value for power_input_stats input_dcdc_current
+   * @param   input_dcdc_current_value New value for the signal
+   */
+  void update_power_input_stats_input_dcdc_current(uint16_t input_dcdc_current_value);
+  /**
+   * @brief   Update the CAN value for power_input_stats input_aux_voltage
+   * @param   input_aux_voltage_value New value for the signal
+   */
+  void update_power_input_stats_input_aux_voltage(uint16_t input_aux_voltage_value);
+  /**
+   * @brief   Update the CAN value for power_input_stats input_aux_current
+   * @param   input_aux_current_value New value for the signal
+   */
+  void update_power_input_stats_input_aux_current(uint16_t input_aux_current_value);
+  /**
+   * @brief   Update the CAN value for afe_discharge_bitset afe1
+   * @param   afe1_value New value for the signal
+   */
+  void update_afe_discharge_bitset_afe1(uint32_t afe1_value);
+  /**
+   * @brief   Update the CAN value for afe_discharge_bitset afe2
+   * @param   afe2_value New value for the signal
+   */
+  void update_afe_discharge_bitset_afe2(uint32_t afe2_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_a id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_a_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_a voltage_0
+   * @param   voltage_0_value New value for the signal
+   */
+  void update_afe1_status_a_voltage_0(uint16_t voltage_0_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_a voltage_1
+   * @param   voltage_1_value New value for the signal
+   */
+  void update_afe1_status_a_voltage_1(uint16_t voltage_1_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_a voltage_2
+   * @param   voltage_2_value New value for the signal
+   */
+  void update_afe1_status_a_voltage_2(uint16_t voltage_2_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_b id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_b_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_b voltage_3
+   * @param   voltage_3_value New value for the signal
+   */
+  void update_afe1_status_b_voltage_3(uint16_t voltage_3_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_b voltage_4
+   * @param   voltage_4_value New value for the signal
+   */
+  void update_afe1_status_b_voltage_4(uint16_t voltage_4_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_b voltage_5
+   * @param   voltage_5_value New value for the signal
+   */
+  void update_afe1_status_b_voltage_5(uint16_t voltage_5_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_c id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_c_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_c voltage_6
+   * @param   voltage_6_value New value for the signal
+   */
+  void update_afe1_status_c_voltage_6(uint16_t voltage_6_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_c voltage_7
+   * @param   voltage_7_value New value for the signal
+   */
+  void update_afe1_status_c_voltage_7(uint16_t voltage_7_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_c voltage_8
+   * @param   voltage_8_value New value for the signal
+   */
+  void update_afe1_status_c_voltage_8(uint16_t voltage_8_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_d id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_d_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_d voltage_9
+   * @param   voltage_9_value New value for the signal
+   */
+  void update_afe1_status_d_voltage_9(uint16_t voltage_9_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_d voltage_10
+   * @param   voltage_10_value New value for the signal
+   */
+  void update_afe1_status_d_voltage_10(uint16_t voltage_10_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_d voltage_11
+   * @param   voltage_11_value New value for the signal
+   */
+  void update_afe1_status_d_voltage_11(uint16_t voltage_11_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_e id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_e_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_e voltage_12
+   * @param   voltage_12_value New value for the signal
+   */
+  void update_afe1_status_e_voltage_12(uint16_t voltage_12_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_e voltage_13
+   * @param   voltage_13_value New value for the signal
+   */
+  void update_afe1_status_e_voltage_13(uint16_t voltage_13_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_e voltage_14
+   * @param   voltage_14_value New value for the signal
+   */
+  void update_afe1_status_e_voltage_14(uint16_t voltage_14_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_f id
+   * @param   id_value New value for the signal
+   */
+  void update_afe1_status_f_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_f voltage_15
+   * @param   voltage_15_value New value for the signal
+   */
+  void update_afe1_status_f_voltage_15(uint16_t voltage_15_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_f voltage_16
+   * @param   voltage_16_value New value for the signal
+   */
+  void update_afe1_status_f_voltage_16(uint16_t voltage_16_value);
+  /**
+   * @brief   Update the CAN value for afe1_status_f voltage_17
+   * @param   voltage_17_value New value for the signal
+   */
+  void update_afe1_status_f_voltage_17(uint16_t voltage_17_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_a id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_a_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_a voltage_0
+   * @param   voltage_0_value New value for the signal
+   */
+  void update_afe2_status_a_voltage_0(uint16_t voltage_0_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_a voltage_1
+   * @param   voltage_1_value New value for the signal
+   */
+  void update_afe2_status_a_voltage_1(uint16_t voltage_1_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_a voltage_2
+   * @param   voltage_2_value New value for the signal
+   */
+  void update_afe2_status_a_voltage_2(uint16_t voltage_2_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_b id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_b_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_b voltage_3
+   * @param   voltage_3_value New value for the signal
+   */
+  void update_afe2_status_b_voltage_3(uint16_t voltage_3_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_b voltage_4
+   * @param   voltage_4_value New value for the signal
+   */
+  void update_afe2_status_b_voltage_4(uint16_t voltage_4_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_b voltage_5
+   * @param   voltage_5_value New value for the signal
+   */
+  void update_afe2_status_b_voltage_5(uint16_t voltage_5_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_c id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_c_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_c voltage_6
+   * @param   voltage_6_value New value for the signal
+   */
+  void update_afe2_status_c_voltage_6(uint16_t voltage_6_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_c voltage_7
+   * @param   voltage_7_value New value for the signal
+   */
+  void update_afe2_status_c_voltage_7(uint16_t voltage_7_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_c voltage_8
+   * @param   voltage_8_value New value for the signal
+   */
+  void update_afe2_status_c_voltage_8(uint16_t voltage_8_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_d id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_d_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_d voltage_9
+   * @param   voltage_9_value New value for the signal
+   */
+  void update_afe2_status_d_voltage_9(uint16_t voltage_9_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_d voltage_10
+   * @param   voltage_10_value New value for the signal
+   */
+  void update_afe2_status_d_voltage_10(uint16_t voltage_10_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_d voltage_11
+   * @param   voltage_11_value New value for the signal
+   */
+  void update_afe2_status_d_voltage_11(uint16_t voltage_11_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_e id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_e_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_e voltage_12
+   * @param   voltage_12_value New value for the signal
+   */
+  void update_afe2_status_e_voltage_12(uint16_t voltage_12_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_e voltage_13
+   * @param   voltage_13_value New value for the signal
+   */
+  void update_afe2_status_e_voltage_13(uint16_t voltage_13_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_e voltage_14
+   * @param   voltage_14_value New value for the signal
+   */
+  void update_afe2_status_e_voltage_14(uint16_t voltage_14_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_f id
+   * @param   id_value New value for the signal
+   */
+  void update_afe2_status_f_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_f voltage_15
+   * @param   voltage_15_value New value for the signal
+   */
+  void update_afe2_status_f_voltage_15(uint16_t voltage_15_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_f voltage_16
+   * @param   voltage_16_value New value for the signal
+   */
+  void update_afe2_status_f_voltage_16(uint16_t voltage_16_value);
+  /**
+   * @brief   Update the CAN value for afe2_status_f voltage_17
+   * @param   voltage_17_value New value for the signal
+   */
+  void update_afe2_status_f_voltage_17(uint16_t voltage_17_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature id
+   * @param   id_value New value for the signal
+   */
+  void update_afe_temperature_id(uint8_t id_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_0
+   * @param   temperature_0_value New value for the signal
+   */
+  void update_afe_temperature_temperature_0(uint8_t temperature_0_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_1
+   * @param   temperature_1_value New value for the signal
+   */
+  void update_afe_temperature_temperature_1(uint8_t temperature_1_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_2
+   * @param   temperature_2_value New value for the signal
+   */
+  void update_afe_temperature_temperature_2(uint8_t temperature_2_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_3
+   * @param   temperature_3_value New value for the signal
+   */
+  void update_afe_temperature_temperature_3(uint8_t temperature_3_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_4
+   * @param   temperature_4_value New value for the signal
+   */
+  void update_afe_temperature_temperature_4(uint8_t temperature_4_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_5
+   * @param   temperature_5_value New value for the signal
+   */
+  void update_afe_temperature_temperature_5(uint8_t temperature_5_value);
+  /**
+   * @brief   Update the CAN value for afe_temperature temperature_6
+   * @param   temperature_6_value New value for the signal
+   */
+  void update_afe_temperature_temperature_6(uint8_t temperature_6_value);
+  /**
    * @brief   Update the CAN value for fast_one_shot_msg sig1
    * @param   sig1_value New value for the signal
    */
@@ -173,6 +525,56 @@ class CanScheduler {
    * @param   sig2_value New value for the signal
    */
   void update_slow_one_shot_msg_sig2(uint16_t sig2_value);
+  /**
+   * @brief   Update the CAN value for gyro_data x_axis
+   * @param   x_axis_value New value for the signal
+   */
+  void update_gyro_data_x_axis(uint16_t x_axis_value);
+  /**
+   * @brief   Update the CAN value for gyro_data y_axis
+   * @param   y_axis_value New value for the signal
+   */
+  void update_gyro_data_y_axis(uint16_t y_axis_value);
+  /**
+   * @brief   Update the CAN value for gyro_data z_axis
+   * @param   z_axis_value New value for the signal
+   */
+  void update_gyro_data_z_axis(uint16_t z_axis_value);
+  /**
+   * @brief   Update the CAN value for accel_data x_axis
+   * @param   x_axis_value New value for the signal
+   */
+  void update_accel_data_x_axis(uint16_t x_axis_value);
+  /**
+   * @brief   Update the CAN value for accel_data y_axis
+   * @param   y_axis_value New value for the signal
+   */
+  void update_accel_data_y_axis(uint16_t y_axis_value);
+  /**
+   * @brief   Update the CAN value for accel_data z_axis
+   * @param   z_axis_value New value for the signal
+   */
+  void update_accel_data_z_axis(uint16_t z_axis_value);
+  /**
+   * @brief   Update the CAN value for imu_data g_force
+   * @param   g_force_value New value for the signal
+   */
+  void update_imu_data_g_force(uint16_t g_force_value);
+  /**
+   * @brief   Update the CAN value for imu_data roll
+   * @param   roll_value New value for the signal
+   */
+  void update_imu_data_roll(uint16_t roll_value);
+  /**
+   * @brief   Update the CAN value for imu_data pitch
+   * @param   pitch_value New value for the signal
+   */
+  void update_imu_data_pitch(uint16_t pitch_value);
+  /**
+   * @brief   Update the CAN value for imu_data yaw
+   * @param   yaw_value New value for the signal
+   */
+  void update_imu_data_yaw(uint16_t yaw_value);
   /**
    * @brief   Update the CAN value for drive_status pedal_percentage
    * @param   pedal_percentage_value New value for the signal
@@ -238,426 +640,6 @@ class CanScheduler {
    * @param   left_sig_current_value New value for the signal
    */
   void update_fc_power_lights_group_left_sig_current(uint16_t left_sig_current_value);
-  /**
-   * @brief   Update the CAN value for pedal_calib_status status
-   * @param   status_value New value for the signal
-   */
-  void update_pedal_calib_status_status(uint8_t status_value);
-  /**
-   * @brief   Update the CAN value for gyro_data x_axis
-   * @param   x_axis_value New value for the signal
-   */
-  void update_gyro_data_x_axis(uint16_t x_axis_value);
-  /**
-   * @brief   Update the CAN value for gyro_data y_axis
-   * @param   y_axis_value New value for the signal
-   */
-  void update_gyro_data_y_axis(uint16_t y_axis_value);
-  /**
-   * @brief   Update the CAN value for gyro_data z_axis
-   * @param   z_axis_value New value for the signal
-   */
-  void update_gyro_data_z_axis(uint16_t z_axis_value);
-  /**
-   * @brief   Update the CAN value for accel_data x_axis
-   * @param   x_axis_value New value for the signal
-   */
-  void update_accel_data_x_axis(uint16_t x_axis_value);
-  /**
-   * @brief   Update the CAN value for accel_data y_axis
-   * @param   y_axis_value New value for the signal
-   */
-  void update_accel_data_y_axis(uint16_t y_axis_value);
-  /**
-   * @brief   Update the CAN value for accel_data z_axis
-   * @param   z_axis_value New value for the signal
-   */
-  void update_accel_data_z_axis(uint16_t z_axis_value);
-  /**
-   * @brief   Update the CAN value for rear_controller_status triggers
-   * @param   triggers_value New value for the signal
-   */
-  void update_rear_controller_status_triggers(uint32_t triggers_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_a pack_voltage_v
-   * @param   pack_voltage_v_value New value for the signal
-   */
-  void update_battery_stats_a_pack_voltage_v(uint32_t pack_voltage_v_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_a pack_soc
-   * @param   pack_soc_value New value for the signal
-   */
-  void update_battery_stats_a_pack_soc(uint16_t pack_soc_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_b max_cell_voltage
-   * @param   max_cell_voltage_value New value for the signal
-   */
-  void update_battery_stats_b_max_cell_voltage(uint8_t max_cell_voltage_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_b min_cell_voltage
-   * @param   min_cell_voltage_value New value for the signal
-   */
-  void update_battery_stats_b_min_cell_voltage(uint8_t min_cell_voltage_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_b max_temperature
-   * @param   max_temperature_value New value for the signal
-   */
-  void update_battery_stats_b_max_temperature(uint16_t max_temperature_value);
-  /**
-   * @brief   Update the CAN value for battery_stats_b pack_current_a
-   * @param   pack_current_a_value New value for the signal
-   */
-  void update_battery_stats_b_pack_current_a(uint32_t pack_current_a_value);
-  /**
-   * @brief   Update the CAN value for bps_fault_info extra_info
-   * @param   extra_info_value New value for the signal
-   */
-  void update_bps_fault_info_extra_info(uint64_t extra_info_value);
-  /**
-   * @brief   Update the CAN value for power_input_stats input_dcdc_voltage
-   * @param   input_dcdc_voltage_value New value for the signal
-   */
-  void update_power_input_stats_input_dcdc_voltage(uint16_t input_dcdc_voltage_value);
-  /**
-   * @brief   Update the CAN value for power_input_stats input_dcdc_current
-   * @param   input_dcdc_current_value New value for the signal
-   */
-  void update_power_input_stats_input_dcdc_current(uint16_t input_dcdc_current_value);
-  /**
-   * @brief   Update the CAN value for power_input_stats input_aux_voltage
-   * @param   input_aux_voltage_value New value for the signal
-   */
-  void update_power_input_stats_input_aux_voltage(uint16_t input_aux_voltage_value);
-  /**
-   * @brief   Update the CAN value for power_input_stats input_aux_current
-   * @param   input_aux_current_value New value for the signal
-   */
-  void update_power_input_stats_input_aux_current(uint16_t input_aux_current_value);
-  /**
-   * @brief   Update the CAN value for afe_discharge_bitset afe1
-   * @param   afe1_value New value for the signal
-   */
-  void update_afe_discharge_bitset_afe1(uint32_t afe1_value);
-  /**
-   * @brief   Update the CAN value for afe_discharge_bitset afe2
-   * @param   afe2_value New value for the signal
-   */
-  void update_afe_discharge_bitset_afe2(uint32_t afe2_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_a id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_a_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_a voltage_0
-   * @param   voltage_0_value New value for the signal
-   */
-  void update_afe1_status_a_voltage_0(uint8_t voltage_0_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_a voltage_1
-   * @param   voltage_1_value New value for the signal
-   */
-  void update_afe1_status_a_voltage_1(uint8_t voltage_1_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_a voltage_2
-   * @param   voltage_2_value New value for the signal
-   */
-  void update_afe1_status_a_voltage_2(uint8_t voltage_2_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_b id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_b_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_b voltage_3
-   * @param   voltage_3_value New value for the signal
-   */
-  void update_afe1_status_b_voltage_3(uint8_t voltage_3_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_b voltage_4
-   * @param   voltage_4_value New value for the signal
-   */
-  void update_afe1_status_b_voltage_4(uint8_t voltage_4_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_b voltage_5
-   * @param   voltage_5_value New value for the signal
-   */
-  void update_afe1_status_b_voltage_5(uint8_t voltage_5_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_c id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_c_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_c voltage_6
-   * @param   voltage_6_value New value for the signal
-   */
-  void update_afe1_status_c_voltage_6(uint8_t voltage_6_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_c voltage_7
-   * @param   voltage_7_value New value for the signal
-   */
-  void update_afe1_status_c_voltage_7(uint8_t voltage_7_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_c voltage_8
-   * @param   voltage_8_value New value for the signal
-   */
-  void update_afe1_status_c_voltage_8(uint8_t voltage_8_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_d id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_d_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_d voltage_9
-   * @param   voltage_9_value New value for the signal
-   */
-  void update_afe1_status_d_voltage_9(uint8_t voltage_9_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_d voltage_10
-   * @param   voltage_10_value New value for the signal
-   */
-  void update_afe1_status_d_voltage_10(uint8_t voltage_10_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_d voltage_11
-   * @param   voltage_11_value New value for the signal
-   */
-  void update_afe1_status_d_voltage_11(uint8_t voltage_11_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_e id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_e_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_e voltage_12
-   * @param   voltage_12_value New value for the signal
-   */
-  void update_afe1_status_e_voltage_12(uint8_t voltage_12_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_e voltage_13
-   * @param   voltage_13_value New value for the signal
-   */
-  void update_afe1_status_e_voltage_13(uint8_t voltage_13_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_e voltage_14
-   * @param   voltage_14_value New value for the signal
-   */
-  void update_afe1_status_e_voltage_14(uint8_t voltage_14_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_f id
-   * @param   id_value New value for the signal
-   */
-  void update_afe1_status_f_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_f voltage_15
-   * @param   voltage_15_value New value for the signal
-   */
-  void update_afe1_status_f_voltage_15(uint8_t voltage_15_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_f voltage_16
-   * @param   voltage_16_value New value for the signal
-   */
-  void update_afe1_status_f_voltage_16(uint8_t voltage_16_value);
-  /**
-   * @brief   Update the CAN value for afe1_status_f voltage_17
-   * @param   voltage_17_value New value for the signal
-   */
-  void update_afe1_status_f_voltage_17(uint8_t voltage_17_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_a id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_a_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_a voltage_0
-   * @param   voltage_0_value New value for the signal
-   */
-  void update_afe2_status_a_voltage_0(uint8_t voltage_0_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_a voltage_1
-   * @param   voltage_1_value New value for the signal
-   */
-  void update_afe2_status_a_voltage_1(uint8_t voltage_1_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_a voltage_2
-   * @param   voltage_2_value New value for the signal
-   */
-  void update_afe2_status_a_voltage_2(uint8_t voltage_2_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_b id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_b_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_b voltage_3
-   * @param   voltage_3_value New value for the signal
-   */
-  void update_afe2_status_b_voltage_3(uint8_t voltage_3_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_b voltage_4
-   * @param   voltage_4_value New value for the signal
-   */
-  void update_afe2_status_b_voltage_4(uint8_t voltage_4_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_b voltage_5
-   * @param   voltage_5_value New value for the signal
-   */
-  void update_afe2_status_b_voltage_5(uint8_t voltage_5_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_c id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_c_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_c voltage_6
-   * @param   voltage_6_value New value for the signal
-   */
-  void update_afe2_status_c_voltage_6(uint8_t voltage_6_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_c voltage_7
-   * @param   voltage_7_value New value for the signal
-   */
-  void update_afe2_status_c_voltage_7(uint8_t voltage_7_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_c voltage_8
-   * @param   voltage_8_value New value for the signal
-   */
-  void update_afe2_status_c_voltage_8(uint8_t voltage_8_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_d id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_d_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_d voltage_9
-   * @param   voltage_9_value New value for the signal
-   */
-  void update_afe2_status_d_voltage_9(uint8_t voltage_9_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_d voltage_10
-   * @param   voltage_10_value New value for the signal
-   */
-  void update_afe2_status_d_voltage_10(uint8_t voltage_10_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_d voltage_11
-   * @param   voltage_11_value New value for the signal
-   */
-  void update_afe2_status_d_voltage_11(uint8_t voltage_11_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_e id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_e_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_e voltage_12
-   * @param   voltage_12_value New value for the signal
-   */
-  void update_afe2_status_e_voltage_12(uint8_t voltage_12_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_e voltage_13
-   * @param   voltage_13_value New value for the signal
-   */
-  void update_afe2_status_e_voltage_13(uint8_t voltage_13_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_e voltage_14
-   * @param   voltage_14_value New value for the signal
-   */
-  void update_afe2_status_e_voltage_14(uint8_t voltage_14_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_f id
-   * @param   id_value New value for the signal
-   */
-  void update_afe2_status_f_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_f voltage_15
-   * @param   voltage_15_value New value for the signal
-   */
-  void update_afe2_status_f_voltage_15(uint8_t voltage_15_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_f voltage_16
-   * @param   voltage_16_value New value for the signal
-   */
-  void update_afe2_status_f_voltage_16(uint8_t voltage_16_value);
-  /**
-   * @brief   Update the CAN value for afe2_status_f voltage_17
-   * @param   voltage_17_value New value for the signal
-   */
-  void update_afe2_status_f_voltage_17(uint8_t voltage_17_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature id
-   * @param   id_value New value for the signal
-   */
-  void update_afe_temperature_id(uint8_t id_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_0
-   * @param   temperature_0_value New value for the signal
-   */
-  void update_afe_temperature_temperature_0(uint8_t temperature_0_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_1
-   * @param   temperature_1_value New value for the signal
-   */
-  void update_afe_temperature_temperature_1(uint8_t temperature_1_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_2
-   * @param   temperature_2_value New value for the signal
-   */
-  void update_afe_temperature_temperature_2(uint8_t temperature_2_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_3
-   * @param   temperature_3_value New value for the signal
-   */
-  void update_afe_temperature_temperature_3(uint8_t temperature_3_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_4
-   * @param   temperature_4_value New value for the signal
-   */
-  void update_afe_temperature_temperature_4(uint8_t temperature_4_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_5
-   * @param   temperature_5_value New value for the signal
-   */
-  void update_afe_temperature_temperature_5(uint8_t temperature_5_value);
-  /**
-   * @brief   Update the CAN value for afe_temperature temperature_6
-   * @param   temperature_6_value New value for the signal
-   */
-  void update_afe_temperature_temperature_6(uint8_t temperature_6_value);
-  /**
-   * @brief   Update the CAN value for steering cruise_control_target_velocity
-   * @param   cruise_control_target_velocity_value New value for the signal
-   */
-  void update_steering_cruise_control_target_velocity(uint32_t cruise_control_target_velocity_value);
-  /**
-   * @brief   Update the CAN value for steering buttons
-   * @param   buttons_value New value for the signal
-   */
-  void update_steering_buttons(uint16_t buttons_value);
-  /**
-   * @brief   Update the CAN value for pedal_calib_request command
-   * @param   command_value New value for the signal
-   */
-  void update_pedal_calib_request_command(uint8_t command_value);
-  /**
-   * @brief   Update the CAN value for imu_data g_force
-   * @param   g_force_value New value for the signal
-   */
-  void update_imu_data_g_force(uint16_t g_force_value);
-  /**
-   * @brief   Update the CAN value for imu_data roll
-   * @param   roll_value New value for the signal
-   */
-  void update_imu_data_roll(uint16_t roll_value);
-  /**
-   * @brief   Update the CAN value for imu_data pitch
-   * @param   pitch_value New value for the signal
-   */
-  void update_imu_data_pitch(uint16_t pitch_value);
-  /**
-   * @brief   Update the CAN value for imu_data yaw
-   * @param   yaw_value New value for the signal
-   */
-  void update_imu_data_yaw(uint16_t yaw_value);
 };
 
 /** @} */

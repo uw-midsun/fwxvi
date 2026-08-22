@@ -26,41 +26,40 @@ const size_t g_can_cache_high_size = 0U;
 
 CanMessageCache g_can_cache_medium[] = {
   /* rear_controller messages */
-  { .can_id = 19U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM },   /* rear_controller_status */
-  { .can_id = 35U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM },   /* battery_stats_A        */
-  { .can_id = 51U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM },   /* battery_stats_B        */
-  { .can_id = 67U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM },   /* power_input_stats      */
-  { .can_id = 1107U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* bps_fault_info         */
+  { .can_id = 17U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* rear_controller_status */
+  { .can_id = 33U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* battery_stats_A        */
+  { .can_id = 49U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* battery_stats_B        */
+  { .can_id = 65U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* power_input_stats      */
   /* steering */
-  { .can_id = 100U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* steering               */
+  { .can_id = 96U, .length = 5U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* steering               */
   /* front_controller */
-  { .can_id = 1361U, .length = 5U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* drive_status           */
+  { .can_id = 1365U, .length = 5U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* drive_status           */
   /* imu */
-  { .can_id = 1826U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* accel_data             */
-  { .can_id = 1842U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* gyro_data              */
+  { .can_id = 1827U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* accel_data             */
+  { .can_id = 1843U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* gyro_data              */
   /* rear_controller AFE messages */
-  { .can_id = 1827U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_discharge_bitset   */
-  { .can_id = 1843U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_A          */
-  { .can_id = 1859U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_B          */
-  { .can_id = 1875U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_C          */
-  { .can_id = 1891U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_D          */
-  { .can_id = 1907U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_E          */
-  { .can_id = 1923U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_F          */
-  { .can_id = 1939U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_A          */
-  { .can_id = 1955U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_B          */
-  { .can_id = 1971U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_C          */
-  { .can_id = 1987U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_D          */
-  { .can_id = 2003U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_E          */
-  { .can_id = 2019U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_F          */
-  { .can_id = 2035U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_temperature        */
+  { .can_id = 1825U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_discharge_bitset   */
+  { .can_id = 1841U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_A          */
+  { .can_id = 1857U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_B          */
+  { .can_id = 1873U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_C          */
+  { .can_id = 1889U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_D          */
+  { .can_id = 1905U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_E          */
+  { .can_id = 1921U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_F          */
+  { .can_id = 1937U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_A          */
+  { .can_id = 1953U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_B          */
+  { .can_id = 1969U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_C          */
+  { .can_id = 1985U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_D          */
+  { .can_id = 2001U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_E          */
+  { .can_id = 2017U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_F          */
+  { .can_id = 2033U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_temperature        */
 };
 const size_t g_can_cache_medium_size = sizeof(g_can_cache_medium) / sizeof(g_can_cache_medium[0]);
 
 CanMessageCache g_can_cache_low[] = {
   /* ---- CAN-received slow-cycle messages ---- */
-  { .can_id = 1521U, .length = 8U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_group_A      */
-  { .can_id = 1569U, .length = 8U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_lights_group */
-  { .can_id = 1617U, .length = 4U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_group_B      */
+  { .can_id = 1525U, .length = 8U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_group_A      */
+  { .can_id = 1573U, .length = 8U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_lights_group */
+  { .can_id = 1621U, .length = 4U, .priority = CAN_MSG_PRIORITY_LOW }, /* fc_power_group_B      */
 
   /* ---- Telemetry-internal messages (populated by scheduler, not CAN RX) ---- */
   { .can_id = TELEMETRY_STATS_CAN_ID, .length = TELEMETRY_STATS_DLC, .priority = CAN_MSG_PRIORITY_LOW }, /* telemetry_stats       */

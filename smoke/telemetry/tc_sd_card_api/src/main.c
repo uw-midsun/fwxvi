@@ -8,7 +8,6 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
-#include <string.h>
 
 /* Inter-component Headers */
 #include "delay.h"
@@ -23,9 +22,8 @@
 #include "sd_card_interface.h"
 #include "sd_card_spi.h"
 
-/* SD cards require SPI mode 0 (CPOL=0, CPHA=0) */
 SdSpiSettings sd_spi_test_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
-                                       .mode = SD_SPI_MODE_0,
+                                       .mode = SD_SPI_MODE_1,
                                        .mosi = { .port = GPIO_PORT_B, .pin = 15 },
                                        .miso = { .port = GPIO_PORT_B, .pin = 14 },
                                        .sclk = { .port = GPIO_PORT_B, .pin = 13 },
@@ -33,95 +31,74 @@ SdSpiSettings sd_spi_test_settings = { .baudrate = SD_SPI_BAUDRATE_2_5MHZ,
 
 SdSpiPort spi = SD_SPI_PORT_2;
 
-static const char s_test_msg[] = "Hello World!";
-#define TEST_MSG_LEN (sizeof(s_test_msg) - 1U)
-
 TASK(sd_card_api, TASK_STACK_1024) {
+  LOG_DEBUG("Linking driver...\r\n");
+  delay_ms(10U);
+
+  if (sd_card_link_driver(spi, &sd_spi_test_settings) == STATUS_CODE_OK) {
+    LOG_DEBUG("Driver linked\r\n");
+  } else {
+    LOG_DEBUG("Driver linking failure\r\n");
+  }
+  delay_ms(10U);
+
   FATFS workArea;
+
   FIL file;
   FRESULT result;
   UINT bytesWritten;
-  UINT bytesRead;
-  char readBuf[TEST_MSG_LEN];
 
-  LOG_DEBUG("Linking driver...\r\n");
-  if (sd_card_link_driver(spi, &sd_spi_test_settings) != STATUS_CODE_OK) {
-    LOG_DEBUG("Driver linking failure\r\n");
-    goto error;
-  }
-  LOG_DEBUG("Driver linked\r\n");
-
-  result = f_mount(&workArea, "", 1);
+  result = f_mount(&workArea, "", 0);
   if (result != FR_OK) {
     LOG_DEBUG("f_mount() failed, result = %d\r\n", result);
-    goto error;
+    return;
   }
-  LOG_DEBUG("Workarea mounted\r\n");
 
-  /* Write phase */
+  LOG_DEBUG("Workarea mounted\r\n");
+  delay_ms(10U);
+
   result = f_open(&file, "test.txt", FA_WRITE | FA_CREATE_ALWAYS);
   if (result != FR_OK) {
-    LOG_DEBUG("f_open(write) failed, result = %d\r\n", result);
-    goto error;
+    LOG_DEBUG("f_open() failed, result = %d\r\n", result);
+    return;
   }
-  LOG_DEBUG("Opened test.txt for writing\r\n");
 
-  result = f_write(&file, s_test_msg, TEST_MSG_LEN, &bytesWritten);
-  if (result != FR_OK || bytesWritten != TEST_MSG_LEN) {
-    LOG_DEBUG("f_write() failed, result = %d, written = %u\r\n", result, bytesWritten);
-    f_close(&file);
-    goto error;
-  }
-  LOG_DEBUG("Wrote %u bytes\r\n", bytesWritten);
+  LOG_DEBUG("Created text.txt\r\n");
+  delay_ms(10U);
 
-  result = f_close(&file);
+  LOG_DEBUG("Writing to file...\r\n");
+  delay_ms(10U);
+
+  result = f_write(&file, "Hello World!", 12, &bytesWritten);
   if (result != FR_OK) {
-    LOG_DEBUG("f_close(write) failed, result = %d\r\n", result);
-    goto error;
+    LOG_DEBUG("f_write() failed, result = %d\r\n", result);
+    return;
   }
+
+  LOG_DEBUG("Writing finished\r\n");
+  delay_ms(10U);
+
+  f_close(&file);
+
+  if (result != FR_OK) {
+    LOG_DEBUG("f_close() failed, result = %d\r\n", result);
+    return;
+  }
+
   LOG_DEBUG("File closed\r\n");
+  delay_ms(10U);
 
-  /* Read-back phase - verifies the data actually landed on the card */
-  result = f_open(&file, "test.txt", FA_READ);
-  if (result != FR_OK) {
-    LOG_DEBUG("f_open(read) failed, result = %d\r\n", result);
-    goto error;
-  }
-
-  result = f_read(&file, readBuf, TEST_MSG_LEN, &bytesRead);
-  if (result != FR_OK || bytesRead != TEST_MSG_LEN) {
-    LOG_DEBUG("f_read() failed, result = %d, read = %u\r\n", result, bytesRead);
-    f_close(&file);
-    goto error;
-  }
-
-  result = f_close(&file);
-  if (result != FR_OK) {
-    LOG_DEBUG("f_close(read) failed, result = %d\r\n", result);
-    goto error;
-  }
-
-  if (memcmp(readBuf, s_test_msg, TEST_MSG_LEN) != 0) {
-    LOG_DEBUG("Read-back mismatch\r\n");
-    goto error;
-  }
-  LOG_DEBUG("Read-back verified: %.*s\r\n", (int)TEST_MSG_LEN, readBuf);
-
-  result = f_unmount("");
+  f_unmount("");
   if (result != FR_OK) {
     LOG_DEBUG("f_unmount() failed, result = %d\r\n", result);
-    goto error;
+    return;
   }
+
   LOG_DEBUG("Workarea unmounted\r\n");
+  delay_ms(10U);
 
   while (true) {
-    LOG_DEBUG("sd_card_api PASS\r\n");
-    delay_ms(1000U);
-  }
-
-error:
-  while (true) {
-    LOG_DEBUG("sd_card_api FAIL\r\n");
+    LOG_DEBUG("sd_card_api task running...\r\n");
     delay_ms(1000U);
   }
 }

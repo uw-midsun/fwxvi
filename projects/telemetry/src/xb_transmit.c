@@ -12,7 +12,6 @@
 
 /* Inter-component Headers */
 #include "can.h"
-#include "delay.h"
 #include "global_enums.h"
 #include "log.h"
 #include "tasks.h"
@@ -227,7 +226,6 @@ TASK(can_cache_updater, TASK_STACK_512) {
         }
 
         if (matched) {
-          // LOG_DEBUG("ID: %lx\r\n", message.id.raw);
           break;
         }
       }
@@ -301,14 +299,11 @@ TASK(can_cache_summary, TASK_STACK_512) {
         taskEXIT_CRITICAL();
         if (last_tick == 0U) continue;
         if (is_pending) pending_count++;
-        LOG_DEBUG("  ID=%-4lu [%s] pending=%c last=%lums\r\n", caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', now - last_tick);
-        delay_ms(10U);
+        LOG_DEBUG("  ID=%-4u [%s] pending=%c last=%ums\r\n", caches[p][i].can_id, prio_str[p], is_pending ? 'Y' : 'N', now - last_tick);
       }
     }
-    LOG_DEBUG("  total pending: %lu\r\n", pending_count);
-    delay_ms(10U);
+    LOG_DEBUG("  total pending: %u\r\n", pending_count);
     LOG_DEBUG("=========================\r\n");
-    delay_ms(10U);
   }
 }
 #endif

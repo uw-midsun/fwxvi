@@ -76,12 +76,4 @@ StatusCode trigger_bps_fault_with_data(BpsFault fault, uint8_t cell_at_fault, Bp
  */
 StatusCode bps_fault_clear();
 
-/**
- * @brief   Whether BPS protection is disabled from steering (manual override)
- * @details Defaults to enabled until the first steering frame is received, so protection is never
- *          spuriously off at boot when the steering bitfield still reads its zero default.
- * @return  true if BPS is disabled, false otherwise
- */
-bool bps_is_disabled(void);
-
 /** @} */

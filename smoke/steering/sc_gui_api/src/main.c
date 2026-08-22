@@ -122,12 +122,6 @@ static void s_update_demo_display_data(uint32_t step) {
   s_demo_storage.display_data.max_cell_temp = 30U + s_triangle_wave(step + 90U, 250U, 35U);
   s_demo_storage.display_data.state_of_charge = (uint8_t)s_triangle_wave(step + 30U, 320U, 100U);
 
-  /* Thermistor temperatures (C) for the Thermistors screen - stagger each channel so the table
-     shows independent motion across a plausible ~20-45 C pack range */
-  for (uint8_t i = 0U; i < NUMBER_OF_THERMISTORS; ++i) {
-    s_demo_storage.display_data.thermistor_temp_c[i] = 20U + s_triangle_wave(step + (uint32_t)i * 20U, 200U, 25U);
-  }
-
   /* Aux battery voltage in mV (~12.0-12.8 V) and net energy used ramp (Wh) */
   s_demo_storage.display_data.aux_voltage = (int16_t)(12000 + s_triangle_wave(step + 15U, 240U, 800U));
   s_demo_storage.display_data.energy_used_wh = (float)s_triangle_wave(step + 5U, 600U, 5000U);

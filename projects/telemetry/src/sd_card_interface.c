@@ -35,8 +35,8 @@
  */
 #define SD_DUMMY_BYTE 0xFFU
 
-#define SD_SPI_INIT_LOW_FREQ SD_SPI_BAUDRATE_312_5KHZ
-#define SD_SPI_HIGH_FREQ SD_SPI_BAUDRATE_2_5MHZ
+#define SD_SPI_INIT_LOW_FREQ_HZ SD_SPI_BAUDRATE_312_5KHZ
+#define SD_SPI_HIGH_FREQ_HZ SD_SPI_BAUDRATE_2_5MHZ
 
 #define SD_R1_NO_ERROR (0x00)
 #define SD_R1_IN_IDLE_STATE (0x01)
@@ -107,9 +107,6 @@ static SdSpiPort s_spi_port;
 static SdSpiSettings *s_spi_settings;
 static bool s_is_initialized = false;
 
-/* SDHC/SDXC use block addressing; SDSC uses byte addressing */
-static bool s_is_high_capacity = false;
-
 /************************************************************************************************
  * Private helper functions
  ************************************************************************************************/
@@ -160,9 +157,7 @@ static uint8_t s_wait_for_response(void) {
   return readvalue;
 }
 
-/* When hold_cs is true, CS is left asserted (LOW) on success so the caller can
- * continue into a data phase (CMD17/CMD24/CMD9). The caller must deassert CS. */
-static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdResponseType expected, bool hold_cs) {
+static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdResponseType expected) {
   uint8_t frame[SD_SEND_SIZE];
 
   frame[0] = (cmd | 0x40);
@@ -212,7 +207,7 @@ static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdRespon
       break;
   }
 
-  if (expected != SD_RESPONSE_R1B && !hold_cs) {
+  if (expected != SD_RESPONSE_R1B) {
     sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
     s_read_byte();
   }
@@ -220,8 +215,6 @@ static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdRespon
   return res;
 }
 
-/* Reads the data response token after a write and waits for programming to
- * finish. CS must be asserted on entry and is left asserted on exit. */
 static StatusCode s_sd_get_data_response(void) {
   uint8_t dataresponse;
   uint16_t timeout = 0xFFFFU;
@@ -229,20 +222,24 @@ static StatusCode s_sd_get_data_response(void) {
   do {
     dataresponse = s_read_byte();
     if (--timeout == 0U) {
+      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
       return STATUS_CODE_TIMEOUT;
     }
-  } while (dataresponse == 0xFFU);
+  } while (dataresponse == 0xFFu);
 
-  if ((dataresponse & 0x1FU) != SD_DATA_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
+  s_read_byte();
+
+  if ((dataresponse & 0x1F) == SD_DATA_OK) {
+    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
+    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_LOW);
+
+    while (s_read_byte() != 0xFFU) {
+    }
+    return STATUS_CODE_OK;
   }
 
-  /* Card holds MISO low while programming; wait for it to release (0xFF) */
-  if (!s_wait_for_ready()) {
-    return STATUS_CODE_TIMEOUT;
-  }
-
-  return STATUS_CODE_OK;
+  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
+  return STATUS_CODE_INTERNAL_ERROR;
 }
 
 /************************************************************************************************
@@ -255,7 +252,7 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   }
 
   /* Step 0: Initialize at a low frequency */
-  sd_spi_set_frequency(s_spi_port, SD_SPI_INIT_LOW_FREQ);
+  sd_spi_set_frequency(s_spi_port, SD_SPI_INIT_LOW_FREQ_HZ);
 
   sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
 
@@ -269,7 +266,7 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   SdResponse r1;
 
   for (uint8_t i = 0U; i < SD_NUM_RETRIES; i++) {
-    r1 = s_send_sd_cmd(SD_CMD_GO_IDLE_STATE, 0U, 0x95U, SD_RESPONSE_R1, false);
+    r1 = s_send_sd_cmd(SD_CMD_GO_IDLE_STATE, 0U, 0x95U, SD_RESPONSE_R1);
 
     if (r1.r1 == SD_R1_IN_IDLE_STATE) {
       break;
@@ -289,14 +286,14 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   s_is_initialized = true;
 
   /* Step 3: Check SD version with CMD8 */
-  r1 = s_send_sd_cmd(SD_CMD_SEND_IF_COND, 0x1AAU, 0x87U, SD_RESPONSE_R7, false);
+  r1 = s_send_sd_cmd(SD_CMD_SEND_IF_COND, 0x1AAU, 0x87U, SD_RESPONSE_R7);
   bool is_v2 = (r1.r1 & SD_R1_ILLEGAL_COMMAND) == 0U ? true : false;
 
   /* Step 4: Initiate init process with ACMD41 */
   uint32_t acmd41_arg = is_v2 ? 0x40000000U : 0U;
   for (uint16_t i = 0U; i < SD_NUM_RETRIES; i++) {
-    s_send_sd_cmd(SD_CMD_APP_CMD, 0U, 0xFFU, SD_RESPONSE_R1, false);
-    r1 = s_send_sd_cmd(SD_CMD_SD_APP_OP_COND, acmd41_arg, 0xFFU, SD_RESPONSE_R1, false);
+    s_send_sd_cmd(SD_CMD_APP_CMD, 0U, 0xFFU, SD_RESPONSE_R1);
+    r1 = s_send_sd_cmd(SD_CMD_SD_APP_OP_COND, acmd41_arg, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 == SD_R1_NO_ERROR) {
       break;
@@ -312,13 +309,13 @@ static DSTATUS sd_card_init(BYTE pdrv) {
     return RES_ERROR;
   }
 
-  /* Step 5: Read OCR - CCS bit (OCR bit 30) selects block vs byte addressing */
-  r1 = s_send_sd_cmd(SD_CMD_READ_OCR, 0U, 0xFFU, SD_RESPONSE_R3, false);
-  s_is_high_capacity = (r1.r2 & 0x40U) != 0U;
+  /* Step 5: Read OCR */
+  r1 = s_send_sd_cmd(SD_CMD_READ_OCR, 0U, 0xFFU, SD_RESPONSE_R3);
+  bool is_sdhc = (r1.r2 & 0x40U);
 
-  /* Step 6: If not high capacity set block length to 512 */
-  if (!s_is_high_capacity) {
-    r1 = s_send_sd_cmd(SD_CMD_SET_BLOCKLEN, 512U, 0xFFU, SD_RESPONSE_R1, false);
+  /* Step 6: If not SDHC set block length to 512 */
+  if (!is_sdhc) {
+    r1 = s_send_sd_cmd(SD_CMD_SET_BLOCKLEN, 512U, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 != SD_R1_NO_ERROR) {
       sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
@@ -331,27 +328,21 @@ static DSTATUS sd_card_init(BYTE pdrv) {
   s_read_byte();
 
   /* Step 7: Reinitialize at a high frequency */
-  sd_spi_set_frequency(s_spi_port, SD_SPI_HIGH_FREQ);
+  sd_spi_set_frequency(s_spi_port, SD_SPI_HIGH_FREQ_HZ);
 
   s_is_initialized = true;
   return RES_OK;
 }
 
 static DSTATUS sd_card_status(BYTE pdrv) {
-  return s_is_initialized ? 0 : STA_NOINIT;
-}
-
-/* Translate an LBA to the command argument: block index for high-capacity
- * cards, byte offset for standard-capacity cards. */
-static uint32_t s_sd_block_addr(LBA_t sector) {
-  return s_is_high_capacity ? (uint32_t)sector : (uint32_t)(sector * 512U);
+  return s_is_initialized ? RES_OK : RES_NOTRDY;
 }
 
 static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
   DRESULT result = RES_OK;
 
   while (count--) {
-    SdResponse r1 = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true);
+    SdResponse r1 = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, sector * 512U, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 != SD_R1_NO_ERROR) {
       result = RES_ERROR;
@@ -395,26 +386,19 @@ static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
 
 static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count) {
   while (count--) {
-    SdResponse r1 = s_send_sd_cmd(SD_CMD_WRITE_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true);
+    SdResponse r1 = s_send_sd_cmd(SD_CMD_WRITE_SINGLE_BLOCK, sector * 512U, 0xFFU, SD_RESPONSE_R1);
 
     if (r1.r1 != SD_R1_NO_ERROR) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
       return RES_ERROR;
     }
 
-    /* One dummy byte before the data token */
     s_read_byte();
 
     sd_spi_tx(s_spi_port, (uint8_t[]){ SD_TOKEN_START_DATA_SINGLE_BLOCK_WRITE }, 1);
     sd_spi_tx(s_spi_port, (uint8_t *)buff, 512);
     sd_spi_tx(s_spi_port, (uint8_t[]){ 0xFF, 0xFF }, 2);
 
-    if (s_sd_get_data_response() != STATUS_CODE_OK) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-      return RES_ERROR;
-    }
+    if (s_sd_get_data_response() != STATUS_CODE_OK) return RES_ERROR;
 
     buff += 512U;
     sector++;
@@ -442,10 +426,8 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
       uint8_t csd[16];
       uint32_t sector_count = 0;
 
-      SdResponse r1 = s_send_sd_cmd(SD_CMD_SEND_CSD, 0U, 0xFFU, SD_RESPONSE_R1, true);
+      SdResponse r1 = s_send_sd_cmd(SD_CMD_SEND_CSD, 0U, 0xFFU, SD_RESPONSE_R1);
       if (r1.r1 != SD_R1_NO_ERROR) {
-        sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-        s_read_byte();
         *(DWORD *)buff = 32768U;
         return RES_OK;
       }

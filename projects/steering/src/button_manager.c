@@ -26,7 +26,6 @@
 #include "drive_state_manager.h"
 #include "global_enums.h"
 #include "gui_menu.h"
-#include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
 #include "light_signal_manager.h"
 #include "party_mode.h"
@@ -132,8 +131,7 @@ static void hazards_btn_falling_edge_cb(Button *button) {
     return;
   }
 
-  if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
-    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
+  if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_request(steering_storage);
     return;
   }
@@ -192,32 +190,31 @@ static void neutral_btn_rising_edge_cb(Button *button) {
  * Horn button handlers
  ************************************************************************************************/
 
-/**
- * @brief   Sound or silence the horn, ignoring presses while the overlay menu is open
- * @details Shared by the dedicated horn button and the CC-down button, which doubles as the horn
- *          whenever the overlay menu is closed. Also chirps the local buzzer for driver feedback.
- * @param   enabled TRUE to sound the horn, FALSE to silence it
- */
-static void s_horn_set_enabled(bool enabled) {
+static void horn_btn_falling_edge_cb(Button *button) {
   if (gui_menu_is_open()) {
     return;
   }
 
-  if (enabled && party_mode_active() == false) {
+  if (party_mode_active() == false) {
     buzzer_play_success();
   }
 
-  set_steering_buttons_horn_enabled(enabled);
-}
-
-static void horn_btn_falling_edge_cb(Button *button) {
   CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Falling edge callback\r\n");
-  s_horn_set_enabled(true);
+
+  set_steering_buttons_horn_enabled(true);
 }
 
 static void horn_btn_rising_edge_cb(Button *button) {
+  if (gui_menu_is_open()) {
+    return;
+  }
+
+#if (BUTTON_MANAGER_DEBUG)
+  LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
+#endif
   CONDITIONAL_LOG_DEBUG("ButtonManager - Horn Rising edge callback\r\n");
-  s_horn_set_enabled(false);
+
+  set_steering_buttons_horn_enabled(false);
 }
 
 /************************************************************************************************
@@ -261,12 +258,10 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
   }
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
-  s_horn_set_enabled(true);
 }
 
 static void cruise_control_down_btn_rising_edge_cb(Button *button) {
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Rising edge callback\r\n");
-  s_horn_set_enabled(false);
 }
 
 /************************************************************************************************

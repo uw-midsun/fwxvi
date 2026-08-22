@@ -35,7 +35,7 @@
 
 #ifndef MASTER_TASK_1HZ_SIZE
 /** @brief  Number of bytes statically allocated for 1hz task */
-#define MASTER_TASK_1HZ_SIZE (TASK_STACK_512)
+#define MASTER_TASK_1HZ_SIZE (TASK_STACK_256)
 #endif
 
 #define MASTER_50HZ_TO_MS 20U

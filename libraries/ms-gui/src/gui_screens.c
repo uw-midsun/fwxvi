@@ -21,7 +21,6 @@
 #include "gui_pack_screen.h"
 #include "gui_pedal_calib_screen.h"
 #include "gui_screens.h"
-#include "gui_therm_screen.h"
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
 
@@ -128,22 +127,6 @@ static void s_destroy_pack_voltage_screen(void) {
 }
 
 /**
- * @brief   Build the thermistor voltage screen
- * @param   screen Root screen object to populate
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-static StatusCode s_create_thermistor_screen(GuiScreen *screen) {
-  return gui_therm_screen_init(screen);
-}
-
-/**
- * @brief   Reset thermistor-screen widget handles after the active root is cleaned
- */
-static void s_destroy_thermistor_screen(void) {
-  gui_therm_screen_deinit();
-}
-
-/**
  * @brief   Build the pedal calibration screen
  * @param   screen Root screen object to populate
  * @return  STATUS_CODE_OK on success, error otherwise
@@ -181,12 +164,6 @@ static StatusCode s_register_default_screens(void) {
       .name = "Pack Voltage",
       .create = s_create_pack_voltage_screen,
       .destroy = s_destroy_pack_voltage_screen,
-    },
-    [GUI_SCREEN_THERMISTORS] = {
-      .id = GUI_SCREEN_THERMISTORS,
-      .name = "Thermistors",
-      .create = s_create_thermistor_screen,
-      .destroy = s_destroy_thermistor_screen,
     },
     [GUI_SCREEN_PEDAL_CALIB] = {
       .id = GUI_SCREEN_PEDAL_CALIB,

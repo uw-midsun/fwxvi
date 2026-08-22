@@ -22,7 +22,7 @@ Messages:
         length: 32
       buttons:
         type: bitfield
-        flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled, balancing_enabled, bps_enabled]
+        flags: [{name: drive_state, length: 2}, {name: lights, length: 2}, cruise_control_enabled, hazard_enabled, horn_enabled, regen_enabled, balancing_enabled]
         length: 16
   pedal_calib_request:
     id: 46

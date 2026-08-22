@@ -46,21 +46,15 @@ StatusCode ads122_change_MUX(ADS122Storage *storage, uint8_t MUX_CFG) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ads122_change_gain(ADS122Storage *storage, uint8_t GAIN_CFG) {
-  if (storage == NULL) {
+StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage) {
+  (void)register_map;
+  if (storage == NULL || i2c_settings_storage == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  /* ARM code writes the new GAIN_CFG to the ADS122_REG_GAIN_CFG register*/
-  s_registers[ADS122_REG_GAIN_CFG] = GAIN_CFG;
-
-  return STATUS_CODE_OK;
-}
-
-StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]) {
-  if (storage == NULL || register_map == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
+  storage->i2c_port = i2c_port_storage;
+  storage->i2c_address = i2c_address_storage;
+  storage->i2c_settings = *i2c_settings_storage;
 
   for (int i = 0; i < 16; i++) {
     s_registers[i] = register_map[i];
@@ -72,27 +66,11 @@ StatusCode ads122_configure(ADS122Storage *storage, uint8_t register_map[]) {
   return STATUS_CODE_OK;
 }
 
-StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddress i2c_address_storage, uint8_t register_map[], I2CSettings *i2c_settings_storage) {
-  if (storage == NULL || i2c_settings_storage == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  storage->i2c_port = i2c_port_storage;
-  storage->i2c_address = i2c_address_storage;
-  storage->i2c_settings = *i2c_settings_storage;
-
-  return ads122_configure(storage, register_map);
-}
-
 StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]) {
   if (storage == NULL || rx_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
   memset(s_conversion_data, *rx_data, 5U);
-  return STATUS_CODE_OK;
-}
-
-StatusCode ads122_reset(ADS122Storage *storage) {
   return STATUS_CODE_OK;
 }

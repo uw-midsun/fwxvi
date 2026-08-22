@@ -54,10 +54,8 @@ typedef struct {
   bool is_open;                                    /**< Bool to check if menu is currently open */
   uint8_t selected_index;                          /**< Index user is currently "hovering" over */
   bool discharge_enabled;                          /**< Mirror of the broadcast cell-discharge request, for the row label */
-  bool bps_enabled;                                /**< Mirror of the broadcast BPS-enable state, for the row label */
   GuiMenuActionCallback party_mode_callback;       /**< Callback for party mode */
   GuiMenuActionCallback toggle_discharge_callback; /**< Callback for toggling cell discharge */
-  GuiMenuActionCallback toggle_bps_callback;       /**< Callback for toggling BPS enable */
   lv_obj_t *overlay;                               /**< Dimmed backdrop when menu is open */
   lv_obj_t *panel;                                 /**< Container that holds title + menu rows */
   lv_obj_t *title;                                 /**< Menu title */
@@ -95,22 +93,6 @@ StatusCode gui_menu_set_party_mode_callback(GuiMenuActionCallback callback);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_menu_set_toggle_discharge_callback(GuiMenuActionCallback callback);
-
-/**
- * @brief   Register the callback invoked by the Toggle BPS menu item
- * @param   callback Callback to invoke when Toggle BPS is selected
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_menu_set_toggle_bps_callback(GuiMenuActionCallback callback);
-
-/**
- * @brief   Force the menu's mirrored BPS-enable state (SECURE MODE row label)
- * @details Used when BPS is disabled outside the menu (e.g. acknowledging a BPS fault) so the row
- *          label reflects the true broadcast state without invoking the toggle callback.
- * @param   enabled New BPS-enable state to mirror in the menu
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_menu_set_bps_enabled(bool enabled);
 
 /**
  * @brief   Queue a menu toggle request for processing on the display task

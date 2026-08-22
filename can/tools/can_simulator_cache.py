@@ -56,11 +56,6 @@ class CanSimulatorDataCache:
                 "left_sig_current": 0,
             },
 
-            "front_controller_pedal_calib_status": {
-                # pedal_calib_status cache definitions
-                "status": 0,
-            },
-
             "imu_gyro_data": {
                 # gyro_data cache definitions
                 "x_axis": 0,
@@ -225,11 +220,6 @@ class CanSimulatorDataCache:
                 # steering cache definitions
                 "cruise_control_target_velocity": 0,
                 "buttons": 0,
-            },
-
-            "steering_pedal_calib_request": {
-                # pedal_calib_request cache definitions
-                "command": 0,
             },
 
             "telemetry_imu_data": {

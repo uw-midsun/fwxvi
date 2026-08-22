@@ -52,26 +52,4 @@ StatusCode gui_pedal_calib_widget_big_text(const char *text);
  */
 StatusCode gui_pedal_calib_widget_subtitle_text(const char *text);
 
-/**
- * @brief   Toggle the BPS-fault takeover styling on the pedal calibration screen
- * @details When active, the screen shows the BPS fault background with a "BPS FAULT" title and the
- *          decoded fault name (and cell, when applicable), matching the old dedicated fault screen.
- *          A live fault (blocking drive) uses the red background; a non-live fault (e.g. restored
- *          from flash, only lighting the BPS indicator) uses an orange background. When inactive,
- *          the normal pedal calibration appearance is restored. This lets a BPS fault reuse the
- *          already-allocated pedal calib screen instead of a separate one.
- * @param   fault_active TRUE to force the fault appearance, FALSE to restore normal calibration UI
- * @param   fault_live TRUE if the fault is live (red); FALSE for a non-live fault (orange)
- * @param   fault_code BPS fault bitfield used to decode the fault name
- * @param   cell_at_fault Cell number associated with the fault, or 0 when not cell-specific
- * @return  STATUS_CODE_OK on success, error otherwise
- */
-StatusCode gui_pedal_calib_screen_set_fault(bool fault_active, bool fault_live, uint16_t fault_code, uint8_t cell_at_fault);
-
-/**
- * @brief   Query whether the pedal calibration screen is currently in BPS-fault takeover mode
- * @return  TRUE while the fault appearance is forced, FALSE otherwise
- */
-bool gui_pedal_calib_screen_is_fault_active(void);
-
 /** @} */

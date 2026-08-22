@@ -76,7 +76,8 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent);
  * @param   ws22_flags Motor flags bitmask
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, float motor_bus_voltage, float motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags);
+StatusCode gui_widgets_set_top_label(uint16_t pack_voltage, uint16_t pack_current, uint16_t motor_bus_voltage, uint16_t motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault,
+                                     uint16_t ws22_flags);
 
 /**
  * @brief   Map a BPS fault bitmask to a human-readable name (highest-priority active fault)

@@ -28,7 +28,7 @@
 #define NUM_REAR_RELAYS 4U
 #define REAR_CLOSE_RELAYS_DELAY_MS 250U
 
-#define REAR_POWER_WS22_DELAY_MS 750U
+#define REAR_CLOSE_RELAYS_DELAY_MS 250U
 
 /**
  * @brief   Initialize the relay control module
