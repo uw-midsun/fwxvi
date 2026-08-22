@@ -318,7 +318,6 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
   // Handle lights
   if (lights_from_steering < STEERING_LIGHTS_NUM_STATES) {
     front_lights_signal_process_event(lights_from_steering);
-    `
   } else {
     CONDITIONAL_LOG_DEBUG("Warning: invalid lights state recieved from steering\r\n");
   }
