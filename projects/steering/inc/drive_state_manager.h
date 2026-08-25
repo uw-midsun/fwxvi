@@ -31,6 +31,7 @@ typedef enum {
   DRIVE_STATE_REQUEST_D,        /**< Request to switch to drive */
   DRIVE_STATE_REQUEST_N,        /**< Request to switch to neutral */
   DRIVE_STATE_REQUEST_R,        /**< Request to switch to reverse */
+  DRIVE_STATE_REQUEST_C,        /**< Request to switch to charging */
   NUM_DRIVE_STATE_REQUESTS,     /**< Number of drive state requests */
 } DriveStateRequest;
 
