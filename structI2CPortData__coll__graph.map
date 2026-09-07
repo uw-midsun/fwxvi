@@ -1,0 +1,13 @@
+<map id="I2CPortData" name="I2CPortData">
+<area shape="rect" id="Node000001" title="I2C Port data." alt="" coords="59,211,159,236"/>
+<area shape="rect" id="Node000002" href="$structI2CSettings.html" title="I2C settings struct." alt="" coords="5,108,101,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,146,76,185,97,209,93,212,71,188,56,148"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="24,5,83,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="56,45,56,108,51,108,51,45"/>
+<area shape="rect" id="Node000004" href="$structI2CBuffer.html" title=" " alt="" coords="125,108,208,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="156,147,133,188,119,212,114,209,128,185,152,144"/>
+<area shape="rect" id="Node000005" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="120,5,184,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="158,44,168,108,162,108,153,44"/>
+<area shape="rect" id="Node000006" href="$structSemaphore.html" title="Semaphore object with handle and buffer." alt="" coords="208,5,304,31"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="244,44,213,86,185,110,181,106,209,82,240,41"/>
+</map>

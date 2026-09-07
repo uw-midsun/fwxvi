@@ -1,0 +1,7 @@
+<map id="ADS122Storage" name="ADS122Storage">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,196,128,221"/>
+<area shape="rect" id="Node000002" href="$structI2CSettings.html" title="I2C settings struct." alt="" coords="19,108,115,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,147,69,195,64,195,64,147"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="37,5,96,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="69,45,69,108,64,108,64,45"/>
+</map>

@@ -1,0 +1,20 @@
+<map id="RearControllerStorage" name="RearControllerStorage">
+<area shape="rect" id="Node000001" title=" " alt="" coords="831,142,997,167"/>
+<area shape="rect" id="Node000002" href="$structBpsFaultRecord.html" title="Latched BPS fault state, persisted on the rear controller." alt="" coords="479,10,601,35"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="615,19,709,28,760,40,808,58,838,76,866,98,905,140,901,144,862,102,835,80,806,62,758,45,708,34,615,24"/>
+<area shape="rect" id="Node000003" href="$unionBpsFaultData.html" title=" " alt="" coords="136,6,244,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="258,17,478,19,478,25,258,22"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,91,64,117"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="77,96,88,95,112,95,308,90,462,82,535,81,614,85,703,96,807,115,848,126,884,139,882,144,846,131,806,120,702,101,614,91,535,87,462,87,308,95,112,100,88,100,78,101"/>
+<area shape="rect" id="Node000007" href="$structI2CSettings.html" title="I2C settings struct." alt="" coords="142,117,238,142"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="74,120,89,124,142,129,141,134,87,129,72,125"/>
+<area shape="rect" id="Node000005" href="$structACS37800Storage.html" title=" " alt="" coords="471,166,609,191"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="623,178,712,178,806,172,855,165,856,170,807,177,712,183,623,184"/>
+<area shape="rect" id="Node000006" href="$structADS122Storage.html" title=" " alt="" coords="479,117,601,142"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="615,132,831,146,830,152,615,137"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="252,127,479,127,479,132,252,132"/>
+<area shape="rect" id="Node000008" href="$structRearControllerConfig.html" title=" " alt="" coords="461,215,619,241"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="632,223,717,215,806,199,850,183,888,165,891,170,852,188,807,204,718,221,633,229"/>
+<area shape="rect" id="Node000009" href="$structWs22MotorCanConfig.html" title=" " alt="" coords="459,265,621,290"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="635,277,720,268,764,258,806,243,835,226,861,206,900,166,904,170,865,210,838,231,808,248,765,263,721,273,635,282"/>
+</map>
