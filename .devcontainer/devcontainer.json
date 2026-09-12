@@ -1,6 +1,6 @@
 {
 	"name": "FWXVI",
-	"image": "ghcr.io/uw-midsun/devcontainers/fwxvi:0.2.0",
+	"image": "ghcr.io/uw-midsun/devcontainers/fwxvi:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [
