@@ -1,0 +1,7 @@
+<map id="CanQueue" name="CanQueue">
+<area shape="rect" id="Node000001" title="CAN queue data structure to store received CAN messages." alt="" coords="35,93,125,119"/>
+<area shape="rect" id="Node000002" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="5,5,69,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="43,44,50,68,68,91,64,94,46,71,38,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="93,5,152,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="113,44,88,94,84,92,108,42"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="15,5,54,31"/>
+<area shape="rect" id="Node000001" href="$classsystem__can_1_1SystemCanDevice.html" title=" " alt="" coords="125,5,266,31"/>
+<area shape="poly" id="edge3_Node000000_Node000001" title=" " alt="" coords="68,15,125,15,125,21,68,21"/>
+<area shape="rect" id="Node000003" href="$classsystem__can_1_1SystemCanMessageId.html" title=" " alt="" coords="112,55,279,80"/>
+<area shape="poly" id="edge4_Node000000_Node000003" title=" " alt="" coords="68,25,113,39,153,52,152,57,111,45,66,30"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,55,64,80"/>
+<area shape="poly" id="edge5_Node000002_Node000001" title=" " alt="" coords="76,51,111,39,148,28,150,33,113,45,78,56"/>
+<area shape="poly" id="edge6_Node000002_Node000003" title=" " alt="" coords="78,65,112,65,112,70,78,70"/>
+</map>

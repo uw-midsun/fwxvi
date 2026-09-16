@@ -1,0 +1,41 @@
+<map id="TelemetryStorage" name="TelemetryStorage">
+<area shape="rect" id="Node000001" title="Telemetry storage." alt="" coords="1127,132,1264,157"/>
+<area shape="rect" id="Node000002" href="$structDatagram.html" title="Datagram storage class." alt="" coords="835,5,922,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="936,16,1018,26,1062,37,1104,54,1130,71,1153,92,1186,130,1182,133,1149,95,1127,75,1101,59,1060,42,1017,31,936,21"/>
+<area shape="rect" id="Node000003" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="847,55,911,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="925,67,1009,76,1057,85,1104,97,1142,112,1174,129,1172,134,1139,117,1102,102,1055,90,1008,81,924,72"/>
+<area shape="rect" id="Node000004" href="$structBmi323Storage.html" title="Storage struct for bmi323." alt="" coords="817,280,940,305"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="930,273,1012,242,1101,201,1175,155,1178,160,1104,206,1014,247,932,278"/>
+<area shape="rect" id="Node000005" href="$structBmi323Settings.html" title=" " alt="" coords="475,305,600,331"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="614,313,769,303,817,298,817,304,770,309,614,318"/>
+<area shape="rect" id="Node000006" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="185,343,280,368"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="294,345,474,323,475,328,294,351"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,229,64,255"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="78,249,178,270,338,293,475,309,474,315,337,299,177,275,77,255"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="41,267,56,318,70,342,89,361,115,372,143,374,171,372,196,365,198,371,172,377,143,380,114,377,87,366,65,345,51,320,36,269"/>
+<area shape="rect" id="Node000012" href="$structCanStorage.html" title="Storage class for the device ID and RX data." alt="" coords="316,93,413,119"/>
+<area shape="poly" id="edge13_Node000012_Node000007" title=" " alt="" coords="37,215,52,167,67,143,86,124,114,108,143,97,205,87,265,87,316,93,315,98,265,92,205,92,144,103,116,113,90,128,71,147,57,169,42,217"/>
+<area shape="rect" id="Node000017" href="$structUartSettings.html" title="UART Settings." alt="" coords="181,207,284,232"/>
+<area shape="poly" id="edge19_Node000017_Node000007" title=" " alt="" coords="78,241,153,238,192,229,193,235,154,243,78,247"/>
+<area shape="rect" id="Node000018" href="$structSdSpiSettings.html" title="Configuration settings for initializing an SD SPI port." alt="" coords="177,157,288,183"/>
+<area shape="poly" id="edge21_Node000018_Node000007" title=" " alt="" coords="66,220,87,209,132,192,176,180,178,185,134,197,89,214,68,225"/>
+<area shape="rect" id="Node000008" href="$structAxes.html" title=" " alt="" coords="511,207,564,232"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="578,222,667,235,770,255,843,277,841,283,769,261,666,240,578,227"/>
+<area shape="rect" id="Node000009" href="$structAccelGainOffsetValues.html" title="Struct to store offset and gain values for accelerometer." alt="" coords="453,256,622,281"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="636,273,817,286,817,291,636,278"/>
+<area shape="rect" id="Node000010" href="$structGyroGainOffsetValues.html" title="Struct to store offset and gain values for gyroscope." alt="" coords="455,355,620,380"/>
+<area shape="poly" id="edge10_Node000004_Node000010" title=" " alt="" coords="633,356,700,346,769,331,848,303,850,308,770,337,701,351,634,361"/>
+<area shape="rect" id="Node000011" href="$structBmi323Readings.html" title=" " alt="" coords="471,404,603,429"/>
+<area shape="poly" id="edge11_Node000004_Node000011" title=" " alt="" coords="617,409,692,397,731,387,768,373,797,358,823,339,863,304,866,308,826,343,799,362,770,378,733,392,693,402,618,414"/>
+<area shape="poly" id="edge12_Node000001_Node000012" title=" " alt="" coords="427,105,718,115,1103,134,1126,136,1126,141,1103,139,718,120,427,110"/>
+<area shape="rect" id="Node000013" href="$structWs22MotorCanStorage.html" title="WS22 motor CAN interface storage structure." alt="" coords="793,453,964,479"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="907,443,997,371,1050,323,1101,272,1150,209,1184,156,1189,159,1155,212,1105,276,1054,327,1000,375,910,447"/>
+<area shape="rect" id="Node000014" href="$structWs22MotorControlData.html" title="Motor control command data structure." alt="" coords="450,503,625,528"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="638,501,769,483,811,476,812,481,770,489,639,507"/>
+<area shape="rect" id="Node000015" href="$structWs22MotorTelemetryData.html" title="Motor status and telemetry data structure." alt="" coords="441,453,633,479"/>
+<area shape="poly" id="edge16_Node000013_Node000015" title=" " alt="" coords="647,463,793,463,793,469,647,469"/>
+<area shape="rect" id="Node000016" href="$structTelemetryConfig.html" title="Telemetry configuration data." alt="" coords="473,157,601,183"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="615,164,1126,145,1127,150,615,170"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="297,207,417,187,473,178,474,183,418,193,298,212"/>
+<area shape="poly" id="edge20_Node000016_Node000018" title=" " alt="" coords="302,167,473,167,473,173,302,173"/>
+</map>
