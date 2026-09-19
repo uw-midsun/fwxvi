@@ -384,6 +384,7 @@ def build_lvgl_library():
 
     lvgl_src_archive = entry.File('lvgl_src.tar.gz')
     lvgl_src_dir = entry.Dir('src')
+    lvgl_custom_fonts_dir = entry.Dir('font')
 
     if not os.path.isdir(lvgl_src_dir.abspath):
         if not lvgl_src_archive.exists():
@@ -402,6 +403,12 @@ def build_lvgl_library():
             raise FileNotFoundError(
                 f"Extracted LVGL archive but '{lvgl_src_dir.path}' was not created."
             )
+
+    if not os.path.isdir(lvgl_custom_fonts_dir.abspath):
+        raise FileNotFoundError(
+            "Could not find LVGL custom fonts directory. "
+            f"Expected '{lvgl_custom_fonts_dir.path}'."
+        )
 
     lib_deps = get_lib_deps(entry)
 
@@ -461,6 +468,10 @@ def build_lvgl_library():
             continue
         if len(rel_to_src.parts) >= 2 and (rel_to_src.parts[0], rel_to_src.parts[1]) in lvgl_excluded_subdirs:
             continue
+        rel_path = os.path.relpath(str(c_file), str(ROOT))
+        lvgl_srcs.append(OBJ_DIR.File(rel_path))
+
+    for c_file in Path(str(lvgl_custom_fonts_dir)).rglob('*.c'):
         rel_path = os.path.relpath(str(c_file), str(ROOT))
         lvgl_srcs.append(OBJ_DIR.File(rel_path))
 
