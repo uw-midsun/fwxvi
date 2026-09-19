@@ -300,7 +300,7 @@ typedef struct {
 /* Fonts */
 #define GUI_SMALL_TEXT &lv_font_montserrat_14
 #define GUI_MEDIUM_TEXT &lv_font_montserrat_26
-#define GUI_BIG_TEXT &lv_font_montserrat_40
+#define GUI_BIG_TEXT &lv_font_orbitron_40
 
 StatusCode lvgl_widgets_create_label(LabelWidget *label, const LabelWidgetConfig *config, GuiScreen *parent);
 StatusCode lvgl_widgets_set_label_text(LabelWidget *label, const char *text);
