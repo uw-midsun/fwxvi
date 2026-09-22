@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -202,9 +203,13 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
   if (speedometer == NULL || config == NULL || parent == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  if (config->size.width <= 0 || config->size.height <= 0 || config->total_tick_count == 0 || config->major_tick_every == 0) {
+  if (config->size.width <= 0 || config->size.height <= 0 || config->total_tick_count < 2 || config->major_tick_every == 0 || config->angle_range <= 0 || config->angle_range > 360 ||
+      config->ring_width < 0) {
     return STATUS_CODE_INVALID_ARGS;
   }
+
+  const int32_t ring_width = (config->ring_width == 0) ? 6 : config->ring_width;
+  const int32_t ring_inset = 5;
 
   *speedometer = (SpeedometerWidget){ 0 };
   s_init_speedometer_styles();
@@ -213,7 +218,15 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
   lv_obj_set_size(speedometer->scale, config->size.width, config->size.height);
   s_apply_position(speedometer->scale, &config->position);
 
+  lv_obj_set_style_pad_all(speedometer->scale, 0, LV_PART_MAIN);
+  lv_obj_set_style_arc_color(speedometer->scale, s_gui_palette_color(GUI_COLOR_SPEEDOMETER_TICK_MAJOR), LV_PART_MAIN);
+  lv_obj_set_style_arc_width(speedometer->scale, 1, LV_PART_MAIN);
+  lv_obj_remove_flag(speedometer->scale, LV_OBJ_FLAG_SCROLLABLE);
   lv_scale_set_mode(speedometer->scale, LV_SCALE_MODE_ROUND_INNER);
+  lv_scale_set_post_draw(speedometer->scale, true);
+  lv_scale_set_draw_ticks_on_top(speedometer->scale, true);
+
+  lv_scale_set_label_show(speedometer->scale, false);
   lv_scale_set_range(speedometer->scale, SPEEDOMETER_MIN_VALUE, SPEEDOMETER_MAX_VALUE);
   lv_scale_set_total_tick_count(speedometer->scale, config->total_tick_count);
   lv_scale_set_major_tick_every(speedometer->scale, config->major_tick_every);
@@ -222,25 +235,52 @@ StatusCode lvgl_widgets_create_speedometer(SpeedometerWidget *speedometer, const
 
   lv_obj_add_style(speedometer->scale, &s_speedometer_main_style, LV_PART_INDICATOR);
   lv_obj_add_style(speedometer->scale, &s_speedometer_minor_style, LV_PART_ITEMS);
+  lv_obj_set_style_line_opa(speedometer->scale, LV_OPA_TRANSP, LV_PART_ITEMS);
 
-  speedometer->needle = lv_line_create(speedometer->scale);
-  lv_obj_add_style(speedometer->needle, &s_speedometer_needle_style, 0);
-  lv_scale_set_line_needle_value(speedometer->scale, speedometer->needle, config->needle_length, SPEEDOMETER_MIN_VALUE);
+  speedometer->ring = lv_arc_create(speedometer->scale);
+  lv_obj_remove_style_all(speedometer->ring);
+  lv_obj_set_size(speedometer->ring, config->size.width - 2 * ring_inset, config->size.height - 2 * ring_inset);
+  lv_obj_center(speedometer->ring);
+  lv_obj_remove_flag(speedometer->ring, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+  lv_arc_set_rotation(speedometer->ring, config->rotation);
+  lv_arc_set_bg_angles(speedometer->ring, 0, config->angle_range);
+  lv_arc_set_range(speedometer->ring, SPEEDOMETER_MIN_VALUE, SPEEDOMETER_MAX_VALUE);
+  lv_arc_set_value(speedometer->ring, SPEEDOMETER_MIN_VALUE);
+  lv_obj_set_style_arc_width(speedometer->ring, ring_width, LV_PART_MAIN);
+  lv_obj_set_style_arc_width(speedometer->ring, ring_width, LV_PART_INDICATOR);
+  lv_obj_set_style_arc_color(speedometer->ring, s_gui_palette_color(GUI_COLOR_BAR_BACKGROUND), LV_PART_MAIN);
+  lv_obj_set_style_arc_color(speedometer->ring, s_gui_palette_color(GUI_COLOR_SPEEDOMETER_RING_FILL), LV_PART_INDICATOR);
+  lv_obj_set_style_arc_rounded(speedometer->ring, false, LV_PART_MAIN);
+  lv_obj_set_style_arc_rounded(speedometer->ring, false, LV_PART_INDICATOR);
+
+  speedometer->needle_length = config->needle_length;
+  if (config->needle_length != 0) {
+    speedometer->needle = lv_line_create(speedometer->scale);
+    lv_obj_add_style(speedometer->needle, &s_speedometer_needle_style, 0);
+    lv_scale_set_line_needle_value(speedometer->scale, speedometer->needle, config->needle_length, SPEEDOMETER_MIN_VALUE);
+  }
 
   speedometer->label = lv_label_create(speedometer->scale);
   lv_label_set_text(speedometer->label, "0");
   lv_obj_set_style_text_color(speedometer->label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
-  lv_obj_align(speedometer->label, LV_ALIGN_CENTER, 0, 0);
+  lv_obj_set_style_text_font(speedometer->label, config->font != NULL ? config->font : GUI_BIG_TEXT, 0);
+  lv_obj_align(speedometer->label, LV_ALIGN_CENTER, 0, -10);
+
+  speedometer->units_label = lv_label_create(speedometer->scale);
+  lv_label_set_text(speedometer->units_label, "km/h");
+  lv_obj_set_style_text_color(speedometer->units_label, s_gui_palette_color(GUI_COLOR_TEXT_PRIMARY), 0);
+  lv_obj_set_style_text_font(speedometer->units_label, GUI_SMALL_TEXT, 0);
+  lv_obj_align(speedometer->units_label, LV_ALIGN_CENTER, 0, 25);
 
   return STATUS_CODE_OK;
 }
 
 StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_kmh) {
-  if (speedometer == NULL) {
+  if (speedometer == NULL || !isfinite(speed_kmh)) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if (speedometer->scale == NULL || speedometer->needle == NULL || speedometer->label == NULL) {
+  if (speedometer->scale == NULL || speedometer->ring == NULL || speedometer->label == NULL) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
@@ -251,7 +291,10 @@ StatusCode lvgl_widgets_set_speed(SpeedometerWidget *speedometer, float speed_km
     speed_kmh = SPEEDOMETER_MAX_VALUE;
   }
 
-  lv_scale_set_line_needle_value(speedometer->scale, speedometer->needle, -15, (int32_t)speed_kmh);
+  lv_arc_set_value(speedometer->ring, (int32_t)speed_kmh);
+  if (speedometer->needle != NULL) {
+    lv_scale_set_line_needle_value(speedometer->scale, speedometer->needle, speedometer->needle_length, (int32_t)speed_kmh);
+  }
 
   char buf[16];
   snprintf(buf, sizeof(buf), "%u", (unsigned int)speed_kmh);
