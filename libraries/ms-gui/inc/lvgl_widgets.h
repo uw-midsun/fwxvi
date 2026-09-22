@@ -79,6 +79,9 @@ typedef struct {
 
 /** @brief   Runtime handles and state for a speedometer widget */
 typedef struct {
+  lv_obj_t *ring;                      /**< Ring that moves proportionally to speed */
+  lv_obj_t *units_label;               /**< km/h label type */
+  int32_t needle_length;               /**< Check SpeedometerWidgetConfig.needle_length */
   lv_obj_t *scale;                     /**< LVGL scale object used for the dial */
   lv_obj_t *needle;                    /**< LVGL line object used as the speedometer needle */
   lv_obj_t *label;                     /**< LVGL label object showing the current speed */
@@ -93,7 +96,9 @@ typedef struct {
   uint16_t major_tick_every; /**< Interval between emphasized major ticks */
   int32_t angle_range;       /**< Sweep angle of the dial in degrees */
   int32_t rotation;          /**< Rotation offset applied to the dial in degrees */
-  int32_t needle_length;     /**< Needle length in pixels */
+  int32_t needle_length;     //? Could delete
+  int32_t ring_width;        /**< Ring thickness in pixels, default 6 */
+  WidgetFontSize font;       /**< Central speed font, default GUI BIG_TEXT */
 } SpeedometerWidgetConfig;
 
 /** @brief   Runtime handles for a labeled bar widget */
@@ -197,6 +202,9 @@ typedef struct {
 
 /** @brief   Runtime handles and state for a speedometer widget */
 typedef struct {
+  int16_t *ring;
+  int16_t *units_label;
+  int32_t needle_length;
   int16_t *scale;           /**< LVGL scale object used for the dial */
   int16_t *needle;          /**< LVGL line object used as the speedometer needle */
   int16_t *label;           /**< LVGL label object showing the current speed */
@@ -211,7 +219,9 @@ typedef struct {
   uint16_t major_tick_every; /**< Interval between emphasized major ticks */
   int32_t angle_range;       /**< Sweep angle of the dial in degrees */
   int32_t rotation;          /**< Rotation offset applied to the dial in degrees */
-  int32_t needle_length;     /**< Needle length in pixels */
+  int32_t needle_length;
+  int32_t ring_width;
+  WidgetFontSize font;
 } SpeedometerWidgetConfig;
 
 /** @brief   Runtime handles for a labeled bar widget */

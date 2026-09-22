@@ -33,16 +33,17 @@ static bool s_drive_widgets_initialized;
 
 static StatusCode s_create_speedometer(GuiScreen *screen) {
   const SpeedometerWidgetConfig speedometer_config = {
-    .size = { .width = 220, .height = 220 },
+    .size = { .width = 200, .height = 200 },
     .position = {
       .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 15 },
+      .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 0 },
     },
     .total_tick_count = 41,
     .major_tick_every = 5,
     .angle_range = 270,
     .rotation = 135,
-    .needle_length = -15,
+    .ring_width = 20,
+    .font = GUI_BIG_TEXT,
   };
 
   return lvgl_widgets_create_speedometer(&s_speedometer, &speedometer_config, screen);

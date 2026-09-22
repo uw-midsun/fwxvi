@@ -31,7 +31,7 @@
 
 /* Speedometer widget min and max vals */
 #define SPEEDOMETER_MIN_VALUE 0
-#define SPEEDOMETER_MAX_VALUE 120
+#define SPEEDOMETER_MAX_VALUE 100
 
 /* Bar widget min and max vals */
 #define BAR_MIN_VALUE 0
