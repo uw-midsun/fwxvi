@@ -52,6 +52,8 @@ static Note MELODY_NEUTRAL_STATE[] = { { NOTE_E6, 100 }, { NOTE_REST, 0 } };
 
 static Note MELODY_REVERSE_STATE[] = { { NOTE_G6, 100 }, { NOTE_REST, 0 } };
 
+static Note MELODY_CHARGING_STATE[] = { { NOTE_F6, 100 }, { NOTE_REST, 0 } };
+
 static Note MELODY_INVALID_STATE[] = { { NOTE_C5, 100 }, { NOTE_REST, 50 }, { NOTE_C5, 100 }, { NOTE_REST, 0 } };
 
 static Note MELODY_REGEN_ON[] = { { NOTE_C4, 30 }, { NOTE_D4, 30 }, { NOTE_E4, 30 }, { NOTE_F4, 30 }, { NOTE_G4, 30 }, { NOTE_A4, 30 },
@@ -232,6 +234,10 @@ StatusCode buzzer_play_neutral(void) {
 
 StatusCode buzzer_play_reverse(void) {
   return buzzer_play_melody(MELODY_REVERSE_STATE);
+}
+
+StatusCode buzzer_play_charging(void) {
+  return buzzer_play_melody(MELODY_CHARGING_STATE);
 }
 
 StatusCode buzzer_play_invalid(void) {
