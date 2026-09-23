@@ -16,6 +16,7 @@
 #include "log.h"
 #include "ltdc.h"
 #include "mcu.h"
+#include "pwm.h"
 #include "status.h"
 #include "tasks.h"
 /* Intra-component Headers */
@@ -65,7 +66,8 @@ StatusCode ltdc_display_init() {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  status_ok_or_return(pwm_init(PWM_TIMER_2, DISPLAY_BACKLIGHT_PERIOD_US));
+  status_ok_or_return(pwm_set_dc(PWM_TIMER_2, DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE, PWM_CHANNEL_2, false));
   return ltdc_init(&settings);
 }
 
