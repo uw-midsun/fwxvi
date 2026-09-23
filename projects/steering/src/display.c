@@ -38,6 +38,13 @@
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
+// TODO: How to figure out a reasonable clock period? Datasheet doesn't say much, but that might be the wrong place.
+// Random sources from Google seem to indicate somewhere around 1-5 KHz?
+// https://zbotic.in/lcd-backlight-dimming-pwm-control-for-power-saving-projects/
+// I've kept the frequency at 1KHz for now
+#define STEERING_DISPLAY_BACKLIGHT_PERIOD_US 1000
+#define STEERING_DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE 100
+
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
 
@@ -328,7 +335,8 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.gpio_config = gpio_config;
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  status_ok_or_return(pwm_init(PWM_TIMER_2, STEERING_DISPLAY_BACKLIGHT_PERIOD_US));
+  status_ok_or_return(pwm_set_dc(PWM_TIMER_2, STEERING_DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE, PWM_CHANNEL_2, false));
 
 #ifdef MS_PLATFORM_X86
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
