@@ -38,8 +38,8 @@
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
-// TODO: How to figure out a reasonable clock period? Datasheet doesn't say much, but that might be the wrong place.
-// Random sources from Google seem to indicate somewhere around 1-5 KHz?
+// TODO: How to figure out a reasonable clock period? Datasheet doesn't say much from what I could see,
+// but that might be the wrong place. Random sources from Google seem to indicate somewhere around 1-5 KHz?
 // https://zbotic.in/lcd-backlight-dimming-pwm-control-for-power-saving-projects/
 // I've kept the frequency at 1KHz for now
 #define STEERING_DISPLAY_BACKLIGHT_PERIOD_US 1000
