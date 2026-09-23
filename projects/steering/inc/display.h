@@ -37,11 +37,10 @@
 #define HORIZONTAL_FRONT_PORCH 8
 #define VERTICAL_FRONT_PORCH 8
 
-// TODO: How to figure out a reasonable clock period? Datasheet doesn't say much from what I could see,
-// but that might be the wrong place. Random sources from Google seem to indicate somewhere around 1-5 KHz?
-// https://zbotic.in/lcd-backlight-dimming-pwm-control-for-power-saving-projects/
-// I've kept the frequency at 1KHz for now
-#define DISPLAY_BACKLIGHT_PERIOD_US 1000
+// TODO: Verify backlight PWM period. I couldn't find the chip myself in the schematics,
+// but the previous PR mentioned that the backlight driver was the AP3032, and its datasheet
+// suggests a minimum PWM duty cycle of 25kHz
+#define DISPLAY_BACKLIGHT_PERIOD_US 20
 #define DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE 100
 
 /**
@@ -56,7 +55,8 @@ StatusCode display_init(SteeringStorage *storage);
  * @brief Adjust the brightness of the display
  * @param percentage Percentage to set the display brightness to, between 0 to 100
  * @return STATUS_CODE_OK if completed successfully
- *         STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ *         STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect, or
+ *          the method is run before the display is initialized
  */
 StatusCode display_set_brightness(uint16_t percentage);
 
