@@ -10,6 +10,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,6 +21,7 @@
 /* Intra-component Headers */
 #include "gpio.h"
 #include "ms_semaphore.h"
+#include "queues.h"
 #include "tasks.h"
 #include "uart.h"
 
@@ -29,9 +31,9 @@
  * @{
  */
 
-#define MAX_LOG_SIZE (size_t)200
+#define LOG_STRING_SIZE (size_t)256
 #define LOG_TIMEOUT_MS 10
-#define MS_LOG 0
+#define MS_LOG 0U
 
 #ifdef STM32L433xx
 #define LOG_UART_PORT UART_PORT_1
@@ -81,26 +83,35 @@ typedef enum {
   NUM_LOG_LEVELS,      /**< Number of Log levels */
 } LogLevel;
 
-extern char g_log_buffer[MAX_LOG_SIZE];
+typedef struct {
+  char log_msg[LOG_STRING_SIZE];
+  size_t msg_size;
+} LogMessageData;
+
 extern UartSettings log_uart_settings;
+extern Queue logger_queue;
 
 #define LOG_DEBUG(fmt, ...) LOG(LOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
 #define LOG_WARN(fmt, ...) LOG(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
 #define LOG_CRITICAL(fmt, ...) LOG(LOG_LEVEL_CRITICAL, fmt, ##__VA_ARGS__)
 
-#define log_init() \
-  { uart_init(LOG_UART_PORT, &log_uart_settings); }
+#define LOG_TIMEOUT 1000
+#define LOGGER_ITEMS 50
+#define TASK_PRIORTIY_LOGGER 3U
+
+StatusCode log_init(void);
 
 #ifdef MS_PLATFORM_X86
 #define LOG(level, fmt, ...) printf("[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__)
 #elif MS_DEBUG_LOG
-#define LOG(level, fmt, ...)                                                                                                            \
-  do {                                                                                                                                  \
-    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                            \
-      size_t msg_size = (size_t)snprintf(g_log_buffer, MAX_LOG_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
-      uart_tx(LOG_UART_PORT, (uint8_t *)g_log_buffer, msg_size);                                                                        \
-    }                                                                                                                                   \
-  } while (0)
+#define LOG(level, fmt, ...)                                                                                                                     \
+  do {                                                                                                                                           \
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {                                                                                     \
+      LogMessageData log_data;                                                                                                                   \
+      log_data.msg_size = (size_t)snprintf(log_data.log_msg, LOG_STRING_SIZE, "\r[%u] %s:%u: " fmt, (level), __FILE__, __LINE__, ##__VA_ARGS__); \
+      queue_send(&logger_queue, &log_data, LOG_TIMEOUT);                                                                                         \
+    }                                                                                                                                            \
+  } while (0);
 #else
 #define LOG(level, fmt, ...) \
   do {                       \
