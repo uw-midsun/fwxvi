@@ -52,6 +52,14 @@
  */
 StatusCode display_init(SteeringStorage *storage);
 
+/**
+ * @brief Adjust the brightness of the display
+ * @param percentage Percentage to set the display brightness to, between 0 to 100
+ * @return STATUS_CODE_OK if completed successfully
+ *         STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect
+ */
+StatusCode display_set_brightness(uint16_t percentage);
+
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();
 StatusCode display_rx_fast();
