@@ -117,7 +117,7 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
     }
 
     if (brightness_pct % 25 == 0) {
-      LOG_DEBUG("I'm alive, at %u% brightness", brightness_pct);
+      LOG_DEBUG("I'm alive, at %u%% brightness", brightness_pct);
       delay_ms(200U);
     } else {
       delay_ms(50U);
