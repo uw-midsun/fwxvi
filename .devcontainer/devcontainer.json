@@ -1,13 +1,13 @@
 {
 	"name": "FWXVI",
-	"image": "ghcr.io/uw-midsun/devcontainers/fwxvi:v0.2.2",
+	"image": "ghcr.io/uw-midsun/devcontainers/fwxvi:v0.2.3",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-vscode.cpptools-extension-pack"
 			]
 		}
-	}
+	},
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"username": "ubuntu",

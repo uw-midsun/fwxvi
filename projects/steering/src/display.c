@@ -205,7 +205,7 @@ static StatusCode s_render_gui_step(void) {
         /* Driver navigated away = acknowledged the fault: force SECURE MODE off and stop forcing the
          * takeover until the fault re-asserts. The pedal-calib screen (and its fault flag) was torn
          * down by the navigation, so no styling teardown is needed here. */
-        status_ok_or_return(steering_force_disable_bps());
+        // status_ok_or_return(steering_force_disable_bps());
         s_fault_ui_state = FAULT_UI_ACKNOWLEDGED;
         break;
       }

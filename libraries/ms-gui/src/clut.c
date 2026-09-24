@@ -33,7 +33,7 @@ static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = { [GUI_COLOR_SCREE
                                                                 [GUI_COLOR_MENU_ITEM_SELECTED_BACKGROUND] = { .red = 0x0DU, .green = 0x32U, .blue = 0x6EU },
                                                                 [GUI_COLOR_MENU_ITEM_SELECTED_BORDER] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU },
                                                                 [GUI_COLOR_SPEEDOMETER_TICK_MAJOR] = { .red = 0xF4U, .green = 0xF7U, .blue = 0xFBU },
-                                                                [GUI_COLOR_SPEEDOMETER_TICK_MINOR] = { .red = 0x59U, .green = 0x66U, .blue = 0x74U },
+                                                                [GUI_COLOR_SPEEDOMETER_TICK_MINOR] = { .red = 0x08U, .green = 0x0CU, .blue = 0x12U },
                                                                 [GUI_COLOR_SPEEDOMETER_NEEDLE] = { .red = 0xFFU, .green = 0x6BU, .blue = 0x6BU },
                                                                 [GUI_COLOR_BAR_BACKGROUND] = { .red = 0x17U, .green = 0x20U, .blue = 0x29U },
                                                                 [GUI_COLOR_BAR_BORDER] = { .red = 0xD9U, .green = 0xE2U, .blue = 0xECU },
@@ -46,7 +46,8 @@ static const ClutEntry s_gui_color_table[NUM_GUI_COLOR_IDS] = { [GUI_COLOR_SCREE
                                                                 [GUI_COLOR_CELL_VOLTAGE_HIGH] = { .red = 0x01U, .green = 0x21U, .blue = 0x08U },
                                                                 [GUI_COLOR_BPS_FAULT_TEXT] = { .red = 0xFFU, .green = 0xFFU, .blue = 0xFFU },
                                                                 [GUI_COLOR_BPS_FAULT_BACKGROUND] = { .red = 0xFFU, .green = 0x6BU, .blue = 0x6BU },
-                                                                [GUI_COLOR_BPS_FAULT_NONLIVE_BACKGROUND] = { .red = 0xFFU, .green = 0xA5U, .blue = 0x00U } };
+                                                                [GUI_COLOR_BPS_FAULT_NONLIVE_BACKGROUND] = { .red = 0xFFU, .green = 0xA5U, .blue = 0x00U },
+                                                                [GUI_COLOR_SPEEDOMETER_RING_FILL] = { .red = 240, .green = 128, .blue = 0 } };
 ClutEntry *clut_get_table(void) {
   return s_clut_table;
 }
