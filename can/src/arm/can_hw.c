@@ -32,6 +32,10 @@
 /* STM32L4 has 14 filter banks */
 #define CAN_HW_NUM_FILTER_BANKS   14U
 
+/* 32-bit identifier-list mode packs two exact-match IDs per filter bank */
+#define CAN_HW_IDS_PER_BANK       2U
+#define CAN_HW_MAX_FILTERS        (CAN_HW_NUM_FILTER_BANKS * CAN_HW_IDS_PER_BANK)
+
 #define CAN_NUM_MAILBOXES         3U
 
 /*
@@ -71,20 +75,42 @@ static StaticSemaphore_t s_can_tx_ready_sem;
 static bool s_tx_full = false;
 static bool s_can_bus_error = false;
 
-/* 1 for filter in, 2 for filter out, default = 0 */
-static int s_can_filter_en = 0;
-static uint32_t can_filters[CAN_HW_NUM_FILTER_BANKS];
+/* Identifiers staged into the in-progress (partially filled) filter bank.
+ * Unused slots duplicate a real identifier so they never accept ID 0. */
+static uint32_t s_bank_ids[CAN_HW_IDS_PER_BANK];
 
-static void s_add_filter_in(uint8_t filter_num, uint32_t mask, uint32_t filter) {
+/* Configures a filter bank in 32-bit identifier-list mode, holding two exact-match
+ * identifiers. In list mode the mask registers are reused as a second identifier,
+ * so a single-ID bank is behaviourally identical to the old full-mask match. */
+static void s_write_filter_bank(uint8_t bank, uint32_t id0, uint32_t id1) {
   CAN_FilterTypeDef filter_cfg = {
-    .FilterBank = filter_num,
+    .FilterBank = bank,
+    .FilterMode = CAN_FILTERMODE_IDLIST,
+    .FilterScale = CAN_FILTERSCALE_32BIT,
+    .FilterIdHigh = (id0 >> 16),
+    .FilterIdLow = (uint16_t)id0,
+    .FilterMaskIdHigh = (id1 >> 16),
+    .FilterMaskIdLow = (uint16_t)id1,
+    .FilterFIFOAssignment = (bank % 2) ? CAN_RX_FIFO1 : CAN_RX_FIFO0,
+    .FilterActivation = ENABLE,
+    .SlaveStartFilterBank = 14
+  };
+
+  HAL_CAN_ConfigFilter(&s_can_handle, &filter_cfg);
+}
+
+/* Accept every message. Used as the default until a board registers its first
+ * filter, which overwrites bank 0. */
+static void s_add_allow_all_filter(void) {
+  CAN_FilterTypeDef filter_cfg = {
+    .FilterBank = 0,
     .FilterMode = CAN_FILTERMODE_IDMASK,
     .FilterScale = CAN_FILTERSCALE_32BIT,
-    .FilterIdHigh = (filter >> 16),
-    .FilterIdLow = (uint16_t)filter,
-    .FilterMaskIdHigh = (mask >> 16),
-    .FilterMaskIdLow = (uint16_t)mask,
-    .FilterFIFOAssignment = (filter_num % 2) ? CAN_RX_FIFO1 : CAN_RX_FIFO0,
+    .FilterIdHigh = 0,
+    .FilterIdLow = 0,
+    .FilterMaskIdHigh = 0,
+    .FilterMaskIdLow = 0,
+    .FilterFIFOAssignment = CAN_RX_FIFO0,
     .FilterActivation = ENABLE,
     .SlaveStartFilterBank = 14
   };
@@ -134,7 +160,7 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
   }
 
   /* Allow all messages by default, but reset the filter count so it's overwritten on the first filter */
-  s_add_filter_in(0, 0, 0);
+  s_add_allow_all_filter();
   s_num_filters = 0;
 
   if (HAL_CAN_Start(&s_can_handle) != HAL_OK) {
@@ -164,21 +190,29 @@ StatusCode can_hw_init(const CanQueue *rx_queue, const CanSettings *settings) {
 }
 
 StatusCode can_hw_add_filter_in(uint32_t mask, uint32_t filter, bool extended) {
-  if (s_can_filter_en == 0) {
-    s_can_filter_en = 1;
-  }
+  (void)mask; /* Identifier-list mode matches exact IDs; no mask is applied */
 
-  if (s_num_filters >= CAN_HW_NUM_FILTER_BANKS) {
+  if (s_num_filters >= CAN_HW_MAX_FILTERS) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
-  } else if (s_can_filter_en != 1) {
-    return STATUS_CODE_UNINITIALIZED;
   }
 
   size_t offset = extended ? 3 : 21;
-  uint32_t mask_val = (mask << offset) | (1 << 2);
-  uint32_t filter_val = (filter << offset) | ((uint32_t)extended << 2);
+  uint32_t id_reg = (filter << offset) | ((uint32_t)extended << 2);
 
-  s_add_filter_in(s_num_filters, mask_val, filter_val);
+  uint8_t bank = s_num_filters / CAN_HW_IDS_PER_BANK;
+  uint8_t slot = s_num_filters % CAN_HW_IDS_PER_BANK;
+
+  if (slot == 0) {
+    /* Starting a fresh bank: seed every slot with this ID so a slot left unused
+     * (e.g. an odd final ID) duplicates a real ID instead of accepting ID 0 */
+    for (uint8_t i = 0; i < CAN_HW_IDS_PER_BANK; i++) {
+      s_bank_ids[i] = id_reg;
+    }
+  } else {
+    s_bank_ids[slot] = id_reg;
+  }
+
+  s_write_filter_bank(bank, s_bank_ids[0], s_bank_ids[1]);
   s_num_filters++;
   return STATUS_CODE_OK;
 }
@@ -358,17 +392,7 @@ static void s_process_rx_fifo(uint32_t fifo) {
     rx_msg.dlc = rx_header.DLC;
     memcpy(&rx_msg.data, rx_data, rx_header.DLC);
 
-    bool s_filter_id_match = false;
-    for (uint32_t i = 0; i < CAN_HW_NUM_FILTER_BANKS; i++) {
-      if (can_filters[i] == rx_msg.id.raw) {
-        s_filter_id_match = true;
-        break;
-      }
-    }
-
-    if (!s_filter_id_match) {
-      can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
-    }
+    can_queue_push_from_isr(s_g_rx_queue, &rx_msg, &higher_woken);
   }
 
   portYIELD_FROM_ISR(higher_woken);
