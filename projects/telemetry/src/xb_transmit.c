@@ -186,6 +186,7 @@ static void s_update_stats_cache(uint16_t can_rx_rate, uint16_t xbee_tx_rate, ui
 
 /* Task A: drains CAN RX queue into the message cache. */
 TASK(can_cache_updater, TASK_STACK_512) {
+  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   CanMessage message = { 0 };
@@ -237,6 +238,7 @@ TASK(can_cache_updater, TASK_STACK_512) {
 
 /* Task B: round-robin HIGH→MEDIUM→LOW scheduler; updates bus-load stats cache every second. */
 TASK(can_cache_scheduler, TASK_STACK_512) {
+  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   uint32_t last_stats_tick = (uint32_t)xTaskGetTickCount();
@@ -282,6 +284,7 @@ TASK(can_cache_scheduler, TASK_STACK_512) {
 #if (LOG_DEBUG_SUMMARY == 1)
 /* Task C: logs all pending cache entries once per second (debug only). */
 TASK(can_cache_summary, TASK_STACK_512) {
+  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   static const char *prio_str[] = { "HIGH  ", "MEDIUM", "LOW   " };
@@ -320,10 +323,10 @@ StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) 
 
   s_telemetry_storage = storage;
   s_telemetry_storage->config = config;
-  tasks_init_task(can_cache_updater, TASK_PRIORITY(2), NULL);
-  tasks_init_task(can_cache_scheduler, TASK_PRIORITY(2), NULL);
+  status_ok_or_return(tasks_init_task(can_cache_updater, TASK_PRIORITY(2), NULL));
+  status_ok_or_return(tasks_init_task(can_cache_scheduler, TASK_PRIORITY(2), NULL));
 #if (LOG_DEBUG_SUMMARY == 1)
-  tasks_init_task(can_cache_summary, TASK_PRIORITY(1), NULL);
+  status_ok_or_return(tasks_init_task(can_cache_summary, TASK_PRIORITY(1), NULL));
 #endif
 
   return STATUS_CODE_OK;

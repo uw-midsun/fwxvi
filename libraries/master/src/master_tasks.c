@@ -20,6 +20,7 @@
 static uint8_t s_cycles_over = 0;
 
 void master_no_op() {}
+void master_wait_ready() __attribute__((weak, alias("master_no_op")));
 
 void run_1000hz_cycle() __attribute__((weak, alias("master_no_op")));
 void run_10hz_cycle() __attribute__((weak, alias("master_no_op")));
@@ -42,6 +43,7 @@ void check_late_cycle(Task *task, BaseType_t delay) {
 }
 
 TASK(master_task_1000hz, MASTER_TASK_50HZ_SIZE) {
+  master_wait_ready();
   pre_loop_init();
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
@@ -52,6 +54,7 @@ TASK(master_task_1000hz, MASTER_TASK_50HZ_SIZE) {
 }
 
 TASK(master_task_10hz, MASTER_TASK_3HZ_SIZE) {
+  master_wait_ready();
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
     run_10hz_cycle();
@@ -61,6 +64,7 @@ TASK(master_task_10hz, MASTER_TASK_3HZ_SIZE) {
 }
 
 TASK(master_task_1hz, MASTER_TASK_1HZ_SIZE) {
+  master_wait_ready();
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (true) {
     run_1hz_cycle();

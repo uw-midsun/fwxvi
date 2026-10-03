@@ -23,11 +23,12 @@
 #define IMU_DEBUG 0U
 
 static Bmi323Storage *s_storage = NULL;
+static bool s_imu_ready;
 
 StatusCode imu_run() {
+  if (!s_storage || !s_imu_ready) return STATUS_CODE_UNINITIALIZED;
   StatusCode status = bmi323_update(s_storage);
   if (status != STATUS_CODE_OK) {
-    LOG_CRITICAL("status error");
     return status;
   }
   imu_filter(s_storage->accel.x, s_storage->accel.y, s_storage->accel.z, s_storage->gyro.x, s_storage->gyro.y, s_storage->gyro.z);
@@ -52,6 +53,7 @@ StatusCode imu_run() {
 }
 
 StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
+  s_imu_ready = false;
   if (storage == NULL || settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
@@ -64,6 +66,7 @@ StatusCode imu_init(Bmi323Storage *storage, Bmi323Settings *settings) {
     return status;
   }
 
+  s_imu_ready = true;
   return STATUS_CODE_OK;
 }
 
