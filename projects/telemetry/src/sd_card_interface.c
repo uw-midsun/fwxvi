@@ -507,7 +507,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
  * Public
  ************************************************************************************************/
 
- // Link the SD card driver to FatFs and store the active SPI configuration.
+// Link the SD card driver to FatFs and store the active SPI configuration.
 StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings) {
   if (settings == NULL || (unsigned)spi >= NUM_SD_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;

@@ -12,8 +12,8 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "ff.h"
 #include "ff_gen_drv.h"
-#include "ff.h" 
 
 /* Intra-component Headers */
 #include "sd_card_spi.h"
@@ -33,7 +33,7 @@
  */
 StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings);
 
-//error handling
+// error handling
 /**
  * @brief Initialize the linked SD card and mount its filesystem immediately.
  * @return FR_OK when the filesystem is mounted, otherwise a FatFs error.

@@ -52,33 +52,29 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
   telemetry_storage->bmi323_storage = bmi323_storage;
   telemetry_storage->can_storage = can_storage;
 
-uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
-can_init(telemetry_storage->can_storage, &s_can_settings);
-queue_init(&telemetry_storage->datagram_queue);
-bmi323_init(bmi323_storage);
+  uart_init(telemetry_storage->config->uart_port, &telemetry_storage->config->uart_settings);
+  can_init(telemetry_storage->can_storage, &s_can_settings);
+  queue_init(&telemetry_storage->datagram_queue);
+  bmi323_init(bmi323_storage);
 
-StatusCode sd_status = sd_card_link_driver(
-    telemetry_storage->config->sd_spi_port,
-    &telemetry_storage->config->sd_spi_settings);
+  StatusCode sd_status = sd_card_link_driver(telemetry_storage->config->sd_spi_port, &telemetry_storage->config->sd_spi_settings);
 
-if (sd_status != STATUS_CODE_OK) {
-  LOG_DEBUG("SD driver registration failed: %u\n", (unsigned)sd_status);
-  return sd_status;
-}
+  if (sd_status != STATUS_CODE_OK) {
+    LOG_DEBUG("SD driver registration failed: %u\n", (unsigned)sd_status);
+    return sd_status;
+  }
 
-FRESULT mount_result = sd_card_mount();
+  FRESULT mount_result = sd_card_mount();
 
-if (mount_result != FR_OK) {
-  /* sd_card_mount() already logs the exact FatFs error. */
-  return mount_result == FR_NOT_READY
-             ? STATUS_CODE_UNINITIALIZED
-             : STATUS_CODE_INTERNAL_ERROR;
-}
+  if (mount_result != FR_OK) {
+    /* sd_card_mount() already logs the exact FatFs error. */
+    return mount_result == FR_NOT_READY ? STATUS_CODE_UNINITIALIZED : STATUS_CODE_INTERNAL_ERROR;
+  }
 
-xb_transmit_init(telemetry_storage, telemetry_storage->config);
+  xb_transmit_init(telemetry_storage, telemetry_storage->config);
 
-gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
+  gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW);
 
-return STATUS_CODE_OK;
+  return STATUS_CODE_OK;
 }
