@@ -7,6 +7,7 @@
 #
 #  @ingroup FOTA_Python
 
+
 class CRC32:
     """
     @brief CRC32 class to validate the packets sent
