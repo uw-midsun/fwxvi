@@ -101,7 +101,10 @@ static Diskio_drvTypeDef s_disk_driver = {
   .disk_ioctl = sd_card_ioctl,
 };
 
-static char s_disk_path[4U] = { "/sd" };
+// Keep FatFs path and filesystem state at file scope so they remain valid after mounting.
+static char s_disk_path[4U] = { 0 };
+static FATFS s_filesystem;
+static bool s_driver_linked = false;
 
 static SdSpiPort s_spi_port;
 static SdSpiSettings *s_spi_settings;
@@ -504,16 +507,43 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
  * Public
  ************************************************************************************************/
 
+ // Link the SD card driver to FatFs and store the active SPI configuration.
 StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings) {
-  s_spi_settings = settings;
-  s_spi_port = spi;
+  if (settings == NULL || (unsigned)spi >= NUM_SD_SPI_PORTS) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
 
-  if (FATFS_LinkDriver(&s_disk_driver, s_disk_path) == 0) {
-    LOG_DEBUG("SD card linked at: %s\n", s_disk_path);
-  } else {
+  if (s_driver_linked) {
+    return STATUS_CODE_ALREADY_INITIALIZED;
+  }
+
+  if (FATFS_LinkDriver(&s_disk_driver, s_disk_path) != 0U) {
     LOG_DEBUG("Error linking SD card\n");
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
+  s_spi_settings = settings;
+  s_spi_port = spi;
+  s_driver_linked = true;
+
+  LOG_DEBUG("SD card linked at: %s\n", s_disk_path);
   return STATUS_CODE_OK;
+}
+
+// Mount the SD card filesystem immediately using the registered driver.
+FRESULT sd_card_mount(void) {
+  if (!s_driver_linked) {
+    return FR_INVALID_DRIVE;
+  }
+
+  FRESULT result = f_mount(&s_filesystem, s_disk_path, 1U);
+  if (result != FR_OK) {
+    LOG_DEBUG("SD card mount failed: %u\n", (unsigned)result);
+    /* Unregister the filesystem object after a failed mount. */
+    (void)f_mount(NULL, s_disk_path, 0U);
+    return result;
+  }
+
+  LOG_DEBUG("SD card mounted at: %s\n", s_disk_path);
+  return FR_OK;
 }

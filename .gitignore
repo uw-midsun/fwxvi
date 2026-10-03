@@ -60,3 +60,4 @@ libraries/lvgl9/src/
 # Claude
 CLAUDE.md
 .claude/
+projects/telemetry/todo.md

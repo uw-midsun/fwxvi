@@ -111,7 +111,15 @@ int main() {
 
   ws22_motor_can_init(&ws22_storage, &ws22_config);
   telemetry_storage.ws22_storage = &ws22_storage;
-  telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
+  StatusCode telemetry_status = telemetry_init(
+    &telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
+
+  if (telemetry_status != STATUS_CODE_OK) {
+    LOG_DEBUG("Telemetry initialization failed: %u\n",
+            (unsigned)telemetry_status);
+    return 1;
+  }
+  
   init_master_tasks();
 
   tasks_start();
