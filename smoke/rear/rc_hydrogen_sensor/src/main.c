@@ -10,12 +10,12 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "mcu.h"
+#include "delay.h"
 #include "gpio.h"
 #include "log.h"
-#include "tasks.h"
+#include "mcu.h"
 #include "status.h"
-#include "delay.h"
+#include "tasks.h"
 #include "tcixtma1.h"
 
 TCIXTMA1Storage storage;
@@ -23,7 +23,6 @@ TCIXTMA1Storage storage;
 /* Intra-component Headers */
 
 TASK(hydrogen_sensor, TASK_STACK_1024) {
-  
   tcixtma1_init(&storage, I2C_PORT_2, 0x2E);
   float conc;
 
@@ -40,7 +39,7 @@ int main(int argc, char *argv[]) {
 int main() {
 #endif
 
-mcu_init();
+  mcu_init();
   tasks_init();
   log_init();
 
