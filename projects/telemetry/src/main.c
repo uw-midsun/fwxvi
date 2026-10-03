@@ -111,8 +111,8 @@ TASK(telemetry_startup, TASK_STACK_2048) {
   if (status != STATUS_CODE_OK) goto fail;
   status = gpio_init_pin(&imu_cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) goto fail;
-  status = spi_init(bmi323_settings.spi_port, &bmi323_settings.spi_settings);
-  if (status != STATUS_CODE_OK) goto fail;
+  // status = spi_init(bmi323_settings.spi_port, &bmi323_settings.spi_settings);
+  // if (status != STATUS_CODE_OK) goto fail;
   stage = "WS22";
   status = ws22_motor_can_init(&ws22_storage, &ws22_config);
   if (status != STATUS_CODE_OK) goto fail;

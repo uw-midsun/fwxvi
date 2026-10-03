@@ -88,7 +88,7 @@ StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *
     return mount_result == FR_NOT_READY ? STATUS_CODE_UNINITIALIZED : STATUS_CODE_INTERNAL_ERROR;
   }
 
-  TELEMETRY_CHECK("IMU", imu_init(bmi323_storage, bmi323_storage->settings));
+  // TELEMETRY_CHECK("IMU", imu_init(bmi323_storage, bmi323_storage->settings));
 
   TELEMETRY_CHECK("LED GPIO", gpio_init_pin(&s_telemetry_board_led, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH));
   TELEMETRY_CHECK("XBee sleep GPIO", gpio_init_pin(&s_xbee_sleep, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_LOW));
