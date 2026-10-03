@@ -12,7 +12,9 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "queue.h"
+#include "FreeRTOS.h"
+#include "queues.h"
+#include "uart.h"
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
@@ -61,3 +63,7 @@ typedef struct {
 StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage, CanStorage *can_storage);
 
 /** @} */
+
+StatusCode telemetry_readiness_init(void);
+void telemetry_wait_ready(void);
+void telemetry_set_ready(void);

@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define TELEMETRY_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define TELEMETRY_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Telemetry CAN definitions
@@ -106,3 +105,6 @@
 #define GPIO_TELEMETRY_BOARD_LED TELEMETRY_GPIO_DEF(A, 6)
 
 /** @} */
+
+#define GPIO_TELEMETRY_SD_CS TELEMETRY_GPIO_DEF(B, 12)
+#define GPIO_TELEMETRY_IMU_CS TELEMETRY_GPIO_DEF(A, 9)

@@ -12,7 +12,7 @@
     ],
     "sources": [
         "projects/telemetry/src/sd_card_interface.o",
-        "projects/telemetry/src/arm/sd_card_spi.o"
+        "projects/telemetry/src/sd_card_spi.o"
     ],
     "can": false,
     "selected_preset": "STM32L433CCU6_legacy_debug"

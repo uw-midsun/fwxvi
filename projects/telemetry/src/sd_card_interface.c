@@ -10,9 +10,11 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#include "FreeRTOS.h"
 #include "delay.h"
 #include "ff_gen_drv.h"
 #include "log.h"
+#include "task.h"
 
 /* Intra-component Headers */
 #include "sd_card_interface.h"
@@ -117,387 +119,268 @@ static bool s_is_high_capacity = false;
  * Private helper functions
  ************************************************************************************************/
 
-static uint8_t s_read_byte(void) {
-  uint8_t result = 0x00U;
-  sd_spi_rx(s_spi_port, &result, 1U, 0xFFU);
+/* Time limits require task context. Confirm these margins on the fitted card. */
+#define SD_READY_TIMEOUT_MS 1000U
+#define SD_TOKEN_TIMEOUT_MS 500U
+#define SD_INIT_TIMEOUT_MS 2000U
+#define SD_RESPONSE_BYTES 8U
+
+static bool s_transaction_active;
+
+static StatusCode s_read_byte(uint8_t *out) {
+  return sd_spi_rx(s_spi_port, out, 1U, SD_DUMMY_BYTE);
+}
+
+static StatusCode s_finish(StatusCode result) {
+  if (s_transaction_active) {
+    StatusCode end = sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
+    s_transaction_active = false;
+    if (result == STATUS_CODE_OK) result = end;
+  }
   return result;
 }
 
-static void s_clock_dummy_bytes(uint8_t times) {
-  for (uint8_t i = 0; i < times; i++) {
-    s_read_byte();
-  }
-}
-
-static uint8_t s_full_duplex_transfer(uint8_t byte) {
-  uint8_t result = 0x00;
-  sd_spi_rx(s_spi_port, &result, 1U, byte);
+static StatusCode s_select(void) {
+  StatusCode result = sd_spi_cs_set_state(s_spi_port, GPIO_STATE_LOW);
+  if (result == STATUS_CODE_OK) s_transaction_active = true;
   return result;
 }
 
-static bool s_wait_for_ready(void) {
-  uint16_t timeout = 0xFFFFU;
-  uint8_t readvalue;
-
+static StatusCode s_wait_byte(uint8_t *out, bool ready, uint32_t timeout_ms) {
+  TickType_t start = xTaskGetTickCount();
+  TickType_t limit = pdMS_TO_TICKS(timeout_ms);
+  if (!limit) limit = 1U;
   do {
-    readvalue = s_full_duplex_transfer(SD_DUMMY_BYTE);
-    if (--timeout == 0U) {
-      return false;
+    status_ok_or_return(s_read_byte(out));
+    if (ready ? *out == 0xFFU : *out != 0xFFU) return STATUS_CODE_OK;
+  } while ((TickType_t)(xTaskGetTickCount() - start) < limit);
+  return STATUS_CODE_TIMEOUT;
+}
+
+static StatusCode s_wait_for_ready(void) {
+  uint8_t byte;
+  return s_wait_byte(&byte, true, SD_READY_TIMEOUT_MS);
+}
+
+/* A held transaction continues through data/CRC/programming. All other paths
+ * finish here, preserving the first error even if release clocks also fail. */
+static StatusCode s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdResponseType expected, bool hold_cs, SdResponse *out) {
+  *out = (SdResponse){ 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU };
+  uint8_t frame[SD_SEND_SIZE] = { cmd | 0x40U, arg >> 24, arg >> 16, arg >> 8, arg, crc };
+  StatusCode result = s_select();
+  if (result != STATUS_CODE_OK) return result;
+  result = s_wait_for_ready();
+  if (result == STATUS_CODE_OK) result = sd_spi_tx(s_spi_port, frame, sizeof(frame));
+  if (result != STATUS_CODE_OK) return s_finish(result);
+  for (size_t i = 0; i < SD_RESPONSE_BYTES; ++i) {
+    result = s_read_byte(&out->r1);
+    if (result != STATUS_CODE_OK) return s_finish(result);
+    if ((out->r1 & 0x80U) == 0U) break;
+  }
+  if (out->r1 & 0x80U) return s_finish(STATUS_CODE_TIMEOUT);
+  if ((expected == SD_RESPONSE_R7 && out->r1 == SD_R1_IN_IDLE_STATE) || (expected == SD_RESPONSE_R3 && out->r1 == SD_R1_NO_ERROR)) {
+    uint8_t bytes[4];
+    result = sd_spi_rx(s_spi_port, bytes, sizeof(bytes), SD_DUMMY_BYTE);
+    if (result == STATUS_CODE_OK) {
+      out->r2 = bytes[0];
+      out->r3 = bytes[1];
+      out->r4 = bytes[2];
+      out->r5 = bytes[3];
     }
-  } while (readvalue != 0xFFU);
-
-  return true;
+  } else if (expected == SD_RESPONSE_R2) {
+    result = s_read_byte(&out->r2);
+  } else if (expected == SD_RESPONSE_R1B) {
+    result = s_wait_for_ready();
+  }
+  if (result != STATUS_CODE_OK || !hold_cs) return s_finish(result);
+  return result;
 }
 
-static uint8_t s_wait_for_response(void) {
-  uint16_t timeout = 0xFFFFU;
-  uint8_t readvalue;
-
-  do {
-    readvalue = s_full_duplex_transfer(SD_DUMMY_BYTE);
-    if (--timeout == 0U) {
-      return 0xFFU;
-    }
-  } while (readvalue == SD_DUMMY_BYTE);
-
-  return readvalue;
+static uint32_t s_extension(const SdResponse *response) {
+  return ((uint32_t)response->r2 << 24) | ((uint32_t)response->r3 << 16) | ((uint32_t)response->r4 << 8) | response->r5;
 }
-
-/* When hold_cs is true, CS is left asserted (LOW) on success so the caller can
- * continue into a data phase (CMD17/CMD24/CMD9). The caller must deassert CS. */
-static SdResponse s_send_sd_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, SdResponseType expected, bool hold_cs) {
-  uint8_t frame[SD_SEND_SIZE];
-
-  frame[0] = (cmd | 0x40);
-  frame[1] = (uint8_t)(arg >> 24);
-  frame[2] = (uint8_t)(arg >> 16);
-  frame[3] = (uint8_t)(arg >> 8);
-  frame[4] = (uint8_t)(arg);
-  frame[5] = (uint8_t)(crc);
-
-  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_LOW);
-
-  if (!s_wait_for_ready()) {
-    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-    s_read_byte();
-    return ((SdResponse){ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF });
-  }
-
-  sd_spi_tx(s_spi_port, frame, SD_SEND_SIZE);
-
-  SdResponse res = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-  switch (expected) {
-    case SD_RESPONSE_R1:
-      res.r1 = s_wait_for_response();
-      break;
-    case SD_RESPONSE_R1B:
-      res.r1 = s_wait_for_response();
-      res.r2 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      delay_ms(1);
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_LOW);
-      while (s_full_duplex_transfer(SD_DUMMY_BYTE) != 0xFFU) {
-      }
-      break;
-    case SD_RESPONSE_R2:
-      res.r1 = s_wait_for_response();
-      res.r2 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      break;
-    case SD_RESPONSE_R3:
-    case SD_RESPONSE_R7:
-      res.r1 = s_wait_for_response();
-      res.r2 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      res.r3 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      res.r4 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      res.r5 = s_full_duplex_transfer(SD_DUMMY_BYTE);
-      break;
-    default:
-      break;
-  }
-
-  if (expected != SD_RESPONSE_R1B && !hold_cs) {
-    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-    s_read_byte();
-  }
-
-  return res;
-}
-
-/* Reads the data response token after a write and waits for programming to
- * finish. CS must be asserted on entry and is left asserted on exit. */
-static StatusCode s_sd_get_data_response(void) {
-  uint8_t dataresponse;
-  uint16_t timeout = 0xFFFFU;
-
-  do {
-    dataresponse = s_read_byte();
-    if (--timeout == 0U) {
-      return STATUS_CODE_TIMEOUT;
-    }
-  } while (dataresponse == 0xFFU);
-
-  if ((dataresponse & 0x1FU) != SD_DATA_OK) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
-
-  /* Card holds MISO low while programming; wait for it to release (0xFF) */
-  if (!s_wait_for_ready()) {
-    return STATUS_CODE_TIMEOUT;
-  }
-
-  return STATUS_CODE_OK;
-}
-
-/************************************************************************************************
- * SD Card driver functions
- ************************************************************************************************/
 
 static DSTATUS sd_card_init(BYTE pdrv) {
-  if (sd_spi_init(s_spi_port, s_spi_settings) != STATUS_CODE_OK) {
-    return RES_ERROR;
-  }
-
-  /* Step 0: Initialize at a low frequency */
-  sd_spi_set_frequency(s_spi_port, SD_SPI_INIT_LOW_FREQ);
-
-  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-
-  /* Step 1: Send 80 clock cycles with CS high to wake up card */
-  /* 10 * 8 bits = 80 clocked bits */
-  s_clock_dummy_bytes(10U);
-
-  delay_ms(10);
-
-  /* Step 2: reset */
-  SdResponse r1;
-
-  for (uint8_t i = 0U; i < SD_NUM_RETRIES; i++) {
-    r1 = s_send_sd_cmd(SD_CMD_GO_IDLE_STATE, 0U, 0x95U, SD_RESPONSE_R1, false);
-
-    if (r1.r1 == SD_R1_IN_IDLE_STATE) {
-      break;
-    }
-
+  s_is_initialized = false;
+  s_is_high_capacity = false;
+  const char *stage = "transport";
+  StatusCode result = sd_spi_init(s_spi_port, s_spi_settings);
+  if (result != STATUS_CODE_OK) goto fail;
+  result = sd_spi_set_frequency(s_spi_port, SD_SPI_INIT_LOW_FREQ);
+  if (result != STATUS_CODE_OK) goto fail;
+  stage = "power/clocks";
+  delay_ms(10U);
+  uint8_t clocks[10] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+  result = sd_spi_tx(s_spi_port, clocks, sizeof(clocks));
+  if (result != STATUS_CODE_OK) goto fail;
+  stage = "CMD0";
+  SdResponse response;
+  TickType_t start = xTaskGetTickCount();
+  do {
+    result = s_send_sd_cmd(SD_CMD_GO_IDLE_STATE, 0U, 0x95U, SD_RESPONSE_R1, false, &response);
+    if (result != STATUS_CODE_OK) goto fail;
+    if (response.r1 == SD_R1_IN_IDLE_STATE) break;
     delay_ms(1U);
+  } while ((TickType_t)(xTaskGetTickCount() - start) < pdMS_TO_TICKS(SD_INIT_TIMEOUT_MS));
+  if (response.r1 != SD_R1_IN_IDLE_STATE) {
+    result = STATUS_CODE_TIMEOUT;
+    goto fail;
   }
-
-  if (r1.r1 != SD_R1_IN_IDLE_STATE) {
-    LOG_DEBUG("Failed to reset SD card\n");
-    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-    s_is_initialized = false;
-    return RES_ERROR;
+  stage = "CMD8";
+  result = s_send_sd_cmd(SD_CMD_SEND_IF_COND, 0x1AAU, 0x87U, SD_RESPONSE_R7, false, &response);
+  if (result != STATUS_CODE_OK) goto fail;
+  bool v2 = response.r1 == SD_R1_IN_IDLE_STATE;
+  if ((v2 && (s_extension(&response) & 0xFFFU) != 0x1AAU) || (!v2 && response.r1 != (SD_R1_IN_IDLE_STATE | SD_R1_ILLEGAL_COMMAND))) {
+    result = STATUS_CODE_INTERNAL_ERROR;
+    goto fail;
   }
-
-  LOG_DEBUG("Resetted SD card\n");
-  s_is_initialized = true;
-
-  /* Step 3: Check SD version with CMD8 */
-  r1 = s_send_sd_cmd(SD_CMD_SEND_IF_COND, 0x1AAU, 0x87U, SD_RESPONSE_R7, false);
-  bool is_v2 = (r1.r1 & SD_R1_ILLEGAL_COMMAND) == 0U ? true : false;
-
-  /* Step 4: Initiate init process with ACMD41 */
-  uint32_t acmd41_arg = is_v2 ? 0x40000000U : 0U;
-  for (uint16_t i = 0U; i < SD_NUM_RETRIES; i++) {
-    s_send_sd_cmd(SD_CMD_APP_CMD, 0U, 0xFFU, SD_RESPONSE_R1, false);
-    r1 = s_send_sd_cmd(SD_CMD_SD_APP_OP_COND, acmd41_arg, 0xFFU, SD_RESPONSE_R1, false);
-
-    if (r1.r1 == SD_R1_NO_ERROR) {
-      break;
+  stage = "CMD55/ACMD41";
+  start = xTaskGetTickCount();
+  do {
+    result = s_send_sd_cmd(SD_CMD_APP_CMD, 0U, 0xFFU, SD_RESPONSE_R1, false, &response);
+    if (result != STATUS_CODE_OK) goto fail;
+    if (response.r1 != SD_R1_IN_IDLE_STATE) {
+      result = STATUS_CODE_INTERNAL_ERROR;
+      goto fail;
     }
-
-    delay_ms(1U);
+    result = s_send_sd_cmd(SD_CMD_SD_APP_OP_COND, v2 ? 0x40000000U : 0U, 0xFFU, SD_RESPONSE_R1, false, &response);
+    if (result != STATUS_CODE_OK) goto fail;
+    if (response.r1 == SD_R1_NO_ERROR) break;
+    if (response.r1 != SD_R1_IN_IDLE_STATE) {
+      result = STATUS_CODE_INTERNAL_ERROR;
+      goto fail;
+    }
+    delay_ms(10U);
+  } while ((TickType_t)(xTaskGetTickCount() - start) < pdMS_TO_TICKS(SD_INIT_TIMEOUT_MS));
+  if (response.r1 != SD_R1_NO_ERROR) {
+    result = STATUS_CODE_TIMEOUT;
+    goto fail;
   }
-
-  if (r1.r1 != SD_R1_NO_ERROR) {
-    LOG_DEBUG("Failed to initiate init process with ACMD41 cmd\n");
-    sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-    s_is_initialized = false;
-    return RES_ERROR;
+  stage = "CMD58";
+  result = s_send_sd_cmd(SD_CMD_READ_OCR, 0U, 0xFFU, SD_RESPONSE_R3, false, &response);
+  if (result != STATUS_CODE_OK) goto fail;
+  uint32_t ocr = s_extension(&response);
+  /* OCR voltage windows 20/21 cover 3.2–3.4 V on this 3.3 V board. */
+  if (response.r1 != SD_R1_NO_ERROR || !(ocr & 0x80000000U) || !(ocr & (3UL << 20))) {
+    result = STATUS_CODE_INTERNAL_ERROR;
+    goto fail;
   }
-
-  /* Step 5: Read OCR - CCS bit (OCR bit 30) selects block vs byte addressing */
-  r1 = s_send_sd_cmd(SD_CMD_READ_OCR, 0U, 0xFFU, SD_RESPONSE_R3, false);
-  s_is_high_capacity = (r1.r2 & 0x40U) != 0U;
-
-  /* Step 6: If not high capacity set block length to 512 */
+  s_is_high_capacity = v2 && (ocr & 0x40000000U);
   if (!s_is_high_capacity) {
-    r1 = s_send_sd_cmd(SD_CMD_SET_BLOCKLEN, 512U, 0xFFU, SD_RESPONSE_R1, false);
-
-    if (r1.r1 != SD_R1_NO_ERROR) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_is_initialized = false;
-      return RES_ERROR;
+    stage = "CMD16";
+    result = s_send_sd_cmd(SD_CMD_SET_BLOCKLEN, 512U, 0xFFU, SD_RESPONSE_R1, false, &response);
+    if (result != STATUS_CODE_OK) goto fail;
+    if (response.r1 != SD_R1_NO_ERROR) {
+      result = STATUS_CODE_INTERNAL_ERROR;
+      goto fail;
     }
   }
-
-  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-  s_read_byte();
-
-  /* Step 7: Reinitialize at a high frequency */
-  sd_spi_set_frequency(s_spi_port, SD_SPI_HIGH_FREQ);
-
+  stage = "operating clock";
+  result = sd_spi_set_frequency(s_spi_port, SD_SPI_HIGH_FREQ);
+  /* Apply and check the new settings before declaring the disk ready. */
+  if (result == STATUS_CODE_OK) result = s_select();
+  result = s_finish(result);
+  if (result != STATUS_CODE_OK) goto fail;
   s_is_initialized = true;
-  return RES_OK;
+  return 0U;
+fail:
+  result = s_finish(result);
+  s_is_high_capacity = false;
+  LOG_DEBUG("SD initialization failed at %s: %u\n", stage, (unsigned)result);
+  return STA_NOINIT;
 }
 
 static DSTATUS sd_card_status(BYTE pdrv) {
-  return s_is_initialized ? 0 : STA_NOINIT;
+  return s_is_initialized ? 0U : STA_NOINIT;
 }
 
-/* Translate an LBA to the command argument: block index for high-capacity
- * cards, byte offset for standard-capacity cards. */
 static uint32_t s_sd_block_addr(LBA_t sector) {
   return s_is_high_capacity ? (uint32_t)sector : (uint32_t)(sector * 512U);
 }
 
+static StatusCode s_read_data(uint8_t *data, size_t length) {
+  uint8_t token, crc[2];
+  status_ok_or_return(s_wait_byte(&token, false, SD_TOKEN_TIMEOUT_MS));
+  if (token != SD_TOKEN_START_DATA_SINGLE_BLOCK_READ) return STATUS_CODE_INTERNAL_ERROR;
+  status_ok_or_return(sd_spi_rx(s_spi_port, data, length, SD_DUMMY_BYTE));
+  return sd_spi_rx(s_spi_port, crc, sizeof(crc), SD_DUMMY_BYTE);
+}
+
 static DRESULT sd_read_blocks(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count) {
-  DRESULT result = RES_OK;
-
+  if (!s_is_initialized) return RES_NOTRDY;
+  if (!buff || !count) return RES_PARERR;
   while (count--) {
-    SdResponse r1 = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true);
-
-    if (r1.r1 != SD_R1_NO_ERROR) {
-      result = RES_ERROR;
-      break;
-    }
-
-    uint8_t token;
-    uint16_t timeout = 0xFFFFU;
-
-    do {
-      token = s_read_byte();
-      if (--timeout == 0U) {
-        LOG_DEBUG("Timeout waiting for data token\n");
-        result = RES_ERROR;
-        break;
-      }
-    } while (token == 0xFFU);
-
-    if (result != RES_OK || token != SD_TOKEN_START_DATA_SINGLE_BLOCK_READ) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-      return RES_ERROR;
-    }
-
-    for (uint16_t i = 0U; i < 512U; i++) {
-      *buff++ = s_read_byte();
-    }
-
-    /* Discard CRC */
-    s_read_byte();
-    s_read_byte();
-
-    sector++;
+    SdResponse response;
+    StatusCode result = s_send_sd_cmd(SD_CMD_READ_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true, &response);
+    if (result == STATUS_CODE_OK && response.r1 != SD_R1_NO_ERROR) result = STATUS_CODE_INTERNAL_ERROR;
+    if (result == STATUS_CODE_OK) result = s_read_data(buff, 512U);
+    result = s_finish(result);
+    if (result != STATUS_CODE_OK) return RES_ERROR;
+    buff += 512U;
+    ++sector;
   }
-
-  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-  s_read_byte();
-
-  return result;
+  return RES_OK;
 }
 
 static DRESULT sd_write_blocks(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count) {
+  if (!s_is_initialized) return RES_NOTRDY;
+  if (!buff || !count) return RES_PARERR;
   while (count--) {
-    SdResponse r1 = s_send_sd_cmd(SD_CMD_WRITE_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true);
-
-    if (r1.r1 != SD_R1_NO_ERROR) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-      return RES_ERROR;
-    }
-
-    /* One dummy byte before the data token */
-    s_read_byte();
-
-    sd_spi_tx(s_spi_port, (uint8_t[]){ SD_TOKEN_START_DATA_SINGLE_BLOCK_WRITE }, 1);
-    sd_spi_tx(s_spi_port, (uint8_t *)buff, 512);
-    sd_spi_tx(s_spi_port, (uint8_t[]){ 0xFF, 0xFF }, 2);
-
-    if (s_sd_get_data_response() != STATUS_CODE_OK) {
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-      return RES_ERROR;
-    }
-
+    SdResponse response;
+    StatusCode result = s_send_sd_cmd(SD_CMD_WRITE_SINGLE_BLOCK, s_sd_block_addr(sector), 0xFFU, SD_RESPONSE_R1, true, &response);
+    if (result == STATUS_CODE_OK && response.r1 != SD_R1_NO_ERROR) result = STATUS_CODE_INTERNAL_ERROR;
+    uint8_t prefix[] = { 0xFFU, SD_TOKEN_START_DATA_SINGLE_BLOCK_WRITE }, crc[] = { 0xFFU, 0xFFU }, token;
+    if (result == STATUS_CODE_OK) result = sd_spi_tx(s_spi_port, prefix, sizeof(prefix));
+    if (result == STATUS_CODE_OK) result = sd_spi_tx(s_spi_port, (uint8_t *)buff, 512U);
+    if (result == STATUS_CODE_OK) result = sd_spi_tx(s_spi_port, crc, sizeof(crc));
+    if (result == STATUS_CODE_OK) result = s_wait_byte(&token, false, SD_TOKEN_TIMEOUT_MS);
+    if (result == STATUS_CODE_OK && (token & 0x1FU) != SD_DATA_OK) result = STATUS_CODE_INTERNAL_ERROR;
+    if (result == STATUS_CODE_OK) result = s_wait_for_ready();
+    result = s_finish(result);
+    if (result != STATUS_CODE_OK) return RES_ERROR;
     buff += 512U;
-    sector++;
+    ++sector;
   }
-
-  sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-  s_read_byte();
   return RES_OK;
 }
 
 static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
+  if (!s_is_initialized) return RES_NOTRDY;
+  if (cmd != CTRL_SYNC && !buff) return RES_PARERR;
   switch (cmd) {
-    case CTRL_SYNC:
-      return RES_OK;
-
+    case CTRL_SYNC: {
+      StatusCode result = s_select();
+      if (result == STATUS_CODE_OK) result = s_wait_for_ready();
+      return s_finish(result) == STATUS_CODE_OK ? RES_OK : RES_ERROR;
+    }
     case GET_SECTOR_SIZE:
       *(WORD *)buff = 512U;
       return RES_OK;
-
     case GET_BLOCK_SIZE:
       *(DWORD *)buff = 1U;
       return RES_OK;
-
     case GET_SECTOR_COUNT: {
+      SdResponse response;
       uint8_t csd[16];
-      uint32_t sector_count = 0;
-
-      SdResponse r1 = s_send_sd_cmd(SD_CMD_SEND_CSD, 0U, 0xFFU, SD_RESPONSE_R1, true);
-      if (r1.r1 != SD_R1_NO_ERROR) {
-        sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-        s_read_byte();
-        *(DWORD *)buff = 32768U;
-        return RES_OK;
-      }
-
-      uint16_t timeout = 0xFFFF;
-      uint8_t token;
-      do {
-        token = s_read_byte();
-        if (--timeout == 0) {
-          sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-          s_read_byte();
-          *(DWORD *)buff = 32768;
-          return RES_OK;
-        }
-      } while (token == 0xFF);
-
-      if (token != SD_TOKEN_START_DATA_SINGLE_BLOCK_READ) {
-        sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-        s_read_byte();
-        *(DWORD *)buff = 32768;
-        return RES_OK;
-      }
-
-      for (int i = 0; i < 16; i++) {
-        csd[i] = s_read_byte();
-      }
-
-      s_read_byte();
-      s_read_byte();
-
-      sd_spi_cs_set_state(s_spi_port, GPIO_STATE_HIGH);
-      s_read_byte();
-
-      if ((csd[0] & 0xC0) == 0x40) {
-        uint32_t c_size = ((uint32_t)csd[7] & 0x3F) << 16;
-        c_size |= (uint32_t)csd[8] << 8;
-        c_size |= (uint32_t)csd[9];
-        sector_count = (c_size + 1) * 1024;
-      } else {
-        uint8_t read_bl_len = csd[5] & 0x0F;
-        uint16_t c_size = ((csd[6] & 0x03) << 10) | (csd[7] << 2) | ((csd[8] & 0xC0) >> 6);
-        uint8_t c_size_mult = ((csd[9] & 0x03) << 1) | ((csd[10] & 0x80) >> 7);
-        sector_count = (uint32_t)(c_size + 1) << (c_size_mult + read_bl_len - 7);
-      }
-
-      *(DWORD *)buff = sector_count;
+      StatusCode result = s_send_sd_cmd(SD_CMD_SEND_CSD, 0U, 0xFFU, SD_RESPONSE_R1, true, &response);
+      if (result == STATUS_CODE_OK && response.r1 != SD_R1_NO_ERROR) result = STATUS_CODE_INTERNAL_ERROR;
+      if (result == STATUS_CODE_OK) result = s_read_data(csd, sizeof(csd));
+      if (s_finish(result) != STATUS_CODE_OK) return RES_ERROR;
+      uint64_t sectors;
+      if ((csd[0] & 0xC0U) == 0x40U) {
+        uint32_t c_size = ((uint32_t)(csd[7] & 0x3FU) << 16) | ((uint32_t)csd[8] << 8) | csd[9];
+        sectors = ((uint64_t)c_size + 1U) * 1024U;
+      } else if ((csd[0] & 0xC0U) == 0U) {
+        uint8_t read_bl_len = csd[5] & 0x0FU;
+        uint16_t c_size = ((csd[6] & 3U) << 10) | (csd[7] << 2) | (csd[8] >> 6);
+        uint8_t mult = ((csd[9] & 3U) << 1) | (csd[10] >> 7);
+        sectors = (((uint64_t)c_size + 1U) << (mult + 2U + read_bl_len)) / 512U;
+      } else
+        return RES_ERROR;
+      if (!sectors || sectors > UINT32_MAX) return RES_ERROR;
+      *(LBA_t *)buff = (LBA_t)sectors;
       return RES_OK;
     }
-
     default:
       return RES_PARERR;
   }
@@ -507,7 +390,7 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
  * Public
  ************************************************************************************************/
 
- // Link the SD card driver to FatFs and store the active SPI configuration.
+// Link the SD card driver to FatFs and store the active SPI configuration.
 StatusCode sd_card_link_driver(SdSpiPort spi, SdSpiSettings *settings) {
   if (settings == NULL || (unsigned)spi >= NUM_SD_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
@@ -546,4 +429,8 @@ FRESULT sd_card_mount(void) {
 
   LOG_DEBUG("SD card mounted at: %s\n", s_disk_path);
   return FR_OK;
+}
+
+const char *sd_card_drive_path(void) {
+  return s_driver_linked ? s_disk_path : NULL;
 }

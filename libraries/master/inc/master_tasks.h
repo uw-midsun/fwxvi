@@ -95,3 +95,6 @@ Task *get_10hz_task();
 Task *get_1hz_task();
 
 /** @} */
+
+/* Optional application gate, called before any master task work. */
+void master_wait_ready(void);

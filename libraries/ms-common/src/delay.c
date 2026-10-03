@@ -19,7 +19,9 @@
 
 void delay_ms(uint32_t time_ms) {
   if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
-    vTaskDelay(time_ms);
+    TickType_t ticks = pdMS_TO_TICKS(time_ms);
+    if (time_ms > 0U && ticks == 0U) ticks = 1U;
+    vTaskDelay(ticks);
   } else {
     /* TODO: Handle non-RTOS delays */
   }
