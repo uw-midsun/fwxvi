@@ -191,17 +191,7 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  uint16_t pulse_width;
-  if (dc == 0U) {
-    /* Prevent divide by 0 */
-    pulse_width = 0U;
-  } else {
-    pulse_width = ((s_period_us[timer]) * dc) / 100;
-    /* Avoid overflow at 100% duty cycle */
-    if (pulse_width >= s_period_us[timer]) {
-      pulse_width = s_period_us[timer] - 1;
-    }
-  }
+  uint16_t pulse_width = ((s_period_us[timer]) * dc) / 100;
 
   return pwm_set_pulse(timer, pulse_width, channel, n_channel_en);
 }
