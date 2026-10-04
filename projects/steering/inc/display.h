@@ -14,6 +14,8 @@
 
 /* Inter-component Headers */
 #include "display_defs.h"
+#include "gpio.h"
+#include "pwm.h"
 #include "status.h"
 
 /* Intra-component Headers */
@@ -37,11 +39,13 @@
 #define HORIZONTAL_FRONT_PORCH 8
 #define VERTICAL_FRONT_PORCH 8
 
-// TODO: Verify backlight PWM period. I couldn't find the chip myself in the schematics,
-// but the previous PR mentioned that the backlight driver was the AP3032, and its datasheet
-// suggests a minimum PWM duty cycle of 25kHz
-#define DISPLAY_BACKLIGHT_PERIOD_US 20
-#define DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE 100
+// AP3032 datasheet mentions a signal frequency of >=25 kHz to avoid audible noise
+#define BACKLIGHT_FREQ_HZ 25000
+#define BACKLIGHT_DEFAULT_BRIGHTNESS 100U
+
+#define BACKLIGHT_PWM_TIMER PWM_TIMER_15
+#define BACKLIGHT_PWM_CHANNEL PWM_CHANNEL_1
+#define BACKLIGHT_GPIO_AF GPIO_ALT14_TIM15
 
 /**
  * @brief   Initialize the display

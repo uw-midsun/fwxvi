@@ -38,12 +38,6 @@
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
-// TODO: Should these go in display.h? Not sure since they don't need to be accessible
-// by anyone who needs the display?
-#define BACKLIGHT_PWM_TIMER PWM_TIMER_2
-#define BACKLIGHT_PWM_CHANNEL PWM_CHANNEL_2
-#define BACKLIGHT_GPIO_AF GPIO_ALT1_TIM2
-
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
 
@@ -335,8 +329,8 @@ StatusCode display_init(SteeringStorage *storage) {
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
-  status_ok_or_return(pwm_init(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_PERIOD_US));
-  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE, BACKLIGHT_PWM_CHANNEL, false));
+  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
+  status_ok_or_return(display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
 
 #ifdef MS_PLATFORM_X86
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
@@ -351,7 +345,13 @@ StatusCode display_init(SteeringStorage *storage) {
 }
 
 StatusCode display_set_brightness(uint16_t percentage) {
-  return pwm_set_dc(BACKLIGHT_PWM_TIMER, percentage, BACKLIGHT_PWM_CHANNEL, false);
+  if (percentage > 100) {
+    percentage = 100;
+  }
+
+  // We use the inverted channel to drive the backlight, so the duty cycle we run pwm_set_dc
+  // against represents how long the signal is LOW for. As such, we invert it.
+  return pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - percentage, BACKLIGHT_PWM_CHANNEL, true);
 }
 
 StatusCode display_run() {

@@ -23,10 +23,6 @@
 #include "display.h"
 #include "steering_hw_defs.h"
 
-#define BACKLIGHT_PWM_TIMER PWM_TIMER_2
-#define BACKLIGHT_PWM_CHANNEL PWM_CHANNEL_2
-#define BACKLIGHT_GPIO_AF GPIO_ALT1_TIM2
-
 #ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
 #define DISPLAY_WIDTH 480  /**< Width of the display */
 #define DISPLAY_HEIGHT 272 /**< Height of the display */
@@ -43,6 +39,8 @@ static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((al
 static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
+
+StatusCode ltdc_display_set_brightness(uint16_t percentage);
 
 StatusCode ltdc_display_init() {
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
@@ -71,13 +69,19 @@ StatusCode ltdc_display_init() {
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
-  status_ok_or_return(pwm_init(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_PERIOD_US));
-  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE, BACKLIGHT_PWM_CHANNEL, false));
+  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
+  status_ok_or_return(ltdc_display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
   return ltdc_init(&settings);
 }
 
 StatusCode ltdc_display_set_brightness(uint16_t percentage) {
-  return pwm_set_dc(BACKLIGHT_PWM_TIMER, percentage, BACKLIGHT_PWM_CHANNEL, false);
+  if (percentage > 100) {
+    percentage = 100;
+  }
+
+  // We use the inverted channel to drive the backlight, so the duty cycle we run pwm_set_dc
+  // against represents how long the signal is LOW for. As such, we invert it.
+  return pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - percentage, BACKLIGHT_PWM_CHANNEL, true);
 }
 
 StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t square_size) {
@@ -94,7 +98,7 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
 }
 
 TASK(sc_display_brightness, TASK_STACK_1024) {
-  uint16_t brightness_pct = DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE;
+  uint16_t brightness_pct = BACKLIGHT_DEFAULT_BRIGHTNESS;
   bool brightness_increasing = true;  // Even if initial brightness is 100%, loop will immediately go in other direction
 
   StatusCode status = ltdc_display_init();

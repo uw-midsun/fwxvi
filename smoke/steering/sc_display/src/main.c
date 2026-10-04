@@ -23,10 +23,6 @@
 #include "display.h"
 #include "steering_hw_defs.h"
 
-#define BACKLIGHT_PWM_TIMER PWM_TIMER_2
-#define BACKLIGHT_PWM_CHANNEL PWM_CHANNEL_2
-#define BACKLIGHT_GPIO_AF GPIO_ALT1_TIM2
-
 #ifdef STM32L4P5xx         /* Framebuffer takes up too much RAM on other STMs otherwise*/
 #define DISPLAY_WIDTH 480  /**< Width of the display */
 #define DISPLAY_HEIGHT 272 /**< Height of the display */
@@ -71,8 +67,10 @@ StatusCode ltdc_display_init() {
 
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
-  status_ok_or_return(pwm_init(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_PERIOD_US));
-  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, DISPLAY_BACKLIGHT_DEFAULT_DUTY_CYCLE, BACKLIGHT_PWM_CHANNEL, false));
+  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
+  // Using inverted channel to drive backlight, so must invert the duty cycle for intended brightness.
+  // Note: assumes that BACKLIGHT_DEFAULT_BRIGHTNESS <= 100
+  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - BACKLIGHT_DEFAULT_BRIGHTNESS, BACKLIGHT_PWM_CHANNEL, true));
 
   return ltdc_init(&settings);
 }
