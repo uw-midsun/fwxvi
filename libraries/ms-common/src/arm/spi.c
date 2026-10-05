@@ -13,11 +13,9 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "stm32l4xx.h"
-#include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_conf.h"
 #include "stm32l4xx_hal_rcc.h"
 #include "stm32l4xx_hal_spi.h"
-#include "task.h"
 
 /* Intra-component Headers */
 #include "interrupts.h"
@@ -56,18 +54,32 @@ static const uint16_t s_spi_baudrate_map[] = {
 };
 
 static SPI_HandleTypeDef s_spi_handles[NUM_SPI_PORTS];
-#define SPI_DEVICE_LIMIT 4U
-#define SPI_TRANSFER_TIMEOUT_MS 100U
-#define SPI_LOCK_TIMEOUT_MS 1000U
-static SpiSettings s_defaults[NUM_SPI_PORTS];
-static GpioAddress s_devices[NUM_SPI_PORTS][SPI_DEVICE_LIMIT];
-static size_t s_device_count[NUM_SPI_PORTS];
-static TaskHandle_t s_owner[NUM_SPI_PORTS];
-static GpioAddress s_selected[NUM_SPI_PORTS];
+static GpioAddress s_spi_cs_handles[NUM_SPI_PORTS];
 
 /* Mutex for port access */
 static StaticSemaphore_t s_spi_port_mutex[NUM_SPI_PORTS];
 static SemaphoreHandle_t s_spi_port_handle[NUM_SPI_PORTS];
+
+/* Semaphore to signal event complete */
+static StaticSemaphore_t s_spi_cmplt_sem[NUM_SPI_PORTS];
+static SemaphoreHandle_t s_spi_cmplt_handle[NUM_SPI_PORTS];
+
+/* Helper function to get SPI port index from handle */
+static SpiPort s_get_spi_port_from_handle(SPI_HandleTypeDef *hspi) {
+  if (hspi->Instance == SPI1) {
+    return SPI_PORT_1;
+  } else if (hspi->Instance == SPI2) {
+    return SPI_PORT_2;
+  } else {
+    return SPI_PORT_3;
+  }
+}
+
+/* Helper function to release CS pin */
+static void s_release_cs(SpiPort spi) {
+  GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (s_spi_cs_handles[spi].port * GPIO_ADDRESS_OFFSET));
+  HAL_GPIO_WritePin(gpio_port, (1U << (s_spi_cs_handles[spi].pin)), 1U);
+}
 
 void SPI1_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_1]);
@@ -81,15 +93,32 @@ void SPI3_IRQHandler(void) {
   HAL_SPI_IRQHandler(&s_spi_handles[SPI_PORT_3]);
 }
 
-/* Transactions use bounded polling transfers. No completion callback changes
- * CS or ownership; both legacy and explicit callers finish in task context. */
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  SpiPort spi = s_get_spi_port_from_handle(hspi);
+
+  /* Release CS after RX completes - this is the final operation */
+  s_release_cs(spi);
+  xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  SpiPort spi = s_get_spi_port_from_handle(hspi);
+
+  /* Release CS on error */
+  s_release_cs(spi);
+  xSemaphoreGiveFromISR(s_spi_cmplt_handle[spi], &xHigherPriorityTaskWoken);
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
 
 StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   if (settings == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  if ((unsigned)spi >= NUM_SPI_PORTS || (unsigned)settings->mode >= NUM_SPI_MODES || (unsigned)settings->baudrate >= NUM_SPI_BAUDRATE) {
+  if (spi >= NUM_SPI_PORTS) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
@@ -98,19 +127,26 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   }
 
   s_spi_port_handle[spi] = xSemaphoreCreateMutexStatic(&s_spi_port_mutex[spi]);
+  s_spi_cmplt_handle[spi] = xSemaphoreCreateBinaryStatic(&s_spi_cmplt_sem[spi]);
 
-  if (s_spi_port_handle[spi] == NULL) {
+  if (s_spi_port_handle[spi] == NULL || s_spi_cmplt_handle[spi] == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  GpioAlternateFunctions af = spi == SPI_PORT_3 ? GPIO_ALT6_SPI3 : spi == SPI_PORT_2 ? GPIO_ALT5_SPI2 : GPIO_ALT5_SPI1;
-  status_ok_or_return(gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, af));
-  status_ok_or_return(gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, af));
-  status_ok_or_return(gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, af));
-  status_ok_or_return(gpio_init_pin(&settings->cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH));
-  s_defaults[spi] = *settings;
-  s_devices[spi][0] = settings->cs;
-  s_device_count[spi] = 1U;
+  if (spi == SPI_PORT_3) {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT6_SPI3);
+    gpio_init_pin_af(&settings->cs, GPIO_OUTPUT_PUSH_PULL, GPIO_ALT6_SPI3);
+  } else {
+    gpio_init_pin_af(&settings->sdo, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sdi, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->sclk, GPIO_ALTFN_PUSH_PULL, GPIO_ALT5_SPI1);
+    gpio_init_pin_af(&settings->cs, GPIO_OUTPUT_PUSH_PULL, GPIO_ALT5_SPI1);
+  }
+
+  s_spi_cs_handles[spi] = settings->cs;
+  gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
 
   s_spi_handles[spi].Instance = s_port[spi].base;
   s_spi_handles[spi].Init.Mode = SPI_MODE_MASTER;
@@ -157,121 +193,61 @@ StatusCode spi_init(SpiPort spi, const SpiSettings *settings) {
   return STATUS_CODE_OK;
 }
 
-static bool s_valid_settings(SpiPort spi, const SpiSettings *settings) {
-  return (unsigned)spi < NUM_SPI_PORTS && settings != NULL && (unsigned)settings->mode < NUM_SPI_MODES && (unsigned)settings->baudrate < NUM_SPI_BAUDRATE;
-}
+StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
+  if (!s_port[spi].initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
 
-StatusCode spi_register_device(SpiPort spi, const SpiSettings *settings) {
-  if (!s_valid_settings(spi, settings)) return STATUS_CODE_INVALID_ARGS;
-  if (!s_port[spi].initialized) return STATUS_CODE_UNINITIALIZED;
-  if (xSemaphoreTake(s_spi_port_handle[spi], pdMS_TO_TICKS(SPI_LOCK_TIMEOUT_MS)) != pdTRUE) return STATUS_CODE_TIMEOUT;
+  if (spi >= NUM_SPI_PORTS || (tx_len == 0U && rx_len == 0U)) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (tx_len > SPI_MAX_NUM_DATA || rx_len > SPI_MAX_NUM_DATA) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (xSemaphoreTake(s_spi_port_handle[spi], portMAX_DELAY) != pdTRUE) {
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
+  }
+
+  HAL_StatusTypeDef status;
   StatusCode result = STATUS_CODE_OK;
-  const SpiSettings *bus = &s_defaults[spi];
-  if (settings->sdo.port != bus->sdo.port || settings->sdo.pin != bus->sdo.pin || settings->sdi.port != bus->sdi.port || settings->sdi.pin != bus->sdi.pin || settings->sclk.port != bus->sclk.port ||
-      settings->sclk.pin != bus->sclk.pin) {
-    result = STATUS_CODE_INVALID_ARGS;
-  } else {
-    size_t i;
-    for (i = 0; i < s_device_count[spi]; ++i) {
-      if (s_devices[spi][i].port == settings->cs.port && s_devices[spi][i].pin == settings->cs.pin) break;
-    }
-    if (i == s_device_count[spi]) {
-      if (i == SPI_DEVICE_LIMIT)
-        result = STATUS_CODE_RESOURCE_EXHAUSTED;
-      else {
-        result = gpio_init_pin(&settings->cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-        if (result == STATUS_CODE_OK) s_devices[spi][s_device_count[spi]++] = settings->cs;
-      }
+  static uint8_t s_spi_dummy_tx[SPI_MAX_NUM_DATA] = { 0 };
+
+  /* Assert CS at the start of the transaction */
+  gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_LOW);
+
+  /* First: Transmit command/address if TX data provided */
+  if (tx_len > 0) {
+    status = HAL_SPI_Transmit(&s_spi_handles[spi], tx_data, tx_len, HAL_MAX_DELAY);
+    if (status != HAL_OK) {
+      gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_INTERNAL_ERROR;
     }
   }
-  xSemaphoreGive(s_spi_port_handle[spi]);
-  return result;
-}
 
-static StatusCode s_acquire(SpiPort spi, const SpiSettings *settings, bool select) {
-  if (!s_valid_settings(spi, settings)) return STATUS_CODE_INVALID_ARGS;
-  if (!s_port[spi].initialized) return STATUS_CODE_UNINITIALIZED;
-  size_t i;
-  for (i = 0; i < s_device_count[spi]; ++i) {
-    if (s_devices[spi][i].port == settings->cs.port && s_devices[spi][i].pin == settings->cs.pin) break;
-  }
-  if (i == s_device_count[spi]) return STATUS_CODE_INVALID_ARGS;
-  if (xSemaphoreTake(s_spi_port_handle[spi], pdMS_TO_TICKS(SPI_LOCK_TIMEOUT_MS)) != pdTRUE) return STATUS_CODE_TIMEOUT;
-  StatusCode result = STATUS_CODE_OK;
-  for (i = 0; i < s_device_count[spi]; ++i) {
-    result = gpio_set_state(&s_devices[spi][i], GPIO_STATE_HIGH);
-    if (result != STATUS_CODE_OK) goto fail;
-  }
-  SPI_HandleTypeDef *handle = &s_spi_handles[spi];
-  __HAL_SPI_DISABLE(handle);
-  handle->Init.BaudRatePrescaler = s_spi_baudrate_map[settings->baudrate];
-  handle->Init.CLKPolarity = settings->mode >= SPI_MODE_2 ? SPI_POLARITY_HIGH : SPI_POLARITY_LOW;
-  handle->Init.CLKPhase = (settings->mode == SPI_MODE_1 || settings->mode == SPI_MODE_3) ? SPI_PHASE_2EDGE : SPI_PHASE_1EDGE;
-  if (HAL_SPI_Init(handle) != HAL_OK) {
-    result = STATUS_CODE_INTERNAL_ERROR;
-    goto fail;
-  }
-  s_selected[spi] = settings->cs;
-  if (select) {
-    result = gpio_set_state(&settings->cs, GPIO_STATE_LOW);
-    if (result != STATUS_CODE_OK) goto fail;
-  }
-  s_owner[spi] = xTaskGetCurrentTaskHandle();
-  return STATUS_CODE_OK;
-fail:
-  xSemaphoreGive(s_spi_port_handle[spi]);
-  return result;
-}
+  /* Second: Receive response if RX data expected */
+  if (rx_len > 0) {
+    /* Use interrupt-based receive so CS is released in callback after completion */
+    status = HAL_SPI_TransmitReceive_IT(&s_spi_handles[spi], s_spi_dummy_tx, rx_data, rx_len);
+    if (status != HAL_OK) {
+      gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
+      xSemaphoreGive(s_spi_port_handle[spi]);
+      return STATUS_CODE_INTERNAL_ERROR;
+    }
 
-StatusCode spi_transaction_begin(SpiPort spi, const SpiSettings *settings) {
-  return s_acquire(spi, settings, true);
-}
-
-StatusCode spi_transaction_transfer(SpiPort spi, const uint8_t *tx, uint8_t *rx, size_t length, uint8_t filler, uint32_t timeout_ms) {
-  if ((unsigned)spi >= NUM_SPI_PORTS || length == 0U || timeout_ms == 0U) return STATUS_CODE_INVALID_ARGS;
-  if (s_owner[spi] == NULL || s_owner[spi] != xTaskGetCurrentTaskHandle()) return STATUS_CODE_UNINITIALIZED;
-  uint32_t start = HAL_GetTick();
-  for (size_t i = 0; i < length; ++i) {
-    uint32_t elapsed = HAL_GetTick() - start;
-    if (elapsed >= timeout_ms) {
-      HAL_SPI_Abort(&s_spi_handles[spi]);
+    /* Wait for RX to complete - CS will be released in the callback */
+    if (xSemaphoreTake(s_spi_cmplt_handle[spi], portMAX_DELAY) != pdTRUE) {
+      gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
+      xSemaphoreGive(s_spi_port_handle[spi]);
       return STATUS_CODE_TIMEOUT;
     }
-    uint8_t output = tx ? tx[i] : filler, input;
-    HAL_StatusTypeDef result = HAL_SPI_TransmitReceive(&s_spi_handles[spi], &output, &input, 1U, timeout_ms - elapsed);
-    if (result != HAL_OK) {
-      HAL_SPI_Abort(&s_spi_handles[spi]);
-      return result == HAL_TIMEOUT ? STATUS_CODE_TIMEOUT : STATUS_CODE_INTERNAL_ERROR;
-    }
-    if (rx) rx[i] = input;
+  } else {
+    /* TX only - no RX expected, release CS immediately */
+    gpio_set_state(&s_spi_cs_handles[spi], GPIO_STATE_HIGH);
   }
-  return STATUS_CODE_OK;
-}
 
-StatusCode spi_transaction_end(SpiPort spi, bool sd_trailing_clocks) {
-  if ((unsigned)spi >= NUM_SPI_PORTS) return STATUS_CODE_INVALID_ARGS;
-  if (s_owner[spi] == NULL || s_owner[spi] != xTaskGetCurrentTaskHandle()) return STATUS_CODE_UNINITIALIZED;
-  StatusCode result = gpio_set_state(&s_selected[spi], GPIO_STATE_HIGH);
-  if (sd_trailing_clocks && result == STATUS_CODE_OK) result = spi_transaction_transfer(spi, NULL, NULL, 1U, 0xFFU, SPI_TRANSFER_TIMEOUT_MS);
-  s_owner[spi] = NULL;
   xSemaphoreGive(s_spi_port_handle[spi]);
   return result;
-}
-
-StatusCode spi_deselected_clocks(SpiPort spi, const SpiSettings *settings, size_t length) {
-  status_ok_or_return(s_acquire(spi, settings, false));
-  StatusCode result = spi_transaction_transfer(spi, NULL, NULL, length, 0xFFU, SPI_TRANSFER_TIMEOUT_MS);
-  StatusCode end = spi_transaction_end(spi, false);
-  return result != STATUS_CODE_OK ? result : end;
-}
-
-StatusCode spi_exchange(SpiPort spi, uint8_t *tx_data, size_t tx_len, uint8_t *rx_data, size_t rx_len) {
-  if ((unsigned)spi >= NUM_SPI_PORTS || (tx_len == 0U && rx_len == 0U) || (tx_len && !tx_data) || (rx_len && !rx_data) || tx_len > SPI_MAX_NUM_DATA || rx_len > SPI_MAX_NUM_DATA)
-    return STATUS_CODE_INVALID_ARGS;
-  status_ok_or_return(spi_transaction_begin(spi, &s_defaults[spi]));
-  StatusCode result = STATUS_CODE_OK;
-  if (tx_len) result = spi_transaction_transfer(spi, tx_data, NULL, tx_len, 0U, SPI_TRANSFER_TIMEOUT_MS);
-  if (result == STATUS_CODE_OK && rx_len) result = spi_transaction_transfer(spi, NULL, rx_data, rx_len, 0U, SPI_TRANSFER_TIMEOUT_MS);
-  StatusCode end = spi_transaction_end(spi, false);
-  return result != STATUS_CODE_OK ? result : end;
 }

@@ -79,7 +79,7 @@ void test_imu_rejects_sampling_before_successful_initialization(void) {
 }
 
 TEST_IN_TASK
-void test_sd_failed_mount_keeps_disk_unready_and_releases_bus(void) {
+void test_sd_failed_mount_keeps_disk_unready(void) {
   /* The host has no card bytes: transport failure must not become success. */
   TEST_ASSERT_EQUAL(FR_NOT_READY, sd_card_mount());
   BYTE buffer[512] = { 0 };
@@ -92,9 +92,6 @@ void test_sd_failed_mount_keeps_disk_unready_and_releases_bus(void) {
   TEST_ASSERT_EQUAL(RES_NOTRDY, driver->disk_ioctl(0, GET_SECTOR_COUNT, &capacity));
   TEST_ASSERT_EQUAL_UINT32(123U, capacity);
   TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, sd_spi_cs_get_state(SD_SPI_PORT_2));
-  SpiSettings settings = { 0 };
-  TEST_ASSERT_OK(spi_transaction_begin(SPI_PORT_2, &settings));
-  TEST_ASSERT_OK(spi_transaction_end(SPI_PORT_2, false));
 }
 
 TEST_IN_TASK
@@ -108,33 +105,4 @@ void test_datagram_queue_round_trip(void) {
   TEST_ASSERT_OK(queue_receive(&storage.datagram_queue, &received, 0U));
   TEST_ASSERT_EQUAL_MEMORY(&sent, &received, sizeof(sent));
   TEST_ASSERT_EQUAL(STATUS_CODE_EMPTY, queue_receive(&storage.datagram_queue, &received, 0U));
-}
-
-TEST_IN_TASK
-void test_spi_keeps_device_selected_across_command_and_receive(void) {
-  /* Use the bus registered by the failed-mount test; no card script is needed. */
-  SpiSettings sd = { 0 }, imu = { .mode = SPI_MODE_3, .cs = { .port = GPIO_PORT_A, .pin = 1U } };
-  uint8_t discarded[SPI_MAX_NUM_DATA];
-  size_t pending = spi_get_tx_num_bytes(SPI_PORT_2);
-  if (pending) TEST_ASSERT_OK(spi_get_tx_data(SPI_PORT_2, discarded, pending));
-  TEST_ASSERT_OK(spi_register_device(SPI_PORT_2, &imu));
-  uint8_t responses[] = { 0xFFU, 0xFFU, 0x43U, 0x00U };
-  TEST_ASSERT_OK(spi_set_rx(SPI_PORT_2, responses, sizeof(responses)));
-  TEST_ASSERT_OK(spi_transaction_begin(SPI_PORT_2, &imu));
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, gpio_get_state(&sd.cs));
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, gpio_get_state(&imu.cs));
-  uint8_t command[] = { 0x80U, 0x00U }, received[2];
-  TEST_ASSERT_OK(spi_transaction_transfer(SPI_PORT_2, command, NULL, sizeof(command), 0U, 100U));
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, gpio_get_state(&imu.cs));
-  TEST_ASSERT_OK(spi_transaction_transfer(SPI_PORT_2, NULL, received, sizeof(received), 0U, 100U));
-  TEST_ASSERT_EQUAL_MEMORY(&responses[2], received, sizeof(received));
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, gpio_get_state(&imu.cs));
-  /* A failed transfer stays owned until the caller performs cleanup. */
-  TEST_ASSERT_NOT_OK(spi_transaction_transfer(SPI_PORT_2, NULL, received, 1U, 0U, 100U));
-  TEST_ASSERT_EQUAL(GPIO_STATE_LOW, gpio_get_state(&imu.cs));
-  TEST_ASSERT_OK(spi_transaction_end(SPI_PORT_2, false));
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, gpio_get_state(&imu.cs));
-  TEST_ASSERT_OK(spi_transaction_begin(SPI_PORT_2, &sd));
-  TEST_ASSERT_EQUAL(GPIO_STATE_HIGH, gpio_get_state(&imu.cs));
-  TEST_ASSERT_OK(spi_transaction_end(SPI_PORT_2, false));
 }

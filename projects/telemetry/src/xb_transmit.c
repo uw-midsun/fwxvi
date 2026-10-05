@@ -186,7 +186,6 @@ static void s_update_stats_cache(uint16_t can_rx_rate, uint16_t xbee_tx_rate, ui
 
 /* Task A: drains CAN RX queue into the message cache. */
 TASK(can_cache_updater, TASK_STACK_512) {
-  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   CanMessage message = { 0 };
@@ -238,7 +237,6 @@ TASK(can_cache_updater, TASK_STACK_512) {
 
 /* Task B: round-robin HIGH→MEDIUM→LOW scheduler; updates bus-load stats cache every second. */
 TASK(can_cache_scheduler, TASK_STACK_512) {
-  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   uint32_t last_stats_tick = (uint32_t)xTaskGetTickCount();
@@ -284,7 +282,6 @@ TASK(can_cache_scheduler, TASK_STACK_512) {
 #if (LOG_DEBUG_SUMMARY == 1)
 /* Task C: logs all pending cache entries once per second (debug only). */
 TASK(can_cache_summary, TASK_STACK_512) {
-  telemetry_wait_ready();
   CanMessageCache *caches[] = { g_can_cache_high, g_can_cache_medium, g_can_cache_low };
   const size_t sizes[] = { g_can_cache_high_size, g_can_cache_medium_size, g_can_cache_low_size };
   static const char *prio_str[] = { "HIGH  ", "MEDIUM", "LOW   " };

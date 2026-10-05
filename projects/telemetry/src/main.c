@@ -68,11 +68,11 @@ Ws22MotorCanConfig ws22_config = {
   .ws22_status_info_enabled = true,
   .ws22_bus_measurement_enabled = true,
   .ws22_velocity_measurement_enabled = true,
-  .ws22_phase_current_enabled = false,
-  .ws22_motor_voltage_enabled = false,
-  .ws22_motor_current_enabled = false,
-  .ws22_motor_back_emf_enabled = false,
-  .ws22_rail_15v_enabled = false,
+  .ws22_phase_current_enabled = true,
+  .ws22_motor_voltage_enabled = true,
+  .ws22_motor_current_enabled = true,
+  .ws22_motor_back_emf_enabled = true,
+  .ws22_rail_15v_enabled = true,
   .ws22_temperature_enabled = true,
   .ws22_drive_cmd_enabled = true,
 };
@@ -80,61 +80,60 @@ Ws22MotorCanConfig ws22_config = {
 float roll = 0;
 float pitch = 0;
 float yaw = 0;
-static void s_prepare_filter(void) {
+static volatile bool s_telemetry_ready;
+
+/* SD card writes might lowk be slow, putting in another task for now */
+TASK(telemetry_sd_logger, TASK_STACK_2048) {
+  while (true) {
+    StatusCode status = telemetry_log_sd();
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("SD snapshot failed: %u\n", (unsigned)status);
+    }
+    vTaskDelay(pdMS_TO_TICKS(1000U));
+  }
+}
+
+static void __attribute__((unused)) s_prepare_filter(void) {
   for (float i = 0; i < 1000; i++) {
     imu_filter(0.05, 0.05, 0.9, 0, 0, 0);
     eulerAngles(q_est, &roll, &pitch, &yaw);
   }
 }
 
-void run_1000hz_cycle() {}
+void pre_loop_init() {
+  GpioAddress sd_cs = GPIO_TELEMETRY_SD_CS;
+  GpioAddress imu_cs = GPIO_TELEMETRY_IMU_CS;
 
-void run_10hz_cycle() {
-  run_can_tx_medium();
-  static uint32_t failures;
-  StatusCode status = imu_run();
-  if (status != STATUS_CODE_OK && (++failures == 1U || failures % 100U == 0U)) {
-    LOG_DEBUG("IMU sample failed: %u (count %lu)\n", (unsigned)status, (unsigned long)failures);
-  }
-}
-
-void run_1hz_cycle() {
-  run_can_tx_slow();
-}
-
-/* Device delays and calibration execute only after the scheduler starts. */
-TASK(telemetry_startup, TASK_STACK_2048) {
-  const char *stage = "shared SPI";
-  /* Both CS outputs must be inactive before configuring or clocking SPI2. */
-  GpioAddress sd_cs = GPIO_TELEMETRY_SD_CS, imu_cs = GPIO_TELEMETRY_IMU_CS;
   StatusCode status = gpio_init_pin(&sd_cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) goto fail;
   status = gpio_init_pin(&imu_cs, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   if (status != STATUS_CODE_OK) goto fail;
-  // status = spi_init(bmi323_settings.spi_port, &bmi323_settings.spi_settings);
-  // if (status != STATUS_CODE_OK) goto fail;
-  stage = "WS22";
+
   status = ws22_motor_can_init(&ws22_storage, &ws22_config);
   if (status != STATUS_CODE_OK) goto fail;
   telemetry_storage.ws22_storage = &ws22_storage;
-  stage = "devices/storage";
   status = telemetry_init(&telemetry_storage, &telemetry_config, &bmi323_storage, &can_storage);
   if (status != STATUS_CODE_OK) goto fail;
-  stage = "filter preparation";
-  s_prepare_filter();
-  stage = "radio tasks";
-  status = xb_transmit_init(&telemetry_storage, &telemetry_config);
+  // s_prepare_filter();
+  // xb_transmit_init(&telemetry_storage, &telemetry_config);
+  status = tasks_init_task(telemetry_sd_logger, TASK_PRIORITY(1), NULL);
   if (status != STATUS_CODE_OK) goto fail;
-  stage = "master tasks";
-  status = init_master_tasks();
-  if (status != STATUS_CODE_OK) goto fail;
-  LOG_DEBUG("Telemetry ready; startup stack free: %lu entries\n", (unsigned long)uxTaskGetStackHighWaterMark(NULL));
-  telemetry_set_ready();
-  vTaskDelete(NULL);
+  s_telemetry_ready = true;
   return;
 fail:
-  LOG_DEBUG("Telemetry startup failed at %s: %u; reboot after correction\n", stage, (unsigned)status);
-  vTaskDelete(NULL);
+  LOG_DEBUG("Telemetry initialization failed: %u\n", (unsigned)status);
+}
+
+void run_1000hz_cycle() {
+  if (s_telemetry_ready) run_can_rx_all();
+}
+
+void run_10hz_cycle() {
+  if (s_telemetry_ready) run_can_tx_medium();
+}
+
+void run_1hz_cycle() {
+  if (s_telemetry_ready) run_can_tx_slow();
 }
 
 #ifdef MS_PLATFORM_X86
@@ -144,10 +143,14 @@ int main(int argc, char *argv[]) {
 #else
 int main() {
 #endif
-  if (mcu_init() != STATUS_CODE_OK) return 1;
+  mcu_init();
+  tasks_init();
   log_init();
-  if (tasks_init() != STATUS_CODE_OK || telemetry_readiness_init() != STATUS_CODE_OK) return 1;
-  if (tasks_init_task(telemetry_startup, TASK_PRIORITY(3), NULL) != STATUS_CODE_OK) return 1;
+
+  init_master_tasks();
+
   tasks_start();
-  return 1; /* The embedded scheduler should never return. */
+
+  LOG_DEBUG("exiting main?");
+  return 0;
 }

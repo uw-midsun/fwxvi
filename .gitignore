@@ -60,7 +60,3 @@ libraries/lvgl9/src/
 # Claude
 CLAUDE.md
 .claude/
-projects/telemetry/todo.md
-projects/telemetry/flash_handoff.md
-projects/telemetry/todo_optional.md
-projects/telemetry/todo_solutions.md

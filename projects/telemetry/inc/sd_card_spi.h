@@ -41,7 +41,7 @@ typedef enum {
   SD_SPI_BAUDRATE_10MHZ,        /**< 10 MHz */
   SD_SPI_BAUDRATE_20MHZ,        /**< 20 MHz */
   SD_SPI_BAUDRATE_40MHZ,        /**< 40 MHz */
-  NUM_SD_SPI_BAUDRATES          /**< Number of baudrate options */
+  NUM_SD_SPI_BAUDRATES
 } SdSpiBaudrate;
 
 /**
@@ -131,6 +131,7 @@ StatusCode sd_spi_exchange(SdSpiPort spi, uint8_t *tx_data, size_t tx_len, uint8
 
 /**
  * @brief   Set the CS (chip select) GPIO state
+ * @details Releasing CS sends eight trailing clocks with MOSI high.
  * @param   spi SPI port
  * @param   state Desired CS state (GPIO_STATE_LOW to select)
  * @return  STATUS_CODE_OK on success

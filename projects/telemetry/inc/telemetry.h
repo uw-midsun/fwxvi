@@ -39,6 +39,11 @@ typedef struct {
   SdSpiSettings sd_spi_settings;          /**< SPI Settings for SD card interface */
 } TelemetryConfig;
 
+typedef struct {
+  uint32_t reboot_number;
+  uint32_t reserved;
+} RebootCount;
+
 /**
  * @brief   Telemetry storage
  */
@@ -49,6 +54,7 @@ typedef struct {
   CanStorage *can_storage;                        /**< Pointer to CAN storage struct, to be used in xb_transmit */
   Ws22MotorCanStorage *ws22_storage;              /**< Pointer to WS22 parsed data; populated before telemetry_init */
   TelemetryConfig *config;                        /**< Pointer to the telemetry configuration data */
+  RebootCount reboot_number;                      /**< Number of times car has been rebooted */
 } TelemetryStorage;
 
 /**
@@ -62,8 +68,10 @@ typedef struct {
  */
 StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage, CanStorage *can_storage);
 
-/** @} */
+/**
+ * @brief  Add all CAN signals to logs_<reboot_number>.csv
+ * @return STATUS_CODE_OK if successful, other stuff if not.
+ */
+StatusCode telemetry_log_sd(void);
 
-StatusCode telemetry_readiness_init(void);
-void telemetry_wait_ready(void);
-void telemetry_set_ready(void);
+/** @} */

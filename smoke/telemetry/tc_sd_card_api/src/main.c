@@ -35,7 +35,7 @@ SdSpiSettings sd_spi_test_settings = { .baudrate = SD_SPI_BAUDRATE_312_5KHZ,
 
 SdSpiPort spi = SD_SPI_PORT_2;
 
-static const char s_test_msg[] = "Hello World!";
+static const char s_test_msg[] = "testing, test";
 #define TEST_MSG_LEN (sizeof(s_test_msg) - 1U)
 
 TASK(sd_card_api, TASK_STACK_1024) {
@@ -128,7 +128,7 @@ TASK(sd_card_api, TASK_STACK_1024) {
     LOG_DEBUG("f_unmount() failed, result = %d\r\n", result);
     goto error;
   }
-  LOG_DEBUG("Workarea unmounted\r\n");
+  LOG_DEBUG("Work area unmounted\r\n");
 
   while (true) {
     LOG_DEBUG("sd_card_api PASS\r\n");

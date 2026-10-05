@@ -63,13 +63,8 @@ static StatusCode s_get_chip_id(uint8_t *id);
  ************************************************************************************************/
 
 /* Command/address and receive phases share one CS assertion. */
-static StatusCode s_exchange(const uint8_t *tx, size_t tx_len, uint8_t *rx, size_t rx_len) {
-  SpiPort port = imu_storage->settings->spi_port;
-  status_ok_or_return(spi_transaction_begin(port, &imu_storage->settings->spi_settings));
-  StatusCode result = spi_transaction_transfer(port, tx, NULL, tx_len, DUMMY_BYTE, 100U);
-  if (result == STATUS_CODE_OK && rx_len) result = spi_transaction_transfer(port, NULL, rx, rx_len, DUMMY_BYTE, 100U);
-  StatusCode end = spi_transaction_end(port, false);
-  return result != STATUS_CODE_OK ? result : end;
+static StatusCode s_exchange(uint8_t *tx, size_t tx_len, uint8_t *rx, size_t rx_len) {
+  return spi_exchange(imu_storage->settings->spi_port, tx, tx_len, rx, rx_len);
 }
 
 static StatusCode s_get_register(Bmi323Registers reg, uint16_t *data) {

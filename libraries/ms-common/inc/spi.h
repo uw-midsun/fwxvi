@@ -184,12 +184,3 @@ size_t spi_get_tx_num_bytes(SpiPort spi);
 #endif
 
 /** @} */
-
-/* Task-context transactions. Register devices before traffic. Every successful
- * begin must be paired with end by the same task, including on transfer error.
- * Transfers are full duplex; NULL TX sends filler, NULL RX discards input. */
-StatusCode spi_register_device(SpiPort spi, const SpiSettings *settings);
-StatusCode spi_transaction_begin(SpiPort spi, const SpiSettings *settings);
-StatusCode spi_transaction_transfer(SpiPort spi, const uint8_t *tx, uint8_t *rx, size_t length, uint8_t filler, uint32_t timeout_ms);
-StatusCode spi_transaction_end(SpiPort spi, bool sd_trailing_clocks);
-StatusCode spi_deselected_clocks(SpiPort spi, const SpiSettings *settings, size_t length);
