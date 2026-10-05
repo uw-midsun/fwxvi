@@ -340,8 +340,8 @@ StatusCode telemetry_log_sd(void) {
   for (size_t i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i) {
     len = snprintf(scratch_buffer, sizeof(scratch_buffer), "%lu,%s,%.10g\r\n", timestamp_ms, signals[i].name, signals[i].value);
     status = s_write_csv(&fd, len);
-  
-    if (status == STATUS_CODE_OK) {
+
+    if (status != STATUS_CODE_OK) {
       break;
     }
   }
