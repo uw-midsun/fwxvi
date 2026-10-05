@@ -375,8 +375,9 @@ static DRESULT sd_card_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
         uint16_t c_size = ((csd[6] & 3U) << 10) | (csd[7] << 2) | (csd[8] >> 6);
         uint8_t mult = ((csd[9] & 3U) << 1) | (csd[10] >> 7);
         sectors = (((uint64_t)c_size + 1U) << (mult + 2U + read_bl_len)) / 512U;
-      } else
+      } else {
         return RES_ERROR;
+      }
       if (!sectors || sectors > UINT32_MAX) return RES_ERROR;
       *(LBA_t *)buff = (LBA_t)sectors;
       return RES_OK;
