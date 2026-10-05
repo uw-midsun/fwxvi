@@ -41,6 +41,8 @@
 
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
+#define INCLUDE_PERSISTENCE 0
+
 static PersistStorage persist_storage;
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
@@ -353,7 +355,9 @@ StatusCode display_backlight_init(SteeringStorage *storage) {
   status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
 
   committed_brightness = BACKLIGHT_DEFAULT_BRIGHTNESS;  // Set default in case if flash page being init for first time
+#if INCLUDE_PERSISTENCE == 1
   status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &committed_brightness, sizeof(committed_brightness), true));
+#endif
   storage->display_data.brightness = committed_brightness;
   status_ok_or_return(display_set_brightness((uint16_t)storage->display_data.brightness, false));
 
@@ -376,7 +380,9 @@ StatusCode display_set_brightness(uint16_t percentage, bool persist) {
   display_data->brightness = percentage;
   if (persist && committed_brightness != display_data->brightness) {
     committed_brightness = display_data->brightness;
+#if INCLUDE_PERSISTENCE == 1
     return persist_commit(&persist_storage);
+#endif
   }
 
   return STATUS_CODE_OK;

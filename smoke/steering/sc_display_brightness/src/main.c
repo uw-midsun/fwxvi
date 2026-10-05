@@ -41,7 +41,7 @@ static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
   status_ok_or_return(display_backlight_init(&s_demo_storage));
-  status_ok_or_return(display_set_brightness(10));
+  status_ok_or_return(display_set_brightness(10, false));
 
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
@@ -86,6 +86,7 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
 TASK(sc_display_brightness, TASK_STACK_1024) {
   uint16_t brightness_pct = 10;       // The AP3032 seems to only work with steps 0%, 5%, and 10%
   bool brightness_increasing = true;  // Even if initial brightness is 100%, loop will immediately go in other direction
+  LOG_DEBUG("Starting at %u%% brightness", brightness_pct);
 
   StatusCode status = ltdc_display_init();
   if (status != STATUS_CODE_OK) {
@@ -93,10 +94,6 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
     delay_ms(1000U);
     return;
   }
-
-  uint16_t brightness_pct = s_demo_storage.display_data.brightness;
-  bool brightness_increasing = true;
-  LOG_DEBUG("Starting at %u%% brightness", brightness_pct);
 
   while (true) {
     // Gives us a rough idea of the current brightness step
@@ -106,7 +103,7 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
       delay_ms(1000U);
     }
 
-    status = display_set_brightness(brightness_pct);
+    status = display_set_brightness(brightness_pct, false);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Brightness set failed: %d", status);
       delay_ms(1000U);
