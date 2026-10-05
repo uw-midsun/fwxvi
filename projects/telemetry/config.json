@@ -13,5 +13,23 @@
         "-Wl,-u,_printf_float"
     ],
     "can": true,
-    "selected_preset": "STM32L433CCU6_legacy_debug"
+    "selected_preset": "STM32L433CCU6_legacy_debug",
+    "mocks": {
+        "test_telemetry_log": [
+            "f_open",
+            "f_write",
+            "f_sync",
+            "f_close",
+            "vTaskSetTimeOutState"
+        ],
+        "test_sd_card_interface": [
+            "sd_spi_init",
+            "sd_spi_set_frequency",
+            "sd_spi_cs_set_state",
+            "sd_spi_rx",
+            "sd_spi_tx",
+            "delay_ms",
+            "xTaskGetTickCount"
+        ]
+    }
 }

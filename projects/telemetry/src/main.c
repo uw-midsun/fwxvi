@@ -8,6 +8,7 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <inttypes.h>
 
 /* Inter-component Headers */
 #include "can.h"
@@ -82,14 +83,27 @@ float pitch = 0;
 float yaw = 0;
 static volatile bool s_telemetry_ready;
 
-/* SD card writes might lowk be slow, putting in another task for now */
+/* Keep SD writes out of the CAN receive callback. */
 TASK(telemetry_sd_logger, TASK_STACK_2048) {
+  uint32_t last_dropped = 0U;
+  TickType_t last_report = xTaskGetTickCount();
   while (true) {
     StatusCode status = telemetry_log_sd();
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("SD snapshot failed: %u\n", (unsigned)status);
+      LOG_DEBUG("CAN logging stopped: %u\n", (unsigned)status);
+      telemetry_log_close();
+      vTaskSuspend(NULL);
     }
-    vTaskDelay(pdMS_TO_TICKS(1000U));
+
+    TickType_t now = xTaskGetTickCount();
+    if ((TickType_t)(now - last_report) >= pdMS_TO_TICKS(1000U)) {
+      uint32_t dropped = telemetry_log_dropped();
+      if (dropped != last_dropped) {
+        LOG_DEBUG("CAN log queue dropped %" PRIu32 " frames total\n", dropped);
+        last_dropped = dropped;
+      }
+      last_report = now;
+    }
   }
 }
 

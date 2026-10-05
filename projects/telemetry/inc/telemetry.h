@@ -21,6 +21,7 @@
 #include "bmi323.h"
 #include "datagram.h"
 #include "sd_card_spi.h"
+#include "telemetry_log.h"
 
 /**
  * @defgroup telemetry
@@ -67,11 +68,5 @@ typedef struct {
  *          STATUS_CODE_INVALID_ARGS if one of the parameters are NULL/incorrect
  */
 StatusCode telemetry_init(TelemetryStorage *telemetry_storage, TelemetryConfig *config, Bmi323Storage *bmi323_storage, CanStorage *can_storage);
-
-/**
- * @brief  Add all CAN signals to logs_<reboot_number>.csv
- * @return STATUS_CODE_OK if successful, other stuff if not.
- */
-StatusCode telemetry_log_sd(void);
 
 /** @} */
