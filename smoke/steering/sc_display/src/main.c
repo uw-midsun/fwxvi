@@ -68,9 +68,7 @@ StatusCode ltdc_display_init() {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
   status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
-  // Using inverted channel to drive backlight, so must invert the duty cycle for intended brightness.
-  // Note: assumes that BACKLIGHT_DEFAULT_BRIGHTNESS <= 100
-  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - BACKLIGHT_DEFAULT_BRIGHTNESS, BACKLIGHT_PWM_CHANNEL, true));
+  status_ok_or_return(display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
 
   return ltdc_init(&settings);
 }

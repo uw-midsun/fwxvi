@@ -40,8 +40,6 @@ static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
 static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 
-StatusCode ltdc_display_set_brightness(uint16_t percentage);
-
 StatusCode ltdc_display_init() {
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
@@ -70,18 +68,8 @@ StatusCode ltdc_display_init() {
   gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
   status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
   status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
-  status_ok_or_return(ltdc_display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
+  status_ok_or_return(display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
   return ltdc_init(&settings);
-}
-
-StatusCode ltdc_display_set_brightness(uint16_t percentage) {
-  if (percentage > 100) {
-    percentage = 100;
-  }
-
-  // We use the inverted channel to drive the backlight, so the duty cycle we run pwm_set_dc
-  // against represents how long the signal is LOW for. As such, we invert it.
-  return pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - percentage, BACKLIGHT_PWM_CHANNEL, true);
 }
 
 StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t square_size) {
@@ -114,7 +102,7 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
   }
 
   while (true) {
-    status = ltdc_display_set_brightness(brightness_pct);
+    status = display_set_brightness(brightness_pct);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Brightness set failed: %d", status);
       delay_ms(1000U);
