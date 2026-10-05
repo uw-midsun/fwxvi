@@ -172,6 +172,14 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
     output_compare_config.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   }
 
+  // We need to make sure that the timer is stopped before we try reconfiguring it,
+  // in case if it's already running. If this doesn't happen, the PWM channel
+  // seems to shut down.
+  if (has_complementary && n_channel_en) {
+    HAL_TIMEx_PWMN_Stop(&s_timer_handle[timer], channel * 4U);
+  }
+  HAL_TIM_PWM_Stop(&s_timer_handle[timer], channel * 4U);
+
   if (HAL_TIM_PWM_ConfigChannel(&s_timer_handle[timer], &output_compare_config, channel * 4U) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }

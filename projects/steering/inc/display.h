@@ -39,8 +39,10 @@
 #define HORIZONTAL_FRONT_PORCH 8
 #define VERTICAL_FRONT_PORCH 8
 
-// AP3032 datasheet mentions a signal frequency of >=25 kHz to avoid audible noise
-#define BACKLIGHT_FREQ_HZ 25000
+// AP3032 datasheet mentions a signal frequency of >=25 kHz to avoid audible noise.
+// After trying the code on the board, looks like 50 kHz minimizes audible noise while
+// providing decent resolution on the brightness.
+#define BACKLIGHT_FREQ_HZ 50000
 #define BACKLIGHT_DEFAULT_BRIGHTNESS 100U
 
 #define BACKLIGHT_PWM_TIMER PWM_TIMER_15

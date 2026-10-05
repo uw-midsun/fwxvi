@@ -41,6 +41,7 @@ static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
   status_ok_or_return(display_backlight_init(&s_demo_storage));
+  status_ok_or_return(display_set_brightness(10));
 
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
@@ -83,6 +84,9 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
 }
 
 TASK(sc_display_brightness, TASK_STACK_1024) {
+  uint16_t brightness_pct = 10;       // The AP3032 seems to only work with steps 0%, 5%, and 10%
+  bool brightness_increasing = true;  // Even if initial brightness is 100%, loop will immediately go in other direction
+
   StatusCode status = ltdc_display_init();
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("LTDC init failed: %d", status);
@@ -90,40 +94,34 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
     return;
   }
 
-  status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Draw failed: %d", status);
-    delay_ms(1000U);
-  }
-
   uint16_t brightness_pct = s_demo_storage.display_data.brightness;
   bool brightness_increasing = true;
   LOG_DEBUG("Starting at %u%% brightness", brightness_pct);
 
   while (true) {
-    status = display_set_brightness(brightness_pct, brightness_pct % 25 == 0);  // No need to extensively cycle flash in smoke
+    // Gives us a rough idea of the current brightness step
+    status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, DISPLAY_HEIGHT / (brightness_pct + 1));
+    if (status != STATUS_CODE_OK) {
+      LOG_DEBUG("Draw failed: %d", status);
+      delay_ms(1000U);
+    }
+
+    status = display_set_brightness(brightness_pct);
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Brightness set failed: %d", status);
       delay_ms(1000U);
     }
 
-    if (brightness_pct % 25 == 0) {
-      LOG_DEBUG("I'm alive, at %u%% brightness", brightness_pct);
-      delay_ms(200U);
-    } else {
-      delay_ms(50U);
-    }
+    delay_ms(500U);
 
-    if (brightness_pct >= 100) {
-      brightness_increasing = false;
-    } else if (brightness_pct == 0) {
-      brightness_increasing = true;
+    if (brightness_pct == 10 || brightness_pct == 0) {
+      brightness_increasing = !brightness_increasing;
     }
 
     if (brightness_increasing) {
-      ++brightness_pct;
+      brightness_pct += 5;
     } else {
-      --brightness_pct;
+      brightness_pct -= 5;
     }
   }
 }
