@@ -23,11 +23,22 @@ TCIXTMA1Storage storage;
 /* Intra-component Headers */
 
 TASK(hydrogen_sensor, TASK_STACK_1024) {
-  tcixtma1_init(&storage, I2C_PORT_2, 0x2E);
-  float conc;
+  
+  // TCI I2C address is 0x36 (datasheet section 10.1.1)
+  tcixtma1_init(&storage, I2C_PORT_2, 0x36);
+  float conc = 0.0f;
 
   while (true) {
-    tcixtma1_get_hydrogen_concentration(&storage, &conc);
+    StatusCode status = tcixtma1_get_hydrogen_concentration(&storage, &conc);
+
+    /* conc is in vol%, smallest sensor unit is 0.01 vol% = 100 ppm (datasheet section 10.2)*/
+    if (status == STATUS_CODE_OK){
+      LOG_DEBUG("Hydrogen concentration: %.2f (vol%%)\n", conc);
+    } else {
+      LOG_DEBUG("Read failed\n");
+    }
+
+    vTaskDelay(100U);
   }
 }
 
