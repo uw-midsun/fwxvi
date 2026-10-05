@@ -1,5 +1,4 @@
 import json
-import shutil
 import subprocess
 import serial  # pip install pyserial
 import glob
@@ -9,20 +8,9 @@ from sys import platform
 
 # OpenOCD configuration constants
 OPENOCD = 'openocd'
-# Installed OpenOCD knows its own script directory; allow an explicit override.
-OPENOCD_SCRIPT_DIR = os.environ.get('OPENOCD_SCRIPTS')
+OPENOCD_SCRIPT_DIR = '/usr/local/share/openocd/scripts/'
 PROBE = 'stlink'
 PLATFORM_DIR = 'platform'
-
-
-def get_openocd_command():
-    executable = shutil.which(OPENOCD)
-    if executable is None:
-        raise RuntimeError("OpenOCD is missing. Install it with: sudo apt-get install openocd")
-    command = ["sudo", executable]
-    if OPENOCD_SCRIPT_DIR:
-        command.extend(["-s", OPENOCD_SCRIPT_DIR])
-    return command
 
 
 def get_device_params_mode(flash_type):
@@ -67,19 +55,13 @@ def flash_run(entry, hardware, flash_type):
     '''Flash and run file, return a pyserial object which monitors the device serial output'''
     serialData = None
 
-    openocd_command = get_openocd_command()
-    serial_path = os.environ.get('FWXVI_SERIAL_PORT')
-    serial_devices = sorted(glob.glob('/dev/serial/by-id/*'))
-    if serial_path is None and len(serial_devices) == 1:
-        serial_path = serial_devices[0]
-    if serial_path:
-        try:
-            serialData = serial.Serial(serial_path, 115200)
-        except (serial.SerialException, OSError) as error:
-            print(f"Serial monitor unavailable: {error}. SWD flashing will still be attempted.")
-    else:
-        print("No unique serial device found; serial monitoring is disabled. "
-              "SWD flashing uses the ST-Link separately. Set FWXVI_SERIAL_PORT to select a log port.")
+    try:
+        output = subprocess.check_output(["ls", "/dev/serial/by-id/"])
+        device_path = f"/dev/serial/by-id/{str(output, 'ASCII').strip()}"
+        serialData = serial.Serial(device_path, 115200)
+    except:
+        print()
+        print("Flashing requires a controller board to be connected, use --platform=x86 for x86 targets")
 
     paths = get_hardware_paths(hardware, flash_type)
 
@@ -104,7 +86,9 @@ def flash_run(entry, hardware, flash_type):
         'shutdown'
     )
 
-    openocd_cmd = openocd_command + [
+    openocd_cmd = [
+        "sudo", OPENOCD,
+        "-s", OPENOCD_SCRIPT_DIR,
         "-f", f"interface/{PROBE}.cfg",
         "-f", "target/stm32l4x.cfg",
         "-c", f"stm32l4x.cpu configure -rtos FreeRTOS; {tcl_commands_string}"
@@ -115,8 +99,6 @@ def flash_run(entry, hardware, flash_type):
         subprocess.run(openocd_cmd, check=True)
         print("Flash complete")
     except subprocess.CalledProcessError as e:
-        if serialData is not None:
-            serialData.close()
         print(f"Flash failed with error code {e.returncode}")
         print(f"Command: {e.cmd}")
         print(f"Stderr: {e.stderr.decode() if e.stderr else 'N/A'}")
@@ -141,7 +123,9 @@ def gdb_run(elf_path, hardware, flash_type):
     """
     paths = get_hardware_paths(hardware, flash_type)
 
-    openocd_cmd = get_openocd_command() + [
+    openocd_cmd = [
+        "sudo", OPENOCD,
+        "-s", OPENOCD_SCRIPT_DIR,
         "-f", f"interface/{PROBE}.cfg",
         "-f", "target/stm32l4x.cfg",
         "-f", paths['device_params'],
