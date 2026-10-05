@@ -35,12 +35,13 @@
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
+static SteeringStorage s_demo_storage = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((aligned(32)));
-static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
-static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
+  status_ok_or_return(display_backlight_init(&s_demo_storage));
+
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
   LtdcTimingConfig timing_config = {
@@ -65,10 +66,6 @@ StatusCode ltdc_display_init() {
   settings.timing = timing_config;
   settings.gpio_config = gpio_config;
 
-  gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
-  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
-  status_ok_or_return(display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
   return ltdc_init(&settings);
 }
 
@@ -86,23 +83,25 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
 }
 
 TASK(sc_display_brightness, TASK_STACK_1024) {
-  uint16_t brightness_pct = BACKLIGHT_DEFAULT_BRIGHTNESS;
-  bool brightness_increasing = true;  // Even if initial brightness is 100%, loop will immediately go in other direction
-
   StatusCode status = ltdc_display_init();
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("LTDC init failed: %d", status);
     delay_ms(1000U);
     return;
   }
+
   status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("Draw failed: %d", status);
     delay_ms(1000U);
   }
 
+  uint16_t brightness_pct = s_demo_storage.display_data.brightness;
+  bool brightness_increasing = true;
+  LOG_DEBUG("Starting at %u%% brightness", brightness_pct);
+
   while (true) {
-    status = display_set_brightness(brightness_pct);
+    status = display_set_brightness(brightness_pct, brightness_pct % 25 == 0);  // No need to extensively cycle flash in smoke
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Brightness set failed: %d", status);
       delay_ms(1000U);
@@ -115,8 +114,10 @@ TASK(sc_display_brightness, TASK_STACK_1024) {
       delay_ms(50U);
     }
 
-    if (brightness_pct == 100 || brightness_pct == 0) {
-      brightness_increasing = !brightness_increasing;
+    if (brightness_pct >= 100) {
+      brightness_increasing = false;
+    } else if (brightness_pct == 0) {
+      brightness_increasing = true;
     }
 
     if (brightness_increasing) {

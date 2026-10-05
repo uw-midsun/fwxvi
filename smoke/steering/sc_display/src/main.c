@@ -35,12 +35,13 @@
 #define NUMBER_OF_GREEN_BITS 8
 #define NUMBER_OF_BLUE_BITS 8
 
+static SteeringStorage s_demo_storage = { 0 };
 static uint8_t framebuffer[DISPLAY_WIDTH * DISPLAY_HEIGHT * 2] __attribute__((aligned(32)));
-static GpioAddress s_display_ctrl = GPIO_STEERING_DISPLAY_CTRL;
-static GpioAddress s_display_pwm = GPIO_STEERING_BACKLIGHT;
 static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
+  status_ok_or_return(display_backlight_init(&s_demo_storage));
+
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
   LtdcTimingConfig timing_config = {
@@ -64,11 +65,6 @@ StatusCode ltdc_display_init() {
   settings.clut_size = NUM_COLOR_INDICES;
   settings.timing = timing_config;
   settings.gpio_config = gpio_config;
-
-  gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
-  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
-  status_ok_or_return(display_set_brightness(BACKLIGHT_DEFAULT_BRIGHTNESS));
 
   return ltdc_init(&settings);
 }

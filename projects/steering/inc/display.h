@@ -56,13 +56,22 @@
 StatusCode display_init(SteeringStorage *storage);
 
 /**
+ * @brief   Initialize the display's backlight. This is run as a part of display_init
+ * @param   storage Pointer to the SteeringStorage instance
+ * @return  STATUS_CODE_OK if initialized successfully
+ *          STATUS_CODE_INVALID_ARGS if an invalid parameter is passed in
+ */
+StatusCode display_backlight_init(SteeringStorage *storage);
+
+/**
  * @brief Adjust the brightness of the display
  * @param percentage Percentage to set the display brightness to, between 0 to 100
+ * @param persist Whether the brightness should be persisted in flash memory
  * @return STATUS_CODE_OK if completed successfully
  *         STATUS_CODE_INVALID_ARGS if one of the parameters are incorrect, or
- *          the method is run before the display is initialized
+ *          the method is run before the display backlight is initialized
  */
-StatusCode display_set_brightness(uint16_t percentage);
+StatusCode display_set_brightness(uint16_t percentage, bool persist);
 
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();
