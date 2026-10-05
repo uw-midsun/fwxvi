@@ -9,9 +9,19 @@
  * @author Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
 
+/* Standard library Headers */
+
 /* Inter-component Headers */
 #include "can_msg.h"
+
+/* Intra-component Headers */
 #include "status.h"
+
+/**
+ * @defgroup telemetry_log
+ * @brief    telemetry_log Firmware
+ * @{
+ */
 
 #define TELEMETRY_LOG_QUEUE_SIZE 128U
 
@@ -29,3 +39,5 @@ StatusCode telemetry_log_close(void);
 
 /** @brief Number of frames dropped because the SD logging queue was full */
 uint32_t telemetry_log_dropped(void);
+
+/** @} */

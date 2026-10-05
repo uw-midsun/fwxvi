@@ -243,7 +243,7 @@ static uint32_t s_response_value(const SdResponse *response) {
  *          tldr send 80 clocks via 10 dummy bytes
  */
 static StatusCode s_start_clock(void) {
-  delay_ms(10U);  /* settle */
+  delay_ms(10U); /* settle */
   uint8_t clocks[10];
   memset(clocks, SD_DUMMY_BYTE, sizeof(clocks));
   return sd_spi_tx(s_spi_port, clocks, sizeof(clocks));
@@ -454,16 +454,14 @@ static StatusCode s_read_sector_count(LBA_t *sector_count) {
     uint32_t card_size = ((uint32_t)(csd[7] & 0x3FU) << 16) | ((uint32_t)csd[8] << 8) | csd[9];
 
     sectors = ((uint64_t)card_size + 1U) * 1024U;
-  }
-  else if ((csd[0] & 0xC0U) == 0U) {
+  } else if ((csd[0] & 0xC0U) == 0U) {
     /* Version 2 */
     uint8_t block_length = csd[5] & 0x0FU;
     uint16_t card_size = ((csd[6] & 3U) << 10) | (csd[7] << 2) | (csd[8] >> 6);
     uint8_t multiplier = ((csd[9] & 3U) << 1) | (csd[10] >> 7);
 
     sectors = (((uint64_t)card_size + 1U) << (multiplier + 2U + block_length)) / SD_BLOCK_SIZE;
-  }
-  else {
+  } else {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
