@@ -64,6 +64,7 @@ StatusCode tasks_init_task(Task *task, TaskPriority priority, void *context) {
   task->handle = xTaskCreateStatic(s_task, task->name, task->stack_size, task, priority, task->stack, &task->tcb);
   if (task->handle == NULL) {
     LOG_CRITICAL("Failed to create Task %s\n", task->name);
+    return STATUS_CODE_RESOURCE_EXHAUSTED;
   } else {
     LOG_DEBUG("Create Task %s\n", task->name);
   }

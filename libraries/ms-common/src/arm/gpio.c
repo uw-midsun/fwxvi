@@ -81,11 +81,10 @@ StatusCode gpio_init_pin(const GpioAddress *address, const GpioMode pin_mode, Gp
   GPIO_InitTypeDef init = { .Pin = 1U << (address->pin), .Mode = s_gpio_mode_map[pin_mode], .Pull = gpio_pull, .Speed = GPIO_SPEED_FREQ_HIGH };
 
   GPIO_TypeDef *gpio_port = (GPIO_TypeDef *)(AHB2PERIPH_BASE + (address->port * GPIO_ADDRESS_OFFSET));
-  HAL_GPIO_Init(gpio_port, &init);
-
   if (pin_mode == GPIO_OUTPUT_OPEN_DRAIN || pin_mode == GPIO_OUTPUT_PUSH_PULL) {
     HAL_GPIO_WritePin(gpio_port, init.Pin, init_state);
   }
+  HAL_GPIO_Init(gpio_port, &init);
 
   taskEXIT_CRITICAL();
   return STATUS_CODE_OK;

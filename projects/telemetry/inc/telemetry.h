@@ -12,13 +12,16 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
-#include "queue.h"
+#include "FreeRTOS.h"
+#include "queues.h"
+#include "uart.h"
 #include "ws22_motor_can.h"
 
 /* Intra-component Headers */
 #include "bmi323.h"
 #include "datagram.h"
 #include "sd_card_spi.h"
+#include "telemetry_log.h"
 
 /**
  * @defgroup telemetry
@@ -37,6 +40,11 @@ typedef struct {
   SdSpiSettings sd_spi_settings;          /**< SPI Settings for SD card interface */
 } TelemetryConfig;
 
+typedef struct {
+  uint32_t reboot_number;
+  uint32_t reserved;
+} RebootCount;
+
 /**
  * @brief   Telemetry storage
  */
@@ -47,6 +55,7 @@ typedef struct {
   CanStorage *can_storage;                        /**< Pointer to CAN storage struct, to be used in xb_transmit */
   Ws22MotorCanStorage *ws22_storage;              /**< Pointer to WS22 parsed data; populated before telemetry_init */
   TelemetryConfig *config;                        /**< Pointer to the telemetry configuration data */
+  RebootCount reboot_number;                      /**< Number of times car has been rebooted */
 } TelemetryStorage;
 
 /**
