@@ -320,10 +320,10 @@ StatusCode xb_transmit_init(TelemetryStorage *storage, TelemetryConfig *config) 
 
   s_telemetry_storage = storage;
   s_telemetry_storage->config = config;
-  tasks_init_task(can_cache_updater, TASK_PRIORITY(2), NULL);
-  tasks_init_task(can_cache_scheduler, TASK_PRIORITY(2), NULL);
+  status_ok_or_return(tasks_init_task(can_cache_updater, TASK_PRIORITY(2), NULL));
+  status_ok_or_return(tasks_init_task(can_cache_scheduler, TASK_PRIORITY(2), NULL));
 #if (LOG_DEBUG_SUMMARY == 1)
-  tasks_init_task(can_cache_summary, TASK_PRIORITY(1), NULL);
+  status_ok_or_return(tasks_init_task(can_cache_summary, TASK_PRIORITY(1), NULL));
 #endif
 
   return STATUS_CODE_OK;
