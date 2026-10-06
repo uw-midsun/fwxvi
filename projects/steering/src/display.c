@@ -25,6 +25,7 @@
 #include "gui_widgets.h"
 #include "log.h"
 #include "ltdc.h"
+#include "persist.h"
 #include "pwm.h"
 #include "status.h"
 #include "tasks.h"
@@ -38,8 +39,14 @@
 #include "steering_getters.h"
 #include "steering_hw_defs.h"
 
+#define LAST_PAGE (NUM_FLASH_PAGES - 1)
+
+#define INCLUDE_PERSISTENCE 1
+
+static PersistStorage persist_storage;
 static SteeringStorage *steering_storage = NULL;
 static DisplayData *display_data = NULL;
+static uint32_t committed_brightness = BACKLIGHT_DEFAULT_BRIGHTNESS;  // 32 bit so that the data we write is word-aligned
 
 /* BPS-fault takeover lifecycle. Instead of a dedicated fault screen (extra RAM), a live BPS fault
  * reuses the pedal-calib screen with fault styling forced on. */
@@ -298,12 +305,8 @@ TASK(display_lvgl_task, TASK_STACK_2048) {
 }
 
 StatusCode display_init(SteeringStorage *storage) {
-  if (storage == NULL) {
-    return STATUS_CODE_INVALID_ARGS;
-  }
-
-  steering_storage = storage;
-  display_data = &(steering_storage->display_data);
+  // Handles setting steering_storage / display_data
+  status_ok_or_return(display_backlight_init(storage));
 
   LtdcTimingConfig timing_config = {
     .hsync = HORIZONTAL_SYNC_WIDTH, .vsync = VERTICAL_SYNC_WIDTH, .hbp = HORIZONTAL_BACK_PORCH, .vbp = VERTICAL_BACK_PORCH, .hfp = HORIZONTAL_FRONT_PORCH, .vfp = VERTICAL_FRONT_PORCH
@@ -327,9 +330,6 @@ StatusCode display_init(SteeringStorage *storage) {
   settings.timing = timing_config;
   settings.gpio_config = gpio_config;
 
-  gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-  gpio_init_pin(&s_display_pwm, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
-
 #ifdef MS_PLATFORM_X86
   status_ok_or_return(tasks_init_task(display_lvgl_task, TASK_PRIORITY(2), NULL));
 #else
@@ -339,6 +339,53 @@ StatusCode display_init(SteeringStorage *storage) {
 
   LOG_DEBUG("LVGL display initialized\r\n");
 #endif
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_backlight_init(SteeringStorage *storage) {
+  if (storage == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  steering_storage = storage;
+  display_data = &(steering_storage->display_data);
+
+  gpio_init_pin(&s_display_ctrl, GPIO_OUTPUT_PUSH_PULL, GPIO_STATE_HIGH);
+  status_ok_or_return(gpio_init_pin_af(&s_display_pwm, GPIO_ALTFN_PUSH_PULL, BACKLIGHT_GPIO_AF));
+  status_ok_or_return(pwm_init_hz(BACKLIGHT_PWM_TIMER, BACKLIGHT_FREQ_HZ));
+
+  committed_brightness = BACKLIGHT_DEFAULT_BRIGHTNESS;  // Set default in case if flash page being init for first time
+#if INCLUDE_PERSISTENCE == 1
+  status_ok_or_return(flash_init());
+  status_ok_or_return(persist_init(&persist_storage, LAST_PAGE, &committed_brightness, sizeof(committed_brightness), true));
+#endif
+  storage->display_data.brightness = committed_brightness;
+  status_ok_or_return(display_set_brightness((uint16_t)storage->display_data.brightness, false));
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_set_brightness(uint16_t percentage, bool persist) {
+  if (display_data == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+
+  if (percentage > 100) {
+    percentage = 100;
+  }
+
+  // We use the inverted channel to drive the backlight, so the duty cycle we run pwm_set_dc
+  // against represents how long the signal is LOW for. As such, we invert it.
+  status_ok_or_return(pwm_set_dc(BACKLIGHT_PWM_TIMER, 100U - percentage, BACKLIGHT_PWM_CHANNEL, true));
+
+  display_data->brightness = percentage;
+  if (persist && committed_brightness != display_data->brightness) {
+    committed_brightness = display_data->brightness;
+#if INCLUDE_PERSISTENCE == 1
+    return persist_commit(&persist_storage);
+#endif
+  }
+
   return STATUS_CODE_OK;
 }
 

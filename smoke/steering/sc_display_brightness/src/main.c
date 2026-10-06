@@ -1,7 +1,7 @@
 /************************************************************************************************
  * @file   main.c
  *
- * @brief  Smoke test for sc_display (Cycles through different checkerboard colors)
+ * @brief  Smoke test for sc_display_brightness (Cycles through backlight brightness levels)
  *
  * @date   2026-01-12
  * @author Midnight Sun Team #24 - MSXVI
@@ -41,6 +41,7 @@ static LtdcSettings settings = { 0 };
 
 StatusCode ltdc_display_init() {
   status_ok_or_return(display_backlight_init(&s_demo_storage));
+  status_ok_or_return(display_set_brightness(10, false));
 
   // From: https://www.buydisplay.com/download/ic/ST7282.pdf
   // TODO move values to macros
@@ -82,36 +83,42 @@ StatusCode draw_checkerboard(ColorIndex color1, ColorIndex color2, uint16_t squa
   return ltdc_draw();
 }
 
-TASK(sc_display, TASK_STACK_1024) {
+TASK(sc_display_brightness, TASK_STACK_1024) {
+  uint16_t brightness_pct = 10;       // The AP3032 seems to only work with steps 0%, 5%, and 10%
+  bool brightness_increasing = true;  // Even if initial brightness is 100%, loop will immediately go in other direction
+  LOG_DEBUG("Starting at %u%% brightness", brightness_pct);
+
   StatusCode status = ltdc_display_init();
   if (status != STATUS_CODE_OK) {
     LOG_DEBUG("LTDC init failed: %d", status);
     delay_ms(1000U);
     return;
   }
-  status = draw_checkerboard(COLOR_INDEX_YELLOW, COLOR_INDEX_BLUE, 16);
-  if (status != STATUS_CODE_OK) {
-    LOG_DEBUG("Draw failed: %d", status);
-    delay_ms(1000U);
-  }
 
   while (true) {
-    delay_ms(1000);
-    LOG_DEBUG("I'm alive");
-    status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, 16);
+    // Gives us a rough idea of the current brightness step
+    status = draw_checkerboard(COLOR_INDEX_BLACK, COLOR_INDEX_WHITE, DISPLAY_HEIGHT / (brightness_pct + 1));
     if (status != STATUS_CODE_OK) {
       LOG_DEBUG("Draw failed: %d", status);
       delay_ms(1000U);
     }
-    status = draw_checkerboard(COLOR_INDEX_YELLOW, COLOR_INDEX_BLUE, 16);
+
+    status = display_set_brightness(brightness_pct, false);
     if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("Draw failed: %d", status);
+      LOG_DEBUG("Brightness set failed: %d", status);
       delay_ms(1000U);
     }
-    status = draw_checkerboard(COLOR_INDEX_WHITE, COLOR_INDEX_RED, 16);
-    if (status != STATUS_CODE_OK) {
-      LOG_DEBUG("Draw failed: %d", status);
-      delay_ms(1000U);
+
+    delay_ms(500U);
+
+    if (brightness_pct == 10 || brightness_pct == 0) {
+      brightness_increasing = !brightness_increasing;
+    }
+
+    if (brightness_increasing) {
+      brightness_pct += 5;
+    } else {
+      brightness_pct -= 5;
     }
   }
 }
@@ -127,7 +134,7 @@ int main() {
   tasks_init();
   log_init();
 
-  tasks_init_task(sc_display, TASK_PRIORITY(3), NULL);
+  tasks_init_task(sc_display_brightness, TASK_PRIORITY(3), NULL);
 
   tasks_start();
 
