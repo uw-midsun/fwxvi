@@ -1,0 +1,5 @@
+<map id="BpsFaultRecord" name="BpsFaultRecord">
+<area shape="rect" id="Node000001" title="Latched BPS fault state, persisted on the rear controller." alt="" coords="5,93,128,119"/>
+<area shape="rect" id="Node000002" href="$unionBpsFaultData.html" title=" " alt="" coords="13,5,121,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,45,69,93,64,93,64,45"/>
+</map>

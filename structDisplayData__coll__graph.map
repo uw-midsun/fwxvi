@@ -1,0 +1,5 @@
+<map id="DisplayData" name="DisplayData">
+<area shape="rect" id="Node000001" title="Data for the display, CAN RX or internal." alt="" coords="8,93,111,119"/>
+<area shape="rect" id="Node000002" href="$unionBpsFaultData.html" title=" " alt="" coords="5,5,113,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="62,45,62,93,57,93,57,45"/>
+</map>
