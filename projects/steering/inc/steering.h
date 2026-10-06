@@ -108,6 +108,9 @@ typedef struct {
   uint8_t regen_enabled;
   uint8_t precharge_complete;
 
+  uint16_t raw_brake_value; /**< Brake ACD value */
+  uint16_t raw_pedal_value; /**< Pedal ADC value */
+
   TickType_t display_rx_medium_last_start;
   int64_t power_usage;
 } DisplayData;

@@ -24,30 +24,32 @@
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl_widgets.h"
 
-static SpeedometerWidget s_speedometer;
+// static SpeedometerWidget s_speedometer;
 static BarWidget s_throttle_bar;
 static BarWidget s_brake_bar;
 static LabelWidget s_cc_label;
+static LabelWidget s_test_values_label;
+static LabelWidget s_speedometer_label;
 
 static bool s_drive_widgets_initialized;
 
-static StatusCode s_create_speedometer(GuiScreen *screen) {
-  const SpeedometerWidgetConfig speedometer_config = {
-    .size = { .width = 200, .height = 200 },
-    .position = {
-      .type = WIDGET_POSITION_ALIGN,
-      .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 0 },
-    },
-    .total_tick_count = 41,
-    .major_tick_every = 5,
-    .angle_range = 270,
-    .rotation = 135,
-    .ring_width = 20,
-    .font = GUI_BIG_TEXT,
-  };
+// static StatusCode s_create_speedometer(GuiScreen *screen) {
+//   const SpeedometerWidgetConfig speedometer_config = {
+//     .size = { .width = 200, .height = 200 },
+//     .position = {
+//       .type = WIDGET_POSITION_ALIGN,
+//       .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 0 },
+//     },
+//     .total_tick_count = 41,
+//     .major_tick_every = 5,
+//     .angle_range = 270,
+//     .rotation = 135,
+//     .ring_width = 20,
+//     .font = GUI_BIG_TEXT,
+//   };
 
-  return lvgl_widgets_create_speedometer(&s_speedometer, &speedometer_config, screen);
-}
+//   return lvgl_widgets_create_speedometer(&s_speedometer, &speedometer_config, screen);
+// }
 
 static StatusCode s_create_throttle_bar(GuiScreen *screen) {
   const BarWidgetConfig throttle_bar_config = {
@@ -99,6 +101,42 @@ static StatusCode s_create_cc_label(GuiScreen *screen) {
   return lvgl_widgets_create_label(&s_cc_label, &cruise_control_label_config, screen);
 }
 
+static StatusCode s_create_speedometer_label(GuiScreen *screen) {
+  const LabelWidgetConfig speedometer_label_config = {
+    .size = { .width = 100, .height = 80 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 0 } },
+    .label_text = "0 km/h",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_BIG_TEXT,
+    .background_enabled = false,
+    .background_color_id = 0,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+
+  return lvgl_widgets_create_label(&s_speedometer_label, &speedometer_label_config, screen);
+}
+
+static StatusCode s_create_test_values_label(GuiScreen *screen) {
+  const LabelWidgetConfig test_values_label_config = {
+    .size = { .width = 480, .height = 20 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_BOTTOM_MID, .x_offset = 0, .y_offset = 0 } },
+    .label_text = "0 km/h",
+    .alignment = WIDGET_TEXT_ALIGN_CENTER,
+    .text_color_id = GUI_COLOR_TEXT_PRIMARY,
+    .font = GUI_SMALL_TEXT,
+    .background_enabled = false,
+    .background_color_id = 0,
+    .border_enabled = false,
+    .border_color_id = GUI_COLOR_LABEL_BORDER,
+    .border_width = 0,
+  };
+
+  return lvgl_widgets_create_label(&s_test_values_label, &test_values_label_config, screen);
+}
+
 static StatusCode s_drive_widgets_init_screen(GuiScreen *screen) {
   if (screen == NULL) {
     return STATUS_CODE_INVALID_ARGS;
@@ -108,20 +146,23 @@ static StatusCode s_drive_widgets_init_screen(GuiScreen *screen) {
     return STATUS_CODE_ALREADY_INITIALIZED;
   }
 
-  status_ok_or_return(s_create_speedometer(screen));
+  // status_ok_or_return(s_create_speedometer(screen));
   status_ok_or_return(s_create_throttle_bar(screen));
   status_ok_or_return(s_create_brake_bar(screen));
   status_ok_or_return(s_create_cc_label(screen));
+  status_ok_or_return(s_create_test_values_label(screen));
+  status_ok_or_return(s_create_speedometer_label(screen));
 
   s_drive_widgets_initialized = true;
   return STATUS_CODE_OK;
 }
 
 static void s_drive_widgets_deinit(void) {
-  s_speedometer = (SpeedometerWidget){ 0 };
+  s_speedometer_label = (LabelWidget){ 0 };
   s_throttle_bar = (BarWidget){ 0 };
   s_brake_bar = (BarWidget){ 0 };
   s_cc_label = (LabelWidget){ 0 };
+  s_test_values_label = (LabelWidget){ 0 };
   s_drive_widgets_initialized = false;
 }
 
@@ -148,12 +189,23 @@ void gui_drive_screen_deinit(void) {
   gui_widgets_deinit();
 }
 
-StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh) {
+// StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh) {
+//   if (!s_drive_widgets_initialized) {
+//     return STATUS_CODE_UNINITIALIZED;
+//   }
+
+//   return lvgl_widgets_set_speed(&s_speedometer, speed_kmh);
+// }
+
+StatusCode gui_drive_screen_widget_set_speed_label(int16_t speed_kmh) {
   if (!s_drive_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
-  return lvgl_widgets_set_speed(&s_speedometer, speed_kmh);
+  char text_buffer[LABEL_MAX_CHARS];
+  snprintf(text_buffer, sizeof(text_buffer), "%d", speed_kmh);
+
+  return lvgl_widgets_set_label_text(&s_speedometer_label, text_buffer);
 }
 
 StatusCode gui_drive_screen_widget_set_throttle_bar(uint8_t percent) {
@@ -198,6 +250,18 @@ StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_km
 StatusCode gui_widgets_set_brake_bar_color(GuiColorId color_id) {
   return lvgl_widgets_set_bar_color(&s_brake_bar, color_id);
 }
+
+StatusCode gui_drive_screen_widget_set_test_label(int16_t aux_current, int16_t pcs_current, uint16_t raw_pedal_value, uint16_t raw_brake_value) {
+  if (!s_drive_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  char text_buffer[LABEL_MAX_CHARS];
+
+  snprintf(text_buffer, sizeof(text_buffer), "Aux: %dA | PCS: %dA | accel: %u | brake: %u", aux_current / 1000, , pcs_current / 1000, raw_pedal_value, raw_brake_value);
+
+  return lvgl_widgets_set_label_text(&s_test_values_label, text_buffer);
+}
 #else
 
 StatusCode gui_drive_screen_init(GuiScreen *screen) {
@@ -207,7 +271,12 @@ StatusCode gui_drive_screen_init(GuiScreen *screen) {
 
 void gui_drive_screen_deinit(void) {}
 
-StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh) {
+// StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh) {
+//   (void)speed_kmh;
+//   return STATUS_CODE_OK;
+// }
+
+StatusCode gui_drive_screen_widget_set_speed_label(int16_t speed_kmh) {
   (void)speed_kmh;
   return STATUS_CODE_OK;
 }
@@ -230,6 +299,14 @@ StatusCode gui_drive_screen_widget_set_brake_bar_color(GuiColorId color_id) {
 StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled) {
   (void)cruise_control_speed_kmh;
   (void)is_cc_enabled;
+  return STATUS_CODE_OK;
+}
+
+StatusCode gui_drive_screen_widget_set_test_label(int16_t aux_current, int16_t pcs_current, uint16_t raw_pedal_value, uint16_t raw_brake_value) {
+  (void)aux_current;
+  (void)pcs_current;
+  (void)raw_brake_value;
+  (void)raw_pedal_value;
   return STATUS_CODE_OK;
 }
 

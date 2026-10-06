@@ -235,7 +235,7 @@ static StatusCode s_render_gui_step(void) {
   }
 
   if (current_screen == GUI_SCREEN_DRIVE) {
-    status_ok_or_return(gui_drive_screen_widget_set_speed(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
+    status_ok_or_return(gui_drive_screen_widget_set_speed_label(steering_storage->ws22_motor_can_storage->telemetry.vehicle_velocity_kph));
     status_ok_or_return(gui_drive_screen_widget_set_throttle_bar(display_data->pedal_percentage));
     status_ok_or_return(gui_drive_screen_widget_set_brake_bar(display_data->brake_percentage));
     if (steering_storage->display_data.drive_state == VEHICLE_DRIVE_STATE_REGEN) {
@@ -244,6 +244,7 @@ static StatusCode s_render_gui_step(void) {
       gui_widgets_set_brake_bar_color(GUI_COLOR_BRAKE_FILL);
     }
     status_ok_or_return(gui_drive_screen_widget_set_cc_speed(steering_storage->cruise_control_target_speed_kmh, steering_storage->cruise_control_enabled));
+    status_ok_or_return(gui_drive_screen_widget_set_test_label(display_data->aux_current, display_data->dcdc_current, display_data->raw_pedal_value, display_data->raw_brake_value));
 
   } else if (current_screen == GUI_SCREEN_PACK_VOLTAGE) {
     for (uint8_t i = 0; i < 36; ++i) status_ok_or_return(gui_pack_screen_widget_set_pack_voltage(i, display_data->cell_voltages[i]));
@@ -383,6 +384,9 @@ StatusCode display_rx_medium() {
   display_data->brake_percentage = (uint8_t)get_drive_status_brake_percentage();
   display_data->drive_state = (VehicleDriveState)get_drive_status_state_data_drive_state();
 
+  display_data->raw_brake_value = get_pedal_calib_status_brake_pedal_raw_adc();
+  display_data->raw_pedal_value = get_pedal_calib_status_accel_pedal_raw_adc();
+
   display_data->bps_fault = get_rear_controller_status_triggers_bps_fault();
   display_data->bps_fault_cell = get_rear_controller_status_triggers_cell_at_fault();
   display_data->bps_fault_live = (bool)get_rear_controller_status_triggers_bps_fault_live();
@@ -392,6 +396,8 @@ StatusCode display_rx_medium() {
 
   display_data->aux_voltage = (int16_t)get_power_input_stats_input_aux_voltage();
   display_data->aux_current = (int16_t)get_power_input_stats_input_aux_current();
+
+  display_data->dcdc_current = (int16_t)get_power_input_stats_input_dcdc_current();
 
   display_data->pack_voltage = get_battery_stats_A_pack_voltage_v();
   display_data->pack_current = get_battery_stats_B_pack_current_a();

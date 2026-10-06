@@ -42,6 +42,7 @@ StatusCode brake_pedal_run() {
 
   uint16_t adc_reading = s_brake_pedal_storage.calibration_data.lower_value;
   adc_read_raw(&s_brake_gpio, &adc_reading);
+  set_pedal_calib_status_brake_pedal_raw_adc(adc_reading);
 
   float calculated_reading = ((float)adc_reading - (float)s_brake_pedal_storage.calibration_data.lower_value) /
                              ((float)s_brake_pedal_storage.calibration_data.upper_value - (float)s_brake_pedal_storage.calibration_data.lower_value);

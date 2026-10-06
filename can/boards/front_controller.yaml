@@ -80,3 +80,7 @@ Messages:
     signals:
       status:
         length: 8
+      brake_pedal_raw_adc:
+        length: 16
+      accel_pedal_raw_adc:
+        length: 16

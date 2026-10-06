@@ -38,12 +38,19 @@ StatusCode gui_drive_screen_init(GuiScreen *screen);
  */
 void gui_drive_screen_deinit(void);
 
+// /**
+//  * @brief   Update the speedometer needle
+//  * @param   speed_kmh Current speed in km/h
+//  * @return  STATUS_CODE_OK on success, error otherwise
+//  */
+// StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh);
+
 /**
- * @brief   Update the speedometer needle
- * @param   speed_kmh Current speed in km/h
+ * @brief   Update the speedometer
+ * @param   speed_kmh Current speed
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_drive_screen_widget_set_speed(int16_t speed_kmh);
+StatusCode gui_drive_screen_widget_set_speed_label(int16_t speed_kmh);
 
 /**
  * @brief   Update the vertical throttle percentage bar
@@ -73,6 +80,14 @@ StatusCode gui_drive_screen_widget_set_brake_bar_color(GuiColorId color_id);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode gui_drive_screen_widget_set_cc_speed(uint16_t cruise_control_speed_kmh, bool is_cc_enabled);
+
+/**
+ * @brief   Update the label with test values
+ * @param   aux_current The aux bat current in mA
+ * @param   pcs_current The dc_dc current in mA
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_drive_screen_widget_set_test_label(int16_t aux_current, int16_t pcs_current, uint16_t raw_pedal_value, uint16_t raw_brake_value);
 
 /**
  * @brief   Update the vertical brake percentage bar color
