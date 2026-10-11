@@ -164,11 +164,9 @@ StatusCode cruise_control_run_medium_cycle() {
     if (steering_storage->cruise_control_enabled) {
       buzzer_play_cruise_control_disable();
       steering_storage->cruise_control_enabled = false;
-      return STATUS_CODE_OK;
     } else {
       buzzer_play_cruise_control_enable();
       steering_storage->cruise_control_enabled = true;
-      return STATUS_CODE_OK;
     }
 
     // CAN TX
