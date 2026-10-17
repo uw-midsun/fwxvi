@@ -55,7 +55,7 @@ StatusCode front_controller_state_manager_step(FrontControllerEvent event);
 
 /**
  * @brief   Get current state.
- * @return  Current front controller state (see #FrontControllerState)
+ * @return  Current front controller state (see #VehicleDriveState)
  */
 VehicleDriveState front_controller_state_manager_get_state(void);
 

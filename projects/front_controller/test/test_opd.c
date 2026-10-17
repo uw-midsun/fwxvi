@@ -91,7 +91,7 @@ void test_opd_braking(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
 }
 
@@ -122,7 +122,7 @@ void test_opd_regen_no_limiting(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.15f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
 }
 
@@ -156,7 +156,7 @@ void test_opd_regen_partial_limiting(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.075f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
 }
 
@@ -187,7 +187,7 @@ void test_opd_regen_full_limiting(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
 }
 
@@ -218,7 +218,7 @@ void test_opd_regen_no_expected_limiting(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
 
   // Simulate accelerating with max cell voltage
@@ -244,7 +244,7 @@ void test_opd_regen_no_expected_limiting(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
 }
 
@@ -271,7 +271,7 @@ void test_opd_driving(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.712f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.76f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(0, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(0, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_DRIVING, mock_storage.opd_storage->drive_state);
 }
 
@@ -293,7 +293,7 @@ void test_opd_deadzone(void) {
    */
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, mock_storage.accel_pedal_storage->accel_percentage);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.75f, mock_storage.accel_percentage);
-  TEST_ASSERT_EQUAL(1, mock_storage.brake_enabled);
+  TEST_ASSERT_EQUAL(1, mock_storage.brake_state);
   TEST_ASSERT_EQUAL(STATE_BRAKING, mock_storage.opd_storage->drive_state);
 }
 

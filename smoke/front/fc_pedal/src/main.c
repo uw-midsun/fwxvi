@@ -24,6 +24,7 @@
 
 #include "accel_pedal.h"
 #include "brake_pedal.h"
+#include "ws22_motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -62,7 +63,7 @@ TASK(display_pedal_stats, TASK_STACK_1024) {
   delay_ms(1000U);
 
   while (true) {
-    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_enabled);
+    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_state);
     delay_ms(100U);
   }
 }

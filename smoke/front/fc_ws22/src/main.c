@@ -48,7 +48,7 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
 
   // Step 1: Check if the front controller can be initialized
   status = front_controller_init(&front_controller_storage, &front_controller_config, &ws22_motor_can_config);
-  front_controller_storage.brake_enabled = false;
+  front_controller_storage.brake_state = false;
 
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\n\r");
@@ -64,7 +64,7 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
     // opd_run();
     motor_can_update_target_current_velocity();
     run_can_tx_fast();
-    ws22_motor_can_transmit_drive_command();
+    motor_can_transmit_drive_command();
     delay_ms(1U);
   }
 }
@@ -100,7 +100,7 @@ TASK(display_ws22_tx_data, TASK_STACK_1024) {
   float phase_b_current;
   float phase_c_current;
   float rail_15v_supply;
-  float vehicle_velocity;
+  float vehicle_velocity_kph;
   float voltage_d;
   float voltage_q;
 
@@ -121,7 +121,7 @@ TASK(display_ws22_tx_data, TASK_STACK_1024) {
     phase_b_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_b_current;
     phase_c_current = front_controller_storage.ws22_motor_can_storage->telemetry.phase_c_current;
     rail_15v_supply = front_controller_storage.ws22_motor_can_storage->telemetry.rail_15v_supply;
-    vehicle_velocity = front_controller_storage.ws22_motor_can_storage->telemetry.vehicle_velocity;
+    vehicle_velocity_kph = front_controller_storage.ws22_motor_can_storage->telemetry.vehicle_velocity_kph;
     voltage_d = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_d;
     voltage_q = front_controller_storage.ws22_motor_can_storage->telemetry.voltage_q;
 
@@ -142,7 +142,7 @@ TASK(display_ws22_tx_data, TASK_STACK_1024) {
     LOG_DEBUG("THERM: Hs=%ldC Mot=%ldC\n\r", (int32_t)(heat_sink_temp * 10), (int32_t)(motor_temp * 10));
     delay_ms(20U);
 
-    LOG_DEBUG("MOTION: MotVel=%ld VehVel=%ld\n\r", (int32_t)motor_velocity, (int32_t)vehicle_velocity);
+    LOG_DEBUG("MOTION: MotVel=%ld VehVel=%ld\n\r", (int32_t)motor_velocity, (int32_t)vehicle_velocity_kph);
     delay_ms(20U);
 
     LOG_DEBUG("FLAGS: Err=0x%04X Lim=0x%04X\n\r", error_flags, limit_flags);

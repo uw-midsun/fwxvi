@@ -92,23 +92,10 @@ static void set_steering_buttons_horn_enabled(uint16_t val) {
 //   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 7)) | ((val & 0b1) << 7);
 // }
 
-static const char *print_state_str(FrontControllerState state) {
-  switch (state) {
-    case FRONT_CONTROLLER_STATE_IDLE:
-      return "IDLE";
-    case FRONT_CONTROLLER_STATE_ENGAGED:
-      return "ENGAGED";
-    case FRONT_CONTROLLER_STATE_FAULT:
-      return "FAULT";
-    default:
-      return "UNKNOWN";
-  }
-}
-
 // Printed list of relay states
 static void log_status(void) {
-  FrontControllerState current_state = front_controller_state_manager_get_state();
-  LOG_DEBUG("State: %s\n", print_state_str(current_state));
+  VehicleDriveState current_state = front_controller_state_manager_get_state();
+  LOG_DEBUG("State: %s\n", VEHICLE_DRIVE_STATE_TO_STR(current_state));
   delay_ms(20U);
 }
 
