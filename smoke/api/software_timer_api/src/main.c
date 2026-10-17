@@ -14,6 +14,7 @@
 #include "log.h"
 #include "mpxe.h"
 #include "tasks.h"
+#include "mcu.h"
 
 /* Intra-component Headers */
 #include "software_timer.h"
