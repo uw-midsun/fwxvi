@@ -1,0 +1,43 @@
+<map id="TelemetryStorage" name="TelemetryStorage">
+<area shape="rect" id="Node000001" title="Telemetry storage." alt="" coords="1127,158,1264,183"/>
+<area shape="rect" id="Node000002" href="$structDatagram.html" title="Datagram storage class." alt="" coords="835,6,922,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="936,14,975,15,1018,21,1063,32,1104,51,1134,75,1159,104,1190,156,1186,159,1155,107,1131,79,1101,56,1061,37,1017,26,974,21,935,19"/>
+<area shape="rect" id="Node000003" href="$structQueue.html" title="Queue storage and access struct." alt="" coords="847,55,911,81"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="924,65,1009,72,1057,82,1104,98,1150,126,1184,156,1180,160,1147,130,1102,102,1056,87,1009,78,924,70"/>
+<area shape="rect" id="Node000004" href="$structBmi323Storage.html" title="Storage struct for bmi323." alt="" coords="817,281,940,306"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="925,273,1160,181,1162,186,926,278"/>
+<area shape="rect" id="Node000005" href="$structBmi323Settings.html" title=" " alt="" coords="475,306,600,331"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="614,313,769,304,817,299,817,304,770,309,614,319"/>
+<area shape="rect" id="Node000006" href="$structSpiSettings.html" title="SPI settings struct." alt="" coords="185,343,280,369"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="294,346,474,324,475,329,294,351"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,230,64,255"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="78,250,178,271,338,294,475,310,474,315,337,299,177,276,77,255"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="41,268,56,318,70,343,89,362,115,372,143,375,171,372,196,366,198,371,172,377,143,380,114,378,87,366,65,346,51,320,36,270"/>
+<area shape="rect" id="Node000012" href="$structCanStorage.html" title="Storage class for the device ID and RX data." alt="" coords="316,94,413,119"/>
+<area shape="poly" id="edge13_Node000012_Node000007" title=" " alt="" coords="37,216,52,168,67,144,86,125,114,109,143,98,205,87,265,88,316,94,315,99,265,93,205,93,144,103,116,114,90,129,71,147,57,170,42,217"/>
+<area shape="rect" id="Node000017" href="$structUartSettings.html" title="UART Settings." alt="" coords="181,207,284,233"/>
+<area shape="poly" id="edge19_Node000017_Node000007" title=" " alt="" coords="78,242,153,239,192,230,193,235,154,244,78,247"/>
+<area shape="rect" id="Node000018" href="$structSdSpiSettings.html" title="Configuration settings for initializing an SD SPI port." alt="" coords="177,158,288,183"/>
+<area shape="poly" id="edge21_Node000018_Node000007" title=" " alt="" coords="66,220,87,210,132,193,176,180,178,185,134,198,89,214,68,225"/>
+<area shape="rect" id="Node000008" href="$structAxes.html" title=" " alt="" coords="511,207,564,233"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="578,222,667,235,770,256,843,278,841,283,769,261,666,241,578,227"/>
+<area shape="rect" id="Node000009" href="$structAccelGainOffsetValues.html" title="Struct to store offset and gain values for accelerometer." alt="" coords="453,257,622,282"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="636,274,817,286,817,292,636,279"/>
+<area shape="rect" id="Node000010" href="$structGyroGainOffsetValues.html" title="Struct to store offset and gain values for gyroscope." alt="" coords="455,355,620,381"/>
+<area shape="poly" id="edge10_Node000004_Node000010" title=" " alt="" coords="633,356,700,347,769,332,848,304,850,309,770,337,701,352,634,362"/>
+<area shape="rect" id="Node000011" href="$structBmi323Readings.html" title=" " alt="" coords="471,405,603,430"/>
+<area shape="poly" id="edge11_Node000004_Node000011" title=" " alt="" coords="617,410,692,398,731,387,768,374,797,358,823,340,863,304,866,308,826,344,799,363,770,378,733,392,693,403,618,415"/>
+<area shape="poly" id="edge12_Node000001_Node000012" title=" " alt="" coords="427,105,719,116,910,129,1103,149,1139,155,1138,161,1102,155,910,134,719,121,427,110"/>
+<area shape="rect" id="Node000013" href="$structWs22MotorCanStorage.html" title="WS22 motor CAN interface storage structure." alt="" coords="793,403,964,429"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="914,394,1002,341,1052,306,1101,269,1148,222,1182,182,1186,185,1152,226,1104,273,1056,311,1005,346,917,399"/>
+<area shape="rect" id="Node000014" href="$structWs22MotorControlData.html" title="Motor control command data structure." alt="" coords="450,503,625,529"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="622,527,659,528,697,524,734,514,768,497,777,484,779,470,782,455,791,439,812,426,815,431,795,443,787,457,785,471,782,487,771,501,736,519,698,529,660,533,622,533"/>
+<area shape="rect" id="Node000015" href="$structWs22MotorTelemetryData.html" title="Motor status and telemetry data structure." alt="" coords="441,454,633,479"/>
+<area shape="poly" id="edge16_Node000013_Node000015" title=" " alt="" coords="647,476,708,473,768,459,780,450,792,439,823,426,825,431,795,444,783,454,770,464,709,478,647,481"/>
+<area shape="rect" id="Node000016" href="$structTelemetryConfig.html" title="Telemetry configuration data." alt="" coords="473,158,601,183"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="615,168,1126,168,1126,173,615,173"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="297,207,417,188,473,179,474,184,418,193,298,213"/>
+<area shape="poly" id="edge20_Node000016_Node000018" title=" " alt="" coords="302,168,473,168,473,173,302,173"/>
+<area shape="rect" id="Node000019" href="$structRebootCount.html" title=" " alt="" coords="825,453,932,478"/>
+<area shape="poly" id="edge22_Node000001_Node000019" title=" " alt="" coords="945,450,984,438,1026,422,1066,399,1101,370,1136,322,1162,268,1179,219,1189,183,1194,184,1184,221,1167,270,1141,325,1105,374,1069,403,1028,426,986,443,946,455"/>
+</map>
