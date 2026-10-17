@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define TELEMETRY_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define TELEMETRY_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Telemetry CAN definitions

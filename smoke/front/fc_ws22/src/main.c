@@ -40,11 +40,14 @@ static FrontControllerConfig front_controller_config = { .accel_input_deadzone =
                                                          .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                          .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+// TODO(FW Lead/Developer): If your intended test requires usage of motor_can, you need to figure out what to put here, as there might be a breakage.
+static Ws22MotorCanConfig ws22_motor_can_config = { 0U };
+
 TASK(main_1000hz_cycle, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
-  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  status = front_controller_init(&front_controller_storage, &front_controller_config, &ws22_motor_can_config);
   front_controller_storage.brake_enabled = false;
 
   if (status == STATUS_CODE_OK) {

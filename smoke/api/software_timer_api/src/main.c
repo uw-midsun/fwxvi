@@ -12,9 +12,9 @@
 /* Inter-component Headers */
 #include "delay.h"
 #include "log.h"
+#include "mcu.h"
 #include "mpxe.h"
 #include "tasks.h"
-#include "mcu.h"
 
 /* Intra-component Headers */
 #include "software_timer.h"

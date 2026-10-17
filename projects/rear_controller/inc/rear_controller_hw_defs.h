@@ -24,8 +24,7 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define REAR_CONTROLLER_GPIO_DEF(PORT, PIN) \
-  { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define REAR_CONTROLLER_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Rear Controller CAN definitions
