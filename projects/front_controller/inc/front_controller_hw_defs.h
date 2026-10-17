@@ -24,7 +24,8 @@
  * File-scope definitions
  ************************************************************************************************/
 
-#define FRONT_CONTROLLER_GPIO_DEF(PORT, PIN) { .port = GPIO_PORT_##PORT, .pin = PIN }
+#define FRONT_CONTROLLER_GPIO_DEF(PORT, PIN) \
+  { .port = GPIO_PORT_##PORT, .pin = PIN }
 
 /************************************************************************************************
  * Front Controller CAN definitions
