@@ -24,6 +24,7 @@
 
 #include "accel_pedal.h"
 #include "brake_pedal.h"
+#include "ws22_motor_can.h"
 
 FrontControllerStorage front_controller_storage = { 0 };
 
@@ -34,11 +35,14 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
                                                   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA };
 
+// TODO(FW Lead/Developer): If your intended test requires usage of motor_can, you need to figure out what to put here, as there might be a breakage.
+Ws22MotorCanConfig motor_can_config = { 0U };
+
 TASK(run_pedal, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
-  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  status = front_controller_init(&front_controller_storage, &front_controller_config, &motor_can_config);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\r\n");
   } else {
@@ -59,7 +63,7 @@ TASK(display_pedal_stats, TASK_STACK_1024) {
   delay_ms(1000U);
 
   while (true) {
-    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_enabled);
+    printf("ACCEL PEDAL: %ld, BRAKE PEDAL: %d\r\n", (int32_t)(front_controller_storage.accel_pedal_storage->accel_percentage * 100), front_controller_storage.brake_state);
     delay_ms(100U);
   }
 }

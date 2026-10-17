@@ -52,7 +52,7 @@ jobs:
           git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
   build:
-    needs: format-and-lint 
+    needs: format-and-lint
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
@@ -92,15 +92,15 @@ jobs:
           python3 --version
           scons --version
           sdl2-config --version
-          
-      - name: Build stm32l4x
+
+      - name: Build STM32
         id: build-stm32
         run: |
-          scons --platform=arm --define="${DEFINES}"
+          scons build --platform=arm --define="${DEFINES}"
 
       - name: Build x86
         id: build-x86
         run: |
-          scons --platform=x86 --define="${DEFINES}"
+          scons build --platform=x86 --define="${DEFINES}"
           scons mpxe_server
           scons mpxe_gui

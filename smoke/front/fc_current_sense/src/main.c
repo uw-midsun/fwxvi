@@ -30,11 +30,13 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+Ws22MotorCanConfig motor_can_config = { 0U };
+
 TASK(current_sense, TASK_STACK_1024) {
   StatusCode status = STATUS_CODE_OK;
 
   // Step 1: Check if the front controller can be initialized
-  status = front_controller_init(&front_controller_storage, &front_controller_config);
+  status = front_controller_init(&front_controller_storage, &front_controller_config, &motor_can_config);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\r\n");
   } else {
