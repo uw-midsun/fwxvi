@@ -71,8 +71,8 @@
  */
 typedef enum {
   ADBMS_AFE_ADC_MODE_422HZ = 0,
-  ADBMS_AFE_ADC_MODE_27KHZ, /**< Normal */
-  ADBMS_AFE_ADC_MODE_7KHZ,  /**< Fast */
+  ADBMS_AFE_ADC_MODE_27KHZ, /**< Fast */
+  ADBMS_AFE_ADC_MODE_7KHZ,  /**< Normal */
   ADBMS_AFE_ADC_MODE_26HZ,  /**< Filtered */
   ADBMS_AFE_ADC_MODE_1KHZ,
   ADBMS_AFE_ADC_MODE_14KHZ,

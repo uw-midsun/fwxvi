@@ -254,7 +254,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     memset(cfgrB, 0, sizeof(*cfgrB));
 
     cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_1_MIN;
-    cfgrA->adcopt = ((config->adc_mode + 1) > 3);
+    cfgrA->adcopt = (config->adc_mode >= ADBMS_AFE_ADC_MODE_1KHZ);
     cfgrA->dten = true;
     cfgrA->refon = true;
   }
