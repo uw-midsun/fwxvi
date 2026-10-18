@@ -307,7 +307,7 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
 StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up) {
   AdbmsAfeSettings *settings = afe->settings;
 
-  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+  uint8_t md_cmd_bits = (uint8_t)((settings->ow_adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
 
   uint16_t adow = ADBMS1818_ADOW_RESERVED | ADBMS1818_ADCV_DISCHARGE_NOT_PERMITTED | ADBMS1818_CNVT_CELL_ALL | (md_cmd_bits << 7) | ((uint16_t)pull_up << 6);
 

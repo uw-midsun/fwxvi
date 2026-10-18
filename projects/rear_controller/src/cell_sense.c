@@ -146,6 +146,7 @@ static const AdbmsAfeSettings s_afe_settings = {
 
   .adc_mode = ADBMS_AFE_ADC_MODE_26HZ,
   .aux_adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
+  .ow_adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
   .num_devices = ADBMS_AFE_MAX_DEVICES,
   .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
@@ -499,7 +500,7 @@ static StatusCode s_open_wire_read(bool pull_up, uint16_t *voltages) {
   StatusCode status = adbms_afe_clear_cells(adbms_afe_storage);
   for (uint8_t i = 0U; status == STATUS_CODE_OK && i < OPEN_WIRE_CONVERSIONS; i++) {
     status = adbms_afe_trigger_open_wire_conv(adbms_afe_storage, pull_up);
-    delay_ms(CONV_DELAY_MS);
+    delay_ms(OW_CONV_DELAY_MS);
   }
   status_ok_or_return(status);
   return adbms_afe_read_cells_into(adbms_afe_storage, voltages);

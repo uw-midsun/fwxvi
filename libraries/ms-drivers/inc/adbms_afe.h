@@ -90,6 +90,7 @@ typedef enum {
 typedef struct AdbmsAfeSettings {
   AdbmsAfeAdcMode adc_mode;     /**< Determines ADC Mode for cell conversions */
   AdbmsAfeAdcMode aux_adc_mode; /**< ADC Mode for GPIO conversions */
+  AdbmsAfeAdcMode ow_adc_mode;  /**< ADC Mode for open wire conversions */
 
   size_t num_devices;     /**< Number of AFE devices */
   size_t num_cells;       /**< Number of TOTAL cells across all devices */
