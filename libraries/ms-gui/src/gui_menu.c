@@ -29,6 +29,8 @@
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 
 static GuiMenuState s_menu;
+static GuiScreen *s_menu_screen;
+static GuiScreen *s_prev_screen;
 static GuiMenuPendingRequests s_pending_requests;
 static bool s_is_initalized = false;
 
@@ -273,8 +275,6 @@ StatusCode gui_menu_process_pending(void) {
 }
 
 StatusCode gui_menu_open(void) {
-  GuiScreen *top_layer;
-
   if (!s_is_initalized) {
     return STATUS_CODE_UNINITIALIZED;
   }
@@ -283,12 +283,14 @@ StatusCode gui_menu_open(void) {
     return STATUS_CODE_OK;
   }
 
-  top_layer = lvgl_get_top_layer();
-  if (top_layer == NULL) {
+  s_prev_screen = lvgl_get_active_screen();
+  s_menu_screen = lv_obj_create(NULL);
+  if (s_menu_screen == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
-  s_menu.overlay = lv_obj_create(top_layer);
+  lv_obj_set_style_bg_color(s_menu_screen, s_gui_palette_color(GUI_COLOR_MENU_OVERLAY), 0);
+  s_menu.overlay = lv_obj_create(s_menu_screen);
   if (s_menu.overlay == NULL) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -353,6 +355,7 @@ StatusCode gui_menu_open(void) {
     lv_obj_align(s_menu.row_labels[i], LV_ALIGN_LEFT_MID, 0, 0);
   }
 
+  lv_screen_load(s_menu_screen);
   s_menu.selected_index = 0U;
   s_menu.is_open = true;
   s_refresh_selection();
@@ -369,7 +372,10 @@ StatusCode gui_menu_close(void) {
     return STATUS_CODE_OK;
   }
 
-  lv_obj_delete(s_menu.overlay);
+  if (lv_screen_active() == s_menu_screen) {
+    lv_screen_load(s_prev_screen);
+  }
+  lv_obj_delete(s_menu_screen);
   s_menu.overlay = NULL;
   s_menu.panel = NULL;
   s_menu.title = NULL;
