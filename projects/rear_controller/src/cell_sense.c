@@ -145,6 +145,7 @@ static const AdbmsAfeSettings s_afe_settings = {
 static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
+static bool s_cells_read_ok = false;
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
@@ -430,11 +431,11 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
     return true;
   }
 
-  // (*retry_count)++;
+  (*retry_count)++;
   // LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
 
   if (fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
-    // trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
   }
 
   return false;
@@ -442,6 +443,14 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
 
 static StatusCode s_cell_sense_conversions() {
   StatusCode status;
+
+  s_cells_read_ok = false;
+
+  // clear before conversion so stale values cant be read
+  status = adbms_afe_clear_cells(adbms_afe_storage);
+  if (!s_afe_stage_ok(status, &s_afe_retries.cell_conv, OVER_UNDER_FAULTS_ENABLED, "cell clear")) {
+    return status;
+  }
 
   status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
   if (!s_afe_stage_ok(status, &s_afe_retries.cell_conv, OVER_UNDER_FAULTS_ENABLED, "cell conv")) {
@@ -454,6 +463,7 @@ static StatusCode s_cell_sense_conversions() {
   if (!s_afe_stage_ok(status, &s_afe_retries.cell_read, OVER_UNDER_FAULTS_ENABLED, "cell read")) {
     return status;
   }
+  s_cells_read_ok = true;
 
 #if (THERMISTORS_CONNECTED == 1U)
   status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
@@ -631,7 +641,9 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   while (true) {
     s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
-    s_cell_sense_run();
+    if (s_cells_read_ok) {
+      s_cell_sense_run();
+    }
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));
   }
 }

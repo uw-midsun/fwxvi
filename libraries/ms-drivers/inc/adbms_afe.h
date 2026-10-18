@@ -144,6 +144,13 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config);
 StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
 
 /**
+ * @brief   Clears cell voltage registers (CLRCELL). missed conversion will read 0xFFFF
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @return  STATUS_CODE_OK if the command was transmitted, otherwise error.
+ */
+StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe);
+
+/**
  * @brief   Triggers ADC conversion for all enabled cell voltage inputs
  * @details Builds and transmits the ADCV command using the configured ADC mode to start
  *          cell voltage conversion across all AFE devices. Puts device into active mode

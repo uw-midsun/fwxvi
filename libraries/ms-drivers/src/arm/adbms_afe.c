@@ -280,6 +280,16 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
   return s_write_config(afe, gpio_bits);
 }
 
+StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe) {
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  s_build_cmd(ADBMS1818_CLRCELL_RESERVED, cmd, ADBMS1818_CMD_SIZE);
+
+  s_wakeup_idle(afe);
+  return spi_exchange(afe->settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
+}
+
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   AdbmsAfeSettings *settings = afe->settings;
 
@@ -346,6 +356,13 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
 
       for (uint16_t cell = 0; cell < ADBMS1818_CELLS_IN_REG; ++cell) {
         uint16_t voltage = devices_data[device].reg.voltages[cell];
+
+        // 0xFFFF = cleared (conversion failed or never run)
+        // 0xFF0X = digital redundancy fault
+        if (voltage >= 0xFF00U) {
+          LOG_DEBUG("Invalid reading 0x%X from device %d\n\r", voltage, device);
+          return STATUS_CODE_INTERNAL_ERROR;
+        }
 
         uint16_t device_cell = cell + ((v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A) * ADBMS1818_CELLS_IN_REG);
         uint16_t index = device_cell + (device * ADBMS_AFE_MAX_CELLS_PER_DEVICE);

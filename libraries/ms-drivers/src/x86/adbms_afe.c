@@ -88,6 +88,10 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
 
+StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe) {
+  return STATUS_CODE_OK;
+}
+
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return STATUS_CODE_OK;
 }
