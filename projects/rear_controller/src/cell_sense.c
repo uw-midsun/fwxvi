@@ -69,8 +69,6 @@
 /** @brief  Maximum pack current for cell discharging current - 7.0A -> 7000mA */
 #define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7.0f
 
-#define ADBMS1818_ADC_DC_OFFSET_10UV 500
-
 #define THERMISTOR_TEMP_OFFSET_C 4U
 
 /** @brief  Private define to lookup cell voltage */
@@ -487,7 +485,6 @@ static StatusCode s_cell_sense_run() {
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
-      CELL_VOLTAGE_LOOKUP(dev, cell) += ADBMS1818_ADC_DC_OFFSET_10UV;
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
