@@ -556,7 +556,6 @@ static StatusCode s_cell_sense_run() {
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
-      delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
@@ -578,9 +577,7 @@ static StatusCode s_cell_sense_run() {
   set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
   CONDITIONAL_LOG_DEBUG("PACK V: %d\r\n", (int)rear_controller_storage->pack_voltage);
-  delay_ms(10U);
   CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
-  delay_ms(10U);
 
   set_battery_stats_B_max_cell_voltage(max_voltage);
   set_battery_stats_B_min_cell_voltage(min_voltage);

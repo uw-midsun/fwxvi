@@ -186,12 +186,8 @@ static StatusCode s_write_config(AdbmsAfeStorage *afe, const uint8_t *gpio_enabl
   StatusCode status = s_write_cfga(afe);
   if (status != STATUS_CODE_OK) return status;
 
-  delay_ms(50);
-
   status = s_write_cfgb(afe);
   if (status != STATUS_CODE_OK) return status;
-
-  delay_ms(50);
 
   return STATUS_CODE_OK;
 }
