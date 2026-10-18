@@ -304,6 +304,20 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
 }
 
+StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up) {
+  AdbmsAfeSettings *settings = afe->settings;
+
+  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+
+  uint16_t adow = ADBMS1818_ADOW_RESERVED | ADBMS1818_ADCV_DISCHARGE_NOT_PERMITTED | ADBMS1818_CNVT_CELL_ALL | (md_cmd_bits << 7) | ((uint16_t)pull_up << 6);
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  s_build_cmd(adow, cmd, ADBMS1818_CMD_SIZE);
+
+  s_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
+}
+
 StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe) {
   if (!afe || !afe->settings) {
     return STATUS_CODE_INVALID_ARGS;
@@ -331,6 +345,10 @@ StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t devic
 }
 
 StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
+  return adbms_afe_read_cells_into(afe, afe->cell_voltages);
+}
+
+StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
   AdbmsAfeSettings *settings = afe->settings;
 
   for (AdbmsAfeVoltageRegister v_reg_group = ADBMS_AFE_VOLTAGE_REGISTER_A; v_reg_group < NUM_ADBMS_AFE_VOLTAGE_REGISTERS; ++v_reg_group) {
@@ -367,7 +385,7 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
         uint16_t device_cell = cell + ((v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A) * ADBMS1818_CELLS_IN_REG);
         uint16_t index = device_cell + (device * ADBMS_AFE_MAX_CELLS_PER_DEVICE);
 
-        afe->cell_voltages[afe->cell_result_lookup[index]] = voltage;
+        voltages[afe->cell_result_lookup[index]] = voltage;
       }
     }
   }

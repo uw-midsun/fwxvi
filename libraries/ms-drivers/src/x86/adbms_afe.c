@@ -107,6 +107,18 @@ StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t devic
   return STATUS_CODE_OK;
 }
 
+StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up) {
+  return STATUS_CODE_OK;
+}
+
+StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
+  if (afe == NULL || voltages == NULL) {
+    return STATUS_CODE_INVALID_ARGS;
+  }
+  memcpy(voltages, afe->cell_voltages, sizeof(afe->cell_voltages));
+  return STATUS_CODE_OK;
+}
+
 StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
   if (afe == NULL) {
     return STATUS_CODE_INVALID_ARGS;

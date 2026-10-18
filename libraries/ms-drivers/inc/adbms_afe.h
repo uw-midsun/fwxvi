@@ -151,6 +151,22 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
 StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe);
 
 /**
+ * @brief   Runs open wire conversion (ADOW) on all cells
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @param   pull_up true for 100uA pull up, false for pull down.
+ * @return  STATUS_CODE_OK if the command was transmitted, otherwise error.
+ */
+StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up);
+
+/**
+ * @brief   Reads cell voltages into a buffer
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @param   voltages Output array for voltages
+ * @return  STATUS_CODE_OK if all registers were valid
+ */
+StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages);
+
+/**
  * @brief   Triggers ADC conversion for all enabled cell voltage inputs
  * @details Builds and transmits the ADCV command using the configured ADC mode to start
  *          cell voltage conversion across all AFE devices. Puts device into active mode
