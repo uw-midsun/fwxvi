@@ -145,6 +145,7 @@ static const AdbmsAfeSettings s_afe_settings = {
   .spi_port = REAR_CONTROLLER_ADBMS_AFE_SPI_PORT,
 
   .adc_mode = ADBMS_AFE_ADC_MODE_26HZ,
+  .aux_adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
   .num_devices = ADBMS_AFE_MAX_DEVICES,
   .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,

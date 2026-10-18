@@ -88,7 +88,8 @@ typedef enum {
  * @note    For more info on `SpiSettings` refer to `spi.h`
  */
 typedef struct AdbmsAfeSettings {
-  AdbmsAfeAdcMode adc_mode; /**< Determines ADC Mode */
+  AdbmsAfeAdcMode adc_mode;     /**< Determines ADC Mode for cell conversions */
+  AdbmsAfeAdcMode aux_adc_mode; /**< ADC Mode for GPIO conversions */
 
   size_t num_devices;     /**< Number of AFE devices */
   size_t num_cells;       /**< Number of TOTAL cells across all devices */

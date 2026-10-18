@@ -27,7 +27,7 @@
  */
 
 #define CONV_DELAY_MS 250
-#define AUX_CONV_DELAY_MS 400
+#define AUX_CONV_DELAY_MS 10
 // Maximum number of retry attempts to read cell/aux data once triggered
 #define RETRY_DELAY_MS 10U
 #define CELL_SENSE_CONVERSIONS 0

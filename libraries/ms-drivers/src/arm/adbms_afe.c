@@ -324,7 +324,7 @@ StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe) {
   }
   AdbmsAfeSettings *settings = afe->settings;
 
-  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+  uint8_t md_cmd_bits = (uint8_t)((settings->aux_adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
   uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7);
 
   uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
