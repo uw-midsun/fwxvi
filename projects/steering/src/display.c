@@ -346,12 +346,12 @@ StatusCode display_run() {
   return STATUS_CODE_OK;
 }
 
-static uint16_t prv_safe_cell_voltage(float raw) {
-  if (raw < 20000.0f || raw > 50000.0f) {
+static uint16_t prv_safe_cell_voltage(uint16_t raw) {
+  if (raw < 20000U || raw > 50000U) {
     LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
     return 0U;
   }
-  return (uint16_t)(raw);
+  return raw;
 }
 
 StatusCode display_rx_slow() {
