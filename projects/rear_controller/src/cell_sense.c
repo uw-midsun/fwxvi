@@ -69,9 +69,16 @@
 /** @brief  Maximum pack current for cell discharging current - 7.0A -> 7000mA */
 #define MAX_PACK_CURRENT_FOR_CELL_DISCHARGING 7.0f
 
-#define ADBMS1818_ADC_DC_OFFSET_10UV 500
-
 #define THERMISTOR_TEMP_OFFSET_C 4U
+
+/** @brief  Passes between open wire check */
+#define OPEN_WIRE_CHECK_PERIOD_PASSES 12U
+
+/** @brief  400mV threshold for open wire fault */
+#define OPEN_WIRE_THRESHOLD -4000
+
+/** @brief  ADOW commands per open wire check, datasheet table 31 */
+#define OPEN_WIRE_CONVERSIONS 2U
 
 /** @brief  Private define to lookup cell voltage */
 #define CELL_PER_DEVICE (ADBMS_AFE_MAX_CELLS_PER_DEVICE)
@@ -137,7 +144,9 @@ static const AdbmsAfeSettings s_afe_settings = {
 
   .spi_port = REAR_CONTROLLER_ADBMS_AFE_SPI_PORT,
 
-  .adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
+  .adc_mode = ADBMS_AFE_ADC_MODE_26HZ,
+  .aux_adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
+  .ow_adc_mode = ADBMS_AFE_ADC_MODE_7KHZ,
 
   .num_devices = ADBMS_AFE_MAX_DEVICES,
   .num_cells = ADBMS_AFE_MAX_CELLS_PER_DEVICE,
@@ -147,6 +156,10 @@ static const AdbmsAfeSettings s_afe_settings = {
 static AdbmsAfeStorage *adbms_afe_storage;
 
 static bool s_cell_data_updated = false;
+static bool s_cells_read_ok = false;
+
+/** @brief  bit n set when C(n) open wire check above threshold */
+static volatile uint32_t s_open_wire_mask[ADBMS_AFE_MAX_DEVICES];
 
 static uint8_t s_afe_temperature_message_index = 0U;
 
@@ -432,11 +445,11 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
     return true;
   }
 
-  // (*retry_count)++;
+  (*retry_count)++;
   // LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
 
   if (fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
-    // trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
+    trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
   }
 
   return false;
@@ -444,6 +457,14 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
 
 static StatusCode s_cell_sense_conversions() {
   StatusCode status;
+
+  s_cells_read_ok = false;
+
+  // clear before conversion so stale values cant be read
+  status = adbms_afe_clear_cells(adbms_afe_storage);
+  if (!s_afe_stage_ok(status, &s_afe_retries.cell_conv, OVER_UNDER_FAULTS_ENABLED, "cell clear")) {
+    return status;
+  }
 
   status = adbms_afe_trigger_cell_conv(adbms_afe_storage);
   if (!s_afe_stage_ok(status, &s_afe_retries.cell_conv, OVER_UNDER_FAULTS_ENABLED, "cell conv")) {
@@ -456,6 +477,7 @@ static StatusCode s_cell_sense_conversions() {
   if (!s_afe_stage_ok(status, &s_afe_retries.cell_read, OVER_UNDER_FAULTS_ENABLED, "cell read")) {
     return status;
   }
+  s_cells_read_ok = true;
 
 #if (THERMISTORS_CONNECTED == 1U)
   status = adbms_afe_trigger_thermistor_conv(adbms_afe_storage);
@@ -474,6 +496,50 @@ static StatusCode s_cell_sense_conversions() {
   return STATUS_CODE_OK;
 }
 
+static StatusCode s_open_wire_read(bool pull_up, uint16_t *voltages) {
+  StatusCode status = adbms_afe_clear_cells(adbms_afe_storage);
+  for (uint8_t i = 0U; status == STATUS_CODE_OK && i < OPEN_WIRE_CONVERSIONS; i++) {
+    status = adbms_afe_trigger_open_wire_conv(adbms_afe_storage, pull_up);
+    delay_ms(OW_CONV_DELAY_MS);
+  }
+  status_ok_or_return(status);
+  return adbms_afe_read_cells_into(adbms_afe_storage, voltages);
+}
+
+static void s_open_wire_check() {
+  static uint16_t pull_up[ADBMS_AFE_MAX_CELLS];
+  static uint16_t pull_down[ADBMS_AFE_MAX_CELLS];
+
+  if (s_open_wire_read(true, pull_up) != STATUS_CODE_OK || s_open_wire_read(false, pull_down) != STATUS_CODE_OK) return;
+
+  for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
+    const uint16_t *pu = &pull_up[ADBMS_AFE_MAX_CELLS_PER_DEVICE * dev];
+    const uint16_t *pd = &pull_down[ADBMS_AFE_MAX_CELLS_PER_DEVICE * dev];
+    uint32_t mask = 0U;
+
+    // pu[n - 1] is cell n (the cell between C(n-1) and C(n))
+    if (pu[0] == 0U) {
+      mask |= 1U;
+    }
+
+    if (pd[ADBMS_AFE_MAX_CELLS_PER_DEVICE - 1U] == 0U) {
+      mask |= 1U << ADBMS_AFE_MAX_CELLS_PER_DEVICE;
+    }
+
+    for (size_t n = 1U; n < ADBMS_AFE_MAX_CELLS_PER_DEVICE; n++) {
+      if (((int32_t)pu[n] - (int32_t)pd[n]) < OPEN_WIRE_THRESHOLD) {
+        mask |= 1U << n;
+      }
+    }
+
+    s_open_wire_mask[dev] = mask;
+
+    if (mask != 0U) {
+      LOG_DEBUG("OPEN WIRE: AFE %d mask 0x%x\r\n", (int)dev, (unsigned)mask);
+    }
+  }
+}
+
 static StatusCode s_cell_sense_run() {
   StatusCode status = STATUS_CODE_OK;
 
@@ -487,11 +553,9 @@ static StatusCode s_cell_sense_run() {
 
   for (size_t dev = 0U; dev < s_afe_settings.num_devices; dev++) {
     for (size_t cell = 0U; cell < s_afe_settings.num_cells; cell++) {
-      CELL_VOLTAGE_LOOKUP(dev, cell) += ADBMS1818_ADC_DC_OFFSET_10UV;
       uint16_t current_cell_voltage = (uint16_t)CELL_VOLTAGE_LOOKUP(dev, cell);
       total_voltage += current_cell_voltage;
       CONDITIONAL_LOG_DEBUG("CELL %d %d: %d\r\n", (uint8_t)dev, (uint8_t)cell, current_cell_voltage);
-      delay_ms(12U);
 
       if (current_cell_voltage > max_voltage) {
         max_voltage = current_cell_voltage;
@@ -513,9 +577,7 @@ static StatusCode s_cell_sense_run() {
   set_battery_stats_A_pack_voltage_v(rear_controller_storage->pack_voltage);
 
   CONDITIONAL_LOG_DEBUG("PACK V: %d\r\n", (int)rear_controller_storage->pack_voltage);
-  delay_ms(10U);
   CONDITIONAL_LOG_DEBUG("MAX VOLTAGE: %d\r\nMIN VOLTAGE: %d\r\nUNBALANCE: %d\r\n", max_voltage, min_voltage, max_voltage - min_voltage);
-  delay_ms(10U);
 
   set_battery_stats_B_max_cell_voltage(max_voltage);
   set_battery_stats_B_min_cell_voltage(min_voltage);
@@ -625,6 +687,7 @@ StatusCode log_cell_sense() {
 
 TASK(cell_sense_conversions, TASK_STACK_512) {
   StatusCode status = STATUS_CODE_OK;
+  uint32_t open_wire_pass = 0U;
   RETRY_OPERATION(AFE_NUM_RETRIES, RETRY_DELAY_MS, adbms_afe_init(adbms_afe_storage, &s_afe_settings), status);
 
   delay_ms(10);
@@ -634,7 +697,12 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   while (true) {
     s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
-    s_cell_sense_run();
+    if (s_cells_read_ok) {
+      s_cell_sense_run();
+      if (open_wire_pass++ % OPEN_WIRE_CHECK_PERIOD_PASSES == 0U) {
+        s_open_wire_check();
+      }
+    }
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(5000U));
   }
 }

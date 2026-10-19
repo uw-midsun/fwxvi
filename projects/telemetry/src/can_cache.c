@@ -40,18 +40,18 @@ CanMessageCache g_can_cache_medium[] = {
   { .can_id = 1842U, .length = 6U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* gyro_data              */
   /* rear_controller AFE messages */
   { .can_id = 1827U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_discharge_bitset   */
-  { .can_id = 1843U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_A          */
-  { .can_id = 1859U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_B          */
-  { .can_id = 1875U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_C          */
-  { .can_id = 1891U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_D          */
-  { .can_id = 1907U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_E          */
-  { .can_id = 1923U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_F          */
-  { .can_id = 1939U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_A          */
-  { .can_id = 1955U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_B          */
-  { .can_id = 1971U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_C          */
-  { .can_id = 1987U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_D          */
-  { .can_id = 2003U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_E          */
-  { .can_id = 2019U, .length = 4U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_F          */
+  { .can_id = 1843U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_A          */
+  { .can_id = 1859U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_B          */
+  { .can_id = 1875U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_C          */
+  { .can_id = 1891U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_D          */
+  { .can_id = 1907U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_E          */
+  { .can_id = 1923U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE1_status_F          */
+  { .can_id = 1939U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_A          */
+  { .can_id = 1955U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_B          */
+  { .can_id = 1971U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_C          */
+  { .can_id = 1987U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_D          */
+  { .can_id = 2003U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_E          */
+  { .can_id = 2019U, .length = 7U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE2_status_F          */
   { .can_id = 2035U, .length = 8U, .priority = CAN_MSG_PRIORITY_MEDIUM }, /* AFE_temperature        */
 };
 const size_t g_can_cache_medium_size = sizeof(g_can_cache_medium) / sizeof(g_can_cache_medium[0]);

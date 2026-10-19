@@ -36,7 +36,7 @@ debug_defines = [
 
 release_defines = [
     "MS_DEBUG_LOG=0",
-],
+]
 
 hardware_defines = {
     'STM32L433CCU6': [
