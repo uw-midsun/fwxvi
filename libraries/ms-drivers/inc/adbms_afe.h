@@ -71,8 +71,8 @@
  */
 typedef enum {
   ADBMS_AFE_ADC_MODE_422HZ = 0,
-  ADBMS_AFE_ADC_MODE_27KHZ, /**< Normal */
-  ADBMS_AFE_ADC_MODE_7KHZ,  /**< Fast */
+  ADBMS_AFE_ADC_MODE_27KHZ, /**< Fast */
+  ADBMS_AFE_ADC_MODE_7KHZ,  /**< Normal */
   ADBMS_AFE_ADC_MODE_26HZ,  /**< Filtered */
   ADBMS_AFE_ADC_MODE_1KHZ,
   ADBMS_AFE_ADC_MODE_14KHZ,
@@ -88,7 +88,9 @@ typedef enum {
  * @note    For more info on `SpiSettings` refer to `spi.h`
  */
 typedef struct AdbmsAfeSettings {
-  AdbmsAfeAdcMode adc_mode; /**< Determines ADC Mode */
+  AdbmsAfeAdcMode adc_mode;     /**< Determines ADC Mode for cell conversions */
+  AdbmsAfeAdcMode aux_adc_mode; /**< ADC Mode for GPIO conversions */
+  AdbmsAfeAdcMode ow_adc_mode;  /**< ADC Mode for open wire conversions */
 
   size_t num_devices;     /**< Number of AFE devices */
   size_t num_cells;       /**< Number of TOTAL cells across all devices */
@@ -142,6 +144,29 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config);
  * @note    Only for initial config
  */
 StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe);
+
+/**
+ * @brief   Clears cell voltage registers (CLRCELL). missed conversion will read 0xFFFF
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @return  STATUS_CODE_OK if the command was transmitted, otherwise error.
+ */
+StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe);
+
+/**
+ * @brief   Runs open wire conversion (ADOW) on all cells
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @param   pull_up true for 100uA pull up, false for pull down.
+ * @return  STATUS_CODE_OK if the command was transmitted, otherwise error.
+ */
+StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up);
+
+/**
+ * @brief   Reads cell voltages into a buffer
+ * @param   afe Pointer to AdbmsAfeStorage struct containing runtime data and settings
+ * @param   voltages Output array for voltages
+ * @return  STATUS_CODE_OK if all registers were valid
+ */
+StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages);
 
 /**
  * @brief   Triggers ADC conversion for all enabled cell voltage inputs

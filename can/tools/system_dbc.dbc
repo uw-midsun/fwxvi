@@ -104,77 +104,77 @@ BO_   1827 AFE_discharge_bitset: 8 rear_controller
   SG_ AFE1 : 0|32@1+ (1,0) [|] "" telemetry, steering
   SG_ AFE2 : 32|32@1+ (1,0) [|] "" telemetry, steering
 
-BO_   1843 AFE1_status_A: 4 rear_controller
+BO_   1843 AFE1_status_A: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_0 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_1 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_2 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_0 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_1 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_2 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1859 AFE1_status_B: 4 rear_controller
+BO_   1859 AFE1_status_B: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_3 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_4 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_5 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_3 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_4 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_5 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1875 AFE1_status_C: 4 rear_controller
+BO_   1875 AFE1_status_C: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_6 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_7 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_8 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_6 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_7 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_8 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1891 AFE1_status_D: 4 rear_controller
+BO_   1891 AFE1_status_D: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_9 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_10 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_11 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_9 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_10 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_11 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1907 AFE1_status_E: 4 rear_controller
+BO_   1907 AFE1_status_E: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_12 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_13 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_14 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_12 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_13 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_14 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1923 AFE1_status_F: 4 rear_controller
+BO_   1923 AFE1_status_F: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_15 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_16 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_17 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_15 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_16 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_17 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1939 AFE2_status_A: 4 rear_controller
+BO_   1939 AFE2_status_A: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_0 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_1 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_2 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_0 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_1 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_2 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1955 AFE2_status_B: 4 rear_controller
+BO_   1955 AFE2_status_B: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_3 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_4 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_5 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_3 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_4 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_5 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1971 AFE2_status_C: 4 rear_controller
+BO_   1971 AFE2_status_C: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_6 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_7 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_8 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_6 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_7 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_8 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   1987 AFE2_status_D: 4 rear_controller
+BO_   1987 AFE2_status_D: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_9 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_10 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_11 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_9 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_10 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_11 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   2003 AFE2_status_E: 4 rear_controller
+BO_   2003 AFE2_status_E: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_12 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_13 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_14 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_12 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_13 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_14 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
-BO_   2019 AFE2_status_F: 4 rear_controller
+BO_   2019 AFE2_status_F: 7 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering
-  SG_ voltage_15 : 8|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_16 : 16|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
-  SG_ voltage_17 : 24|8@1+ (1,0) [20000.0|50000.0] "" telemetry, steering
+  SG_ voltage_15 : 8|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_16 : 24|16@1+ (1,0) [0|65535] "" telemetry, steering
+  SG_ voltage_17 : 40|16@1+ (1,0) [0|65535] "" telemetry, steering
 
 BO_   2035 AFE_temperature: 8 rear_controller
   SG_ id : 0|8@1+ (1,0) [0|255] "" telemetry, steering

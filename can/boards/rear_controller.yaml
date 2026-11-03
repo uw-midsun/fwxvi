@@ -150,20 +150,11 @@ Messages:
       id:
         length: 8
       voltage_0:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_1:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_2:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE1_status_B:
     id: 52
@@ -178,20 +169,11 @@ Messages:
       id:
         length: 8
       voltage_3:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_4:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_5:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE1_status_C:
     id: 53
@@ -206,20 +188,11 @@ Messages:
       id:
         length: 8
       voltage_6:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_7:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_8:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE1_status_D:
     id: 54
@@ -234,20 +207,11 @@ Messages:
       id:
         length: 8
       voltage_9:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_10:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_11:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE1_status_E:
     id: 55
@@ -262,20 +226,11 @@ Messages:
       id:
         length: 8
       voltage_12:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_13:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_14:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE1_status_F:
     id: 56
@@ -290,20 +245,11 @@ Messages:
       id:
         length: 8
       voltage_15:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_16:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_17:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_A:
     id: 57
@@ -318,20 +264,11 @@ Messages:
       id:
         length: 8
       voltage_0:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_1:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_2:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_B:
     id: 58
@@ -346,20 +283,11 @@ Messages:
       id:
         length: 8
       voltage_3:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_4:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_5:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_C:
     id: 59
@@ -374,20 +302,11 @@ Messages:
       id:
         length: 8
       voltage_6:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_7:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_8:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_D:
     id: 60
@@ -402,20 +321,11 @@ Messages:
       id:
         length: 8
       voltage_9:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_10:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_11:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_E:
     id: 61
@@ -430,20 +340,11 @@ Messages:
       id:
         length: 8
       voltage_12:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_13:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_14:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE2_status_F:
     id: 62
@@ -458,20 +359,11 @@ Messages:
       id:
         length: 8
       voltage_15:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_16:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
       voltage_17:
-        type: "float"
-        min: 20000
-        max: 50000
-        length: 8
+        length: 16
 
   AFE_temperature:
     id: 63

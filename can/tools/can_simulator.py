@@ -143,73 +143,73 @@ messages_medium.append(system_can_message_rear_controller_afe_discharge_bitset)
 
 system_can_message_rear_controller_afe1_status_a = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_A_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_a", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_0"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_1"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_2"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_a", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_0"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_1"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_a", "voltage_2"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_a)
 
 system_can_message_rear_controller_afe1_status_b = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_B_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_b", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_3"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_4"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_5"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_b", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_3"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_4"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_b", "voltage_5"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_b)
 
 system_can_message_rear_controller_afe1_status_c = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_C_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_c", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_6"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_7"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_8"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_c", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_6"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_7"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_c", "voltage_8"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_c)
 
 system_can_message_rear_controller_afe1_status_d = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_D_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_d", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_9"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_10"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_11"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_d", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_9"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_10"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_d", "voltage_11"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_d)
 
 system_can_message_rear_controller_afe1_status_e = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_E_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_e", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_12"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_13"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_14"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_e", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_12"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_13"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_e", "voltage_14"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_e)
 
 system_can_message_rear_controller_afe1_status_f = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE1_STATUS_F_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_f", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_15"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_16"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_17"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe1_status_f", "id"), 8) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_15"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_16"), 16) + pack(can_data_cache.get("rear_controller_afe1_status_f", "voltage_17"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe1_status_f)
 
 system_can_message_rear_controller_afe2_status_a = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_A_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_a", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_0"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_1"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_2"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_a", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_0"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_1"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_a", "voltage_2"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_a)
 
 system_can_message_rear_controller_afe2_status_b = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_B_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_b", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_3"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_4"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_5"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_b", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_3"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_4"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_b", "voltage_5"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_b)
 
 system_can_message_rear_controller_afe2_status_c = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_C_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_c", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_6"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_7"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_8"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_c", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_6"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_7"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_c", "voltage_8"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_c)
 
 system_can_message_rear_controller_afe2_status_d = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_D_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_d", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_9"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_10"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_11"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_d", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_9"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_10"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_d", "voltage_11"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_d)
 
 system_can_message_rear_controller_afe2_status_e = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_E_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_e", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_12"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_13"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_14"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_e", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_12"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_13"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_e", "voltage_14"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_e)
 
 system_can_message_rear_controller_afe2_status_f = Message(
 arbitration_id = SystemCanMessageId.SYSTEM_CAN_MESSAGE_REAR_CONTROLLER_AFE2_STATUS_F_ID,
-data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_f", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_15"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_16"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_17"), 8)))
+data = bytearray(pack(can_data_cache.get("rear_controller_afe2_status_f", "id"), 8) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_15"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_16"), 16) + pack(can_data_cache.get("rear_controller_afe2_status_f", "voltage_17"), 16)))
 
 messages_medium.append(system_can_message_rear_controller_afe2_status_f)
 

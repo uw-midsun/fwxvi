@@ -186,12 +186,8 @@ static StatusCode s_write_config(AdbmsAfeStorage *afe, const uint8_t *gpio_enabl
   StatusCode status = s_write_cfga(afe);
   if (status != STATUS_CODE_OK) return status;
 
-  delay_ms(50);
-
   status = s_write_cfgb(afe);
   if (status != STATUS_CODE_OK) return status;
-
-  delay_ms(50);
 
   return STATUS_CODE_OK;
 }
@@ -254,7 +250,7 @@ StatusCode adbms_afe_init(AdbmsAfeStorage *afe, const AdbmsAfeSettings *config) 
     memset(cfgrB, 0, sizeof(*cfgrB));
 
     cfgrA->discharge_timeout = ADBMS_AFE_DISCHARGE_TIMEOUT_1_MIN;
-    cfgrA->adcopt = ((config->adc_mode + 1) > 3);
+    cfgrA->adcopt = (config->adc_mode >= ADBMS_AFE_ADC_MODE_1KHZ);
     cfgrA->dten = true;
     cfgrA->refon = true;
   }
@@ -280,6 +276,16 @@ StatusCode adbms_afe_write_config(AdbmsAfeStorage *afe) {
   return s_write_config(afe, gpio_bits);
 }
 
+StatusCode adbms_afe_clear_cells(AdbmsAfeStorage *afe) {
+  if (!afe) return STATUS_CODE_INVALID_ARGS;
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  s_build_cmd(ADBMS1818_CLRCELL_RESERVED, cmd, ADBMS1818_CMD_SIZE);
+
+  s_wakeup_idle(afe);
+  return spi_exchange(afe->settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
+}
+
 StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   AdbmsAfeSettings *settings = afe->settings;
 
@@ -294,13 +300,27 @@ StatusCode adbms_afe_trigger_cell_conv(AdbmsAfeStorage *afe) {
   return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
 }
 
+StatusCode adbms_afe_trigger_open_wire_conv(AdbmsAfeStorage *afe, bool pull_up) {
+  AdbmsAfeSettings *settings = afe->settings;
+
+  uint8_t md_cmd_bits = (uint8_t)((settings->ow_adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+
+  uint16_t adow = ADBMS1818_ADOW_RESERVED | ADBMS1818_ADCV_DISCHARGE_NOT_PERMITTED | ADBMS1818_CNVT_CELL_ALL | (md_cmd_bits << 7) | ((uint16_t)pull_up << 6);
+
+  uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
+  s_build_cmd(adow, cmd, ADBMS1818_CMD_SIZE);
+
+  s_wakeup_idle(afe);
+  return spi_exchange(settings->spi_port, cmd, ADBMS1818_CMD_SIZE, NULL, 0);
+}
+
 StatusCode adbms_afe_trigger_thermistor_conv(AdbmsAfeStorage *afe) {
   if (!afe || !afe->settings) {
     return STATUS_CODE_INVALID_ARGS;
   }
   AdbmsAfeSettings *settings = afe->settings;
 
-  uint8_t md_cmd_bits = (uint8_t)((settings->adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
+  uint8_t md_cmd_bits = (uint8_t)((settings->aux_adc_mode) % (NUM_ADBMS_AFE_ADC_MODES / 2));
   uint16_t adax = ADBMS1818_ADAX_RESERVED | ADBMS1818_ADAX_GPIO_ALL | (md_cmd_bits << 7);
 
   uint8_t cmd[ADBMS1818_CMD_SIZE] = { 0 };
@@ -321,6 +341,10 @@ StatusCode adbms_afe_trigger_board_temp_conv(AdbmsAfeStorage *afe, uint8_t devic
 }
 
 StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
+  return adbms_afe_read_cells_into(afe, afe->cell_voltages);
+}
+
+StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
   AdbmsAfeSettings *settings = afe->settings;
 
   for (AdbmsAfeVoltageRegister v_reg_group = ADBMS_AFE_VOLTAGE_REGISTER_A; v_reg_group < NUM_ADBMS_AFE_VOLTAGE_REGISTERS; ++v_reg_group) {
@@ -347,10 +371,17 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
       for (uint16_t cell = 0; cell < ADBMS1818_CELLS_IN_REG; ++cell) {
         uint16_t voltage = devices_data[device].reg.voltages[cell];
 
+        // 0xFFFF = cleared (conversion failed or never run)
+        // 0xFF0X = digital redundancy fault
+        if (voltage >= 0xFF00U) {
+          LOG_DEBUG("Invalid reading 0x%X from device %d\n\r", voltage, device);
+          return STATUS_CODE_INTERNAL_ERROR;
+        }
+
         uint16_t device_cell = cell + ((v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A) * ADBMS1818_CELLS_IN_REG);
         uint16_t index = device_cell + (device * ADBMS_AFE_MAX_CELLS_PER_DEVICE);
 
-        afe->cell_voltages[afe->cell_result_lookup[index]] = voltage;
+        voltages[afe->cell_result_lookup[index]] = voltage;
       }
     }
   }
