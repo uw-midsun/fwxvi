@@ -47,7 +47,11 @@ static void s_flush_cb(lv_display_t *display, const lv_area_t *area, uint8_t *px
     src += width;
   }
 
-  ltdc_draw();
+#ifdef MS_PLATFORM_X86
+  if (lv_display_flush_is_last(display)) {
+    ltdc_draw();
+  }
+#endif
 
   /* Signal to LVGL that flushing is complete */
   lv_display_flush_ready(display);
