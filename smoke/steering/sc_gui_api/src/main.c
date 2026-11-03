@@ -7,7 +7,7 @@
  * @date    2026-03-15
  * @author  Midnight Sun Team #24 - MSXVI
  ************************************************************************************************/
-
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 /* Standard library Headers */
 #include <stdint.h>
 
@@ -33,11 +33,6 @@
 /* Intra-component Headers */
 #if SHOW_SMOKE_TEST_LOGO_IMAGE
 #include "ms_logo_image.h"
-#endif
-
-/* All lvgl wrappers are wrapped with this */
-#ifndef STM32L4P5xx
-#define STM32L4P5xx
 #endif
 
 #define GUI_UPDATE_PERIOD_MS 20U
@@ -229,3 +224,8 @@ int main(void) {
   LOG_DEBUG("exiting main?\r\n");
   return 0;
 }
+#else
+int main(void) {
+  return 0;
+}
+#endif

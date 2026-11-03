@@ -19,7 +19,13 @@
         "projects/rear_controller/src/precharge.o",
         "projects/rear_controller/src/rear_controller.o",
         "projects/rear_controller/src/rear_controller_state_manager.o",
-        "projects/rear_controller/src/relays.o"
+        "projects/rear_controller/src/relays.o",
+        "projects/rear_controller/src/thermistor.o",
+        "projects/rear_controller/src/motor_can.o",
+        "projects/rear_controller/src/state_of_charge.o",
+        "projects/rear_controller/matlab/codegen/src/soc_ekf_matlab.o",
+        "projects/rear_controller/src/fans.o",
+        "projects/rear_controller/src/cell_sense.o"
     ],
     "can": true,
     "selected_preset": "STM32L496RGT6_legacy_debug"

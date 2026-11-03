@@ -35,7 +35,6 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .brake_pedal_deadzone = FRONT_CONTROLLER_BRAKE_INPUT_DEADZONE,
                                                   .brake_low_pass_filter_alpha = FRONT_CONTROLLER_BRAKE_LPF_ALPHA };
 
-// TODO(FW Lead/Developer): If your intended test requires usage of motor_can, you need to figure out what to put here, as there might be a breakage.
 Ws22MotorCanConfig motor_can_config = { 0U };
 
 TASK(run_pedal, TASK_STACK_1024) {

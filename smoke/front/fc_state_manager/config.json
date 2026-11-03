@@ -26,5 +26,6 @@
         "libraries/ms-drivers/src/ws22_motor_can.o"
     ],
     "can": true,
-    "selected_preset": "STM32L433CCU6_legacy_debug"
+    "selected_preset": "STM32L433CCU6_legacy_debug",
+    "arm_only": "true"
 }

@@ -3,12 +3,15 @@
         "FreeRTOS",
         "ms-common"
     ],
+    "arm_libs": [
+
+    ],
     "x86_libs": [
         "ms-mpxe"
     ],
     "include": [
-        "projects/front_controller/inc",
         "build/arm/obj/projects/front_controller/can/inc",
+        "projects/front_controller/inc",
         "libraries/ms-drivers/inc"
     ],
     "sources": [
@@ -26,5 +29,6 @@
         "libraries/ms-drivers/src/ws22_motor_can.o"
     ],
     "can": true,
-    "selected_preset": "STM32L433CCU6_legacy_debug"
+    "selected_preset": "STM32L433CCU6_legacy_debug",
+    "arm_only" : true
 }
