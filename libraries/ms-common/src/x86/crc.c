@@ -13,16 +13,17 @@
 
 /* Intra-component Headers */
 #include "crc.h"
+
 #include "status.h"
 
 StatusCode crc_init(CRCLength crc_length) {
-  (void) crc_length;
+  (void)crc_length;
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
 uint32_t crc_calculate(const uint32_t *data, size_t length) {
-  (void) data;
-  (void) length;
+  (void)data;
+  (void)length;
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
