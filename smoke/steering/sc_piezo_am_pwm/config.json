@@ -11,5 +11,6 @@
         "HAL"
     ],
     "can": false,
-    "selected_preset": "STM32L4P5VET6_legacy_debug"
+    "selected_preset": "STM32L4P5VET6_legacy_debug",
+    "arm_only": true
 }

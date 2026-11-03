@@ -12,7 +12,9 @@
 /* Standard library Headers */
 
 /* Inter-component Headers */
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl.h"
+#endif
 
 /* Intra-component Headers */
 
@@ -81,6 +83,7 @@ static const uint8_t s_midnight_sun_logo_data[] = {
 /* clang-format on */
 // NOLINTEND
 
+#if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 static const lv_image_dsc_t s_midnight_sun_logo_image = {
   .header = {
     .magic = LV_IMAGE_HEADER_MAGIC,
@@ -93,5 +96,6 @@ static const lv_image_dsc_t s_midnight_sun_logo_image = {
   .data_size = sizeof(s_midnight_sun_logo_data),
   .data = s_midnight_sun_logo_data,
 };
+#endif
 
 /** @} */

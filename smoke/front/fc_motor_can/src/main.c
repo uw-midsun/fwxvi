@@ -39,6 +39,8 @@ static FrontControllerConfig front_controller_config = { .accel_input_deadzone =
                                                          .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                          .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+static Ws22MotorCanConfig ws22_motor_can_config = { 0U };
+
 static const float test_current_min = 0.0f;
 static const float test_current_max = 1.0f;
 static const float step_size = (test_current_max - test_current_min) / 5;
@@ -79,7 +81,7 @@ TASK(main_1000hz_cycle, TASK_STACK_1024) {
 #endif
     motor_can_update_target_current_velocity();
     run_can_tx_fast();
-    ws22_motor_can_transmit_drive_command();
+    motor_can_transmit_drive_command();
     delay_ms(1U);
   }
 }
@@ -113,7 +115,7 @@ TASK(cycle_ws22, TASK_STACK_1024) {
 
   while (true) {
     for (VehicleDriveState state = VEHICLE_DRIVE_STATE_NEUTRAL; state <= VEHICLE_DRIVE_STATE_REVERSE; state++) {
-      front_controller_storage.brake_enabled = false;
+      front_controller_storage.brake_state = false;
       // Mock drive state from steering
       g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b11 << 0)) | ((state & 0b11) << 0);
 
@@ -127,12 +129,12 @@ TASK(cycle_ws22, TASK_STACK_1024) {
       }
     }
 
-    front_controller_storage.brake_enabled = true;
+    front_controller_storage.brake_state = true;
     motor_can_get_current_state(&current_state);
     LOG_DEBUG("CURRENT STATE: %s | MOCKING BRAKES\n\r", print_state_str(current_state));
     delay_ms(1000U);
 
-    front_controller_storage.brake_enabled = false;
+    front_controller_storage.brake_state = false;
   }
 }
 #endif
@@ -176,8 +178,8 @@ int main() {
   tasks_init_task(display_ws22_control_data, TASK_PRIORITY(2), NULL);
 #endif
 
-  StatusCode status = front_controller_init(&front_controller_storage, &front_controller_config);
-  front_controller_storage.brake_enabled = false;
+  StatusCode status = front_controller_init(&front_controller_storage, &front_controller_config, &ws22_motor_can_config);
+  front_controller_storage.brake_state = false;
 
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\n\r");

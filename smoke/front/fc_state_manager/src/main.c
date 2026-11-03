@@ -62,6 +62,9 @@ FrontControllerConfig front_controller_config = { .accel_input_deadzone = FRONT_
                                                   .accel_input_curve_exponent = FRONT_CONTROLLER_ACCEL_CURVE_EXPONENT,
                                                   .accel_low_pass_filter_alpha = FRONT_CONTROLLER_ACCEL_LPF_ALPHA };
 
+// TODO(FW Lead/Developer): If your intended test requires usage of motor_can, you need to figure out what to put here, as there might be a breakage.
+Ws22MotorCanConfig motor_can_config = { 0U };
+
 static void set_rear_controller_status_triggers_bps_fault(uint16_t val) {
   g_rx_struct.rear_controller_status_triggers = (g_rx_struct.rear_controller_status_triggers & ~(0b11111111111 << 0)) | ((val & 0b11111111111) << 0);
 }
@@ -89,29 +92,16 @@ static void set_steering_buttons_horn_enabled(uint16_t val) {
 //   g_rx_struct.steering_buttons = (g_rx_struct.steering_buttons & ~(0b1 << 7)) | ((val & 0b1) << 7);
 // }
 
-static const char *print_state_str(FrontControllerState state) {
-  switch (state) {
-    case FRONT_CONTROLLER_STATE_IDLE:
-      return "IDLE";
-    case FRONT_CONTROLLER_STATE_ENGAGED:
-      return "ENGAGED";
-    case FRONT_CONTROLLER_STATE_FAULT:
-      return "FAULT";
-    default:
-      return "UNKNOWN";
-  }
-}
-
 // Printed list of relay states
 static void log_status(void) {
-  FrontControllerState current_state = front_controller_state_manager_get_state();
-  LOG_DEBUG("State: %s\n", print_state_str(current_state));
+  VehicleDriveState current_state = front_controller_state_manager_get_state();
+  LOG_DEBUG("State: %s\n", VEHICLE_DRIVE_STATE_TO_STR(current_state));
   delay_ms(20U);
 }
 
 TASK(front_controller_run_med_cycle, TASK_STACK_1024) {
   LOG_DEBUG("Initializing the front controller...\n");
-  StatusCode status = front_controller_init(&front_controller_storage, &front_controller_config);
+  StatusCode status = front_controller_init(&front_controller_storage, &front_controller_config, &motor_can_config);
   if (status == STATUS_CODE_OK) {
     LOG_DEBUG("front controller initialized\n");
   } else {

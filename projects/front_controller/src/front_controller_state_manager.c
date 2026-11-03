@@ -260,7 +260,7 @@ StatusCode front_controller_update_state_manager_medium_cycle() {
     }
   }
 
-  // Handle brake, brake status is updated by brake_pedal.c and stored in front_controller_storage->brake_enabled
+  // Handle brake, brake status is updated by brake_pedal.c and stored in front_controller_storage->brake_state
   if (s_brake_state == BRAKE_STATE_BRAKING && (front_controller_storage->brake_state == BRAKE_STATE_DISABLED)) {
     power_manager_set_output_group(OUTPUT_GROUP_BRAKE_LIGHTS, false);
     s_brake_state = BRAKE_STATE_DISABLED;

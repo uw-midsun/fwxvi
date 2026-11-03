@@ -20,8 +20,11 @@
         "projects/front_controller/src/power_manager.o",
         "projects/front_controller/src/front_controller_state_manager.o",
         "projects/front_controller/src/brake_pedal.o",
+        "projects/front_controller/src/regen_brake.o",
+        "projects/front_controller/src/pedal_calib_handler.o",
         "libraries/ms-drivers/src/ws22_motor_can.o"
     ],
     "can": false,
-    "selected_preset": "STM32L433CCU6_legacy_debug"
+    "selected_preset": "STM32L433CCU6_legacy_debug",
+    "arm_only": true
 }

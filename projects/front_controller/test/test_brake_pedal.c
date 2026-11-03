@@ -53,7 +53,7 @@ void setup_test(void) {
   mock_storage.brake_pedal_storage->calibration_data.lower_value = 1000;
   mock_storage.brake_pedal_storage->calibration_data.upper_value = 2000;
   mock_storage.brake_pedal_storage->prev_reading = 0.0f;
-  mock_storage.brake_enabled = false;
+  mock_storage.brake_state = false;
 }
 
 void teardown_test(void) {}
@@ -65,7 +65,7 @@ void test_brake_pedal_reading_below_deadzone_should_disable_brake(void) {
   StatusCode ret = brake_pedal_run();
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
 
-  TEST_ASSERT_FALSE(mock_storage.brake_enabled);
+  TEST_ASSERT_FALSE(mock_storage.brake_state);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.04f, mock_storage.brake_pedal_storage->prev_reading);
 }
 
@@ -76,7 +76,7 @@ void test_brake_pedal_reading_above_deadzone_should_enable_brake(void) {
   StatusCode ret = brake_pedal_run();
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
 
-  TEST_ASSERT_TRUE(mock_storage.brake_enabled);
+  TEST_ASSERT_TRUE(mock_storage.brake_state);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.1f, mock_storage.brake_pedal_storage->prev_reading);
 }
 
@@ -107,6 +107,6 @@ void test_brake_pedal_fully_pressed(void) {
   StatusCode ret = brake_pedal_run();
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, ret);
 
-  TEST_ASSERT_TRUE(mock_storage.brake_enabled);
+  TEST_ASSERT_TRUE(mock_storage.brake_state);
   TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, mock_storage.brake_pedal_storage->prev_reading);
 }
