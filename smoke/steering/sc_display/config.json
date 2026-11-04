@@ -10,6 +10,9 @@
     "include": [
         "projects/steering/inc"
     ],
-    "can": false, 
+    "sources": [
+        "projects/steering/src/display.o"
+    ],
+    "can": false,
     "selected_preset": "STM32L4P5VET6_legacy_debug"
 }
