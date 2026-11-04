@@ -108,11 +108,15 @@ typedef struct {
   uint16_t duration_ms;
 } Note;
 
+typedef struct {
+  bool amplitude_modulation_enabled;
+} BuzzerSettings;
+
 /**
  * @brief   Initialize the buzzer
  * @return  STATUS_CODE_OK on success
  */
-StatusCode buzzer_init(void);
+StatusCode buzzer_init(BuzzerSettings settings);
 
 /**
  * @brief   Play a simple beep at 3.5kHz
@@ -126,6 +130,13 @@ StatusCode buzzer_beep(void);
  * @return  STATUS_CODE_OK on success
  */
 StatusCode buzzer_play_melody(Note *melody);
+
+/**
+ * @brief   Play a custom melody using amplitude modulation
+ * @param   melody Array of Note structures, terminated by {NOTE_REST, 0}
+ * @return  STATUS_CODE_OK on success
+ */
+StatusCode buzzer_play_melody_modulated(Note *melody);
 
 /**
  * @brief   Play predefined startup melody
