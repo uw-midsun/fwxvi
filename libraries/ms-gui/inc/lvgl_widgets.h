@@ -29,6 +29,8 @@
  * @brief    GUI Firmware
  * @{
  */
+
+#define SEGMENTED_BAR_SEGMENT_COUNT 5
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 typedef lv_align_t WidgetAlignment;
 typedef lv_bar_orientation_t WidgetOrientation;
@@ -106,6 +108,11 @@ typedef struct {
   lv_obj_t *bar;   /**< LVGL bar object */
   lv_obj_t *label; /**< LVGL label associated with the bar */
 } BarWidget;
+
+typedef struct {
+  lv_obj_t *segments[SEGMENTED_BAR_SEGMENT_COUNT];
+  lv_obj_t *value_label;
+} SegmentedBarWidget;
 
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
@@ -230,6 +237,11 @@ typedef struct {
   int16_t *label; /**< LVGL label associated with the bar */
 } BarWidget;
 
+typedef struct {
+  int16_t *segments[SEGMENTED_BAR_SEGMENT_COUNT];
+  int16_t *value_label;
+} SegmentedBarWidget;
+
 /** @brief   Configuration used when creating a labeled bar widget */
 typedef struct {
   WidgetSize size;                 /**< Bounding size of the bar widget */
@@ -263,6 +275,14 @@ typedef struct {
 typedef struct {
   int16_t *table;
 } TableWidget;
+
+typedef struct {
+  WidgetSize size;
+  WidgetPosition position;
+  const char *label_text;
+  WidgetAlignment label_alignment;
+  GuiColorId indicator_color_id;
+} SegmentedBarWidgetConfig;
 
 /** @brief   Configuration used when creating a table widget */
 typedef struct {
@@ -356,6 +376,15 @@ StatusCode lvgl_widgets_set_bar_value(BarWidget *bar_widget, int32_t value);
  * @return  STATUS_CODE_OK on success, error otherwise
  */
 StatusCode lvgl_widgets_set_bar_color(BarWidget *bar_widget, GuiColorId color_id);
+
+StatusCode lvgl_widgets_create_segmented_bar(
+    SegmentedBarWidget *widget,
+    const SegmentedBarWidgetConfig *config,
+    GuiScreen *parent);
+
+StatusCode lvgl_widgets_set_segmented_bar_value(
+    SegmentedBarWidget *widget,
+    float soc_percent);
 
 /**
  * @brief   Create and initialize a table widget
