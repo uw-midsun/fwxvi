@@ -537,6 +537,7 @@ if LIB_DIR.Dir('ms-mpxe').exists():
 ###########################################################
 # Create appropriate targets for all projects and smoke projects
 ###########################################################
+default_project_targets = []
 for entry in PROJ_DIR.glob('*') + get_smoke_entries():
     config = parse_config(entry)
 
@@ -596,8 +597,10 @@ for entry in PROJ_DIR.glob('*') + get_smoke_entries():
         target = env.Bin(target=BIN_DIR.File(entry.path + '.bin'), source=target)
 
     # Create an alias for the entry so we can do `scons leds` and it Just Works
-    Alias(entry.path, target)
+    project_alias = Alias(entry.path, target)
     Alias(entry.name, target)
+    if entry.dir == PROJ_DIR:
+        default_project_targets.extend(project_alias)
 
 if PLATFORM == 'x86':
     create_mpxe_server()
@@ -687,4 +690,4 @@ for entry in PY_DIR.glob("*", exclude=["*.*", "__pycache__"]):
     Alias(entry.name, target)
 
 # Build all projects when you just run `scons`
-Default(TARGET or [e.path for e in PROJ_DIR.glob('*')])
+Default(TARGET or default_project_targets)
