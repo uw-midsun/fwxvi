@@ -23,7 +23,6 @@ TCIXTMA1Storage storage;
 /* Intra-component Headers */
 
 TASK(hydrogen_sensor, TASK_STACK_1024) {
-
   GpioAddress scl;
   GpioAddress sda;
 
