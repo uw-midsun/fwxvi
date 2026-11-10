@@ -63,7 +63,7 @@ class Terminal {
   void handleAdcCommands(const std::string &action, std::vector<std::string> &tokens);
 
   void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
-
+  
   /**
    * @brief   Handle I2C commands provided an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
@@ -78,15 +78,6 @@ class Terminal {
    */
   void parseCommand(std::vector<std::string> &tokens);
 
- public:
-  /**
-   * @brief   Constructs a Terminal object
-   * @details Initializes the Terminal. The constructor sets up internal variables
-   *          The constructor shall bind to the server
-   * @param   server Pointer to a server instance
-   */
-  explicit Terminal(Server *server);
-
   /**
    * @brief   While true spin-loop to handle shell inputs
    * @details This function must be called after server initialization
@@ -94,11 +85,20 @@ class Terminal {
    */
   void run();
 
+  public:
   /**
    * @brief   Execute terminal-style command for a selected client
    * @note    For testing purposes
    */
   void executeCommand(ClientConnection *targetClient, const std::string &input);
+
+  /**
+   * @brief   Constructs a Terminal object
+   * @details Initializes the Terminal. The constructor sets up internal variables
+   *          The constructor shall bind to the server
+   * @param   server Pointer to a server instance
+   */
+  explicit Terminal(Server *server);
 };
 
 /** @} */

@@ -27,7 +27,8 @@
 #include "afe_page.h"
 #include "gpio_page.h"
 #include "overview_page.h"
-
+#include "app_terminal.h"
+#include "server.h"
 /* Intra-component headers */
 
 /**
@@ -58,9 +59,10 @@ class MainWindow : public QMainWindow {
   /**
    * @brief   Construct the main application window
    * @param   app_state Initial application state (payload, files, selected index)
+   * @param   terminal  Terminal instance
    * @param   parent    Parent widget (can be nullptr)
    */
-  explicit MainWindow(const AppState &app_state, QWidget *parent = nullptr);
+  explicit MainWindow(const AppState &app_state, Terminal &terminal, Server *server, QWidget *parent = nullptr);
 
   /**
    * @brief   Returns the list of known client files
@@ -132,6 +134,8 @@ class MainWindow : public QMainWindow {
 
   QPointer<QListWidget> m_list;     /**< Navigation list (left side) */
   QPointer<QStackedWidget> m_stack; /**< Stacked page container (right side) */
+  Terminal m_terminal; /**< Terminal instance  */
+  Server *m_server; /**< Server instance  */
 
   QPointer<OverviewPage> m_overview_page; /**< Overview page */
   QPointer<AfePage> m_afe_page;           /**< AFE page */

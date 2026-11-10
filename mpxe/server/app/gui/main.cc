@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     state.payload[QStringLiteral("afe")] = afeMap;
   }
 
-  MainWindow win{ state };
+  MainWindow win{ state, terminal, &server };
   win.show();
 
   JSONWatcher *watcher = new JSONWatcher{ &win };
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   /* When the set of *.json files changes, update UI + selection */
   QObject::connect(watcher, SIGNAL(clientsListChanged(QStringList)), &win, SLOT(onClientsListChanged(QStringList)));
 
-  QTimer gpio_poll_timer{ &win };
+ /*  QTimer gpio_poll_timer{ &win };
   QObject::connect(&gpio_poll_timer, &QTimer::timeout, [&server, &terminal]() {
     std::string client_name = "gpio_api";
     ClientConnection *client = server.getClientByName(client_name);
@@ -99,10 +99,8 @@ int main(int argc, char *argv[]) {
     if (client == nullptr) {
       return;
     }
-
-    terminal.executeCommand(client, "GPIO GET_PIN_STATE A0");
   });
-  gpio_poll_timer.start(1000);
+  gpio_poll_timer.start(1000); */
 
   return app.exec();
 }
