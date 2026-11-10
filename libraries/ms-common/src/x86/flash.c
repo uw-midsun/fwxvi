@@ -107,7 +107,7 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
   }
   // Erase all memory to overwrite
   flash_erase(0, 128);
-  
+
   pthread_mutex_lock(&s_flash_mutex);
 
   // Seek to memeory address and write
