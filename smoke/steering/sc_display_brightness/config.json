@@ -8,11 +8,13 @@
         "ms-mpxe"
     ],
     "include": [
-        "projects/steering/inc"
+        "projects/steering/inc",
+        "build/arm/obj/projects/steering/can/inc"
     ],
     "sources": [
-        "projects/steering/src/display.o"
+        "projects/steering/src/display.o",
+        "projects/steering/src/pedal_calib.o"
     ],
-    "can": false,
+    "can": true,
     "selected_preset": "STM32L4P5VET6_legacy_debug"
 }

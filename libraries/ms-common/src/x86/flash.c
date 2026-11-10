@@ -105,11 +105,10 @@ StatusCode flash_write(uintptr_t address, uint8_t *buffer, size_t buffer_len) {
   if (buffer == NULL || s_validate_address(address, buffer_len) != STATUS_CODE_OK) {
     return STATUS_CODE_INVALID_ARGS;
   }
-
-  pthread_mutex_lock(&s_flash_mutex);
-
   // Erase all memory to overwrite
   flash_erase(0, 128);
+  
+  pthread_mutex_lock(&s_flash_mutex);
 
   // Seek to memeory address and write
   fseek(s_flash_fp, (intptr_t)address, SEEK_SET);
