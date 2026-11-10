@@ -6,6 +6,8 @@
  ************************************************************************************************/
 
 /* Standard library headers */
+#include <string>
+#include <vector>
 
 /* Qt library headers */
 #include <QAbstractItemView>
@@ -56,7 +58,7 @@ QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
   return label;
 }
 
-OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent) :
+OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, Terminal &terminal, Server *server, QWidget *parent) :
     QWidget{ parent },
     m_clients{ nullptr },
     m_project_lbl{ nullptr },
@@ -67,7 +69,10 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
     m_status_text{ nullptr },
     m_created_label{ nullptr },
     m_client_files{ clientFiles },
-    m_payload{ payload } {
+    m_payload{ payload },
+    m_cmds_table{ nullptr },
+    m_terminal{ terminal },
+    m_server{ server } {
   /* Top row client selector */
   QWidget *top = new QWidget(this);
   QHBoxLayout *h = new QHBoxLayout(top);
@@ -117,6 +122,8 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   CommandTableModel *cmd_model = new CommandTableModel(MARKDOWN_PATH, this);
   TableWithSearch cmds = makeSearchableTable(cmd_model, this);
   if (cmds.table) {
+    m_cmds_table = cmds;
+    connect(m_cmds_table.table, &QTableView::clicked, this, &OverviewPage::onCommandClicked);
     QHeaderView *hh = cmds.table->horizontalHeader();
 
     /* Keep widths predictable and the last column narrow */
@@ -187,4 +194,23 @@ void OverviewPage::onClientChanged(int index) {
     return;
   }
   emit clientSelected(m_client_files.at(index));
+}
+
+void OverviewPage::onCommandClicked(const QModelIndex &index) {
+  QModelIndex sourceIndex = m_cmds_table.proxy->mapToSource(index);
+  
+  QString type = sourceIndex.sibling(sourceIndex.row(), 0).data().toString();
+  QString cmd = sourceIndex.sibling(sourceIndex.row(), 1).data().toString();
+  QString parameter = sourceIndex.sibling(sourceIndex.row(), 2).data().toString();
+  QString add_parameter = sourceIndex.sibling(sourceIndex.row(), 3).data(Qt::ToolTipRole).toString();
+  
+  std::vector<std::string> tokens = {type.toStdString(), cmd.toStdString(), parameter.toStdString(), add_parameter.toStdString()};
+  std::string clientName = m_clients->currentText().toStdString();
+  ClientConnection *client = m_server->getClientByName(clientName);
+
+  QStringList input;
+  input << type << cmd << parameter << add_parameter;
+  std::string inputString = input.join(' ').toStdString();
+
+  m_terminal.executeCommand(client, inputString);
 }

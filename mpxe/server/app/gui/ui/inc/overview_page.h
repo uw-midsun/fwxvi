@@ -22,6 +22,9 @@
 #include <QWidget>
 
 /* Inter-component headers */
+#include "utils.h"
+#include "app_terminal.h"
+#include "server.h"
 
 /* Intra-component headers */
 
@@ -47,7 +50,7 @@ class OverviewPage : public QWidget {
    * @param   currentIndex  Currently selected client index
    * @param   parent        Parent widget (can be nullptr)
    */
-  explicit OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent = nullptr);
+  explicit OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, Terminal &terminal, Server *server, QWidget *parent = nullptr);
 
   static const constexpr unsigned int SPACE_STRETCH_SIZE = 1; /**< Stretch factor for spacing in layouts */
 
@@ -73,12 +76,19 @@ class OverviewPage : public QWidget {
    */
   void clientSelected(const QString &json_path);
 
- private slots:
+  
+  private slots:
   /**
    * @brief   Slot to handle combobox index changes
    * @param   index Selected index
    */
   void onClientChanged(int index);
+
+  /**
+   * @brief   Emitted when a client is chosen from the combobox
+   * @param   index Index of table row
+   */
+  void onCommandClicked(const QModelIndex &index);
 
  private:
   /**
@@ -102,6 +112,9 @@ class OverviewPage : public QWidget {
 
   QStringList m_client_files;            /**< List of client file paths */
   std::map<QString, QVariant> m_payload; /**< Current payload used for display */
+  TableWithSearch m_cmds_table; /**< Commands table  */
+  Terminal m_terminal; /**< Terminal instance */
+  Server *m_server; /**< Server instance */
 };
 
 /** @} */

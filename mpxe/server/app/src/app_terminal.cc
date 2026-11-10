@@ -207,7 +207,6 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
 
   std::string interface = toLower(tokens[0]);
   std::string action = toLower(tokens[1]);
-
   try {
     if (interface == "gpio") {
       handleGpioCommands(action, tokens);
