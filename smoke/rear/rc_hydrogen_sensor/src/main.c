@@ -23,8 +23,25 @@ TCIXTMA1Storage storage;
 /* Intra-component Headers */
 
 TASK(hydrogen_sensor, TASK_STACK_1024) {
+
+  GpioAddress scl;
+  GpioAddress sda;
+
+  scl.pin = 10;
+  sda.pin = 11;
+
+  scl.port = GPIO_PORT_B;
+  sda.port = GPIO_PORT_B;
+
+  I2CSettings settings;
+  settings.scl = scl;
+  settings.sda = sda;
+  settings.speed = I2C_SPEED_STANDARD;
+
+  i2c_init(I2C_PORT_2, &settings);
+
   // TCI I2C address is 0x36 (datasheet section 10.1.1)
-  tcixtma1_init(&storage, I2C_PORT_2, 0x36);
+  StatusCode status_init = tcixtma1_init(&storage, I2C_PORT_2, 0x36);
   float conc = 0.0f;
 
   while (true) {
@@ -32,7 +49,7 @@ TASK(hydrogen_sensor, TASK_STACK_1024) {
 
     /* conc is in vol%, smallest sensor unit is 0.01 vol% = 100 ppm (datasheet section 10.2)*/
     if (status == STATUS_CODE_OK) {
-      LOG_DEBUG("Hydrogen concentration: %.2f (vol%%)\n", conc);
+      LOG_DEBUG("Hydrogen concentration: %.2f (vol%%)\n", (double)conc);
     } else {
       LOG_DEBUG("Read failed\n");
     }
@@ -48,7 +65,6 @@ int main(int argc, char *argv[]) {
 #else
 int main() {
 #endif
-
   mcu_init();
   tasks_init();
   log_init();
