@@ -77,6 +77,22 @@ StatusCode display_backlight_init(SteeringStorage *storage);
  */
 StatusCode display_set_brightness(uint16_t percentage, bool persist);
 
+/**
+ * @brief Increment display brightness by a set amount, while handling limits correctly
+ * @return STATUS_CODE_OK if completed successfully
+ *         STATUS_CODE_INVALID_ARGS if the method is run before the display
+ *          backlight is initialized
+ */
+StatusCode display_increment_brightness();
+
+/**
+ * @brief Decrement display brightness by a set amount, while handling limits correctly
+ * @return STATUS_CODE_OK if completed successfully
+ *         STATUS_CODE_INVALID_ARGS if the method is run before the display
+ *          backlight is initialized
+ */
+StatusCode display_decrement_brightness();
+
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();
 StatusCode display_rx_fast();

@@ -162,15 +162,10 @@ static void s_process_x86_keyboard_input(void) {
         steering_pedal_calib_request(steering_storage);
       }
     } else if (!menu_chord_pressed && gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
-      if (right_pressed_edge && steering_storage->display_data.brightness < 100) {
-        // Setting the brightness over 100 is already handled by the function
-        display_set_brightness(steering_storage->display_data.brightness + BRIGHTNESS_CHANGE_INTERVAL, false);
-      }
-      if (left_pressed_edge && steering_storage->display_data.brightness > 0) {
-        // An underflow here would set the brightness to max, so we need to explicitly handle it
-        uint8_t new_brightness = steering_storage->display_data.brightness - BRIGHTNESS_CHANGE_INTERVAL;
-        if (steering_storage->display_data.brightness < BRIGHTNESS_CHANGE_INTERVAL) new_brightness = 0;
-        display_set_brightness(new_brightness, false);
+      if (right_pressed_edge) {
+        display_increment_brightness();
+      } else if (left_pressed_edge) {
+        display_decrement_brightness();
       }
     }
   }
@@ -415,6 +410,26 @@ StatusCode display_set_brightness(uint16_t percentage, bool persist) {
   display_data->brightness = percentage;
   if (persist && committed_brightness != display_data->brightness) {
     return s_sync_committed_brightness();
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_increment_brightness() {
+  if (steering_storage->display_data.brightness < 100) {
+    // Setting the brightness over 100 is already handled by the function
+    return display_set_brightness(steering_storage->display_data.brightness + BRIGHTNESS_CHANGE_INTERVAL, false);
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_decrement_brightness() {
+  if (steering_storage->display_data.brightness > 0) {
+    // An underflow here would set the brightness to max, so we need to explicitly handle it
+    uint8_t new_brightness = steering_storage->display_data.brightness - BRIGHTNESS_CHANGE_INTERVAL;
+    if (steering_storage->display_data.brightness < BRIGHTNESS_CHANGE_INTERVAL) new_brightness = 0;
+    return display_set_brightness(new_brightness, false);
   }
 
   return STATUS_CODE_OK;
