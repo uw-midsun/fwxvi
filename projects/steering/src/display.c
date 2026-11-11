@@ -157,10 +157,10 @@ static void s_process_x86_keyboard_input(void) {
     }
   } else if (!gui_menu_is_open()) {
     if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
-    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
-    if (return_pressed_edge) {
-      steering_pedal_calib_request(steering_storage);
-    }
+      /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
+      if (return_pressed_edge) {
+        steering_pedal_calib_request(steering_storage);
+      }
     } else if (!menu_chord_pressed && gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
       if (right_pressed_edge && steering_storage->display_data.brightness < 100) {
         // Setting the brightness over 100 is already handled by the function
