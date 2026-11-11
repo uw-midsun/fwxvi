@@ -16,6 +16,7 @@
 #include "buzzer.h"
 #include "gpio.h"
 #include "gui.h"
+#include "gui_display_brightness_screen.h"
 #include "gui_drive_screen.h"
 #include "gui_menu.h"
 #include "gui_pack_screen.h"
@@ -264,6 +265,8 @@ static StatusCode s_render_gui_step(void) {
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_rx(steering_storage);
+  } else if (current_screen == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+    status_ok_or_return(gui_display_brightness_screen_widget_set_bar(steering_storage->display_data.brightness));
   }
 
   return gui_render();

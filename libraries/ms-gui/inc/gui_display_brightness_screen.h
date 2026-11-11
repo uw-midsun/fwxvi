@@ -36,4 +36,11 @@ StatusCode gui_display_brightness_screen_init(GuiScreen *screen);
  */
 void gui_display_brightness_screen_deinit(void);
 
+/**
+ * @brief   Update the horizontal brightness percentage bar
+ * @param   percent Current percentage (0-100)
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+StatusCode gui_display_brightness_screen_widget_set_bar(uint8_t percent);
+
 /** @} */

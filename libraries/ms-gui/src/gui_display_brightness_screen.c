@@ -27,6 +27,8 @@
 #include "lvgl_screens.h"
 #include "lvgl_widgets.h"
 
+static BarWidget s_brightness_bar;
+
 static bool s_display_brightness_widgets_initialized;
 
 static StatusCode s_create_title_label(GuiScreen *screen) {
@@ -58,7 +60,6 @@ static StatusCode s_create_brightness_bar(GuiScreen *screen) {
     .indicator_color_id = GUI_COLOR_SOC_FILL,  // TODO: TEMPORARY, ADD NEW COLOUR
   };
 
-  static BarWidget s_brightness_bar;
   return lvgl_widgets_create_bar(&s_brightness_bar, &bar_config, screen);
 }
 
@@ -81,8 +82,16 @@ StatusCode gui_display_brightness_screen_init(GuiScreen *screen) {
 }
 
 void gui_display_brightness_screen_deinit(void) {
-  //   s_therm_table = (TableWidget){ 0 };
+  s_brightness_bar = (BarWidget){ 0 };
   s_display_brightness_widgets_initialized = false;
+}
+
+StatusCode gui_display_brightness_screen_widget_set_bar(uint8_t percent) {
+  if (!s_display_brightness_widgets_initialized) {
+    return STATUS_CODE_UNINITIALIZED;
+  }
+
+  return lvgl_widgets_set_bar_value(&s_brightness_bar, percent);
 }
 
 #else
@@ -93,5 +102,10 @@ StatusCode gui_display_brightness_screen_init(GuiScreen *screen) {
 }
 
 void gui_display_brightness_screen_deinit(void) {}
+
+StatusCode gui_display_brightness_screen_widget_set_bar(uint8_t percent) {
+  (void)percent;
+  return STATUS_CODE_OK;
+}
 
 #endif
