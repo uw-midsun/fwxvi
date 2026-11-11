@@ -108,6 +108,8 @@ static void s_process_x86_keyboard_input(void) {
   bool menu_chord_pressed;
   bool up_pressed_edge;
   bool down_pressed_edge;
+  bool left_pressed_edge;
+  bool right_pressed_edge;
   bool return_pressed_edge;
   bool escape_pressed_edge;
 
@@ -124,6 +126,8 @@ static void s_process_x86_keyboard_input(void) {
 
   up_pressed_edge = up_pressed && !s_keyboard_state.up_pressed;
   down_pressed_edge = down_pressed && !s_keyboard_state.down_pressed;
+  left_pressed_edge = left_pressed && !s_keyboard_state.left_pressed;
+  right_pressed_edge = right_pressed && !s_keyboard_state.right_pressed;
   return_pressed_edge = return_pressed && !s_keyboard_state.return_pressed;
   escape_pressed_edge = escape_pressed && !s_keyboard_state.escape_pressed;
 
@@ -151,10 +155,19 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
-  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
+  } else if (!gui_menu_is_open()) {
+    if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
     /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
     if (return_pressed_edge) {
       steering_pedal_calib_request(steering_storage);
+    }
+    } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+      if (right_pressed_edge && steering_storage->display_data.brightness < 100) {
+        display_set_brightness(steering_storage->display_data.brightness + 1, false);
+      }
+      if (left_pressed_edge && steering_storage->display_data.brightness > 0) {
+        display_set_brightness(steering_storage->display_data.brightness - 1, false);
+      }
     }
   }
 
@@ -405,6 +418,15 @@ static uint16_t prv_safe_cell_voltage(uint16_t raw) {
 }
 
 StatusCode display_rx_slow() {
+  // Make sure we keep the committed brightness up to date. This keeps the stored brightness up to date,
+  // while also not writing to flash too much.
+  if (committed_brightness != display_data->brightness) {
+    committed_brightness = display_data->brightness;
+#if INCLUDE_PERSISTENCE == 1
+    return persist_commit(&persist_storage);
+#endif
+  }
+
   return STATUS_CODE_OK;
 }
 

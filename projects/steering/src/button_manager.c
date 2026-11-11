@@ -23,6 +23,7 @@
 #include "button_manager.h"
 #include "buzzer.h"
 #include "cruise_control.h"
+#include "display.h"
 #include "drive_state_manager.h"
 #include "global_enums.h"
 #include "gui_menu.h"
@@ -241,6 +242,11 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
   if (gui_menu_is_open()) {
     gui_menu_request_move_up();
     return;
+  } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+    if (steering_storage->display_data.brightness < 100) {
+      display_set_brightness(steering_storage->display_data.brightness + 1, false);
+    }
+    return;
   }
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
@@ -257,6 +263,11 @@ static void cruise_control_up_btn_rising_edge_cb(Button *button) {
 static void cruise_control_down_btn_falling_edge_cb(Button *button) {
   if (gui_menu_is_open()) {
     gui_menu_request_move_down();
+    return;
+  } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+    if (steering_storage->display_data.brightness > 0) {
+      display_set_brightness(steering_storage->display_data.brightness - 1, false);
+    }
     return;
   }
 
