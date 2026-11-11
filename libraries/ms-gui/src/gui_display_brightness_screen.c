@@ -31,12 +31,12 @@ static bool s_display_brightness_widgets_initialized;
 
 static StatusCode s_create_title_label(GuiScreen *screen) {
   const LabelWidgetConfig title_config = {
-    .size = { .width = DISPLAY_WIDTH, .height = 20 },
-    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 4 } },
+    .size = { .width = DISPLAY_WIDTH, .height = 30 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 20 } },
     .label_text = "Display Brightness",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
-    .font = GUI_SMALL_TEXT,
+    .font = GUI_MEDIUM_TEXT,
     .background_enabled = false,
     .background_color_id = 0,
     .border_enabled = false,
@@ -46,6 +46,20 @@ static StatusCode s_create_title_label(GuiScreen *screen) {
 
   static LabelWidget s_title_label;
   return lvgl_widgets_create_label(&s_title_label, &title_config, screen);
+}
+
+static StatusCode s_create_brightness_bar(GuiScreen *screen) {
+  const BarWidgetConfig bar_config = {
+    .size = { .width = 400, .height = 30 },
+    .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_CENTER, .x_offset = 0, .y_offset = 0 } },
+    .label_text = "",
+    .label_alignment = LV_ALIGN_CENTER,
+    .orientation = LV_BAR_ORIENTATION_HORIZONTAL,
+    .indicator_color_id = GUI_COLOR_SOC_FILL,  // TODO: TEMPORARY, ADD NEW COLOUR
+  };
+
+  static BarWidget s_brightness_bar;
+  return lvgl_widgets_create_bar(&s_brightness_bar, &bar_config, screen);
 }
 
 StatusCode gui_display_brightness_screen_init(GuiScreen *screen) {
@@ -60,6 +74,7 @@ StatusCode gui_display_brightness_screen_init(GuiScreen *screen) {
   status_ok_or_return(lvgl_set_background_color(screen, GUI_COLOR_SCREEN_BACKGROUND));
 
   status_ok_or_return(s_create_title_label(screen));
+  status_ok_or_return(s_create_brightness_bar(screen));
 
   s_display_brightness_widgets_initialized = true;
   return STATUS_CODE_OK;
