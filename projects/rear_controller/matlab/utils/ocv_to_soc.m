@@ -8,7 +8,7 @@
 % FUNCTION DESCRIPTION
 % =========================================================================
 % Computes SOC from a measured OCV using inverse interpolation.
-% Assumes monotonic OCV_table. Converts back from (1 - SOC) indexing
+% Assumes OCV_table is decreasing (index 1 = full). Converts back from (1 - SOC) indexing
 %
 % -------------------------------------------------------------------------
 % INPUTS:
@@ -32,15 +32,15 @@ function soc = ocv_to_soc(params, v) %#codegen
     ocv_tab = params.OCV_table;
     N = numel(ocv_tab);
 
-    if v_cell <= ocv_tab(1)
+    if v_cell >= ocv_tab(1)
         soc = 1 - soc_tab(1); return;  % Convert back to actual SOC
-    elseif v_cell >= ocv_tab(N)
+    elseif v_cell <= ocv_tab(N)
         soc = 1 - soc_tab(N); return;  % Convert back to actual SOC
     end
 
     idx = 1;
     for i = 1:(N-1)
-        if v_cell >= ocv_tab(i) && v_cell <= ocv_tab(i+1)
+        if v_cell <= ocv_tab(i) && v_cell >= ocv_tab(i+1)
             idx = i; break;
         end
     end
