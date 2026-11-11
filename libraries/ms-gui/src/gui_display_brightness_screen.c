@@ -9,7 +9,6 @@
 
 /* Standard library Headers */
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "status.h"
 
@@ -21,7 +20,7 @@
 /* Intra-component Headers */
 #include "clut.h"
 #include "display_defs.h"
-#include "gui_therm_screen.h"
+#include "gui_display_brightness_screen.h"
 
 #if defined(STM32L4P5xx) || defined(MS_PLATFORM_X86)
 #include "lvgl_screens.h"
