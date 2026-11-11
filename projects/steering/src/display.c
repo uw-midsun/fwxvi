@@ -441,7 +441,7 @@ StatusCode display_run() {
 
 static uint16_t prv_safe_cell_voltage(uint16_t raw) {
   if (raw < 20000U || raw > 50000U) {
-    // LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
+    LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
     return 0U;
   }
   return raw;
