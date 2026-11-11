@@ -17,6 +17,7 @@
 
 /* Intra-component Headers */
 #include "clut.h"
+#include "gui_display_brightness_screen.h"
 #include "gui_drive_screen.h"
 #include "gui_pack_screen.h"
 #include "gui_pedal_calib_screen.h"
@@ -160,6 +161,22 @@ static void s_destroy_pedal_calib_screen(void) {
 }
 
 /**
+ * @brief   Build the display brightness screen
+ * @param   screen Root screen object to populate
+ * @return  STATUS_CODE_OK on success, error otherwise
+ */
+static StatusCode s_create_display_brightness_screen(GuiScreen *screen) {
+  return gui_display_brightness_screen_init(screen);
+}
+
+/**
+ * @brief   Reset display brightness screen widget handles after the active root is cleaned
+ */
+static void s_destroy_display_brightness_screen(void) {
+  gui_display_brightness_screen_deinit();
+}
+
+/**
  * @brief   Register the default built-in GUI screens
  * @return  STATUS_CODE_OK on success, error otherwise
  */
@@ -194,6 +211,12 @@ static StatusCode s_register_default_screens(void) {
       .create = s_create_pedal_calib_screen,
       .destroy = s_destroy_pedal_calib_screen,
     },
+    [GUI_SCREEN_DISPLAY_BRIGHTNESS] = {
+      .id = GUI_SCREEN_DISPLAY_BRIGHTNESS,
+      .name = "Display Brightness",
+      .create = s_create_display_brightness_screen,
+      .destroy = s_destroy_display_brightness_screen,
+    }
   };
 
   for (size_t i = 0U; i < NUM_GUI_SCREENS; i++) {
