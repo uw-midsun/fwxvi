@@ -216,7 +216,7 @@ static StatusCode s_register_default_screens(void) {
       .name = "Display Brightness",
       .create = s_create_display_brightness_screen,
       .destroy = s_destroy_display_brightness_screen,
-    }
+    },
   };
 
   for (size_t i = 0U; i < NUM_GUI_SCREENS; i++) {
