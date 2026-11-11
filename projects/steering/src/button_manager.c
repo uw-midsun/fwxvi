@@ -244,7 +244,8 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
     return;
   } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
     if (steering_storage->display_data.brightness < 100) {
-      display_set_brightness(steering_storage->display_data.brightness + 1, false);
+      // Setting the brightness over 100 is already handled by the function
+      display_set_brightness(steering_storage->display_data.brightness + BRIGHTNESS_CHANGE_INTERVAL, false);
     }
     return;
   }
@@ -266,7 +267,10 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
     return;
   } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
     if (steering_storage->display_data.brightness > 0) {
-      display_set_brightness(steering_storage->display_data.brightness - 1, false);
+      // An underflow here would set the brightness to max, so we need to explicitly handle it
+      uint8_t new_brightness = steering_storage->display_data.brightness - BRIGHTNESS_CHANGE_INTERVAL;
+      if (steering_storage->display_data.brightness < BRIGHTNESS_CHANGE_INTERVAL) new_brightness = 0;
+      display_set_brightness(new_brightness, false);
     }
     return;
   }

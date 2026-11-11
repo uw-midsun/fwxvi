@@ -161,12 +161,16 @@ static void s_process_x86_keyboard_input(void) {
     if (return_pressed_edge) {
       steering_pedal_calib_request(steering_storage);
     }
-    } else if (gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+    } else if (!menu_chord_pressed && gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
       if (right_pressed_edge && steering_storage->display_data.brightness < 100) {
-        display_set_brightness(steering_storage->display_data.brightness + 1, false);
+        // Setting the brightness over 100 is already handled by the function
+        display_set_brightness(steering_storage->display_data.brightness + BRIGHTNESS_CHANGE_INTERVAL, false);
       }
       if (left_pressed_edge && steering_storage->display_data.brightness > 0) {
-        display_set_brightness(steering_storage->display_data.brightness - 1, false);
+        // An underflow here would set the brightness to max, so we need to explicitly handle it
+        uint8_t new_brightness = steering_storage->display_data.brightness - BRIGHTNESS_CHANGE_INTERVAL;
+        if (steering_storage->display_data.brightness < BRIGHTNESS_CHANGE_INTERVAL) new_brightness = 0;
+        display_set_brightness(new_brightness, false);
       }
     }
   }
