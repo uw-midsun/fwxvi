@@ -18,10 +18,12 @@
 #include <QObject>
 #include <QTableView>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 /* Inter-component headers */
 #include "command_table_model.h"
 #include "utils.h"
+#include "command_dialog.h"
 
 /* Intra-component headers */
 #include "overview_page.h"
@@ -56,6 +58,33 @@ QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
   }
 
   return label;
+}
+
+/*
+-------------------------------------------------------- */
+
+QStringList extractPlaceholders(const QString &param_1, const QString &param_2) {
+  QStringList cells;
+  for (const QString &cell : {param_1, param_2}) {
+    QStringList names;
+    if (cell.isEmpty() || cell == QStringLiteral("-")) continue;
+    int lbrack = cell.indexOf('[');
+
+    /* Extracting text from brackets */
+    while (lbrack != -1) {
+      const int rbrack = cell.indexOf(']', lbrack + 1);
+      const QString name = cell.mid(lbrack + 1, rbrack - lbrack - 1).trimmed();
+      if (!name.isEmpty()) {
+        names << name;
+      }
+      lbrack = cell.indexOf('[', rbrack + 1);
+    }
+
+    if (!names.isEmpty()) {
+      cells << names.join('/');
+    }
+  }
+  return cells;
 }
 
 OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, Terminal &terminal, Server *server, QWidget *parent) :
@@ -208,8 +237,27 @@ void OverviewPage::onCommandClicked(const QModelIndex &index) {
   std::string clientName = m_clients->currentText().toStdString();
   ClientConnection *client = m_server->getClientByName(clientName);
 
+  const QStringList placeholders = extractPlaceholders(parameter, add_parameter);
+
+  QStringList args;
+  if (!placeholders.isEmpty()) {
+    CommandDialog dialog(type, cmd, placeholders, this);
+    if (dialog.exec() != QDialog::Accepted) {
+      return;
+    }
+
+    const QStringList values = dialog.values();
+    for (const QString &v : values) {
+      if (v.isEmpty()) {
+        QMessageBox::warning(this, QStringLiteral("Missing parameter"), QStringLiteral("All parameters must be provided."));
+        return;
+      }
+    }
+    args = values;
+  }
+  
   QStringList input;
-  input << type << cmd << parameter << add_parameter;
+  input << type << cmd << args;
   std::string inputString = input.join(' ').toStdString();
 
   m_terminal.executeCommand(client, inputString);
