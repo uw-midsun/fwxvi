@@ -57,7 +57,7 @@ static StatusCode s_create_brightness_bar(GuiScreen *screen) {
     .label_text = "",
     .label_alignment = LV_ALIGN_CENTER,
     .orientation = LV_BAR_ORIENTATION_HORIZONTAL,
-    .indicator_color_id = GUI_COLOR_SOC_FILL,  // TODO: TEMPORARY, ADD NEW COLOUR
+    .indicator_color_id = GUI_COLOR_BRIGHTNESS_FILL,
   };
 
   return lvgl_widgets_create_bar(&s_brightness_bar, &bar_config, screen);
