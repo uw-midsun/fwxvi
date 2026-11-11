@@ -289,6 +289,20 @@ static StatusCode s_render_gui_step(void) {
   return gui_render();
 }
 
+static StatusCode s_sync_committed_brightness() {
+  uint32_t prev_brightness = committed_brightness;
+  committed_brightness = display_data->brightness;
+#if INCLUDE_PERSISTENCE == 1
+  StatusCode status_code = persist_commit(&persist_storage);
+  if (status_code != STATUS_CODE_OK) {
+    committed_brightness = prev_brightness;
+  }
+  return status_code;
+#endif
+
+  return STATUS_CODE_OK;
+}
+
 TASK(display_lvgl_task, TASK_STACK_2048) {
 #ifdef MS_PLATFORM_X86
   StatusCode init_status = gui_init(&settings);
@@ -400,10 +414,7 @@ StatusCode display_set_brightness(uint16_t percentage, bool persist) {
 
   display_data->brightness = percentage;
   if (persist && committed_brightness != display_data->brightness) {
-    committed_brightness = display_data->brightness;
-#if INCLUDE_PERSISTENCE == 1
-    return persist_commit(&persist_storage);
-#endif
+    return s_sync_committed_brightness();
   }
 
   return STATUS_CODE_OK;
@@ -415,7 +426,7 @@ StatusCode display_run() {
 
 static uint16_t prv_safe_cell_voltage(uint16_t raw) {
   if (raw < 20000U || raw > 50000U) {
-    LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
+    // LOG_DEBUG("Cell voltage out of range: %d\n", (int)raw);
     return 0U;
   }
   return raw;
@@ -425,10 +436,7 @@ StatusCode display_rx_slow() {
   // Make sure we keep the committed brightness up to date. This keeps the stored brightness up to date,
   // while also not writing to flash too much.
   if (committed_brightness != display_data->brightness) {
-    committed_brightness = display_data->brightness;
-#if INCLUDE_PERSISTENCE == 1
-    return persist_commit(&persist_storage);
-#endif
+    return s_sync_committed_brightness();
   }
 
   return STATUS_CODE_OK;
