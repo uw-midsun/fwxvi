@@ -16,6 +16,7 @@
 #include "buzzer.h"
 #include "gpio.h"
 #include "gui.h"
+#include "gui_display_brightness_screen.h"
 #include "gui_drive_screen.h"
 #include "gui_menu.h"
 #include "gui_pack_screen.h"
@@ -41,7 +42,7 @@
 
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
-#define INCLUDE_PERSISTENCE 1
+#define INCLUDE_PERSISTENCE 0
 
 static PersistStorage persist_storage;
 static SteeringStorage *steering_storage = NULL;
@@ -107,6 +108,8 @@ static void s_process_x86_keyboard_input(void) {
   bool menu_chord_pressed;
   bool up_pressed_edge;
   bool down_pressed_edge;
+  bool left_pressed_edge;
+  bool right_pressed_edge;
   bool return_pressed_edge;
   bool escape_pressed_edge;
 
@@ -123,6 +126,8 @@ static void s_process_x86_keyboard_input(void) {
 
   up_pressed_edge = up_pressed && !s_keyboard_state.up_pressed;
   down_pressed_edge = down_pressed && !s_keyboard_state.down_pressed;
+  left_pressed_edge = left_pressed && !s_keyboard_state.left_pressed;
+  right_pressed_edge = right_pressed && !s_keyboard_state.right_pressed;
   return_pressed_edge = return_pressed && !s_keyboard_state.return_pressed;
   escape_pressed_edge = escape_pressed && !s_keyboard_state.escape_pressed;
 
@@ -150,10 +155,18 @@ static void s_process_x86_keyboard_input(void) {
     if (escape_pressed_edge) {
       gui_menu_close();
     }
-  } else if (!gui_menu_is_open() && gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
-    /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
-    if (return_pressed_edge) {
-      steering_pedal_calib_request(steering_storage);
+  } else if (!gui_menu_is_open()) {
+    if (gui_screens_get_current() == GUI_SCREEN_PEDAL_CALIB && !gui_pedal_calib_screen_is_fault_active()) {
+      /* Ignore the start button while a BPS fault has taken over the pedal-calib screen */
+      if (return_pressed_edge) {
+        steering_pedal_calib_request(steering_storage);
+      }
+    } else if (!menu_chord_pressed && gui_screens_get_current() == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+      if (right_pressed_edge) {
+        display_increment_brightness();
+      } else if (left_pressed_edge) {
+        display_decrement_brightness();
+      }
     }
   }
 
@@ -264,9 +277,32 @@ static StatusCode s_render_gui_step(void) {
 
   } else if (current_screen == GUI_SCREEN_PEDAL_CALIB) {
     steering_pedal_calib_rx(steering_storage);
+  } else if (current_screen == GUI_SCREEN_DISPLAY_BRIGHTNESS) {
+    status_ok_or_return(gui_display_brightness_screen_widget_set_bar(steering_storage->display_data.brightness));
   }
 
   return gui_render();
+}
+
+static StatusCode s_sync_committed_brightness() {
+  uint32_t prev_brightness = committed_brightness;
+  committed_brightness = display_data->brightness;
+#if INCLUDE_PERSISTENCE == 1
+  // Keep the saved brightness at a minimum of 5%, so it doesn't look like the display is broken on next boot
+  if (committed_brightness == 0) {
+    committed_brightness = 5;
+  }
+  // Ensures we don't unnecessarily write to flash because of the desync between committed & prev
+  if (prev_brightness == committed_brightness) return STATUS_CODE_OK;
+
+  StatusCode status_code = persist_commit(&persist_storage);
+  if (status_code != STATUS_CODE_OK) {
+    committed_brightness = prev_brightness;
+  }
+  return status_code;
+#endif
+
+  return STATUS_CODE_OK;
 }
 
 TASK(display_lvgl_task, TASK_STACK_2048) {
@@ -380,10 +416,27 @@ StatusCode display_set_brightness(uint16_t percentage, bool persist) {
 
   display_data->brightness = percentage;
   if (persist && committed_brightness != display_data->brightness) {
-    committed_brightness = display_data->brightness;
-#if INCLUDE_PERSISTENCE == 1
-    return persist_commit(&persist_storage);
-#endif
+    return s_sync_committed_brightness();
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_increment_brightness() {
+  if (steering_storage->display_data.brightness < 100) {
+    // Setting the brightness over 100 is already handled by the function
+    return display_set_brightness(steering_storage->display_data.brightness + BRIGHTNESS_CHANGE_INTERVAL, false);
+  }
+
+  return STATUS_CODE_OK;
+}
+
+StatusCode display_decrement_brightness() {
+  if (steering_storage->display_data.brightness > 0) {
+    // An underflow here would set the brightness to max, so we need to explicitly handle it
+    uint8_t new_brightness = steering_storage->display_data.brightness - BRIGHTNESS_CHANGE_INTERVAL;
+    if (steering_storage->display_data.brightness < BRIGHTNESS_CHANGE_INTERVAL) new_brightness = 0;
+    return display_set_brightness(new_brightness, false);
   }
 
   return STATUS_CODE_OK;
@@ -402,6 +455,12 @@ static uint16_t prv_safe_cell_voltage(uint16_t raw) {
 }
 
 StatusCode display_rx_slow() {
+  // Make sure we keep the committed brightness up to date. This keeps the stored brightness up to date,
+  // while also not writing to flash too much.
+  if (committed_brightness != display_data->brightness) {
+    return s_sync_committed_brightness();
+  }
+
   return STATUS_CODE_OK;
 }
 
