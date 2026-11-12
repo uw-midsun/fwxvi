@@ -3,5 +3,6 @@
     "CMSIS",
     "HAL"
   ],
-  "no_lint": true
+  "no_lint": true,
+  "arm_only": true
 }

@@ -35,24 +35,24 @@
 /** @brief  ADC reference voltage [V] */
 #define CSENSE_VREF_V 2.5f
 
-/** @brief  ADS122 PGA gain and its GAIN-field code (gain = 8) */
-#define CSENSE_PGA_GAIN 8.0f
-#define CSENSE_GAIN_CFG_CODE 0x04U
+/** @brief  ADS122 PGA gain and its GAIN-field code (gain = 10) */
+#define CSENSE_PGA_GAIN 10.0f
+#define CSENSE_GAIN_CFG_CODE 0x06U
 
 /** @brief  ADC full-scale range [V] = Vref / gain */
 #define CSENSE_FSR_V (CSENSE_VREF_V / CSENSE_PGA_GAIN)
 
 /** @brief  Current-sense shunt resistance [ohm] */
-#define CSENSE_SHUNT_RESISTANCE_OHM 0.001f
+#define CSENSE_SHUNT_RESISTANCE_OHM 0.0005f
 
 /** @brief  Empirical calibration: ADC input path under-reads the true shunt voltage; I = V/R * factor */
-#define CSENSE_CURRENT_CAL_FACTOR 2.25f
+#define CSENSE_CURRENT_CAL_FACTOR 1.0f
 
 /** @brief  Light EMA smoothing on pack current: y = a*x + (1-a)*y_prev */
 #define CSENSE_EMA_ALPHA 0.7f
 
-/** @brief  MUX select for the shunt (current) channel: AIN6 (+) / GND (-) */
-#define CSENSE_MUX_SHUNT 0x68U
+/** @brief  MUX select for the shunt (current) channel: AIN6 (+) / AIN7 (-) */
+#define CSENSE_MUX_SHUNT 0x67U
 
 /** @brief  DEVICE_CFG: CONV_MODE = 1 -> single-shot; START each sample and poll DRDY (mirrors the working smoke test) */
 #define CSENSE_DEVICE_CFG_SINGLE_SHOT ADS122_REG_DEVICE_CFG_DEFAULT
@@ -109,7 +109,7 @@ static float s_csense_ema_A;     /**< EMA-filtered pack current [A] */
 static bool s_csense_ema_seeded; /**< false until the EMA is seeded with the first good sample */
 
 static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
-                                  ADS122_REG_DATA_RATE_CFG_DEFAULT,
+                                  (ADS122_REG_DATA_RATE_CFG_DEFAULT | ADS122_GC_EN_MASK),
                                   (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
                                   (ADS122_REG_GAIN_CFG_DEFAULT | CSENSE_GAIN_CFG_CODE),                // PGA gain (see CSENSE_PGA_GAIN)
                                   (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock

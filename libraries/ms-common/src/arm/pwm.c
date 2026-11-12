@@ -172,6 +172,14 @@ StatusCode pwm_set_pulse(PwmTimer timer, uint16_t pulse_width_us, PwmChannel cha
     output_compare_config.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   }
 
+  // We need to make sure that the timer is stopped before we try reconfiguring it,
+  // in case if it's already running. If this doesn't happen, the PWM channel
+  // seems to shut down.
+  if (has_complementary && n_channel_en) {
+    HAL_TIMEx_PWMN_Stop(&s_timer_handle[timer], channel * 4U);
+  }
+  HAL_TIM_PWM_Stop(&s_timer_handle[timer], channel * 4U);
+
   if (HAL_TIM_PWM_ConfigChannel(&s_timer_handle[timer], &output_compare_config, channel * 4U) != HAL_OK) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
@@ -191,17 +199,7 @@ StatusCode pwm_set_dc(PwmTimer timer, uint16_t dc, PwmChannel channel, bool n_ch
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  uint16_t pulse_width;
-  if (dc == 0U) {
-    /* Prevent divide by 0 */
-    pulse_width = 0U;
-  } else {
-    pulse_width = ((s_period_us[timer]) * dc) / 100;
-    /* Avoid overflow at 100% duty cycle */
-    if (pulse_width >= s_period_us[timer]) {
-      pulse_width = s_period_us[timer] - 1;
-    }
-  }
+  uint16_t pulse_width = ((s_period_us[timer]) * dc) / 100;
 
   return pwm_set_pulse(timer, pulse_width, channel, n_channel_en);
 }

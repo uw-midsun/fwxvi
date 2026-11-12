@@ -110,6 +110,7 @@ typedef struct {
 
   TickType_t display_rx_medium_last_start;
   int64_t power_usage;
+  uint16_t brightness;  // Brightness of display, from [0, 100]
 } DisplayData;
 
 /**

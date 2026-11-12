@@ -3,5 +3,6 @@
         "HAL"
     ],
     "can": false,
-    "no_lint": true
+    "no_lint": true,
+    "cflags": ["-O3", "-finline"]
 }
