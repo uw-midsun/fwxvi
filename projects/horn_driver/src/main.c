@@ -16,6 +16,7 @@
 #include "tasks.h"
 #include "master_tasks.h"
 #include "pwm.h"
+#include "stm32l4xx_hal_tim.h"
 
 /* Intra-component Headers */
 #include "horn_driver.h"
@@ -26,8 +27,10 @@
 #define TIM1_CH2N 0 //PB0 Q4
 #define period 250 //4kHz
 #define duty_cycle 0.5 //50% duty cycle
+#define dead_time_duty_cycle 0.04
 
-bool deadtime = false;
+int last_value = -1;
+static TIM_HandleTypeDef h_timer = {0U};
 GpioAddress pa8 = {
   .pin = TIM1_CH1,
   .port = GPIO_PORT_A,
@@ -57,6 +60,7 @@ void run_1hz_cycle() {}
 #include "mpxe.h"
 int main(int argc, char *argv[]) {
   mpxe_init(argc, argv);
+}
 #else
 int main() {
 #endif
@@ -73,8 +77,15 @@ int main() {
   gpio_init_pin(&pa9, GPIO_MODE_LOW);
   gpio_init_pin(&pb0, GPIO_MODE_LOW);
 
-  pwm_init(PWM_TIMER_1,PERIOD);
+  pwm_init(PWM_TIMER_1,period);
   pwm_set_dc(PWM_TIMER_1, duty_cycle * period, PWM_CHANNEL_1, true);
+
+  
+  HAL_TIM_Base_Init(&h_timer);
+  HAL_TIM_Base_Start_IT(&h_timer);
+
+  pwm_duty_cycle();
+
   LOG_DEBUG("exiting main?");
   return 0;
 }
@@ -112,16 +123,27 @@ void set_mosfet_state(enum MOSFET_STATE state) {
       gpio_set(&pb0, GPIO_LOW);
       break;
   }
+}
+void delay_us (uint16_t us)
+{
+    __HAL_TIM_SET_COUNTER(&h_timer,0);  // set the counter value a 0
+    while (__HAL_TIM_GET_COUNTER(&h_timer) < us);  // wait for the counter to reach the us input in the parameter
+}
   // state 1 is duty cycled
-  void pwm_duty_cycle(*double duty_cycle) {
-    if (deadtime) {
+void pwm_duty_cycle() {
+  while (true) {
+    if (last_value != pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) {
+      last_value = pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1);
       set_mosfet_state(ALL_OFF);
-      return;
+      delay_us(5);
+      LOG_DEBUG("delay");
     }
-    if (pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) { // wrong method
+    else if (pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) {
       set_mosfet_state(Q1_Q4_ON);
+      LOG_DEBUG("state Q1 Q4");
     } else {
       set_mosfet_state(Q2_Q3_ON);
+      LOG_DEBUG("state Q2 Q3");
     }
   }
 }
