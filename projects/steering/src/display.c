@@ -42,7 +42,7 @@
 
 #define LAST_PAGE (NUM_FLASH_PAGES - 1)
 
-#define INCLUDE_PERSISTENCE 1
+#define INCLUDE_PERSISTENCE 0
 
 static PersistStorage persist_storage;
 static SteeringStorage *steering_storage = NULL;
