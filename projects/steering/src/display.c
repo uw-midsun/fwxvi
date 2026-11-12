@@ -288,6 +288,13 @@ static StatusCode s_sync_committed_brightness() {
   uint32_t prev_brightness = committed_brightness;
   committed_brightness = display_data->brightness;
 #if INCLUDE_PERSISTENCE == 1
+  // Keep the saved brightness at a minimum of 5%, so it doesn't look like the display is broken on next boot
+  if (committed_brightness == 0) {
+    committed_brightness = 5;
+  }
+  // Ensures we don't unnecessarily write to flash because of the desync between committed & prev
+  if (prev_brightness == committed_brightness) return STATUS_CODE_OK;
+
   StatusCode status_code = persist_commit(&persist_storage);
   if (status_code != STATUS_CODE_OK) {
     committed_brightness = prev_brightness;
