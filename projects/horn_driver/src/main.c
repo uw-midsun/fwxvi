@@ -26,8 +26,9 @@
 #define TIM1_CH2N 0 //PB0 Q4
 #define period 250 //4kHz
 #define duty_cycle 0.5 //50% duty cycle
+#define dead_time_duty_cycle 0.04
 
-bool deadtime = false;
+int last_value = -1;
 GpioAddress pa8 = {
   .pin = TIM1_CH1,
   .port = GPIO_PORT_A,
@@ -73,8 +74,13 @@ int main() {
   gpio_init_pin(&pa9, GPIO_MODE_LOW);
   gpio_init_pin(&pb0, GPIO_MODE_LOW);
 
-  pwm_init(PWM_TIMER_1,PERIOD);
-  pwm_set_dc(PWM_TIMER_1, duty_cycle * period, PWM_CHANNEL_1, true);
+  pwm pwm_main;
+  pwm pwm_dead_time;
+  pwm_main.pwm_init(PWM_TIMER_1,period);
+  pwm_main.pwm_set_dc(PWM_TIMER_1, duty_cycle * period, PWM_CHANNEL_1, true);
+  pwm_dead_time.pwm_init(PWM_TIMER_1,period/2);
+  pwm_dead_time.pwm_set_dc(PWM_TIMER_1, )
+
   LOG_DEBUG("exiting main?");
   return 0;
 }
@@ -114,11 +120,11 @@ void set_mosfet_state(enum MOSFET_STATE state) {
   }
   // state 1 is duty cycled
   void pwm_duty_cycle(*double duty_cycle) {
-    if (deadtime) {
+    if (pwm_dead_time.pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) {
       set_mosfet_state(ALL_OFF);
       return;
     }
-    if (pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) { // wrong method
+    if (pwm_main.pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) {
       set_mosfet_state(Q1_Q4_ON);
     } else {
       set_mosfet_state(Q2_Q3_ON);
