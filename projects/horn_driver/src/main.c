@@ -122,13 +122,15 @@ void set_mosfet_state(enum MOSFET_STATE state) {
       gpio_set(&pb0, GPIO_LOW);
       break;
   }
-  void delay_us (uint16_t us)
-  {
+}
+void delay_us (uint16_t us)
+{
     __HAL_TIM_SET_COUNTER(&h_timer,0);  // set the counter value a 0
     while (__HAL_TIM_GET_COUNTER(&h_timer) < us);  // wait for the counter to reach the us input in the parameter
-  }
+}
   // state 1 is duty cycled
-  void pwm_duty_cycle(*double duty_cycle) {
+void pwm_duty_cycle(*double duty_cycle) {
+  while (true) {
     if (last_value != pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL_1)) {
       last_value = pwm_get_dc(PWM_TIMER_1, PWM_CHANNEL);
       delay_us(5);
