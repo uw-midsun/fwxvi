@@ -12,6 +12,7 @@
 
 /* Inter-component Headers */
 #include "delay.h"
+#include "crc.h"
 
 /* Intra-component Headers */
 #include "current_ads122c14irter.h"
@@ -32,6 +33,14 @@ static StatusCode ads122_read_register(ADS122Storage *storage, uint8_t *rx_data,
   uint8_t reg_address = ads122_create_command(reg, ADS122_READ_COMMAND);
 
   status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, reg_address, rx_data, 1U));
+  
+  // CRC check
+  // 6 bytes - 5 for data, 1 for crc
+  uint8_t rx_buf[6];
+  // 5 bytes of data
+  if (crc_calculate(rx_buf, 5U) != rx_buf[5]) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
   return STATUS_CODE_OK;
 }
@@ -152,6 +161,7 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   storage->i2c_settings = *i2c_settings_storage;
 
   status_ok_or_return(i2c_init(i2c_port_storage, i2c_settings_storage));
+  status_ok_or_return(crc_init(CRC_LENGTH_8)); // 8-bit crc remainder from https://www.ti.com/lit/ds/symlink/ads122c14.pdf
 
   return ads122_configure(storage, register_map);
 }

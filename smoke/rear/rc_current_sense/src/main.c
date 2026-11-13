@@ -73,7 +73,7 @@ static uint8_t s_register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                     (ADS122_REG_MUX_CFG_DEFAULT | 0x01),       /* reads voltage first */
                                     ADS122_REG_GAIN_CFG_DEFAULT,               /* Gain = 0.5 */
                                     (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04), /* Vref = 2.5 V -> +-5 V range */
-                                    (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
+                                    (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10 | ADS122_I2C_CRC_EN_MASK),
                                     ADS122_REG_GPIO_CFG_DEFAULT,
                                     ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                     ADS122_REG_IDAC_MAG_CFG_DEFAULT,
