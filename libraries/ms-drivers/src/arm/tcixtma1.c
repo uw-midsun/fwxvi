@@ -62,11 +62,17 @@ StatusCode tcixtma1_get_hydrogen_concentration(TCIXTMA1Storage *storage, float *
     return status;
   }
 
+  /* Datasheet section 10.1.3 */
+  // bad crc: 40 A9 34
+  // invalid command: 80 70 78
+  // sensor was in standby: 20 C5 92
+
   uint8_t rx_buf_status = rx_buf[0];
   if (rx_buf_status != 0) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
+  // check this
   uint16_t rx_calc_crc = tcixtma1_crc16_calculate(rx_buf, 3);
   uint16_t rx_buf_crc = (rx_buf[3] << 8) | rx_buf[4];
   if (rx_calc_crc != rx_buf_crc) {
