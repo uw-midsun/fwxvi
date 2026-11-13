@@ -38,7 +38,7 @@ static StatusCode ads122_read_register(ADS122Storage *storage, uint8_t *rx_data,
   // 6 bytes - 5 for data, 1 for crc
   uint8_t rx_buf[6];
   // 5 bytes of data
-  if (crc_calculate(rx_buf, 5U) != rx_buf[5]) {
+  if (crc_calculate((uint32_t *) rx_buf, 5U) != rx_buf[5]) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
