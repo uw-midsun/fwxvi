@@ -113,7 +113,7 @@ static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
                                   (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
                                   (ADS122_REG_GAIN_CFG_DEFAULT | CSENSE_GAIN_CFG_CODE),                // PGA gain (see CSENSE_PGA_GAIN)
                                   (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock
-                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN),
+                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN | ADS122_I2C_CRC_EN_MASK),
                                   ADS122_REG_GPIO_CFG_DEFAULT,
                                   ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                   ADS122_REG_IDAC_MAG_CFG_DEFAULT,

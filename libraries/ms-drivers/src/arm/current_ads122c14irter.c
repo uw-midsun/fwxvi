@@ -11,6 +11,7 @@
 #include "string.h"
 
 /* Inter-component Headers */
+#include "crc.h"
 #include "delay.h"
 
 /* Intra-component Headers */
@@ -152,6 +153,7 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   storage->i2c_settings = *i2c_settings_storage;
 
   status_ok_or_return(i2c_init(i2c_port_storage, i2c_settings_storage));
+  status_ok_or_return(crc_init(CRC_LENGTH_8));  // 8-bit crc remainder from https://www.ti.com/lit/ds/symlink/ads122c14.pdf
 
   return ads122_configure(storage, register_map);
 }
@@ -161,5 +163,19 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
+  StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
+  status_ok_or_return(status);
+
+  // CRC check
+  // 6 bytes - 5 for data, 1 for crc
+  uint8_t rx_buf[6];
+  for (uint8_t i = 0; i < 6; i++) {
+    rx_buf[i] = rx_data[i];
+  }
+  // 5 bytes of data
+  if (crc_calculate((uint32_t *)rx_buf, 5U) != rx_buf[5]) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  return status;
 }
