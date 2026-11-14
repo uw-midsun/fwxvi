@@ -162,7 +162,7 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
   if (storage == NULL || rx_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
-  // TODO add crc to this function
+
   StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
   status_ok_or_return(status);
   
