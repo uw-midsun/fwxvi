@@ -33,17 +33,6 @@ static StatusCode ads122_read_register(ADS122Storage *storage, uint8_t *rx_data,
   uint8_t reg_address = ads122_create_command(reg, ADS122_READ_COMMAND);
 
   status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, reg_address, rx_data, 1U));
-  
-  // CRC check
-  // 6 bytes - 5 for data, 1 for crc
-  uint8_t rx_buf[6];
-  for (uint8_t i = 0; i < 6; i++) {
-    rx_buf[i] = rx_data[i];
-  }
-  // 5 bytes of data
-  if (crc_calculate((uint32_t *) rx_buf, 5U) != rx_buf[5]) {
-    return STATUS_CODE_INTERNAL_ERROR;
-  }
 
   return STATUS_CODE_OK;
 }
@@ -173,6 +162,20 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
   if (storage == NULL || rx_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
+  // TODO add crc to this function
+  StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
+  status_ok_or_return(status);
+  
+  // CRC check
+  // 6 bytes - 5 for data, 1 for crc
+  uint8_t rx_buf[6];
+  for (uint8_t i = 0; i < 6; i++) {
+    rx_buf[i] = rx_data[i];
+  }
+  // 5 bytes of data
+  if (crc_calculate((uint32_t *) rx_buf, 5U) != rx_buf[5]) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
 
-  return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
+  return status;
 }
