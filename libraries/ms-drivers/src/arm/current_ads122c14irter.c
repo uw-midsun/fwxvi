@@ -167,13 +167,8 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
   status_ok_or_return(status);
 
   // CRC check
-  // 6 bytes - 5 for data, 1 for crc
-  uint8_t rx_buf[6];
-  for (uint8_t i = 0; i < 6; i++) {
-    rx_buf[i] = rx_data[i];
-  }
   // 5 bytes of data
-  if (crc_calculate((uint32_t *)rx_buf, 5U) != rx_buf[5]) {
+  if (crc_calculate((uint32_t *)rx_data, 5U) != rx_data[4]) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 
