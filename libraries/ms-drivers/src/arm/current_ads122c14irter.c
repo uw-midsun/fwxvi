@@ -153,7 +153,9 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   storage->i2c_settings = *i2c_settings_storage;
 
   status_ok_or_return(i2c_init(i2c_port_storage, i2c_settings_storage));
-  status_ok_or_return(crc_init(CRC_LENGTH_8));  // 8-bit crc remainder from https://www.ti.com/lit/ds/symlink/ads122c14.pdf
+  // 8-bit crc remainder from https://www.ti.com/lit/ds/symlink/ads122c14.pdf
+  // Corresponds to 0x07 polynomial and 0xFF initial seed
+  status_ok_or_return(crc_init(CRC_LENGTH_8));
 
   return ads122_configure(storage, register_map);
 }
