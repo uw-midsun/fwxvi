@@ -66,8 +66,8 @@
 /** @brief  DRDY flag within the status byte (byte 0 of the conversion frame) */
 #define CSENSE_DATA_READY_MASK 0x01U
 
-/** @brief  Length of the ADS122 status + 24-bit conversion frame [bytes] */
-#define CSENSE_CONVERSION_FRAME_LEN 5U
+/** @brief  Length of the ADS122 status + 24-bit conversion frame + 8-bit crc remainder [bytes] */
+#define CSENSE_CONVERSION_FRAME_LEN 6U
 
 /** @brief  Shift used to sign-extend the 24-bit conversion result into an int32_t */
 #define CSENSE_CONVERSION_SIGN_SHIFT 8U
@@ -174,7 +174,7 @@ StatusCode current_sense_run() {
 
   bool data_ready = false;
   for (uint32_t elapsed = 0U; elapsed < CSENSE_DRDY_POLL_TIMEOUT_MS; elapsed += CSENSE_DRDY_POLL_STEP_MS) {
-    status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
+    status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw, CSENSE_CONVERSION_FRAME_LEN);
     status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
     if (conversion_data_raw[0] & CSENSE_DATA_READY_MASK) {
