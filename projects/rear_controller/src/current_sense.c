@@ -174,7 +174,7 @@ StatusCode current_sense_run() {
 
   bool data_ready = false;
   for (uint32_t elapsed = 0U; elapsed < CSENSE_DRDY_POLL_TIMEOUT_MS; elapsed += CSENSE_DRDY_POLL_STEP_MS) {
-    status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw, CSENSE_CONVERSION_FRAME_LEN);
+    status = ads122_get_conversion_data(&rear_controller_storage->ads122_storage, conversion_data_raw);
     status_ok_or_return(csense_handle_retries(&s_csense_counters.comms_retries, status));
 
     if (conversion_data_raw[0] & CSENSE_DATA_READY_MASK) {

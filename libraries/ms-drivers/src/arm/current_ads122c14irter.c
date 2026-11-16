@@ -160,17 +160,17 @@ StatusCode ads122_init(ADS122Storage *storage, I2CPort i2c_port_storage, I2CAddr
   return ads122_configure(storage, register_map);
 }
 
-StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[], uint8_t CSENSE_CONVERSION_FRAME_LEN) {
+StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]) {
   if (storage == NULL || rx_data == NULL) {
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, CSENSE_CONVERSION_FRAME_LEN);
+  StatusCode status = i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 6U);
   status_ok_or_return(status);
 
   // CRC check
   // 5 bytes of data + 1 byte crc remainder
-  if (crc_calculate((uint32_t *)rx_data, CSENSE_CONVERSION_FRAME_LEN - 1) != rx_data[CSENSE_CONVERSION_FRAME_LEN - 1]) {
+  if (crc_calculate((uint32_t *)rx_data, 5) != rx_data[5]) {
     return STATUS_CODE_INTERNAL_ERROR;
   }
 

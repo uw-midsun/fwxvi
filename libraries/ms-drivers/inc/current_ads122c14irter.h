@@ -274,7 +274,7 @@ static uint8_t ADS122_CONFIG_REGISTERS[] = { ADS122_REG_DEVICE_CFG, ADS122_REG_D
  * @param rx_Data - data collection array
  * @return STATUS_CODE_OK on success
  */
-StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[], uint8_t CSENSE_CONVERSION_FRAME_LEN);
+StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[]);
 
 /**
  * @brief Initialize the ADS122 driver
