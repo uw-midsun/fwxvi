@@ -48,7 +48,6 @@
 #ifndef soc_ekf_matlab_COMMON_INCLUDES_
 #define soc_ekf_matlab_COMMON_INCLUDES_
 #include "math.h"
-#include "rtwtypes.h"
 #endif /* soc_ekf_matlab_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
