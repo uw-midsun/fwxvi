@@ -51,8 +51,7 @@ static RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 
 /* Model step function */
-void soc_ekf_matlab_step(void)
-{
+void soc_ekf_matlab_step(void) {
   real_T Fd_0;
   real_T H_idx_0;
   real_T P_new_tmp;
@@ -78,10 +77,8 @@ void soc_ekf_matlab_step(void)
     rtDW.tau = exp(-rtU.dt / rtDW.b_idx);
   }
 
-  rtDW.rtb_x_new_idx_0 = fmin(fmax(rtU.u_k * rtU.dt / (rtU.params.Q_pack_Ah *
-    3600.0) + rtU.x_prev[0], 0.0), 1.0);
-  rtb_x_new_idx_1 = (1.0 - rtDW.tau) * rtU.params.R1_pack * rtU.u_k + rtDW.tau *
-    rtU.x_prev[1];
+  rtDW.rtb_x_new_idx_0 = fmin(fmax(rtU.u_k * rtU.dt / (rtU.params.Q_pack_Ah * 3600.0) + rtU.x_prev[0], 0.0), 1.0);
+  rtb_x_new_idx_1 = (1.0 - rtDW.tau) * rtU.params.R1_pack * rtU.u_k + rtDW.tau * rtU.x_prev[1];
   if (rtDW.b_idx <= 0.0) {
     rtDW.tau = 0.0;
   } else {
@@ -105,23 +102,20 @@ void soc_ekf_matlab_step(void)
     rtDW.soc_m = rtDW.Fd[d_idx + 2];
     rtDW.idx = rtDW.Fd[d_idx];
     rtDW.P_pred[d_idx] = (rtDW.soc_m * 0.0 + rtDW.idx) + rtU.params.Q_proc[d_idx];
-    rtDW.P_pred[d_idx + 2] = (rtDW.soc_m * rtDW.tau + rtDW.idx * 0.0) +
-      rtU.params.Q_proc[d_idx + 2];
+    rtDW.P_pred[d_idx + 2] = (rtDW.soc_m * rtDW.tau + rtDW.idx * 0.0) + rtU.params.Q_proc[d_idx + 2];
   }
 
   rtDW.tau = fmin(rtDW.rtb_x_new_idx_0 + 1.0E-5, 1.0);
   rtDW.soc_m = fmax(rtDW.rtb_x_new_idx_0 - 1.0E-5, 0.0);
   if (1.0 - rtDW.tau <= rtU.params.SOC_table[0]) {
     rtDW.idx = rtU.params.OCV_table[0];
-  } else if (1.0 - rtDW.tau >= rtU.params.SOC_table[(int32_T)
-             rtU.params.SOC_OCV_table_size - 1]) {
+  } else if (1.0 - rtDW.tau >= rtU.params.SOC_table[(int32_T)rtU.params.SOC_OCV_table_size - 1]) {
     rtDW.idx = rtU.params.OCV_table[(int32_T)rtU.params.SOC_OCV_table_size - 1];
   } else {
     rtDW.idx = -1.0;
     d_idx = 0;
     while (d_idx <= (int32_T)(rtU.params.SOC_OCV_table_size - 1.0) - 1) {
-      if ((1.0 - rtDW.tau >= rtU.params.SOC_table[d_idx]) && (1.0 - rtDW.tau <=
-           rtU.params.SOC_table[d_idx + 1])) {
+      if ((1.0 - rtDW.tau >= rtU.params.SOC_table[d_idx]) && (1.0 - rtDW.tau <= rtU.params.SOC_table[d_idx + 1])) {
         rtDW.idx = (real_T)d_idx + 1.0;
         break;
       } else {
@@ -134,29 +128,24 @@ void soc_ekf_matlab_step(void)
     }
 
     P_new_tmp = rtU.params.SOC_table[(int32_T)rtDW.idx - 1];
-    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.idx + 1.0) - 1] -
-      P_new_tmp;
+    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.idx + 1.0) - 1] - P_new_tmp;
     if (P_new_tmp_0 == 0.0) {
       rtDW.idx = rtU.params.OCV_table[(int32_T)rtDW.idx - 1];
     } else {
       rtDW.b_idx = rtU.params.OCV_table[(int32_T)rtDW.idx - 1];
-      rtDW.idx = ((1.0 - rtDW.tau) - P_new_tmp) / P_new_tmp_0 *
-        (rtU.params.OCV_table[(int32_T)(rtDW.idx + 1.0) - 1] - rtDW.b_idx) +
-        rtDW.b_idx;
+      rtDW.idx = ((1.0 - rtDW.tau) - P_new_tmp) / P_new_tmp_0 * (rtU.params.OCV_table[(int32_T)(rtDW.idx + 1.0) - 1] - rtDW.b_idx) + rtDW.b_idx;
     }
   }
 
   if (1.0 - rtDW.soc_m <= rtU.params.SOC_table[0]) {
     rtDW.b_idx = rtU.params.OCV_table[0];
-  } else if (1.0 - rtDW.soc_m >= rtU.params.SOC_table[(int32_T)
-             rtU.params.SOC_OCV_table_size - 1]) {
+  } else if (1.0 - rtDW.soc_m >= rtU.params.SOC_table[(int32_T)rtU.params.SOC_OCV_table_size - 1]) {
     rtDW.b_idx = rtU.params.OCV_table[(int32_T)rtU.params.SOC_OCV_table_size - 1];
   } else {
     rtDW.b_idx = -1.0;
     d_idx = 0;
     while (d_idx <= (int32_T)(rtU.params.SOC_OCV_table_size - 1.0) - 1) {
-      if ((1.0 - rtDW.soc_m >= rtU.params.SOC_table[d_idx]) && (1.0 - rtDW.soc_m
-           <= rtU.params.SOC_table[d_idx + 1])) {
+      if ((1.0 - rtDW.soc_m >= rtU.params.SOC_table[d_idx]) && (1.0 - rtDW.soc_m <= rtU.params.SOC_table[d_idx + 1])) {
         rtDW.b_idx = (real_T)d_idx + 1.0;
         break;
       } else {
@@ -169,31 +158,25 @@ void soc_ekf_matlab_step(void)
     }
 
     P_new_tmp = rtU.params.SOC_table[(int32_T)rtDW.b_idx - 1];
-    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.b_idx + 1.0) - 1] -
-      P_new_tmp;
+    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.b_idx + 1.0) - 1] - P_new_tmp;
     if (P_new_tmp_0 == 0.0) {
       rtDW.b_idx = rtU.params.OCV_table[(int32_T)rtDW.b_idx - 1];
     } else {
       kalman_gain_idx_0 = rtU.params.OCV_table[(int32_T)rtDW.b_idx - 1];
-      rtDW.b_idx = ((1.0 - rtDW.soc_m) - P_new_tmp) / P_new_tmp_0 *
-        (rtU.params.OCV_table[(int32_T)(rtDW.b_idx + 1.0) - 1] -
-         kalman_gain_idx_0) + kalman_gain_idx_0;
+      rtDW.b_idx = ((1.0 - rtDW.soc_m) - P_new_tmp) / P_new_tmp_0 * (rtU.params.OCV_table[(int32_T)(rtDW.b_idx + 1.0) - 1] - kalman_gain_idx_0) + kalman_gain_idx_0;
     }
   }
 
-  H_idx_0 = (rtU.params.N_series * rtDW.idx - rtU.params.N_series * rtDW.b_idx) /
-    ((rtDW.tau - rtDW.soc_m) + 1.0E-12);
+  H_idx_0 = (rtU.params.N_series * rtDW.idx - rtU.params.N_series * rtDW.b_idx) / ((rtDW.tau - rtDW.soc_m) + 1.0E-12);
   if (1.0 - rtDW.rtb_x_new_idx_0 <= rtU.params.SOC_table[0]) {
     rtDW.tau = rtU.params.OCV_table[0];
-  } else if (1.0 - rtDW.rtb_x_new_idx_0 >= rtU.params.SOC_table[(int32_T)
-             rtU.params.SOC_OCV_table_size - 1]) {
+  } else if (1.0 - rtDW.rtb_x_new_idx_0 >= rtU.params.SOC_table[(int32_T)rtU.params.SOC_OCV_table_size - 1]) {
     rtDW.tau = rtU.params.OCV_table[(int32_T)rtU.params.SOC_OCV_table_size - 1];
   } else {
     rtDW.soc_m = -1.0;
     d_idx = 0;
     while (d_idx <= (int32_T)(rtU.params.SOC_OCV_table_size - 1.0) - 1) {
-      if ((1.0 - rtDW.rtb_x_new_idx_0 >= rtU.params.SOC_table[d_idx]) && (1.0 -
-           rtDW.rtb_x_new_idx_0 <= rtU.params.SOC_table[d_idx + 1])) {
+      if ((1.0 - rtDW.rtb_x_new_idx_0 >= rtU.params.SOC_table[d_idx]) && (1.0 - rtDW.rtb_x_new_idx_0 <= rtU.params.SOC_table[d_idx + 1])) {
         rtDW.soc_m = (real_T)d_idx + 1.0;
         break;
       } else {
@@ -206,24 +189,19 @@ void soc_ekf_matlab_step(void)
     }
 
     P_new_tmp = rtU.params.SOC_table[(int32_T)rtDW.soc_m - 1];
-    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.soc_m + 1.0) - 1] -
-      P_new_tmp;
+    P_new_tmp_0 = rtU.params.SOC_table[(int32_T)(rtDW.soc_m + 1.0) - 1] - P_new_tmp;
     if (P_new_tmp_0 == 0.0) {
       rtDW.tau = rtU.params.OCV_table[(int32_T)rtDW.soc_m - 1];
     } else {
       rtDW.b_idx = rtU.params.OCV_table[(int32_T)rtDW.soc_m - 1];
-      rtDW.tau = ((1.0 - rtDW.rtb_x_new_idx_0) - P_new_tmp) / P_new_tmp_0 *
-        (rtU.params.OCV_table[(int32_T)(rtDW.soc_m + 1.0) - 1] - rtDW.b_idx) +
-        rtDW.b_idx;
+      rtDW.tau = ((1.0 - rtDW.rtb_x_new_idx_0) - P_new_tmp) / P_new_tmp_0 * (rtU.params.OCV_table[(int32_T)(rtDW.soc_m + 1.0) - 1] - rtDW.b_idx) + rtDW.b_idx;
     }
   }
 
-  rtDW.tau = (rtU.params.N_series * rtDW.tau - rtb_x_new_idx_1) -
-    rtU.params.R0_pack * rtU.u_k;
+  rtDW.tau = (rtU.params.N_series * rtDW.tau - rtb_x_new_idx_1) - rtU.params.R0_pack * rtU.u_k;
   rtDW.soc_m = rtU.z_k - rtDW.tau;
   rtDW.b_idx = H_idx_0 * rtDW.P_pred[0];
-  rtDW.idx = ((rtDW.b_idx - rtDW.P_pred[1]) * H_idx_0 - (H_idx_0 * rtDW.P_pred[2]
-    - rtDW.P_pred[3])) + rtU.params.R_meas;
+  rtDW.idx = ((rtDW.b_idx - rtDW.P_pred[1]) * H_idx_0 - (H_idx_0 * rtDW.P_pred[2] - rtDW.P_pred[3])) + rtU.params.R_meas;
   rtDW.b_idx = (rtDW.b_idx - rtDW.P_pred[2]) / rtDW.idx;
   kalman_gain_idx_0 = rtDW.b_idx;
   rtDW.rtb_x_new_idx_0 += rtDW.b_idx * rtDW.soc_m;
@@ -252,8 +230,7 @@ void soc_ekf_matlab_step(void)
     d_idx = 0;
     i = 0;
     while (i < 99) {
-      if ((rtDW.soc_m <= rtU.params.OCV_table[i]) && (rtDW.soc_m >=
-           rtU.params.OCV_table[i + 1])) {
+      if ((rtDW.soc_m <= rtU.params.OCV_table[i]) && (rtDW.soc_m >= rtU.params.OCV_table[i + 1])) {
         d_idx = i;
         break;
       } else {
@@ -265,9 +242,7 @@ void soc_ekf_matlab_step(void)
     if (P_new_tmp == 0.0) {
       rtDW.soc_m = 1.0 - rtU.params.SOC_table[d_idx];
     } else {
-      rtDW.soc_m = 1.0 - ((rtDW.soc_m - rtU.params.OCV_table[d_idx]) / P_new_tmp
-                          * (rtU.params.SOC_table[d_idx + 1] -
-        rtU.params.SOC_table[d_idx]) + rtU.params.SOC_table[d_idx]);
+      rtDW.soc_m = 1.0 - ((rtDW.soc_m - rtU.params.OCV_table[d_idx]) / P_new_tmp * (rtU.params.SOC_table[d_idx + 1] - rtU.params.SOC_table[d_idx]) + rtU.params.SOC_table[d_idx]);
     }
   }
 
@@ -285,10 +260,8 @@ void soc_ekf_matlab_step(void)
     rtDW.Fd_m[i] = (real_T)Fd[d_idx] - rtDW.P_new_tmp[d_idx];
     rtDW.Fd_c[i] = 0.0;
     P_new_tmp_0 = rtDW.P_pred[i + 1];
-    rtDW.Fd[i] = (0.0 - (-kalman_gain_idx_0)) * P_new_tmp_0 + rtb_x_new_idx_1 *
-      P_new_tmp;
-    rtDW.Fd[i + 1] = (1.0 - (-rtDW.b_idx)) * P_new_tmp_0 + rtDW.soc_m *
-      P_new_tmp;
+    rtDW.Fd[i] = (0.0 - (-kalman_gain_idx_0)) * P_new_tmp_0 + rtb_x_new_idx_1 * P_new_tmp;
+    rtDW.Fd[i + 1] = (1.0 - (-rtDW.b_idx)) * P_new_tmp_0 + rtDW.soc_m * P_new_tmp;
     rtDW.Fd_m[i + 1] = (real_T)Fd[d_idx + 2] - rtDW.P_new_tmp[d_idx + 2];
     rtDW.Fd_c[i + 1] = 0.0;
   }
@@ -302,8 +275,7 @@ void soc_ekf_matlab_step(void)
     P_new_tmp = rtDW.Fd_m[i];
     Fd_0 = rtDW.Fd_c[i + 1] + rtDW.idx * P_new_tmp;
     P_new_tmp_0 = rtDW.Fd_m[i + 1];
-    rtDW.Fd_c[i] = (rtDW.soc_m * P_new_tmp + rtDW.Fd_c[i]) + rtb_x_new_idx_1 *
-      P_new_tmp_0;
+    rtDW.Fd_c[i] = (rtDW.soc_m * P_new_tmp + rtDW.Fd_c[i]) + rtb_x_new_idx_1 * P_new_tmp_0;
     rtDW.Fd_c[i + 1] = H_idx_0 * P_new_tmp_0 + Fd_0;
   }
 
@@ -338,8 +310,7 @@ void soc_ekf_matlab_step(void)
 }
 
 /* Model initialize function */
-void soc_ekf_matlab_initialize(void)
-{
+void soc_ekf_matlab_initialize(void) {
   /* (no initialization code required) */
 }
 

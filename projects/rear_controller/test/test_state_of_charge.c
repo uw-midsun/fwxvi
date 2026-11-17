@@ -134,4 +134,3 @@ void test_soc_init_mid_voltage(void) {
   TEST_ASSERT_EQUAL(STATUS_CODE_OK, state_of_charge_init(&s_storage));
   TEST_ASSERT_FLOAT_WITHIN(0.02f, 0.795f, s_storage.estimated_state_of_charge);
 }
-
