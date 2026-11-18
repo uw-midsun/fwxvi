@@ -17,6 +17,7 @@
 #include "master_tasks.h"
 #include "pwm.h"
 #include "stm32l4xx_hal_tim.h"
+#include "stm32l4xx_ll_tim.h"
 
 /* Intra-component Headers */
 #include "horn_driver.h"
@@ -85,6 +86,7 @@ int main() {
 
   pwm_init(PWM_TIMER_1,period);
   pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_1, true); // Q1 on first, Q3 off first
+  LL_TIM_OC_SetPolarity(CMP,PWM_CHANNEL_2,LL_TIM_OCPOLARITY_HIGH);
   pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_2,true); // Q2 on first, Q4 off first
   // need to invert second pwm since Q4 should be on first
   
