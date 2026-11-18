@@ -107,7 +107,7 @@ MOSFET_STATE get_mosfet_state() {
 
   if (Q1_state == GPIO_STATE_HIGH && Q4_state == GPIO_STATE_HIGH) {
     return Q1_Q4_ON
-  } else if (Q2_state == GPIO_STATE_HIGH && Q3_state = GPIO_STATE_HIGH) {
+  } else if (Q2_state == GPIO_STATE_HIGH && Q3_state == GPIO_STATE_HIGH) {
     return Q2_Q3_ON;
   }
   return ALL_OFF;
