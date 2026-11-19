@@ -177,6 +177,7 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
   status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 6U));
 
   if (ads122_crc8(rx_data, 5U) != rx_data[5]) {
+    storage->crc_fail_count++;
     return STATUS_CODE_INTERNAL_ERROR;
   }
 

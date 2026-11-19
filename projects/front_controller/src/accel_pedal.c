@@ -21,6 +21,7 @@
 /* Intra-component Headers */
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
+#include "front_controller_setters.h"
 
 static const GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
 static const GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
@@ -46,6 +47,10 @@ StatusCode accel_pedal_run() {
 
   uint16_t adc_reading;
   adc_read_raw(&s_accel_pedal_gpio_opamp_out, &adc_reading);
+  set_pedal_raw_accel_amp(adc_reading);
+  uint16_t accel_raw = 0U;
+  adc_read_raw(&s_accel_pedal_gpio_raw, &accel_raw);
+  set_pedal_raw_accel_raw(accel_raw);
 
   /**
    * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing

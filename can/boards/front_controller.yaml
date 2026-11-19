@@ -80,3 +80,18 @@ Messages:
     signals:
       status:
         length: 8
+
+  pedal_raw:
+    id: 40
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      accel_raw:
+        length: 16
+      accel_amp:
+        length: 16
+      brake_raw:
+        length: 16

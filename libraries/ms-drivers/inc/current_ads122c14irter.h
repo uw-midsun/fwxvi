@@ -265,6 +265,7 @@ typedef struct {
   I2CPort i2c_port;
   I2CAddress i2c_address;
   I2CSettings i2c_settings;
+  uint16_t crc_fail_count;
 } ADS122Storage;
 
 /*All config registers*/

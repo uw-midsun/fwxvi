@@ -391,3 +391,75 @@ Messages:
         length: 8
       temperature_6:
         length: 8
+
+  AFE1_diag:
+    id: 44
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      cell_pec_fail:
+        length: 16
+      cell_invalid:
+        length: 16
+      aux_pec_fail:
+        length: 16
+      bad_group_mask:
+        length: 8
+      read_seq:
+        length: 8
+
+  AFE2_diag:
+    id: 45
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      cell_pec_fail:
+        length: 16
+      cell_invalid:
+        length: 16
+      aux_pec_fail:
+        length: 16
+      bad_group_mask:
+        length: 8
+      read_seq:
+        length: 8
+
+  csense_diag:
+    id: 41
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      crc_fail:
+        length: 16
+      comms_fail:
+        length: 16
+      drdy_timeout:
+        length: 16
+      sample_seq:
+        length: 16
+
+  AFE_thermistor_raw:
+    id: 43
+    cycle: "medium"
+    critical: false
+    target:
+      telemetry:
+        watchdog: 0
+    signals:
+      page:
+        length: 8
+      v0:
+        length: 16
+      v1:
+        length: 16
+      v2:
+        length: 16

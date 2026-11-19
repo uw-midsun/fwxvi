@@ -346,6 +346,12 @@ StatusCode adbms_afe_read_cells(AdbmsAfeStorage *afe) {
 
 StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
   AdbmsAfeSettings *settings = afe->settings;
+  StatusCode result = STATUS_CODE_OK;
+
+  afe->read_seq++;
+  for (uint8_t device = 0; device < settings->num_devices; ++device) {
+    afe->bad_group_mask[device] = 0U;
+  }
 
   for (AdbmsAfeVoltageRegister v_reg_group = ADBMS_AFE_VOLTAGE_REGISTER_A; v_reg_group < NUM_ADBMS_AFE_VOLTAGE_REGISTERS; ++v_reg_group) {
     AdbmsAfeVoltageData devices_data[ADBMS_AFE_MAX_DEVICES] = { 0 };
@@ -365,18 +371,27 @@ StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
       if (data_pec != received_pec) {
         LOG_DEBUG("Communication Failed with device: %d, DATA_PEC: %d, RECEIVED_PEC: %d\n\r", device, data_pec, received_pec);
         LOG_DEBUG("Voltage: %d %d %d\n\r", devices_data[device].reg.voltages[0], devices_data[device].reg.voltages[1], devices_data[device].reg.voltages[2]);
-        return STATUS_CODE_INTERNAL_ERROR;
+        afe->cell_pec_fail[device]++;
+        afe->bad_group_mask[device] |= (uint8_t)(1U << (v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A));
+        result = STATUS_CODE_INTERNAL_ERROR;
+        continue;
+      }
+
+      bool invalid = false;
+      for (uint16_t cell = 0; cell < ADBMS1818_CELLS_IN_REG; ++cell) {
+        if (devices_data[device].reg.voltages[cell] >= 0xFF00U) {
+          invalid = true;
+        }
+      }
+      if (invalid) {
+        afe->cell_invalid[device]++;
+        afe->bad_group_mask[device] |= (uint8_t)(1U << (v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A));
+        result = STATUS_CODE_INTERNAL_ERROR;
+        continue;
       }
 
       for (uint16_t cell = 0; cell < ADBMS1818_CELLS_IN_REG; ++cell) {
         uint16_t voltage = devices_data[device].reg.voltages[cell];
-
-        // 0xFFFF = cleared (conversion failed or never run)
-        // 0xFF0X = digital redundancy fault
-        if (voltage >= 0xFF00U) {
-          LOG_DEBUG("Invalid reading 0x%X from device %d\n\r", voltage, device);
-          return STATUS_CODE_INTERNAL_ERROR;
-        }
 
         uint16_t device_cell = cell + ((v_reg_group - ADBMS_AFE_VOLTAGE_REGISTER_A) * ADBMS1818_CELLS_IN_REG);
         uint16_t index = device_cell + (device * ADBMS_AFE_MAX_CELLS_PER_DEVICE);
@@ -385,7 +400,7 @@ StatusCode adbms_afe_read_cells_into(AdbmsAfeStorage *afe, uint16_t *voltages) {
       }
     }
   }
-  return STATUS_CODE_OK;
+  return result;
 }
 
 StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe) {
@@ -413,6 +428,7 @@ StatusCode adbms_afe_read_thermistors(AdbmsAfeStorage *afe) {
       if (data_pec != received_pec) {
         LOG_DEBUG("Communication Failed with device: %d, DATA_PEC: %d, RECEIVED_PEC: %d\n\r", device, data_pec, received_pec);
         LOG_DEBUG("Voltage: %d %d %d\n\r", devices_data[device].reg.voltages[0], devices_data[device].reg.voltages[1], devices_data[device].reg.voltages[2]);
+        afe->aux_pec_fail[device]++;
         return STATUS_CODE_INTERNAL_ERROR;
       }
 

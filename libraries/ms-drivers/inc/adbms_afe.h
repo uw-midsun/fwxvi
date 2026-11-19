@@ -118,6 +118,11 @@ typedef struct AdbmsAfeStorage {
   AdbmsAfeSettings *settings;                                 /**< Stores settings for AFE devices, set by the user */
   AdbmsAfeWriteConfigAPacket config_a[ADBMS_AFE_MAX_DEVICES]; /**< Stores the Configuration of each device in the CFGRA register */
   AdbmsAfeWriteConfigBPacket config_b[ADBMS_AFE_MAX_DEVICES]; /**< Stores the Configuration of each device in the CFGRB register */
+  uint16_t cell_pec_fail[ADBMS_AFE_MAX_DEVICES];
+  uint16_t cell_invalid[ADBMS_AFE_MAX_DEVICES];
+  uint16_t aux_pec_fail[ADBMS_AFE_MAX_DEVICES];
+  uint8_t bad_group_mask[ADBMS_AFE_MAX_DEVICES];
+  uint8_t read_seq;
 } AdbmsAfeStorage;
 
 /**

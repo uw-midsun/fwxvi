@@ -72,6 +72,7 @@ void run_10hz_cycle() {
 }
 
 void run_1hz_cycle() {
+  run_can_tx_slow();
   bps_fault_commit();
   state_of_charge_run();
   power_path_manager_run();

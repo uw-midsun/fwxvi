@@ -76,7 +76,7 @@
 #define CSENSE_CONVERSION_FULL_SCALE (1 << 23)
 
 /** @brief  Current-sense sampling period [ms] */
-#define CSENSE_SAMPLE_PERIOD_MS 500U
+#define CSENSE_SAMPLE_PERIOD_MS 100U
 
 /** @brief  Delay between ADC bring-up retries when the initial config fails [ms] */
 #define CSENSE_CONFIG_RETRY_MS 50U
@@ -120,8 +120,13 @@ static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
                                   ADS122_REG_IDAC_MUX_CFG_DEFAULT,
                                   ADS122_REG_REG_MAP_CRC_DEFAULT };
 
+static uint16_t s_csense_comms_fail;
+static uint16_t s_csense_drdy_timeout;
+static uint16_t s_csense_sample_seq;
+
 static inline StatusCode csense_handle_retries(uint32_t *retries, StatusCode status) {
   if (status != STATUS_CODE_OK) {
+    s_csense_comms_fail++;
     *retries += 1;
     if (*retries > REAR_CONTROLLER_CURRENT_SENSE_MAX_RETRIES) {
 #if (CSENSE_FAULTS_ENABLED == 1)
@@ -150,6 +155,10 @@ TASK(current_sense, TASK_STACK_512) {
 
   while (true) {
     current_sense_run();
+    set_csense_diag_crc_fail(rear_controller_storage->ads122_storage.crc_fail_count);
+    set_csense_diag_comms_fail(s_csense_comms_fail);
+    set_csense_diag_drdy_timeout(s_csense_drdy_timeout);
+    set_csense_diag_sample_seq(s_csense_sample_seq);
     xTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(CSENSE_SAMPLE_PERIOD_MS));
   }
 }
@@ -185,6 +194,7 @@ StatusCode current_sense_run() {
   }
 
   if (!data_ready) {
+    s_csense_drdy_timeout++;
     return STATUS_CODE_TIMEOUT;
   }
 
@@ -205,6 +215,7 @@ StatusCode current_sense_run() {
 
   rear_controller_storage->pack_current = current_A;
   set_battery_stats_B_pack_current_a(rear_controller_storage->pack_current);
+  s_csense_sample_seq++;
 
   /* Debounce: require several consecutive over-limit current samples before latching a fault */
   if (current_A < PACK_MAX_DISCHARGE_CURRENT_A || current_A > PACK_MAX_CHARGE_CURRENT_A) {

@@ -162,6 +162,8 @@ static bool s_cells_read_ok = false;
 static volatile uint32_t s_open_wire_mask[ADBMS_AFE_MAX_DEVICES];
 
 static uint8_t s_afe_temperature_message_index = 0U;
+static uint16_t s_thermistor_raw[ADBMS_AFE_MAX_CELL_THERMISTORS];
+static uint8_t s_thermistor_raw_page = 0U;
 
 /**
  * @brief   Consecutive-failure retry counters, one per ADBMS AFE transaction stage.
@@ -491,6 +493,9 @@ static StatusCode s_cell_sense_conversions() {
   if (!s_afe_stage_ok(status, &s_afe_retries.thermistor_read, THERMISTOR_FAULTS_ENABLED, "thermistor read")) {
     return status;
   }
+  for (uint8_t i = 0U; i < ADBMS_AFE_MAX_CELL_THERMISTORS; i++) {
+    s_thermistor_raw[i] = adbms_afe_storage->thermistor_voltages[i];
+  }
 #endif
 
   return STATUS_CODE_OK;
@@ -646,6 +651,12 @@ static StatusCode s_cell_sense_run() {
  ************************************************************************************************/
 
 StatusCode log_cell_sense() {
+  set_AFE_thermistor_raw_page(s_thermistor_raw_page);
+  set_AFE_thermistor_raw_v0(s_thermistor_raw[s_thermistor_raw_page * 3U]);
+  set_AFE_thermistor_raw_v1(s_thermistor_raw[s_thermistor_raw_page * 3U + 1U]);
+  set_AFE_thermistor_raw_v2(s_thermistor_raw[s_thermistor_raw_page * 3U + 2U]);
+  s_thermistor_raw_page = (s_thermistor_raw_page + 1U) % (ADBMS_AFE_MAX_CELL_THERMISTORS / 3U);
+
   if (s_cell_data_updated != true) {
     return STATUS_CODE_RESOURCE_EXHAUSTED;
   }
@@ -697,6 +708,16 @@ TASK(cell_sense_conversions, TASK_STACK_512) {
   while (true) {
     s_disable_balancing(); /* We balance again in s_cell_sense_run, disbaled since readings are off during balancing */
     s_cell_sense_conversions();
+    set_AFE1_diag_cell_pec_fail(adbms_afe_storage->cell_pec_fail[0]);
+    set_AFE1_diag_cell_invalid(adbms_afe_storage->cell_invalid[0]);
+    set_AFE1_diag_aux_pec_fail(adbms_afe_storage->aux_pec_fail[0]);
+    set_AFE1_diag_bad_group_mask(adbms_afe_storage->bad_group_mask[0]);
+    set_AFE1_diag_read_seq(adbms_afe_storage->read_seq);
+    set_AFE2_diag_cell_pec_fail(adbms_afe_storage->cell_pec_fail[1]);
+    set_AFE2_diag_cell_invalid(adbms_afe_storage->cell_invalid[1]);
+    set_AFE2_diag_aux_pec_fail(adbms_afe_storage->aux_pec_fail[1]);
+    set_AFE2_diag_bad_group_mask(adbms_afe_storage->bad_group_mask[1]);
+    set_AFE2_diag_read_seq(adbms_afe_storage->read_seq);
     if (s_cells_read_ok) {
       s_cell_sense_run();
       if (open_wire_pass++ % OPEN_WIRE_CHECK_PERIOD_PASSES == 0U) {
