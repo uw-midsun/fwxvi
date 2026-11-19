@@ -155,7 +155,7 @@ static StatusCode s_create_top_label(GuiScreen *screen) {
   const LabelWidgetConfig top_label_config = {
     .size = { .width = 300, .height = 30 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_MID, .x_offset = 0, .y_offset = 0 } },
-    .label_text = "P: 0V, 0A | M: 0V, 0A | S: 0A",
+    .label_text = "P: 0V, 0mA | M: 0V, 0mA | S: 0mA",
     .alignment = WIDGET_TEXT_ALIGN_CENTER,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
@@ -209,7 +209,7 @@ static StatusCode s_create_aux_energy_label(GuiScreen *screen) {
   const LabelWidgetConfig aux_energy_label_config = {
     .size = { .width = 100, .height = 32 },
     .position = { .type = WIDGET_POSITION_ALIGN, .value.align = { .align = WIDGET_ALIGN_IN_TOP_RIGHT, .x_offset = -10, .y_offset = 210 } },
-    .label_text = "Aux: 0.00V\nNrg: 0 Wh",
+    .label_text = "Aux: 0.00V\nCur: 0 mA",
     .alignment = WIDGET_TEXT_ALIGN_LEFT,
     .text_color_id = GUI_COLOR_TEXT_PRIMARY,
     .font = GUI_SMALL_TEXT,
@@ -262,31 +262,17 @@ StatusCode gui_widgets_init(void) {
   return gui_widgets_init_screen(screen);
 }
 
-/* Format a signed float as "<sign><whole>.<1dp>" into buf. Currents are signed (regen/solar go
-   negative), and the embedded printf is built without %f support, so decompose by hand and carry
-   the sign explicitly to keep small negatives (e.g. -0.5) from dropping their sign. */
-static void s_format_signed_1dp(char *buf, size_t len, float value) {
-  const char *sign = (value < 0.0f) ? "-" : "";
-  float magnitude = (value < 0.0f) ? -value : value;
-  int whole = (int)magnitude;
-  int frac = (int)((magnitude - (float)whole) * 10.0f + 0.5f);
-  if (frac >= 10) {
-    whole += 1;
-    frac -= 10;
+/* Convert a signed current in amps to whole milliamps, rounding to nearest. The embedded printf is
+   built without %f support, so currents are shown as integer mA. */
+static long s_amps_to_ma(float amps) {
+  float ma = amps * 1000.0f;
+  /* Clamp so a bogus reading (or NaN) can't overflow the cast */
+  if (!(ma > -999999.0f)) {
+    ma = -999999.0f;
+  } else if (ma > 999999.0f) {
+    ma = 999999.0f;
   }
-  /* Clamp both fields to provably small ranges so neither %d can overflow the caller's fixed-size
-   * buffer (also bounds a bogus out-of-range reading); magnitude is already non-negative. */
-  if (whole < 0) {
-    whole = 0;
-  } else if (whole > 99999) {
-    whole = 99999;
-  }
-  if (frac < 0) {
-    frac = 0;
-  } else if (frac > 9) {
-    frac = 9;
-  }
-  snprintf(buf, len, "%s%d.%d", sign, whole, frac);
+  return (long)((ma < 0.0f) ? (ma - 0.5f) : (ma + 0.5f));
 }
 
 StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, float motor_bus_voltage, float motor_bus_current, uint16_t bps_fault, uint8_t cell_at_fault, uint16_t ws22_flags) {
@@ -309,14 +295,12 @@ StatusCode gui_widgets_set_top_label(float pack_voltage, float pack_current, flo
     const char *ws22_flag_text = s_get_ws22_flag_text(ws22_flags);
     snprintf(text_buffer, sizeof(text_buffer), "%s", ws22_flag_text);
   } else {
-    /* Currents arrive as signed floats; format each with one decimal so regen/solar read correctly */
-    char pack_current_str[12];
-    char motor_current_str[12];
-    char solar_current_str[12];
-    s_format_signed_1dp(pack_current_str, sizeof(pack_current_str), pack_current);
-    s_format_signed_1dp(motor_current_str, sizeof(motor_current_str), motor_bus_current);
-    s_format_signed_1dp(solar_current_str, sizeof(solar_current_str), motor_bus_current - pack_current);
-    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %sA | M: %uV, %sA | S: %sA", (unsigned)pack_voltage, pack_current_str, (unsigned)motor_bus_voltage, motor_current_str, solar_current_str);
+    /* Currents arrive as signed floats in A; display as signed integer mA so regen/solar read correctly */
+    long pack_current_ma = s_amps_to_ma(pack_current);
+    long motor_current_ma = s_amps_to_ma(motor_bus_current);
+    long solar_current_ma = motor_current_ma - pack_current_ma;
+    snprintf(text_buffer, sizeof(text_buffer), "P: %uV, %ldmA | M: %uV, %ldmA | S: %ldmA", (unsigned)pack_voltage, pack_current_ma, (unsigned)motor_bus_voltage, motor_current_ma,
+             solar_current_ma);
   }
 
   return lvgl_widgets_set_label_text(&s_top_label, text_buffer);
@@ -353,14 +337,14 @@ StatusCode gui_widgets_set_soc_bar(uint8_t soc_percent) {
   return lvgl_widgets_set_bar_value(&s_soc_bar, soc_percent);
 }
 
-StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, int16_t aux_ma) {
   if (!s_widgets_initialized) {
     return STATUS_CODE_UNINITIALIZED;
   }
 
   int16_t aux_abs_mv = (aux_mv < 0) ? (int16_t)-aux_mv : aux_mv;
   char text_buffer[LABEL_MAX_CHARS];
-  snprintf(text_buffer, sizeof(text_buffer), "Aux: %d.%02dV\nNrg: %d Wh", aux_mv / 1000, (aux_abs_mv % 1000) / 10, (int)energy_wh);
+  snprintf(text_buffer, sizeof(text_buffer), "Aux: %d.%02dV\nCur: %d mA", aux_mv / 1000, (aux_abs_mv % 1000) / 10, aux_ma);
 
   return lvgl_widgets_set_label_text(&s_aux_energy_label, text_buffer);
 }
@@ -405,9 +389,9 @@ StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_
   return STATUS_CODE_OK;
 }
 
-StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh) {
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, int16_t aux_ma) {
   (void)aux_mv;
-  (void)energy_wh;
+  (void)aux_ma;
   return STATUS_CODE_OK;
 }
 

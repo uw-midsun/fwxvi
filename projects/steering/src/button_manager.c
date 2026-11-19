@@ -242,6 +242,15 @@ static void cruise_control_up_btn_falling_edge_cb(Button *button) {
     gui_menu_request_move_up();
     return;
   }
+  
+  if(steering_storage->accel >= 100){
+    steering_storage->accel = 0;
+      set_steering_cruise_control_target_velocity(steering_storage->accel);
+
+    return;
+  }
+  steering_storage->accel += 10;
+  set_steering_cruise_control_target_velocity(steering_storage->accel);
 
   CONDITIONAL_LOG_DEBUG("ButtonManager - CC up Falling edge callback\r\n");
 }
@@ -260,8 +269,16 @@ static void cruise_control_down_btn_falling_edge_cb(Button *button) {
     return;
   }
 
-  CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
-  s_horn_set_enabled(true);
+  // CONDITIONAL_LOG_DEBUG("ButtonManager - CC down Falling edge callback\r\n");
+  if(steering_storage->accel == 0){
+    steering_storage->accel = 0;
+      set_steering_cruise_control_target_velocity(steering_storage->accel);
+
+    return;
+  }
+  steering_storage->accel -= 10;
+  set_steering_cruise_control_target_velocity(steering_storage->accel);
+  // s_horn_set_enabled(true);
 }
 
 static void cruise_control_down_btn_rising_edge_cb(Button *button) {

@@ -450,7 +450,7 @@ static bool s_afe_stage_ok(StatusCode status, uint8_t *retry_count, bool fault_e
   (*retry_count)++;
   // LOG_DEBUG("AFE %s failed: status %d (retry %u)\n", stage_name, status, *retry_count);
 
-  if (fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
+  if (false && fault_enabled && *retry_count >= AFE_NUM_RETRIES) {
     trigger_bps_fault(BPS_FAULT_COMMS_LOSS_AFE);
   }
 

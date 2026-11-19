@@ -130,6 +130,8 @@ typedef struct {
 
   float estimated_km_remaining; /**< Estimated remaining range based on cell voltage */
 
+  uint32_t accel;
+
   SteeringConfig *config;                    /**< Pointer to the steering configuration data */
   Ws22MotorCanConfig *ws22_motor_can_config; /**< Wavesculptor 22 motor CAN config - flags to indicate whether CAN for certain fields is enabled */
 } SteeringStorage;

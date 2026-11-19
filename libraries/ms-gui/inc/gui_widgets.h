@@ -103,11 +103,11 @@ StatusCode gui_widgets_set_cell_stats_label(uint16_t min_cell_voltage_mv, uint16
 StatusCode gui_widgets_set_temps_stats_label(int16_t motor_temp_c, uint16_t max_cell_temp_c);
 
 /**
- * @brief   Update the shared aux battery voltage + energy-used label
+ * @brief   Update the shared aux (LV) battery voltage + current label
  * @param   aux_mv Auxiliary battery voltage in mV (signed)
- * @param   energy_wh Net energy drawn from the pack in Wh
+ * @param   aux_ma Auxiliary battery current in mA (signed)
  * @return  STATUS_CODE_OK on success, error otherwise
  */
-StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, float energy_wh);
+StatusCode gui_widgets_set_aux_energy_label(int16_t aux_mv, int16_t aux_ma);
 
 /** @} */

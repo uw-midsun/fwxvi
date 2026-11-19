@@ -22,6 +22,7 @@
 #include "accel_pedal.h"
 #include "front_controller_hw_defs.h"
 #include "front_controller_setters.h"
+#include "front_controller_getters.h"
 
 static const GpioAddress s_accel_pedal_gpio_opamp_out = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_OPAMP_OUT;
 static const GpioAddress s_accel_pedal_gpio_raw = GPIO_FRONT_CONTROLLER_ACCEL_PEDAL_RAW;
@@ -52,49 +53,53 @@ StatusCode accel_pedal_run() {
   adc_read_raw(&s_accel_pedal_gpio_raw, &accel_raw);
   set_pedal_raw_accel_raw(accel_raw);
 
-  /**
-   * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
-   * to get percentage press. Negatives and > 100 values will be clamped
-   */
-  float calculated_reading = (((float)adc_reading - (float)s_accel_pedal_storage.calibration_data.lower_value) /
-                              ((float)s_accel_pedal_storage.calibration_data.upper_value - (float)s_accel_pedal_storage.calibration_data.lower_value));
+  s_accel_pedal_storage.accel_percentage = (float)get_steering_cruise_control_target_velocity();
 
-  calculated_reading = fminf(fmaxf(calculated_reading, 0.0f), 1.0f);
 
-  /* Check the reading is above the input deadzone */
-  if (calculated_reading < front_controller_storage->config->accel_input_deadzone) {
-    calculated_reading = 0.0f;
-  } else {
-    /* Exponential curve shaping */
-    calculated_reading = powf(calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
 
-    /* Map the [0.0 - 1.0] reading to [remap min - 1.0] */
-    calculated_reading = front_controller_storage->config->accel_input_remap_min + ((1.0f - front_controller_storage->config->accel_input_remap_min) * calculated_reading);
-  }
+  // /**
+  //  * Convert ADC Reading to readable voltage by normalizing with calibration data and dividing
+  //  * to get percentage press. Negatives and > 100 values will be clamped
+  //  */
+  // float calculated_reading = (((float)adc_reading - (float)s_accel_pedal_storage.calibration_data.lower_value) /
+  //                             ((float)s_accel_pedal_storage.calibration_data.upper_value - (float)s_accel_pedal_storage.calibration_data.lower_value));
 
-  if (s_accel_pedal_storage.calibration_data.reversed) {
-    calculated_reading = 1.0f - calculated_reading;
-  }
+  // calculated_reading = fminf(fmaxf(calculated_reading, 0.0f), 1.0f);
 
-  // Square the value
-  calculated_reading = calculated_reading * calculated_reading;
-  calculated_reading -= 0.08;
+  // /* Check the reading is above the input deadzone */
+  // if (calculated_reading < front_controller_storage->config->accel_input_deadzone) {
+  //   calculated_reading = 0.0f;
+  // } else {
+  //   /* Exponential curve shaping */
+  //   calculated_reading = powf(calculated_reading, front_controller_storage->config->accel_input_curve_exponent);
 
-  if (calculated_reading < 0) {
-    calculated_reading = 0.0f;
-  }
+  //   /* Map the [0.0 - 1.0] reading to [remap min - 1.0] */
+  //   calculated_reading = front_controller_storage->config->accel_input_remap_min + ((1.0f - front_controller_storage->config->accel_input_remap_min) * calculated_reading);
+  // }
 
-  s_accel_pedal_storage.accel_percentage = front_controller_storage->config->accel_low_pass_filter_alpha * calculated_reading +
-                                           (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
+  // if (s_accel_pedal_storage.calibration_data.reversed) {
+  //   calculated_reading = 1.0f - calculated_reading;
+  // }
 
-  if (s_accel_pedal_storage.accel_percentage <= 0.05) {
-    s_accel_pedal_storage.accel_percentage = 0;
-  }
-  s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
+  // // Square the value
+  // calculated_reading = calculated_reading * calculated_reading;
+  // calculated_reading -= 0.08;
 
-  front_controller_storage->accel_percentage = s_accel_pedal_storage.accel_percentage;
+  // if (calculated_reading < 0) {
+  //   calculated_reading = 0.0f;
+  // }
 
-  CONDITIONAL_LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
+  // s_accel_pedal_storage.accel_percentage = front_controller_storage->config->accel_low_pass_filter_alpha * calculated_reading +
+  //                                          (1.0f - front_controller_storage->config->accel_low_pass_filter_alpha) * s_accel_pedal_storage.prev_accel_percentage;
+
+  // if (s_accel_pedal_storage.accel_percentage <= 0.05) {
+  //   s_accel_pedal_storage.accel_percentage = 0;
+  // }
+  // s_accel_pedal_storage.prev_accel_percentage = calculated_reading;
+
+  // front_controller_storage->accel_percentage = s_accel_pedal_storage.accel_percentage;
+
+  // CONDITIONAL_LOG_DEBUG("ACCEL READING: %d | CALC READING %ld \r\n", adc_reading, (int32_t)(s_accel_pedal_storage.accel_percentage * 100));
 
   return STATUS_CODE_OK;
 }
