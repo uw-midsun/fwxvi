@@ -26,6 +26,8 @@ static RearControllerState s_current_state = REAR_CONTROLLER_STATE_IDLE;
 
 static StatusCode status;
 static bool started = false;
+static bool s_front_controller_connected = false;
+static bool s_steering_connected = false;
 
 #define IS_MOTOR_CONNECTED 1U
 #define REAR_STATE_MANAGER_DEBUG 0U
@@ -88,6 +90,8 @@ StatusCode rear_controller_state_manager_init(RearControllerStorage *storage) {
 
   rear_controller_storage = storage;
   started = false;
+  s_front_controller_connected = false;
+  s_steering_connected = false;
   s_current_state = REAR_CONTROLLER_STATE_START;
 
   return STATUS_CODE_OK;
@@ -154,6 +158,17 @@ RearControllerState rear_controller_state_manager_get_state(void) {
 
 StatusCode rear_controller_update_state_manager_medium_cycle() {
   CONDITIONAL_LOG_DEBUG("Current state: %d\r\n", s_current_state);
+
+  if (get_received_drive_status()) {
+    s_front_controller_connected = true;
+  }
+  if (get_received_steering()) {
+    s_steering_connected = true;
+  }
+  if (!s_front_controller_connected || !s_steering_connected) {
+    return STATUS_CODE_OK;
+  }
+
   if (s_current_state == REAR_CONTROLLER_STATE_START && started == false) {
     rear_controller_state_manager_enter_state(REAR_CONTROLLER_STATE_START);
     return STATUS_CODE_OK;
