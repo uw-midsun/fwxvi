@@ -30,6 +30,9 @@
 
 #define ADS122_NUM_REG 16U
 
+#define ADS122_CRC_POLYNOMIAL 0x07U
+#define ADS122_CRC_SEED 0xFFU
+
 /** @brief  Settle time after a software reset before the device accepts further comms [ms] */
 #define ADS122_RESET_SETTLE_MS 20U
 

@@ -73,7 +73,7 @@ static uint8_t s_register_map[] = { ADS122_REG_DEVICE_CFG_DEFAULT,
                                     (ADS122_REG_MUX_CFG_DEFAULT | 0x01),       /* reads voltage first */
                                     ADS122_REG_GAIN_CFG_DEFAULT,               /* Gain = 0.5 */
                                     (ADS122_REG_REFERENCE_CFG_DEFAULT | 0x04), /* Vref = 2.5 V -> +-5 V range */
-                                    (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10),
+                                    (ADS122_REG_DIGITAL_CFG_DEFAULT | 0x10 | ADS122_I2C_CRC_EN_MASK),
                                     ADS122_REG_GPIO_CFG_DEFAULT,
                                     ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                     ADS122_REG_IDAC_MAG_CFG_DEFAULT,
@@ -94,7 +94,7 @@ static StatusCode s_read_channel(uint8_t mux_config, uint8_t gain_cfg, float fsr
   status_ok_or_return(ads122_change_MUX(&s_ads122_storage, mux_config));
   status_ok_or_return(ads122_start_conversion(&s_ads122_storage));
 
-  uint8_t raw[5U] = { 0U };
+  uint8_t raw[6U] = { 0U };
   for (uint32_t elapsed = 0U; elapsed < CSENSE_DRDY_POLL_TIMEOUT_MS; elapsed += 2U) {
     status_ok_or_return(ads122_get_conversion_data(&s_ads122_storage, raw));
     if (raw[0] & CSENSE_DATA_READY_MASK) {

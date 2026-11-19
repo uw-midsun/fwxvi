@@ -21,6 +21,19 @@ static uint8_t ads122_create_command(ADS122C14ITER_Register reg, ADS122C14ITER_C
   return command | reg;
 }
 
+static uint8_t ads122_crc8(const uint8_t *data, uint8_t len) {
+  uint8_t crc = ADS122_CRC_SEED;
+
+  for (uint8_t i = 0U; i < len; i++) {
+    crc ^= data[i];
+    for (uint8_t bit = 0U; bit < 8U; bit++) {
+      crc = (crc & 0x80U) ? (uint8_t)((crc << 1) ^ ADS122_CRC_POLYNOMIAL) : (uint8_t)(crc << 1);
+    }
+  }
+
+  return crc;
+}
+
 /* Read protocol : address, command, SR, address,  get data*/
 /* Reads a specified register and gets the data */
 static StatusCode ads122_read_register(ADS122Storage *storage, uint8_t *rx_data, ADS122C14ITER_Register reg) {
@@ -161,5 +174,11 @@ StatusCode ads122_get_conversion_data(ADS122Storage *storage, uint8_t rx_data[])
     return STATUS_CODE_INVALID_ARGS;
   }
 
-  return i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 5U);
+  status_ok_or_return(i2c_read_mem(storage->i2c_port, storage->i2c_address, ADS122_READ_CONVERSION_COMMAND, rx_data, 6U));
+
+  if (ads122_crc8(rx_data, 5U) != rx_data[5]) {
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+
+  return STATUS_CODE_OK;
 }
