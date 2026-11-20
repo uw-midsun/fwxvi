@@ -1,0 +1,126 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: front_controller rear_controller WaveSculptor22 telemetry
+
+BO_   1665 pedal_raw: 6 front_controller
+  SG_ accel_raw : 0|16@1+ (1,0) [0|65535] "ADC counts" telemetry
+  SG_ accel_amp : 16|16@1+ (1,0) [0|65535] "ADC counts" telemetry
+  SG_ brake_raw : 32|16@1+ (1,0) [0|65535] "ADC counts" telemetry
+
+BO_   1683 csense_diag: 8 rear_controller
+  SG_ crc_fail : 0|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ comms_fail : 16|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ drdy_timeout : 32|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ sample_seq : 48|16@1+ (1,0) [0|65535] "" telemetry
+
+BO_   1715 AFE_thermistor_raw: 7 rear_controller
+  SG_ page : 0|8@1+ (1,0) [0|255] "" telemetry
+  SG_ v0 : 8|16@1+ (1,0) [0|65535] "raw counts" telemetry
+  SG_ v1 : 24|16@1+ (1,0) [0|65535] "raw counts" telemetry
+  SG_ v2 : 40|16@1+ (1,0) [0|65535] "raw counts" telemetry
+
+BO_   1731 AFE1_diag: 8 rear_controller
+  SG_ cell_pec_fail : 0|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ cell_invalid : 16|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ aux_pec_fail : 32|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ bad_group_mask : 48|8@1+ (1,0) [0|255] "" telemetry
+  SG_ read_seq : 56|8@1+ (1,0) [0|255] "" telemetry
+
+BO_   1747 AFE2_diag: 8 rear_controller
+  SG_ cell_pec_fail : 0|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ cell_invalid : 16|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ aux_pec_fail : 32|16@1+ (1,0) [0|65535] "" telemetry
+  SG_ bad_group_mask : 48|8@1+ (1,0) [0|255] "" telemetry
+  SG_ read_seq : 56|8@1+ (1,0) [0|255] "" telemetry
+
+BO_ 128 WS22_identification: 8 WaveSculptor22
+  SG_ device_id : 0|32@1+ (1,0) [0|0] "" telemetry
+  SG_ serial_number : 32|32@1+ (1,0) [0|0] "" telemetry
+
+BO_ 129 WS22_status: 8 WaveSculptor22
+  SG_ limit_flags : 0|16@1+ (1,0) [0|0] "" telemetry
+  SG_ error_flags : 16|16@1+ (1,0) [0|0] "" telemetry
+  SG_ active_motor : 32|16@1+ (1,0) [0|0] "" telemetry
+  SG_ tx_error_count : 48|8@1+ (1,0) [0|0] "" telemetry
+  SG_ rx_error_count : 56|8@1+ (1,0) [0|0] "" telemetry
+
+BO_ 130 WS22_bus: 8 WaveSculptor22
+  SG_ bus_voltage : 0|32@1+ (1,0) [0|0] "V" telemetry
+  SG_ bus_current : 32|32@1+ (1,0) [0|0] "A" telemetry
+
+BO_ 131 WS22_velocity: 8 WaveSculptor22
+  SG_ motor_velocity : 0|32@1+ (1,0) [0|0] "rpm" telemetry
+  SG_ vehicle_velocity : 32|32@1+ (3.6,0) [0|0] "km/h" telemetry
+
+BO_ 132 WS22_phase_currents: 8 WaveSculptor22
+  SG_ phase_b_current : 0|32@1+ (1,0) [0|0] "A RMS" telemetry
+  SG_ phase_c_current : 32|32@1+ (1,0) [0|0] "A RMS" telemetry
+
+BO_ 133 WS22_motor_voltage: 8 WaveSculptor22
+  SG_ voltage_q : 0|32@1+ (1,0) [0|0] "V" telemetry
+  SG_ voltage_d : 32|32@1+ (1,0) [0|0] "V" telemetry
+
+BO_ 134 WS22_motor_current: 8 WaveSculptor22
+  SG_ current_q : 0|32@1+ (1,0) [0|0] "A" telemetry
+  SG_ current_d : 32|32@1+ (1,0) [0|0] "A" telemetry
+
+BO_ 135 WS22_back_emf: 8 WaveSculptor22
+  SG_ back_emf_q : 0|32@1+ (1,0) [0|0] "V" telemetry
+  SG_ back_emf_d : 32|32@1+ (1,0) [0|0] "V" telemetry
+
+BO_ 136 WS22_15V_rail: 8 WaveSculptor22
+  SG_ supply_15v : 32|32@1+ (1,0) [0|0] "V" telemetry
+
+BO_ 137 WS22_logic_rails: 8 WaveSculptor22
+  SG_ supply_1v9 : 0|32@1+ (1,0) [0|0] "V" telemetry
+  SG_ supply_3v3 : 32|32@1+ (1,0) [0|0] "V" telemetry
+
+BO_ 139 WS22_motor_temperatures: 8 WaveSculptor22
+  SG_ motor_temperature : 0|32@1+ (1,0) [0|0] "°C" telemetry
+  SG_ heatsink_temperature : 32|32@1+ (1,0) [0|0] "°C" telemetry
+
+BO_ 140 WS22_dsp_temperature: 8 WaveSculptor22
+  SG_ dsp_temperature : 0|32@1+ (1,0) [0|0] "°C" telemetry
+
+BO_ 141 WS22_reserved_0x8D: 8 WaveSculptor22
+
+BO_ 142 WS22_odometer: 8 WaveSculptor22
+  SG_ odometer : 0|32@1+ (1,0) [0|0] "m" telemetry
+  SG_ dc_bus_charge : 32|32@1+ (1,0) [0|0] "Ah" telemetry
+
+BO_ 151 WS22_slip_speed_frame: 8 WaveSculptor22
+
+BO_ 1281 WS22_drive_command: 8 front_controller
+  SG_ velocity_command : 0|32@1+ (1,0) [0|0] "rpm" telemetry
+  SG_ current_command : 32|32@1+ (100,0) [0|0] "%" telemetry
+
+CM_ "Diagnostic frames from FWXVI f1c5e8c9d82a643c5a22c18a272fef5c6959796f.";
+CM_ "WS22 hardware frames from Prohelion Appendix C and FWXVI front_controller/src/motor_can.c.";
+CM_ BO_ 151 "Appendix C and the vendor DBC disagree on the slip speed word.";
+
+SIG_VALTYPE_ 130 bus_voltage : 1;
+SIG_VALTYPE_ 130 bus_current : 1;
+SIG_VALTYPE_ 131 motor_velocity : 1;
+SIG_VALTYPE_ 131 vehicle_velocity : 1;
+SIG_VALTYPE_ 132 phase_b_current : 1;
+SIG_VALTYPE_ 132 phase_c_current : 1;
+SIG_VALTYPE_ 133 voltage_q : 1;
+SIG_VALTYPE_ 133 voltage_d : 1;
+SIG_VALTYPE_ 134 current_q : 1;
+SIG_VALTYPE_ 134 current_d : 1;
+SIG_VALTYPE_ 135 back_emf_q : 1;
+SIG_VALTYPE_ 135 back_emf_d : 1;
+SIG_VALTYPE_ 136 supply_15v : 1;
+SIG_VALTYPE_ 137 supply_1v9 : 1;
+SIG_VALTYPE_ 137 supply_3v3 : 1;
+SIG_VALTYPE_ 139 motor_temperature : 1;
+SIG_VALTYPE_ 139 heatsink_temperature : 1;
+SIG_VALTYPE_ 140 dsp_temperature : 1;
+SIG_VALTYPE_ 142 odometer : 1;
+SIG_VALTYPE_ 142 dc_bus_charge : 1;
+SIG_VALTYPE_ 1281 velocity_command : 1;
+SIG_VALTYPE_ 1281 current_command : 1;

@@ -15,11 +15,16 @@ add_executable(telemetry
     src/gui/MainWindow.cpp
 )
 
+# macOS uses the bundle identifier to present the native file picker.
+set_target_properties(telemetry PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER "org.uw-midsun.telemetry-replay"
+)
+
 target_link_libraries(telemetry PRIVATE Qt6::Widgets)
 
 qt_add_resources(telemetry "can_database"
     PREFIX "/"
-    FILES can/tools/system_dbc.dbc
+    FILES can/tools/system_dbc.dbc can/tools/replay_extra.dbc
 )
 
 qt_add_resources(telemetry "branding"

@@ -72,9 +72,14 @@ MainWindow::MainWindow(QWidget* parent)
         }
     });
     connect(openButton, &QPushButton::clicked, this, [this]() {
+        QFileDialog::Options options;
+#ifdef Q_OS_MACOS
+        // The native panel can fail to appear when launched as a standalone executable.
+        options |= QFileDialog::DontUseNativeDialog;
+#endif
         const QString filePath = QFileDialog::getOpenFileName(
             this, "Select Telemetry File", "",
-            "Telemetry Files (*.csv *.txt *.log);;All Files (*)");
+            "Telemetry Files (*.csv *.txt *.log);;All Files (*)", nullptr, options);
         if (filePath.isEmpty()) {
             return;
         }

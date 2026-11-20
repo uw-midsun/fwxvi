@@ -78,13 +78,18 @@ The Windows example uses the ARM64 build. Use the corresponding executable path 
 
 ## Log format
 
-The parser currently expects one CAN message per line, for example:
+The parser reads one CAN message per line in either of these formats.
 
 ```text
+(0.082000) can0 551#0000000000
 (1.251000) can0 035 #DAF97EAAF4C8
 ```
 
-The fields are the timestamp in seconds, interface name, decimal CAN ID, and hexadecimal payload. Lines that do not match the supported format are skipped. The payload can contain up to 8 bytes.
+The fields are the timestamp in seconds, interface name, CAN ID, and hexadecimal payload. The compact SD card format uses hexadecimal IDs with `#` immediately after the ID. The legacy format uses decimal IDs followed by whitespace before `#`. The payload can contain up to 8 bytes. Lines that do not match either format are skipped.
+
+The decoder uses the bundled FWXVI CAN database and supplemental definitions for the [track-test diagnostic frames](https://github.com/uw-midsun/fwxvi/blob/f1c5e8c9d82a643c5a22c18a272fef5c6959796f/can/tools/system_dbc.dbc) and [WaveSculptor 22 hardware frames](https://docs.prohelion.com/Motor_Controllers/WaveSculptor22/User_Manual/Appendix_C.html). On `0x501`, velocity and current are commands. Measured velocity is on `0x083`, and measured DC bus voltage and current are on `0x082`.
+
+The raw payload remains visible for every frame. The app leaves `0x08D` raw because it is reserved and `0x097` raw because the vendor manual and DBC disagree on its field layout. FWXVI AFE temperature bytes also display as raw because their interpretation depends on the firmware build. Pedal values above 100 are flagged and shown with the recorded value.
 
 ## Project structure
 
