@@ -78,6 +78,7 @@ class Terminal {
    */
   void parseCommand(std::vector<std::string> &tokens);
 
+ public:
   /**
    * @brief   While true spin-loop to handle shell inputs
    * @details This function must be called after server initialization
@@ -85,7 +86,6 @@ class Terminal {
    */
   void run();
 
- public:
   /**
    * @brief   Execute terminal-style command for a selected client
    * @note    For testing purposes
