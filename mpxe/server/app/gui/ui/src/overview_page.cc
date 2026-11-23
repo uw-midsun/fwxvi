@@ -256,6 +256,24 @@ void OverviewPage::onCommandClicked(const QModelIndex &index) {
     args = values;
   }
 
+  const QString typeLower = type.toLower();
+  const QString cmdLower = cmd.toLower();
+
+  const bool isI2c = (typeLower == QStringLiteral("i2c") && cmdLower == QStringLiteral("write_data"));
+  const bool isSpi = (typeLower == QStringLiteral("spi") && (cmdLower == QStringLiteral("write") || cmdLower == QStringLiteral("transfer")));
+
+  if ((isI2c || isSpi) && args.size() >= 2) {
+    QString &data = args.last();
+
+    if (isI2c) {
+      data.replace(QLatin1Char(','), QLatin1Char(' '));
+      data = data.simplified();
+    } else {
+      data = data.simplified();
+      data.replace(QLatin1Char(' '), QLatin1Char(','));
+    }
+  }
+
   QStringList input;
   input << type << cmd << args;
   std::string inputString = input.join(' ').toStdString();

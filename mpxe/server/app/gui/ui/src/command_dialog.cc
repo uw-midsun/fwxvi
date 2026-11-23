@@ -30,7 +30,9 @@ CommandDialog::CommandDialog(const QString &type, const QString &command, const 
   for (const QString &placeholder : placeholders) {
     QLineEdit *edit = new QLineEdit(this);
     if (placeholder.endsWith(QStringLiteral("..."))) {
-      edit->setPlaceholderText(QStringLiteral("space-separated values"));
+      edit->setPlaceholderText(QStringLiteral("space-separated bytes, e.g. 0x01 0x02 0x03"));
+    } else if (placeholder.contains(QStringLiteral("DATA"), Qt::CaseInsensitive)) {
+      edit->setPlaceholderText(QStringLiteral("bytes, e.g. 0x01 0xAB"));
     } else {
       edit->setPlaceholderText(placeholder);
     }
