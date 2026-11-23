@@ -39,7 +39,7 @@ class QLineEdit;
 class CommandDialog : public QDialog {
   Q_OBJECT
 
-  public:
+ public:
   /**
    * @brief   Construct a new CommandDialog for a given command
    * @param   type          Command type (e.g., "gpio")
@@ -48,15 +48,15 @@ class CommandDialog : public QDialog {
    * @param   parent        Parent widget (can be nullptr)
    */
   explicit CommandDialog(const QString &type, const QString &command, const QStringList &placeholders, QWidget *parent = nullptr);
-  
+
   /**
    * @brief   Construct a new CommandDialog for a given command
    * @return  QStringList of trimmed user inputs
    */
   QStringList values() const;
 
-  private:
-   QVector<QLineEdit*> m_edits; /**< One line edit per placeholder */
+ private:
+  QVector<QLineEdit *> m_edits; /**< One line edit per placeholder */
 };
 
 /** @} */

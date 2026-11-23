@@ -22,9 +22,9 @@
 #include <QWidget>
 
 /* Inter-component headers */
-#include "utils.h"
 #include "app_terminal.h"
 #include "server.h"
+#include "utils.h"
 
 /* Intra-component headers */
 
@@ -76,8 +76,7 @@ class OverviewPage : public QWidget {
    */
   void clientSelected(const QString &json_path);
 
-  
-  private slots:
+ private slots:
   /**
    * @brief   Slot to handle combobox index changes
    * @param   index Selected index
@@ -112,9 +111,9 @@ class OverviewPage : public QWidget {
 
   QStringList m_client_files;            /**< List of client file paths */
   std::map<QString, QVariant> m_payload; /**< Current payload used for display */
-  TableWithSearch m_cmds_table; /**< Commands table  */
-  Terminal m_terminal; /**< Terminal instance */
-  Server *m_server; /**< Server instance */
+  TableWithSearch m_cmds_table;          /**< Commands table  */
+  Terminal m_terminal;                   /**< Terminal instance */
+  Server *m_server;                      /**< Server instance */
 };
 
 /** @} */

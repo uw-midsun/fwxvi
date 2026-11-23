@@ -15,15 +15,15 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QMessageBox>
 #include <QObject>
 #include <QTableView>
 #include <QVBoxLayout>
-#include <QMessageBox>
 
 /* Inter-component headers */
+#include "command_dialog.h"
 #include "command_table_model.h"
 #include "utils.h"
-#include "command_dialog.h"
 
 /* Intra-component headers */
 #include "overview_page.h"
@@ -65,7 +65,7 @@ QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
 
 QStringList extractPlaceholders(const QString &param_1, const QString &param_2) {
   QStringList cells;
-  for (const QString &cell : {param_1, param_2}) {
+  for (const QString &cell : { param_1, param_2 }) {
     QStringList names;
     if (cell.isEmpty() || cell == QStringLiteral("-")) continue;
     int lbrack = cell.indexOf('[');
@@ -227,13 +227,13 @@ void OverviewPage::onClientChanged(int index) {
 
 void OverviewPage::onCommandClicked(const QModelIndex &index) {
   QModelIndex sourceIndex = m_cmds_table.proxy->mapToSource(index);
-  
+
   QString type = sourceIndex.sibling(sourceIndex.row(), 0).data().toString();
   QString cmd = sourceIndex.sibling(sourceIndex.row(), 1).data().toString();
   QString parameter = sourceIndex.sibling(sourceIndex.row(), 2).data().toString();
   QString add_parameter = sourceIndex.sibling(sourceIndex.row(), 3).data(Qt::ToolTipRole).toString();
-  
-  std::vector<std::string> tokens = {type.toStdString(), cmd.toStdString(), parameter.toStdString(), add_parameter.toStdString()};
+
+  std::vector<std::string> tokens = { type.toStdString(), cmd.toStdString(), parameter.toStdString(), add_parameter.toStdString() };
   std::string clientName = m_clients->currentText().toStdString();
   ClientConnection *client = m_server->getClientByName(clientName);
 
@@ -255,7 +255,7 @@ void OverviewPage::onCommandClicked(const QModelIndex &index) {
     }
     args = values;
   }
-  
+
   QStringList input;
   input << type << cmd << args;
   std::string inputString = input.join(' ').toStdString();

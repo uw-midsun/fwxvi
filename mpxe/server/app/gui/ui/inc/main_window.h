@@ -25,9 +25,9 @@
 /* Inter-component headers */
 #include "adc_page.h"
 #include "afe_page.h"
+#include "app_terminal.h"
 #include "gpio_page.h"
 #include "overview_page.h"
-#include "app_terminal.h"
 #include "server.h"
 /* Intra-component headers */
 
@@ -134,8 +134,8 @@ class MainWindow : public QMainWindow {
 
   QPointer<QListWidget> m_list;     /**< Navigation list (left side) */
   QPointer<QStackedWidget> m_stack; /**< Stacked page container (right side) */
-  Terminal m_terminal; /**< Terminal instance  */
-  Server *m_server; /**< Server instance  */
+  Terminal m_terminal;              /**< Terminal instance  */
+  Server *m_server;                 /**< Server instance  */
 
   QPointer<OverviewPage> m_overview_page; /**< Overview page */
   QPointer<AfePage> m_afe_page;           /**< AFE page */

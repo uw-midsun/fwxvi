@@ -91,16 +91,16 @@ int main(int argc, char *argv[]) {
   /* When the set of *.json files changes, update UI + selection */
   QObject::connect(watcher, SIGNAL(clientsListChanged(QStringList)), &win, SLOT(onClientsListChanged(QStringList)));
 
- /*  QTimer gpio_poll_timer{ &win };
-  QObject::connect(&gpio_poll_timer, &QTimer::timeout, [&server, &terminal]() {
-    std::string client_name = "gpio_api";
-    ClientConnection *client = server.getClientByName(client_name);
+  /*  QTimer gpio_poll_timer{ &win };
+   QObject::connect(&gpio_poll_timer, &QTimer::timeout, [&server, &terminal]() {
+     std::string client_name = "gpio_api";
+     ClientConnection *client = server.getClientByName(client_name);
 
-    if (client == nullptr) {
-      return;
-    }
-  });
-  gpio_poll_timer.start(1000); */
+     if (client == nullptr) {
+       return;
+     }
+   });
+   gpio_poll_timer.start(1000); */
 
   return app.exec();
 }

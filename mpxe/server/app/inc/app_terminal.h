@@ -63,7 +63,7 @@ class Terminal {
   void handleAdcCommands(const std::string &action, std::vector<std::string> &tokens);
 
   void handleSpiCommands(const std::string &action, std::vector<std::string> &tokens);
-  
+
   /**
    * @brief   Handle I2C commands provided an action statement and tokenized parameters
    * @param   action Action statement to select the Remote procedure call
@@ -85,7 +85,7 @@ class Terminal {
    */
   void run();
 
-  public:
+ public:
   /**
    * @brief   Execute terminal-style command for a selected client
    * @note    For testing purposes

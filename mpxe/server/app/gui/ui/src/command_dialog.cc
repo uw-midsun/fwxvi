@@ -20,8 +20,7 @@
 /* Intra-component headers */
 #include "command_dialog.h"
 
-CommandDialog::CommandDialog(const QString &type, const QString &command, const QStringList &placeholders, QWidget *parent) :
-    QDialog{ parent } {
+CommandDialog::CommandDialog(const QString &type, const QString &command, const QStringList &placeholders, QWidget *parent) : QDialog{ parent } {
   setWindowTitle(type.toLower() + QStringLiteral(" ") + command.toLower());
   setModal(true);
 
