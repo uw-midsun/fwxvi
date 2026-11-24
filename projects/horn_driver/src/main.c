@@ -66,6 +66,7 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {}
 
+// this should be here for a start up because when we do it in the other fcn it might/shouldn't read not? research more
 void run_10hz_cycle() {
 while (true){
   gpio_init_pin_af(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
@@ -98,7 +99,7 @@ int main() {
 if (all_gpio_open()) {
   LOG_DEBUG("pins are open at startup!");
 }// NOTE TO JOHN OR NEXT USER PLEASE DOUBLE CHECK HOW TO FIND THIS MESSAGE NEXT DAY OF TESTING 
-// MINICOM INFO: https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
+// MINICOM INFO:git  https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
 
 
   pwm_init(PWM_TIMER_1,period);
