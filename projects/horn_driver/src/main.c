@@ -20,6 +20,8 @@
 #include "stm32l4xx_hal_tim.h"
 #include "stm32l4xx_ll_tim.h"
 
+static bool all_gpio_open(void); // FOR TEST CASES
+
 /* Intra-component Headers */
 #include "horn_driver.h"
 
@@ -30,6 +32,7 @@
 #define period 250 //4kHz
 #define dead_time 5 // in us
 #define duty_cycle 0.5 //50% duty cycle
+
 
 enum MOSFET_STATE {
   ALL_OFF = 0,
@@ -63,7 +66,14 @@ void pre_loop_init() {}
 
 void run_1000hz_cycle() {}
 
-void run_10hz_cycle() {}
+void run_10hz_cycle() {
+while (true){
+  gpio_init_pin_af(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pa7, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pa9, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pb0, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+};
+}
 
 void run_1hz_cycle() {}
 
@@ -83,10 +93,13 @@ int main() {
 
   //tasks_start();
 
-  gpio_init_pin_af(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-  gpio_init_pin_af(&pa7, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-  gpio_init_pin_af(&pa9, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-  gpio_init_pin_af(&pb0, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+
+
+if (all_gpio_open()) {
+  LOG_DEBUG("pins are open at startup!");
+}// NOTE TO JOHN OR NEXT USER PLEASE DOUBLE CHECK HOW TO FIND THIS MESSAGE NEXT DAY OF TESTING 
+// MINICOM INFO: https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
+
 
   pwm_init(PWM_TIMER_1,period);
   pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_1, true); // Q1 on first, Q3 off first
@@ -132,4 +145,13 @@ void dead_time_run() {
       delay_us(dead_time);
     }
   }
+}
+
+
+// CHECKS IF ALL PINS ARE STARTING OFF
+static bool all_gpio_open(void) {
+  return gpio_get_state(&pa8) == GPIO_STATE_LOW &&  // Q1
+         gpio_get_state(&pa7) == GPIO_STATE_LOW &&  // Q3
+         gpio_get_state(&pa9) == GPIO_STATE_LOW &&  // Q2
+         gpio_get_state(&pb0) == GPIO_STATE_LOW;    // Q4
 }
