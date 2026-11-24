@@ -81,12 +81,12 @@ int main() {
 
   init_master_tasks();
 
-  tasks_start();
+  //tasks_start();
 
-  gpio_init_pin(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&pa7, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&pa9, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
-  gpio_init_pin(&pb0, GPIO_INPUT_PULL_DOWN, GPIO_STATE_LOW);
+  gpio_init_pin_af(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pa7, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pa9, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+  gpio_init_pin_af(&pb0, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
 
   pwm_init(PWM_TIMER_1,period);
   pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_1, true); // Q1 on first, Q3 off first
