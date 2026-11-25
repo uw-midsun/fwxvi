@@ -55,7 +55,7 @@ TIM_BreakDeadTimeConfigTypeDef dead_time_config = {
   TIM_OSSR_ENABLE,
   TIM_OSSI_ENABLE,
   TIM_LOCKLEVEL_OFF,
-  0x05,
+  0xD2,
   TIM_BREAK_DISABLE,
   TIM_BREAKPOLARITY_LOW,
   0x0,
