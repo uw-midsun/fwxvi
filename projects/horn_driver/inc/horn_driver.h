@@ -10,8 +10,10 @@
  ************************************************************************************************/
 
 /* Standard library Headers */
+#include <stdbool.h>
 
 /* Inter-component Headers */
+#include "status.h"
 
 /* Intra-component Headers */
 
@@ -20,5 +22,9 @@
  * @brief    horn_driver Firmware
  * @{
  */
+
+StatusCode horn_driver_init();
+
+StatusCode horn_driver_enable(bool is_enabled);
 
 /** @} */
