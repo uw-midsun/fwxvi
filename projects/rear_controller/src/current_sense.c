@@ -66,8 +66,8 @@
 /** @brief  DRDY flag within the status byte (byte 0 of the conversion frame) */
 #define CSENSE_DATA_READY_MASK 0x01U
 
-/** @brief  Length of the ADS122 status + 24-bit conversion frame [bytes] */
-#define CSENSE_CONVERSION_FRAME_LEN 5U
+/** @brief  Length of the ADS122 status + 24-bit conversion frame + 8-bit crc remainder [bytes] */
+#define CSENSE_CONVERSION_FRAME_LEN 6U
 
 /** @brief  Shift used to sign-extend the 24-bit conversion result into an int32_t */
 #define CSENSE_CONVERSION_SIGN_SHIFT 8U
@@ -113,7 +113,7 @@ static uint8_t register_map[] = { CSENSE_DEVICE_CFG_SINGLE_SHOT,
                                   (ADS122_REG_MUX_CFG_DEFAULT | CSENSE_MUX_SHUNT),                     // shunt (current) channel, fixed
                                   (ADS122_REG_GAIN_CFG_DEFAULT | CSENSE_GAIN_CFG_CODE),                // PGA gain (see CSENSE_PGA_GAIN)
                                   (ADS122_REG_REFERENCE_CFG_DEFAULT | CSENSE_REFERENCE_CFG_VREF_2V5),  // Vref = 2.5 V -> +-5 V range, 256 kHz clock
-                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN),
+                                  (ADS122_REG_DIGITAL_CFG_DEFAULT | CSENSE_DIGITAL_CFG_STATUS_EN | ADS122_I2C_CRC_EN_MASK),
                                   ADS122_REG_GPIO_CFG_DEFAULT,
                                   ADS122_REG_GPIO_DATA_OUTPUT_DEFAULT,
                                   ADS122_REG_IDAC_MAG_CFG_DEFAULT,
