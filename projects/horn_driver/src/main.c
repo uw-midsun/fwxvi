@@ -14,10 +14,6 @@
 #include "log.h"
 #include "master_tasks.h"
 #include "mcu.h"
-#include "pwm.h"
-#include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_tim.h"
-#include "stm32l4xx_ll_tim.h"
 #include "tasks.h"
 
 static bool all_gpio_open(void);  // FOR TEST CASES
@@ -29,36 +25,44 @@ static bool all_gpio_open(void);  // FOR TEST CASES
 #define TIM1_CH1N 7     // PA7 Q3
 #define TIM1_CH2 9      // PA9 Q2
 #define TIM1_CH2N 0     // PB0 Q4
-#define period 250      // 4kHz
-#define dead_time 5     // in us
-#define duty_cycle 0.5  // 50% duty cycle
+#define DEAD_TIME_US 5     // in us
+#define DUTY_CYCLE_PER 0.5  // 50% duty cycle
 
-enum MOSFET_STATE {
-  ALL_OFF = 0,
-  Q1_Q4_ON = 1,
-  Q2_Q3_ON = 2,
-};
 void dead_time_run();
 void delay_us(uint16_t us);
-enum MOSFET_STATE get_mosfet_state();
+MosfetState get_mosfet_state();
 
-enum MOSFET_STATE last = ALL_OFF;
-static TIM_HandleTypeDef h_timer = { 0U };
-GpioAddress pa8 = {
+MosfetState last = ALL_OFF;
+
+GpioAddress Q1 = {
   .pin = TIM1_CH1,
   .port = GPIO_PORT_A,
 };
-GpioAddress pa7 = {
+GpioAddress Q3 = {
   .pin = TIM1_CH1N,
   .port = GPIO_PORT_A,
 };
-GpioAddress pa9 = {
+GpioAddress Q2 = {
   .pin = TIM1_CH2,
   .port = GPIO_PORT_A,
 };
-GpioAddress pb0 = {
+GpioAddress Q4 = {
   .pin = TIM1_CH2N,
   .port = GPIO_PORT_B,
+};
+
+TIM_BreakDeadTimeConfigTypeDef dead_time_config = {
+  TIM_OSSR_ENABLE,
+  TIM_OSSI_ENABLE,
+  TIM_LOCKLEVEL_OFF,
+  0x05,
+  TIM_BREAK_DISABLE,
+  TIM_BREAKPOLARITY_LOW,
+  0x0,
+  TIM_BREAK2_DISABLE,
+  TIM_BREAK2POLARITY_LOW,
+  0x0,
+  TIM_AUTOMATICOUTPUT_DISABLE
 };
 
 // this should be here for a start up because when we do it in the other fcn it might/shouldn't read not? research more
@@ -67,22 +71,18 @@ TASK(horn_driver, TASK_STACK_2048) {
     LOG_DEBUG("pins are open at startup!");
   }  // NOTE TO JOHN OR NEXT USER PLEASE DOUBLE CHECK HOW TO FIND THIS MESSAGE NEXT DAY OF TESTING
     // MINICOM INFO:git  https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
-
-  pwm_init(PWM_TIMER_1, period);
-  pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_1, true);  // Q1 on first, Q3 off first
+  pwm_set_dc(PWM_TIMER_1, DUTY_CYCLE_PER, PWM_CHANNEL_1, true);  // Q1 on first, Q3 off first
   LL_TIM_OC_SetPolarity(TIM1, PWM_CHANNEL_2, LL_TIM_OCPOLARITY_HIGH);
-  pwm_set_dc(PWM_TIMER_1, duty_cycle, PWM_CHANNEL_2, true);  // Q2 on first, Q4 off first
+  pwm_set_dc(PWM_TIMER_1,DUTY_CYCLE_PER, PWM_CHANNEL_2, true);  // Q2 on first, Q4 off first
   // need to invert second pwm since Q4 should be on first
-
-  HAL_TIM_Base_Init(&h_timer);
   HAL_TIM_Base_Start_IT(&h_timer);
-
-  dead_time_run();
+  
+  HAL_TIMEx_ConfigBreakDeadTime(&h_timer,&dead_time_config);
   while (true) {
-    gpio_init_pin_af(&pa8, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-    gpio_init_pin_af(&pa7, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-    gpio_init_pin_af(&pa9, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
-    gpio_init_pin_af(&pb0, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+    gpio_init_pin_af(&Q1, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+    gpio_init_pin_af(&Q3, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+    gpio_init_pin_af(&Q2, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
+    gpio_init_pin_af(&Q4, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
   };
 }
 
@@ -97,20 +97,21 @@ int main() {
   mcu_init();
   tasks_init();
   log_init();
+  horn_driver_init();
 
   tasks_init_task(horn_driver, TASK_PRIORITY(3), NULL);
-
+  
   tasks_start();
 
   LOG_DEBUG("exiting main?");
   return 0;
 }
 
-enum MOSFET_STATE get_mosfet_state() {
-  GpioState Q1_state = gpio_get_state(&pa8);  // Q1
-  GpioState Q3_state = gpio_get_state(&pa7);  // Q3
-  GpioState Q2_state = gpio_get_state(&pa9);  // Q2
-  GpioState Q4_state = gpio_get_state(&pb0);  // Q4
+MosfetState get_mosfet_state() {
+  GpioState Q1_state = gpio_get_state(&Q1);  // Q1
+  GpioState Q3_state = gpio_get_state(&Q3);  // Q3
+  GpioState Q2_state = gpio_get_state(&Q2);  // Q2
+  GpioState Q4_state = gpio_get_state(&Q4);  // Q4
 
   if (Q1_state == GPIO_STATE_HIGH && Q4_state == GPIO_STATE_HIGH) {
     return Q1_Q4_ON;
@@ -122,25 +123,24 @@ enum MOSFET_STATE get_mosfet_state() {
 
 void delay_us(uint16_t us) {
   __HAL_TIM_SET_COUNTER(&h_timer, 0);  // set the counter value a 0
-  while (__HAL_TIM_GET_COUNTER(&h_timer) < us)
-    ;  // wait for the counter to reach the us input in the parameter
+  while (__HAL_TIM_GET_COUNTER(&h_timer) < us);  // wait for the counter to reach the us input in the parameter
 }
 
 // state 1 is duty cycled
 void dead_time_run() {
   while (true) {
-    enum MOSFET_STATE current = get_mosfet_state();
+    MosfetState current = get_mosfet_state();
     if (current != last) {
       last = current;
-      delay_us(dead_time);
+      delay_us(DEAD_TIME_US);
     }
   }
 }
 
 // CHECKS IF ALL PINS ARE STARTING OFF
 static bool all_gpio_open(void) {
-  return gpio_get_state(&pa8) == GPIO_STATE_LOW &&  // Q1
-         gpio_get_state(&pa7) == GPIO_STATE_LOW &&  // Q3
-         gpio_get_state(&pa9) == GPIO_STATE_LOW &&  // Q2
-         gpio_get_state(&pb0) == GPIO_STATE_LOW;    // Q4
+  return gpio_get_state(&Q1) == GPIO_STATE_LOW &&  // Q1
+         gpio_get_state(&Q3) == GPIO_STATE_LOW &&  // Q3
+         gpio_get_state(&Q2) == GPIO_STATE_LOW &&  // Q2
+         gpio_get_state(&Q4) == GPIO_STATE_LOW;    // Q4
 }

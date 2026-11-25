@@ -12,11 +12,16 @@
 
 /* Inter-component Headers */
 #include "status.h"
+#include "log.h"
 
 /* Intra-component Headers */
 #include "horn_driver.h"
-
+// macros
 StatusCode horn_driver_init() {
+  pwm_init(PWM_TIMER_1, PERIOD_MS);
+  if (HAL_TIM_Base_Init(&h_timer) != HAL_OK) {
+    LOG_DEBUG("Error in HAL init\r\n");
+  }
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
