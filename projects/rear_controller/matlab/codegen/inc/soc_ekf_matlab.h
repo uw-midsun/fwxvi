@@ -31,9 +31,9 @@
  *
  * Code generated for Simulink model 'soc_ekf_matlab'.
  *
- * Model version                  : 1.43
- * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
- * C/C++ source code generated on : Thu Oct 30 18:39:26 2025
+ * Model version                  : 7.0
+ * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
+ * C/C++ source code generated on : Tue Nov 17 10:03:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -43,10 +43,11 @@
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_soc_ekf_matlab_h_
-#define RTW_HEADER_soc_ekf_matlab_h_
+#ifndef soc_ekf_matlab_h_
+#define soc_ekf_matlab_h_
 #ifndef soc_ekf_matlab_COMMON_INCLUDES_
 #define soc_ekf_matlab_COMMON_INCLUDES_
+#include "math.h"
 #endif /* soc_ekf_matlab_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
@@ -91,14 +92,16 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real_T Fd[4];
   real_T P_pred[4];
   real_T P_new_tmp[4];
+  real_T Fd[4];
   real_T Fd_m[4];
   real_T Fd_c[4];
-  real_T kalman_gain[2];
   real_T tau;
   real_T soc_m;
+  real_T idx;
+  real_T b_idx;
+  real_T rtb_x_new_idx_0;
 } DW;
 
 /* External inputs (root inport signals with default storage) */
@@ -116,6 +119,7 @@ typedef struct {
   real_T x_new[2]; /* '<Root>/x_new' */
   real_T P_new[4]; /* '<Root>/P_new' */
   real_T y_pred;   /* '<Root>/y_pred' */
+  real_T x0[2];    /* '<Root>/x0' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -159,7 +163,7 @@ extern RT_MODEL *const rtM;
  * '<Root>' : 'ekf_soc_estimator'
  * '<S1>'   : 'ekf_soc_estimator/soc_ekf_matlab'
  */
-#endif /* RTW_HEADER_soc_ekf_matlab_h_ */
+#endif /* soc_ekf_matlab_h_ */
 
 /*
  * File trailer for generated code.

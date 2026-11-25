@@ -2,7 +2,7 @@
 % @file    test_battery_params.m
 % @brief   Diagnostic test for battery_params definitions and OCV functions
 % @date    2025-09-07
-% @autho   Midnight Sun Team #24 - MSXVI
+% @author   Midnight Sun Team #24 - MSXVI
 %
 % =========================================================================
 % FUNCTION DESCRIPTION
@@ -66,6 +66,13 @@ function test_battery_params()
             ocv_from_soc(params, 1.0), ocv_from_soc(params, 0.0));
     else
         fprintf('\nPASS: OCV function increases with SOC as expected.\n');
+    end
+
+    roundtrip_err = max(abs(soc_fine_from_ocv - soc_fine));
+    if roundtrip_err > 1e-6
+        fprintf('ERROR: ocv_to_soc does not invert ocv_from_soc (max error %.4f)\n', roundtrip_err);
+    else
+        fprintf('PASS: ocv_to_soc inverts ocv_from_soc (max error %.2e)\n', roundtrip_err);
     end
 
     % ---------- Plotting ----------    
