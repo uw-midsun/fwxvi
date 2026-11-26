@@ -1,11 +1,31 @@
 #pragma once
 
+/************************************************************************************************
+ * @file    MainWindow.h
+ *
+ * @brief   Mainwindow
+ *
+ * @date    2026-11-26
+ * @author  Midnight Sun Team #24 - MSXVI
+ ************************************************************************************************/
+
+/* Standard library Headers */
+#include <QLabel>
 #include <QMainWindow>
 #include <QSlider>
-#include <QLabel>
-#include <QVector>
 #include <QTableWidget>
+#include <QVector>
+
+/* Inter-component Headers */
 #include "../telemetry/LogParser.h"
+
+/* Intra-component Headers */
+
+/**
+ * @defgroup MainWindow
+ * @brief    MainWindow Firmware
+ * @{
+ */
 
 class MainWindow : public QMainWindow
 {
@@ -25,3 +45,5 @@ private:
 
     void showSample(int index);
 };
+
+/** @} */
