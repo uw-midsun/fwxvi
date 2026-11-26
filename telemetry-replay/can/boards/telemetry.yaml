@@ -1,0 +1,24 @@
+# If you need to add a new message use a reasonable
+# reserved ID. The higher ID the lower the priority. Generally
+# - 0-13: Critical messages
+# - 14-30: Actionable messages (trigger a change in another system)
+# - 30-63: Data messages (usually not actionable by an onboard device)
+
+---
+Messages:
+  imu_data:
+    id: 52
+    critical: false
+    cycle: "medium"
+    target:
+      steering:
+        watchdog: 0
+    signals:
+      g_force:
+        length: 16
+      roll:
+        length: 16
+      pitch:
+        length: 16
+      yaw:
+        length: 16
