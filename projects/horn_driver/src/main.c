@@ -52,8 +52,8 @@ GpioAddress Q4 = {
 };
 
 TIM_BreakDeadTimeConfigTypeDef dead_time_config = {
-  TIM_OSSR_ENABLE,
-  TIM_OSSI_ENABLE,
+  TIM_OSSR_DISABLE,
+  TIM_OSSI_DISABLE,
   TIM_LOCKLEVEL_OFF,
   0xD2,
   TIM_BREAK_DISABLE,
@@ -71,11 +71,7 @@ TASK(horn_driver, TASK_STACK_2048) {
     LOG_DEBUG("pins are open at startup!");
   }  // NOTE TO JOHN OR NEXT USER PLEASE DOUBLE CHECK HOW TO FIND THIS MESSAGE NEXT DAY OF TESTING
     // MINICOM INFO:git  https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
-  pwm_set_dc(PWM_TIMER_1, DUTY_CYCLE_PER, PWM_CHANNEL_1, true);  // Q1 on first, Q3 off first
-  LL_TIM_OC_SetPolarity(TIM1, PWM_CHANNEL_2, LL_TIM_OCPOLARITY_HIGH);
-  pwm_set_dc(PWM_TIMER_1,DUTY_CYCLE_PER, PWM_CHANNEL_2, true);  // Q2 on first, Q4 off first
-  // need to invert second pwm since Q4 should be on first
-  HAL_TIM_Base_Start_IT(&h_timer);
+  
   
   HAL_TIMEx_ConfigBreakDeadTime(&h_timer,&dead_time_config);
   while (true) {

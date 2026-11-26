@@ -16,7 +16,10 @@
 
 /* Intra-component Headers */
 #include "horn_driver.h"
+#define PERIOD_MS 250      // 4kHz
 // macros
+static TIM_HandleTypeDef h_timer = { 0U };
+
 StatusCode horn_driver_init() {
   pwm_init(PWM_TIMER_1, PERIOD_MS);
   if (HAL_TIM_Base_Init(&h_timer) != HAL_OK) {

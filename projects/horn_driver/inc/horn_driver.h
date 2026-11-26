@@ -24,7 +24,7 @@
 #include "stm32l4xx_ll_tim.h"
 #include "stm32l4xx_hal_tim_ex.h"
 // macros
-#define PERIOD_MS 250      // 4kHz
+
 /**
  * @defgroup horn_driver
  * @brief    horn_driver Firmware
@@ -36,7 +36,7 @@ typedef enum {
   Q1_Q4_ON = 1,
   Q2_Q3_ON = 2,
 } MosfetState;
-static TIM_HandleTypeDef h_timer = { 0U };
+
 StatusCode horn_driver_init();
 
 StatusCode horn_driver_enable(bool is_enabled);
