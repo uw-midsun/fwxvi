@@ -18,5 +18,4 @@ cmake --build build
 ./build/telemetry
 ```
 
-# If you're lazy to build
-[Google drive download](https://drive.google.com/drive/folders/1iRqTesJolsoyPd42WkKSLFo6zUHbYRG_?usp=sharing)
+If you're lazy to build [Google Drive download link](https://drive.google.com/drive/folders/1iRqTesJolsoyPd42WkKSLFo6zUHbYRG_?usp=sharing)
