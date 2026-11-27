@@ -43,8 +43,4 @@ typedef enum {
 StatusCode horn_driver_init();
 
 StatusCode horn_driver_enable(bool is_enabled);
-
-static bool all_gpio_open(void);
-
-MosfetState get_mosfet_state();
 /** @} */

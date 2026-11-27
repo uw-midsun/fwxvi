@@ -16,12 +16,10 @@
 #include "mcu.h"
 #include "tasks.h"
 
-static bool all_gpio_open(void);  // FOR TEST CASES
+static bool all_gpio_open();  // FOR TEST CASES
 
 /* Intra-component Headers */
 #include "horn_driver.h"
-
-MosfetState last = ALL_OFF;
 
 GpioAddress Q1 = {
   .pin = TIM1_CH1,
@@ -47,13 +45,34 @@ TASK(horn_driver, TASK_STACK_2048) {
   }  // NOTE TO JOHN OR NEXT USER PLEASE DOUBLE CHECK HOW TO FIND THIS MESSAGE NEXT DAY OF TESTING
     // MINICOM INFO:git  https://uwmidsun.atlassian.net/wiki/spaces/Firmware/pages/3263103250/Minicom+Instructions
   
-  HAL_TIMEx_ConfigBreakDeadTime(&h_timer,&dead_time_config);
   while (true) {
     gpio_init_pin_af(&Q1, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
     gpio_init_pin_af(&Q3, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
     gpio_init_pin_af(&Q2, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
     gpio_init_pin_af(&Q4, GPIO_INPUT_PULL_DOWN, GPIO_ALT1_TIM1);
   };
+}
+
+// CHECKS IF ALL PINS ARE STARTING OFF
+static bool all_gpio_open() {
+  return gpio_get_state(&Q1) == GPIO_STATE_LOW &&  // Q1
+         gpio_get_state(&Q3) == GPIO_STATE_LOW &&  // Q3
+         gpio_get_state(&Q2) == GPIO_STATE_LOW &&  // Q2
+         gpio_get_state(&Q4) == GPIO_STATE_LOW;    // Q4
+}
+
+MosfetState get_mosfet_state() {
+  GpioState Q1_state = gpio_get_state(&Q1);  // Q1
+  GpioState Q3_state = gpio_get_state(&Q3);  // Q3
+  GpioState Q2_state = gpio_get_state(&Q2);  // Q2
+  GpioState Q4_state = gpio_get_state(&Q4);  // Q4
+
+  if (Q1_state == GPIO_STATE_HIGH && Q4_state == GPIO_STATE_HIGH) {
+    return Q1_Q4_ON;
+  } else if (Q2_state == GPIO_STATE_HIGH && Q3_state == GPIO_STATE_HIGH) {
+    return Q2_Q3_ON;
+  }
+  return ALL_OFF;
 }
 
 #ifdef MS_PLATFORM_X86
