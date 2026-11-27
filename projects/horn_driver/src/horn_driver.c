@@ -20,16 +20,63 @@
 // macros
 static TIM_HandleTypeDef h_timer = { 0U };
 
+static TIM_OC_InitTypeDef s_config = {0U};
+
+static TIM_BreakDeadTimeConfigTypeDef bdtr_config = {0U};
+
 StatusCode horn_driver_init() {
-  pwm_init(PWM_TIMER_1, PERIOD_MS);
+  h_timer.Instance = TIM1;
+  h_timer.Init.Prescaler = 8000000/250; // some number need to figure out;
+  
+  // calculated using 5 microseconds of deadtime
+  bdtr_config.DeadTime = 0xD2;
+  
+  HAL_TIM_OC_ConfigChannel(&h_timer, &s_config, TIM1_CH2);
+
+  HAL_TIMEx_ConfigBreakDeadTime(&h_timer,&dead_time_config);
+
   if (HAL_TIM_Base_Init(&h_timer) != HAL_OK) {
     LOG_DEBUG("Error in HAL init\r\n");
+    return STATUS_CODE_INTERNAL_ERROR;
   }
+  
+  if (HAL_TIM_PWM_Init(&h_timer) != HAL_OK) {
+    LOG_DEBUG("Error in PWM init");
+    return STATUS_CODE_INTERNAL_ERROR;
+  }
+  __HAL_TIM_MOE_ENABLE(h_timer);
+
+  HAL_TIM_PWM_Start(&h_timer, TIM1_CH1);
+  HAL_TIMEx_PWMN_Start(&h_timer,TIM1_CH1); // do we need to do TIM1_CH1N?
+  HAL_TIM_PWM_Start(&h_timer, TIM1_CH2);
+  HAL_TIMEx_PWMN_Start(&h_timer, TIM1_CH2); // same question as above
   return STATUS_CODE_UNIMPLEMENTED;
 }
 
 StatusCode horn_driver_enable(bool is_enabled) {
   return STATUS_CODE_UNIMPLEMENTED;
+}
+
+// CHECKS IF ALL PINS ARE STARTING OFF
+static bool all_gpio_open(void) {
+  return gpio_get_state(&Q1) == GPIO_STATE_LOW &&  // Q1
+         gpio_get_state(&Q3) == GPIO_STATE_LOW &&  // Q3
+         gpio_get_state(&Q2) == GPIO_STATE_LOW &&  // Q2
+         gpio_get_state(&Q4) == GPIO_STATE_LOW;    // Q4
+}
+
+MosfetState get_mosfet_state() {
+  GpioState Q1_state = gpio_get_state(&Q1);  // Q1
+  GpioState Q3_state = gpio_get_state(&Q3);  // Q3
+  GpioState Q2_state = gpio_get_state(&Q2);  // Q2
+  GpioState Q4_state = gpio_get_state(&Q4);  // Q4
+
+  if (Q1_state == GPIO_STATE_HIGH && Q4_state == GPIO_STATE_HIGH) {
+    return Q1_Q4_ON;
+  } else if (Q2_state == GPIO_STATE_HIGH && Q3_state == GPIO_STATE_HIGH) {
+    return Q2_Q3_ON;
+  }
+  return ALL_OFF;
 }
 
 /** @} */
