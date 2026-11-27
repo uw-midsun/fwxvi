@@ -47,11 +47,13 @@ std::map<QString, QVariant> MainWindow::extractSubmap(const std::map<QString, QV
   return out;
 }
 
-MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
+MainWindow::MainWindow(const AppState &app_state, Terminal &terminal, Server *server, QWidget *parent) :
     QMainWindow{ parent },
     m_state{ app_state },
     m_list{ nullptr },
     m_stack{ nullptr },
+    m_terminal{ terminal },
+    m_server{ server },
     m_overview_page{ nullptr },
     m_afe_page{ nullptr },
     m_gpio_page{ nullptr },
@@ -79,7 +81,7 @@ MainWindow::MainWindow(const AppState &app_state, QWidget *parent) :
   const std::map<QString, QVariant> gpio_payload = extractSubmap(m_state.payload, QStringLiteral("gpio"));
   const std::map<QString, QVariant> adc_payload = extractSubmap(m_state.payload, QStringLiteral("adc"));
 
-  m_overview_page = new OverviewPage(m_state.payload, m_state.client_files, m_state.current_client_index, m_stack);
+  m_overview_page = new OverviewPage(m_state.payload, m_state.client_files, m_state.current_client_index, m_terminal, m_server, m_stack);
   m_afe_page = new AfePage(afe_payload, m_stack);
   m_gpio_page = new GpioPage(gpio_payload, m_stack);
   m_adc_page = new AdcPage(adc_payload, m_stack);

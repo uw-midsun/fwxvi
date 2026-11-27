@@ -207,7 +207,6 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
 
   std::string interface = toLower(tokens[0]);
   std::string action = toLower(tokens[1]);
-
   try {
     if (interface == "gpio") {
       handleGpioCommands(action, tokens);
@@ -225,6 +224,32 @@ void Terminal::parseCommand(std::vector<std::string> &tokens) {
   } catch (const std::exception &e) {
     std::cerr << "Terminal command error: " << e.what() << std::endl;
   }
+}
+
+void Terminal::executeCommand(ClientConnection *targetClient, const std::string &input) {
+  if (targetClient == nullptr) {
+    std::cout << "Invalid client selection." << std::endl;
+    return;
+  }
+
+  std::string trimmed_input = input;
+  trimmed_input.erase(0, trimmed_input.find_first_not_of(" \t"));
+  trimmed_input.erase(trimmed_input.find_last_not_of(" \t") + 1);
+
+  std::vector<std::string> tokens;
+  std::istringstream iss(trimmed_input);
+  std::string token;
+  while (iss >> token) {
+    tokens.push_back(token);
+  }
+
+  if (tokens.empty()) {
+    return;
+  }
+
+  m_targetClient = targetClient;
+  parseCommand(tokens);
+  m_targetClient = nullptr;
 }
 
 void Terminal::run() {
@@ -264,20 +289,6 @@ void Terminal::run() {
       break;
     }
 
-    /**
-     * Create tokens out of input string
-     * Input = "GPIO GET_PIN_STATE A9"
-     * tokens = ["GPIO", "GET_PIN_STATE", "A9"]
-     */
-    std::vector<std::string> tokens;
-    std::istringstream iss(input);
-    std::string token;
-    while (iss >> token) {
-      tokens.push_back(token);
-    }
-
-    if (!tokens.empty()) {
-      parseCommand(tokens);
-    }
+    executeCommand(m_targetClient, input);
   }
 }

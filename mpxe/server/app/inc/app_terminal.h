@@ -80,19 +80,25 @@ class Terminal {
 
  public:
   /**
+   * @brief   While true spin-loop to handle shell inputs
+   * @details This function must be called after server initialization
+   *          This function will never return. To exit safely, you must enter 'exit'
+   */
+  void run();
+
+  /**
+   * @brief   Execute terminal-style command for a selected client
+   * @note    For testing purposes
+   */
+  void executeCommand(ClientConnection *targetClient, const std::string &input);
+
+  /**
    * @brief   Constructs a Terminal object
    * @details Initializes the Terminal. The constructor sets up internal variables
    *          The constructor shall bind to the server
    * @param   server Pointer to a server instance
    */
   explicit Terminal(Server *server);
-
-  /**
-   * @brief   While true spin-loop to handle shell inputs
-   * @details This function must be called after server initialization
-   *          This function will never return. To exit safely, you must enter 'exit'
-   */
-  void run();
 };
 
 /** @} */

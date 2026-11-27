@@ -6,6 +6,8 @@
  ************************************************************************************************/
 
 /* Standard library headers */
+#include <string>
+#include <vector>
 
 /* Qt library headers */
 #include <QAbstractItemView>
@@ -13,11 +15,13 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QMessageBox>
 #include <QObject>
 #include <QTableView>
 #include <QVBoxLayout>
 
 /* Inter-component headers */
+#include "command_dialog.h"
 #include "command_table_model.h"
 #include "utils.h"
 
@@ -56,7 +60,34 @@ QLabel *OverviewPage::makeLabel(const QString &text, bool bold, bool mono, QWidg
   return label;
 }
 
-OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, QWidget *parent) :
+/*
+-------------------------------------------------------- */
+
+QStringList extractPlaceholders(const QString &param_1, const QString &param_2) {
+  QStringList cells;
+  for (const QString &cell : { param_1, param_2 }) {
+    QStringList names;
+    if (cell.isEmpty() || cell == QStringLiteral("-")) continue;
+    int lbrack = cell.indexOf('[');
+
+    /* Extracting text from brackets */
+    while (lbrack != -1) {
+      const int rbrack = cell.indexOf(']', lbrack + 1);
+      const QString name = cell.mid(lbrack + 1, rbrack - lbrack - 1).trimmed();
+      if (!name.isEmpty()) {
+        names << name;
+      }
+      lbrack = cell.indexOf('[', rbrack + 1);
+    }
+
+    if (!names.isEmpty()) {
+      cells << names.join('/');
+    }
+  }
+  return cells;
+}
+
+OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QStringList &clientFiles, int currentIndex, Terminal &terminal, Server *server, QWidget *parent) :
     QWidget{ parent },
     m_clients{ nullptr },
     m_project_lbl{ nullptr },
@@ -67,7 +98,10 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
     m_status_text{ nullptr },
     m_created_label{ nullptr },
     m_client_files{ clientFiles },
-    m_payload{ payload } {
+    m_payload{ payload },
+    m_cmds_table{ nullptr },
+    m_terminal{ terminal },
+    m_server{ server } {
   /* Top row client selector */
   QWidget *top = new QWidget(this);
   QHBoxLayout *h = new QHBoxLayout(top);
@@ -117,6 +151,8 @@ OverviewPage::OverviewPage(const std::map<QString, QVariant> &payload, const QSt
   CommandTableModel *cmd_model = new CommandTableModel(MARKDOWN_PATH, this);
   TableWithSearch cmds = makeSearchableTable(cmd_model, this);
   if (cmds.table) {
+    m_cmds_table = cmds;
+    connect(m_cmds_table.table, &QTableView::clicked, this, &OverviewPage::onCommandClicked);
     QHeaderView *hh = cmds.table->horizontalHeader();
 
     /* Keep widths predictable and the last column narrow */
@@ -187,4 +223,60 @@ void OverviewPage::onClientChanged(int index) {
     return;
   }
   emit clientSelected(m_client_files.at(index));
+}
+
+void OverviewPage::onCommandClicked(const QModelIndex &index) {
+  QModelIndex sourceIndex = m_cmds_table.proxy->mapToSource(index);
+
+  QString type = sourceIndex.sibling(sourceIndex.row(), 0).data().toString();
+  QString cmd = sourceIndex.sibling(sourceIndex.row(), 1).data().toString();
+  QString parameter = sourceIndex.sibling(sourceIndex.row(), 2).data().toString();
+  QString add_parameter = sourceIndex.sibling(sourceIndex.row(), 3).data(Qt::ToolTipRole).toString();
+
+  std::vector<std::string> tokens = { type.toStdString(), cmd.toStdString(), parameter.toStdString(), add_parameter.toStdString() };
+  std::string clientName = m_clients->currentText().toStdString();
+  ClientConnection *client = m_server->getClientByName(clientName);
+
+  const QStringList placeholders = extractPlaceholders(parameter, add_parameter);
+
+  QStringList args;
+  if (!placeholders.isEmpty()) {
+    CommandDialog dialog(type, cmd, placeholders, this);
+    if (dialog.exec() != QDialog::Accepted) {
+      return;
+    }
+
+    const QStringList values = dialog.values();
+    for (const QString &v : values) {
+      if (v.isEmpty()) {
+        QMessageBox::warning(this, QStringLiteral("Missing parameter"), QStringLiteral("All parameters must be provided."));
+        return;
+      }
+    }
+    args = values;
+  }
+
+  const QString typeLower = type.toLower();
+  const QString cmdLower = cmd.toLower();
+
+  const bool isI2c = (typeLower == QStringLiteral("i2c") && cmdLower == QStringLiteral("write_data"));
+  const bool isSpi = (typeLower == QStringLiteral("spi") && (cmdLower == QStringLiteral("write") || cmdLower == QStringLiteral("transfer")));
+
+  if ((isI2c || isSpi) && args.size() >= 2) {
+    QString &data = args.last();
+
+    if (isI2c) {
+      data.replace(QLatin1Char(','), QLatin1Char(' '));
+      data = data.simplified();
+    } else {
+      data = data.simplified();
+      data.replace(QLatin1Char(' '), QLatin1Char(','));
+    }
+  }
+
+  QStringList input;
+  input << type << cmd << args;
+  std::string inputString = input.join(' ').toStdString();
+
+  m_terminal.executeCommand(client, inputString);
 }
