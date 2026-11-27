@@ -42,6 +42,7 @@ typedef enum {
   GUI_MENU_ITEM_INDEX_PARTY_MODE = 4,
   GUI_MENU_ITEM_INDEX_PEDAL_CALIB = 5,
   GUI_MENU_ITEM_INDEX_TOGGLE_BPS = 6,
+  GUI_MENU_ITEM_INDEX_DISPLAY_BRIGHTNESS = 7,
 } GuiMenuIndex;
 
 static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
@@ -79,6 +80,11 @@ static const GuiMenuItem s_menu_items[GUI_MENU_ITEM_COUNT] = {
     .type = GUI_MENU_ITEM_ACTION,
     .action_label = "Toggle BPS",
     .target.callback = NULL,
+  },
+  [GUI_MENU_ITEM_INDEX_DISPLAY_BRIGHTNESS] = {
+    .type = GUI_MENU_ITEM_SCREEN,
+    .action_label = "Display Brightness",
+    .target.screen_id = GUI_SCREEN_DISPLAY_BRIGHTNESS,
   },
 };
 

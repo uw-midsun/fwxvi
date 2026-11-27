@@ -45,6 +45,8 @@
 #define BACKLIGHT_FREQ_HZ 50000
 #define BACKLIGHT_DEFAULT_BRIGHTNESS 100U
 
+#define BRIGHTNESS_CHANGE_INTERVAL 5
+
 #define BACKLIGHT_PWM_TIMER PWM_TIMER_15
 #define BACKLIGHT_PWM_CHANNEL PWM_CHANNEL_1
 #define BACKLIGHT_GPIO_AF GPIO_ALT14_TIM15
@@ -74,6 +76,22 @@ StatusCode display_backlight_init(SteeringStorage *storage);
  *          the method is run before the display backlight is initialized
  */
 StatusCode display_set_brightness(uint16_t percentage, bool persist);
+
+/**
+ * @brief Increment display brightness by a set amount, while handling limits correctly
+ * @return STATUS_CODE_OK if completed successfully
+ *         STATUS_CODE_INVALID_ARGS if the method is run before the display
+ *          backlight is initialized
+ */
+StatusCode display_increment_brightness();
+
+/**
+ * @brief Decrement display brightness by a set amount, while handling limits correctly
+ * @return STATUS_CODE_OK if completed successfully
+ *         STATUS_CODE_INVALID_ARGS if the method is run before the display
+ *          backlight is initialized
+ */
+StatusCode display_decrement_brightness();
 
 StatusCode display_rx_slow();
 StatusCode display_rx_medium();
