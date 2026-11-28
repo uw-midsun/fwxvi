@@ -22,15 +22,25 @@ static TIM_HandleTypeDef h_timer = { 0U };
 
 static TIM_OC_InitTypeDef s_config = {0U};
 
-static TIM_BreakDeadTimeConfigTypeDef bdtr_config = {0U};
+// calculated using 5 microseconds of deadtime
+static TIM_BreakDeadTimeConfigTypeDef bdtr_config = {
+  .OffStateRunMode = TIM_OSSR_DISABLE,
+  .OffStateIDLEMode = TIM_OSSI_DISABLE,
+  .LockLevel = TIM_LOCKLEVEL_OFF,
+  .DeadTime = 0xD2,
+  .BreakState = TIM_BREAK_DISABLE,
+  .BreakPolarity = TIM_BREAKPOLARITY_HIGH,
+  .BreakFilter = 0,
+  .Break2State = TIM_BREAK2_DISABLE,
+  .Break2Polarity = TIM_BREAK2POLARITY_HIGH,
+  .Break2Filter = 0,
+  .AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE,
+};
 
 
 StatusCode horn_driver_init() {
   h_timer.Instance = TIM1;
   h_timer.Init.Prescaler = 8000000/250; // some number need to figure out;
-  
-  // calculated using 5 microseconds of deadtime
-  bdtr_config.DeadTime = 0xD2;
   
   HAL_TIM_OC_ConfigChannel(&h_timer, &s_config, TIM1_CH2);
 
