@@ -18,8 +18,7 @@
 /* Intra-component Headers */
 
 // libraries
-#include "stm32l4xx_hal_tim.h"
-#include "stm32l4xx_hal_tim_ex.h"
+#include "stm32l4xx_hal.h"
 // macros
 #define TIM1_CH1 8      // PA8 Q1
 #define TIM1_CH1N 7     // PA7 Q3
